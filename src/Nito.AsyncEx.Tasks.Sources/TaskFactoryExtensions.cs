@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 using System.Runtime.CompilerServices;
 #endif
 
@@ -13,7 +13,7 @@ namespace CuteAnt.AsyncEx
 		/// <param name="this">The <see cref="TaskFactory"/>. May not be <c>null</c>.</param>
 		/// <param name="action">The action delegate to execute. May not be <c>null</c>.</param>
 		/// <returns>The started task.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Task Run(this TaskFactory @this, Action action)
@@ -26,7 +26,7 @@ namespace CuteAnt.AsyncEx
 		/// <param name="this">The <see cref="TaskFactory"/>. May not be <c>null</c>.</param>
 		/// <param name="action">The action delegate to execute. May not be <c>null</c>.</param>
 		/// <returns>The started task.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Task<TResult> Run<TResult>(this TaskFactory @this, Func<TResult> action)
@@ -39,7 +39,7 @@ namespace CuteAnt.AsyncEx
 		/// <param name="this">The <see cref="TaskFactory"/>. May not be <c>null</c>.</param>
 		/// <param name="action">The action delegate to execute. May not be <c>null</c>.</param>
 		/// <returns>The started task.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Task Run(this TaskFactory @this, Func<Task> action)
@@ -52,7 +52,7 @@ namespace CuteAnt.AsyncEx
 		/// <param name="this">The <see cref="TaskFactory"/>. May not be <c>null</c>.</param>
 		/// <param name="action">The action delegate to execute. May not be <c>null</c>.</param>
 		/// <returns>The started task.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Task<TResult> Run<TResult>(this TaskFactory @this, Func<Task<TResult>> action)

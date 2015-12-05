@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-150808",
+  "version": "2.0.0-rc2-151205",
   "description": "CuteAnt.AsyncEx Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Core" ],
@@ -8,7 +8,7 @@
   "requireLicenseAcceptance": false,
 
   "compilationOptions": {
-    "define": [ "TRACE", "NET_4_5_X", "NET_3_5_GREATER", "NET_4_0_GREATER", "NET45PLUS", "NET40PLUS", "NET35PLUS", "CONCURRENT_COLLECTIONS", "FEATURE_TRACING" ],
+    "define": [ "TRACE", "NET_3_5_GREATER", "NET_4_0_GREATER", "FEATURE_TRACING" ],
     "keyFile": "../../tools/StrongKey.snk",
     "warningsAsErrors": false,
     "allowUnsafe": true
@@ -27,7 +27,7 @@
     "System.Collections.Immutable": "1.1.37",
     "Ix-Main": "1.2.5",
     "Ix-Async": "1.2.5",
-    "CuteAnt": "2.0.0-rc2-150808",
+    "CuteAnt": "2.0.0-rc2-151205",
     "CuteAnt.Extensions.Sources": {
       "type": "build",
       "version": "2.0.0-*"

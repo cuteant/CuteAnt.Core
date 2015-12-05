@@ -19,7 +19,7 @@
 
 using System;
 using CuteAnt.Extension;
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 using System.Runtime.CompilerServices;
 #endif
 
@@ -36,7 +36,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <returns>Byte array containing packed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte[] ToBigEndian(this Int16 n)
@@ -52,7 +52,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this Int16 n, byte[] ba)
@@ -68,7 +68,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian_NoChecks(this Int16 n, byte[] ba)
@@ -84,7 +84,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this Int16 n, byte[] ba, int baOff)
@@ -101,7 +101,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian_NoChecks(this Int16 n, byte[] ba, int baOff)
@@ -119,7 +119,7 @@ namespace System
 		/// <param name="ia">Integer array to pack into <paramref name="ba" />.</param>
 		/// <param name="iaOff">Offset in <paramref name="ia" /> to read from.</param>
 		/// <param name="count">Number of integers to output into <paramref name="ba" />.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this Int16[] ia, int iaOff, byte[] ba, int baOff, int count)
@@ -183,7 +183,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>16-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int16 BigEndianToInt16(this byte[] ba)
@@ -198,7 +198,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>16-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int16 BigEndianToInt16_NoChecks(this byte[] ba)
@@ -214,7 +214,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>16-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int16 BigEndianToInt16(this byte[] ba, int baOff)
@@ -230,7 +230,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>16-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int16 BigEndianToInt16_NoChecks(this byte[] ba, int baOff)
@@ -313,7 +313,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <returns>Byte array containing packed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte[] ToBigEndian(this Int32 n)
@@ -329,7 +329,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this Int32 n, byte[] ba)
@@ -345,7 +345,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian_NoChecks(this Int32 n, byte[] ba)
@@ -363,7 +363,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this Int32 n, byte[] ba, int baOff)
@@ -380,7 +380,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian_NoChecks(this Int32 n, byte[] ba, int baOff)
@@ -400,7 +400,7 @@ namespace System
 		/// <param name="ia">Integer array to pack into <paramref name="ba" />.</param>
 		/// <param name="iaOff">Offset in <paramref name="ia" /> to read from.</param>
 		/// <param name="count">Number of integers to output into <paramref name="ba" />.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this Int32[] ia, int iaOff, byte[] ba, int baOff, int count)
@@ -464,7 +464,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>32-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32 BigEndianToInt32(this byte[] ba)
@@ -479,7 +479,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>32-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32 BigEndianToInt32_NoChecks(this byte[] ba)
@@ -496,7 +496,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>32-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32 BigEndianToInt32(this byte[] ba, int baOff)
@@ -512,7 +512,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>32-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32 BigEndianToInt32_NoChecks(this byte[] ba, int baOff)
@@ -596,7 +596,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <returns>Byte array containing packed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte[] ToBigEndian(this Int64 n)
@@ -612,7 +612,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this Int64 n, byte[] ba)
@@ -628,7 +628,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian_NoChecks(this Int64 n, byte[] ba)
@@ -644,7 +644,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this Int64 n, byte[] ba, int baOff)
@@ -661,7 +661,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian_NoChecks(this Int64 n, byte[] ba, int baOff)
@@ -679,7 +679,7 @@ namespace System
 		/// <param name="ia">Integer array to pack into <paramref name="ba" />.</param>
 		/// <param name="iaOff">Offset in <paramref name="ia" /> to read from.</param>
 		/// <param name="count">Number of integers to output into <paramref name="ba" />.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this Int64[] ia, int iaOff, byte[] ba, int baOff, int count)
@@ -743,7 +743,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>64-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64 BigEndianToInt64(this byte[] ba)
@@ -758,7 +758,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>64-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64 BigEndianToInt64_NoChecks(this byte[] ba)
@@ -774,7 +774,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>64-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64 BigEndianToInt64(this byte[] ba, int baOff)
@@ -790,7 +790,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>64-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64 BigEndianToInt64_NoChecks(this byte[] ba, int baOff)
@@ -873,7 +873,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <returns>Byte array containing packed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte[] ToBigEndian(this UInt16 n)
@@ -889,7 +889,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this UInt16 n, byte[] ba)
@@ -905,7 +905,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian_NoChecks(this UInt16 n, byte[] ba)
@@ -921,7 +921,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this UInt16 n, byte[] ba, int baOff)
@@ -938,7 +938,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian_NoChecks(this UInt16 n, byte[] ba, int baOff)
@@ -956,7 +956,7 @@ namespace System
 		/// <param name="ia">Integer array to pack into <paramref name="ba" />.</param>
 		/// <param name="iaOff">Offset in <paramref name="ia" /> to read from.</param>
 		/// <param name="count">Number of integers to output into <paramref name="ba" />.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this UInt16[] ia, int iaOff, byte[] ba, int baOff, int count)
@@ -1020,7 +1020,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>16-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 BigEndianToUInt16(this byte[] ba)
@@ -1035,7 +1035,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>16-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 BigEndianToUInt16_NoChecks(this byte[] ba)
@@ -1051,7 +1051,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>16-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 BigEndianToUInt16(this byte[] ba, int baOff)
@@ -1067,7 +1067,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>16-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 BigEndianToUInt16_NoChecks(this byte[] ba, int baOff)
@@ -1150,7 +1150,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <returns>Byte array containing packed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte[] ToBigEndian(this UInt32 n)
@@ -1166,7 +1166,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this UInt32 n, byte[] ba)
@@ -1182,7 +1182,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian_NoChecks(this UInt32 n, byte[] ba)
@@ -1200,7 +1200,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this UInt32 n, byte[] ba, int baOff)
@@ -1217,7 +1217,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian_NoChecks(this UInt32 n, byte[] ba, int baOff)
@@ -1237,7 +1237,7 @@ namespace System
 		/// <param name="ia">Integer array to pack into <paramref name="ba" />.</param>
 		/// <param name="iaOff">Offset in <paramref name="ia" /> to read from.</param>
 		/// <param name="count">Number of integers to output into <paramref name="ba" />.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this uint[] ia, int iaOff, byte[] ba, int baOff, int count)
@@ -1301,7 +1301,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>32-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt32 BigEndianToUInt32(this byte[] ba)
@@ -1316,7 +1316,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>32-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt32 BigEndianToUInt32_NoChecks(this byte[] ba)
@@ -1333,7 +1333,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>32-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt32 BigEndianToUInt32(this byte[] ba, int baOff)
@@ -1349,7 +1349,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>32-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt32 BigEndianToUInt32_NoChecks(this byte[] ba, int baOff)
@@ -1433,7 +1433,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <returns>Byte array containing packed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte[] ToBigEndian(this UInt64 n)
@@ -1449,7 +1449,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this UInt64 n, byte[] ba)
@@ -1465,7 +1465,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian_NoChecks(this UInt64 n, byte[] ba)
@@ -1481,7 +1481,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this UInt64 n, byte[] ba, int baOff)
@@ -1498,7 +1498,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian_NoChecks(this UInt64 n, byte[] ba, int baOff)
@@ -1516,7 +1516,7 @@ namespace System
 		/// <param name="ia">Integer array to pack into <paramref name="ba" />.</param>
 		/// <param name="iaOff">Offset in <paramref name="ia" /> to read from.</param>
 		/// <param name="count">Number of integers to output into <paramref name="ba" />.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToBigEndian(this UInt64[] ia, int iaOff, byte[] ba, int baOff, int count)
@@ -1580,7 +1580,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>64-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt64 BigEndianToUInt64(this byte[] ba)
@@ -1595,7 +1595,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>64-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt64 BigEndianToUInt64_NoChecks(this byte[] ba)
@@ -1611,7 +1611,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>64-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt64 BigEndianToUInt64(this byte[] ba, int baOff)
@@ -1627,7 +1627,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>64-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt64 BigEndianToUInt64_NoChecks(this byte[] ba, int baOff)
@@ -1710,7 +1710,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <returns>Byte array containing packed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte[] ToLittleEndian(this Int16 n)
@@ -1726,7 +1726,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this Int16 n, byte[] ba)
@@ -1742,7 +1742,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian_NoChecks(this Int16 n, byte[] ba)
@@ -1758,7 +1758,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this Int16 n, byte[] ba, int baOff)
@@ -1775,7 +1775,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian_NoChecks(this Int16 n, byte[] ba, int baOff)
@@ -1793,7 +1793,7 @@ namespace System
 		/// <param name="ia">Integer array to pack into <paramref name="ba" />.</param>
 		/// <param name="iaOff">Offset in <paramref name="ia" /> to read from.</param>
 		/// <param name="count">Number of integers to output into <paramref name="ba" />.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this Int16[] ia, int iaOff, byte[] ba, int baOff, int count)
@@ -1857,7 +1857,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>16-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int16 LittleEndianToInt16(this byte[] ba)
@@ -1872,7 +1872,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>16-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int16 LittleEndianToInt16_NoChecks(this byte[] ba)
@@ -1887,7 +1887,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>16-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int16 LittleEndianToInt16(this byte[] ba, int baOff)
@@ -1903,7 +1903,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>16-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int16 LittleEndianToInt16_NoChecks(this byte[] ba, int baOff)
@@ -1985,7 +1985,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <returns>Byte array containing packed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte[] ToLittleEndian(this Int32 n)
@@ -2001,7 +2001,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this Int32 n, byte[] ba)
@@ -2017,7 +2017,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian_NoChecks(this Int32 n, byte[] ba)
@@ -2035,7 +2035,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this Int32 n, byte[] ba, int baOff)
@@ -2052,7 +2052,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian_NoChecks(this Int32 n, byte[] ba, int baOff)
@@ -2072,7 +2072,7 @@ namespace System
 		/// <param name="ia">Integer array to pack into <paramref name="ba" />.</param>
 		/// <param name="iaOff">Offset in <paramref name="ia" /> to read from.</param>
 		/// <param name="count">Number of integers to output into <paramref name="ba" />.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this Int32[] ia, int iaOff, byte[] ba, int baOff, int count)
@@ -2136,7 +2136,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>32-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32 LittleEndianToInt32(this byte[] ba)
@@ -2151,7 +2151,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>32-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32 LittleEndianToInt32_NoChecks(this byte[] ba)
@@ -2168,7 +2168,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>32-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32 LittleEndianToInt32(this byte[] ba, int baOff)
@@ -2184,7 +2184,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>32-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32 LittleEndianToInt32_NoChecks(this byte[] ba, int baOff)
@@ -2268,7 +2268,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <returns>Byte array containing packed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte[] ToLittleEndian(this Int64 n)
@@ -2284,7 +2284,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this Int64 n, byte[] ba)
@@ -2300,7 +2300,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian_NoChecks(this Int64 n, byte[] ba)
@@ -2316,7 +2316,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this Int64 n, byte[] ba, int baOff)
@@ -2333,7 +2333,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian_NoChecks(this Int64 n, byte[] ba, int baOff)
@@ -2351,7 +2351,7 @@ namespace System
 		/// <param name="ia">Integer array to pack into <paramref name="ba" />.</param>
 		/// <param name="iaOff">Offset in <paramref name="ia" /> to read from.</param>
 		/// <param name="count">Number of integers to output into <paramref name="ba" />.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this Int64[] ia, int iaOff, byte[] ba, int baOff, int count)
@@ -2415,7 +2415,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>64-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64 LittleEndianToInt64(this byte[] ba)
@@ -2430,7 +2430,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>64-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64 LittleEndianToInt64_NoChecks(this byte[] ba)
@@ -2446,7 +2446,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>64-bit signed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64 LittleEndianToInt64(this byte[] ba, int baOff)
@@ -2462,7 +2462,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>64-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64 LittleEndianToInt64_NoChecks(this byte[] ba, int baOff)
@@ -2545,7 +2545,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <returns>Byte array containing packed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte[] ToLittleEndian(this UInt16 n)
@@ -2561,7 +2561,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this UInt16 n, byte[] ba)
@@ -2577,7 +2577,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian_NoChecks(this UInt16 n, byte[] ba)
@@ -2593,7 +2593,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this UInt16 n, byte[] ba, int baOff)
@@ -2610,7 +2610,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian_NoChecks(this UInt16 n, byte[] ba, int baOff)
@@ -2628,7 +2628,7 @@ namespace System
 		/// <param name="ia">Integer array to pack into <paramref name="ba" />.</param>
 		/// <param name="iaOff">Offset in <paramref name="ia" /> to read from.</param>
 		/// <param name="count">Number of integers to output into <paramref name="ba" />.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this UInt16[] ia, int iaOff, byte[] ba, int baOff, int count)
@@ -2692,7 +2692,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>16-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 LittleEndianToUInt16(this byte[] ba)
@@ -2707,7 +2707,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>16-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 LittleEndianToUInt16_NoChecks(this byte[] ba)
@@ -2723,7 +2723,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>16-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 LittleEndianToUInt16(this byte[] ba, int baOff)
@@ -2739,7 +2739,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>16-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 LittleEndianToUInt16_NoChecks(this byte[] ba, int baOff)
@@ -2822,7 +2822,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <returns>Byte array containing packed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte[] ToLittleEndian(this UInt32 n)
@@ -2838,7 +2838,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this UInt32 n, byte[] ba)
@@ -2854,7 +2854,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian_NoChecks(this UInt32 n, byte[] ba)
@@ -2872,7 +2872,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this UInt32 n, byte[] ba, int baOff)
@@ -2889,7 +2889,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian_NoChecks(this UInt32 n, byte[] ba, int baOff)
@@ -2909,7 +2909,7 @@ namespace System
 		/// <param name="ia">Integer array to pack into <paramref name="ba" />.</param>
 		/// <param name="iaOff">Offset in <paramref name="ia" /> to read from.</param>
 		/// <param name="count">Number of integers to output into <paramref name="ba" />.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this uint[] ia, int iaOff, byte[] ba, int baOff, int count)
@@ -2973,7 +2973,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>32-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt32 LittleEndianToUInt32(this byte[] ba)
@@ -2988,7 +2988,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>32-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt32 LittleEndianToUInt32_NoChecks(this byte[] ba)
@@ -3005,7 +3005,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>32-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt32 LittleEndianToUInt32(this byte[] ba, int baOff)
@@ -3021,7 +3021,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>32-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt32 LittleEndianToUInt32_NoChecks(this byte[] ba, int baOff)
@@ -3105,7 +3105,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <returns>Byte array containing packed integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte[] ToLittleEndian(this UInt64 n)
@@ -3121,7 +3121,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this UInt64 n, byte[] ba)
@@ -3137,7 +3137,7 @@ namespace System
 		/// </summary>
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian_NoChecks(this UInt64 n, byte[] ba)
@@ -3153,7 +3153,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this UInt64 n, byte[] ba, int baOff)
@@ -3170,7 +3170,7 @@ namespace System
 		/// <param name="n">Integer to pack.</param>
 		/// <param name="ba">Byte array to pack integer into.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to write to.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian_NoChecks(this UInt64 n, byte[] ba, int baOff)
@@ -3188,7 +3188,7 @@ namespace System
 		/// <param name="ia">Integer array to pack into <paramref name="ba" />.</param>
 		/// <param name="iaOff">Offset in <paramref name="ia" /> to read from.</param>
 		/// <param name="count">Number of integers to output into <paramref name="ba" />.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ToLittleEndian(this UInt64[] ia, int iaOff, byte[] ba, int baOff, int count)
@@ -3252,7 +3252,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>64-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt64 LittleEndianToUInt64(this byte[] ba)
@@ -3267,7 +3267,7 @@ namespace System
 		/// </summary>
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <returns>64-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt64 LittleEndianToUInt64_NoChecks(this byte[] ba)
@@ -3283,7 +3283,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>64-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt64 LittleEndianToUInt64(this byte[] ba, int baOff)
@@ -3299,7 +3299,7 @@ namespace System
 		/// <param name="ba">Byte array to unpack integer from.</param>
 		/// <param name="baOff">Offset in <paramref name="ba" /> to read from.</param>
 		/// <returns>64-bit unsigned integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt64 LittleEndianToUInt64_NoChecks(this byte[] ba, int baOff)
@@ -3376,7 +3376,7 @@ namespace System
 
 		#region Argument validation utility methods
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static void ValidateArguments16(byte[] ba, int baOff = 0)
@@ -3384,7 +3384,7 @@ namespace System
 			ValidateArgumentsBytesToIntegersImpl<ushort>(ba, baOff, 16 / 8);
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static void ValidateArguments16(byte[] ba, int baOff, short[] dst, int dstOff, int count)
@@ -3392,7 +3392,7 @@ namespace System
 			ValidateArgumentsBytesToIntegersImpl(ba, baOff, dst, dstOff, count, sizeof(short));
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static void ValidateArguments16(byte[] ba, int baOff, ushort[] dst, int dstOff, int count)
@@ -3400,7 +3400,7 @@ namespace System
 			ValidateArgumentsBytesToIntegersImpl(ba, baOff, dst, dstOff, count, sizeof(ushort));
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static void ValidateArguments32(byte[] ba, int baOff = 0)
@@ -3408,7 +3408,7 @@ namespace System
 			ValidateArgumentsBytesToIntegersImpl<uint>(ba, baOff, 32 / 8);
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static void ValidateArguments32(byte[] ba, int baOff, int[] dst, int dstOff, int count)
@@ -3416,7 +3416,7 @@ namespace System
 			ValidateArgumentsBytesToIntegersImpl(ba, baOff, dst, dstOff, count, sizeof(int));
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static void ValidateArguments32(byte[] ba, int baOff, uint[] dst, int dstOff, int count)
@@ -3424,7 +3424,7 @@ namespace System
 			ValidateArgumentsBytesToIntegersImpl(ba, baOff, dst, dstOff, count, sizeof(uint));
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static void ValidateArguments64(byte[] ba, int baOff = 0)
@@ -3432,7 +3432,7 @@ namespace System
 			ValidateArgumentsBytesToIntegersImpl<ulong>(ba, baOff, 64 / 8);
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static void ValidateArguments64(byte[] ba, int baOff, long[] dst, int dstOff, int count)
@@ -3440,7 +3440,7 @@ namespace System
 			ValidateArgumentsBytesToIntegersImpl(ba, baOff, dst, dstOff, count, sizeof(long));
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static void ValidateArguments64(byte[] ba, int baOff, ulong[] dst, int dstOff, int count)
@@ -3481,7 +3481,7 @@ namespace System
 		///         </item>
 		///     </list>
 		/// </exception>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static void ValidateArgumentsBytesToIntegersImpl<T>(byte[] src, int srcOff, int? outputSizeRatio = null) where T : struct
@@ -3864,7 +3864,7 @@ namespace System
 		#region Performance copy/swap methods
 
 #if INCLUDE_UNSAFE
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static unsafe void SwapOrder(byte* srcPtr, byte* dstPtr, int count)
@@ -3876,7 +3876,7 @@ namespace System
 			}
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static unsafe void SwapOrder16(byte* srcPtr, byte* dstPtr, int count)
@@ -3890,7 +3890,7 @@ namespace System
 			}
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static unsafe void SwapOrder32(byte* srcPtr, byte* dstPtr, int count)
@@ -3906,7 +3906,7 @@ namespace System
 			}
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static unsafe void SwapOrder64(byte* srcPtr, byte* dstPtr, int count)

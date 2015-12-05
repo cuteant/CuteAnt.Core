@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using CuteAnt.IO;
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 using System.Runtime.CompilerServices;
 #endif
 
@@ -40,7 +40,7 @@ namespace System.IO
 		/// <remarks>不确保目录后面一定有分隔符，是否有分隔符由原始路径末尾决定</remarks>
 		/// <param name="path">文件或目录</param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String GetFullPath(this String path)
@@ -72,7 +72,7 @@ namespace System.IO
 		/// <param name="path">文件路径或目录路径，斜杠结尾的路径一定是目录，无视第二参数</param>
 		/// <param name="isfile">该路径是否是否文件路径。文件路径需要取目录部分</param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String EnsureDirectory(this String path, Boolean isfile = true)
@@ -113,7 +113,7 @@ namespace System.IO
 		/// <param name="path"></param>
 		/// <param name="ps"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String CombinePath(this String path, params String[] ps)
@@ -139,7 +139,7 @@ namespace System.IO
 		/// <summary>文件路径作为文件信息</summary>
 		/// <param name="file"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static FileInfo AsFile(this String file) { return new FileInfo(file.GetFullPath()); }
@@ -149,7 +149,7 @@ namespace System.IO
 //		/// <param name="offset"></param>
 //		/// <param name="count"></param>
 //		/// <returns></returns>
-//#if NET_4_0_GREATER
+//#if (NET45 || NET451 || NET46 || NET461)
 //		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 //#endif
 //		internal static Byte[] ReadBytes(this FileInfo file, Int32 offset = 0, Int32 count = 0)
@@ -169,7 +169,7 @@ namespace System.IO
 		/// <param name="data"></param>
 		/// <param name="offset"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static FileInfo WriteBytes(this FileInfo file, Byte[] data, Int32 offset = 0)
@@ -189,7 +189,7 @@ namespace System.IO
 		/// <param name="file"></param>
 		/// <param name="encoding"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String ReadText(this FileInfo file, Encoding encoding = null)
@@ -209,7 +209,7 @@ namespace System.IO
 		/// <param name="text"></param>
 		/// <param name="encoding"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static FileInfo WriteText(this FileInfo file, String text, Encoding encoding = null)
@@ -253,7 +253,7 @@ namespace System.IO
 		/// <summary>路径作为目录信息</summary>
 		/// <param name="dir"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static DirectoryInfo AsDirectory(this String dir) { return new DirectoryInfo(dir.GetFullPath()); }
@@ -263,7 +263,7 @@ namespace System.IO
 		/// <param name="exts">文件扩展列表。比如*.exe;*.dll;*.config</param>
 		/// <param name="allSub">是否包含所有子孙目录文件</param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static IEnumerable<FileInfo> GetAllFiles(this DirectoryInfo di, String exts = null, Boolean allSub = false)

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 using System.Runtime.CompilerServices;
 #endif
 
@@ -10,7 +10,7 @@ namespace CuteAnt
 	{
 		#region -- method ArgumentNullOrEmpty --
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void ArgumentNullOrEmpty(String value, String parameterName)
@@ -18,7 +18,7 @@ namespace CuteAnt
 			ArgumentNullOrEmpty(value, parameterName, "'{0}' cannot be empty.");
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void ArgumentNullOrEmpty(String value, String parameterName, String message)
@@ -37,7 +37,7 @@ namespace CuteAnt
 			}
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void ArgumentNullOrEmpty<T>(ICollection<T> collection, String parameterName)
@@ -45,7 +45,7 @@ namespace CuteAnt
 			ArgumentNullOrEmpty<T>(collection, parameterName, "Collection '{0}' cannot be empty.".FormatWith(parameterName));
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void ArgumentNullOrEmpty<T>(ICollection<T> collection, String parameterName, String message)
@@ -64,7 +64,7 @@ namespace CuteAnt
 
 		#region -- method ArgumentNull --
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void ArgumentNull<T>(T value, String parameterName) where T : class
@@ -75,7 +75,7 @@ namespace CuteAnt
 			}
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void ArgumentNull<T>(T value, String parameterName, String message)
@@ -90,7 +90,7 @@ namespace CuteAnt
 
 		#region -- method ArgumentCondition --
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void ArgumentCondition(Boolean condition, String message)
@@ -101,7 +101,7 @@ namespace CuteAnt
 			}
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void ArgumentCondition(Boolean condition, String parameterName, String message)
@@ -116,7 +116,7 @@ namespace CuteAnt
 
 		#region -- method ArgumentOutOfRangeCondition --
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void ArgumentOutOfRangeCondition(Boolean condition, String parameterName)
@@ -127,7 +127,7 @@ namespace CuteAnt
 			}
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void ArgumentOutOfRangeCondition(Boolean condition, String parameterName, String message)
@@ -142,7 +142,7 @@ namespace CuteAnt
 
 		#region -- method ArgumentTypeIsEnum --
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void ArgumentTypeIsEnum(Type enumType, String parameterName)
@@ -158,7 +158,7 @@ namespace CuteAnt
 
 		#region -- method InvalidOperationCondition --
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void InvalidOperationCondition(Boolean condition, String message)
@@ -173,7 +173,7 @@ namespace CuteAnt
 
 		#region -- method ObjectDisposedCondition --
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void ObjectDisposedCondition(Boolean condition, String objectName)
@@ -184,7 +184,7 @@ namespace CuteAnt
 			}
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void ObjectDisposedCondition(Boolean condition, String objectName, String message)

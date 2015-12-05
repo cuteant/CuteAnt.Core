@@ -2,5 +2,8 @@
   "version": "2.0.0-*",
   "shared": "*.cs",
   "dependencies": { },
-  "frameworks": { "net451": { } }
+  "frameworks": {
+    "net40": { },
+    "net451": { }
+  }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 using System.Runtime.CompilerServices;
 #endif
 
@@ -56,7 +56,7 @@ namespace CuteAnt.AsyncEx
 
 		/// <summary>Waits for the task to complete, unwrapping any exceptions.</summary>
 		/// <param name="task">The task. May not be <c>null</c>.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void WaitAndUnwrapException(this Task task)
@@ -68,7 +68,7 @@ namespace CuteAnt.AsyncEx
 		/// <param name="task">The task. May not be <c>null</c>.</param>
 		/// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
 		/// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled before the <paramref name="task"/> completed, or the <paramref name="task"/> raised an <see cref="OperationCanceledException"/>.</exception>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void WaitAndUnwrapException(this Task task, CancellationToken cancellationToken)
@@ -87,7 +87,7 @@ namespace CuteAnt.AsyncEx
 		/// <typeparam name="TResult">The type of the result of the task.</typeparam>
 		/// <param name="task">The task. May not be <c>null</c>.</param>
 		/// <returns>The result of the task.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static TResult WaitAndUnwrapException<TResult>(this Task<TResult> task)
@@ -101,7 +101,7 @@ namespace CuteAnt.AsyncEx
 		/// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
 		/// <returns>The result of the task.</returns>
 		/// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled before the <paramref name="task"/> completed, or the <paramref name="task"/> raised an <see cref="OperationCanceledException"/>.</exception>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static TResult WaitAndUnwrapException<TResult>(this Task<TResult> task, CancellationToken cancellationToken)
@@ -123,7 +123,7 @@ namespace CuteAnt.AsyncEx
 
 		/// <summary>Waits for the task to complete, but does not raise task exceptions. The task exception (if any) is unobserved.</summary>
 		/// <param name="task">The task. May not be <c>null</c>.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void WaitWithoutException(this Task task)
@@ -139,7 +139,7 @@ namespace CuteAnt.AsyncEx
 		/// <param name="task">The task. May not be <c>null</c>.</param>
 		/// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
 		/// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled before the <paramref name="task"/> completed.</exception>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void WaitWithoutException(this Task task, CancellationToken cancellationToken)

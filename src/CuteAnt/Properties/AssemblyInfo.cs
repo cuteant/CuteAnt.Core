@@ -9,10 +9,12 @@ using CuteAnt;
 // 有关程序集的常规信息通过以下
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
-#if NET_4_0
+#if NET40
 [assembly: AssemblyTitle("CuteAnt for .NetFx4.0")]
-#elif NET_4_5_X
+#elif NET451
 [assembly: AssemblyTitle("CuteAnt for .NetFx4.5")]
+#elif NET46
+[assembly: AssemblyTitle("CuteAnt for .NetFx4.6")]
 #endif
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]

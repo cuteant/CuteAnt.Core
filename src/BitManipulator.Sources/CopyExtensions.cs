@@ -19,7 +19,7 @@
 
 using System;
 using CuteAnt.Extension;
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 using System.Runtime.CompilerServices;
 #endif
 
@@ -44,7 +44,7 @@ namespace System
 		/// <summary>Produce a deep copy (copied value by value) of <paramref name="data" /> array.</summary>
 		/// <param name="data">Array to produce a copy of.</param>
 		/// <returns>Copy of <paramref name="data" /> array.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte[] CopyBytes(this byte[] data)
@@ -55,7 +55,7 @@ namespace System
 		/// <summary>Copy bytes from <paramref name="src" /> array into <paramref name="dst" /> array.</summary>
 		/// <param name="src">Array to copy from.</param>
 		/// <param name="dst">Array to copy into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void CopyBytes(this byte[] src, byte[] dst)
@@ -67,7 +67,7 @@ namespace System
 		/// <param name="src">Array to copy from.</param>
 		/// <param name="dst">Array to copy into.</param>
 		/// <param name="length">Amount of bytes to copy.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void CopyBytes(this byte[] src, byte[] dst, int length)
@@ -81,7 +81,7 @@ namespace System
 		/// <param name="length">Amount of bytes to copy.</param>
 		/// <param name="srcOff">The offset in <paramref name="src" /> to copy from.</param>
 		/// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void CopyBytes(this byte[] src, int srcOff, byte[] dst, int dstOff, int length)
@@ -97,7 +97,7 @@ namespace System
 		/// <param name="length">Amount of bytes to copy.</param>
 		/// <param name="srcOff">The offset in <paramref name="src" /> to copy from.</param>
 		/// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void CopyBytes_NoChecks(this byte[] src, int srcOff, byte[] dst, int dstOff, int length)
@@ -112,7 +112,7 @@ namespace System
 		/// <summary>Produce a deep copy (copied value by value) of <paramref name="data" /> array.</summary>
 		/// <param name="data">Array to produce a copy of.</param>
 		/// <returns>Copy of <paramref name="data" /> array.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte[] DeepCopy(this byte[] data)
@@ -129,7 +129,7 @@ namespace System
 		/// <summary>Copy values from <paramref name="src" /> array into <paramref name="dst" /> array.</summary>
 		/// <param name="src">Array to copy from.</param>
 		/// <param name="dst">Array to copy into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this byte[] src, byte[] dst)
@@ -144,7 +144,7 @@ namespace System
 		/// <param name="dst">Array to copy into.</param>
 		/// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
 		/// <param name="length">Quantity of values to copy.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this byte[] src, int srcOff, byte[] dst, int dstOff, int length)
@@ -200,7 +200,7 @@ namespace System
 		/// <summary>Produce a deep copy (copied value by value) of <paramref name="data" /> array.</summary>
 		/// <param name="data">Array to produce a copy of.</param>
 		/// <returns>Copy of <paramref name="data" /> array.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static char[] DeepCopy(this char[] data)
@@ -217,7 +217,7 @@ namespace System
 		/// <summary>Copy values from <paramref name="src" /> array into <paramref name="dst" /> array.</summary>
 		/// <param name="src">Array to copy from.</param>
 		/// <param name="dst">Array to copy into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this char[] src, char[] dst)
@@ -232,7 +232,7 @@ namespace System
 		/// <param name="dst">Array to copy into.</param>
 		/// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
 		/// <param name="length">Quantity of values to copy.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this char[] src, int srcOff, char[] dst, int dstOff, int length)
@@ -292,7 +292,7 @@ namespace System
 		/// </summary>
 		/// <param name="data">Array to produce a copy of.</param>
 		/// <returns>Copy of <paramref name="data" /> array.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int16[] DeepCopy(this Int16[] data)
@@ -311,7 +311,7 @@ namespace System
 		/// </summary>
 		/// <param name="src">Array to copy from.</param>
 		/// <param name="dst">Array to copy into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this Int16[] src, Int16[] dst)
@@ -328,7 +328,7 @@ namespace System
 		/// <param name="dst">Array to copy into.</param>
 		/// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
 		/// <param name="length">Quantity of values to copy.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this Int16[] src, int srcOff, Int16[] dst, int dstOff, int length)
@@ -389,7 +389,7 @@ namespace System
 		/// </summary>
 		/// <param name="data">Array to produce a copy of.</param>
 		/// <returns>Copy of <paramref name="data" /> array.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16[] DeepCopy(this UInt16[] data)
@@ -408,7 +408,7 @@ namespace System
 		/// </summary>
 		/// <param name="src">Array to copy from.</param>
 		/// <param name="dst">Array to copy into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this UInt16[] src, UInt16[] dst)
@@ -425,7 +425,7 @@ namespace System
 		/// <param name="dst">Array to copy into.</param>
 		/// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
 		/// <param name="length">Quantity of values to copy.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this UInt16[] src, int srcOff, UInt16[] dst, int dstOff, int length)
@@ -486,7 +486,7 @@ namespace System
 		/// </summary>
 		/// <param name="data">Array to produce a copy of.</param>
 		/// <returns>Copy of <paramref name="data" /> array.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32[] DeepCopy(this Int32[] data)
@@ -505,7 +505,7 @@ namespace System
 		/// </summary>
 		/// <param name="src">Array to copy from.</param>
 		/// <param name="dst">Array to copy into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this Int32[] src, Int32[] dst)
@@ -522,7 +522,7 @@ namespace System
 		/// <param name="dst">Array to copy into.</param>
 		/// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
 		/// <param name="length">Quantity of values to copy.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this Int32[] src, int srcOff, Int32[] dst, int dstOff, int length)
@@ -583,7 +583,7 @@ namespace System
 		/// </summary>
 		/// <param name="data">Array to produce a copy of.</param>
 		/// <returns>Copy of <paramref name="data" /> array.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt32[] DeepCopy(this UInt32[] data)
@@ -602,7 +602,7 @@ namespace System
 		/// </summary>
 		/// <param name="src">Array to copy from.</param>
 		/// <param name="dst">Array to copy into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this UInt32[] src, UInt32[] dst)
@@ -619,7 +619,7 @@ namespace System
 		/// <param name="dst">Array to copy into.</param>
 		/// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
 		/// <param name="length">Quantity of values to copy.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this UInt32[] src, int srcOff, UInt32[] dst, int dstOff, int length)
@@ -680,7 +680,7 @@ namespace System
 		/// </summary>
 		/// <param name="data">Array to produce a copy of.</param>
 		/// <returns>Copy of <paramref name="data" /> array.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64[] DeepCopy(this Int64[] data)
@@ -699,7 +699,7 @@ namespace System
 		/// </summary>
 		/// <param name="src">Array to copy from.</param>
 		/// <param name="dst">Array to copy into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this Int64[] src, Int64[] dst)
@@ -716,7 +716,7 @@ namespace System
 		/// <param name="dst">Array to copy into.</param>
 		/// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
 		/// <param name="length">Quantity of values to copy.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this Int64[] src, int srcOff, Int64[] dst, int dstOff, int length)
@@ -777,7 +777,7 @@ namespace System
 		/// </summary>
 		/// <param name="data">Array to produce a copy of.</param>
 		/// <returns>Copy of <paramref name="data" /> array.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt64[] DeepCopy(this UInt64[] data)
@@ -796,7 +796,7 @@ namespace System
 		/// </summary>
 		/// <param name="src">Array to copy from.</param>
 		/// <param name="dst">Array to copy into.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this UInt64[] src, UInt64[] dst)
@@ -813,7 +813,7 @@ namespace System
 		/// <param name="dst">Array to copy into.</param>
 		/// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
 		/// <param name="length">Quantity of values to copy.</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void DeepCopy(this UInt64[] src, int srcOff, UInt64[] dst, int dstOff, int length)

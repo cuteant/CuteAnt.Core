@@ -20,7 +20,7 @@
 using System;
 using System.Diagnostics;
 using CuteAnt.Extension;
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 using System.Runtime.CompilerServices;
 #endif
 
@@ -38,7 +38,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte RotateLeft(this byte i, int distance)
@@ -54,7 +54,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte RotateLeft_NoChecks(this byte i, int distance)
@@ -69,7 +69,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int16 RotateLeft(this Int16 i, int distance)
@@ -86,7 +86,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int16 RotateLeft_NoChecks(this Int16 i, int distance)
@@ -102,7 +102,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 RotateLeft(this UInt16 i, int distance)
@@ -119,7 +119,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 RotateLeft_NoChecks(this UInt16 i, int distance)
@@ -134,7 +134,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32 RotateLeft(this Int32 i, int distance)
@@ -151,7 +151,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32 RotateLeft_NoChecks(this Int32 i, int distance)
@@ -167,7 +167,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt32 RotateLeft(this UInt32 i, int distance)
@@ -184,7 +184,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt32 RotateLeft_NoChecks(this UInt32 i, int distance)
@@ -199,7 +199,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64 RotateLeft(this Int64 i, int distance)
@@ -216,7 +216,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64 RotateLeft_NoChecks(this Int64 i, int distance)
@@ -232,7 +232,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt64 RotateLeft(this UInt64 i, int distance)
@@ -249,7 +249,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt64 RotateLeft_NoChecks(this UInt64 i, int distance)
@@ -268,7 +268,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte RotateRight(this byte i, int distance)
@@ -284,7 +284,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static byte RotateRight_NoChecks(this byte i, int distance)
@@ -299,7 +299,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int16 RotateRight(this Int16 i, int distance)
@@ -316,7 +316,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int16 RotateRight_NoChecks(this Int16 i, int distance)
@@ -332,7 +332,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 RotateRight(this UInt16 i, int distance)
@@ -349,7 +349,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 RotateRight_NoChecks(this UInt16 i, int distance)
@@ -364,7 +364,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32 RotateRight(this Int32 i, int distance)
@@ -381,7 +381,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32 RotateRight_NoChecks(this Int32 i, int distance)
@@ -397,7 +397,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt32 RotateRight(this UInt32 i, int distance)
@@ -414,7 +414,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt32 RotateRight_NoChecks(this UInt32 i, int distance)
@@ -429,7 +429,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64 RotateRight(this Int64 i, int distance)
@@ -446,7 +446,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64 RotateRight_NoChecks(this Int64 i, int distance)
@@ -462,7 +462,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt64 RotateRight(this UInt64 i, int distance)
@@ -479,7 +479,7 @@ namespace System
 		/// <param name="i">Integer to rotate.</param>
 		/// <param name="distance">Distance to rotate.</param>
 		/// <returns>Rotated integer.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt64 RotateRight_NoChecks(this UInt64 i, int distance)
@@ -496,7 +496,7 @@ namespace System
 		///     Shift <paramref name="distance" /> is negative (less than 0), or exceeds
 		///     <paramref name="typeSizeBits" /> (bit-size of relevant value type - e.g. UInt64 = 64).
 		/// </exception>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static void ThrowOnInvalidArgument(int distance, int typeSizeBits)

@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("Serviceable", "True")]
 [assembly: NeutralResourcesLanguage("en-US")]
 
-#if NET4 || PORTABLE
+#if NET40 || PORTABLE
 namespace System.Reflection
 {
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true, Inherited = false)]

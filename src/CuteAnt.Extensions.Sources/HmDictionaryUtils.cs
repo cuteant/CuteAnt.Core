@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 using System.Runtime.CompilerServices;
 #endif
 
@@ -16,7 +16,7 @@ namespace System.Collections.Generic
     /// <param name="dictionary">The dictionary.</param>
     /// <param name="key">The key.</param>
     /// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     [Obsolete("=>GetValueOrDefault")]
@@ -33,7 +33,7 @@ namespace System.Collections.Generic
     /// <param name="key">The key.</param>
     /// <param name="defaultValue">The default value.</param>
     /// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     [Obsolete("=>GetValueOrDefault")]
@@ -57,7 +57,7 @@ namespace System.Collections.Generic
     /// <param name="dictionary">The dictionary to call this method on.</param>
     /// <param name="key">The key to look up.</param>
     /// <returns>The key value. default(TValue) if this key is not in the dictionary.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     internal static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
@@ -73,7 +73,7 @@ namespace System.Collections.Generic
     /// <param name="key">The key to look up.</param>
     /// <param name="defaultValue">The default Value.</param>
     /// <returns>The key value. default(TValue) if this key is not in the dictionary.</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     internal static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
@@ -98,7 +98,7 @@ namespace System.Collections.Concurrent
     /// <param name="valueFactory">用于为键生成值的函数</param>
     /// <param name="value">返回值</param>
     /// <returns>是否从字典查找或添加成功</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     internal static Boolean TryGetOrAdd<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> valueFactory, out TValue value)

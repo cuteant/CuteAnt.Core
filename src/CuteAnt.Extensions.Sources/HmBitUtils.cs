@@ -8,7 +8,7 @@
 
 using System;
 using System.ComponentModel;
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 using System.Runtime.CompilerServices;
 #endif
 
@@ -23,7 +23,7 @@ namespace System
 		/// <param name="position"></param>
 		/// <param name="flag"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 SetBit(this UInt16 value, Int32 position, Boolean flag)
@@ -37,7 +37,7 @@ namespace System
 		/// <param name="length"></param>
 		/// <param name="bits"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 SetBits(this UInt16 value, Int32 position, Int32 length, UInt16 bits)
@@ -54,7 +54,7 @@ namespace System
 		/// <param name="position"></param>
 		/// <param name="flag"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte SetBit(this Byte value, Int32 position, Boolean flag)
@@ -70,7 +70,7 @@ namespace System
 		/// <param name="value">数值</param>
 		/// <param name="position"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Boolean GetBit(this UInt16 value, Int32 position)
@@ -83,7 +83,7 @@ namespace System
 		/// <param name="position"></param>
 		/// <param name="length"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 GetBits(this UInt16 value, Int32 position, Int32 length)
@@ -97,7 +97,7 @@ namespace System
 		/// <param name="value">数值</param>
 		/// <param name="position"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Boolean GetBit(this Byte value, Int32 position)

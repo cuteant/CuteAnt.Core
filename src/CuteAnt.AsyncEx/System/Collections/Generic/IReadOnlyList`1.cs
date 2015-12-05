@@ -1,4 +1,4 @@
-﻿#if NET45PLUS
+﻿#if (NET45 || NET451 || NET46 || NET461)
 
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -42,7 +42,7 @@ namespace System.Collections.Generic
     [ContractClass(typeof(IReadOnlyListContract<>))]
 #endif
     // If we ever implement more interfaces on IReadOnlyList, we should also update RuntimeTypeCache.PopulateInterfaces() in rttype.cs
-#if NET40PLUS
+#if NET40
     public interface IReadOnlyList<out T> : IReadOnlyCollection<T>
 #else
     public interface IReadOnlyList<T> : IReadOnlyCollection<T>

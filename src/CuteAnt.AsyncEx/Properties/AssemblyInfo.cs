@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 #if NET_4_0
 [assembly: AssemblyTitle("CuteAnt.AsyncEx for .NetFx4.0")]
-#elif NET_4_5_X
+#elif NET451
 [assembly: AssemblyTitle("CuteAnt.AsyncEx for .NetFx4.5")]
 #endif
 #if DEBUG

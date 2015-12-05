@@ -28,21 +28,15 @@ namespace CuteAnt
     /// <summary>neutral</summary>
     public const String Culture = "neutral";
 
-#if NET_2_0
-    /// <summary>1</summary>
-    public const String NETVersion = "1";
-#elif NET_2_3_5
-    /// <summary>2</summary>
-    public const String NETVersion = "2";
-#elif NET_3_5
-    /// <summary>3</summary>
-    public const String NETVersion = "3";
-#elif NET_4_0
+#if NET40
     /// <summary>4</summary>
     public const String NETVersion = "4";
-#elif NET_4_5_X
+#elif NET451 || DNX451
     /// <summary>5</summary>
     public const String NETVersion = "5";
+#elif NET46
+    /// <summary>6</summary>
+    public const String NETVersion = "6";
 #endif
 
     /// <summary>1</summary>

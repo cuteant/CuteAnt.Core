@@ -2,7 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 using CuteAnt.Security.Cryptography;
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 using System.Runtime.CompilerServices;
 #endif
 
@@ -533,7 +533,7 @@ namespace CuteAnt.Security
 		/// <param name="outstream"></param>
 		/// <param name="callback">在outstream被关闭之前，执行对outstream的处理</param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static SymmetricAlgorithm Encrypt(this SymmetricAlgorithm sa, Stream instream, Stream outstream, Action<Stream> callback = null)
@@ -557,7 +557,7 @@ namespace CuteAnt.Security
 		/// <param name="sa"></param>
 		/// <param name="data"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] Encrypt(this SymmetricAlgorithm sa, Byte[] data)
@@ -580,7 +580,7 @@ namespace CuteAnt.Security
 		/// <param name="sa"></param>
 		/// <param name="plainText"></param>
 		/// <returns>返回Base64编码密文</returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String Encrypt(this SymmetricAlgorithm sa, String plainText)
@@ -613,7 +613,7 @@ namespace CuteAnt.Security
 		/// <param name="instream"></param>
 		/// <param name="outstream"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static SymmetricAlgorithm Descrypt(this SymmetricAlgorithm sa, Stream instream, Stream outstream)
@@ -630,7 +630,7 @@ namespace CuteAnt.Security
 		/// <param name="sa"></param>
 		/// <param name="data"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] Descrypt(this SymmetricAlgorithm sa, Byte[] data)
@@ -651,7 +651,7 @@ namespace CuteAnt.Security
 		/// <param name="sa">对称解密算法实例</param>
 		/// <param name="content">Base64编码的密文</param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String Descrypt(this SymmetricAlgorithm sa, String content)

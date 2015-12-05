@@ -68,7 +68,7 @@ namespace CuteAnt.AsyncEx
 		internal static NormalizedCancellationToken FromTask(Task source, TaskContinuationOptions continuationOptions)
 		{
 			var cts = new CancellationTokenSource();
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 			source.ContinueWith((task, state) => ((CancellationTokenSource)state).Cancel(), cts, CancellationToken.None, continuationOptions, TaskScheduler.Default);
 #else
 			source.ContinueWith(_ => cts.Cancel(), CancellationToken.None, continuationOptions, TaskScheduler.Default);

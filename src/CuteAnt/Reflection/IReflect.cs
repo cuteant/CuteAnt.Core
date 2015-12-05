@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 using System.Runtime.CompilerServices;
 #endif
 
@@ -316,7 +316,7 @@ namespace CuteAnt.Reflection
     //	}
     //}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     public static FieldInfo GetSafeField(Type type, String propertyName, BindingFlags flags)
@@ -331,7 +331,7 @@ namespace CuteAnt.Reflection
       }
     }
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     public static PropertyInfo GetSafeProperty(Type type, String propertyName, BindingFlags flags)
@@ -346,7 +346,7 @@ namespace CuteAnt.Reflection
       }
     }
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     public static EventInfo GetSafeEvent(Type type, String eventName, BindingFlags flags)

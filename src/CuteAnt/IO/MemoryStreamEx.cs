@@ -87,7 +87,7 @@ namespace CuteAnt.IO
 			m_pStream.Flush();
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		public override Task FlushAsync(CancellationToken cancellationToken)
 		{
 			return m_pStream.FlushAsync(cancellationToken);
@@ -127,7 +127,7 @@ namespace CuteAnt.IO
 
 		#region -- CopyToAsync --
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		public override Task CopyToAsync(Stream destination, Int32 bufferSize, CancellationToken cancellationToken)
 		{
 			return m_pStream.CopyToAsync(destination, bufferSize, cancellationToken);
@@ -165,7 +165,7 @@ namespace CuteAnt.IO
 			return m_pStream.EndRead(asyncResult);
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		public override Task<Int32> ReadAsync(Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken)
 		{
 			return m_pStream.ReadAsync(buffer, offset, count, cancellationToken);
@@ -208,7 +208,7 @@ namespace CuteAnt.IO
 			m_pStream.Write(buffer, offset, count);
 		}
 
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		public override Task WriteAsync(Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken)
 		{
 			// MemoryStream 调用 Write 方法

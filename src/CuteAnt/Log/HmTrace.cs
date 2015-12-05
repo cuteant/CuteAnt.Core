@@ -19,7 +19,7 @@ using CuteAnt.Configuration;
 using CuteAnt.IO;
 using CuteAnt.Reflection;
 using NLog;
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 using System.Runtime.CompilerServices;
 #endif
 
@@ -52,7 +52,7 @@ namespace CuteAnt.Log
 
 		/// <summary>输出信息日志</summary>
 		/// <param name="msg">信息</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Info")]
@@ -64,7 +64,7 @@ namespace CuteAnt.Log
 		/// <summary>输出信息日志</summary>
 		/// <param name="formatMsg">格式化字符串</param>
 		/// <param name="args">格式化参数</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Info")]
@@ -79,7 +79,7 @@ namespace CuteAnt.Log
 
 		/// <summary>输出警告日志</summary>
 		/// <param name="msg">信息</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Warn")]
@@ -91,7 +91,7 @@ namespace CuteAnt.Log
 		/// <summary>输出警告日志</summary>
 		/// <param name="formatMsg">格式化字符串</param>
 		/// <param name="args">格式化参数</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Warn")]
@@ -106,7 +106,7 @@ namespace CuteAnt.Log
 
 		/// <summary>输出错误日志</summary>
 		/// <param name="msg">错误信息</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Error")]
@@ -118,7 +118,7 @@ namespace CuteAnt.Log
 		/// <summary>输出错误日志</summary>
 		/// <param name="formatMsg">格式化字符串</param>
 		/// <param name="args">格式化参数</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Error")]
@@ -129,7 +129,7 @@ namespace CuteAnt.Log
 
 		/// <summary>输出错误日志</summary>
 		/// <param name="ex">异常</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Error")]
@@ -141,7 +141,7 @@ namespace CuteAnt.Log
 		/// <summary>输出错误日志</summary>
 		/// <param name="ex">异常</param>
 		/// <param name="msg">错误信息</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Error")]
@@ -154,7 +154,7 @@ namespace CuteAnt.Log
 		/// <param name="ex">异常</param>
 		/// <param name="formatMsg">格式化字符串</param>
 		/// <param name="args">格式化参数</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Error")]
@@ -169,7 +169,7 @@ namespace CuteAnt.Log
 
 		/// <summary>输出严重错误日志</summary>
 		/// <param name="msg">错误信息</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Fatal")]
@@ -181,7 +181,7 @@ namespace CuteAnt.Log
 		/// <summary>输出严重错误日志</summary>
 		/// <param name="formatMsg">格式化字符串</param>
 		/// <param name="args">格式化参数</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Fatal")]
@@ -192,7 +192,7 @@ namespace CuteAnt.Log
 
 		/// <summary>输出严重错误日志</summary>
 		/// <param name="ex">异常</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Fatal")]
@@ -204,7 +204,7 @@ namespace CuteAnt.Log
 		/// <summary>输出严重错误日志</summary>
 		/// <param name="ex">异常</param>
 		/// <param name="msg">错误信息</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Fatal")]
@@ -217,7 +217,7 @@ namespace CuteAnt.Log
 		/// <param name="ex">异常</param>
 		/// <param name="formatMsg">格式化字符串</param>
 		/// <param name="args">格式化参数</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Fatal")]
@@ -232,7 +232,7 @@ namespace CuteAnt.Log
 
 		/// <summary>输出调试日志</summary>
 		/// <param name="msg">信息</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Debug")]
@@ -244,7 +244,7 @@ namespace CuteAnt.Log
 		/// <summary>输出调试日志</summary>
 		/// <param name="formatMsg">格式化字符串</param>
 		/// <param name="args">格式化参数</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Debug")]
@@ -255,7 +255,7 @@ namespace CuteAnt.Log
 
 		/// <summary>输出调试异常日志</summary>
 		/// <param name="ex">异常</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Debug")]
@@ -267,7 +267,7 @@ namespace CuteAnt.Log
 		/// <summary>输出调试异常日志</summary>
 		/// <param name="ex">异常</param>
 		/// <param name="msg">信息</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Debug")]
@@ -281,7 +281,7 @@ namespace CuteAnt.Log
 		/// <param name="ex">异常</param>
 		/// <param name="formatMsg">格式化字符串</param>
 		/// <param name="args">格式化参数</param>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		//[Obsolete("Use Log.Debug")]

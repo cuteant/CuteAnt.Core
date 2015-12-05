@@ -9,7 +9,7 @@
 using System.ComponentModel;
 using CuteAnt.Log;
 using CuteAnt.Model;
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 using System.Runtime.CompilerServices;
 #endif
 
@@ -26,7 +26,7 @@ namespace System
 		/// <param name="id">标识</param>
 		/// <param name="priority">优先级</param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IObjectContainer Register<TInterface, TImplement>(this IObjectContainer container, Object id = null, Int32 priority = 0)
@@ -41,7 +41,7 @@ namespace System
 		/// <param name="id">标识</param>
 		/// <param name="priority">优先级</param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IObjectContainer Register<TInterface>(this IObjectContainer container, Object instance, Object id = null, Int32 priority = 0)
@@ -55,7 +55,7 @@ namespace System
 		/// <param name="id">标识</param>
 		/// <param name="extend">扩展。若为ture，name为null而找不到时，采用第一个注册项；name不为null而找不到时，采用null注册项</param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static TInterface Resolve<TInterface>(this IObjectContainer container, Object id = null, Boolean extend = false)
@@ -70,7 +70,7 @@ namespace System
 		/// <param name="extend">扩展。若为ture，name为null而找不到时，采用第一个注册项；name不为null而找不到时，采用null注册项</param>
 		/// <returns></returns>
 #if !DEBUG
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static TInterface ResolveInstance<TInterface>(this IObjectContainer container, Object id = null, Boolean extend = false)
@@ -102,7 +102,7 @@ namespace System
 		/// <typeparam name="TImplement">要排除的类型，一般是内部默认实现</typeparam>
 		/// <param name="container">对象容器</param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IObjectContainer AutoRegister<TInterface, TImplement>(this IObjectContainer container)
@@ -119,7 +119,7 @@ namespace System
 		/// <param name="id">标识</param>
 		/// <param name="priority">优先级</param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IObjectContainer AutoRegister<TInterface, TImplement>(this IObjectContainer container, Func<Object, Object> getidCallback = null, Object id = null, Int32 priority = 0)
@@ -133,7 +133,7 @@ namespace System
 		/// <param name="id">标识</param>
 		/// <param name="extend">扩展。若为ture，name为null而找不到时，采用第一个注册项；name不为null而找不到时，采用null注册项</param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Type ResolveType<TInterface>(this IObjectContainer container, Object id = null, Boolean extend = false)

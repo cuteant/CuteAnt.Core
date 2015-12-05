@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 using System.Runtime.CompilerServices;
 #endif
 
@@ -14,7 +14,7 @@ namespace CuteAnt
 		/// <summary>获取枚举类型的所有字段注释</summary>
 		/// <typeparam name="TEnum"></typeparam>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Dictionary<TEnum, String> GetDescriptions<TEnum>()
@@ -32,7 +32,7 @@ namespace CuteAnt
 		/// <summary>获取枚举类型的所有字段注释</summary>
 		/// <param name="enumType"></param>
 		/// <returns></returns>
-#if NET_4_0_GREATER
+#if (NET45 || NET451 || NET46 || NET461)
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Dictionary<Int32, String> GetDescriptions(Type enumType)
