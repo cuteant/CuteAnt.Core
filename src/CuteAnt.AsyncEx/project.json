@@ -1,0 +1,63 @@
+{
+  "version": "2.0.0-rc2-150808",
+  "description": "CuteAnt.AsyncEx Class Library",
+  "authors": [ "SeaBiscuit" ],
+  "tags": [ "CuteAnt", "CuteAnt.Core" ],
+  "projectUrl": "http://www.cuteant.net",
+  "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+  "requireLicenseAcceptance": false,
+
+  "compilationOptions": {
+    "define": [ "TRACE", "NET_4_5_X", "NET_3_5_GREATER", "NET_4_0_GREATER", "NET45PLUS", "NET40PLUS", "NET35PLUS", "CONCURRENT_COLLECTIONS", "FEATURE_TRACING" ],
+    "keyFile": "../../tools/StrongKey.snk",
+    "warningsAsErrors": false,
+    "allowUnsafe": true
+  },
+  "compile": [
+    "**/*.cs",
+    "../../Common/*.cs"
+  ],
+  "compileExclude": [ ],
+  "exclude": [ ],
+  "preprocess": [ ],
+  "preprocessExclude": [ ],
+  "resource": [ "**/*.resx" ],
+
+  "dependencies": {
+    "System.Collections.Immutable": "1.1.37",
+    "Ix-Main": "1.2.5",
+    "Ix-Async": "1.2.5",
+    "CuteAnt": "2.0.0-rc2-150808",
+    "CuteAnt.Extensions.Sources": {
+      "type": "build",
+      "version": "2.0.0-*"
+    },
+    "CuteAnt.Extensions.Reflection.Sources": {
+      "type": "build",
+      "version": "2.0.0-*"
+    },
+    "Nito.AsyncEx.Tasks.Sources": {
+      "type": "build",
+      "version": "2.0.0-*"
+    }
+  },
+
+  "frameworks": {
+    "net451": {
+      "frameworkAssemblies": {
+        "System.Data": "4.0.0.0",
+        "System.Runtime.Serialization": "4.0.0.0",
+        "System.XML": "4.0.0.0",
+        "System.Xml.Linq": "4.0.0.0",
+        "System.IO": "4.0.0.0",
+        "System.Runtime": "",
+        "System.Collections": ""
+      }
+    }
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "http://git.oschina.net/cuteant/"
+  }
+}

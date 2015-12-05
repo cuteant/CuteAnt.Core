@@ -46,7 +46,7 @@ namespace CuteAnt
 #endif
 
     /// <summary>1</summary>
-    public const String VersionMajor = "1";
+    public const String VersionMajor = "2";
 
     /// <summary>2</summary>
     public const String VersionMinor = "2";

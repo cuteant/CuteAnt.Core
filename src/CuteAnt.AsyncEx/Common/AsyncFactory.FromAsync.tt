@@ -1,0 +1,39 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<# Int32 maxNumberOfFuncParameters = 16; #>
+using System;
+using System.Threading.Tasks;
+
+namespace CuteAnt.AsyncEx
+{
+    public static partial class AsyncFactory
+    {
+<# for (Int32 i = 0; i != maxNumberOfFuncParameters - 2; ++i)
+{
+    var range = Enumerable.Range(0, i + 1);
+    var tArgList = String.Join(", ", range.Select(j => "TArg" + j));
+    var paramList = String.Join(", ", range.Select(j => "TArg" + j + " arg" + j));
+    var argList = String.Join(", ", range.Select(j => "arg" + j));
+#>
+        /// <summary>Wraps a begin/end asynchronous method.</summary>
+<# for (Int32 j = 0; j != i + 1; ++j) { #>
+        /// <typeparam name="TArg<#= j #>">The type of argument <#= j #>.</typeparam>
+<# } #>
+        /// <param name="beginMethod">The begin method.</param>
+        /// <param name="endMethod">The end method.</param>
+<# for (Int32 j = 0; j != i + 1; ++j) { #>
+        /// <param name="arg<#= j #>">Argument <#= j #>.</param>
+<# } #>
+        /// <returns></returns>
+        public static Task FromApm<<#= tArgList #>>(Func<<#= tArgList #>, AsyncCallback, Object, IAsyncResult> beginMethod, Action<IAsyncResult> endMethod, <#= paramList #>)
+        {
+            TaskCompletionSource<Object> tcs = new TaskCompletionSource<Object>();
+            beginMethod(<#= argList #>, Callback(endMethod, tcs), null);
+            return tcs.Task;
+        }
+
+<# } #>
+    }
+}
