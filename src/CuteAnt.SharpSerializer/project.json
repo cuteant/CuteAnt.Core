@@ -1,0 +1,42 @@
+﻿{
+  "version": "2.0.0-rc2-151205",
+  "description": "CuteAnt.SharpSerializer Class Library",
+  "authors": [ "SeaBiscuit" ],
+  "tags": [ "CuteAnt", "CuteAnt.Core" ],
+  "projectUrl": "http://www.cuteant.net",
+  "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+  "requireLicenseAcceptance": true,
+
+  "compilationOptions": {
+    "define": [ "TRACE", "NET_3_5_GREATER" ],
+    "keyFile": "../../tools/StrongKey.snk",
+    "warningsAsErrors": false,
+    "allowUnsafe": true
+  },
+  "compile": [
+    "**/*.cs",
+    "../../Common/*.cs"
+  ],
+  "compileExclude": [ ],
+  "exclude": [ ],
+  "preprocess": [ ],
+  "preprocessExclude": [ ],
+  "resource": [ "**/*.resx" ],
+
+  "dependencies": {
+    "CuteAnt": "2.0.0-rc2-151205",
+    "CuteAnt.Extensions.Sources": {
+      "version": "2.0.0-rc2-151205",
+      "type": "build"
+    }
+  },
+
+  "frameworks": {
+    "net451": { }
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "http://git.oschina.net/cuteant/"
+  }
+}

@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-#if NET_4_0
+#if NET40
 [assembly: AssemblyTitle("CuteAnt.AsyncEx for .NetFx4.0")]
 #elif NET451
 [assembly: AssemblyTitle("CuteAnt.AsyncEx for .NetFx4.5")]
