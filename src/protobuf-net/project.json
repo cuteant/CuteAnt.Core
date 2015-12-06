@@ -5,7 +5,7 @@
   "tags": [ "CuteAnt", "CuteAnt.Core" ],
   "projectUrl": "https://github.com/mgravell/protobuf-net",
   "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
-  "requireLicenseAcceptance": false,
+  "requireLicenseAcceptance": true,
 
   "compilationOptions": {
     "define": [ "TRACE", "FEAT_COMPILER", "FEAT_SERVICEMODEL", "PLAT_BINARYFORMATTER", "PLAT_XMLSERIALIZER" ],

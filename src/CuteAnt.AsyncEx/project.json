@@ -5,7 +5,7 @@
   "tags": [ "CuteAnt", "CuteAnt.AsyncEx" ],
   "projectUrl": "http://www.cuteant.net",
   "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
-  "requireLicenseAcceptance": false,
+  "requireLicenseAcceptance": true,
 
   "compilationOptions": {
     "define": [ "TRACE", "NET_3_5_GREATER", "NET_4_0_GREATER", "FEATURE_TRACING" ],
@@ -30,15 +30,15 @@
     "CuteAnt": "2.0.0-rc2-151205",
     "CuteAnt.Extensions.Sources": {
       "type": "build",
-      "version": "2.0.0-*"
+      "version": "2.0.0-rc2-151205"
     },
     "CuteAnt.Extensions.Reflection.Sources": {
       "type": "build",
-      "version": "2.0.0-*"
+      "version": "2.0.0-rc2-151205"
     },
     "Nito.AsyncEx.Tasks.Sources": {
       "type": "build",
-      "version": "2.0.0-*"
+      "version": "2.0.0-rc2-151205"
     }
   },
 

@@ -6,8 +6,8 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>8d96c23e-7879-4bc1-82f0-c12a8e88659e</ProjectGuid>
-    <RootNamespace>CuteAnt.Extensions.Async.Sources</RootNamespace>
+    <ProjectGuid>4a88cd40-345f-4d58-a507-98a5eaf7f20e</ProjectGuid>
+    <RootNamespace>System.ServiceModel.Internals.Interop</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\..\artifacts\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">..\..\artifacts\bin\$(MSBuildProjectName)\</OutputPath>
   </PropertyGroup>
