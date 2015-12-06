@@ -4,7 +4,7 @@
     "warningsAsErrors": false,
     "keyFile": "../../tools/StrongKey.snk"
   },
-  "shared": "*.cs",
+  "shared": "**/*.cs",
   "dependencies": { },
   "frameworks": {
     "net40": { },

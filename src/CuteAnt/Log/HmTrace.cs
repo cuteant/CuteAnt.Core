@@ -135,7 +135,7 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Error")]
     public static void WriteException(Exception ex)
     {
-      Log.LogError(ex.Message, ex);
+      Log.LogError(ex.ToString());
     }
 
     /// <summary> ‰≥ˆ¥ÌŒÛ»’÷æ</summary>
