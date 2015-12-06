@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-151205",
+  "version": "2.0.0-rc2-151206",
   "description": "protobuf-net Class Library",
   "authors": [ "Marc Gravell" ],
   "tags": [ "CuteAnt", "CuteAnt.Core" ],
@@ -24,7 +24,7 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt": "2.0.0-rc2-151205"
+    "CuteAnt": "2.0.0-rc2-151206"
   },
 
   "frameworks": {
