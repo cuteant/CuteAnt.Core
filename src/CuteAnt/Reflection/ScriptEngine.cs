@@ -15,7 +15,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using CuteAnt.Collections;
-using NLog;
+using Microsoft.Extensions.Logging;
 
 namespace CuteAnt.Reflection
 {
@@ -556,7 +556,7 @@ namespace CuteAnt.Reflection
 
 		void WriteLog(String format, params Object[] args)
 		{
-			if (Log != null) Log.Info(format, args);
+			if (Log != null) Log.LogInformation(format, args);
 		}
 
 		static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)

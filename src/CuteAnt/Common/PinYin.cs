@@ -671,7 +671,7 @@ namespace CuteAnt.Common
 				_inited = true;
 				_type = "ChineseChar".GetTypeEx(true);
 
-				if (_type == null) HmTrace.Log.Warn("未找到微软拼音库ChnCharInfo.dll");
+				if (_type == null) HmTrace.WriteWarn("未找到微软拼音库ChnCharInfo.dll");
 			}
 			if (_type == null) return null;
 
