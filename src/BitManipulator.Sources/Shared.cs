@@ -18,7 +18,7 @@
 #endregion
 
 using System;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -44,7 +44,7 @@ namespace CuteAnt.Extension
 		/// </remarks>
 		/// <typeparam name="T">Type of the struct.</typeparam>
 		/// <returns>Size of a <typeparamref name="T" /> instance in bytes.</returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static int SizeOf<T>() where T : struct

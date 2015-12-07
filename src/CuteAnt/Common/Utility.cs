@@ -8,7 +8,7 @@
 
 using System;
 using System.Globalization;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -45,7 +45,7 @@ namespace CuteAnt
 		/// <param name="value">待转换对象</param>
 		/// <param name="defaultValue">默认值。待转换对象无效时使用</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Int32 ToInt(this Object value, Int32 defaultValue = 0)
@@ -57,7 +57,7 @@ namespace CuteAnt
 		/// <param name="value">待转换对象</param>
 		/// <param name="defaultValue">默认值。待转换对象无效时使用</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Int32 ToInt16(this Object value, Int16 defaultValue = 0)
@@ -69,7 +69,7 @@ namespace CuteAnt
 		/// <param name="value">待转换对象</param>
 		/// <param name="defaultValue">默认值。待转换对象无效时使用</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Int64 ToInt64(this Object value, Int64 defaultValue = 0L)
@@ -81,7 +81,7 @@ namespace CuteAnt
 		/// <param name="value">待转换对象</param>
 		/// <param name="defaultValue">默认值。待转换对象无效时使用</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Decimal ToDecimal(this Object value, Decimal defaultValue = 0.0M)
@@ -93,7 +93,7 @@ namespace CuteAnt
 		/// <param name="value">待转换对象</param>
 		/// <param name="defaultValue">默认值。待转换对象无效时使用</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Single ToSingle(this Object value, Single defaultValue = 0.0F)
@@ -105,7 +105,7 @@ namespace CuteAnt
 		/// <param name="value">待转换对象</param>
 		/// <param name="defaultValue">默认值。待转换对象无效时使用</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Double ToDouble(this Object value, Double defaultValue = 0.0D)
@@ -122,7 +122,7 @@ namespace CuteAnt
 		/// <param name="value">待转换对象</param>
 		/// <param name="defaultValue">默认值。待转换对象无效时使用</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Boolean ToBoolean(this Object value, Boolean defaultValue = false)
@@ -133,7 +133,7 @@ namespace CuteAnt
 		/// <summary>转为时间日期</summary>
 		/// <param name="value">待转换对象</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static DateTime ToDateTime(this Object value)
@@ -145,7 +145,7 @@ namespace CuteAnt
 		/// <param name="value">待转换对象</param>
 		/// <param name="defaultValue">默认值。待转换对象无效时使用</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static DateTime ToDateTime(this Object value, DateTime defaultValue)
@@ -156,7 +156,7 @@ namespace CuteAnt
 		/// <summary>转为GUID</summary>
 		/// <param name="value">待转换对象</param>
 		/// <returns>转换失败，返回 Guid.Empty 对象</returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Guid ToGuid(this Object value)
@@ -168,7 +168,7 @@ namespace CuteAnt
 		/// <param name="value">待转换对象</param>
 		/// <param name="defaultValue">默认值。待转换对象无效时使用</param>
 		/// <returns>转换失败，返回 defaultValue 对象</returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Guid ToGuid(this Object value, Guid defaultValue)
@@ -179,7 +179,7 @@ namespace CuteAnt
 		/// <summary>时间日期转为yyyy-MM-dd HH:mm:ss完整字符串</summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String ToFullString(this DateTime value)

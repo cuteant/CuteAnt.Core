@@ -13,7 +13,7 @@ using System.Linq;
 using CuteAnt.OrmLite.Configuration;
 using CuteAnt.OrmLite.DataAccessLayer;
 using CuteAnt.Reflection;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -226,7 +226,7 @@ namespace CuteAnt.OrmLite
 		private static String[] TrueString = new String[] { "true", "y", "yes", "1" };
 		private static String[] FalseString = new String[] { "false", "n", "no", "0" };
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static void LoadData(IDictionary<String, Object> dr, IEntity entity, IEntityOperate factory, List<FieldItem> ps, List<String> exts)
@@ -243,7 +243,7 @@ namespace CuteAnt.OrmLite
 			}
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static void LoadData(DataRow dr, IEntity entity, IEntityOperate factory, List<FieldItem> ps, List<String> exts)
@@ -260,7 +260,7 @@ namespace CuteAnt.OrmLite
 			}
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static void SetValue(IEntity entity, IEntityOperate factory, String name, Type type, Object value)
@@ -405,7 +405,7 @@ namespace CuteAnt.OrmLite
 			}
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static void SetValue(IEntity entity, IEntityOperate factory, String name, CommonDbType dbType, Object value)

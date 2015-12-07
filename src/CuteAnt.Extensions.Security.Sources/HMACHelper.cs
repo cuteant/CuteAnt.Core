@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using CuteAnt.Security.Cryptography;
 using CuteAnt.Text;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -160,7 +160,7 @@ namespace CuteAnt.Security
 		/// <param name="hashtype"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMAC(this Stream inputStream, HMACEncryptionProviderType hashtype, Byte[] key)
@@ -265,7 +265,7 @@ namespace CuteAnt.Security
 		/// <param name="hashtype"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMAC(this Byte[] data, HMACEncryptionProviderType hashtype, Byte[] key)
@@ -372,7 +372,7 @@ namespace CuteAnt.Security
 		/// <param name="hashtype"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMAC(this Byte[] data, Int32 offset, Int32 count, HMACEncryptionProviderType hashtype, Byte[] key)
@@ -478,7 +478,7 @@ namespace CuteAnt.Security
 		/// <param name="key"></param>
 		/// <param name="encoding">字符串编码，默认UTF-8</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMAC(this String data, HMACEncryptionProviderType hashtype, Byte[] key, Encoding encoding = null)
@@ -496,7 +496,7 @@ namespace CuteAnt.Security
 		/// <param name="inputStream"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA1(this Stream inputStream, Byte[] key)
@@ -511,7 +511,7 @@ namespace CuteAnt.Security
 		/// <param name="data"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA1(this Byte[] data, Byte[] key)
@@ -528,7 +528,7 @@ namespace CuteAnt.Security
 		/// <param name="count"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA1(this Byte[] data, Int32 offset, Int32 count, Byte[] key)
@@ -544,7 +544,7 @@ namespace CuteAnt.Security
 		/// <param name="key"></param>
 		/// <param name="encoding">字符串编码，默认UTF-8</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA1(this String data, Byte[] key, Encoding encoding = null)
@@ -562,7 +562,7 @@ namespace CuteAnt.Security
 		/// <param name="inputStream"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA256(this Stream inputStream, Byte[] key)
@@ -587,7 +587,7 @@ namespace CuteAnt.Security
 		/// <param name="data"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA256(this Byte[] data, Byte[] key)
@@ -614,7 +614,7 @@ namespace CuteAnt.Security
 		/// <param name="count"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA256(this Byte[] data, Int32 offset, Int32 count, Byte[] key)
@@ -640,7 +640,7 @@ namespace CuteAnt.Security
 		/// <param name="key"></param>
 		/// <param name="encoding">字符串编码，默认UTF-8</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA256(this String data, Byte[] key, Encoding encoding = null)
@@ -658,7 +658,7 @@ namespace CuteAnt.Security
 		/// <param name="inputStream"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA384(this Stream inputStream, Byte[] key)
@@ -683,7 +683,7 @@ namespace CuteAnt.Security
 		/// <param name="data"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA384(this Byte[] data, Byte[] key)
@@ -710,7 +710,7 @@ namespace CuteAnt.Security
 		/// <param name="count"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA384(this Byte[] data, Int32 offset, Int32 count, Byte[] key)
@@ -736,7 +736,7 @@ namespace CuteAnt.Security
 		/// <param name="key"></param>
 		/// <param name="encoding">字符串编码，默认UTF-8</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA384(this String data, Byte[] key, Encoding encoding = null)
@@ -754,7 +754,7 @@ namespace CuteAnt.Security
 		/// <param name="inputStream"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA512(this Stream inputStream, Byte[] key)
@@ -779,7 +779,7 @@ namespace CuteAnt.Security
 		/// <param name="data"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA512(this Byte[] data, Byte[] key)
@@ -806,7 +806,7 @@ namespace CuteAnt.Security
 		/// <param name="count"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA512(this Byte[] data, Int32 offset, Int32 count, Byte[] key)
@@ -832,7 +832,7 @@ namespace CuteAnt.Security
 		/// <param name="key"></param>
 		/// <param name="encoding">字符串编码，默认UTF-8</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] HMACSHA512(this String data, Byte[] key, Encoding encoding = null)
@@ -971,7 +971,7 @@ namespace CuteAnt.Security
 		/// <param name="inputStream"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] MAC(this Stream inputStream, Byte[] key)
@@ -986,7 +986,7 @@ namespace CuteAnt.Security
 		/// <param name="data"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] MAC(this Byte[] data, Byte[] key)
@@ -1003,7 +1003,7 @@ namespace CuteAnt.Security
 		/// <param name="count"></param>
 		/// <param name="key"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] MAC(this Byte[] data, Int32 offset, Int32 count, Byte[] key)
@@ -1019,7 +1019,7 @@ namespace CuteAnt.Security
 		/// <param name="key"></param>
 		/// <param name="encoding">字符串编码，默认UTF-8</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String MAC(this String data, Byte[] key, Encoding encoding = null)

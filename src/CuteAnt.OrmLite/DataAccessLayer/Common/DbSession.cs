@@ -21,7 +21,7 @@ using CuteAnt.AsyncEx;
 using CuteAnt.Collections;
 using CuteAnt.OrmLite.Exceptions;
 using CuteAnt.Log;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -290,7 +290,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 		/// <summary>事务计数。当且仅当事务计数等于1时，才提交或回滚。</summary>
 		private Int32 TransactionCount = 0;
 #if ASYNC
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		private ConcurrentDictionary<String, DirtiedEntitySession> _EntitySession = new ConcurrentDictionary<String, DirtiedEntitySession>();
 #else
 		private Dictionary<String, DirtiedEntitySession> _EntitySession = new Dictionary<String, DirtiedEntitySession>();
@@ -422,7 +422,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			if (_EntitySession.TryGetValue(key, out oldsession))
 			{
 #if ASYNC
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 				Interlocked.Add(ref oldsession.ExecuteCount, executeCount);
 				Interlocked.Add(ref oldsession.UpdateCount, updateCount);
 				Interlocked.Add(ref oldsession.DirectExecuteSQLCount, directExecuteSQLCount);
@@ -440,7 +440,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			else
 			{
 #if ASYNC
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 				_EntitySession.TryAdd(key, new DirtiedEntitySession(entitySession, executeCount, updateCount, directExecuteSQLCount));
 #else
 				_EntitySession.Add(key, new DirtiedEntitySession(entitySession, executeCount, updateCount, directExecuteSQLCount));
@@ -457,7 +457,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 		public void RemoveDirtiedEntitySession(String key)
 		{
 #if ASYNC
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			DirtiedEntitySession session;
 			_EntitySession.TryRemove(key, out session);
 #else
@@ -606,7 +606,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static QueryRecords ToDictionariesImpl(DbDataReader reader)

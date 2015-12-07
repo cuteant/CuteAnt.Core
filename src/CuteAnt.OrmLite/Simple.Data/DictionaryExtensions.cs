@@ -19,7 +19,7 @@ namespace CuteAnt.OrmLite
 			return dictionary == null ? null : new SimpleRecord(dictionary);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		internal static IReadOnlyDictionary<K, V> ToReadOnly<K, V>(this IDictionary<K, V> dictionary)
 		{
 			return new ReadOnlyDictionary<K, V>(dictionary);

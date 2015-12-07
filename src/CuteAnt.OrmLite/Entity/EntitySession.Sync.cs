@@ -262,7 +262,7 @@ namespace CuteAnt.OrmLite
 
 		#region -- 数据库操作 --
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private void InitData()

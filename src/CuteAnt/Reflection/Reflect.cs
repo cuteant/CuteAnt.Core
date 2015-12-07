@@ -15,7 +15,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using CuteAnt.Collections;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -44,7 +44,7 @@ namespace CuteAnt.Reflection
 		/// <param name="typeName">类型名</param>
 		/// <param name="isLoadAssembly">是否从未加载程序集中获取类型。使用仅反射的方法检查目标类型，如果存在，则进行常规加载</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Type GetTypeEx(this String typeName, Boolean isLoadAssembly = true)
@@ -62,12 +62,12 @@ namespace CuteAnt.Reflection
 		/// <param name="type">类型</param>
 		/// <param name="name">名称</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static EventInfo GetDeclaredEventEx(this Type type, String name)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return type.GetTypeInfo().GetDeclaredEvent(name);
 #else
 			return type.GetEvent(name, DeclaredOnlyLookup);
@@ -77,12 +77,12 @@ namespace CuteAnt.Reflection
 		/// <summary>获取当前类型定义的操作的集合</summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IEnumerable<EventInfo> GetDeclaredEventsEx(this Type type)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return type.GetTypeInfo().DeclaredEvents;
 #else
 			return type.GetEvents(DeclaredOnlyLookup);
@@ -97,12 +97,12 @@ namespace CuteAnt.Reflection
 		/// <param name="type">类型</param>
 		/// <param name="name">名称</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static FieldInfo GetDeclaredFieldEx(this Type type, String name)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return type.GetTypeInfo().GetDeclaredField(name);
 #else
 			return type.GetField(name, DeclaredOnlyLookup);
@@ -112,12 +112,12 @@ namespace CuteAnt.Reflection
 		/// <summary>获取当前类型定义的字段的集合</summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IEnumerable<FieldInfo> GetDeclaredFieldsEx(this Type type)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return type.GetTypeInfo().DeclaredFields;
 #else
 			return type.GetFields(DeclaredOnlyLookup);
@@ -129,7 +129,7 @@ namespace CuteAnt.Reflection
 		/// <param name="name">名称</param>
 		/// <param name="ignoreCase">忽略大小写</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static FieldInfo GetFieldEx(this Type type, String name, Boolean ignoreCase = false)
@@ -159,12 +159,12 @@ namespace CuteAnt.Reflection
 		/// <param name="type">类型</param>
 		/// <param name="name">名称</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static PropertyInfo GetDeclaredPropertyEx(this Type type, String name)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return type.GetTypeInfo().GetDeclaredProperty(name);
 #else
 			return type.GetProperty(name, DeclaredOnlyLookup);
@@ -174,12 +174,12 @@ namespace CuteAnt.Reflection
 		/// <summary>获取指定类型定义的属性的集合</summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IEnumerable<PropertyInfo> GetDeclaredPropertiesEx(this Type type)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return type.GetTypeInfo().DeclaredProperties;
 #else
 			return type.GetProperties(DeclaredOnlyLookup);
@@ -191,7 +191,7 @@ namespace CuteAnt.Reflection
 		/// <param name="name">名称</param>
 		/// <param name="ignoreCase">忽略大小写</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static PropertyInfo GetPropertyEx(this Type type, String name, Boolean ignoreCase = false)
@@ -209,12 +209,12 @@ namespace CuteAnt.Reflection
 		/// <param name="type">类型</param>
 		/// <param name="name">名称</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static MethodInfo GetDeclaredMethodEx(this Type type, String name)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return type.GetTypeInfo().GetDeclaredMethod(name);
 #else
 			return type.GetMethod(name, DeclaredOnlyLookup);
@@ -224,12 +224,12 @@ namespace CuteAnt.Reflection
 		/// <summary>获取当前类型定义方法的集合</summary>
 		/// <param name="type">类型</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IEnumerable<MethodInfo> GetDeclaredMethodsEx(this Type type)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return type.GetTypeInfo().DeclaredMethods;
 #else
 			return type.GetMethods(DeclaredOnlyLookup);
@@ -240,12 +240,12 @@ namespace CuteAnt.Reflection
 		/// <param name="type">类型</param>
 		/// <param name="name">名称</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IEnumerable<MethodInfo> GetDeclaredMethodsEx(this Type type, String name)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return type.GetTypeInfo().GetDeclaredMethods(name);
 #else
 			return type.GetMethods(DeclaredOnlyLookup).Where(m => m.Name == name);
@@ -257,7 +257,7 @@ namespace CuteAnt.Reflection
 		/// <param name="name">名称</param>
 		/// <param name="paramTypes">参数类型数组</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static MethodInfo GetMethodEx(this Type type, String name, params Type[] paramTypes)
@@ -289,7 +289,7 @@ namespace CuteAnt.Reflection
 		/// <param name="type">类型</param>
 		/// <param name="parameters">参数数组</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		[DebuggerHidden]
@@ -305,7 +305,7 @@ namespace CuteAnt.Reflection
 		/// <param name="name">方法名</param>
 		/// <param name="parameters">方法参数</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Object Invoke(this Object target, String name, params Object[] parameters)
@@ -326,7 +326,7 @@ namespace CuteAnt.Reflection
 		/// <param name="value">数值</param>
 		/// <param name="parameters">方法参数</param>
 		/// <remarks>反射调用是否成功</remarks>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Boolean TryInvoke(this Object target, String name, out Object value, params Object[] parameters)
@@ -359,7 +359,7 @@ namespace CuteAnt.Reflection
 		/// <param name="method">方法</param>
 		/// <param name="parameters">方法参数</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		[DebuggerHidden]
@@ -396,7 +396,7 @@ namespace CuteAnt.Reflection
 		/// <param name="name">名称</param>
 		/// <param name="throwOnError">出错时是否抛出异常</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		[DebuggerHidden]
@@ -419,7 +419,7 @@ namespace CuteAnt.Reflection
 		/// <param name="name">名称</param>
 		/// <param name="value">数值</param>
 		/// <returns>是否成功获取数值</returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Boolean TryGetValue(this Object target, String name, out Object value)
@@ -455,7 +455,7 @@ namespace CuteAnt.Reflection
 		/// <param name="target">目标对象</param>
 		/// <param name="property">属性</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Object GetValue(this Object target, PropertyInfo property)
@@ -467,7 +467,7 @@ namespace CuteAnt.Reflection
 		/// <param name="target">目标对象</param>
 		/// <param name="field">字段</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Object GetValue(this Object target, FieldInfo field)
@@ -479,7 +479,7 @@ namespace CuteAnt.Reflection
 		/// <param name="target">目标对象</param>
 		/// <param name="member">成员</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Object GetValue(this Object target, MemberInfo member)
@@ -510,7 +510,7 @@ namespace CuteAnt.Reflection
 		/// <param name="name">名称</param>
 		/// <param name="value">数值</param>
 		/// <remarks>反射调用是否成功</remarks>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		[DebuggerHidden]
@@ -537,7 +537,7 @@ namespace CuteAnt.Reflection
 		/// <param name="target">目标对象</param>
 		/// <param name="property">属性</param>
 		/// <param name="value">数值</param>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void SetValue(this Object target, PropertyInfo property, Object value)
@@ -549,7 +549,7 @@ namespace CuteAnt.Reflection
 		/// <param name="target">目标对象</param>
 		/// <param name="field">字段</param>
 		/// <param name="value">数值</param>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void SetValue(this Object target, FieldInfo field, Object value)
@@ -561,7 +561,7 @@ namespace CuteAnt.Reflection
 		/// <param name="target">目标对象</param>
 		/// <param name="member">成员</param>
 		/// <param name="value">数值</param>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		[DebuggerHidden]
@@ -592,12 +592,12 @@ namespace CuteAnt.Reflection
 		/// <summary>获取包含该成员的自定义特性的集合。</summary>
 		/// <param name="member"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IEnumerable<CustomAttributeData> CustomAttributesEx(this MemberInfo member)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return member.CustomAttributes;
 #else
 			return member.GetCustomAttributesData(); ;
@@ -633,7 +633,7 @@ namespace CuteAnt.Reflection
 
 		#region - MethodInfo -
 
-#if !(NET45 || NET451 || NET46 || NET461)
+#if !!NET40
 		/// <summary>创建指定类型的委托从此方法的</summary>
 		/// <param name="method">MethodInfo</param>
 		/// <param name="delegateType">创建委托的类型</param>
@@ -661,12 +661,12 @@ namespace CuteAnt.Reflection
 		/// <summary>获取属性的类型。</summary>
 		/// <param name="attrdata"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Type AttributeTypeEx(this CustomAttributeData attrdata)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return attrdata.AttributeType;
 #else
 			return attrdata.Constructor.DeclaringType; ;
@@ -680,12 +680,12 @@ namespace CuteAnt.Reflection
 		/// <summary>获取此属性的 get 访问器。</summary>
 		/// <param name="property"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static MethodInfo GetMethodEx(this PropertyInfo property)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return property.GetMethod;
 #else
 			return property.GetGetMethod(true);
@@ -695,12 +695,12 @@ namespace CuteAnt.Reflection
 		/// <summary>获取此属性的 set 访问器。</summary>
 		/// <param name="property"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static MethodInfo SetMethodEx(this PropertyInfo property)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return property.SetMethod;
 #else
 			return property.GetSetMethod(true); ;
@@ -714,12 +714,12 @@ namespace CuteAnt.Reflection
 		/// <summary>获取此类型通用类型参数的数组。</summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Type[] GenericTypeArgumentsEx(this Type type)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return type.GetTypeInfo().GenericTypeArguments;
 #else
 			return type.IsGenericType && !type.IsGenericTypeDefinition ? type.GetGenericArguments() : Type.EmptyTypes;
@@ -729,12 +729,12 @@ namespace CuteAnt.Reflection
 		/// <summary>获取当前类型的泛型参数的数组。</summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Type[] GenericTypeParametersEx(this Type type)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return type.GetTypeInfo().GenericTypeParameters;
 #else
 			return type.IsGenericTypeDefinition ? type.GetGenericArguments() : Type.EmptyTypes;
@@ -744,12 +744,12 @@ namespace CuteAnt.Reflection
 		/// <summary>获取当前类型实现的接口的集合。</summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IEnumerable<Type> ImplementedInterfacesEx(this Type type)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return type.GetTypeInfo().ImplementedInterfaces;
 #else
 			return type.GetInterfaces();
@@ -760,12 +760,12 @@ namespace CuteAnt.Reflection
 		/// <param name="type"></param>
 		/// <param name="c"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Boolean IsAssignableFromEx(this Type type, Type c)
 		{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			return type.GetTypeInfo().IsAssignableFrom(c.GetTypeInfo());
 #else
 			return type.IsAssignableFrom(c);
@@ -775,7 +775,7 @@ namespace CuteAnt.Reflection
 		/// <summary>获取一个类型的元素类型</summary>
 		/// <param name="type">类型</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Type GetElementTypeEx(this Type type)
@@ -789,7 +789,7 @@ namespace CuteAnt.Reflection
 		/// <param name="value">数值</param>
 		/// <param name="conversionType"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Object ChangeType(this Object value, Type conversionType)
@@ -801,7 +801,7 @@ namespace CuteAnt.Reflection
 		/// <typeparam name="TResult"></typeparam>
 		/// <param name="value">数值</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static TResult ChangeType<TResult>(this Object value)
@@ -815,7 +815,7 @@ namespace CuteAnt.Reflection
 		/// <param name="type">指定类型</param>
 		/// <param name="isfull">是否全名，包含命名空间</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String GetName(this Type type, Boolean isfull = false)
@@ -826,7 +826,7 @@ namespace CuteAnt.Reflection
 		/// <summary>从参数数组中获取类型数组</summary>
 		/// <param name="args"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Type[] GetTypeArray(this Object[] args)
@@ -885,7 +885,7 @@ namespace CuteAnt.Reflection
 		/// <param name="asm">指定程序集</param>
 		/// <param name="baseType">基类或接口</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IEnumerable<Type> GetSubclasses(this Assembly asm, Type baseType)
@@ -897,7 +897,7 @@ namespace CuteAnt.Reflection
 		/// <param name="baseType">基类或接口</param>
 		/// <param name="isLoadAssembly">是否加载为加载程序集</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IEnumerable<Type> GetAllSubclasses(this Type baseType, Boolean isLoadAssembly = false)
@@ -951,7 +951,7 @@ namespace CuteAnt.Reflection
 		{
 			if (target == null)
 			{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 				return (TFunc)(Object)method.CreateDelegate(typeof(TFunc));
 #else
 				return (TFunc)(Object)Delegate.CreateDelegate(typeof(TFunc), method);
@@ -959,7 +959,7 @@ namespace CuteAnt.Reflection
 			}
 			else
 			{
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 				return (TFunc)(Object)method.CreateDelegate(typeof(TFunc), target);
 #else
 				return (TFunc)(Object)Delegate.CreateDelegate(typeof(TFunc), target, method);

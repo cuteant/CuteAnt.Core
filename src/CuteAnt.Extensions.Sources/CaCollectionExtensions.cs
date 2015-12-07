@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -19,7 +19,7 @@ namespace System.Collections.Generic
 		/// <param name="items">原集合</param>
 		/// <param name="transformation">将每个元素从一种类型转换为另一种类型的委托</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static IEnumerable<TResult> ConvertAllX<T, TResult>(this IEnumerable<T> items, Converter<T, TResult> transformation)
@@ -44,7 +44,7 @@ namespace System.Collections.Generic
 		/// <typeparam name="T">元素类型</typeparam>
 		/// <param name="items">指定类型的集合</param>
 		/// <param name="action">是对传递给它的对象执行某个操作的方法的委托</param>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void ForEachX<T>(this IEnumerable<T> items, Action<T> action)
@@ -78,7 +78,7 @@ namespace System.Collections.Generic
 		/// Code taken from Castle Project's Castle.Core Library
 		/// &lt;a href="http://www.castleproject.org/"&gt;Castle Project's Castle.Core Library&lt;/a&gt;
 		/// </remarks>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T Find<T>(this T[] items, Predicate<T> predicate)
@@ -95,7 +95,7 @@ namespace System.Collections.Generic
 		/// Code taken from Castle Project's Castle.Core Library
 		/// &lt;a href="http://www.castleproject.org/"&gt;Castle Project's Castle.Core Library&lt;/a&gt;
 		/// </remarks>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] FindAll<T>(this T[] items, Predicate<T> predicate)
@@ -110,7 +110,7 @@ namespace System.Collections.Generic
 		/// Code taken from Castle Project's Castle.Core Library
 		/// &lt;a href="http://www.castleproject.org/"&gt;Castle Project's Castle.Core Library&lt;/a&gt;
 		/// </remarks>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Boolean IsNullOrEmpty(this IEnumerable @this)
@@ -121,7 +121,7 @@ namespace System.Collections.Generic
 		/// <summary>Checks whether or not collection is null or empty. Assumes colleciton can be safely enumerated multiple times.</summary>
 		/// <param name = "this"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Boolean IsNullOrEmpty<T>(this IEnumerable<T> @this)

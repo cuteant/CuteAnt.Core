@@ -14,7 +14,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Threading;
 using System.Xml.Serialization;
 using CuteAnt.Log;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -167,7 +167,7 @@ namespace CuteAnt
 		/// <summary>尝试销毁对象，如果有<see cref="IDisposable"/>则调用</summary>
 		/// <param name="obj"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Object TryDispose(this Object obj)

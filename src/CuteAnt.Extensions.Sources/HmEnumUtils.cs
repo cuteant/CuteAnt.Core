@@ -9,7 +9,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -49,7 +49,7 @@ namespace System
 		/// <param name="flag"></param>
 		/// <param name="value">数值</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T Set<T>(this Enum source, T flag, Boolean value)
@@ -74,7 +74,7 @@ namespace System
 		/// <summary>获取枚举字段的注释</summary>
 		/// <param name="value">数值</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String GetDescription(this Enum value)
@@ -91,7 +91,7 @@ namespace System
 		/// <summary>获取枚举类型的所有字段注释</summary>
 		/// <typeparam name="TEnum"></typeparam>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Dictionary<TEnum, String> GetDescriptions<TEnum>()
@@ -109,7 +109,7 @@ namespace System
 		/// <summary>获取枚举类型的所有字段注释</summary>
 		/// <param name="enumType"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Dictionary<Int32, String> GetDescriptions(Type enumType)

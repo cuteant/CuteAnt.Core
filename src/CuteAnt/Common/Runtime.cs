@@ -12,7 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 using System.Runtime.ConstrainedExecution;
@@ -351,7 +351,7 @@ namespace CuteAnt
 
 		/// <summary>释放当前进程所占用的内存</summary>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Boolean ReleaseMemory()

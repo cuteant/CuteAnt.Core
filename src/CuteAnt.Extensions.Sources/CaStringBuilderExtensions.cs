@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -12,7 +12,7 @@ namespace System.Text
 		/// <param name="sb">字符串构造者</param>
 		/// <param name="str">分隔符</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static StringBuilder AppendSeparate(this StringBuilder sb, String str)

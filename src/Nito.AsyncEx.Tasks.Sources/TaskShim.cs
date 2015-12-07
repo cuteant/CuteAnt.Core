@@ -1,4 +1,4 @@
-﻿#if (NET45 || NET451 || NET46 || NET461)
+﻿#if !NET40
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;

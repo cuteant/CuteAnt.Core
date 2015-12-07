@@ -4,7 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Web;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -70,7 +70,7 @@ namespace CuteAnt.IO
 		/// <summary>Fixes path separator, replaces / \ with platform separator Char.</summary>
 		/// <param name="path">Path to fix.</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String PathFix(String path)
@@ -86,7 +86,7 @@ namespace CuteAnt.IO
 		/// <param name="path1"></param>
 		/// <param name="path2"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String PathCombineFix(String path1, String path2)
@@ -106,7 +106,7 @@ namespace CuteAnt.IO
 		/// <param name="path2"></param>
 		/// <param name="path3"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String PathCombineFix(String path1, String path2, String path3)
@@ -127,7 +127,7 @@ namespace CuteAnt.IO
 		/// <param name="path3"></param>
 		/// <param name="path4"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String PathCombineFix(String path1, String path2, String path3, String path4)
@@ -145,7 +145,7 @@ namespace CuteAnt.IO
 		/// <summary>将字符串数组组合成一个路径</summary>
 		/// <param name="paths"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String PathCombineFix(params String[] paths)
@@ -164,7 +164,7 @@ namespace CuteAnt.IO
 
 		#region -- method ApplicationStartupPathCombine --
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String ApplicationStartupPathCombine(String path1)
@@ -172,7 +172,7 @@ namespace CuteAnt.IO
 			return Path.GetFullPath(PathCombineFix(AppDomainBaseDirectory, path1));
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String ApplicationStartupPathCombine(String path1, String path2)
@@ -180,7 +180,7 @@ namespace CuteAnt.IO
 			return Path.GetFullPath(PathCombineFix(AppDomainBaseDirectory, path1, path2));
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String ApplicationStartupPathCombine(String path1, String path2, String path3)
@@ -188,7 +188,7 @@ namespace CuteAnt.IO
 			return Path.GetFullPath(PathCombineFix(AppDomainBaseDirectory, path1, path2, path3));
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String ApplicationStartupPathCombine(params String[] paths)
@@ -238,7 +238,7 @@ namespace CuteAnt.IO
 		/// </summary>
 		/// <param name="dirName">Directory to check.</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String DirectoryExists(String dirName)
@@ -310,7 +310,7 @@ namespace CuteAnt.IO
 		/// Returns actual dir (In linux it may differ from requested directory, because of case-sensitivity.).
 		/// </summary>
 		/// <param name="folder">Folder name with path.</param>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String EnsureDirectory(String folder)
@@ -334,7 +334,7 @@ namespace CuteAnt.IO
 		/// <summary>检测目录是否存在</summary>
 		/// <param name="StrPath">路径</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Boolean DirectoryIsExists(String StrPath)
@@ -346,7 +346,7 @@ namespace CuteAnt.IO
 		/// <summary>检测目录是否存在</summary>
 		/// <param name="StrPath">路径</param>
 		/// <param name="Create">如果不存在，是否创建</param>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static void DirectoryIsExists(String StrPath, Boolean Create)

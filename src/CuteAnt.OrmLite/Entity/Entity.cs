@@ -31,7 +31,7 @@ using CuteAnt.Text;
 using CuteAnt.Xml;
 using MySql.Data.MySqlClient;
 using ProtoBuf;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -2331,7 +2331,7 @@ namespace CuteAnt.OrmLite
 
 		#region *& FormatOrderClause &*
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static String FormatOrderClause(String orderClause)
@@ -2437,7 +2437,7 @@ namespace CuteAnt.OrmLite
 
 		#region *& ReverseRecords &*
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static IList<QueryRecords> ReverseRecords(IList<QueryRecords> ds)
@@ -2455,7 +2455,7 @@ namespace CuteAnt.OrmLite
 
 		#region *& ReverseDataSet &*
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static DataSet ReverseDataSet(DataSet ds)

@@ -1013,7 +1013,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 				if (_Tables == null)
 				{
 #if ASYNC
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 					_Tables = GetTablesAsync().WaitAndUnwrapException();
 #else
 					_Tables = GetTables();
@@ -1025,7 +1025,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 				else
 				{
 #if ASYNC
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 					//GetTablesAsync().ContinueWith(task => _Tables = task.Result, CancellationToken.None, AsyncUtils.GetContinuationOptions(), TaskScheduler.Default);
 					Task.Run(async () => _Tables = await GetTablesAsync());
 #else

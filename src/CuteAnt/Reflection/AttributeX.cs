@@ -11,7 +11,7 @@ using System.Linq;
 using System.Reflection;
 using CuteAnt.Collections;
 using CuteAnt.Reflection;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -31,7 +31,7 @@ namespace System
 		/// <param name="attributeType"></param>
 		/// <param name="inherit"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IEnumerable<Attribute> GetCustomAttributesX(this MemberInfo member, Type attributeType = null, Boolean inherit = true)
@@ -58,7 +58,7 @@ namespace System
 		/// <param name="member"></param>
 		/// <param name="inherit"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IEnumerable<TAttribute> GetCustomAttributesX<TAttribute>(this MemberInfo member, Boolean inherit = true)
@@ -93,7 +93,7 @@ namespace System
 		/// <param name="member"></param>
 		/// <param name="inherit"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static TAttribute GetCustomAttributeX<TAttribute>(this MemberInfo member, Boolean inherit = true)
@@ -109,7 +109,7 @@ namespace System
 		/// <typeparam name="TAttribute"></typeparam>
 		/// <param name="assembly"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static IEnumerable<TAttribute> GetCustomAttributesX<TAttribute>(this Assembly assembly)
@@ -130,7 +130,7 @@ namespace System
 		/// <typeparam name="TAttribute"></typeparam>
 		/// <param name="assembly"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static TAttribute GetCustomAttributeX<TAttribute>(this Assembly assembly)
@@ -144,7 +144,7 @@ namespace System
 		/// <typeparam name="TAttribute"></typeparam>
 		/// <typeparam name="TResult"></typeparam>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static TResult GetCustomAttributeValue<TAttribute, TResult>(this Assembly target)
@@ -172,7 +172,7 @@ namespace System
 		/// <param name="target">目标对象</param>
 		/// <param name="inherit">是否递归</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static TResult GetCustomAttributeValue<TAttribute, TResult>(this MemberInfo target, Boolean inherit = true)

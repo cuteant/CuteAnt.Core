@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using CuteAnt.Text;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -92,7 +92,7 @@ namespace CuteAnt.Security
 		/// <param name="inputStream"></param>
 		/// <param name="provider"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] MD5(this Stream inputStream, MD5EncryptionProviderType provider = MD5EncryptionProviderType.CSP)
@@ -107,7 +107,7 @@ namespace CuteAnt.Security
 		/// <param name="data"></param>
 		/// <param name="provider"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] MD5(this Byte[] data, MD5EncryptionProviderType provider = MD5EncryptionProviderType.CSP)
@@ -124,7 +124,7 @@ namespace CuteAnt.Security
 		/// <param name="count"></param>
 		/// <param name="provider"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] MD5(this Byte[] data, Int32 offset, Int32 count, MD5EncryptionProviderType provider = MD5EncryptionProviderType.CSP)
@@ -138,7 +138,7 @@ namespace CuteAnt.Security
 		/// <summary>MD5散列，根据字节数组大小自动匹配MD5算法</summary>
 		/// <param name="data"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] MD5Mix(this Byte[] data)
@@ -162,7 +162,7 @@ namespace CuteAnt.Security
 		/// <param name="offset"></param>
 		/// <param name="count"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] MD5Mix(this Byte[] data, Int32 offset, Int32 count)
@@ -185,7 +185,7 @@ namespace CuteAnt.Security
 		/// <param name="data"></param>
 		/// <param name="encoding">字符串编码，默认UTF-8</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] MD5(this String data, Encoding encoding = null)
@@ -249,7 +249,7 @@ namespace CuteAnt.Security
 		/// <param name="inputStream"></param>
 		/// <param name="provider"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA1(this Stream inputStream, SHAEncryptionProviderType provider = SHAEncryptionProviderType.CSP)
@@ -264,7 +264,7 @@ namespace CuteAnt.Security
 		/// <param name="data"></param>
 		/// <param name="provider"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA1(this Byte[] data, SHAEncryptionProviderType provider = SHAEncryptionProviderType.CSP)
@@ -281,7 +281,7 @@ namespace CuteAnt.Security
 		/// <param name="count"></param>
 		/// <param name="provider"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA1(this Byte[] data, Int32 offset, Int32 count, SHAEncryptionProviderType provider = SHAEncryptionProviderType.CSP)
@@ -295,7 +295,7 @@ namespace CuteAnt.Security
 		/// <summary>SHA1散列，根据字节数组大小自动匹配SHA1算法</summary>
 		/// <param name="data"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA1Mix(this Byte[] data)
@@ -319,7 +319,7 @@ namespace CuteAnt.Security
 		/// <param name="offset"></param>
 		/// <param name="count"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA1Mix(this Byte[] data, Int32 offset, Int32 count)
@@ -342,7 +342,7 @@ namespace CuteAnt.Security
 		/// <param name="data"></param>
 		/// <param name="encoding">字符串编码，默认UTF-8</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA1(this String data, Encoding encoding = null)
@@ -390,7 +390,7 @@ namespace CuteAnt.Security
 		/// <param name="inputStream"></param>
 		/// <param name="provider"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA256(this Stream inputStream, SHAEncryptionProviderType provider = SHAEncryptionProviderType.CNG)
@@ -405,7 +405,7 @@ namespace CuteAnt.Security
 		/// <param name="data"></param>
 		/// <param name="provider"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA256(this Byte[] data, SHAEncryptionProviderType provider = SHAEncryptionProviderType.CNG)
@@ -422,7 +422,7 @@ namespace CuteAnt.Security
 		/// <param name="count"></param>
 		/// <param name="provider"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA256(this Byte[] data, Int32 offset, Int32 count, SHAEncryptionProviderType provider = SHAEncryptionProviderType.CNG)
@@ -436,7 +436,7 @@ namespace CuteAnt.Security
 		/// <summary>SHA256散列，根据字节数组大小自动匹配SHA256算法</summary>
 		/// <param name="data"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA256Mix(this Byte[] data)
@@ -467,7 +467,7 @@ namespace CuteAnt.Security
 		/// <param name="offset"></param>
 		/// <param name="count"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA256Mix(this Byte[] data, Int32 offset, Int32 count)
@@ -497,7 +497,7 @@ namespace CuteAnt.Security
 		/// <param name="data"></param>
 		/// <param name="encoding">字符串编码，默认UTF-8</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA256(this String data, Encoding encoding = null)
@@ -545,7 +545,7 @@ namespace CuteAnt.Security
 		/// <param name="inputStream"></param>
 		/// <param name="provider"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA384(this Stream inputStream, SHAEncryptionProviderType provider = SHAEncryptionProviderType.CNG)
@@ -560,7 +560,7 @@ namespace CuteAnt.Security
 		/// <param name="data"></param>
 		/// <param name="provider"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA384(this Byte[] data, SHAEncryptionProviderType provider = SHAEncryptionProviderType.CNG)
@@ -577,7 +577,7 @@ namespace CuteAnt.Security
 		/// <param name="count"></param>
 		/// <param name="provider"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA384(this Byte[] data, Int32 offset, Int32 count, SHAEncryptionProviderType provider = SHAEncryptionProviderType.CNG)
@@ -593,7 +593,7 @@ namespace CuteAnt.Security
 		/// <param name="provider"></param>
 		/// <param name="encoding">字符串编码，默认UTF-8</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA384(this String data, SHAEncryptionProviderType provider = SHAEncryptionProviderType.CNG, Encoding encoding = null)
@@ -641,7 +641,7 @@ namespace CuteAnt.Security
 		/// <param name="inputStream"></param>
 		/// <param name="provider"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA512(this Stream inputStream, SHAEncryptionProviderType provider = SHAEncryptionProviderType.CNG)
@@ -656,7 +656,7 @@ namespace CuteAnt.Security
 		/// <param name="data"></param>
 		/// <param name="provider"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA512(this Byte[] data, SHAEncryptionProviderType provider = SHAEncryptionProviderType.CNG)
@@ -673,7 +673,7 @@ namespace CuteAnt.Security
 		/// <param name="count"></param>
 		/// <param name="provider"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA512(this Byte[] data, Int32 offset, Int32 count, SHAEncryptionProviderType provider = SHAEncryptionProviderType.CNG)
@@ -689,7 +689,7 @@ namespace CuteAnt.Security
 		/// <param name="provider"></param>
 		/// <param name="encoding">字符串编码，默认UTF-8</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] SHA512(this String data, SHAEncryptionProviderType provider = SHAEncryptionProviderType.CNG, Encoding encoding = null)
@@ -706,7 +706,7 @@ namespace CuteAnt.Security
 		/// <summary>RIPEMD160散列</summary>
 		/// <param name="inputStream"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] RIPEMD160(this Stream inputStream)
@@ -720,7 +720,7 @@ namespace CuteAnt.Security
 		/// <summary>RIPEMD160散列</summary>
 		/// <param name="data"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] RIPEMD160(this Byte[] data)
@@ -736,7 +736,7 @@ namespace CuteAnt.Security
 		/// <param name="offset"></param>
 		/// <param name="count"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] RIPEMD160(this Byte[] data, Int32 offset, Int32 count)
@@ -751,7 +751,7 @@ namespace CuteAnt.Security
 		/// <param name="data"></param>
 		/// <param name="encoding">字符串编码，默认UTF-8</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] RIPEMD160(this String data, Encoding encoding = null)
@@ -768,7 +768,7 @@ namespace CuteAnt.Security
 		/// <summary>Crc散列</summary>
 		/// <param name="data"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt32 Crc(this Byte[] data)
@@ -779,7 +779,7 @@ namespace CuteAnt.Security
 		/// <summary>Crc16散列</summary>
 		/// <param name="data"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static UInt16 Crc16(this Byte[] data)

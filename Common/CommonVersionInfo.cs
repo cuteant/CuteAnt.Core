@@ -3,5 +3,5 @@
 using System.Reflection;
 
 [assembly: AssemblyVersion(CuteAnt.AssemblyInfo.StaticVersion)]
-[assembly: AssemblyFileVersion(CuteAnt.AssemblyInfo.FileVersion + "8.8")]
+[assembly: AssemblyFileVersion(CuteAnt.AssemblyInfo.FileVersion + ".666")]
 

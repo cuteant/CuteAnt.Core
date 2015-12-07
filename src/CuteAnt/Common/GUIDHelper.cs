@@ -1,5 +1,5 @@
 ﻿using System;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -16,7 +16,7 @@ namespace CuteAnt
 		/// </para></summary>
 		/// <param name="guid"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String To32Digits(this Guid guid)
@@ -55,7 +55,7 @@ namespace CuteAnt
 		/// 例如，返回值可以是“382c74c3-721d-4f34-80e5-57657b6cbc27”。
 		/// </para></summary>
 		/// <returns>新生成的GUID的字符串</returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String GenerateGuid()
@@ -68,7 +68,7 @@ namespace CuteAnt
 		/// 例如，返回值可以是“382c74c3721d4f3480e557657b6cbc27”。
 		/// </para></summary>
 		/// <returns>新生成的GUID的字符串</returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String GenerateGuid32()
@@ -252,7 +252,7 @@ namespace CuteAnt
 		/// <summary>验证给定字符串是否是合法的Guid</summary>
 		/// <param name="value">要验证的字符串</param>
 		/// <returns>true/false</returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Boolean IsGuid(String value)
@@ -277,7 +277,7 @@ namespace CuteAnt
 
 		/// <summary>产生16位字符串：（例：49f949d735f5c79e）</summary>
 		/// <returns>A String value...</returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String GenerateId16()
@@ -291,7 +291,7 @@ namespace CuteAnt
 		}
 
 		//产生Int64 类型：（例：4833055965497820814）
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static Int64 GenerateId()
@@ -302,7 +302,7 @@ namespace CuteAnt
 
 		/// <summary>返加12位的UUID(GUID)</summary>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		public static String GenerateId12()

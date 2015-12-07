@@ -15,7 +15,7 @@ using System.Text;
 using CuteAnt;
 using CuteAnt.Reflection;
 using CuteAnt.Text;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -29,7 +29,7 @@ namespace System
 
 		#region -- method FormatWith --
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String FormatWith(this String format, Object arg0)
@@ -37,7 +37,7 @@ namespace System
 			return format.FormatWith(new Object[] { arg0 });
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String FormatWith(this String format, Object arg0, Object arg1)
@@ -45,7 +45,7 @@ namespace System
 			return format.FormatWith(new Object[] { arg0, arg1 });
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String FormatWith(this String format, Object arg0, Object arg1, Object arg2)
@@ -53,7 +53,7 @@ namespace System
 			return format.FormatWith(new Object[] { arg0, arg1, arg2 });
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String FormatWith(this String format, params Object[] args)
@@ -64,7 +64,7 @@ namespace System
 			return String.Format(CultureInfo.InvariantCulture, format, args);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String FormatWith(this String format, IFormatProvider provider, Object arg0)
@@ -72,7 +72,7 @@ namespace System
 			return format.FormatWith(provider, new Object[] { arg0 });
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String FormatWith(this String format, IFormatProvider provider, Object arg0, Object arg1)
@@ -80,7 +80,7 @@ namespace System
 			return format.FormatWith(provider, new Object[] { arg0, arg1 });
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String FormatWith(this String format, IFormatProvider provider, Object arg0, Object arg1, Object arg2)
@@ -88,7 +88,7 @@ namespace System
 			return format.FormatWith(provider, new Object[] { arg0, arg1, arg2 });
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String FormatWith(this String format, IFormatProvider provider, params Object[] args)
@@ -107,7 +107,7 @@ namespace System
 		/// <param name="value">字符串</param>
 		/// <param name="strs">待比较字符串数组</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Boolean EqualIgnoreCase(this String value, params String[] strs)
@@ -127,7 +127,7 @@ namespace System
 		/// <param name="value">字符串</param>
 		/// <param name="strs">待比较字符串数组</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Boolean StartsWithIgnoreCase(this String value, params String[] strs)
@@ -149,7 +149,7 @@ namespace System
 		/// <param name="value">字符串</param>
 		/// <param name="strs">待比较字符串数组</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Boolean EndsWithIgnoreCase(this String value, params String[] strs)
@@ -170,7 +170,7 @@ namespace System
 		/// <summary>指示指定的字符串是 null 还是 String.Empty 字符串</summary>
 		/// <param name="value">指定的字符串</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Boolean IsNullOrEmpty(this String value)
@@ -186,7 +186,7 @@ namespace System
 		/// <summary>是否空或者空白字符串</summary>
 		/// <param name="value">字符串</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Boolean IsNullOrWhiteSpace(this String value)
@@ -213,7 +213,7 @@ namespace System
 		/// <param name="value">数值</param>
 		/// <param name="separators"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String[] Split(this String value, params String[] separators)
@@ -222,7 +222,7 @@ namespace System
 			return value.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String[] SplitDefaultSeparator(this String value)
@@ -231,7 +231,7 @@ namespace System
 			return value.Split(m_defaultSeparator, StringSplitOptions.RemoveEmptyEntries);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] SplitDefaultSeparator<T>(this String value)
@@ -239,7 +239,7 @@ namespace System
 			return SplitInternal(value.Split(m_defaultSeparator, StringSplitOptions.RemoveEmptyEntries), new T[0]);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] SplitDefaultSeparator<T>(this String value, T[] defaultValue)
@@ -247,7 +247,7 @@ namespace System
 			return SplitInternal(value.Split(m_defaultSeparator, StringSplitOptions.RemoveEmptyEntries), defaultValue);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] Split<T>(this String value, params Char[] separator)
@@ -255,7 +255,7 @@ namespace System
 			return SplitInternal(value.Split(separator, StringSplitOptions.RemoveEmptyEntries), new T[0]);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] Split<T>(this String value, T[] defaultValue, params Char[] separator)
@@ -263,7 +263,7 @@ namespace System
 			return SplitInternal(value.Split(separator, StringSplitOptions.RemoveEmptyEntries), defaultValue);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] Split<T>(this String value, Char[] separator, Int32 count)
@@ -271,7 +271,7 @@ namespace System
 			return SplitInternal(value.Split(separator, count, StringSplitOptions.RemoveEmptyEntries), new T[0]);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] Split<T>(this String value, Char[] separator, Int32 count, T[] defaultValue)
@@ -279,7 +279,7 @@ namespace System
 			return SplitInternal(value.Split(separator, count, StringSplitOptions.RemoveEmptyEntries), defaultValue);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] Split<T>(this String value, Char[] separator, StringSplitOptions options)
@@ -287,7 +287,7 @@ namespace System
 			return SplitInternal(value.Split(separator, options), new T[0]);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] Split<T>(this String value, Char[] separator, StringSplitOptions options, T[] defaultValue)
@@ -295,7 +295,7 @@ namespace System
 			return SplitInternal(value.Split(separator, options), defaultValue);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] Split<T>(this String value, Char[] separator, Int32 count, StringSplitOptions options)
@@ -303,7 +303,7 @@ namespace System
 			return SplitInternal(value.Split(separator, count, options), new T[0]);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] Split<T>(this String value, Char[] separator, Int32 count, StringSplitOptions options, T[] defaultValue)
@@ -311,7 +311,7 @@ namespace System
 			return SplitInternal(value.Split(separator, count, options), defaultValue);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] Split<T>(this String value, params String[] separator)
@@ -319,7 +319,7 @@ namespace System
 			return SplitInternal(value.Split(separator, StringSplitOptions.RemoveEmptyEntries), new T[0]);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] Split<T>(this String value, T[] defaultValue, params String[] separator)
@@ -327,7 +327,7 @@ namespace System
 			return SplitInternal(value.Split(separator, StringSplitOptions.RemoveEmptyEntries), defaultValue);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] Split<T>(this String value, String[] separator, StringSplitOptions options)
@@ -335,7 +335,7 @@ namespace System
 			return SplitInternal(value.Split(separator, options), new T[0]);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] Split<T>(this String value, String[] separator, StringSplitOptions options, T[] defaultValue)
@@ -343,7 +343,7 @@ namespace System
 			return SplitInternal(value.Split(separator, options), defaultValue);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] Split<T>(this String value, String[] separator, Int32 count, StringSplitOptions options)
@@ -351,7 +351,7 @@ namespace System
 			return SplitInternal(value.Split(separator, count, options), new T[0]);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static T[] Split<T>(this String value, String[] separator, Int32 count, StringSplitOptions options, T[] defaultValue)
@@ -359,7 +359,7 @@ namespace System
 			return SplitInternal(value.Split(separator, count, options), defaultValue);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static T[] SplitInternal<T>(String[] value, T[] defaultValue)
@@ -386,7 +386,7 @@ namespace System
 		/// <param name="value">字符串</param>
 		/// <param name="separators">分组分隔符，默认逗号分号</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32[] SplitAsInt(this String value, params String[] separators)
@@ -414,7 +414,7 @@ namespace System
 		/// <param name="nameValueSeparator">名值分隔符，默认等于号</param>
 		/// <param name="separators">分组分隔符，默认逗号分号</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static IDictionary<String, String> SplitAsDictionary(this String str, String nameValueSeparator = "=", params String[] separators)
@@ -446,7 +446,7 @@ namespace System
 		/// <param name="value">一个包含要串联的对象的集合</param>
 		/// <param name="separator">组合分隔符，默认逗号</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String Join(this IEnumerable value, String separator = ",")
@@ -466,7 +466,7 @@ namespace System
 		/// <param name="value">一个包含要串联的对象的集合</param>
 		/// <param name="separator">组合分隔符，默认逗号</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String Join<T>(this IEnumerable<T> value, String separator = ",")
@@ -492,7 +492,7 @@ namespace System
 		/// <param name="transformation">把对象转为字符串的委托</param>
 		/// <param name="separator">组合分隔符，默认逗号</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String Join<T>(this IEnumerable<T> value, Converter<T, String> transformation, String separator = ",")
@@ -617,7 +617,7 @@ namespace System
 		/// <param name="str">字符串</param>
 		/// <param name="start"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String EnsureStart(this String str, String start)
@@ -634,7 +634,7 @@ namespace System
 		/// <param name="str">字符串</param>
 		/// <param name="end"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String EnsureEnd(this String str, String end)
@@ -651,7 +651,7 @@ namespace System
 		/// <param name="str">当前字符串</param>
 		/// <param name="starts">另一字符串</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String TrimStart(this String str, params String[] starts)
@@ -676,7 +676,7 @@ namespace System
 		/// <param name="str">当前字符串</param>
 		/// <param name="ends">另一字符串</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String TrimEnd(this String str, params String[] ends)
@@ -706,7 +706,7 @@ namespace System
 		/// <param name="startIndex">搜索的开始位置</param>
 		/// <param name="positions">位置数组，两个元素分别记录头尾位置</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String Substring(this String str, String after, String before = null, Int32 startIndex = 0, Int32[] positions = null)
@@ -750,7 +750,7 @@ namespace System
 		/// <param name="maxLength">截取后字符串的最大允许长度，包含后面填充</param>
 		/// <param name="pad">需要填充在后面的字符串，比如几个圆点</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String Cut(this String str, Int32 maxLength, String pad = null)
@@ -772,7 +772,7 @@ namespace System
 		/// <param name="pad">需要填充在后面的字符串，比如几个圆点</param>
 		/// <param name="strict">严格模式时，遇到截断位置位于一个字符中间时，忽略该字符，否则包括该字符。默认true</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String CutBinary(this String str, Int32 maxLength, String pad = null, Boolean strict = true)
@@ -862,7 +862,7 @@ namespace System
 		/// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
 		/// <param name="enumValue">The enum value.</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Boolean TryParseEnum<T>(this String value, Boolean ignoreCase, out T enumValue)
@@ -892,7 +892,7 @@ namespace System
 		/// <param name="value">GUID 的字符串</param>
 		/// <param name="guid">将包含已分析的值的结构。 如果此方法返回 true，result 包含有效的 Guid。 如果此方法返回 false，result 等于 Guid.Empty。</param>
 		/// <returns>如果分析操作成功，则为 true；否则为 false。</returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Boolean TryParseGuid(this String value, out Guid guid)
@@ -921,7 +921,7 @@ namespace System
 		/// <param name="str"></param>
 		/// <param name="encoding"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] ToByteArray(this String str, Encoding encoding = null)

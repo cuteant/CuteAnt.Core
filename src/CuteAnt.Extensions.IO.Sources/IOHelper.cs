@@ -13,7 +13,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using CuteAnt.Text;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 #endif
@@ -29,7 +29,7 @@ namespace System
 		/// <param name="inStream">输入流</param>
 		/// <param name="outStream">输出流。如果不指定，则内部实例化一个内存流</param>
 		/// <remarks>返回输出流，注意此时指针位于末端</remarks>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Stream Compress(this Stream inStream, Stream outStream = null)
@@ -37,7 +37,7 @@ namespace System
 			if (outStream == null) outStream = new MemoryStream();
 
 			// 第三个参数为true，保持数据流打开，内部不应该干涉外部，不要关闭外部的数据流
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			using (var stream = new DeflateStream(outStream, CompressionLevel.Optimal, true))
 #else
 			using (var stream = new DeflateStream(outStream, CompressionMode.Compress, true))
@@ -55,7 +55,7 @@ namespace System
 		/// <param name="inStream">输入流</param>
 		/// <param name="outStream">输出流。如果不指定，则内部实例化一个内存流</param>
 		/// <remarks>返回输出流，注意此时指针位于末端</remarks>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Stream Decompress(this Stream inStream, Stream outStream = null)
@@ -75,7 +75,7 @@ namespace System
 		/// <summary>压缩字节数组</summary>
 		/// <param name="data">字节数组</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] Compress(this Byte[] data)
@@ -88,7 +88,7 @@ namespace System
 		/// <summary>解压缩字节数组</summary>
 		/// <param name="data">字节数组</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] Decompress(this Byte[] data)
@@ -102,7 +102,7 @@ namespace System
 		/// <param name="inStream">输入流</param>
 		/// <param name="outStream">输出流。如果不指定，则内部实例化一个内存流</param>
 		/// <remarks>返回输出流，注意此时指针位于末端</remarks>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Stream CompressGZip(this Stream inStream, Stream outStream = null)
@@ -110,7 +110,7 @@ namespace System
 			if (outStream == null) outStream = new MemoryStream();
 
 			// 第三个参数为true，保持数据流打开，内部不应该干涉外部，不要关闭外部的数据流
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 			using (var stream = new DeflateStream(outStream, CompressionLevel.Optimal, true))
 #else
 			using (var stream = new GZipStream(outStream, CompressionMode.Compress, true))
@@ -128,7 +128,7 @@ namespace System
 		/// <param name="inStream">输入流</param>
 		/// <param name="outStream">输出流。如果不指定，则内部实例化一个内存流</param>
 		/// <remarks>返回输出流，注意此时指针位于末端</remarks>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Stream DecompressGZip(this Stream inStream, Stream outStream = null)
@@ -192,7 +192,7 @@ namespace System
 		/// <param name="des">目的数据流</param>
 		/// <param name="bufferSize">缓冲区大小，也就是每次复制的大小，默认大小为 4096</param>
 		/// <param name="totalSize">返回复制的总字节数</param>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void CopyTo(this Stream src, Stream des, Int32 bufferSize, out Int64 totalSize)
@@ -223,7 +223,7 @@ namespace System
 		/// <param name="max">最大复制字节数</param>
 		/// <param name="bufferSize">缓冲区大小，也就是每次复制的大小</param>
 		/// <returns>返回复制的总字节数</returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static void CopyTo(this Stream src, Stream des, Int32 max, Int32 bufferSize = 4096)
@@ -254,7 +254,7 @@ namespace System
 			}
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		/// <summary>复制数据流</summary>
 		/// <param name="src">源数据流</param>
 		/// <param name="des">目的数据流</param>
@@ -308,7 +308,7 @@ namespace System
 		/// <param name="des">目的数据流</param>
 		/// <param name="src">源数据流</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Stream Write(this Stream des, params Byte[] src)
@@ -322,7 +322,7 @@ namespace System
 		/// <param name="offset">起始位置</param>
 		/// <param name="count">复制字节数</param>
 		/// <returns>返回复制的总字节数</returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] ReadBytes(this Byte[] src, Int32 offset = 0, Int32 count = 0)
@@ -342,7 +342,7 @@ namespace System
 		/// <param name="offset">偏移</param>
 		/// <param name="count">数量</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] Write(this Byte[] data, Int32 srcOffset, Byte[] buf, Int32 offset = 0, Int32 count = 0)
@@ -363,7 +363,7 @@ namespace System
 		/// <param name="offset">起始位置</param>
 		/// <param name="count">字节数</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] Combine(this Byte[] src, Byte[] des, Int32 offset = 0, Int32 count = 0)
@@ -389,7 +389,7 @@ namespace System
 		/// <param name="stream">数据流</param>
 		/// <param name="length">长度，0表示读到结束</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] ReadBytes(this Stream stream, Int64 length = 0)
@@ -450,7 +450,7 @@ namespace System
 			}
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		/// <summary>数据流转为字节数组</summary>
 		/// <remarks>
 		/// 针对MemoryStream进行优化。内存流的Read实现是一个个字节复制，而ToArray是调用内部内存复制方法
@@ -512,7 +512,7 @@ namespace System
 		/// <summary>数据流转为字节数组，从0开始，无视数据流的当前位置</summary>
 		/// <param name="stream">数据流</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] ToArray(this Stream stream)
@@ -524,7 +524,7 @@ namespace System
 			return stream.ReadBytes();
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		/// <summary>数据流转为字节数组，从0开始，无视数据流的当前位置</summary>
 		/// <param name="stream">数据流</param>
 		/// <returns></returns>
@@ -545,7 +545,7 @@ namespace System
 		/// <param name="offset">字节数组中的偏移</param>
 		/// <param name="length">字节数组中的查找长度</param>
 		/// <returns>未找到时返回空，0位置范围大小为0的字节数组</returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] ReadTo(this Stream stream, Byte[] buffer, Int64 offset = 0, Int64 length = 0)
@@ -566,7 +566,7 @@ namespace System
 		/// <param name="str"></param>
 		/// <param name="encoding"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] ReadTo(this Stream stream, String str, Encoding encoding = null)
@@ -580,7 +580,7 @@ namespace System
 		/// <param name="encoding"></param>
 		/// <returns>未找到返回null，0位置返回String.Empty</returns>
 		[Obsolete("使用StreamRead")]
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String ReadLine(this Stream stream, Encoding encoding = null)
@@ -600,7 +600,7 @@ namespace System
 		/// <param name="encoding">编码格式</param>
 		/// <returns></returns>
 		//[Obsolete("使用StreamRead")]
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String ToStr(this Stream stream, Encoding encoding = null)
@@ -626,7 +626,7 @@ namespace System
 		/// <param name="buf">字节数组</param>
 		/// <param name="encoding">编码格式</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String ToStr(this Byte[] buf, Encoding encoding = null)
@@ -655,7 +655,7 @@ namespace System
 		/// <param name="offset">字节数组中的偏移</param>
 		/// <param name="length">字节数组中的查找长度</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64 IndexOf(this Stream stream, Byte[] buffer, Int64 offset = 0, Int64 length = 0)
@@ -707,7 +707,7 @@ namespace System
 		/// <param name="offset">偏移</param>
 		/// <param name="length">查找长度</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64 IndexOf(this Byte[] source, Byte[] buffer, Int64 offset = 0, Int64 length = 0)
@@ -723,7 +723,7 @@ namespace System
 		/// <param name="offset">偏移</param>
 		/// <param name="length">查找长度</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int64 IndexOf(this Byte[] source, Int64 start, Int64 count, Byte[] buffer, Int64 offset = 0, Int64 length = 0)
@@ -759,7 +759,7 @@ namespace System
 		/// <param name="source"></param>
 		/// <param name="buffer">缓冲区</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32 CompareTo(this Byte[] source, Byte[] buffer)
@@ -775,7 +775,7 @@ namespace System
 		/// <param name="offset">偏移</param>
 		/// <param name="length"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Int32 CompareTo(this Byte[] source, Int64 start, Int64 count, Byte[] buffer, Int64 offset = 0, Int64 length = 0)
@@ -803,7 +803,7 @@ namespace System
 		/// <param name="buf"></param>
 		/// <param name="sps"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static IEnumerable<Byte[]> Split(this Byte[] buf, Byte[] sps)
@@ -831,7 +831,7 @@ namespace System
 		/// <param name="source"></param>
 		/// <param name="buffer">缓冲区</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Boolean StartsWith(this Stream source, Byte[] buffer)
@@ -852,7 +852,7 @@ namespace System
 		/// <param name="source"></param>
 		/// <param name="buffer">缓冲区</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Boolean EndsWith(this Stream source, Byte[] buffer)
@@ -871,7 +871,7 @@ namespace System
 		/// <param name="source"></param>
 		/// <param name="buffer">缓冲区</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Boolean StartsWith(this Byte[] source, Byte[] buffer)
@@ -889,7 +889,7 @@ namespace System
 		/// <param name="source"></param>
 		/// <param name="buffer">缓冲区</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Boolean EndsWith(this Byte[] source, Byte[] buffer)
@@ -911,7 +911,7 @@ namespace System
 		/// <summary>倒序、更换字节序</summary>
 		/// <param name="buf">字节数组</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static unsafe Byte[] Reverse(this Byte[] buf)
@@ -947,7 +947,7 @@ namespace System
 		/// <param name="data">字节数组</param>
 		/// <param name="isUpper">是否返回大写十六进制字符串</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String ToHex(this Byte[] data, Boolean isUpper = true)
@@ -988,7 +988,7 @@ namespace System
 		/// <param name="count">数量</param>
 		/// <param name="isUpper">是否返回大写十六进制字符串</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String ToHex(this Byte[] data, Int32 offset, Int32 count, Boolean isUpper = true)
@@ -1036,7 +1036,7 @@ namespace System
 		/// <param name="groupSize">分组大小，为0时对每个字节应用分隔符，否则对每个分组使用</param>
 		/// <param name="isUpper">是否返回大写十六进制字符串</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String ToHex(this Byte[] data, String separate, Int32 groupSize = 0, Boolean isUpper = true)
@@ -1105,7 +1105,7 @@ namespace System
 			return sb.ToString();
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static char GetUpperHexValue(int i)
@@ -1114,7 +1114,7 @@ namespace System
 			return (char)(i - 10 + 0x41);
 		}
 
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		private static char GetLowerHexValue(int i)
@@ -1130,7 +1130,7 @@ namespace System
 		/// <returns></returns>
 		[Obsolete("ToHex")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] FromHex(this String data, Int32 startIndex = 0, Int32 length = 0) { return ToHex(data, startIndex, length); }
@@ -1138,7 +1138,7 @@ namespace System
 		/// <summary>解密</summary>
 		/// <param name="data">Hex编码的字符串</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] ToHex(this String data)
@@ -1170,7 +1170,7 @@ namespace System
 		/// <param name="startIndex">起始位置</param>
 		/// <param name="length">长度</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] ToHex(this String data, Int32 startIndex, Int32 length)
@@ -1207,7 +1207,7 @@ namespace System
 		/// <param name="count"></param>
 		/// <param name="lineBreak">是否换行显示</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static String ToBase64(this Byte[] data, Int32 offset = 0, Int32 count = 0, Boolean lineBreak = false)
@@ -1228,7 +1228,7 @@ namespace System
 		/// <summary>Base64字符串转为字节数组</summary>
 		/// <param name="data"></param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Byte[] ToBase64(this String data)

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 using System.Runtime.CompilerServices;
 #endif
 
@@ -14,7 +14,7 @@ namespace CuteAnt.Security
 		/// <param name="saltSize">您希望类生成的随机 salt 的大小，长度必须大于等于8</param>
 		/// <param name="iterations">操作的迭代数</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Rfc2898DeriveBytes Create(String password, Int32 saltSize, Int32 iterations = 1000)
@@ -29,7 +29,7 @@ namespace CuteAnt.Security
 		/// <param name="salt">用于派生密钥的密钥 salt，长度必须大于等于8字节</param>
 		/// <param name="iterations">操作的迭代数</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Rfc2898DeriveBytes Create(String password, String salt, Int32 iterations = 1000)
@@ -45,7 +45,7 @@ namespace CuteAnt.Security
 		/// <param name="salt">用于派生密钥的密钥 salt，长度必须大于等于8字节</param>
 		/// <param name="iterations">操作的迭代数</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Rfc2898DeriveBytes Create(String password, Byte[] salt, Int32 iterations = 1000)
@@ -58,7 +58,7 @@ namespace CuteAnt.Security
 		/// <param name="salt">用于派生密钥的密钥 salt，长度必须大于等于8字节</param>
 		/// <param name="iterations">操作的迭代数</param>
 		/// <returns></returns>
-#if (NET45 || NET451 || NET46 || NET461)
+#if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
 		internal static Rfc2898DeriveBytes Create(Byte[] password, Byte[] salt, Int32 iterations = 1000)
