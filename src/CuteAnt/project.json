@@ -8,7 +8,7 @@
   "requireLicenseAcceptance": true,
 
   "compilationOptions": {
-    "define": [ "TRACE", "NET_3_5_GREATER" ],
+    "define": [ "TRACE", "NET_3_5_GREATER", "ASPNET" ],
     "keyFile": "../../tools/StrongKey.snk",
     "warningsAsErrors": false,
     "allowUnsafe": true

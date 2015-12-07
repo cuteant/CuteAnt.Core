@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0-rc2-151206",
+  "description": "CuteAnt.IdentityModel.Tokens.Jwt Class Library",
+  "authors": [ "SeaBiscuit" ],
+  "tags": [ "CuteAnt", "CuteAnt.IdentityModel.Tokens.Jwt" ],
+  "projectUrl": "http://www.cuteant.net",
+  "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+  "requireLicenseAcceptance": true,
+
+  "compilationOptions": {
+    "define": [ "TRACE", "NET_3_5_GREATER" ],
+    "keyFile": "../../tools/StrongKey.snk",
+    "warningsAsErrors": false,
+    "allowUnsafe": true
+  },
+  "compile": [
+    "**/*.cs",
+    "../../Common/*.cs"
+  ],
+  "compileExclude": [ ],
+  "exclude": [ ],
+  "preprocess": [ ],
+  "preprocessExclude": [ ],
+  "resource": [ "**/*.resx" ],
+
+  "dependencies": { },
+
+  "frameworks": {
+    "net451": {
+      "frameworkAssemblies": {
+        "System.configuration": "4.0.0.0",
+        "System.IdentityModel": "4.0.0.0",
+        "System.Runtime.Serialization": "4.0.0.0",
+        "System.Web.Extensions": "4.0.0.0",
+        "System.XML": "4.0.0.0",
+        "System.Xml.Linq": "4.0.0.0"
+      }
+    }
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "http://git.oschina.net/cuteant/"
+  }
+}

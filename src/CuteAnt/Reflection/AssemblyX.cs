@@ -16,7 +16,9 @@ using System.Runtime.InteropServices;
 using System.Web;
 using CuteAnt.Collections;
 using CuteAnt.Log;
+#if ASPNET
 using Microsoft.Extensions.PlatformAbstractions;
+#endif
 
 namespace CuteAnt.Reflection
 {
@@ -406,6 +408,7 @@ namespace CuteAnt.Reflection
       }
       if (isLoadAssembly)
       {
+#if ASPNET
         var loadedAssemblies = new List<AssemblyX>();
         var roasmxs = ReflectionOnlyGetAssemblies();
         loadedAssemblies.AddRange(roasmxs);
@@ -430,6 +433,9 @@ namespace CuteAnt.Reflection
         }
 
         foreach (var item in loadedAssemblies)
+#else
+        foreach (var item in ReflectionOnlyGetAssemblies())
+#endif
         {
           // 如果excludeGlobalTypes为true，则指检查来自非GAC引用的程序集
           if (excludeGlobalTypes && item.Asm.GlobalAssemblyCache) continue;

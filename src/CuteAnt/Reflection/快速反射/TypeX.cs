@@ -19,7 +19,9 @@ using System.Runtime.Serialization;
 using System.Text;
 using CuteAnt.Collections;
 using CuteAnt.Log;
+#if ASPNET
 using Microsoft.Extensions.PlatformAbstractions;
+#endif
 
 namespace CuteAnt.Reflection
 {
@@ -406,9 +408,11 @@ namespace CuteAnt.Reflection
           assembly = Assembly.Load(assemblyName);
         }
         catch { }
+#if ASPNET
         if (assembly == null)
         {
-          try {
+          try
+          {
             var loadContext = PlatformServices.Default.AssemblyLoadContextAccessor.Default;
             if (loadContext != null)
             {
@@ -417,6 +421,7 @@ namespace CuteAnt.Reflection
           }
           catch { }
         }
+#endif
         if (assembly != null)
         {
           var asmx = AssemblyX.Create(assembly);
