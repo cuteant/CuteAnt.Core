@@ -29,7 +29,7 @@ namespace CuteAnt.Configuration
 			m_configType = type;
 			m_configPath = path;
 			String fileName = type.Contains(".") ? type : type + ".config";
-			ConfigFile = PathHelper.ApplicationStartupPathCombine(path, fileName);
+			ConfigFile = PathHelper.ApplicationBasePathCombine(path, fileName);
 			String file = FileHelper.FileExists(ConfigFile);
 			m_configInfo = new TConfig();
 			m_configInfo.Init();

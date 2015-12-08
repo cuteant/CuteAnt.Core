@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if DESKTOPCLR
+using System;
 using System.Runtime.InteropServices;
 
 namespace CuteAnt.Threading
@@ -205,3 +206,4 @@ namespace CuteAnt.Threading
 		#endregion
 	}
 }
+#endif

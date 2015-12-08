@@ -13,7 +13,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Web;
 using CuteAnt.Collections;
 using CuteAnt.Log;
 #if ASPNET
@@ -408,17 +407,16 @@ namespace CuteAnt.Reflection
       }
       if (isLoadAssembly)
       {
-#if ASPNET
+#if !DESKTOPCLR
         var loadedAssemblies = new List<AssemblyX>();
-        var roasmxs = ReflectionOnlyGetAssemblies();
-        loadedAssemblies.AddRange(roasmxs);
+        loadedAssemblies.AddRange(GetAssemblies());
         IEnumerable<Library> refLibs = null;
         var lm = PlatformServices.Default?.LibraryManager;
         var loadContext = PlatformServices.Default?.AssemblyLoadContextAccessor?.Default;
         if (lm != null && loadContext != null) { refLibs = lm.GetLibraries(); }
         if (!refLibs.IsNullOrEmpty())
         {
-          var loadeds = GetAssemblies().Concat(roasmxs).ToList();
+          var loadeds = GetAssemblies().ToList();
           var aspnetAsms = refLibs.SelectMany(_ => _.Assemblies)
                                   .Select(_ => Create(loadContext.Load(_)));
           foreach (var item in aspnetAsms)
@@ -522,6 +520,7 @@ namespace CuteAnt.Reflection
     //	return GetAssemblies(AppDomain.CurrentDomain);
     //}
 
+#if DESKTOPCLR
     private static ICollection<String> _AssemblyPaths;
 
     /// <summary>程序集目录集合</summary>
@@ -534,7 +533,6 @@ namespace CuteAnt.Reflection
           var set = new HashSet<String>(StringComparer.OrdinalIgnoreCase);
 
           set.Add(AppDomain.CurrentDomain.BaseDirectory);
-          if (HttpRuntime.AppDomainId != null) set.Add(HttpRuntime.BinDirectory);
 
           // 增加所有程序集所在目录为搜索目录，便于查找程序集
           foreach (var asm in GetAssemblies())
@@ -680,6 +678,7 @@ namespace CuteAnt.Reflection
       }
       return list;
     }
+#endif
 
     #endregion 静态加载
 

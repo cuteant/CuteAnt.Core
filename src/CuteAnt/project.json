@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-151208",
+  "version": "2.0.0-rc2-151209",
   "description": "CuteAnt.Core Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Core" ],
@@ -29,20 +29,23 @@
     "Microsoft.Extensions.Logging": "1.0.0-rc1-final",
     "CuteAnt.Extensions.Reflection.Sources": {
       "type": "build",
-      "version": "2.0.0-rc2-151208"
+      "version": "2.0.0-rc2-151209"
     },
     "CuteAnt.Extensions.Sources": {
       "type": "build",
-      "version": "2.0.0-rc2-151208"
+      "version": "2.0.0-rc2-151209"
     },
     "CuteAnt.Extensions.IO.Sources": {
       "type": "build",
-      "version": "2.0.0-rc2-151208"
+      "version": "2.0.0-rc2-151209"
     }
   },
 
   "frameworks": {
     "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      },
       "frameworkAssemblies": {
         "Microsoft.VisualBasic": "10.0.0.0",
         "System.configuration": "4.0.0.0",
@@ -51,8 +54,23 @@
         "System.Management": "4.0.0.0",
         "System.Runtime.Serialization": "4.0.0.0",
         "System.Security": "4.0.0.0",
-        "System.Web": "4.0.0.0",
         "System.Windows.Forms": "4.0.0.0",
+        "System.XML": "4.0.0.0",
+        "System.Xml.Linq": "4.0.0.0"
+      }
+    },
+    "dnx451": {
+      "compilationOptions": {
+        "define": [ "DNXCLR" ]
+      },
+      "frameworkAssemblies": {
+        "Microsoft.VisualBasic": "10.0.0.0",
+        "System.configuration": "4.0.0.0",
+        "System.Data": "4.0.0.0",
+        "System.Drawing": "4.0.0.0",
+        "System.Management": "4.0.0.0",
+        "System.Runtime.Serialization": "4.0.0.0",
+        "System.Security": "4.0.0.0",
         "System.XML": "4.0.0.0",
         "System.Xml.Linq": "4.0.0.0"
       }

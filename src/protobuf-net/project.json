@@ -1,10 +1,12 @@
 {
-  "version": "2.0.0-rc2-151208",
-  "description": "protobuf-net Class Library",
+  "version": "2.0.0-rc2-151209",
+  "description": "Protocol Buffers is the name of the binary serialization format used by Google for much of their data communications. It is designed to be: small in size - efficient data storage (far smaller than xml) cheap to process - both at the client and server platform independent - portable between different programming architectures extensible - to add new data to old messages. protobuf-net is a .NET implementation of this, allowing you to serialize your .NET objects efficiently and easily. It is compatible with most of the .NET family, including .NET 2.0/3.0/3.5/4.0, .NET CF 2.0/3.5, Mono 2.x, Silverlight, etc.",
   "authors": [ "Marc Gravell" ],
-  "tags": [ "CuteAnt", "CuteAnt.Core" ],
+  "owners": [ "Marc Gravell" ],
+  "summary": "Provides simple access to fast and efficient \"Protocol Buffers\" serialization from .NET applications",
+  "tags": [ "binary", "serialization", "protocol", "buffers", "protobuf", "deserialization" ],
   "projectUrl": "https://github.com/mgravell/protobuf-net",
-  "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+  "licenseUrl": "https://raw.githubusercontent.com/mgravell/protobuf-net/master/Licence.txt",
   "requireLicenseAcceptance": true,
 
   "compilationOptions": {
@@ -24,14 +26,22 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt": "2.0.0-rc2-151208"
+    "CuteAnt": "2.0.0-rc2-151209"
   },
 
   "frameworks": {
     "net451": {
       "frameworkAssemblies": {
         "System.Runtime.Serialization": "4.0.0.0",
-        "System.ServiceModel": "4.0.0.0"
+        "System.ServiceModel": "4.0.0.0",
+        "System.XML": "4.0.0.0"
+      }
+    },
+    "dnx451": {
+      "frameworkAssemblies": {
+        "System.Runtime.Serialization": "4.0.0.0",
+        "System.ServiceModel": "4.0.0.0",
+        "System.XML": "4.0.0.0"
       }
     }
   },

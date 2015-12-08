@@ -36,7 +36,7 @@ namespace CuteAnt.IO
 			}
 			if (!Path.IsPathRooted(dest))
 			{
-				var str = Runtime.IsWeb ? HttpRuntime.BinDirectory : AppDomain.CurrentDomain.BaseDirectory;
+				var str = PathHelper.ApplicationBasePath;
 
 				//dest = Path.Combine(str, dest);
 				dest = Path.GetFullPath(PathHelper.PathCombineFix(str, dest));
@@ -111,14 +111,7 @@ namespace CuteAnt.IO
 			}
 			if (dest.IsNullOrWhiteSpace())
 			{
-				dest = AppDomain.CurrentDomain.BaseDirectory;
-			}
-			if (!Path.IsPathRooted(dest))
-			{
-				String str = Runtime.IsWeb ? HttpRuntime.BinDirectory : AppDomain.CurrentDomain.BaseDirectory;
-
-				//dest = Path.Combine(str, dest);
-				dest = Path.GetFullPath(PathHelper.PathCombineFix(str, dest));
+				dest = PathHelper.ApplicationBasePath;
 			}
 
 			// 开始处理

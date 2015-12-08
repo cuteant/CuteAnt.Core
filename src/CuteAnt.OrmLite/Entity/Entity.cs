@@ -976,7 +976,7 @@ namespace CuteAnt.OrmLite
 				}
 
 				var entities = LoadDataToList(dt);
-				var tmpPath = PathHelper.EnsureDirectory(PathHelper.ApplicationStartupPathCombine(HmTrace.TempPath));
+				var tmpPath = PathHelper.EnsureDirectory(PathHelper.ApplicationBasePathCombine(HmTrace.TempPath));
 				var file = PathHelper.PathCombineFix(tmpPath, Guid.NewGuid().ToString("N"));
 				CreateCSV(entities, keepIdentity, file);
 

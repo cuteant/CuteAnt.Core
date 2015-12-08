@@ -86,7 +86,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 			if (!Path.IsPathRooted(file))
 			{
-				file = PathHelper.ApplicationStartupPathCombine(file);
+				file = PathHelper.ApplicationBasePathCombine(file);
 			}
 			file = new FileInfo(file).FullName;
 

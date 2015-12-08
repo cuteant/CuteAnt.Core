@@ -1,0 +1,62 @@
+{
+  "version": "2.0.0-rc2-151209",
+  "description": "ADO.Net driver for MySQL.",
+  "authors": [ "Oracle" ],
+  "owners": [ "MySQL" ],
+  "tags": [ "MySQL" ],
+  "iconUrl": "http://www.mysql.com/common/logos/logo-mysql-170x115.png",
+  "projectUrl": "http://dev.mysql.com/downloads/",
+  "licenseUrl": "http://www.gnu.org/licenses/old-licenses/gpl-2.0.html",
+  "requireLicenseAcceptance": true,
+
+  "compilationOptions": {
+    "define": [ "TRACE", "ASYNC" ],
+    "keyFile": "../../tools/StrongKey.snk",
+    "warningsAsErrors": false,
+    "allowUnsafe": true
+  },
+  "compile": [
+    "**/*.cs"
+  ],
+  "compileExclude": [ ],
+  "exclude": [ ],
+  "preprocess": [ ],
+  "preprocessExclude": [ ],
+  "resource": [
+    "**/*.resx",
+    "Properties\\ReservedWords.txt"
+  ],
+
+  "dependencies": {
+    "CuteAnt": "2.0.0-rc2-151209"
+  },
+
+  "frameworks": {
+    "net451": {
+      "frameworkAssemblies": {
+        "System.configuration": "4.0.0.0",
+        "System.Configuration.Install": "4.0.0.0",
+        "System.Data": "4.0.0.0",
+        "System.Design": "4.0.0.0",
+        "System.Drawing": "4.0.0.0",
+        "System.Management": "4.0.0.0",
+        "System.Security": "4.0.0.0",
+        "System.Transactions": "4.0.0.0",
+        "System.XML": "4.0.0.0"
+      }
+    },
+    "dnx451": {
+      "frameworkAssemblies": {
+        "System.configuration": "4.0.0.0",
+        "System.Configuration.Install": "4.0.0.0",
+        "System.Data": "4.0.0.0",
+        "System.Design": "4.0.0.0",
+        "System.Drawing": "4.0.0.0",
+        "System.Management": "4.0.0.0",
+        "System.Security": "4.0.0.0",
+        "System.Transactions": "4.0.0.0",
+        "System.XML": "4.0.0.0"
+      }
+    }
+  }
+}

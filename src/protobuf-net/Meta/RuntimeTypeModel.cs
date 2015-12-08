@@ -33,9 +33,9 @@ namespace ProtoBuf.Meta
        OPTIONS_Frozen = 4,
        OPTIONS_AutoAddMissingTypes = 8,
 #if FEAT_COMPILER && !FX11
-           OPTIONS_AutoCompile = 16,
+       OPTIONS_AutoCompile = 16,
 #endif
-           OPTIONS_UseImplicitZeroDefaults = 32,
+       OPTIONS_UseImplicitZeroDefaults = 32,
        OPTIONS_AllowParseableTypes = 64,
        OPTIONS_AutoAddProtoContractTypesOnly = 128,
        OPTIONS_IncludeDateTimeKind = 256;
@@ -634,7 +634,7 @@ namespace ProtoBuf.Meta
       if (newType != null) return newType; // return existing
       int opaqueToken = 0;
 
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
             System.Reflection.TypeInfo typeInfo = System.Reflection.IntrospectionExtensions.GetTypeInfo(type);
             if (typeInfo.IsInterface && MetaType.ienumerable.IsAssignableFrom(typeInfo)
 #else
@@ -793,8 +793,7 @@ namespace ProtoBuf.Meta
         if (ser.RequiresOldValue) value = Activator.CreateInstance(ser.ExpectedType);
         return ser.Read(value, source);
       }
-      else
-      {
+      else {
         return ser.Read(value, source);
       }
 #endif
@@ -916,7 +915,8 @@ namespace ProtoBuf.Meta
     /// <returns>An instance of the newly created compiled type-model</returns>
     public TypeModel Compile()
     {
-      return Compile(null, null);
+      CompilerOptions options = new CompilerOptions();
+      return Compile(options);
     }
     static ILGenerator Override(TypeBuilder type, string name)
     {
@@ -987,7 +987,7 @@ namespace ProtoBuf.Meta
       public void SetFrameworkOptions(MetaType from)
       {
         if (from == null) throw new ArgumentNullException("from");
-        AttributeMap[] attribs = AttributeMap.Create(from.Model, from.Type.Assembly);
+        AttributeMap[] attribs = AttributeMap.Create(from.Model, Helpers.GetAssembly(from.Type));
         foreach (AttributeMap attrib in attribs)
         {
           if (attrib.AttributeType.FullName == "System.Runtime.Versioning.TargetFrameworkAttribute")
@@ -1015,9 +1015,16 @@ namespace ProtoBuf.Meta
       /// The name of the TypeModel class to create
       /// </summary>
       public string TypeName { get { return typeName; } set { typeName = value; } }
+
+#if COREFX
+            internal const string NoPersistence = "Assembly persistence not supported on this runtime";
+#endif
       /// <summary>
       /// The path for the new dll
       /// </summary>
+#if COREFX
+            [Obsolete(NoPersistence)]
+#endif
       public string OutputPath { get { return outputPath; } set { outputPath = value; } }
       /// <summary>
       /// The runtime version for the generated assembly
@@ -1065,6 +1072,8 @@ namespace ProtoBuf.Meta
       /// </summary>
       Internal
     }
+
+#if !COREFX
     /// <summary>
     /// Fully compiles the current model into a static-compiled serialization dll
     /// (the serialization dll still requires protobuf-net for support services).
@@ -1080,7 +1089,7 @@ namespace ProtoBuf.Meta
       options.OutputPath = path;
       return Compile(options);
     }
-
+#endif
     /// <summary>
     /// Fully compiles the current model into a static-compiled serialization dll
     /// (the serialization dll still requires protobuf-net for support services).
@@ -1091,7 +1100,9 @@ namespace ProtoBuf.Meta
     {
       if (options == null) throw new ArgumentNullException("options");
       string typeName = options.TypeName;
+#pragma warning disable 0618
       string path = options.OutputPath;
+#pragma warning restore 0618
       BuildAllSerializers();
       Freeze();
       bool save = !Helpers.IsNullOrEmpty(path);
@@ -1135,6 +1146,12 @@ namespace ProtoBuf.Meta
                 asm.__SetImageRuntimeVersion(options.ImageRuntimeVersion, options.MetaDataVersion);
             }
             ModuleBuilder module = asm.DefineDynamicModule(moduleName, path);
+#elif COREFX
+            AssemblyName an = new AssemblyName();
+            an.Name = assemblyName;
+            AssemblyBuilder asm = AssemblyBuilder.DefineDynamicAssembly(an,
+                AssemblyBuilderAccess.Run);
+            ModuleBuilder module = asm.DefineDynamicModule(moduleName);
 #else
       AssemblyName an = new AssemblyName();
       an.Name = assemblyName;
@@ -1172,12 +1189,19 @@ namespace ProtoBuf.Meta
       WriteConstructors(type, ref index, methodPairs, ref il, knownTypesCategory, knownTypes, knownTypesLookupType, ctx);
 
 
-
+#if COREFX
+            Type finalType = type.CreateTypeInfo().AsType();
+#else
       Type finalType = type.CreateType();
+#endif
       if (!Helpers.IsNullOrEmpty(path))
       {
+#if COREFX
+                throw new NotSupportedException(CompilerOptions.NoPersistence);
+#else
         asm.Save(path);
         Helpers.DebugWriteLine("Wrote dll:" + path);
+#endif
       }
 #if FEAT_IKVM
             return null;
@@ -1329,7 +1353,7 @@ namespace ProtoBuf.Meta
         SerializerPair pair = methodPairs[i];
         ctx.MarkLabel(jumpTable[i]);
         Type keyType = pair.Type.Type;
-        if (keyType.IsValueType)
+        if (Helpers.IsValueType(keyType))
         {
           il.Emit(OpCodes.Ldarg_2);
           il.Emit(OpCodes.Ldarg_3);
@@ -1367,12 +1391,15 @@ namespace ProtoBuf.Meta
 #else
         knownTypesLookupType = MapType(typeof(System.Collections.Generic.Dictionary<System.Type, int>), false);
 #endif
+
+#if !COREFX
         if (knownTypesLookupType == null)
         {
           knownTypesLookupType = MapType(typeof(Hashtable), true);
           knownTypesCategory = KnownTypes_Hashtable;
         }
         else
+#endif
         {
           knownTypesCategory = KnownTypes_Dictionary;
         }
@@ -1542,7 +1569,11 @@ namespace ProtoBuf.Meta
       {
         SerializerPair pair = methodPairs[index];
         ctx = new Compiler.CompilerContext(pair.SerializeBody, true, true, methodPairs, this, ilVersion, assemblyName, pair.Type.Type);
-        ctx.CheckAccessibility(pair.Deserialize.ReturnType);
+        ctx.CheckAccessibility(pair.Deserialize.ReturnType
+#if COREFX
+                    .GetTypeInfo()
+#endif
+                    );
         pair.Type.Serializer.EmitWrite(ctx, ctx.InputValue);
         ctx.Return();
 
@@ -1559,7 +1590,11 @@ namespace ProtoBuf.Meta
     private TypeBuilder WriteBasicTypeModel(CompilerOptions options, string typeName, ModuleBuilder module)
     {
       Type baseType = MapType(typeof(TypeModel));
+#if COREFX
+            TypeAttributes typeAttributes = (baseType.GetTypeInfo().Attributes & ~TypeAttributes.Abstract) | TypeAttributes.Sealed;
+#else
       TypeAttributes typeAttributes = (baseType.Attributes & ~TypeAttributes.Abstract) | TypeAttributes.Sealed;
+#endif
       if (options.Accessibility == Accessibility.Internal)
       {
         typeAttributes &= ~TypeAttributes.Public;
@@ -1577,7 +1612,7 @@ namespace ProtoBuf.Meta
         Type versionAttribType = null;
         try
         { // this is best-endeavours only
-          versionAttribType = GetType("System.Runtime.Versioning.TargetFrameworkAttribute", MapType(typeof(string)).Assembly);
+          versionAttribType = GetType("System.Runtime.Versioning.TargetFrameworkAttribute", Helpers.GetAssembly(MapType(typeof(string))));
         }
         catch { /* don't stress */ }
         if (versionAttribType != null)
@@ -1617,7 +1652,7 @@ namespace ProtoBuf.Meta
         BasicList internalAssemblies = new BasicList(), consideredAssemblies = new BasicList();
         foreach (MetaType metaType in types)
         {
-          Assembly assembly = metaType.Type.Assembly;
+          Assembly assembly = Helpers.GetAssembly(metaType.Type);
           if (consideredAssemblies.IndexOfReference(assembly) >= 0) continue;
           consideredAssemblies.Add(assembly);
 
@@ -1857,7 +1892,7 @@ namespace ProtoBuf.Meta
 
       if (itemType != null && defaultType == null)
       {
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
                 System.Reflection.TypeInfo typeInfo = System.Reflection.IntrospectionExtensions.GetTypeInfo(type);
                 if (typeInfo.IsClass && !typeInfo.IsAbstract && Helpers.GetConstructor(typeInfo, Helpers.EmptyTypes, true) != null)
 #else
@@ -1868,7 +1903,7 @@ namespace ProtoBuf.Meta
         }
         if (defaultType == null)
         {
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
                     if (typeInfo.IsInterface)
 #else
           if (type.IsInterface)
@@ -1878,7 +1913,7 @@ namespace ProtoBuf.Meta
                         defaultType = typeof(ArrayList);
 #else
             Type[] genArgs;
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
                         if (typeInfo.IsGenericType && typeInfo.GetGenericTypeDefinition() == typeof(System.Collections.Generic.IDictionary<,>)
                             && itemType == typeof(System.Collections.Generic.KeyValuePair<,>).MakeGenericType(genArgs = typeInfo.GenericTypeArguments))
 #else

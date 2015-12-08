@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Runtime.Serialization;
-using System.Web.UI.WebControls;
+//using System.Web.UI.WebControls;
 using System.Xml.Serialization;
 using CuteAnt.OrmLite.Exceptions;
 using CuteAnt.Reflection;
@@ -492,56 +492,6 @@ namespace CuteAnt.OrmLite
 		#endregion
 
 		#region 业务
-
-		/// <summary>创建菜单树</summary>
-		/// <param name="nodes">父集合</param>
-		/// <param name="list">菜单列表</param>
-		/// <param name="url">格式化地址，可以使用{ID}和{Name}</param>
-		/// <param name="func">由菜单项创建树节点的委托</param>
-		public static void MakeTree(TreeNodeCollection nodes, EntityList<TEntity> list, String url, Func<TEntity, TreeNode> func)
-		{
-			if (list == null || list.Count < 1) { return; }
-
-			// 使用内层递归，避免死循环
-			MakeTree(nodes, list, url, func, new EntityList<TEntity>());
-		}
-
-		private static void MakeTree(TreeNodeCollection nodes, EntityList<TEntity> list, String url, Func<TEntity, TreeNode> func, EntityList<TEntity> parents)
-		{
-			//var def = Meta.Factory.Default as TEntity;
-			var id = Setting.Key;
-			var name = Setting.Name;
-
-			foreach (var item in list)
-			{
-				if (parents.Contains(item) || parents.Exists(id, item[id])) continue;
-				parents.Add(item);
-
-				TreeNode node = null;
-				if (func == null)
-				{
-					node = new TreeNode((String)item[name]);
-					node.Value = "" + item[id];
-					if (!url.IsNullOrWhiteSpace())
-					{
-						foreach (var elm in Meta.FieldNames)
-						{
-							url = url.Replace("{" + elm + "}", "" + item[elm]);
-						}
-						node.NavigateUrl = url;
-					}
-				}
-				else
-				{
-					node = func(item);
-				}
-
-				var list2 = item.Childs;
-				if (list2 != null && list2.Count > 0) MakeTree(node.ChildNodes, list2, url, func, parents);
-
-				if (node != null) nodes.Add(node);
-			}
-		}
 
 		///// <summary>取得全路径的实体，由上向下排序。克隆的独立列表，外部可随意修改列表</summary>
 		///// <param name="includeSelf"></param>

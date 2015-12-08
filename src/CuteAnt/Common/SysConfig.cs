@@ -5,7 +5,7 @@
  * 
  * 修改：海洋饼干（cuteant@outlook.com）
 */
-
+#if DESKTOPCLR
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -126,3 +126,4 @@ namespace CuteAnt.Common
 		#endregion 构造
 	}
 }
+#endif

@@ -14,7 +14,9 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+#if DESKTOPCLR
 using System.Windows.Forms;
+#endif
 using CuteAnt.Configuration;
 using CuteAnt.IO;
 using CuteAnt.Reflection;
@@ -297,7 +299,9 @@ namespace CuteAnt.Log
 
     static HmTrace()
     {
+#if  DESKTOPCLR
       AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+#endif
     }
 
     #endregion
@@ -308,6 +312,7 @@ namespace CuteAnt.Log
     private static Boolean _ShowErrorMessage = false;
     //private static Boolean _IsServiceMode = false;
 
+#if DESKTOPCLR
     //private static String _Title;
     /// <summary>拦截WinForm异常并记录日志，可指定是否用<see cref="MessageBox"/>显示。</summary>
     /// <param name="showErrorMessage">发为捕获异常时，是否显示提示，默认显示</param>
@@ -323,6 +328,7 @@ namespace CuteAnt.Log
 
       //AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
     }
+#endif
 
     public static void UseService()
     {
@@ -330,6 +336,7 @@ namespace CuteAnt.Log
       _ShowErrorMessage = false;
     }
 
+#if DESKTOPCLR
     private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
       var show = _ShowErrorMessage && Application.MessageLoop;
@@ -364,6 +371,7 @@ namespace CuteAnt.Log
         MessageBox.Show("" + e.Exception, "出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
+#endif
 
     #endregion
 
@@ -412,7 +420,7 @@ namespace CuteAnt.Log
         //  _TempPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _TempPath);
         //}
         //_TempPath = Path.GetFullPath(_TempPath);
-        _TempPath = PathHelper.ApplicationStartupPathCombine(_TempPath);
+        _TempPath = PathHelper.ApplicationBasePathCombine(_TempPath);
 
         #endregion
       }

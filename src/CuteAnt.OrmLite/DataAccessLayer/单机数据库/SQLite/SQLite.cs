@@ -49,7 +49,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 					lock (typeof(SQLite))
 					{
 						// Mono有自己的驱动，因为SQLite是混合编译，里面的C++代码与平台相关，不能通用;注意大小写问题
-						if (Runtime.Mono)
+						if (RuntimeHelper.IsMono)
 						{
 							if (_dbProviderFactory == null) { _dbProviderFactory = GetProviderFactory("Mono.Data.Sqlite.dll", "Mono.Data.Sqlite.SqliteFactory"); }
 						}

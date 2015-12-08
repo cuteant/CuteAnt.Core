@@ -613,11 +613,11 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			ocifile = "oci.dll".GetFullPath();
 			if (File.Exists(ocifile)) return ocifile;
 
-			if (Runtime.IsWeb && !HttpRuntime.BinDirectory.IsNullOrWhiteSpace())
-			{
-				ocifile = Path.Combine(HttpRuntime.BinDirectory, "oci.dll");
-				if (File.Exists(ocifile)) return ocifile;
-			}
+			//if (RuntimeHelper.IsWeb && !HttpRuntime.BinDirectory.IsNullOrWhiteSpace())
+			//{
+			//	ocifile = Path.Combine(HttpRuntime.BinDirectory, "oci.dll");
+			//	if (File.Exists(ocifile)) return ocifile;
+			//}
 
 			ocifile = @"OracleClient\oci.dll".GetFullPath();
 			if (File.Exists(ocifile)) return ocifile;

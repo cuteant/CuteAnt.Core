@@ -5,7 +5,7 @@
  * 
  * 修改：海洋饼干（cuteant@outlook.com）
 */
-
+#if DESKTOPCLR
 using System;
 using System.Linq;
 using System.Reflection;
@@ -114,3 +114,4 @@ namespace CuteAnt.Reflection
 		}
 	}
 }
+#endif

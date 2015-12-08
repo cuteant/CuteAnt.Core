@@ -19,7 +19,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using CuteAnt.Collections;
 using CuteAnt.Log;
-#if ASPNET
+#if !DESKTOPCLR
 using Microsoft.Extensions.PlatformAbstractions;
 #endif
 
@@ -408,7 +408,7 @@ namespace CuteAnt.Reflection
           assembly = Assembly.Load(assemblyName);
         }
         catch { }
-#if ASPNET
+#if !DESKTOPCLR
         if (assembly == null)
         {
           try
@@ -469,7 +469,7 @@ namespace CuteAnt.Reflection
         type = asm.GetType(typeName);
         if (type != null) { return type; }
       }
-
+#if DESKTOPCLR
       // 尝试加载只读程序集
       if (isLoadAssembly)
       {
@@ -495,6 +495,7 @@ namespace CuteAnt.Reflection
           }
         }
       }
+#endif
 
       return null;
     }

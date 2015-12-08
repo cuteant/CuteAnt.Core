@@ -137,9 +137,8 @@ namespace ProtoBuf
     public static void WriteFieldHeader(int fieldNumber, WireType wireType, ProtoWriter writer)
     {
       if (writer == null) throw new ArgumentNullException("writer");
-      if (writer.wireType != WireType.None)
-        throw new InvalidOperationException("Cannot write a " + wireType.ToString()
-+ " header until the " + writer.wireType.ToString() + " data has been written");
+      if (writer.wireType != WireType.None) throw new InvalidOperationException("Cannot write a " + wireType.ToString()
+          + " header until the " + writer.wireType.ToString() + " data has been written");
       if (fieldNumber < 0) throw new ArgumentOutOfRangeException("fieldNumber");
 #if DEBUG
             switch (wireType)
@@ -271,8 +270,7 @@ namespace ProtoBuf
           // more space than this in the buffer)
           DemandSpace(128, writer);
           if ((bytesRead = source.Read(writer.ioBuffer, writer.ioIndex,
-              writer.ioBuffer.Length - writer.ioIndex)) <= 0)
-            break;
+              writer.ioBuffer.Length - writer.ioIndex)) <= 0) break;
           writer.position += bytesRead;
           writer.ioIndex += bytesRead;
         } while (true);
@@ -556,8 +554,8 @@ namespace ProtoBuf
       writer.position += count;
     }
 
-#if DNXCORE50
-    static readonly Encoding encoding = Encoding.UTF8;
+#if COREFX
+        static readonly Encoding encoding = Encoding.UTF8;
 #else
     static readonly UTF8Encoding encoding = new UTF8Encoding();
 #endif

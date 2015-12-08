@@ -89,7 +89,7 @@ namespace ProtoBuf.Meta
     private BasicList subTypes;
     private bool IsValidSubType(Type subType)
     {
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
             return typeInfo.IsAssignableFrom(subType.GetTypeInfo());
 #else
       return type.IsAssignableFrom(subType);
@@ -109,7 +109,7 @@ namespace ProtoBuf.Meta
     {
       if (derivedType == null) throw new ArgumentNullException("derivedType");
       if (fieldNumber < 1) throw new ArgumentOutOfRangeException("fieldNumber");
-#if WINRT || DNXCORE50 || DNXCORE50
+#if WINRT || COREFX || COREFX
             if (!(typeInfo.IsClass || typeInfo.IsInterface) || typeInfo.IsSealed) {
 #else
       if (!(type.IsClass || type.IsInterface) || type.IsSealed)
@@ -132,7 +132,7 @@ namespace ProtoBuf.Meta
       subTypes.Add(subType);
       return this;
     }
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
         internal static readonly TypeInfo ienumerable = typeof(IEnumerable).GetTypeInfo();
 #else
     internal static readonly System.Type ienumerable = typeof(IEnumerable);
@@ -185,7 +185,7 @@ namespace ProtoBuf.Meta
     {
       get
       {
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
                 return typeInfo.IsValueType;
 #else
         return type.IsValueType;
@@ -237,7 +237,7 @@ namespace ProtoBuf.Meta
       string typeName = type.Name;
 #if !NO_GENERICS
       if (type
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
                 .GetTypeInfo()
 #endif
                 .IsGenericType)
@@ -246,7 +246,7 @@ namespace ProtoBuf.Meta
         int split = typeName.IndexOf('`');
         if (split >= 0) sb.Length = split;
         foreach (Type arg in type
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
                     .GetTypeInfo().GenericTypeArguments
 #else
                     .GetGenericArguments()
@@ -315,7 +315,7 @@ namespace ProtoBuf.Meta
     private MethodInfo ResolveMethod(string name, bool instance)
     {
       if (Helpers.IsNullOrEmpty(name)) return null;
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
             return instance ? Helpers.GetInstanceMethod(typeInfo, name) : Helpers.GetStaticMethod(typeInfo, name);
 #else
       return instance ? Helpers.GetInstanceMethod(type, name) : Helpers.GetStaticMethod(type, name);
@@ -339,21 +339,21 @@ namespace ProtoBuf.Meta
       }
 
       this.type = type;
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
             this.typeInfo = type.GetTypeInfo();
 #endif
       this.model = model;
 
       if (Helpers.IsEnum(type))
       {
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
                 EnumPassthru = typeInfo.IsDefined(typeof(FlagsAttribute), false);
 #else
         EnumPassthru = type.IsDefined(model.MapType(typeof(FlagsAttribute)), false);
 #endif
       }
     }
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
         private readonly TypeInfo typeInfo;
 #endif
     /// <summary>
@@ -454,7 +454,7 @@ namespace ProtoBuf.Meta
       {
         foreach (SubType subType in subTypes)
         {
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
                     if (!subType.DerivedType.IgnoreListHandling && ienumerable.IsAssignableFrom(subType.DerivedType.Type.GetTypeInfo()))
 #else
           if (!subType.DerivedType.IgnoreListHandling && model.MapType(ienumerable).IsAssignableFrom(subType.DerivedType.Type))
@@ -505,7 +505,7 @@ namespace ProtoBuf.Meta
     }
     static Type GetBaseType(MetaType type)
     {
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
             return type.typeInfo.BaseType;
 #else
       return type.type.BaseType;
@@ -565,9 +565,8 @@ namespace ProtoBuf.Meta
           Type knownType = null;
           try
           {
-            if (item.TryGet("knownTypeName", out tmp))
-              knownType = model.GetType((string)tmp, type
-#if WINRT || DNXCORE50
+            if (item.TryGet("knownTypeName", out tmp)) knownType = model.GetType((string)tmp, type
+#if WINRT || COREFX
                             .GetTypeInfo()
 #endif
                             .Assembly);
@@ -657,10 +656,14 @@ namespace ProtoBuf.Meta
 
       BasicList members = new BasicList();
 
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
             System.Collections.Generic.IEnumerable<MemberInfo> foundList;
             if(isEnum) {
+#if COREFX
+                foundList = type.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+#else
                 foundList = type.GetRuntimeFields();
+#endif
             }
             else
             {
@@ -669,8 +672,13 @@ namespace ProtoBuf.Meta
                     MethodInfo getter = Helpers.GetGetMethod(prop, false, false);
                     if(getter != null && !getter.IsStatic) list.Add(prop);
                 }
+#if COREFX
+                foreach (FieldInfo fld in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)) list.Add(fld);
+                foreach (MethodInfo mthd in type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)) list.Add(mthd);
+#else
                 foreach(FieldInfo fld in type.GetRuntimeFields()) if(fld.IsPublic && !fld.IsStatic) list.Add(fld);
                 foreach(MethodInfo mthd in type.GetRuntimeMethods()) if(mthd.IsPublic && !mthd.IsStatic) list.Add(mthd);
+#endif
                 foundList = list;
             }
 #else
@@ -772,7 +780,7 @@ namespace ProtoBuf.Meta
       }
 
       // we just don't like delegate types ;p
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
             if (effectiveType.GetTypeInfo().IsSubclassOf(typeof(Delegate))) effectiveType = null;
 #else
       if (effectiveType.IsSubclassOf(model.MapType(typeof(Delegate)))) effectiveType = null;
@@ -836,7 +844,7 @@ namespace ProtoBuf.Meta
     {
       mappedMembers = null;
       if (type == null) throw new ArgumentNullException("type");
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
             TypeInfo typeInfo = type.GetTypeInfo();
             if (typeInfo.IsAbstract) return null; // as if!
             ConstructorInfo[] ctors = Helpers.GetConstructors(typeInfo, false);
@@ -928,7 +936,7 @@ namespace ProtoBuf.Meta
           if (callbacks == null) { callbacks = new MethodInfo[8]; }
           else if (callbacks[index] != null)
           {
-#if WINRT || FEAT_IKVM || DNXCORE50
+#if WINRT || FEAT_IKVM || COREFX
                         Type reflected = method.DeclaringType;
 #else
             Type reflected = method.ReflectedType;
@@ -965,7 +973,7 @@ namespace ProtoBuf.Meta
         else
         {
           attrib = GetAttribute(attribs, "ProtoBuf.ProtoEnumAttribute");
-#if WINRT || PORTABLE || CF || FX11 || DNXCORE50
+#if WINRT || PORTABLE || CF || FX11 || COREFX
                     fieldNumber = Convert.ToInt32(((FieldInfo)member).GetValue(null));
 #else
           fieldNumber = Convert.ToInt32(((FieldInfo)member).GetRawConstantValue());
@@ -975,7 +983,7 @@ namespace ProtoBuf.Meta
             GetFieldName(ref name, attrib, "Name");
 #if !FEAT_IKVM // IKVM can't access HasValue, but conveniently, Value will only be returned if set via ctor or property
             if ((bool)Helpers.GetInstanceMethod(attrib.AttributeType
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
                              .GetTypeInfo()
 #endif
                             , "HasValue").Invoke(attrib.Target, null))
@@ -1150,7 +1158,7 @@ namespace ProtoBuf.Meta
               : null;
       if (vm != null)
       {
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
                 TypeInfo finalType = typeInfo;
 #else
         Type finalType = type;
@@ -1403,7 +1411,7 @@ namespace ProtoBuf.Meta
       if (mi == null) throw new ArgumentException("Unable to determine member: " + memberName, "memberName");
 
       Type miType;
-#if WINRT || PORTABLE || DNXCORE50
+#if WINRT || PORTABLE || COREFX
             PropertyInfo pi = mi as PropertyInfo;
             if (pi == null)
             {
@@ -1474,7 +1482,7 @@ namespace ProtoBuf.Meta
 
       if (itemType != null && defaultType == null)
       {
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
                 TypeInfo typeInfo = type.GetTypeInfo();
                 if (typeInfo.IsClass && !typeInfo.IsAbstract && Helpers.GetConstructor(typeInfo, Helpers.EmptyTypes, true) != null)
 #else
@@ -1485,7 +1493,7 @@ namespace ProtoBuf.Meta
         }
         if (defaultType == null)
         {
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
                     if (typeInfo.IsInterface)
 #else
           if (type.IsInterface)
@@ -1495,7 +1503,7 @@ namespace ProtoBuf.Meta
                         defaultType = typeof(ArrayList);
 #else
             Type[] genArgs;
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
                         if (typeInfo.IsGenericType && type.GetGenericTypeDefinition() == typeof(System.Collections.Generic.IDictionary<,>)
                             && itemType == typeof(System.Collections.Generic.KeyValuePair<,>).MakeGenericType(genArgs = typeInfo.GenericTypeArguments))
 #else
@@ -1780,7 +1788,7 @@ namespace ProtoBuf.Meta
         if (fieldsArr.Length == 0 && EnumPassthru)
         {
           if (type
-#if WINRT || DNXCORE50
+#if WINRT || COREFX
                     .GetTypeInfo()
 #endif
 .IsDefined(model.MapType(typeof(FlagsAttribute)), false))
@@ -1803,7 +1811,7 @@ namespace ProtoBuf.Meta
             if (field.IsStatic && field.IsLiteral)
             {
               object enumVal;
-#if WINRT || PORTABLE || CF || FX11 || DNXCORE50
+#if WINRT || PORTABLE || CF || FX11 || COREFX
                             enumVal = field.GetValue(null);
 #else
               enumVal = field.GetRawConstantValue();

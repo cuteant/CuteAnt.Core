@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0-rc2-151209",
+  "description": "The official SQLite database engine for both x86 and x64 along with the ADO.NET provider.",
+  "authors": [ "SQLite Development Team" ],
+  "tags": [ "SQLite" ],
+  "iconUrl": "https://system.data.sqlite.org/images/sqlite128.png",
+  "projectUrl": "https://system.data.sqlite.org/",
+  "licenseUrl": "https://www.sqlite.org/copyright.html",
+  "requireLicenseAcceptance": true,
+
+  "compilationOptions": {
+    "define": [ "TRACE", "USE_INTEROP_DLL", "USE_PREPARE_V2", "THROW_ON_DISPOSED", "PRELOAD_NATIVE_LIBRARY", "INTEROP_CODEC", "INTEROP_EXTENSION_FUNCTIONS", "INTEROP_VIRTUAL_TABLE", "TRACE_PRELOAD", "TRACE_SHARED", "TRACE_WARNING", "WINDOWS" ],
+    "keyFile": "../../tools/StrongKey.snk",
+    "warningsAsErrors": false,
+    "allowUnsafe": true
+  },
+  "compile": [
+    "**/*.cs"
+  ],
+  "compileExclude": [ ],
+  "exclude": [ ],
+  "preprocess": [ ],
+  "preprocessExclude": [ ],
+  "resource": [
+    "**/*.resx",
+    "Resources\\*.bmp"
+  ],
+
+  "dependencies": {
+    "CuteAnt": "2.0.0-rc2-151209"
+  },
+
+  "frameworks": {
+    "net451": {
+      "frameworkAssemblies": {
+        "System.Data": "4.0.0.0",
+        "System.Transactions": "4.0.0.0",
+        "System.XML": "4.0.0.0"
+      }
+    },
+    "dnx451": {
+      "frameworkAssemblies": {
+        "System.Data": "4.0.0.0",
+        "System.Transactions": "4.0.0.0",
+        "System.XML": "4.0.0.0"
+      }
+    }
+  }
+}
