@@ -39,7 +39,7 @@ namespace System.Data.SQLite
 #endif
   internal static class UnsafeNativeMethods
   {
-      #region Critical Handle Counts (Debug Build Only)
+    #region Critical Handle Counts (Debug Build Only)
 #if COUNT_HANDLE
       //
       // NOTE: These counts represent the total number of outstanding
@@ -54,41 +54,41 @@ namespace System.Data.SQLite
       internal static int statementCount;
       internal static int backupCount;
 #endif
-      #endregion
+    #endregion
 
-      /////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////
 
-      #region Shared Native SQLite Library Pre-Loading Code
-      #region Private Constants
-      /// <summary>
-      /// The file extension used for dynamic link libraries.
-      /// </summary>
-      private static readonly string DllFileExtension = ".dll";
+    #region Shared Native SQLite Library Pre-Loading Code
+    #region Private Constants
+    /// <summary>
+    /// The file extension used for dynamic link libraries.
+    /// </summary>
+    private static readonly string DllFileExtension = ".dll";
 
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// The file extension used for the XML configuration file.
-      /// </summary>
-      private static readonly string ConfigFileExtension = ".config";
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// The file extension used for the XML configuration file.
+    /// </summary>
+    private static readonly string ConfigFileExtension = ".config";
 
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// This is the name of the XML configuration file specific to the
-      /// System.Data.SQLite assembly.
-      /// </summary>
-      private static readonly string XmlConfigFileName =
-          typeof(UnsafeNativeMethods).Namespace + DllFileExtension +
-          ConfigFileExtension;
-      #endregion
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// This is the name of the XML configuration file specific to the
+    /// System.Data.SQLite assembly.
+    /// </summary>
+    private static readonly string XmlConfigFileName =
+        typeof(UnsafeNativeMethods).Namespace + DllFileExtension +
+        ConfigFileExtension;
+    #endregion
 
-      /////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////
 
-      #region Private Data
-      /// <summary>
-      /// This lock is used to protect the static _SQLiteNativeModuleFileName,
-      /// _SQLiteNativeModuleHandle, and processorArchitecturePlatforms fields.
-      /// </summary>
-      private static readonly object staticSyncRoot = new object();
+    #region Private Data
+    /// <summary>
+    /// This lock is used to protect the static _SQLiteNativeModuleFileName,
+    /// _SQLiteNativeModuleHandle, and processorArchitecturePlatforms fields.
+    /// </summary>
+    private static readonly object staticSyncRoot = new object();
 
 #if DEBUG
       /////////////////////////////////////////////////////////////////////////
@@ -100,120 +100,120 @@ namespace System.Data.SQLite
       private static Dictionary<string, int> settingReadCounts;
 #endif
 
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// This dictionary stores the mappings between processor architecture
-      /// names and platform names.  These mappings are now used for two
-      /// purposes.  First, they are used to determine if the assembly code
-      /// base should be used instead of the location, based upon whether one
-      /// or more of the named sub-directories exist within the assembly code
-      /// base.  Second, they are used to assist in loading the appropriate
-      /// SQLite interop assembly into the current process.
-      /// </summary>
-      private static Dictionary<string, string> processorArchitecturePlatforms;
-      #endregion
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// This dictionary stores the mappings between processor architecture
+    /// names and platform names.  These mappings are now used for two
+    /// purposes.  First, they are used to determine if the assembly code
+    /// base should be used instead of the location, based upon whether one
+    /// or more of the named sub-directories exist within the assembly code
+    /// base.  Second, they are used to assist in loading the appropriate
+    /// SQLite interop assembly into the current process.
+    /// </summary>
+    private static Dictionary<string, string> processorArchitecturePlatforms;
+    #endregion
 
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// For now, this method simply calls the Initialize method.
-      /// </summary>
-      static UnsafeNativeMethods()
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// For now, this method simply calls the Initialize method.
+    /// </summary>
+    static UnsafeNativeMethods()
+    {
+      Initialize();
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+
+    /// <summary>
+    /// This type is only present when running on Mono.
+    /// </summary>
+    private static readonly string MonoRuntimeType = "Mono.Runtime";
+
+    /// <summary>
+    /// Keeps track of whether we are running on Mono.  Initially null, it is
+    /// set by the <see cref="IsMono" /> method on its first call.  Later, it
+    /// is returned verbatim by the <see cref="IsMono" /> method.
+    /// </summary>
+    private static bool? isMono = null;
+
+    /// <summary>
+    /// Determines whether or not this assembly is running on Mono.
+    /// </summary>
+    /// <returns>
+    /// Non-zero if this assembly is running on Mono.
+    /// </returns>
+    private static bool IsMono()
+    {
+      try
       {
-          Initialize();
+        lock (staticSyncRoot)
+        {
+          if (isMono == null)
+            isMono = (Type.GetType(MonoRuntimeType) != null);
+
+          return (bool)isMono;
+        }
+      }
+      catch
+      {
+        // do nothing.
       }
 
-      /////////////////////////////////////////////////////////////////////////
+      return false;
+    }
 
-      /// <summary>
-      /// This type is only present when running on Mono.
-      /// </summary>
-      private static readonly string MonoRuntimeType = "Mono.Runtime";
+    /////////////////////////////////////////////////////////////////////////
 
-      /// <summary>
-      /// Keeps track of whether we are running on Mono.  Initially null, it is
-      /// set by the <see cref="IsMono" /> method on its first call.  Later, it
-      /// is returned verbatim by the <see cref="IsMono" /> method.
-      /// </summary>
-      private static bool? isMono = null;
+    /// <summary>
+    /// This is a wrapper around the
+    /// <see cref="String.Format(IFormatProvider,String,Object[])" /> method.
+    /// On Mono, it has to call the method overload without the
+    /// <see cref="IFormatProvider" /> parameter, due to a bug in Mono.
+    /// </summary>
+    /// <param name="provider">
+    /// This is used for culture-specific formatting.
+    /// </param>
+    /// <param name="format">
+    /// The format string.
+    /// </param>
+    /// <param name="args">
+    /// An array the objects to format.
+    /// </param>
+    /// <returns>
+    /// The resulting string.
+    /// </returns>
+    internal static string StringFormat(
+        IFormatProvider provider,
+        string format,
+        params object[] args
+        )
+    {
+      if (IsMono())
+        return String.Format(format, args);
+      else
+        return String.Format(provider, format, args);
+    }
 
-      /// <summary>
-      /// Determines whether or not this assembly is running on Mono.
-      /// </summary>
-      /// <returns>
-      /// Non-zero if this assembly is running on Mono.
-      /// </returns>
-      private static bool IsMono()
-      {
-          try
-          {
-              lock (staticSyncRoot)
-              {
-                  if (isMono == null)
-                      isMono = (Type.GetType(MonoRuntimeType) != null);
-
-                  return (bool)isMono;
-              }
-          }
-          catch
-          {
-              // do nothing.
-          }
-
-          return false;
-      }
-
-      /////////////////////////////////////////////////////////////////////////
-
-      /// <summary>
-      /// This is a wrapper around the
-      /// <see cref="String.Format(IFormatProvider,String,Object[])" /> method.
-      /// On Mono, it has to call the method overload without the
-      /// <see cref="IFormatProvider" /> parameter, due to a bug in Mono.
-      /// </summary>
-      /// <param name="provider">
-      /// This is used for culture-specific formatting.
-      /// </param>
-      /// <param name="format">
-      /// The format string.
-      /// </param>
-      /// <param name="args">
-      /// An array the objects to format.
-      /// </param>
-      /// <returns>
-      /// The resulting string.
-      /// </returns>
-      internal static string StringFormat(
-          IFormatProvider provider,
-          string format,
-          params object[] args
-          )
-      {
-          if (IsMono())
-              return String.Format(format, args);
-          else
-              return String.Format(provider, format, args);
-      }
-
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// Attempts to initialize this class by pre-loading the native SQLite
-      /// library for the processor architecture of the current process.
-      /// </summary>
-      internal static void Initialize()
-      {
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Attempts to initialize this class by pre-loading the native SQLite
+    /// library for the processor architecture of the current process.
+    /// </summary>
+    internal static void Initialize()
+    {
 #if SQLITE_STANDARD || USE_INTEROP_DLL || PLATFORM_COMPACTFRAMEWORK
 #if PRELOAD_NATIVE_LIBRARY
-          //
-          // NOTE: If the "No_PreLoadSQLite" environment variable is set (to
-          //       anything), skip all our special code and simply return.
-          //
-          if (GetSettingValue("No_PreLoadSQLite", null) != null)
-              return;
+      //
+      // NOTE: If the "No_PreLoadSQLite" environment variable is set (to
+      //       anything), skip all our special code and simply return.
+      //
+      if (GetSettingValue("No_PreLoadSQLite", null) != null)
+        return;
 #endif
 #endif
 
-          lock (staticSyncRoot)
-          {
+      lock (staticSyncRoot)
+      {
 #if DEBUG
               //
               // NOTE: Create the list of statistics that will contain the
@@ -223,126 +223,127 @@ namespace System.Data.SQLite
                   settingReadCounts = new Dictionary<string, int>();
 #endif
 
-              //
-              // TODO: Make sure this list is updated if the supported
-              //       processor architecture names and/or platform names
-              //       changes.
-              //
-              if (processorArchitecturePlatforms == null)
-              {
-                  //
-                  // NOTE: Create the map of processor architecture names
-                  //       to platform names using a case-insensitive string
-                  //       comparer.
-                  //
-                  processorArchitecturePlatforms =
-                      new Dictionary<string, string>(
-                          StringComparer.OrdinalIgnoreCase);
+        //
+        // TODO: Make sure this list is updated if the supported
+        //       processor architecture names and/or platform names
+        //       changes.
+        //
+        if (processorArchitecturePlatforms == null)
+        {
+          //
+          // NOTE: Create the map of processor architecture names
+          //       to platform names using a case-insensitive string
+          //       comparer.
+          //
+          processorArchitecturePlatforms =
+              new Dictionary<string, string>(
+                  StringComparer.OrdinalIgnoreCase);
 
-                  //
-                  // NOTE: Setup the list of platform names associated with
-                  //       the supported processor architectures.
-                  //
-                  processorArchitecturePlatforms.Add("x86", "Win32");
-                  processorArchitecturePlatforms.Add("AMD64", "x64");
-                  processorArchitecturePlatforms.Add("IA64", "Itanium");
-                  processorArchitecturePlatforms.Add("ARM", "WinCE");
-              }
+          //
+          // NOTE: Setup the list of platform names associated with
+          //       the supported processor architectures.
+          //
+          processorArchitecturePlatforms.Add("x86", "Win32");
+          processorArchitecturePlatforms.Add("AMD64", "x64");
+          processorArchitecturePlatforms.Add("IA64", "Itanium");
+          processorArchitecturePlatforms.Add("ARM", "WinCE");
+        }
 
 #if SQLITE_STANDARD || USE_INTEROP_DLL || PLATFORM_COMPACTFRAMEWORK
 #if PRELOAD_NATIVE_LIBRARY
-              //
-              // BUGBUG: What about other application domains?
-              //
-              if (_SQLiteNativeModuleHandle == IntPtr.Zero)
-              {
-                  string baseDirectory = null;
-                  string processorArchitecture = null;
+        //
+        // BUGBUG: What about other application domains?
+        //
+        if (_SQLiteNativeModuleHandle == IntPtr.Zero)
+        {
+          string baseDirectory = null;
+          string processorArchitecture = null;
 
-                  /* IGNORED */
-                  SearchForDirectory(
-                      ref baseDirectory, ref processorArchitecture);
+          /* IGNORED */
+          SearchForDirectory(
+              ref baseDirectory, ref processorArchitecture);
 
-                  //
-                  // NOTE: Attempt to pre-load the SQLite core library (or
-                  //       interop assembly) and store both the file name
-                  //       and native module handle for later usage.
-                  //
-                  /* IGNORED */
-                  PreLoadSQLiteDll(
-                      baseDirectory, processorArchitecture,
-                      ref _SQLiteNativeModuleFileName,
-                      ref _SQLiteNativeModuleHandle);
-              }
+          //
+          // NOTE: Attempt to pre-load the SQLite core library (or
+          //       interop assembly) and store both the file name
+          //       and native module handle for later usage.
+          //
+          /* IGNORED */
+          PreLoadSQLiteDll(
+              baseDirectory, processorArchitecture,
+              ref _SQLiteNativeModuleFileName,
+              ref _SQLiteNativeModuleHandle);
+        }
 #endif
 #endif
-          }
       }
+    }
 
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// Queries and returns the XML configuration file name for the assembly
-      /// containing the managed System.Data.SQLite components.
-      /// </summary>
-      /// <returns>
-      /// The XML configuration file name -OR- null if it cannot be determined
-      /// or does not exist.
-      /// </returns>
-      private static string GetXmlConfigFileName()
-      {
-          string directory;
-          string fileName;
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Queries and returns the XML configuration file name for the assembly
+    /// containing the managed System.Data.SQLite components.
+    /// </summary>
+    /// <returns>
+    /// The XML configuration file name -OR- null if it cannot be determined
+    /// or does not exist.
+    /// </returns>
+    private static string GetXmlConfigFileName()
+    {
+      string directory;
+      string fileName;
 
 #if !PLATFORM_COMPACTFRAMEWORK
-          directory = AppDomain.CurrentDomain.BaseDirectory;
-          fileName = Path.Combine(directory, XmlConfigFileName);
+      //directory = AppDomain.CurrentDomain.BaseDirectory;
+      directory = CuteAnt.IO.PathHelper.ApplicationBasePath; // ## ¿àÖñ ÐÞ¸Ä ##
+      fileName = Path.Combine(directory, XmlConfigFileName);
 
-          if (File.Exists(fileName))
-              return fileName;
+      if (File.Exists(fileName))
+        return fileName;
 #endif
 
-          directory = GetAssemblyDirectory();
-          fileName = Path.Combine(directory, XmlConfigFileName);
+      directory = GetAssemblyDirectory();
+      fileName = Path.Combine(directory, XmlConfigFileName);
 
-          if (File.Exists(fileName))
-              return fileName;
+      if (File.Exists(fileName))
+        return fileName;
 
-          return null;
-      }
+      return null;
+    }
 
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// Queries and returns the value of the specified setting, using the XML
-      /// configuration file and/or the environment variables for the current
-      /// process and/or the current system, when available.
-      /// </summary>
-      /// <param name="name">
-      /// The name of the setting.
-      /// </param>
-      /// <param name="default">
-      /// The value to be returned if the setting has not been set explicitly
-      /// or cannot be determined.
-      /// </param>
-      /// <returns>
-      /// The value of the setting -OR- the default value specified by
-      /// <paramref name="default" /> if it has not been set explicitly or
-      /// cannot be determined.  By default, all references to existing
-      /// environment variables will be expanded to their corresponding values
-      /// within the value to be returned unless either the "No_Expand" or
-      /// "No_Expand_<paramref name="name" />" environment variable is set [to
-      /// anything].
-      /// </returns>
-      internal static string GetSettingValue(
-          string name,    /* in */
-          string @default /* in */
-          )
-      {
-          if (name == null)
-              return @default;
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Queries and returns the value of the specified setting, using the XML
+    /// configuration file and/or the environment variables for the current
+    /// process and/or the current system, when available.
+    /// </summary>
+    /// <param name="name">
+    /// The name of the setting.
+    /// </param>
+    /// <param name="default">
+    /// The value to be returned if the setting has not been set explicitly
+    /// or cannot be determined.
+    /// </param>
+    /// <returns>
+    /// The value of the setting -OR- the default value specified by
+    /// <paramref name="default" /> if it has not been set explicitly or
+    /// cannot be determined.  By default, all references to existing
+    /// environment variables will be expanded to their corresponding values
+    /// within the value to be returned unless either the "No_Expand" or
+    /// "No_Expand_<paramref name="name" />" environment variable is set [to
+    /// anything].
+    /// </returns>
+    internal static string GetSettingValue(
+        string name,    /* in */
+        string @default /* in */
+        )
+    {
+      if (name == null)
+        return @default;
 
-          /////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////
 
-          #region Debug Build Only
+      #region Debug Build Only
 #if DEBUG
           lock (staticSyncRoot)
           {
@@ -360,187 +361,187 @@ namespace System.Data.SQLite
               }
           }
 #endif
-          #endregion
+      #endregion
 
-          /////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////
 
-          string value = null;
+      string value = null;
 
 #if !PLATFORM_COMPACTFRAMEWORK
-          bool expand = true;
+      bool expand = true;
 
-          if (Environment.GetEnvironmentVariable("No_Expand") != null)
-          {
-              expand = false;
-          }
-          else if (Environment.GetEnvironmentVariable(StringFormat(
-                  CultureInfo.InvariantCulture, "No_Expand_{0}",
-                  name)) != null)
-          {
-              expand = false;
-          }
+      if (Environment.GetEnvironmentVariable("No_Expand") != null)
+      {
+        expand = false;
+      }
+      else if (Environment.GetEnvironmentVariable(StringFormat(
+              CultureInfo.InvariantCulture, "No_Expand_{0}",
+              name)) != null)
+      {
+        expand = false;
+      }
 
-          value = Environment.GetEnvironmentVariable(name);
+      value = Environment.GetEnvironmentVariable(name);
 
+      if (expand && !String.IsNullOrEmpty(value))
+        value = Environment.ExpandEnvironmentVariables(value);
+
+      if (value != null)
+        return value;
+#endif
+
+      try
+      {
+        string fileName = GetXmlConfigFileName();
+
+        if (fileName == null)
+          return @default;
+
+        XmlDocument document = new XmlDocument();
+
+        document.Load(fileName);
+
+        XmlElement element = document.SelectSingleNode(StringFormat(
+            CultureInfo.InvariantCulture,
+            "/configuration/appSettings/add[@key='{0}']", name)) as
+            XmlElement;
+
+        if (element != null)
+        {
+          if (element.HasAttribute("value"))
+            value = element.GetAttribute("value");
+
+#if !PLATFORM_COMPACTFRAMEWORK
           if (expand && !String.IsNullOrEmpty(value))
-              value = Environment.ExpandEnvironmentVariables(value);
+            value = Environment.ExpandEnvironmentVariables(value);
+#endif
 
           if (value != null)
-              return value;
-#endif
-
-          try
-          {
-              string fileName = GetXmlConfigFileName();
-
-              if (fileName == null)
-                  return @default;
-
-              XmlDocument document = new XmlDocument();
-
-              document.Load(fileName);
-
-              XmlElement element = document.SelectSingleNode(StringFormat(
-                  CultureInfo.InvariantCulture,
-                  "/configuration/appSettings/add[@key='{0}']", name)) as
-                  XmlElement;
-
-              if (element != null)
-              {
-                  if (element.HasAttribute("value"))
-                      value = element.GetAttribute("value");
-
-#if !PLATFORM_COMPACTFRAMEWORK
-                  if (expand && !String.IsNullOrEmpty(value))
-                      value = Environment.ExpandEnvironmentVariables(value);
-#endif
-
-                  if (value != null)
-                      return value;
-              }
-          }
+            return value;
+        }
+      }
 #if !NET_COMPACT_20 && TRACE_SHARED
-          catch (Exception e)
+      catch (Exception e)
 #else
           catch (Exception)
 #endif
-          {
+      {
 #if !NET_COMPACT_20 && TRACE_SHARED
-              try
-              {
-                  Trace.WriteLine(StringFormat(
-                      CultureInfo.CurrentCulture,
-                      "Native library pre-loader failed to get setting " +
-                      "\"{0}\" value: {1}", name, e)); /* throw */
-              }
-              catch
-              {
-                  // do nothing.
-              }
+        try
+        {
+          Trace.WriteLine(StringFormat(
+              CultureInfo.CurrentCulture,
+              "Native library pre-loader failed to get setting " +
+              "\"{0}\" value: {1}", name, e)); /* throw */
+        }
+        catch
+        {
+          // do nothing.
+        }
 #endif
-          }
-
-          return @default;
       }
 
-      /////////////////////////////////////////////////////////////////////////
+      return @default;
+    }
+
+    /////////////////////////////////////////////////////////////////////////
 
 #if !PLATFORM_COMPACTFRAMEWORK
-      private static string ListToString(IList<string> list)
+    private static string ListToString(IList<string> list)
+    {
+      if (list == null)
+        return null;
+
+      StringBuilder result = new StringBuilder();
+
+      foreach (string element in list)
       {
-          if (list == null)
-              return null;
+        if (element == null)
+          continue;
 
-          StringBuilder result = new StringBuilder();
+        if (result.Length > 0)
+          result.Append(' ');
 
-          foreach (string element in list)
-          {
-              if (element == null)
-                  continue;
-
-              if (result.Length > 0)
-                  result.Append(' ');
-
-              result.Append(element);
-          }
-
-          return result.ToString();
+        result.Append(element);
       }
 
-      /////////////////////////////////////////////////////////////////////////
+      return result.ToString();
+    }
 
-      private static int CheckForArchitecturesAndPlatforms(
-          string directory,
-          ref List<string> matches
-          )
+    /////////////////////////////////////////////////////////////////////////
+
+    private static int CheckForArchitecturesAndPlatforms(
+        string directory,
+        ref List<string> matches
+        )
+    {
+      int result = 0;
+
+      if (matches == null)
+        matches = new List<string>();
+
+      lock (staticSyncRoot)
       {
-          int result = 0;
-
-          if (matches == null)
-              matches = new List<string>();
-
-          lock (staticSyncRoot)
+        if (!String.IsNullOrEmpty(directory) &&
+            (processorArchitecturePlatforms != null))
+        {
+          foreach (KeyValuePair<string, string> pair
+                    in processorArchitecturePlatforms)
           {
-              if (!String.IsNullOrEmpty(directory) &&
-                  (processorArchitecturePlatforms != null))
-              {
-                  foreach (KeyValuePair<string, string> pair
-                            in processorArchitecturePlatforms)
-                  {
-                      if (Directory.Exists(Path.Combine(directory, pair.Key)))
-                      {
-                          matches.Add(pair.Key);
-                          result++;
-                      }
+            if (Directory.Exists(Path.Combine(directory, pair.Key)))
+            {
+              matches.Add(pair.Key);
+              result++;
+            }
 
-                      string value = pair.Value;
+            string value = pair.Value;
 
-                      if (value == null)
-                          continue;
+            if (value == null)
+              continue;
 
-                      if (Directory.Exists(Path.Combine(directory, value)))
-                      {
-                          matches.Add(value);
-                          result++;
-                      }
-                  }
-              }
+            if (Directory.Exists(Path.Combine(directory, value)))
+            {
+              matches.Add(value);
+              result++;
+            }
           }
-
-          return result;
+        }
       }
 
-      /////////////////////////////////////////////////////////////////////////
+      return result;
+    }
 
-      private static bool CheckAssemblyCodeBase(
-          Assembly assembly,
-          ref string fileName
-          )
+    /////////////////////////////////////////////////////////////////////////
+
+    private static bool CheckAssemblyCodeBase(
+        Assembly assembly,
+        ref string fileName
+        )
+    {
+      try
       {
-          try
-          {
-              if (assembly == null)
-                  return false;
+        if (assembly == null)
+          return false;
 
-              string codeBase = assembly.CodeBase;
+        string codeBase = assembly.CodeBase;
 
-              if (String.IsNullOrEmpty(codeBase))
-                  return false;
+        if (String.IsNullOrEmpty(codeBase))
+          return false;
 
-              Uri uri = new Uri(codeBase);
-              string localFileName = uri.LocalPath;
+        Uri uri = new Uri(codeBase);
+        string localFileName = uri.LocalPath;
 
-              if (!File.Exists(localFileName))
-                  return false;
+        if (!File.Exists(localFileName))
+          return false;
 
-              string directory = Path.GetDirectoryName(
-                  localFileName); /* throw */
+        string directory = Path.GetDirectoryName(
+            localFileName); /* throw */
 
-              string xmlConfigFileName = Path.Combine(
-                  directory, XmlConfigFileName);
+        string xmlConfigFileName = Path.Combine(
+            directory, XmlConfigFileName);
 
-              if (File.Exists(xmlConfigFileName))
-              {
+        if (File.Exists(xmlConfigFileName))
+        {
 #if !NET_COMPACT_20 && TRACE_DETECTION
                   try
                   {
@@ -556,14 +557,14 @@ namespace System.Data.SQLite
                   }
 #endif
 
-                  fileName = localFileName;
-                  return true;
-              }
+          fileName = localFileName;
+          return true;
+        }
 
-              List<string> matches = null;
+        List<string> matches = null;
 
-              if (CheckForArchitecturesAndPlatforms(directory, ref matches) > 0)
-              {
+        if (CheckForArchitecturesAndPlatforms(directory, ref matches) > 0)
+        {
 #if !NET_COMPACT_20 && TRACE_DETECTION
                   try
                   {
@@ -579,56 +580,56 @@ namespace System.Data.SQLite
                   }
 #endif
 
-                  fileName = localFileName;
-                  return true;
-              }
+          fileName = localFileName;
+          return true;
+        }
 
-              return false;
-          }
+        return false;
+      }
 #if !NET_COMPACT_20 && TRACE_SHARED
-          catch (Exception e)
+      catch (Exception e)
 #else
           catch (Exception)
 #endif
-          {
-#if !NET_COMPACT_20 && TRACE_SHARED
-              try
-              {
-                  Trace.WriteLine(StringFormat(
-                      CultureInfo.CurrentCulture,
-                      "Native library pre-loader failed to check code base " +
-                      "for currently executing assembly: {0}", e)); /* throw */
-              }
-              catch
-              {
-                  // do nothing.
-              }
-#endif
-          }
-
-          return false;
-      }
-#endif
-
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// Queries and returns the directory for the assembly currently being
-      /// executed.
-      /// </summary>
-      /// <returns>
-      /// The directory for the assembly currently being executed -OR- null if
-      /// it cannot be determined.
-      /// </returns>
-      private static string GetAssemblyDirectory()
       {
-          try
-          {
-              Assembly assembly = Assembly.GetExecutingAssembly();
+#if !NET_COMPACT_20 && TRACE_SHARED
+        try
+        {
+          Trace.WriteLine(StringFormat(
+              CultureInfo.CurrentCulture,
+              "Native library pre-loader failed to check code base " +
+              "for currently executing assembly: {0}", e)); /* throw */
+        }
+        catch
+        {
+          // do nothing.
+        }
+#endif
+      }
 
-              if (assembly == null)
-                  return null;
+      return false;
+    }
+#endif
 
-              string fileName = null;
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Queries and returns the directory for the assembly currently being
+    /// executed.
+    /// </summary>
+    /// <returns>
+    /// The directory for the assembly currently being executed -OR- null if
+    /// it cannot be determined.
+    /// </returns>
+    private static string GetAssemblyDirectory()
+    {
+      try
+      {
+        Assembly assembly = Assembly.GetExecutingAssembly();
+
+        if (assembly == null)
+          return null;
+
+        string fileName = null;
 
 #if PLATFORM_COMPACTFRAMEWORK
               AssemblyName assemblyName = assembly.GetName();
@@ -638,84 +639,84 @@ namespace System.Data.SQLite
 
               fileName = assemblyName.CodeBase;
 #else
-              if (!CheckAssemblyCodeBase(assembly, ref fileName))
-                  fileName = assembly.Location;
+        if (!CheckAssemblyCodeBase(assembly, ref fileName))
+          fileName = assembly.Location;
 #endif
 
-              if (String.IsNullOrEmpty(fileName))
-                  return null;
+        if (String.IsNullOrEmpty(fileName))
+          return null;
 
-              string directory = Path.GetDirectoryName(fileName);
+        string directory = Path.GetDirectoryName(fileName);
 
-              if (String.IsNullOrEmpty(directory))
-                  return null;
+        if (String.IsNullOrEmpty(directory))
+          return null;
 
-              return directory;
-          }
+        return directory;
+      }
 #if !NET_COMPACT_20 && TRACE_SHARED
-          catch (Exception e)
+      catch (Exception e)
 #else
           catch (Exception)
 #endif
-          {
+      {
 #if !NET_COMPACT_20 && TRACE_SHARED
-              try
-              {
-                  Trace.WriteLine(StringFormat(
-                      CultureInfo.CurrentCulture,
-                      "Native library pre-loader failed to get directory " +
-                      "for currently executing assembly: {0}", e)); /* throw */
-              }
-              catch
-              {
-                  // do nothing.
-              }
+        try
+        {
+          Trace.WriteLine(StringFormat(
+              CultureInfo.CurrentCulture,
+              "Native library pre-loader failed to get directory " +
+              "for currently executing assembly: {0}", e)); /* throw */
+        }
+        catch
+        {
+          // do nothing.
+        }
 #endif
-          }
-
-          return null;
       }
-      #endregion
 
-      /////////////////////////////////////////////////////////////////////////
+      return null;
+    }
+    #endregion
 
-      #region Optional Native SQLite Library Pre-Loading Code
-      //
-      // NOTE: If we are looking for the standard SQLite DLL ("sqlite3.dll"),
-      //       the interop DLL ("SQLite.Interop.dll"), or we are running on the
-      //       .NET Compact Framework, we should include this code (only if the
-      //       feature has actually been enabled).  This code would be totally
-      //       redundant if this module has been bundled into the mixed-mode
-      //       assembly.
-      //
+    /////////////////////////////////////////////////////////////////////////
+
+    #region Optional Native SQLite Library Pre-Loading Code
+    //
+    // NOTE: If we are looking for the standard SQLite DLL ("sqlite3.dll"),
+    //       the interop DLL ("SQLite.Interop.dll"), or we are running on the
+    //       .NET Compact Framework, we should include this code (only if the
+    //       feature has actually been enabled).  This code would be totally
+    //       redundant if this module has been bundled into the mixed-mode
+    //       assembly.
+    //
 #if SQLITE_STANDARD || USE_INTEROP_DLL || PLATFORM_COMPACTFRAMEWORK
 
-      //
-      // NOTE: Only compile in the native library pre-load code if the feature
-      //       has been enabled for this build.
-      //
+    //
+    // NOTE: Only compile in the native library pre-load code if the feature
+    //       has been enabled for this build.
+    //
 #if PRELOAD_NATIVE_LIBRARY
-      /// <summary>
-      /// The name of the environment variable containing the processor
-      /// architecture of the current process.
-      /// </summary>
-      private static readonly string PROCESSOR_ARCHITECTURE =
-          "PROCESSOR_ARCHITECTURE";
+    /// <summary>
+    /// The name of the environment variable containing the processor
+    /// architecture of the current process.
+    /// </summary>
+    private static readonly string PROCESSOR_ARCHITECTURE =
+        "PROCESSOR_ARCHITECTURE";
 
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// This is the P/Invoke method that wraps the native Win32 LoadLibrary
-      /// function.  See the MSDN documentation for full details on what it
-      /// does.
-      /// </summary>
-      /// <param name="fileName">
-      /// The name of the executable library.
-      /// </param>
-      /// <returns>
-      /// The native module handle upon success -OR- IntPtr.Zero on failure.
-      /// </returns>
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// This is the P/Invoke method that wraps the native Win32 LoadLibrary
+    /// function.  See the MSDN documentation for full details on what it
+    /// does.
+    /// </summary>
+    /// <param name="fileName">
+    /// The name of the executable library.
+    /// </param>
+    /// <returns>
+    /// The native module handle upon success -OR- IntPtr.Zero on failure.
+    /// </returns>
 #if !PLATFORM_COMPACTFRAMEWORK
-      [DllImport("kernel32",
+    [DllImport("kernel32",
 #else
       [DllImport("coredll",
 #endif
@@ -724,9 +725,9 @@ namespace System.Data.SQLite
           BestFitMapping = false, ThrowOnUnmappableChar = true,
 #endif
           SetLastError = true)]
-      private static extern IntPtr LoadLibrary(string fileName);
+    private static extern IntPtr LoadLibrary(string fileName);
 
-      /////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////
 
 #if PLATFORM_COMPACTFRAMEWORK
       /// <summary>
@@ -783,143 +784,146 @@ namespace System.Data.SQLite
       }
 #endif
 
-      /////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////
 
-      #region Private Data
-      /// <summary>
-      /// The native module file name for the native SQLite library or null.
-      /// </summary>
-      private static string _SQLiteNativeModuleFileName = null;
+    #region Private Data
+    /// <summary>
+    /// The native module file name for the native SQLite library or null.
+    /// </summary>
+    private static string _SQLiteNativeModuleFileName = null;
 
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// The native module handle for the native SQLite library or the value
-      /// IntPtr.Zero.
-      /// </summary>
-      private static IntPtr _SQLiteNativeModuleHandle = IntPtr.Zero;
-      #endregion
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// The native module handle for the native SQLite library or the value
+    /// IntPtr.Zero.
+    /// </summary>
+    private static IntPtr _SQLiteNativeModuleHandle = IntPtr.Zero;
+    #endregion
 
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// Searches for the native SQLite library in the directory containing
-      /// the assembly currently being executed as well as the base directory
-      /// for the current application domain.
-      /// </summary>
-      /// <param name="baseDirectory">
-      /// Upon success, this parameter will be modified to refer to the base
-      /// directory containing the native SQLite library.
-      /// </param>
-      /// <param name="processorArchitecture">
-      /// Upon success, this parameter will be modified to refer to the name
-      /// of the immediate directory (i.e. the offset from the base directory)
-      /// containing the native SQLite library.
-      /// </param>
-      /// <returns>
-      /// Non-zero (success) if the native SQLite library was found; otherwise,
-      /// zero (failure).
-      /// </returns>
-      private static bool SearchForDirectory(
-          ref string baseDirectory,        /* out */
-          ref string processorArchitecture /* out */
-          )
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Searches for the native SQLite library in the directory containing
+    /// the assembly currently being executed as well as the base directory
+    /// for the current application domain.
+    /// </summary>
+    /// <param name="baseDirectory">
+    /// Upon success, this parameter will be modified to refer to the base
+    /// directory containing the native SQLite library.
+    /// </param>
+    /// <param name="processorArchitecture">
+    /// Upon success, this parameter will be modified to refer to the name
+    /// of the immediate directory (i.e. the offset from the base directory)
+    /// containing the native SQLite library.
+    /// </param>
+    /// <returns>
+    /// Non-zero (success) if the native SQLite library was found; otherwise,
+    /// zero (failure).
+    /// </returns>
+    private static bool SearchForDirectory(
+        ref string baseDirectory,        /* out */
+        ref string processorArchitecture /* out */
+        )
+    {
+      if (GetSettingValue(
+            "PreLoadSQLite_NoSearchForDirectory", null) != null)
       {
-          if (GetSettingValue(
-                "PreLoadSQLite_NoSearchForDirectory", null) != null)
-          {
-              return false; /* DISABLED */
-          }
+        return false; /* DISABLED */
+      }
 
-          //
-          // NOTE: Build the list of base directories and processor/platform
-          //       names.  These lists will be used to help locate the native
-          //       SQLite core library (or interop assembly) to pre-load into
-          //       this process.
-          //
-          string[] directories = {
+      //
+      // NOTE: Build the list of base directories and processor/platform
+      //       names.  These lists will be used to help locate the native
+      //       SQLite core library (or interop assembly) to pre-load into
+      //       this process.
+      //
+      string[] directories = {
               GetAssemblyDirectory(),
 #if !PLATFORM_COMPACTFRAMEWORK
-              AppDomain.CurrentDomain.BaseDirectory,
+              //AppDomain.CurrentDomain.BaseDirectory,
+              CuteAnt.IO.PathHelper.ApplicationBasePath, // ## ¿àÖñ ÐÞ¸Ä ##
 #endif
-          };
+    };
 
-          string[] subDirectories = {
+      string[] subDirectories = {
               GetProcessorArchitecture(), GetPlatformName(null)
           };
 
-          foreach (string directory in directories)
+      foreach (string directory in directories)
+      {
+        if (directory == null)
+          continue;
+
+        foreach (string subDirectory in subDirectories)
+        {
+          if (subDirectory == null)
+            continue;
+
+          string fileName = FixUpDllFileName(Path.Combine(
+              Path.Combine(directory, subDirectory), SQLITE_DLL));
+
+          //
+          // NOTE: If the SQLite DLL file exists, return success.
+          //       Prior to returning, set the base directory and
+          //       processor architecture to reflect the location
+          //       where it was found.
+          //
+          if (File.Exists(fileName))
           {
-              if (directory == null)
-                  continue;
-
-              foreach (string subDirectory in subDirectories)
-              {
-                  if (subDirectory == null)
-                      continue;
-
-                  string fileName = FixUpDllFileName(Path.Combine(
-                      Path.Combine(directory, subDirectory), SQLITE_DLL));
-
-                  //
-                  // NOTE: If the SQLite DLL file exists, return success.
-                  //       Prior to returning, set the base directory and
-                  //       processor architecture to reflect the location
-                  //       where it was found.
-                  //
-                  if (File.Exists(fileName))
-                  {
-                      baseDirectory = directory;
-                      processorArchitecture = subDirectory;
-                      return true; /* FOUND */
-                  }
-              }
+            baseDirectory = directory;
+            processorArchitecture = subDirectory;
+            return true; /* FOUND */
           }
-
-          return false; /* NOT FOUND */
+        }
       }
 
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// Queries and returns the base directory of the current application
-      /// domain.
-      /// </summary>
-      /// <returns>
-      /// The base directory for the current application domain -OR- null if it
-      /// cannot be determined.
-      /// </returns>
-      private static string GetBaseDirectory()
-      {
-          //
-          // NOTE: If the "PreLoadSQLite_BaseDirectory" environment variable
-          //       is set, use it verbatim for the base directory.
-          //
-          string directory = GetSettingValue("PreLoadSQLite_BaseDirectory",
-              null);
+      return false; /* NOT FOUND */
+    }
 
-          if (directory != null)
-              return directory;
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Queries and returns the base directory of the current application
+    /// domain.
+    /// </summary>
+    /// <returns>
+    /// The base directory for the current application domain -OR- null if it
+    /// cannot be determined.
+    /// </returns>
+    private static string GetBaseDirectory()
+    {
+      //
+      // NOTE: If the "PreLoadSQLite_BaseDirectory" environment variable
+      //       is set, use it verbatim for the base directory.
+      //
+      string directory = GetSettingValue("PreLoadSQLite_BaseDirectory",
+          null);
+
+      if (directory != null)
+        return directory;
 
 #if !PLATFORM_COMPACTFRAMEWORK
-          //
-          // NOTE: If the "PreLoadSQLite_UseAssemblyDirectory" environment
-          //       variable is set (to anything), then attempt to use the
-          //       directory containing the currently executing assembly
-          //       (i.e. System.Data.SQLite) intsead of the application
-          //       domain base directory.
-          //
-          if (GetSettingValue(
-                  "PreLoadSQLite_UseAssemblyDirectory", null) != null)
-          {
-              directory = GetAssemblyDirectory();
+      //
+      // NOTE: If the "PreLoadSQLite_UseAssemblyDirectory" environment
+      //       variable is set (to anything), then attempt to use the
+      //       directory containing the currently executing assembly
+      //       (i.e. System.Data.SQLite) intsead of the application
+      //       domain base directory.
+      //
+      if (GetSettingValue(
+              "PreLoadSQLite_UseAssemblyDirectory", null) != null)
+      {
+        directory = GetAssemblyDirectory();
 
-              if (directory != null)
-                  return directory;
-          }
+        if (directory != null)
+          return directory;
+      }
 
-          //
-          // NOTE: Otherwise, fallback on using the base directory of the
-          //       current application domain.
-          //
-          return AppDomain.CurrentDomain.BaseDirectory;
+      //
+      // NOTE: Otherwise, fallback on using the base directory of the
+      //       current application domain.
+      //
+      //return AppDomain.CurrentDomain.BaseDirectory;
+      return CuteAnt.IO.PathHelper.ApplicationBasePath; // ## ¿àÖñ ÐÞ¸Ä ##
+
 #else
           //
           // NOTE: Otherwise, fallback on using the directory containing
@@ -927,87 +931,87 @@ namespace System.Data.SQLite
           //
           return GetAssemblyDirectory();
 #endif
-      }
+    }
 
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// Determines if the dynamic link library file name requires a suffix
-      /// and adds it if necessary.
-      /// </summary>
-      /// <param name="fileName">
-      /// The original dynamic link library file name to inspect.
-      /// </param>
-      /// <returns>
-      /// The dynamic link library file name, possibly modified to include an
-      /// extension.
-      /// </returns>
-      private static string FixUpDllFileName(
-          string fileName /* in */
-          )
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Determines if the dynamic link library file name requires a suffix
+    /// and adds it if necessary.
+    /// </summary>
+    /// <param name="fileName">
+    /// The original dynamic link library file name to inspect.
+    /// </param>
+    /// <returns>
+    /// The dynamic link library file name, possibly modified to include an
+    /// extension.
+    /// </returns>
+    private static string FixUpDllFileName(
+    string fileName /* in */
+    )
+    {
+      if (!String.IsNullOrEmpty(fileName))
       {
-          if (!String.IsNullOrEmpty(fileName))
-          {
-              PlatformID platformId = Environment.OSVersion.Platform;
+        PlatformID platformId = Environment.OSVersion.Platform;
 
-              if ((platformId == PlatformID.Win32S) ||
-                  (platformId == PlatformID.Win32Windows) ||
-                  (platformId == PlatformID.Win32NT) ||
-                  (platformId == PlatformID.WinCE))
-              {
-                  if (!fileName.EndsWith(DllFileExtension,
-                          StringComparison.OrdinalIgnoreCase))
-                  {
-                      return fileName + DllFileExtension;
-                  }
-              }
-          }
-
-          return fileName;
-      }
-
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// Queries and returns the processor architecture of the current
-      /// process.
-      /// </summary>
-      /// <returns>
-      /// The processor architecture of the current process -OR- null if it
-      /// cannot be determined.
-      /// </returns>
-      private static string GetProcessorArchitecture()
-      {
-          //
-          // NOTE: If the "PreLoadSQLite_ProcessorArchitecture" environment
-          //       variable is set, use it verbatim for the current processor
-          //       architecture.
-          //
-          string processorArchitecture = GetSettingValue(
-              "PreLoadSQLite_ProcessorArchitecture", null);
-
-          if (processorArchitecture != null)
-              return processorArchitecture;
-
-          //
-          // BUGBUG: Will this always be reliable?
-          //
-          processorArchitecture = GetSettingValue(PROCESSOR_ARCHITECTURE, null);
-
-          /////////////////////////////////////////////////////////////////////
-
-#if !PLATFORM_COMPACTFRAMEWORK
-          //
-          // HACK: Check for an "impossible" situation.  If the pointer size
-          //       is 32-bits, the processor architecture cannot be "AMD64".
-          //       In that case, we are almost certainly hitting a bug in the
-          //       operating system and/or Visual Studio that causes the
-          //       PROCESSOR_ARCHITECTURE environment variable to contain the
-          //       wrong value in some circumstances.  Please refer to ticket
-          //       [9ac9862611] for further information.
-          //
-          if ((IntPtr.Size == sizeof(int)) &&
-              String.Equals(processorArchitecture, "AMD64",
+        if ((platformId == PlatformID.Win32S) ||
+            (platformId == PlatformID.Win32Windows) ||
+            (platformId == PlatformID.Win32NT) ||
+            (platformId == PlatformID.WinCE))
+        {
+          if (!fileName.EndsWith(DllFileExtension,
                   StringComparison.OrdinalIgnoreCase))
           {
+            return fileName + DllFileExtension;
+          }
+        }
+      }
+
+      return fileName;
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Queries and returns the processor architecture of the current
+    /// process.
+    /// </summary>
+    /// <returns>
+    /// The processor architecture of the current process -OR- null if it
+    /// cannot be determined.
+    /// </returns>
+    private static string GetProcessorArchitecture()
+    {
+      //
+      // NOTE: If the "PreLoadSQLite_ProcessorArchitecture" environment
+      //       variable is set, use it verbatim for the current processor
+      //       architecture.
+      //
+      string processorArchitecture = GetSettingValue(
+          "PreLoadSQLite_ProcessorArchitecture", null);
+
+      if (processorArchitecture != null)
+        return processorArchitecture;
+
+      //
+      // BUGBUG: Will this always be reliable?
+      //
+      processorArchitecture = GetSettingValue(PROCESSOR_ARCHITECTURE, null);
+
+      /////////////////////////////////////////////////////////////////////
+
+#if !PLATFORM_COMPACTFRAMEWORK
+      //
+      // HACK: Check for an "impossible" situation.  If the pointer size
+      //       is 32-bits, the processor architecture cannot be "AMD64".
+      //       In that case, we are almost certainly hitting a bug in the
+      //       operating system and/or Visual Studio that causes the
+      //       PROCESSOR_ARCHITECTURE environment variable to contain the
+      //       wrong value in some circumstances.  Please refer to ticket
+      //       [9ac9862611] for further information.
+      //
+      if ((IntPtr.Size == sizeof(int)) &&
+          String.Equals(processorArchitecture, "AMD64",
+              StringComparison.OrdinalIgnoreCase))
+      {
 #if !NET_COMPACT_20 && TRACE_DETECTION
               //
               // NOTE: When tracing is enabled, save the originally detected
@@ -1016,13 +1020,13 @@ namespace System.Data.SQLite
               string savedProcessorArchitecture = processorArchitecture;
 #endif
 
-              //
-              // NOTE: We know that operating systems that return "AMD64" as
-              //       the processor architecture are actually a superset of
-              //       the "x86" processor architecture; therefore, return
-              //       "x86" when the pointer size is 32-bits.
-              //
-              processorArchitecture = "x86";
+        //
+        // NOTE: We know that operating systems that return "AMD64" as
+        //       the processor architecture are actually a superset of
+        //       the "x86" processor architecture; therefore, return
+        //       "x86" when the pointer size is 32-bits.
+        //
+        processorArchitecture = "x86";
 
 #if !NET_COMPACT_20 && TRACE_DETECTION
               try
@@ -1044,7 +1048,7 @@ namespace System.Data.SQLite
                   // do nothing.
               }
 #endif
-          }
+      }
 #else
           if (processorArchitecture == null)
           {
@@ -1088,228 +1092,228 @@ namespace System.Data.SQLite
           }
 #endif
 
-          /////////////////////////////////////////////////////////////////////
+      /////////////////////////////////////////////////////////////////////
 
-          return processorArchitecture;
-      }
+      return processorArchitecture;
+    }
 
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// Given the processor architecture, returns the name of the platform.
-      /// </summary>
-      /// <param name="processorArchitecture">
-      /// The processor architecture to be translated to a platform name.
-      /// </param>
-      /// <returns>
-      /// The platform name for the specified processor architecture -OR- null
-      /// if it cannot be determined.
-      /// </returns>
-      private static string GetPlatformName(
-          string processorArchitecture /* in */
-          )
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Given the processor architecture, returns the name of the platform.
+    /// </summary>
+    /// <param name="processorArchitecture">
+    /// The processor architecture to be translated to a platform name.
+    /// </param>
+    /// <returns>
+    /// The platform name for the specified processor architecture -OR- null
+    /// if it cannot be determined.
+    /// </returns>
+    private static string GetPlatformName(
+        string processorArchitecture /* in */
+        )
+    {
+      if (processorArchitecture == null)
+        processorArchitecture = GetProcessorArchitecture();
+
+      if (String.IsNullOrEmpty(processorArchitecture))
+        return null;
+
+      lock (staticSyncRoot)
       {
-          if (processorArchitecture == null)
-              processorArchitecture = GetProcessorArchitecture();
-
-          if (String.IsNullOrEmpty(processorArchitecture))
-              return null;
-
-          lock (staticSyncRoot)
-          {
-              if (processorArchitecturePlatforms == null)
-                  return null;
-
-              string platformName;
-
-              if (processorArchitecturePlatforms.TryGetValue(
-                      processorArchitecture, out platformName))
-              {
-                  return platformName;
-              }
-          }
-
+        if (processorArchitecturePlatforms == null)
           return null;
+
+        string platformName;
+
+        if (processorArchitecturePlatforms.TryGetValue(
+                processorArchitecture, out platformName))
+        {
+          return platformName;
+        }
       }
 
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// Attempts to load the native SQLite library based on the specified
-      /// directory and processor architecture.
-      /// </summary>
-      /// <param name="baseDirectory">
-      /// The base directory to use, null for default (the base directory of
-      /// the current application domain).  This directory should contain the
-      /// processor architecture specific sub-directories.
-      /// </param>
-      /// <param name="processorArchitecture">
-      /// The requested processor architecture, null for default (the
-      /// processor architecture of the current process).  This caller should
-      /// almost always specify null for this parameter.
-      /// </param>
-      /// <param name="nativeModuleFileName">
-      /// The candidate native module file name to load will be stored here,
-      /// if necessary.
-      /// </param>
-      /// <param name="nativeModuleHandle">
-      /// The native module handle as returned by LoadLibrary will be stored
-      /// here, if necessary.  This value will be IntPtr.Zero if the call to
-      /// LoadLibrary fails.
-      /// </param>
-      /// <returns>
-      /// Non-zero if the native module was loaded successfully; otherwise,
-      /// zero.
-      /// </returns>
-      private static bool PreLoadSQLiteDll(
-          string baseDirectory,            /* in */
-          string processorArchitecture,    /* in */
-          ref string nativeModuleFileName, /* out */
-          ref IntPtr nativeModuleHandle    /* out */
-          )
+      return null;
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Attempts to load the native SQLite library based on the specified
+    /// directory and processor architecture.
+    /// </summary>
+    /// <param name="baseDirectory">
+    /// The base directory to use, null for default (the base directory of
+    /// the current application domain).  This directory should contain the
+    /// processor architecture specific sub-directories.
+    /// </param>
+    /// <param name="processorArchitecture">
+    /// The requested processor architecture, null for default (the
+    /// processor architecture of the current process).  This caller should
+    /// almost always specify null for this parameter.
+    /// </param>
+    /// <param name="nativeModuleFileName">
+    /// The candidate native module file name to load will be stored here,
+    /// if necessary.
+    /// </param>
+    /// <param name="nativeModuleHandle">
+    /// The native module handle as returned by LoadLibrary will be stored
+    /// here, if necessary.  This value will be IntPtr.Zero if the call to
+    /// LoadLibrary fails.
+    /// </param>
+    /// <returns>
+    /// Non-zero if the native module was loaded successfully; otherwise,
+    /// zero.
+    /// </returns>
+    private static bool PreLoadSQLiteDll(
+        string baseDirectory,            /* in */
+        string processorArchitecture,    /* in */
+        ref string nativeModuleFileName, /* out */
+        ref IntPtr nativeModuleHandle    /* out */
+        )
+    {
+      //
+      // NOTE: If the specified base directory is null, use the default
+      //       (i.e. attempt to automatically detect it).
+      //
+      if (baseDirectory == null)
+        baseDirectory = GetBaseDirectory();
+
+      //
+      // NOTE: If we failed to query the base directory, stop now.
+      //
+      if (baseDirectory == null)
+        return false;
+
+      //
+      // NOTE: If the native SQLite library exists in the base directory
+      //       itself, stop now.
+      //
+      string fileName = FixUpDllFileName(Path.Combine(baseDirectory,
+          SQLITE_DLL));
+
+      if (File.Exists(fileName))
+        return false;
+
+      //
+      // NOTE: If the specified processor architecture is null, use the
+      //       default.
+      //
+      if (processorArchitecture == null)
+        processorArchitecture = GetProcessorArchitecture();
+
+      //
+      // NOTE: If we failed to query the processor architecture, stop now.
+      //
+      if (processorArchitecture == null)
+        return false;
+
+      //
+      // NOTE: Build the full path and file name for the native SQLite
+      //       library using the processor architecture name.
+      //
+      fileName = FixUpDllFileName(Path.Combine(Path.Combine(baseDirectory,
+          processorArchitecture), SQLITE_DLL));
+
+      //
+      // NOTE: If the file name based on the processor architecture name
+      // is not found, try using the associated platform name.
+      //
+      if (!File.Exists(fileName))
       {
-          //
-          // NOTE: If the specified base directory is null, use the default
-          //       (i.e. attempt to automatically detect it).
-          //
-          if (baseDirectory == null)
-              baseDirectory = GetBaseDirectory();
+        //
+        // NOTE: Attempt to translate the processor architecture to a
+        //       platform name.
+        //
+        string platformName = GetPlatformName(processorArchitecture);
 
-          //
-          // NOTE: If we failed to query the base directory, stop now.
-          //
-          if (baseDirectory == null)
-              return false;
+        //
+        // NOTE: If we failed to translate the platform name, stop now.
+        //
+        if (platformName == null)
+          return false;
 
-          //
-          // NOTE: If the native SQLite library exists in the base directory
-          //       itself, stop now.
-          //
-          string fileName = FixUpDllFileName(Path.Combine(baseDirectory,
-              SQLITE_DLL));
+        //
+        // NOTE: Build the full path and file name for the native SQLite
+        //       library using the platform name.
+        //
+        fileName = FixUpDllFileName(Path.Combine(Path.Combine(
+            baseDirectory, platformName), SQLITE_DLL));
 
-          if (File.Exists(fileName))
-              return false;
+        //
+        // NOTE: If the file does not exist, skip trying to load it.
+        //
+        if (!File.Exists(fileName))
+          return false;
+      }
 
-          //
-          // NOTE: If the specified processor architecture is null, use the
-          //       default.
-          //
-          if (processorArchitecture == null)
-              processorArchitecture = GetProcessorArchitecture();
-
-          //
-          // NOTE: If we failed to query the processor architecture, stop now.
-          //
-          if (processorArchitecture == null)
-              return false;
-
-          //
-          // NOTE: Build the full path and file name for the native SQLite
-          //       library using the processor architecture name.
-          //
-          fileName = FixUpDllFileName(Path.Combine(Path.Combine(baseDirectory,
-              processorArchitecture), SQLITE_DLL));
-
-          //
-          // NOTE: If the file name based on the processor architecture name
-          // is not found, try using the associated platform name.
-          //
-          if (!File.Exists(fileName))
-          {
-              //
-              // NOTE: Attempt to translate the processor architecture to a
-              //       platform name.
-              //
-              string platformName = GetPlatformName(processorArchitecture);
-
-              //
-              // NOTE: If we failed to translate the platform name, stop now.
-              //
-              if (platformName == null)
-                  return false;
-
-              //
-              // NOTE: Build the full path and file name for the native SQLite
-              //       library using the platform name.
-              //
-              fileName = FixUpDllFileName(Path.Combine(Path.Combine(
-                  baseDirectory, platformName), SQLITE_DLL));
-
-              //
-              // NOTE: If the file does not exist, skip trying to load it.
-              //
-              if (!File.Exists(fileName))
-                  return false;
-          }
-
-          try
-          {
+      try
+      {
 #if !NET_COMPACT_20 && TRACE_PRELOAD
-              try
-              {
-                  //
-                  // NOTE: Show exactly where we are trying to load the native
-                  //       SQLite library from.
-                  //
-                  Trace.WriteLine(StringFormat(
-                      CultureInfo.CurrentCulture,
-                      "Native library pre-loader is trying to load native " +
-                      "SQLite library \"{0}\"...", fileName)); /* throw */
-              }
-              catch
-              {
-                  // do nothing.
-              }
+        try
+        {
+          //
+          // NOTE: Show exactly where we are trying to load the native
+          //       SQLite library from.
+          //
+          Trace.WriteLine(StringFormat(
+              CultureInfo.CurrentCulture,
+              "Native library pre-loader is trying to load native " +
+              "SQLite library \"{0}\"...", fileName)); /* throw */
+        }
+        catch
+        {
+          // do nothing.
+        }
 #endif
 
-              //
-              // NOTE: Attempt to load the native library.  This will either
-              //       return a valid native module handle, return IntPtr.Zero,
-              //       or throw an exception.
-              //
-              nativeModuleFileName = fileName;
-              nativeModuleHandle = LoadLibrary(fileName);
+        //
+        // NOTE: Attempt to load the native library.  This will either
+        //       return a valid native module handle, return IntPtr.Zero,
+        //       or throw an exception.
+        //
+        nativeModuleFileName = fileName;
+        nativeModuleHandle = LoadLibrary(fileName);
 
-              return (nativeModuleHandle != IntPtr.Zero);
-          }
+        return (nativeModuleHandle != IntPtr.Zero);
+      }
 #if !NET_COMPACT_20 && TRACE_PRELOAD
-          catch (Exception e)
+      catch (Exception e)
 #else
           catch (Exception)
 #endif
-          {
+      {
 #if !NET_COMPACT_20 && TRACE_PRELOAD
-              try
-              {
-                  //
-                  // NOTE: First, grab the last Win32 error number.
-                  //
-                  int lastError = Marshal.GetLastWin32Error(); /* throw */
+        try
+        {
+          //
+          // NOTE: First, grab the last Win32 error number.
+          //
+          int lastError = Marshal.GetLastWin32Error(); /* throw */
 
-                  //
-                  // NOTE: Show where we failed to load the native SQLite
-                  //       library from along with the Win32 error code and
-                  //       exception information.
-                  //
-                  Trace.WriteLine(StringFormat(
-                      CultureInfo.CurrentCulture,
-                      "Native library pre-loader failed to load native " +
-                      "SQLite library \"{0}\" (getLastError = {1}): {2}",
-                      fileName, lastError, e)); /* throw */
-              }
-              catch
-              {
-                  // do nothing.
-              }
+          //
+          // NOTE: Show where we failed to load the native SQLite
+          //       library from along with the Win32 error code and
+          //       exception information.
+          //
+          Trace.WriteLine(StringFormat(
+              CultureInfo.CurrentCulture,
+              "Native library pre-loader failed to load native " +
+              "SQLite library \"{0}\" (getLastError = {1}): {2}",
+              fileName, lastError, e)); /* throw */
+        }
+        catch
+        {
+          // do nothing.
+        }
 #endif
-          }
-
-          return false;
       }
-#endif
-#endif
-      #endregion
 
-      /////////////////////////////////////////////////////////////////////////
+      return false;
+    }
+#endif
+#endif
+    #endregion
+
+    /////////////////////////////////////////////////////////////////////////
 
 #if PLATFORM_COMPACTFRAMEWORK
     //
@@ -1326,7 +1330,7 @@ namespace System.Data.SQLite
     //
     internal const string SQLITE_DLL = "sqlite3";
 #elif USE_INTEROP_DLL
-      //
+    //
     // NOTE: Otherwise, if the native SQLite interop assembly is enabled,
     //       use it.
     //
@@ -1407,7 +1411,7 @@ namespace System.Data.SQLite
     internal static extern SQLiteErrorCode sqlite3_config_log_interop();
 #endif
 #endif
-// !SQLITE_STANDARD
+    // !SQLITE_STANDARD
 
     #endregion
 
@@ -1453,7 +1457,7 @@ namespace System.Data.SQLite
     [DllImport(SQLITE_DLL)]
     internal static extern int sqlite3_changes_interop(IntPtr db);
 #endif
-// !SQLITE_STANDARD
+    // !SQLITE_STANDARD
 
     #endregion
 
@@ -1668,7 +1672,7 @@ namespace System.Data.SQLite
     internal static extern int sqlite3_table_cursor_interop(IntPtr stmt, int db, int tableRootPage);
 
 #endif
-// !SQLITE_STANDARD
+    // !SQLITE_STANDARD
 
     #endregion
 
@@ -2722,31 +2726,31 @@ namespace System.Data.SQLite
     [StructLayout(LayoutKind.Sequential)]
     internal struct sqlite3_module
     {
-        public int iVersion;
-        public xCreate xCreate;
-        public xConnect xConnect;
-        public xBestIndex xBestIndex;
-        public xDisconnect xDisconnect;
-        public xDestroy xDestroy;
-        public xOpen xOpen;
-        public xClose xClose;
-        public xFilter xFilter;
-        public xNext xNext;
-        public xEof xEof;
-        public xColumn xColumn;
-        public xRowId xRowId;
-        public xUpdate xUpdate;
-        public xBegin xBegin;
-        public xSync xSync;
-        public xCommit xCommit;
-        public xRollback xRollback;
-        public xFindFunction xFindFunction;
-        public xRename xRename;
-        /* The methods above are in version 1 of the sqlite3_module
-         * object.  Those below are for version 2 and greater. */
-        public xSavepoint xSavepoint;
-        public xRelease xRelease;
-        public xRollbackTo xRollbackTo;
+      public int iVersion;
+      public xCreate xCreate;
+      public xConnect xConnect;
+      public xBestIndex xBestIndex;
+      public xDisconnect xDisconnect;
+      public xDestroy xDestroy;
+      public xOpen xOpen;
+      public xClose xClose;
+      public xFilter xFilter;
+      public xNext xNext;
+      public xEof xEof;
+      public xColumn xColumn;
+      public xRowId xRowId;
+      public xUpdate xUpdate;
+      public xBegin xBegin;
+      public xSync xSync;
+      public xCommit xCommit;
+      public xRollback xRollback;
+      public xFindFunction xFindFunction;
+      public xRename xRename;
+      /* The methods above are in version 1 of the sqlite3_module
+       * object.  Those below are for version 2 and greater. */
+      public xSavepoint xSavepoint;
+      public xRelease xRelease;
+      public xRollbackTo xRollbackTo;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -2754,9 +2758,9 @@ namespace System.Data.SQLite
     [StructLayout(LayoutKind.Sequential)]
     internal struct sqlite3_vtab
     {
-        public IntPtr pModule;
-        public int nRef; /* NO LONGER USED */
-        public IntPtr zErrMsg;
+      public IntPtr pModule;
+      public int nRef; /* NO LONGER USED */
+      public IntPtr zErrMsg;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -2764,7 +2768,7 @@ namespace System.Data.SQLite
     [StructLayout(LayoutKind.Sequential)]
     internal struct sqlite3_vtab_cursor
     {
-        public IntPtr pVTab;
+      public IntPtr pVTab;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -2772,26 +2776,26 @@ namespace System.Data.SQLite
     [StructLayout(LayoutKind.Sequential)]
     internal struct sqlite3_index_constraint
     {
-        public sqlite3_index_constraint(
-            SQLiteIndexConstraint constraint
-            )
-            : this()
+      public sqlite3_index_constraint(
+          SQLiteIndexConstraint constraint
+          )
+          : this()
+      {
+        if (constraint != null)
         {
-            if (constraint != null)
-            {
-                iColumn = constraint.iColumn;
-                op = constraint.op;
-                usable = constraint.usable;
-                iTermOffset = constraint.iTermOffset;
-            }
+          iColumn = constraint.iColumn;
+          op = constraint.op;
+          usable = constraint.usable;
+          iTermOffset = constraint.iTermOffset;
         }
+      }
 
-        ///////////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////////
 
-        public int iColumn;
-        public SQLiteIndexConstraintOp op;
-        public byte usable;
-        public int iTermOffset;
+      public int iColumn;
+      public SQLiteIndexConstraintOp op;
+      public byte usable;
+      public int iTermOffset;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -2799,22 +2803,22 @@ namespace System.Data.SQLite
     [StructLayout(LayoutKind.Sequential)]
     internal struct sqlite3_index_orderby
     {
-        public sqlite3_index_orderby(
-            SQLiteIndexOrderBy orderBy
-            )
-            : this()
+      public sqlite3_index_orderby(
+          SQLiteIndexOrderBy orderBy
+          )
+          : this()
+      {
+        if (orderBy != null)
         {
-            if (orderBy != null)
-            {
-                iColumn = orderBy.iColumn;
-                desc = orderBy.desc;
-            }
+          iColumn = orderBy.iColumn;
+          desc = orderBy.desc;
         }
+      }
 
-        ///////////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////////
 
-        public int iColumn; /* Column number */
-        public byte desc;   /* True for DESC.  False for ASC. */
+      public int iColumn; /* Column number */
+      public byte desc;   /* True for DESC.  False for ASC. */
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -2822,22 +2826,22 @@ namespace System.Data.SQLite
     [StructLayout(LayoutKind.Sequential)]
     internal struct sqlite3_index_constraint_usage
     {
-        public sqlite3_index_constraint_usage(
-            SQLiteIndexConstraintUsage constraintUsage
-            )
-            : this()
+      public sqlite3_index_constraint_usage(
+          SQLiteIndexConstraintUsage constraintUsage
+          )
+          : this()
+      {
+        if (constraintUsage != null)
         {
-            if (constraintUsage != null)
-            {
-                argvIndex = constraintUsage.argvIndex;
-                omit = constraintUsage.omit;
-            }
+          argvIndex = constraintUsage.argvIndex;
+          omit = constraintUsage.omit;
         }
+      }
 
-        ///////////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////////
 
-        public int argvIndex; /* if >0, constraint is part of argv to xFilter */
-        public byte omit;     /* Do not code a test for this constraint */
+      public int argvIndex; /* if >0, constraint is part of argv to xFilter */
+      public byte omit;     /* Do not code a test for this constraint */
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -2845,18 +2849,18 @@ namespace System.Data.SQLite
     [StructLayout(LayoutKind.Sequential)]
     internal struct sqlite3_index_info
     {
-        /* Inputs */
-        public int nConstraint; /* Number of entries in aConstraint */
-        public IntPtr aConstraint;
-        public int nOrderBy;
-        public IntPtr aOrderBy;
-        /* Outputs */
-        public IntPtr aConstraintUsage;
-        public int idxNum;           /* Number used to identify the index */
-        public string idxStr;        /* String, possibly obtained from sqlite3_malloc */
-        public int needToFreeIdxStr; /* Free idxStr using sqlite3_free() if true */
-        public int orderByConsumed;  /* True if output is already ordered */
-        public double estimatedCost; /* Estimated cost of using this index */
+      /* Inputs */
+      public int nConstraint; /* Number of entries in aConstraint */
+      public IntPtr aConstraint;
+      public int nOrderBy;
+      public IntPtr aOrderBy;
+      /* Outputs */
+      public IntPtr aConstraintUsage;
+      public int idxNum;           /* Number used to identify the index */
+      public string idxStr;        /* String, possibly obtained from sqlite3_malloc */
+      public int needToFreeIdxStr; /* Free idxStr using sqlite3_free() if true */
+      public int orderByConsumed;  /* True if output is already ordered */
+      public double estimatedCost; /* Estimated cost of using this index */
     }
 #endif
     #endregion
@@ -2936,13 +2940,13 @@ namespace System.Data.SQLite
 
 #endif
 
-    ///////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
 
-    #region SQLiteConnectionHandle Class
-    // Handles the unmanaged database pointer, and provides finalization
-    // support for it.
-    internal sealed class SQLiteConnectionHandle : CriticalHandle
-    {
+  #region SQLiteConnectionHandle Class
+  // Handles the unmanaged database pointer, and provides finalization
+  // support for it.
+  internal sealed class SQLiteConnectionHandle : CriticalHandle
+  {
 #if SQLITE_STANDARD && !PLATFORM_COMPACTFRAMEWORK
         internal delegate void CloseConnectionCallback(
             SQLiteConnectionHandle hdl, IntPtr db);
@@ -2951,80 +2955,80 @@ namespace System.Data.SQLite
             SQLiteBase.CloseConnection;
 #endif
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
 #if PLATFORM_COMPACTFRAMEWORK
         internal readonly object syncRoot = new object();
 #endif
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
-        private bool ownHandle;
+    private bool ownHandle;
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
-        public static implicit operator IntPtr(SQLiteConnectionHandle db)
-        {
-            if (db != null)
-            {
+    public static implicit operator IntPtr(SQLiteConnectionHandle db)
+    {
+      if (db != null)
+      {
 #if PLATFORM_COMPACTFRAMEWORK
                 lock (db.syncRoot)
 #endif
-                {
-                    return db.handle;
-                }
-            }
-            return IntPtr.Zero;
-        }
-
-        ///////////////////////////////////////////////////////////////////////
-
-        internal SQLiteConnectionHandle(IntPtr db, bool ownHandle)
-            : this(ownHandle)
         {
+          return db.handle;
+        }
+      }
+      return IntPtr.Zero;
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+
+    internal SQLiteConnectionHandle(IntPtr db, bool ownHandle)
+        : this(ownHandle)
+    {
 #if PLATFORM_COMPACTFRAMEWORK
             lock (syncRoot)
 #endif
-            {
-                this.ownHandle = ownHandle;
-                SetHandle(db);
-            }
-        }
+      {
+        this.ownHandle = ownHandle;
+        SetHandle(db);
+      }
+    }
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
-        private SQLiteConnectionHandle(bool ownHandle)
-            : base(IntPtr.Zero)
-        {
+    private SQLiteConnectionHandle(bool ownHandle)
+        : base(IntPtr.Zero)
+    {
 #if COUNT_HANDLE
             if (ownHandle)
                 Interlocked.Increment(ref UnsafeNativeMethods.connectionCount);
 #endif
-        }
+    }
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
-        protected override bool ReleaseHandle()
-        {
+    protected override bool ReleaseHandle()
+    {
 #if PLATFORM_COMPACTFRAMEWORK
             lock (syncRoot)
 #endif
-            {
-                if (!ownHandle) return true;
-            }
+      {
+        if (!ownHandle) return true;
+      }
 
-            try
-            {
+      try
+      {
 #if !PLATFORM_COMPACTFRAMEWORK
-                IntPtr localHandle = Interlocked.Exchange(
-                    ref handle, IntPtr.Zero);
+        IntPtr localHandle = Interlocked.Exchange(
+            ref handle, IntPtr.Zero);
 
 #if SQLITE_STANDARD
                 if (localHandle != IntPtr.Zero)
                     closeConnection(this, localHandle);
 #else
-                if (localHandle != IntPtr.Zero)
-                    SQLiteBase.CloseConnection(this, localHandle);
+        if (localHandle != IntPtr.Zero)
+          SQLiteBase.CloseConnection(this, localHandle);
 #endif
 
 #if !NET_COMPACT_20 && TRACE_HANDLE
@@ -3055,13 +3059,13 @@ namespace System.Data.SQLite
 #if DEBUG
                 return true;
 #endif
-            }
+      }
 #if !NET_COMPACT_20 && TRACE_HANDLE
             catch (SQLiteException e)
 #else
-            catch (SQLiteException)
+      catch (SQLiteException)
 #endif
-            {
+      {
 #if !NET_COMPACT_20 && TRACE_HANDLE
                 try
                 {
@@ -3074,24 +3078,24 @@ namespace System.Data.SQLite
                 {
                 }
 #endif
-            }
-            finally
-            {
+      }
+      finally
+      {
 #if PLATFORM_COMPACTFRAMEWORK
                 lock (syncRoot)
 #endif
-                {
-                    SetHandleAsInvalid();
-                }
-            }
+        {
+          SetHandleAsInvalid();
+        }
+      }
 #if DEBUG
             return false;
 #else
-            return true;
+      return true;
 #endif
-        }
+    }
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
 #if COUNT_HANDLE
         public int WasReleasedOk()
@@ -3101,37 +3105,37 @@ namespace System.Data.SQLite
         }
 #endif
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
-        public bool OwnHandle
-        {
-            get
-            {
+    public bool OwnHandle
+    {
+      get
+      {
 #if PLATFORM_COMPACTFRAMEWORK
                 lock (syncRoot)
 #endif
-                {
-                    return ownHandle;
-                }
-            }
-        }
-
-        ///////////////////////////////////////////////////////////////////////
-
-        public override bool IsInvalid
         {
-            get
-            {
+          return ownHandle;
+        }
+      }
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+
+    public override bool IsInvalid
+    {
+      get
+      {
 #if PLATFORM_COMPACTFRAMEWORK
                 lock (syncRoot)
 #endif
-                {
-                    return (handle == IntPtr.Zero);
-                }
-            }
+        {
+          return (handle == IntPtr.Zero);
         }
+      }
+    }
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
 #if DEBUG
         public override string ToString()
@@ -3144,76 +3148,76 @@ namespace System.Data.SQLite
             }
         }
 #endif
-    }
-    #endregion
+  }
+  #endregion
 
-    ///////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
 
-    #region SQLiteStatementHandle Class
-    // Provides finalization support for unmanaged SQLite statements.
-    internal sealed class SQLiteStatementHandle : CriticalHandle
-    {
+  #region SQLiteStatementHandle Class
+  // Provides finalization support for unmanaged SQLite statements.
+  internal sealed class SQLiteStatementHandle : CriticalHandle
+  {
 #if PLATFORM_COMPACTFRAMEWORK
         internal readonly object syncRoot = new object();
 #endif
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
-        private SQLiteConnectionHandle cnn;
+    private SQLiteConnectionHandle cnn;
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
-        public static implicit operator IntPtr(SQLiteStatementHandle stmt)
-        {
-            if (stmt != null)
-            {
+    public static implicit operator IntPtr(SQLiteStatementHandle stmt)
+    {
+      if (stmt != null)
+      {
 #if PLATFORM_COMPACTFRAMEWORK
                 lock (stmt.syncRoot)
 #endif
-                {
-                    return stmt.handle;
-                }
-            }
-            return IntPtr.Zero;
-        }
-
-        ///////////////////////////////////////////////////////////////////////
-
-        internal SQLiteStatementHandle(SQLiteConnectionHandle cnn, IntPtr stmt)
-            : this()
         {
+          return stmt.handle;
+        }
+      }
+      return IntPtr.Zero;
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+
+    internal SQLiteStatementHandle(SQLiteConnectionHandle cnn, IntPtr stmt)
+        : this()
+    {
 #if PLATFORM_COMPACTFRAMEWORK
             lock (syncRoot)
 #endif
-            {
-                this.cnn = cnn;
-                SetHandle(stmt);
-            }
-        }
+      {
+        this.cnn = cnn;
+        SetHandle(stmt);
+      }
+    }
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
-        private SQLiteStatementHandle()
-            : base(IntPtr.Zero)
-        {
+    private SQLiteStatementHandle()
+        : base(IntPtr.Zero)
+    {
 #if COUNT_HANDLE
             Interlocked.Increment(
                 ref UnsafeNativeMethods.statementCount);
 #endif
-        }
+    }
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
-        protected override bool ReleaseHandle()
-        {
-            try
-            {
+    protected override bool ReleaseHandle()
+    {
+      try
+      {
 #if !PLATFORM_COMPACTFRAMEWORK
-                IntPtr localHandle = Interlocked.Exchange(
-                    ref handle, IntPtr.Zero);
+        IntPtr localHandle = Interlocked.Exchange(
+            ref handle, IntPtr.Zero);
 
-                if (localHandle != IntPtr.Zero)
-                    SQLiteBase.FinalizeStatement(cnn, localHandle);
+        if (localHandle != IntPtr.Zero)
+          SQLiteBase.FinalizeStatement(cnn, localHandle);
 
 #if !NET_COMPACT_20 && TRACE_HANDLE
                 try
@@ -3243,13 +3247,13 @@ namespace System.Data.SQLite
 #if DEBUG
                 return true;
 #endif
-            }
+      }
 #if !NET_COMPACT_20 && TRACE_HANDLE
             catch (SQLiteException e)
 #else
-            catch (SQLiteException)
+      catch (SQLiteException)
 #endif
-            {
+      {
 #if !NET_COMPACT_20 && TRACE_HANDLE
                 try
                 {
@@ -3262,24 +3266,24 @@ namespace System.Data.SQLite
                 {
                 }
 #endif
-            }
-            finally
-            {
+      }
+      finally
+      {
 #if PLATFORM_COMPACTFRAMEWORK
                 lock (syncRoot)
 #endif
-                {
-                    SetHandleAsInvalid();
-                }
-            }
+        {
+          SetHandleAsInvalid();
+        }
+      }
 #if DEBUG
             return false;
 #else
-            return true;
+      return true;
 #endif
-        }
+    }
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
 #if COUNT_HANDLE
         public int WasReleasedOk()
@@ -3289,22 +3293,22 @@ namespace System.Data.SQLite
         }
 #endif
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
-        public override bool IsInvalid
-        {
-            get
-            {
+    public override bool IsInvalid
+    {
+      get
+      {
 #if PLATFORM_COMPACTFRAMEWORK
                 lock (syncRoot)
 #endif
-                {
-                    return (handle == IntPtr.Zero);
-                }
-            }
+        {
+          return (handle == IntPtr.Zero);
         }
+      }
+    }
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
 #if DEBUG
         public override string ToString()
@@ -3317,76 +3321,76 @@ namespace System.Data.SQLite
             }
         }
 #endif
-    }
-    #endregion
+  }
+  #endregion
 
-    ///////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
 
-    #region SQLiteBackupHandle Class
-    // Provides finalization support for unmanaged SQLite backup objects.
-    internal sealed class SQLiteBackupHandle : CriticalHandle
-    {
+  #region SQLiteBackupHandle Class
+  // Provides finalization support for unmanaged SQLite backup objects.
+  internal sealed class SQLiteBackupHandle : CriticalHandle
+  {
 #if PLATFORM_COMPACTFRAMEWORK
         internal readonly object syncRoot = new object();
 #endif
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
-        private SQLiteConnectionHandle cnn;
+    private SQLiteConnectionHandle cnn;
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
-        public static implicit operator IntPtr(SQLiteBackupHandle backup)
-        {
-            if (backup != null)
-            {
+    public static implicit operator IntPtr(SQLiteBackupHandle backup)
+    {
+      if (backup != null)
+      {
 #if PLATFORM_COMPACTFRAMEWORK
                 lock (backup.syncRoot)
 #endif
-                {
-                    return backup.handle;
-                }
-            }
-            return IntPtr.Zero;
-        }
-
-        ///////////////////////////////////////////////////////////////////////
-
-        internal SQLiteBackupHandle(SQLiteConnectionHandle cnn, IntPtr backup)
-            : this()
         {
+          return backup.handle;
+        }
+      }
+      return IntPtr.Zero;
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+
+    internal SQLiteBackupHandle(SQLiteConnectionHandle cnn, IntPtr backup)
+        : this()
+    {
 #if PLATFORM_COMPACTFRAMEWORK
             lock (syncRoot)
 #endif
-            {
-                this.cnn = cnn;
-                SetHandle(backup);
-            }
-        }
+      {
+        this.cnn = cnn;
+        SetHandle(backup);
+      }
+    }
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
-        private SQLiteBackupHandle()
-            : base(IntPtr.Zero)
-        {
+    private SQLiteBackupHandle()
+        : base(IntPtr.Zero)
+    {
 #if COUNT_HANDLE
             Interlocked.Increment(
                 ref UnsafeNativeMethods.backupCount);
 #endif
-        }
+    }
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
-        protected override bool ReleaseHandle()
-        {
-            try
-            {
+    protected override bool ReleaseHandle()
+    {
+      try
+      {
 #if !PLATFORM_COMPACTFRAMEWORK
-                IntPtr localHandle = Interlocked.Exchange(
-                    ref handle, IntPtr.Zero);
+        IntPtr localHandle = Interlocked.Exchange(
+            ref handle, IntPtr.Zero);
 
-                if (localHandle != IntPtr.Zero)
-                    SQLiteBase.FinishBackup(cnn, localHandle);
+        if (localHandle != IntPtr.Zero)
+          SQLiteBase.FinishBackup(cnn, localHandle);
 
 #if !NET_COMPACT_20 && TRACE_HANDLE
                 try
@@ -3416,13 +3420,13 @@ namespace System.Data.SQLite
 #if DEBUG
                 return true;
 #endif
-            }
+      }
 #if !NET_COMPACT_20 && TRACE_HANDLE
             catch (SQLiteException e)
 #else
-            catch (SQLiteException)
+      catch (SQLiteException)
 #endif
-            {
+      {
 #if !NET_COMPACT_20 && TRACE_HANDLE
                 try
                 {
@@ -3435,24 +3439,24 @@ namespace System.Data.SQLite
                 {
                 }
 #endif
-            }
-            finally
-            {
+      }
+      finally
+      {
 #if PLATFORM_COMPACTFRAMEWORK
                 lock (syncRoot)
 #endif
-                {
-                    SetHandleAsInvalid();
-                }
-            }
+        {
+          SetHandleAsInvalid();
+        }
+      }
 #if DEBUG
             return false;
 #else
-            return true;
+      return true;
 #endif
-        }
+    }
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
 #if COUNT_HANDLE
         public int WasReleasedOk()
@@ -3462,22 +3466,22 @@ namespace System.Data.SQLite
         }
 #endif
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
-        public override bool IsInvalid
-        {
-            get
-            {
+    public override bool IsInvalid
+    {
+      get
+      {
 #if PLATFORM_COMPACTFRAMEWORK
                 lock (syncRoot)
 #endif
-                {
-                    return (handle == IntPtr.Zero);
-                }
-            }
+        {
+          return (handle == IntPtr.Zero);
         }
+      }
+    }
 
-        ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
 #if DEBUG
         public override string ToString()
@@ -3490,6 +3494,6 @@ namespace System.Data.SQLite
             }
         }
 #endif
-    }
-    #endregion
+  }
+  #endregion
 }

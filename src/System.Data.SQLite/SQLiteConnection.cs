@@ -28,86 +28,86 @@ namespace System.Data.SQLite
   /// </summary>
   public class ConnectionEventArgs : EventArgs
   {
-      /// <summary>
-      /// The type of event being raised.
-      /// </summary>
-      public readonly SQLiteConnectionEventType EventType;
+    /// <summary>
+    /// The type of event being raised.
+    /// </summary>
+    public readonly SQLiteConnectionEventType EventType;
 
-      /// <summary>
-      /// The <see cref="StateChangeEventArgs" /> associated with this event, if any.
-      /// </summary>
-      public readonly StateChangeEventArgs EventArgs;
+    /// <summary>
+    /// The <see cref="StateChangeEventArgs" /> associated with this event, if any.
+    /// </summary>
+    public readonly StateChangeEventArgs EventArgs;
 
-      /// <summary>
-      /// The transaction associated with this event, if any.
-      /// </summary>
-      public readonly IDbTransaction Transaction;
+    /// <summary>
+    /// The transaction associated with this event, if any.
+    /// </summary>
+    public readonly IDbTransaction Transaction;
 
-      /// <summary>
-      /// The command associated with this event, if any.
-      /// </summary>
-      public readonly IDbCommand Command;
+    /// <summary>
+    /// The command associated with this event, if any.
+    /// </summary>
+    public readonly IDbCommand Command;
 
-      /// <summary>
-      /// The data reader associated with this event, if any.
-      /// </summary>
-      public readonly IDataReader DataReader;
+    /// <summary>
+    /// The data reader associated with this event, if any.
+    /// </summary>
+    public readonly IDataReader DataReader;
 
-      /// <summary>
-      /// The critical handle associated with this event, if any.
-      /// </summary>
+    /// <summary>
+    /// The critical handle associated with this event, if any.
+    /// </summary>
 #if !PLATFORM_COMPACTFRAMEWORK
-      public readonly CriticalHandle CriticalHandle;
+    public readonly CriticalHandle CriticalHandle;
 #else
       public readonly object CriticalHandle;
 #endif
 
-      /// <summary>
-      /// Command or message text associated with this event, if any.
-      /// </summary>
-      public readonly string Text;
+    /// <summary>
+    /// Command or message text associated with this event, if any.
+    /// </summary>
+    public readonly string Text;
 
-      /// <summary>
-      /// Extra data associated with this event, if any.
-      /// </summary>
-      public readonly object Data;
+    /// <summary>
+    /// Extra data associated with this event, if any.
+    /// </summary>
+    public readonly object Data;
 
-      /// <summary>
-      /// Constructs the object.
-      /// </summary>
-      /// <param name="eventType">The type of event being raised.</param>
-      /// <param name="eventArgs">The base <see cref="EventArgs" /> associated
-      /// with this event, if any.</param>
-      /// <param name="transaction">The transaction associated with this event, if any.</param>
-      /// <param name="command">The command associated with this event, if any.</param>
-      /// <param name="dataReader">The data reader associated with this event, if any.</param>
-      /// <param name="criticalHandle">The critical handle associated with this event, if any.</param>
-      /// <param name="text">The command or message text, if any.</param>
-      /// <param name="data">The extra data, if any.</param>
-      internal ConnectionEventArgs(
-          SQLiteConnectionEventType eventType,
-          StateChangeEventArgs eventArgs,
-          IDbTransaction transaction,
-          IDbCommand command,
-          IDataReader dataReader,
+    /// <summary>
+    /// Constructs the object.
+    /// </summary>
+    /// <param name="eventType">The type of event being raised.</param>
+    /// <param name="eventArgs">The base <see cref="EventArgs" /> associated
+    /// with this event, if any.</param>
+    /// <param name="transaction">The transaction associated with this event, if any.</param>
+    /// <param name="command">The command associated with this event, if any.</param>
+    /// <param name="dataReader">The data reader associated with this event, if any.</param>
+    /// <param name="criticalHandle">The critical handle associated with this event, if any.</param>
+    /// <param name="text">The command or message text, if any.</param>
+    /// <param name="data">The extra data, if any.</param>
+    internal ConnectionEventArgs(
+        SQLiteConnectionEventType eventType,
+        StateChangeEventArgs eventArgs,
+        IDbTransaction transaction,
+        IDbCommand command,
+        IDataReader dataReader,
 #if !PLATFORM_COMPACTFRAMEWORK
           CriticalHandle criticalHandle,
 #else
           object criticalHandle,
 #endif
           string text,
-          object data
-          )
-      {
-          EventType = eventType;
-          EventArgs = eventArgs;
-          Transaction = transaction;
-          Command = command;
-          DataReader = dataReader;
-          CriticalHandle = criticalHandle;
-          Text = text;
-          Data = data;
-      }
+        object data
+        )
+    {
+      EventType = eventType;
+      EventArgs = eventArgs;
+      Transaction = transaction;
+      Command = command;
+      DataReader = dataReader;
+      CriticalHandle = criticalHandle;
+      Text = text;
+      Data = data;
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -813,7 +813,7 @@ namespace System.Data.SQLite
     public SQLiteConnection(string connectionString)
         : this(connectionString, false)
     {
-        // do nothing.
+      // do nothing.
     }
 
 #if INTEROP_VIRTUAL_TABLE
@@ -835,16 +835,16 @@ namespace System.Data.SQLite
     internal SQLiteConnection(IntPtr db, string fileName, bool ownHandle)
         : this()
     {
-        _sql = new SQLite3(
-            SQLiteDateFormats.Default, DateTimeKind.Unspecified, null,
-            db, fileName, ownHandle);
+      _sql = new SQLite3(
+          SQLiteDateFormats.Default, DateTimeKind.Unspecified, null,
+          db, fileName, ownHandle);
 
-        _flags = SQLiteConnectionFlags.None;
+      _flags = SQLiteConnectionFlags.None;
 
-        _connectionState = (db != IntPtr.Zero) ?
-            ConnectionState.Open : ConnectionState.Closed;
+      _connectionState = (db != IntPtr.Zero) ?
+          ConnectionState.Open : ConnectionState.Closed;
 
-        _connectionString = null; /* unknown */
+      _connectionString = null; /* unknown */
     }
 #endif
 
@@ -968,21 +968,21 @@ namespace System.Data.SQLite
         )
     {
 #if !PLATFORM_COMPACTFRAMEWORK
-        if ((connection != null) && !connection.CanRaiseEvents)
-            return;
+      if ((connection != null) && !connection.CanRaiseEvents)
+        return;
 #endif
 
-        SQLiteConnectionEventHandler handlers;
+      SQLiteConnectionEventHandler handlers;
 
-        lock (_syncRoot)
-        {
-            if (_handlers != null)
-                handlers = _handlers.Clone() as SQLiteConnectionEventHandler;
-            else
-                handlers = null;
-        }
+      lock (_syncRoot)
+      {
+        if (_handlers != null)
+          handlers = _handlers.Clone() as SQLiteConnectionEventHandler;
+        else
+          handlers = null;
+      }
 
-        if (handlers != null) handlers(connection, e);
+      if (handlers != null) handlers(connection, e);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -993,26 +993,26 @@ namespace System.Data.SQLite
     /// </summary>
     public static event SQLiteConnectionEventHandler Changed
     {
-        add
+      add
+      {
+        lock (_syncRoot)
         {
-            lock (_syncRoot)
-            {
-                // Remove any copies of this event handler from registered
-                // list.  This essentially means that a handler will be
-                // called only once no matter how many times it is added.
-                _handlers -= value;
+          // Remove any copies of this event handler from registered
+          // list.  This essentially means that a handler will be
+          // called only once no matter how many times it is added.
+          _handlers -= value;
 
-                // Add this to the list of event handlers.
-                _handlers += value;
-            }
+          // Add this to the list of event handlers.
+          _handlers += value;
         }
-        remove
+      }
+      remove
+      {
+        lock (_syncRoot)
         {
-            lock (_syncRoot)
-            {
-                _handlers -= value;
-            }
+          _handlers -= value;
         }
+      }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1024,8 +1024,8 @@ namespace System.Data.SQLite
     /// </summary>
     public static ISQLiteConnectionPool ConnectionPool
     {
-        get { return SQLiteConnectionPool.GetConnectionPool(); }
-        set { SQLiteConnectionPool.SetConnectionPool(value); }
+      get { return SQLiteConnectionPool.GetConnectionPool(); }
+      set { SQLiteConnectionPool.SetConnectionPool(value); }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1049,27 +1049,27 @@ namespace System.Data.SQLite
         IntPtr nativeHandle
         )
     {
-        SQLiteConnectionHandle result;
+      SQLiteConnectionHandle result;
 
-        try
-        {
-            // do nothing.
-        }
-        finally /* NOTE: Thread.Abort() protection. */
-        {
-            result = (nativeHandle != IntPtr.Zero) ?
-                new SQLiteConnectionHandle(nativeHandle, true) : null;
-        }
+      try
+      {
+        // do nothing.
+      }
+      finally /* NOTE: Thread.Abort() protection. */
+      {
+        result = (nativeHandle != IntPtr.Zero) ?
+            new SQLiteConnectionHandle(nativeHandle, true) : null;
+      }
 
-        if (result != null)
-        {
-            SQLiteConnection.OnChanged(null, new ConnectionEventArgs(
-                SQLiteConnectionEventType.NewCriticalHandle, null,
-                null, null, null, result, null, new object[] {
+      if (result != null)
+      {
+        SQLiteConnection.OnChanged(null, new ConnectionEventArgs(
+            SQLiteConnectionEventType.NewCriticalHandle, null,
+            null, null, null, result, null, new object[] {
                 typeof(SQLiteConnection), nativeHandle }));
-        }
+      }
 
-        return result;
+      return result;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1103,88 +1103,88 @@ namespace System.Data.SQLite
         int retryMilliseconds
         )
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        if (_connectionState != ConnectionState.Open)
-            throw new InvalidOperationException(
-                "Source database is not open.");
+      if (_connectionState != ConnectionState.Open)
+        throw new InvalidOperationException(
+            "Source database is not open.");
 
-        if (destination == null)
-            throw new ArgumentNullException("destination");
+      if (destination == null)
+        throw new ArgumentNullException("destination");
 
-        if (destination._connectionState != ConnectionState.Open)
-            throw new ArgumentException(
-                "Destination database is not open.", "destination");
+      if (destination._connectionState != ConnectionState.Open)
+        throw new ArgumentException(
+            "Destination database is not open.", "destination");
 
-        if (destinationName == null)
-            throw new ArgumentNullException("destinationName");
+      if (destinationName == null)
+        throw new ArgumentNullException("destinationName");
 
-        if (sourceName == null)
-            throw new ArgumentNullException("sourceName");
+      if (sourceName == null)
+        throw new ArgumentNullException("sourceName");
 
-        SQLiteBase sqliteBase = _sql;
+      SQLiteBase sqliteBase = _sql;
 
-        if (sqliteBase == null)
-            throw new InvalidOperationException(
-                "Connection object has an invalid handle.");
+      if (sqliteBase == null)
+        throw new InvalidOperationException(
+            "Connection object has an invalid handle.");
 
-        SQLiteBackup backup = null;
+      SQLiteBackup backup = null;
 
-        try
+      try
+      {
+        backup = sqliteBase.InitializeBackup(
+            destination, destinationName, sourceName); /* throw */
+
+        bool retry = false;
+
+        while (sqliteBase.StepBackup(backup, pages, ref retry)) /* throw */
         {
-            backup = sqliteBase.InitializeBackup(
-                destination, destinationName, sourceName); /* throw */
+          //
+          // NOTE: If a callback was supplied by our caller, call it.
+          //       If it returns false, halt the backup process.
+          //
+          if ((callback != null) && !callback(this, sourceName,
+                  destination, destinationName, pages,
+                  sqliteBase.RemainingBackup(backup),
+                  sqliteBase.PageCountBackup(backup), retry))
+          {
+            break;
+          }
 
-            bool retry = false;
+          //
+          // NOTE: If we need to retry the previous operation, wait for
+          //       the number of milliseconds specified by our caller
+          //       unless the caller used a negative number, in that case
+          //       skip sleeping at all because we do not want to block
+          //       this thread forever.
+          //
+          if (retry && (retryMilliseconds >= 0))
+            System.Threading.Thread.Sleep(retryMilliseconds);
 
-            while (sqliteBase.StepBackup(backup, pages, ref retry)) /* throw */
-            {
-                //
-                // NOTE: If a callback was supplied by our caller, call it.
-                //       If it returns false, halt the backup process.
-                //
-                if ((callback != null) && !callback(this, sourceName,
-                        destination, destinationName, pages,
-                        sqliteBase.RemainingBackup(backup),
-                        sqliteBase.PageCountBackup(backup), retry))
-                {
-                    break;
-                }
-
-                //
-                // NOTE: If we need to retry the previous operation, wait for
-                //       the number of milliseconds specified by our caller
-                //       unless the caller used a negative number, in that case
-                //       skip sleeping at all because we do not want to block
-                //       this thread forever.
-                //
-                if (retry && (retryMilliseconds >= 0))
-                    System.Threading.Thread.Sleep(retryMilliseconds);
-
-                //
-                // NOTE: There is no point in calling the native API to copy
-                //       zero pages as it does nothing; therefore, stop now.
-                //
-                if (pages == 0)
-                    break;
-            }
+          //
+          // NOTE: There is no point in calling the native API to copy
+          //       zero pages as it does nothing; therefore, stop now.
+          //
+          if (pages == 0)
+            break;
         }
-        catch (Exception e)
+      }
+      catch (Exception e)
+      {
+        if ((_flags & SQLiteConnectionFlags.LogBackup) == SQLiteConnectionFlags.LogBackup)
         {
-            if ((_flags & SQLiteConnectionFlags.LogBackup) == SQLiteConnectionFlags.LogBackup)
-            {
-                SQLiteLog.LogMessage(UnsafeNativeMethods.StringFormat(
-                    CultureInfo.CurrentCulture,
-                    "Caught exception while backing up database: {0}", e));
-            }
+          SQLiteLog.LogMessage(UnsafeNativeMethods.StringFormat(
+              CultureInfo.CurrentCulture,
+              "Caught exception while backing up database: {0}", e));
+        }
 
-            throw;
-        }
-        finally
-        {
-            if (backup != null)
-                sqliteBase.FinishBackup(backup); /* throw */
-        }
+        throw;
+      }
+      finally
+      {
+        if (backup != null)
+          sqliteBase.FinishBackup(backup); /* throw */
+      }
     }
     #endregion
 
@@ -1199,17 +1199,17 @@ namespace System.Data.SQLite
     /// </returns>
     public int ClearCachedSettings()
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        int result = -1; /* NO SETTINGS */
+      int result = -1; /* NO SETTINGS */
 
-        if (_cachedSettings != null)
-        {
-            result = _cachedSettings.Count;
-            _cachedSettings.Clear();
-        }
+      if (_cachedSettings != null)
+      {
+        result = _cachedSettings.Count;
+        _cachedSettings.Clear();
+      }
 
-        return result;
+      return result;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1238,13 +1238,13 @@ namespace System.Data.SQLite
         out object value /* out */
         )
     {
-        if ((name == null) || (_cachedSettings == null))
-        {
-            value = @default;
-            return false;
-        }
+      if ((name == null) || (_cachedSettings == null))
+      {
+        value = @default;
+        return false;
+      }
 
-        return _cachedSettings.TryGetValue(name, out value);
+      return _cachedSettings.TryGetValue(name, out value);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1264,10 +1264,10 @@ namespace System.Data.SQLite
         object value /* in */
         )
     {
-        if ((name == null) || (_cachedSettings == null))
-            return;
+      if ((name == null) || (_cachedSettings == null))
+        return;
 
-        _cachedSettings[name] = value;
+      _cachedSettings[name] = value;
     }
     #endregion
 
@@ -1282,14 +1282,14 @@ namespace System.Data.SQLite
     /// </returns>
     public int ClearTypeMappings()
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        int result = -1; /* NO MAPPINGS */
+      int result = -1; /* NO MAPPINGS */
 
-        if (_typeNames != null)
-            result = _typeNames.Clear();
+      if (_typeNames != null)
+        result = _typeNames.Clear();
 
-        return result;
+      return result;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1302,34 +1302,34 @@ namespace System.Data.SQLite
     /// </returns>
     public Dictionary<string, object> GetTypeMappings()
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        Dictionary<string, object> result = null;
+      Dictionary<string, object> result = null;
 
-        if (_typeNames != null)
+      if (_typeNames != null)
+      {
+        result = new Dictionary<string, object>(_typeNames.Count, _typeNames.Comparer);
+
+        foreach (KeyValuePair<string, SQLiteDbTypeMapping> pair in _typeNames)
         {
-            result = new Dictionary<string, object>(_typeNames.Count, _typeNames.Comparer);
+          SQLiteDbTypeMapping mapping = pair.Value;
 
-            foreach (KeyValuePair<string, SQLiteDbTypeMapping> pair in _typeNames)
-            {
-                SQLiteDbTypeMapping mapping = pair.Value;
+          object typeName = null; /* System.String */
+          object dataType = null; /* System.Data.DbType */
+          object primary = null;  /* System.Boolean */
 
-                object typeName = null; /* System.String */
-                object dataType = null; /* System.Data.DbType */
-                object primary = null;  /* System.Boolean */
+          if (mapping != null)
+          {
+            typeName = mapping.typeName;
+            dataType = mapping.dataType;
+            primary = mapping.primary;
+          }
 
-                if (mapping != null)
-                {
-                    typeName = mapping.typeName;
-                    dataType = mapping.dataType;
-                    primary = mapping.primary;
-                }
-
-                result.Add(pair.Key, new object[] { typeName, dataType, primary });
-            }
+          result.Add(pair.Key, new object[] { typeName, dataType, primary });
         }
+      }
 
-        return result;
+      return result;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1363,27 +1363,27 @@ namespace System.Data.SQLite
         bool primary
         )
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        if (typeName == null)
-            throw new ArgumentNullException("typeName");
+      if (typeName == null)
+        throw new ArgumentNullException("typeName");
 
-        int result = -1; /* NO MAPPINGS */
+      int result = -1; /* NO MAPPINGS */
 
-        if (_typeNames != null)
-        {
-            result = 0;
+      if (_typeNames != null)
+      {
+        result = 0;
 
-            if (primary && _typeNames.ContainsKey(dataType))
-                result += _typeNames.Remove(dataType) ? 1 : 0;
+        if (primary && _typeNames.ContainsKey(dataType))
+          result += _typeNames.Remove(dataType) ? 1 : 0;
 
-            if (_typeNames.ContainsKey(typeName))
-                result += _typeNames.Remove(typeName) ? 1 : 0;
+        if (_typeNames.ContainsKey(typeName))
+          result += _typeNames.Remove(typeName) ? 1 : 0;
 
-            _typeNames.Add(new SQLiteDbTypeMapping(typeName, dataType, primary));
-        }
+        _typeNames.Add(new SQLiteDbTypeMapping(typeName, dataType, primary));
+      }
 
-        return result;
+      return result;
     }
     #endregion
 
@@ -1406,13 +1406,13 @@ namespace System.Data.SQLite
         SQLiteFunction function
         )
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        if (_sql == null)
-            throw new InvalidOperationException(
-                "Database connection not valid for binding functions.");
+      if (_sql == null)
+        throw new InvalidOperationException(
+            "Database connection not valid for binding functions.");
 
-        _sql.BindFunction(functionAttribute, function, _flags);
+      _sql.BindFunction(functionAttribute, function, _flags);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1445,14 +1445,14 @@ namespace System.Data.SQLite
         Delegate callback2
         )
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        if (_sql == null)
-            throw new InvalidOperationException(
-                "Database connection not valid for binding functions.");
+      if (_sql == null)
+        throw new InvalidOperationException(
+            "Database connection not valid for binding functions.");
 
-        _sql.BindFunction(functionAttribute,
-            new SQLiteDelegateFunction(callback1, callback2), _flags);
+      _sql.BindFunction(functionAttribute,
+          new SQLiteDelegateFunction(callback1, callback2), _flags);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1470,13 +1470,13 @@ namespace System.Data.SQLite
         SQLiteFunctionAttribute functionAttribute
         )
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        if (_sql == null)
-            throw new InvalidOperationException(
-                "Database connection not valid for unbinding functions.");
+      if (_sql == null)
+        throw new InvalidOperationException(
+            "Database connection not valid for unbinding functions.");
 
-        return _sql.UnbindFunction(functionAttribute, _flags);
+      return _sql.UnbindFunction(functionAttribute, _flags);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1496,13 +1496,13 @@ namespace System.Data.SQLite
         bool registered
         )
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        if (_sql == null)
-            throw new InvalidOperationException(
-                "Database connection not valid for unbinding functions.");
+      if (_sql == null)
+        throw new InvalidOperationException(
+            "Database connection not valid for unbinding functions.");
 
-        return SQLiteFunction.UnbindAllFunctions(_sql, _flags, registered);
+      return SQLiteFunction.UnbindAllFunctions(_sql, _flags, registered);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1510,29 +1510,29 @@ namespace System.Data.SQLite
     [Conditional("CHECK_STATE")]
     internal static void Check(SQLiteConnection connection)
     {
-        if (connection == null)
-            throw new ArgumentNullException("connection");
+      if (connection == null)
+        throw new ArgumentNullException("connection");
 
-        connection.CheckDisposed();
+      connection.CheckDisposed();
 
-        if (connection._connectionState != ConnectionState.Open)
-            throw new InvalidOperationException("The connection is not open.");
+      if (connection._connectionState != ConnectionState.Open)
+        throw new InvalidOperationException("The connection is not open.");
 
-        SQLite3 sql = connection._sql as SQLite3;
+      SQLite3 sql = connection._sql as SQLite3;
 
-        if (sql == null)
-            throw new InvalidOperationException("The connection handle wrapper is null.");
+      if (sql == null)
+        throw new InvalidOperationException("The connection handle wrapper is null.");
 
-        SQLiteConnectionHandle handle = sql._sql;
+      SQLiteConnectionHandle handle = sql._sql;
 
-        if (handle == null)
-            throw new InvalidOperationException("The connection handle is null.");
+      if (handle == null)
+        throw new InvalidOperationException("The connection handle is null.");
 
-        if (handle.IsInvalid)
-            throw new InvalidOperationException("The connection handle is invalid.");
+      if (handle.IsInvalid)
+        throw new InvalidOperationException("The connection handle is invalid.");
 
-        if (handle.IsClosed)
-            throw new InvalidOperationException("The connection handle is closed.");
+      if (handle.IsClosed)
+        throw new InvalidOperationException("The connection handle is closed.");
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1563,51 +1563,51 @@ namespace System.Data.SQLite
         bool allowNameOnly
         )
     {
-        return parseViaFramework ?
-            ParseConnectionStringViaFramework(connectionString, false) :
-            ParseConnectionString(connectionString, allowNameOnly);
+      return parseViaFramework ?
+          ParseConnectionStringViaFramework(connectionString, false) :
+          ParseConnectionString(connectionString, allowNameOnly);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private void SetupSQLiteBase(SortedList<string, string> opts)
     {
-        object enumValue;
+      object enumValue;
 
-        enumValue = TryParseEnum(
-            typeof(SQLiteDateFormats), FindKey(opts, "DateTimeFormat",
-            DefaultDateTimeFormat.ToString()), true);
+      enumValue = TryParseEnum(
+          typeof(SQLiteDateFormats), FindKey(opts, "DateTimeFormat",
+          DefaultDateTimeFormat.ToString()), true);
 
-        SQLiteDateFormats dateFormat = (enumValue is SQLiteDateFormats) ?
-            (SQLiteDateFormats)enumValue : DefaultDateTimeFormat;
+      SQLiteDateFormats dateFormat = (enumValue is SQLiteDateFormats) ?
+          (SQLiteDateFormats)enumValue : DefaultDateTimeFormat;
 
-        enumValue = TryParseEnum(
-            typeof(DateTimeKind), FindKey(opts, "DateTimeKind",
-            DefaultDateTimeKind.ToString()), true);
+      enumValue = TryParseEnum(
+          typeof(DateTimeKind), FindKey(opts, "DateTimeKind",
+          DefaultDateTimeKind.ToString()), true);
 
-        DateTimeKind kind = (enumValue is DateTimeKind) ?
-            (DateTimeKind)enumValue : DefaultDateTimeKind;
+      DateTimeKind kind = (enumValue is DateTimeKind) ?
+          (DateTimeKind)enumValue : DefaultDateTimeKind;
 
-        string dateTimeFormat = FindKey(opts, "DateTimeFormatString",
-            DefaultDateTimeFormatString);
+      string dateTimeFormat = FindKey(opts, "DateTimeFormatString",
+          DefaultDateTimeFormatString);
 
-        //
-        // NOTE: SQLite automatically sets the encoding of the database
-        //       to UTF16 if called from sqlite3_open16().
-        //
-        if (SQLiteConvert.ToBoolean(FindKey(opts, "UseUTF16Encoding",
-                  DefaultUseUTF16Encoding.ToString())))
-        {
-            _sql = new SQLite3_UTF16(
-                dateFormat, kind, dateTimeFormat, IntPtr.Zero, null,
-                false);
-        }
-        else
-        {
-            _sql = new SQLite3(
-                dateFormat, kind, dateTimeFormat, IntPtr.Zero, null,
-                false);
-        }
+      //
+      // NOTE: SQLite automatically sets the encoding of the database
+      //       to UTF16 if called from sqlite3_open16().
+      //
+      if (SQLiteConvert.ToBoolean(FindKey(opts, "UseUTF16Encoding",
+                DefaultUseUTF16Encoding.ToString())))
+      {
+        _sql = new SQLite3_UTF16(
+            dateFormat, kind, dateTimeFormat, IntPtr.Zero, null,
+            false);
+      }
+      else
+      {
+        _sql = new SQLite3(
+            dateFormat, kind, dateTimeFormat, IntPtr.Zero, null,
+            false);
+      }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1618,10 +1618,10 @@ namespace System.Data.SQLite
     /// </summary>
     public new void Dispose()
     {
-        if (_noDispose)
-            return;
+      if (_noDispose)
+        return;
 
-        base.Dispose();
+      base.Dispose();
     }
     #endregion
 
@@ -1632,8 +1632,8 @@ namespace System.Data.SQLite
     private void CheckDisposed() /* throw */
     {
 #if THROW_ON_DISPOSED
-        if (disposed)
-            throw new ObjectDisposedException(typeof(SQLiteConnection).Name);
+      if (disposed)
+        throw new ObjectDisposedException(typeof(SQLiteConnection).Name);
 #endif
     }
 
@@ -1648,47 +1648,47 @@ namespace System.Data.SQLite
     protected override void Dispose(bool disposing)
     {
 #if !NET_COMPACT_20 && TRACE_WARNING
-        if ((_flags & SQLiteConnectionFlags.TraceWarning) == SQLiteConnectionFlags.TraceWarning)
+      if ((_flags & SQLiteConnectionFlags.TraceWarning) == SQLiteConnectionFlags.TraceWarning)
+      {
+        if (_noDispose)
         {
-            if (_noDispose)
-            {
-                System.Diagnostics.Trace.WriteLine(UnsafeNativeMethods.StringFormat(
-                    CultureInfo.CurrentCulture,
-                    "WARNING: Disposing of connection \"{0}\" with the no-dispose flag set.",
-                    _connectionString));
-            }
+          System.Diagnostics.Trace.WriteLine(UnsafeNativeMethods.StringFormat(
+              CultureInfo.CurrentCulture,
+              "WARNING: Disposing of connection \"{0}\" with the no-dispose flag set.",
+              _connectionString));
         }
+      }
 #endif
 
-        _disposing = true;
+      _disposing = true;
 
-        try
+      try
+      {
+        if (!disposed)
         {
-            if (!disposed)
-            {
-                //if (disposing)
-                //{
-                //    ////////////////////////////////////
-                //    // dispose managed resources here...
-                //    ////////////////////////////////////
-                //}
+          //if (disposing)
+          //{
+          //    ////////////////////////////////////
+          //    // dispose managed resources here...
+          //    ////////////////////////////////////
+          //}
 
-                //////////////////////////////////////
-                // release unmanaged resources here...
-                //////////////////////////////////////
+          //////////////////////////////////////
+          // release unmanaged resources here...
+          //////////////////////////////////////
 
-                Close();
-            }
+          Close();
         }
-        finally
-        {
-            base.Dispose(disposing);
+      }
+      finally
+      {
+        base.Dispose(disposing);
 
-            //
-            // NOTE: Everything should be fully disposed at this point.
-            //
-            disposed = true;
-        }
+        //
+        // NOTE: Everything should be fully disposed at this point.
+        //
+        disposed = true;
+      }
     }
     #endregion
 
@@ -1743,19 +1743,19 @@ namespace System.Data.SQLite
         ref StateChangeEventArgs eventArgs
         )
     {
-        ConnectionState oldState = _connectionState;
+      ConnectionState oldState = _connectionState;
 
-        _connectionState = newState;
+      _connectionState = newState;
 
-        if ((StateChange != null) && (newState != oldState))
-        {
-            StateChangeEventArgs localEventArgs =
-                new StateChangeEventArgs(oldState, newState);
+      if ((StateChange != null) && (newState != oldState))
+      {
+        StateChangeEventArgs localEventArgs =
+            new StateChangeEventArgs(oldState, newState);
 
-            StateChange(this, localEventArgs);
+        StateChange(this, localEventArgs);
 
-            eventArgs = localEventArgs;
-        }
+        eventArgs = localEventArgs;
+      }
     }
 
     /// <summary>
@@ -1768,7 +1768,7 @@ namespace System.Data.SQLite
     /// </returns>
     private static IsolationLevel GetFallbackDefaultIsolationLevel()
     {
-        return DefaultIsolationLevel;
+      return DefaultIsolationLevel;
     }
 
     /// <summary>
@@ -1780,7 +1780,7 @@ namespace System.Data.SQLite
     /// </returns>
     internal IsolationLevel GetDefaultIsolationLevel()
     {
-        return _defaultIsolation;
+      return _defaultIsolation;
     }
 
     /// <summary>
@@ -1939,11 +1939,11 @@ namespace System.Data.SQLite
     /// </summary>
     public int PoolCount
     {
-        get
-        {
-            if (_sql == null) return 0;
-            return _sql.CountPool();
-        }
+      get
+      {
+        if (_sql == null) return 0;
+        return _sql.CountPool();
+      }
     }
 
     /// <summary>
@@ -2048,14 +2048,14 @@ namespace System.Data.SQLite
 
     internal static string MapUriPath(string path)
     {
-        if (path.StartsWith ("file://", StringComparison.OrdinalIgnoreCase))
-            return path.Substring (7);
-      else if (path.StartsWith ("file:", StringComparison.OrdinalIgnoreCase))
-            return path.Substring (5);
-      else if (path.StartsWith ("/", StringComparison.OrdinalIgnoreCase))
-            return path;
+      if (path.StartsWith("file://", StringComparison.OrdinalIgnoreCase))
+        return path.Substring(7);
+      else if (path.StartsWith("file:", StringComparison.OrdinalIgnoreCase))
+        return path.Substring(5);
+      else if (path.StartsWith("/", StringComparison.OrdinalIgnoreCase))
+        return path;
       else
-            throw new InvalidOperationException ("Invalid connection string: invalid URI");
+        throw new InvalidOperationException("Invalid connection string: invalid URI");
     }
 
     /// <summary>
@@ -2087,16 +2087,16 @@ namespace System.Data.SQLite
       string[] arParts;
 
       if (UnsafeNativeMethods.GetSettingValue("No_SQLiteConnectionNewParser", null) != null)
-          arParts = SQLiteConvert.Split(s, ';');
+        arParts = SQLiteConvert.Split(s, ';');
       else
-          arParts = SQLiteConvert.NewSplit(s, ';', true, ref error);
+        arParts = SQLiteConvert.NewSplit(s, ';', true, ref error);
 
       if (arParts == null)
       {
-          throw new ArgumentException(UnsafeNativeMethods.StringFormat(
-              CultureInfo.CurrentCulture,
-              "Invalid ConnectionString format, cannot parse: {0}", (error != null) ?
-              error : "could not split connection string into properties"));
+        throw new ArgumentException(UnsafeNativeMethods.StringFormat(
+            CultureInfo.CurrentCulture,
+            "Invalid ConnectionString format, cannot parse: {0}", (error != null) ?
+            error : "could not split connection string into properties"));
       }
 
       int x = (arParts != null) ? arParts.Length : 0;
@@ -2146,38 +2146,38 @@ namespace System.Data.SQLite
         )
     {
 #if !PLATFORM_COMPACTFRAMEWORK
-        DbConnectionStringBuilder connectionStringBuilder
-            = new DbConnectionStringBuilder();
+      DbConnectionStringBuilder connectionStringBuilder
+          = new DbConnectionStringBuilder();
 
-        connectionStringBuilder.ConnectionString = connectionString; /* throw */
+      connectionStringBuilder.ConnectionString = connectionString; /* throw */
 
-        SortedList<string, string> result =
-            new SortedList<string, string>(StringComparer.OrdinalIgnoreCase);
+      SortedList<string, string> result =
+          new SortedList<string, string>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (string keyName in connectionStringBuilder.Keys)
+      foreach (string keyName in connectionStringBuilder.Keys)
+      {
+        object value = connectionStringBuilder[keyName];
+        string keyValue = null;
+
+        if (value is string)
         {
-            object value = connectionStringBuilder[keyName];
-            string keyValue = null;
-
-            if (value is string)
-            {
-                keyValue = (string)value;
-            }
-            else if (strict)
-            {
-                throw new ArgumentException(
-                    "connection property value is not a string",
-                    keyName);
-            }
-            else if (value != null)
-            {
-                keyValue = value.ToString();
-            }
-
-            result.Add(keyName, keyValue);
+          keyValue = (string)value;
+        }
+        else if (strict)
+        {
+          throw new ArgumentException(
+              "connection property value is not a string",
+              keyName);
+        }
+        else if (value != null)
+        {
+          keyValue = value.ToString();
         }
 
-        return result;
+        result.Add(keyName, keyValue);
+      }
+
+      return result;
 #else
         //
         // NOTE: On the .NET Compact Framework, always use our custom connection
@@ -2252,19 +2252,19 @@ namespace System.Data.SQLite
         bool ignoreCase
         )
     {
-        if (!String.IsNullOrEmpty(value))
+      if (!String.IsNullOrEmpty(value))
+      {
+        try
         {
-            try
-            {
-                return Enum.Parse(type, value, ignoreCase);
-            }
-            catch
-            {
-                // do nothing.
-            }
+          return Enum.Parse(type, value, ignoreCase);
         }
+        catch
+        {
+          // do nothing.
+        }
+      }
 
-        return null;
+      return null;
     }
 
     /// <summary>
@@ -2290,7 +2290,7 @@ namespace System.Data.SQLite
         )
     {
 #if !PLATFORM_COMPACTFRAMEWORK
-        return byte.TryParse(value, style, null, out result);
+      return byte.TryParse(value, style, null, out result);
 #else
         try
         {
@@ -2315,18 +2315,18 @@ namespace System.Data.SQLite
         bool enable
         )
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        if (_sql == null)
-            throw new InvalidOperationException(UnsafeNativeMethods.StringFormat(
-                CultureInfo.CurrentCulture,
-                "Database connection not valid for {0} extensions.",
-                enable ? "enabling" : "disabling"));
+      if (_sql == null)
+        throw new InvalidOperationException(UnsafeNativeMethods.StringFormat(
+            CultureInfo.CurrentCulture,
+            "Database connection not valid for {0} extensions.",
+            enable ? "enabling" : "disabling"));
 
-        if ((_flags & SQLiteConnectionFlags.NoLoadExtension) == SQLiteConnectionFlags.NoLoadExtension)
-            throw new SQLiteException("Loading extensions is disabled for this database connection.");
+      if ((_flags & SQLiteConnectionFlags.NoLoadExtension) == SQLiteConnectionFlags.NoLoadExtension)
+        throw new SQLiteException("Loading extensions is disabled for this database connection.");
 
-        _sql.SetLoadExtension(enable);
+      _sql.SetLoadExtension(enable);
     }
 
     /// <summary>
@@ -2339,9 +2339,9 @@ namespace System.Data.SQLite
         string fileName
         )
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        LoadExtension(fileName, null);
+      LoadExtension(fileName, null);
     }
 
     /// <summary>
@@ -2359,16 +2359,16 @@ namespace System.Data.SQLite
         string procName
         )
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        if (_sql == null)
-            throw new InvalidOperationException(
-                "Database connection not valid for loading extensions.");
+      if (_sql == null)
+        throw new InvalidOperationException(
+            "Database connection not valid for loading extensions.");
 
-        if ((_flags & SQLiteConnectionFlags.NoLoadExtension) == SQLiteConnectionFlags.NoLoadExtension)
-            throw new SQLiteException("Loading extensions is disabled for this database connection.");
+      if ((_flags & SQLiteConnectionFlags.NoLoadExtension) == SQLiteConnectionFlags.NoLoadExtension)
+        throw new SQLiteException("Loading extensions is disabled for this database connection.");
 
-        _sql.LoadExtension(fileName, procName);
+      _sql.LoadExtension(fileName, procName);
     }
 
 #if INTEROP_VIRTUAL_TABLE
@@ -2383,16 +2383,16 @@ namespace System.Data.SQLite
         SQLiteModule module
         )
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        if (_sql == null)
-            throw new InvalidOperationException(
-                "Database connection not valid for creating modules.");
+      if (_sql == null)
+        throw new InvalidOperationException(
+            "Database connection not valid for creating modules.");
 
-        if ((_flags & SQLiteConnectionFlags.NoCreateModule) == SQLiteConnectionFlags.NoCreateModule)
-            throw new SQLiteException("Creating modules is disabled for this database connection.");
+      if ((_flags & SQLiteConnectionFlags.NoCreateModule) == SQLiteConnectionFlags.NoCreateModule)
+        throw new SQLiteException("Creating modules is disabled for this database connection.");
 
-        _sql.CreateModule(module, _flags);
+      _sql.CreateModule(module, _flags);
     }
 #endif
 
@@ -2413,9 +2413,9 @@ namespace System.Data.SQLite
         string text
         )
     {
-        string error = null;
+      string error = null;
 
-        return FromHexString(text, ref error);
+      return FromHexString(text, ref error);
     }
 
     /// <summary>
@@ -2432,23 +2432,23 @@ namespace System.Data.SQLite
         byte[] array
         )
     {
-        if (array == null)
-            return null;
+      if (array == null)
+        return null;
 
-        StringBuilder result = new StringBuilder();
+      StringBuilder result = new StringBuilder();
 
-        int length = array.Length;
+      int length = array.Length;
 
-        for (int index = 0; index < length; index++)
+      for (int index = 0; index < length; index++)
 #if NET_COMPACT_20
             result.Append(UnsafeNativeMethods.StringFormat(
                 CultureInfo.InvariantCulture,
                 "{0:x2}", array[index]));
 #else
-            result.AppendFormat("{0:x2}", array[index]);
+        result.AppendFormat("{0:x2}", array[index]);
 #endif
 
-        return result.ToString();
+      return result.ToString();
     }
 
     /// <summary>
@@ -2472,37 +2472,37 @@ namespace System.Data.SQLite
         ref string error
         )
     {
-        if (text == null)
+      if (text == null)
+      {
+        error = "string is null";
+        return null;
+      }
+
+      if (text.Length % 2 != 0)
+      {
+        error = "string contains an odd number of characters";
+        return null;
+      }
+
+      byte[] result = new byte[text.Length / 2];
+
+      for (int index = 0; index < text.Length; index += 2)
+      {
+        string value = text.Substring(index, 2);
+
+        if (!TryParseByte(value,
+                NumberStyles.HexNumber, out result[index / 2]))
         {
-            error = "string is null";
-            return null;
+          error = UnsafeNativeMethods.StringFormat(
+              CultureInfo.CurrentCulture,
+              "string contains \"{0}\", which cannot be converted to a byte value",
+              value);
+
+          return null;
         }
+      }
 
-        if (text.Length % 2 != 0)
-        {
-            error = "string contains an odd number of characters";
-            return null;
-        }
-
-        byte[] result = new byte[text.Length / 2];
-
-        for (int index = 0; index < text.Length; index += 2)
-        {
-            string value = text.Substring(index, 2);
-
-            if (!TryParseByte(value,
-                    NumberStyles.HexNumber, out result[index / 2]))
-            {
-                error = UnsafeNativeMethods.StringFormat(
-                    CultureInfo.CurrentCulture,
-                    "string contains \"{0}\", which cannot be converted to a byte value",
-                    value);
-
-                return null;
-            }
-        }
-
-        return result;
+      return result;
     }
 
     /// <summary>
@@ -2516,26 +2516,26 @@ namespace System.Data.SQLite
     /// </returns>
     private bool GetDefaultPooling()
     {
-        bool result = DefaultPooling;
+      bool result = DefaultPooling;
 
-        if (result) /* NOTE: True branch not reached in the default build. */
-        {
-            if ((_flags & SQLiteConnectionFlags.NoConnectionPool) == SQLiteConnectionFlags.NoConnectionPool)
-                result = false;
+      if (result) /* NOTE: True branch not reached in the default build. */
+      {
+        if ((_flags & SQLiteConnectionFlags.NoConnectionPool) == SQLiteConnectionFlags.NoConnectionPool)
+          result = false;
 
-            if ((_flags & SQLiteConnectionFlags.UseConnectionPool) == SQLiteConnectionFlags.UseConnectionPool)
-                result = true;
-        }
-        else
-        {
-            if ((_flags & SQLiteConnectionFlags.UseConnectionPool) == SQLiteConnectionFlags.UseConnectionPool)
-                result = true;
+        if ((_flags & SQLiteConnectionFlags.UseConnectionPool) == SQLiteConnectionFlags.UseConnectionPool)
+          result = true;
+      }
+      else
+      {
+        if ((_flags & SQLiteConnectionFlags.UseConnectionPool) == SQLiteConnectionFlags.UseConnectionPool)
+          result = true;
 
-            if ((_flags & SQLiteConnectionFlags.NoConnectionPool) == SQLiteConnectionFlags.NoConnectionPool)
-                result = false;
-        }
+        if ((_flags & SQLiteConnectionFlags.NoConnectionPool) == SQLiteConnectionFlags.NoConnectionPool)
+          result = false;
+      }
 
-        return result;
+      return result;
     }
 
     /// <summary>
@@ -2555,26 +2555,26 @@ namespace System.Data.SQLite
         IsolationLevel isolationLevel
         )
     {
-        if ((_flags & SQLiteConnectionFlags.MapIsolationLevels)
-                != SQLiteConnectionFlags.MapIsolationLevels)
-        {
-            return isolationLevel;
-        }
+      if ((_flags & SQLiteConnectionFlags.MapIsolationLevels)
+              != SQLiteConnectionFlags.MapIsolationLevels)
+      {
+        return isolationLevel;
+      }
 
-        switch (isolationLevel)
-        {
-            case IsolationLevel.Unspecified:
-            case IsolationLevel.Chaos:
-            case IsolationLevel.ReadUncommitted:
-            case IsolationLevel.ReadCommitted:
-                return DeferredIsolationLevel;
-            case IsolationLevel.RepeatableRead:
-            case IsolationLevel.Serializable:
-            case IsolationLevel.Snapshot:
-                return ImmediateIsolationLevel;
-            default:
-                return GetFallbackDefaultIsolationLevel();
-        }
+      switch (isolationLevel)
+      {
+        case IsolationLevel.Unspecified:
+        case IsolationLevel.Chaos:
+        case IsolationLevel.ReadUncommitted:
+        case IsolationLevel.ReadCommitted:
+          return DeferredIsolationLevel;
+        case IsolationLevel.RepeatableRead:
+        case IsolationLevel.Serializable:
+        case IsolationLevel.Snapshot:
+          return ImmediateIsolationLevel;
+        default:
+          return GetFallbackDefaultIsolationLevel();
+      }
     }
 
     /// <summary>
@@ -2619,9 +2619,9 @@ namespace System.Data.SQLite
       bool noDefaultFlags = SQLiteConvert.ToBoolean(FindKey(opts, "NoDefaultFlags", DefaultNoDefaultFlags.ToString()));
 
       if (enumValue is SQLiteConnectionFlags)
-          _flags |= (SQLiteConnectionFlags)enumValue;
+        _flags |= (SQLiteConnectionFlags)enumValue;
       else if (!noDefaultFlags)
-          _flags |= DefaultFlags;
+        _flags |= DefaultFlags;
 
       bool noSharedFlags = SQLiteConvert.ToBoolean(FindKey(opts, "NoSharedFlags", DefaultNoSharedFlags.ToString()));
       if (!noSharedFlags) { lock (_syncRoot) { _flags |= _sharedFlags; } }
@@ -2707,17 +2707,17 @@ namespace System.Data.SQLite
 #if !NET_COMPACT_20 && TRACE_WARNING
       if ((_flags & SQLiteConnectionFlags.TraceWarning) == SQLiteConnectionFlags.TraceWarning)
       {
-          if (!uri && !fullUri && !isMemory && !String.IsNullOrEmpty(fileName) &&
-              fileName.StartsWith("\\", StringComparison.OrdinalIgnoreCase) &&
-              !fileName.StartsWith("\\\\", StringComparison.OrdinalIgnoreCase))
-          {
-              System.Diagnostics.Trace.WriteLine(UnsafeNativeMethods.StringFormat(
-                  CultureInfo.CurrentCulture,
-                  "WARNING: Detected a possibly malformed UNC database file name \"{0}\" that " +
-                  "may have originally started with two backslashes; however, four leading " +
-                  "backslashes may be required, e.g.: \"Data Source=\\\\\\{0};\"",
-                  fileName));
-          }
+        if (!uri && !fullUri && !isMemory && !String.IsNullOrEmpty(fileName) &&
+            fileName.StartsWith("\\", StringComparison.OrdinalIgnoreCase) &&
+            !fileName.StartsWith("\\\\", StringComparison.OrdinalIgnoreCase))
+        {
+          System.Diagnostics.Trace.WriteLine(UnsafeNativeMethods.StringFormat(
+              CultureInfo.CurrentCulture,
+              "WARNING: Detected a possibly malformed UNC database file name \"{0}\" that " +
+              "may have originally started with two backslashes; however, four leading " +
+              "backslashes may be required, e.g.: \"Data Source=\\\\\\{0};\"",
+              fileName));
+        }
       }
 #endif
 
@@ -2757,7 +2757,7 @@ namespace System.Data.SQLite
 
         if (_sql == null)
         {
-            SetupSQLiteBase(opts);
+          SetupSQLiteBase(opts);
         }
 
         SQLiteOpenFlagsEnum flags = SQLiteOpenFlagsEnum.None;
@@ -2777,7 +2777,7 @@ namespace System.Data.SQLite
         }
 
         if (fullUri)
-            flags |= SQLiteOpenFlagsEnum.Uri;
+          flags |= SQLiteOpenFlagsEnum.Uri;
 
         _sql.Open(fileName, _vfsName, _flags, flags, maxPoolSize, usePooling);
 
@@ -2788,27 +2788,27 @@ namespace System.Data.SQLite
 
         if (hexPassword != null)
         {
-            string error = null;
-            byte[] hexPasswordBytes = FromHexString(hexPassword, ref error);
+          string error = null;
+          byte[] hexPasswordBytes = FromHexString(hexPassword, ref error);
 
-            if (hexPasswordBytes == null)
-            {
-                throw new FormatException(UnsafeNativeMethods.StringFormat(
-                    CultureInfo.CurrentCulture,
-                    "Cannot parse 'HexPassword' property value into byte values: {0}",
-                    error));
-            }
+          if (hexPasswordBytes == null)
+          {
+            throw new FormatException(UnsafeNativeMethods.StringFormat(
+                CultureInfo.CurrentCulture,
+                "Cannot parse 'HexPassword' property value into byte values: {0}",
+                error));
+          }
 
-            _sql.SetPassword(hexPasswordBytes);
+          _sql.SetPassword(hexPasswordBytes);
         }
         else
         {
-            string password = FindKey(opts, "Password", DefaultPassword);
+          string password = FindKey(opts, "Password", DefaultPassword);
 
-            if (password != null)
-                _sql.SetPassword(UTF8Encoding.UTF8.GetBytes(password));
-            else if (_password != null)
-                _sql.SetPassword(_password);
+          if (password != null)
+            _sql.SetPassword(UTF8Encoding.UTF8.GetBytes(password));
+          else if (_password != null)
+            _sql.SetPassword(_password);
         }
         _password = null;
 #endif
@@ -2833,97 +2833,97 @@ namespace System.Data.SQLite
 
           if (boolValue)
           {
-              using (SQLiteCommand cmd = CreateCommand())
+            using (SQLiteCommand cmd = CreateCommand())
+            {
+              if (_busyTimeout != DefaultBusyTimeout)
               {
-                  if (_busyTimeout != DefaultBusyTimeout)
-                  {
-                      cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA busy_timeout={0}", _busyTimeout);
-                      cmd.ExecuteNonQuery();
-                  }
+                cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA busy_timeout={0}", _busyTimeout);
+                cmd.ExecuteNonQuery();
+              }
 
-                  int intValue;
+              int intValue;
 
-                  if (!fullUri && !isMemory)
-                  {
-                      strValue = FindKey(opts, "Page Size", DefaultPageSize.ToString());
-                      intValue = Convert.ToInt32(strValue, CultureInfo.InvariantCulture);
-                      if (intValue != DefaultPageSize)
-                      {
-                          cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA page_size={0}", intValue);
-                          cmd.ExecuteNonQuery();
-                      }
-                  }
+              if (!fullUri && !isMemory)
+              {
+                strValue = FindKey(opts, "Page Size", DefaultPageSize.ToString());
+                intValue = Convert.ToInt32(strValue, CultureInfo.InvariantCulture);
+                if (intValue != DefaultPageSize)
+                {
+                  cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA page_size={0}", intValue);
+                  cmd.ExecuteNonQuery();
+                }
+              }
 
-                  strValue = FindKey(opts, "Max Page Count", DefaultMaxPageCount.ToString());
-                  intValue = Convert.ToInt32(strValue, CultureInfo.InvariantCulture);
-                  if (intValue != DefaultMaxPageCount)
-                  {
-                      cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA max_page_count={0}", intValue);
-                      cmd.ExecuteNonQuery();
-                  }
+              strValue = FindKey(opts, "Max Page Count", DefaultMaxPageCount.ToString());
+              intValue = Convert.ToInt32(strValue, CultureInfo.InvariantCulture);
+              if (intValue != DefaultMaxPageCount)
+              {
+                cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA max_page_count={0}", intValue);
+                cmd.ExecuteNonQuery();
+              }
 
-                  strValue = FindKey(opts, "Legacy Format", DefaultLegacyFormat.ToString());
-                  boolValue = SQLiteConvert.ToBoolean(strValue);
-                  if (boolValue != DefaultLegacyFormat)
-                  {
-                      cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA legacy_file_format={0}", boolValue ? "ON" : "OFF");
-                      cmd.ExecuteNonQuery();
-                  }
+              strValue = FindKey(opts, "Legacy Format", DefaultLegacyFormat.ToString());
+              boolValue = SQLiteConvert.ToBoolean(strValue);
+              if (boolValue != DefaultLegacyFormat)
+              {
+                cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA legacy_file_format={0}", boolValue ? "ON" : "OFF");
+                cmd.ExecuteNonQuery();
+              }
 
-                  strValue = FindKey(opts, "Synchronous", DefaultSynchronous.ToString());
-                  enumValue = TryParseEnum(typeof(SQLiteSynchronousEnum), strValue, true);
-                  if (!(enumValue is SQLiteSynchronousEnum) || ((SQLiteSynchronousEnum)enumValue != DefaultSynchronous))
-                  {
-                      cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA synchronous={0}", strValue);
-                      cmd.ExecuteNonQuery();
-                  }
+              strValue = FindKey(opts, "Synchronous", DefaultSynchronous.ToString());
+              enumValue = TryParseEnum(typeof(SQLiteSynchronousEnum), strValue, true);
+              if (!(enumValue is SQLiteSynchronousEnum) || ((SQLiteSynchronousEnum)enumValue != DefaultSynchronous))
+              {
+                cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA synchronous={0}", strValue);
+                cmd.ExecuteNonQuery();
+              }
 
-                  strValue = FindKey(opts, "Cache Size", DefaultCacheSize.ToString());
-                  intValue = Convert.ToInt32(strValue, CultureInfo.InvariantCulture);
-                  if (intValue != DefaultCacheSize)
-                  {
-                      cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA cache_size={0}", intValue);
-                      cmd.ExecuteNonQuery();
-                  }
+              strValue = FindKey(opts, "Cache Size", DefaultCacheSize.ToString());
+              intValue = Convert.ToInt32(strValue, CultureInfo.InvariantCulture);
+              if (intValue != DefaultCacheSize)
+              {
+                cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA cache_size={0}", intValue);
+                cmd.ExecuteNonQuery();
+              }
 
-                  strValue = FindKey(opts, "Journal Mode", DefaultJournalMode.ToString());
-                  enumValue = TryParseEnum(typeof(SQLiteJournalModeEnum), strValue, true);
-                  if (!(enumValue is SQLiteJournalModeEnum) || ((SQLiteJournalModeEnum)enumValue != DefaultJournalMode))
-                  {
-                      string pragmaStr = "PRAGMA journal_mode={0}";
+              strValue = FindKey(opts, "Journal Mode", DefaultJournalMode.ToString());
+              enumValue = TryParseEnum(typeof(SQLiteJournalModeEnum), strValue, true);
+              if (!(enumValue is SQLiteJournalModeEnum) || ((SQLiteJournalModeEnum)enumValue != DefaultJournalMode))
+              {
+                string pragmaStr = "PRAGMA journal_mode={0}";
 
 #if INTEROP_INCLUDE_ZIPVFS
                       if (useZipVfs)
                           pragmaStr = "PRAGMA zipvfs_journal_mode={0}";
 #endif
 
-                      cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, pragmaStr, strValue);
-                      cmd.ExecuteNonQuery();
-                  }
-
-                  strValue = FindKey(opts, "Foreign Keys", DefaultForeignKeys.ToString());
-                  boolValue = SQLiteConvert.ToBoolean(strValue);
-                  if (boolValue != DefaultForeignKeys)
-                  {
-                      cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA foreign_keys={0}", boolValue ? "ON" : "OFF");
-                      cmd.ExecuteNonQuery();
-                  }
-
-                  strValue = FindKey(opts, "Recursive Triggers", DefaultRecursiveTriggers.ToString());
-                  boolValue = SQLiteConvert.ToBoolean(strValue);
-                  if (boolValue != DefaultRecursiveTriggers)
-                  {
-                      cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA recursive_triggers={0}", boolValue ? "ON" : "OFF");
-                      cmd.ExecuteNonQuery();
-                  }
+                cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, pragmaStr, strValue);
+                cmd.ExecuteNonQuery();
               }
+
+              strValue = FindKey(opts, "Foreign Keys", DefaultForeignKeys.ToString());
+              boolValue = SQLiteConvert.ToBoolean(strValue);
+              if (boolValue != DefaultForeignKeys)
+              {
+                cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA foreign_keys={0}", boolValue ? "ON" : "OFF");
+                cmd.ExecuteNonQuery();
+              }
+
+              strValue = FindKey(opts, "Recursive Triggers", DefaultRecursiveTriggers.ToString());
+              boolValue = SQLiteConvert.ToBoolean(strValue);
+              if (boolValue != DefaultRecursiveTriggers)
+              {
+                cmd.CommandText = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "PRAGMA recursive_triggers={0}", boolValue ? "ON" : "OFF");
+                cmd.ExecuteNonQuery();
+              }
+            }
           }
 
           if (_progressHandler != null)
-              _sql.SetProgressHook(_progressOps, _progressCallback);
+            _sql.SetProgressHook(_progressOps, _progressCallback);
 
           if (_authorizerHandler != null)
-              _sql.SetAuthorizerHook(_authorizerCallback);
+            _sql.SetAuthorizerHook(_authorizerCallback);
 
           if (_commitHandler != null)
             _sql.SetCommitHook(_commitCallback);
@@ -2940,7 +2940,7 @@ namespace System.Data.SQLite
           if (transaction != null &&
               SQLiteConvert.ToBoolean(FindKey(opts, "Enlist", DefaultEnlist.ToString())))
           {
-              EnlistTransaction(transaction);
+            EnlistTransaction(transaction);
           }
 #endif
 
@@ -2972,7 +2972,7 @@ namespace System.Data.SQLite
     /// <returns>The current connection object.</returns>
     public SQLiteConnection OpenAndReturn()
     {
-        CheckDisposed(); Open(); return this;
+      CheckDisposed(); Open(); return this;
     }
 
     /// <summary>
@@ -2992,8 +2992,8 @@ namespace System.Data.SQLite
     /// </summary>
     public int BusyTimeout
     {
-        get { CheckDisposed(); return _busyTimeout; }
-        set { CheckDisposed(); _busyTimeout = value; }
+      get { CheckDisposed(); return _busyTimeout; }
+      set { CheckDisposed(); _busyTimeout = value; }
     }
 
     /// <summary>
@@ -3003,8 +3003,8 @@ namespace System.Data.SQLite
     /// </summary>
     public int PrepareRetries
     {
-        get { CheckDisposed(); return _prepareRetries; }
-        set { CheckDisposed(); _prepareRetries = value; }
+      get { CheckDisposed(); return _prepareRetries; }
+      set { CheckDisposed(); _prepareRetries = value; }
     }
 
     /// <summary>
@@ -3016,8 +3016,8 @@ namespace System.Data.SQLite
     /// </summary>
     public int ProgressOps
     {
-        get { CheckDisposed(); return _progressOps; }
-        set { CheckDisposed(); _progressOps = value; }
+      get { CheckDisposed(); return _progressOps; }
+      set { CheckDisposed(); _progressOps = value; }
     }
 
     /// <summary>
@@ -3026,8 +3026,8 @@ namespace System.Data.SQLite
     /// </summary>
     public bool ParseViaFramework
     {
-        get { CheckDisposed(); return _parseViaFramework; }
-        set { CheckDisposed(); _parseViaFramework = value; }
+      get { CheckDisposed(); return _parseViaFramework; }
+      set { CheckDisposed(); _parseViaFramework = value; }
     }
 
     /// <summary>
@@ -3077,15 +3077,15 @@ namespace System.Data.SQLite
     /// </summary>
     public bool OwnHandle
     {
-        get
-        {
-            CheckDisposed();
+      get
+      {
+        CheckDisposed();
 
-            if (_sql == null)
-                throw new InvalidOperationException("Database connection not valid for checking handle.");
+        if (_sql == null)
+          throw new InvalidOperationException("Database connection not valid for checking handle.");
 
-            return _sql.OwnHandle;
-        }
+        return _sql.OwnHandle;
+      }
     }
 
     /// <summary>
@@ -3137,12 +3137,12 @@ namespace System.Data.SQLite
     /// </summary>
     public void Cancel()
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        if (_sql == null)
-            throw new InvalidOperationException("Database connection not valid for query cancellation.");
+      if (_sql == null)
+        throw new InvalidOperationException("Database connection not valid for query cancellation.");
 
-        _sql.Cancel(); /* throw */
+      _sql.Cancel(); /* throw */
     }
 
     /// <summary>
@@ -3175,15 +3175,15 @@ namespace System.Data.SQLite
 #endif
     public bool AutoCommit
     {
-        get
-        {
-            CheckDisposed();
+      get
+      {
+        CheckDisposed();
 
-            if (_sql == null)
-                throw new InvalidOperationException("Database connection not valid for getting autocommit mode.");
+        if (_sql == null)
+          throw new InvalidOperationException("Database connection not valid for getting autocommit mode.");
 
-            return _sql.AutoCommit;
-        }
+        return _sql.AutoCommit;
+      }
     }
 
     /// <summary>
@@ -3220,7 +3220,7 @@ namespace System.Data.SQLite
         if (_sql == null)
           throw new InvalidOperationException("Database connection not valid for getting maximum memory used.");
 
-          return _sql.MemoryHighwater;
+        return _sql.MemoryHighwater;
       }
     }
 
@@ -3239,11 +3239,11 @@ namespace System.Data.SQLite
         ref IDictionary<string, long> statistics
         )
     {
-        if (statistics == null)
-            statistics = new Dictionary<string, long>();
+      if (statistics == null)
+        statistics = new Dictionary<string, long>();
 
-        statistics["MemoryUsed"] = SQLite3.StaticMemoryUsed;
-        statistics["MemoryHighwater"] = SQLite3.StaticMemoryHighwater;
+      statistics["MemoryUsed"] = SQLite3.StaticMemoryUsed;
+      statistics["MemoryHighwater"] = SQLite3.StaticMemoryHighwater;
     }
 
     /// <summary>
@@ -3251,18 +3251,18 @@ namespace System.Data.SQLite
     /// </summary>
     public void ReleaseMemory()
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        if (_sql == null)
-            throw new InvalidOperationException("Database connection not valid for releasing memory.");
+      if (_sql == null)
+        throw new InvalidOperationException("Database connection not valid for releasing memory.");
 
-        SQLiteErrorCode rc = _sql.ReleaseMemory();
+      SQLiteErrorCode rc = _sql.ReleaseMemory();
 
-        if (rc != SQLiteErrorCode.Ok)
-        {
-            throw new SQLiteException(rc,
-                _sql.GetLastError("Could not release connection memory."));
-        }
+      if (rc != SQLiteErrorCode.Ok)
+      {
+        throw new SQLiteException(rc,
+            _sql.GetLastError("Could not release connection memory."));
+      }
     }
 
     /// <summary>
@@ -3296,7 +3296,7 @@ namespace System.Data.SQLite
     /// A standard SQLite return code (i.e. zero for success and non-zero
     /// for failure).
     /// </returns>
-    #pragma warning disable 3001
+#pragma warning disable 3001
     public static SQLiteErrorCode ReleaseMemory(
         int nBytes,
         bool reset,
@@ -3306,10 +3306,10 @@ namespace System.Data.SQLite
         ref uint nLargest
         )
     {
-        return SQLite3.StaticReleaseMemory(
-            nBytes, reset, compact, ref nFree, ref resetOk, ref nLargest);
+      return SQLite3.StaticReleaseMemory(
+          nBytes, reset, compact, ref nFree, ref resetOk, ref nLargest);
     }
-    #pragma warning restore 3001
+#pragma warning restore 3001
 
     /// <summary>
     /// Sets the status of the memory usage tracking subsystem in the SQLite core library.  By default, this is enabled.
@@ -3320,7 +3320,7 @@ namespace System.Data.SQLite
     /// <returns>A standard SQLite return code (i.e. zero for success and non-zero for failure).</returns>
     public static SQLiteErrorCode SetMemoryStatus(bool value)
     {
-        return SQLite3.StaticSetMemoryStatus(value);
+      return SQLite3.StaticSetMemoryStatus(value);
     }
 
     /// <summary>
@@ -3330,7 +3330,7 @@ namespace System.Data.SQLite
     /// </summary>
     public static string DefineConstants
     {
-        get { return SQLite3.DefineConstants; }
+      get { return SQLite3.DefineConstants; }
     }
 
     /// <summary>
@@ -3357,7 +3357,7 @@ namespace System.Data.SQLite
     /// </summary>
     public static string SQLiteCompileOptions
     {
-        get { return SQLite3.SQLiteCompileOptions; }
+      get { return SQLite3.SQLiteCompileOptions; }
     }
 
     /// <summary>
@@ -3389,7 +3389,7 @@ namespace System.Data.SQLite
     /// </summary>
     public static string InteropCompileOptions
     {
-        get { return SQLite3.InteropCompileOptions; }
+      get { return SQLite3.InteropCompileOptions; }
     }
 
     /// <summary>
@@ -3400,11 +3400,11 @@ namespace System.Data.SQLite
     /// </summary>
     public static string ProviderVersion
     {
-        get
-        {
-            return (_assembly != null) ?
-                _assembly.GetName().Version.ToString() : null;
-        }
+      get
+      {
+        return (_assembly != null) ?
+            _assembly.GetName().Version.ToString() : null;
+      }
     }
 
     /// <summary>
@@ -3415,50 +3415,50 @@ namespace System.Data.SQLite
     /// </summary>
     public static string ProviderSourceId
     {
-        get
+      get
+      {
+        if (_assembly == null)
+          return null;
+
+        string sourceId = null;
+
+        if (_assembly.IsDefined(typeof(AssemblySourceIdAttribute), false))
         {
-            if (_assembly == null)
-                return null;
+          AssemblySourceIdAttribute attribute =
+              (AssemblySourceIdAttribute)_assembly.GetCustomAttributes(
+                  typeof(AssemblySourceIdAttribute), false)[0];
 
-            string sourceId = null;
-
-            if (_assembly.IsDefined(typeof(AssemblySourceIdAttribute), false))
-            {
-                AssemblySourceIdAttribute attribute =
-                    (AssemblySourceIdAttribute)_assembly.GetCustomAttributes(
-                        typeof(AssemblySourceIdAttribute), false)[0];
-
-                sourceId = attribute.SourceId;
-            }
-
-            string sourceTimeStamp = null;
-
-            if (_assembly.IsDefined(typeof(AssemblySourceTimeStampAttribute), false))
-            {
-                AssemblySourceTimeStampAttribute attribute =
-                    (AssemblySourceTimeStampAttribute)_assembly.GetCustomAttributes(
-                        typeof(AssemblySourceTimeStampAttribute), false)[0];
-
-                sourceTimeStamp = attribute.SourceTimeStamp;
-            }
-
-            if ((sourceId != null) || (sourceTimeStamp != null))
-            {
-                if (sourceId == null)
-                    sourceId = "0000000000000000000000000000000000000000";
-
-                if (sourceTimeStamp == null)
-                    sourceTimeStamp = "0000-00-00 00:00:00 UTC";
-
-                return UnsafeNativeMethods.StringFormat(
-                    CultureInfo.InvariantCulture,
-                    "{0} {1}", sourceId, sourceTimeStamp);
-            }
-            else
-            {
-                return null;
-            }
+          sourceId = attribute.SourceId;
         }
+
+        string sourceTimeStamp = null;
+
+        if (_assembly.IsDefined(typeof(AssemblySourceTimeStampAttribute), false))
+        {
+          AssemblySourceTimeStampAttribute attribute =
+              (AssemblySourceTimeStampAttribute)_assembly.GetCustomAttributes(
+                  typeof(AssemblySourceTimeStampAttribute), false)[0];
+
+          sourceTimeStamp = attribute.SourceTimeStamp;
+        }
+
+        if ((sourceId != null) || (sourceTimeStamp != null))
+        {
+          if (sourceId == null)
+            sourceId = "0000000000000000000000000000000000000000";
+
+          if (sourceTimeStamp == null)
+            sourceTimeStamp = "0000-00-00 00:00:00 UTC";
+
+          return UnsafeNativeMethods.StringFormat(
+              CultureInfo.InvariantCulture,
+              "{0} {1}", sourceId, sourceTimeStamp);
+        }
+        else
+        {
+          return null;
+        }
+      }
     }
 
     /// <summary>
@@ -3467,19 +3467,19 @@ namespace System.Data.SQLite
     /// </summary>
     public static SQLiteConnectionFlags DefaultFlags
     {
-        get
-        {
-            object enumValue;
+      get
+      {
+        object enumValue;
 
-            enumValue = TryParseEnum(typeof(SQLiteConnectionFlags),
-                UnsafeNativeMethods.GetSettingValue(
-                    "DefaultFlags_SQLiteConnection", null), true);
+        enumValue = TryParseEnum(typeof(SQLiteConnectionFlags),
+            UnsafeNativeMethods.GetSettingValue(
+                "DefaultFlags_SQLiteConnection", null), true);
 
-            if (enumValue is SQLiteConnectionFlags)
-                return (SQLiteConnectionFlags)enumValue;
+        if (enumValue is SQLiteConnectionFlags)
+          return (SQLiteConnectionFlags)enumValue;
 
-            return FallbackDefaultFlags;
-        }
+        return FallbackDefaultFlags;
+      }
     }
 
     /// <summary>
@@ -3487,8 +3487,8 @@ namespace System.Data.SQLite
     /// </summary>
     public static SQLiteConnectionFlags SharedFlags
     {
-        get { lock (_syncRoot) { return _sharedFlags; } }
-        set { lock (_syncRoot) { _sharedFlags = value; } }
+      get { lock (_syncRoot) { return _sharedFlags; } }
+      set { lock (_syncRoot) { _sharedFlags = value; } }
     }
 
     /// <summary>
@@ -3516,13 +3516,13 @@ namespace System.Data.SQLite
     /// </returns>
     public SQLiteErrorCode Shutdown()
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        if (_sql == null)
-            throw new InvalidOperationException("Database connection not valid for shutdown.");
+      if (_sql == null)
+        throw new InvalidOperationException("Database connection not valid for shutdown.");
 
-        _sql.Close(true); /* NOTE: MUST be closed before shutdown. */
-        SQLiteErrorCode rc = _sql.Shutdown();
+      _sql.Close(true); /* NOTE: MUST be closed before shutdown. */
+      SQLiteErrorCode rc = _sql.Shutdown();
 
 #if !NET_COMPACT_20 && TRACE_CONNECTION
         if (rc != SQLiteErrorCode.Ok)
@@ -3531,7 +3531,7 @@ namespace System.Data.SQLite
                 "Shutdown (Instance) Failed: {0}", rc));
 #endif
 
-        return rc;
+      return rc;
     }
 
     /// <summary>
@@ -3551,19 +3551,19 @@ namespace System.Data.SQLite
         bool noThrow
         )
     {
-        SQLiteErrorCode rc = SQLite3.StaticShutdown(directories);
+      SQLiteErrorCode rc = SQLite3.StaticShutdown(directories);
 
-        if (rc != SQLiteErrorCode.Ok)
-        {
+      if (rc != SQLiteErrorCode.Ok)
+      {
 #if !NET_COMPACT_20 && TRACE_CONNECTION
             System.Diagnostics.Trace.WriteLine(UnsafeNativeMethods.StringFormat(
                 CultureInfo.CurrentCulture,
                 "Shutdown (Static) Failed: {0}", rc));
 #endif
 
-            if (!noThrow)
-                throw new SQLiteException(rc, null);
-        }
+        if (!noThrow)
+          throw new SQLiteException(rc, null);
+      }
     }
 
     /// Enables or disabled extended result codes returned by SQLite
@@ -3598,7 +3598,7 @@ namespace System.Data.SQLite
       CheckDisposed();
 
       if (_sql == null)
-          throw new InvalidOperationException("Database connection not valid for logging message.");
+        throw new InvalidOperationException("Database connection not valid for logging message.");
 
       _sql.LogMessage(iErrCode, zMessage);
     }
@@ -3609,7 +3609,7 @@ namespace System.Data.SQLite
       CheckDisposed();
 
       if (_sql == null)
-          throw new InvalidOperationException("Database connection not valid for logging message.");
+        throw new InvalidOperationException("Database connection not valid for logging message.");
 
       _sql.LogMessage((SQLiteErrorCode)iErrCode, zMessage);
     }
@@ -3692,37 +3692,37 @@ namespace System.Data.SQLite
     /// <returns>Zero for success, non-zero for error.</returns>
     public SQLiteErrorCode SetAvRetry(ref int count, ref int interval)
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        if (_connectionState != ConnectionState.Open)
-            throw new InvalidOperationException(
-                "Database must be opened before changing the AV retry parameters.");
+      if (_connectionState != ConnectionState.Open)
+        throw new InvalidOperationException(
+            "Database must be opened before changing the AV retry parameters.");
 
-        SQLiteErrorCode rc;
-        IntPtr pArg = IntPtr.Zero;
+      SQLiteErrorCode rc;
+      IntPtr pArg = IntPtr.Zero;
 
-        try
+      try
+      {
+        pArg = Marshal.AllocHGlobal(sizeof(int) * 2);
+
+        Marshal.WriteInt32(pArg, 0, count);
+        Marshal.WriteInt32(pArg, sizeof(int), interval);
+
+        rc = _sql.FileControl(null, SQLITE_FCNTL_WIN32_AV_RETRY, pArg);
+
+        if (rc == SQLiteErrorCode.Ok)
         {
-            pArg = Marshal.AllocHGlobal(sizeof(int) * 2);
-
-            Marshal.WriteInt32(pArg, 0, count);
-            Marshal.WriteInt32(pArg, sizeof(int), interval);
-
-            rc = _sql.FileControl(null, SQLITE_FCNTL_WIN32_AV_RETRY, pArg);
-
-            if (rc == SQLiteErrorCode.Ok)
-            {
-                count = Marshal.ReadInt32(pArg, 0);
-                interval = Marshal.ReadInt32(pArg, sizeof(int));
-            }
+          count = Marshal.ReadInt32(pArg, 0);
+          interval = Marshal.ReadInt32(pArg, sizeof(int));
         }
-        finally
-        {
-            if (pArg != IntPtr.Zero)
-                Marshal.FreeHGlobal(pArg);
-        }
+      }
+      finally
+      {
+        if (pArg != IntPtr.Zero)
+          Marshal.FreeHGlobal(pArg);
+      }
 
-        return rc;
+      return rc;
     }
 
     /// <summary>
@@ -3737,27 +3737,27 @@ namespace System.Data.SQLite
     /// </returns>
     public SQLiteErrorCode SetChunkSize(int size)
     {
-        CheckDisposed();
+      CheckDisposed();
 
-        if (_connectionState != ConnectionState.Open)
-            throw new InvalidOperationException(
-                "Database must be opened before changing the chunk size.");
+      if (_connectionState != ConnectionState.Open)
+        throw new InvalidOperationException(
+            "Database must be opened before changing the chunk size.");
 
-        IntPtr pArg = IntPtr.Zero;
+      IntPtr pArg = IntPtr.Zero;
 
-        try
-        {
-            pArg = Marshal.AllocHGlobal(sizeof(int) * 1);
+      try
+      {
+        pArg = Marshal.AllocHGlobal(sizeof(int) * 1);
 
-            Marshal.WriteInt32(pArg, 0, size);
+        Marshal.WriteInt32(pArg, 0, size);
 
-            return _sql.FileControl(null, SQLITE_FCNTL_CHUNK_SIZE, pArg);
-        }
-        finally
-        {
-            if (pArg != IntPtr.Zero)
-                Marshal.FreeHGlobal(pArg);
-        }
+        return _sql.FileControl(null, SQLITE_FCNTL_CHUNK_SIZE, pArg);
+      }
+      finally
+      {
+        if (pArg != IntPtr.Zero)
+          Marshal.FreeHGlobal(pArg);
+      }
     }
 
     /// <summary>
@@ -3773,29 +3773,29 @@ namespace System.Data.SQLite
     /// </returns>
     private static string UnwrapString(string value)
     {
-        if (String.IsNullOrEmpty(value))
-        {
-            //
-            // NOTE: The string is null or empty, return it verbatim.
-            //
-            return value;
-        }
-
-        int length = value.Length;
-
-        if (((value[0] == '\'') && (value[length - 1] == '\'')) ||
-            ((value[0] == '"') && (value[length - 1] == '"')))
-        {
-            //
-            // NOTE: Remove the first and last character.
-            //
-            return value.Substring(1, length - 2);
-        }
-
+      if (String.IsNullOrEmpty(value))
+      {
         //
-        // NOTE: No match, return the input string verbatim.
+        // NOTE: The string is null or empty, return it verbatim.
         //
         return value;
+      }
+
+      int length = value.Length;
+
+      if (((value[0] == '\'') && (value[length - 1] == '\'')) ||
+          ((value[0] == '"') && (value[length - 1] == '"')))
+      {
+        //
+        // NOTE: Remove the first and last character.
+        //
+        return value.Substring(1, length - 2);
+      }
+
+      //
+      // NOTE: No match, return the input string verbatim.
+      //
+      return value;
     }
 
     /// <summary>
@@ -3821,7 +3821,10 @@ namespace System.Data.SQLite
 #else
         dataDirectory = AppDomain.CurrentDomain.GetData("DataDirectory") as string;
         if (String.IsNullOrEmpty(dataDirectory))
-          dataDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        {
+          //dataDirectory = AppDomain.CurrentDomain.BaseDirectory;
+          dataDirectory = CuteAnt.IO.PathHelper.ApplicationBasePath; // ## ¿àÖñ ÐÞ¸Ä ##
+        }
 #endif
 
         if (sourceFile.Length > _dataDirectory.Length)
@@ -4182,7 +4185,7 @@ namespace System.Data.SQLite
                 }
               }
             }
-            catch(SQLiteException)
+            catch (SQLiteException)
             {
             }
           }
@@ -4983,28 +4986,28 @@ namespace System.Data.SQLite
     /// </summary>
     public event SQLiteProgressEventHandler Progress
     {
-        add
-        {
-            CheckDisposed();
+      add
+      {
+        CheckDisposed();
 
-            if (_progressHandler == null)
-            {
-                _progressCallback = new SQLiteProgressCallback(ProgressCallback);
-                if (_sql != null) _sql.SetProgressHook(_progressOps, _progressCallback);
-            }
-            _progressHandler += value;
-        }
-        remove
+        if (_progressHandler == null)
         {
-            CheckDisposed();
-
-            _progressHandler -= value;
-            if (_progressHandler == null)
-            {
-                if (_sql != null) _sql.SetProgressHook(0, null);
-                _progressCallback = null;
-            }
+          _progressCallback = new SQLiteProgressCallback(ProgressCallback);
+          if (_sql != null) _sql.SetProgressHook(_progressOps, _progressCallback);
         }
+        _progressHandler += value;
+      }
+      remove
+      {
+        CheckDisposed();
+
+        _progressHandler -= value;
+        if (_progressHandler == null)
+        {
+          if (_sql != null) _sql.SetProgressHook(0, null);
+          _progressCallback = null;
+        }
+      }
     }
 
     /// <summary>
@@ -5017,28 +5020,28 @@ namespace System.Data.SQLite
     /// </summary>
     public event SQLiteAuthorizerEventHandler Authorize
     {
-        add
-        {
-            CheckDisposed();
+      add
+      {
+        CheckDisposed();
 
-            if (_authorizerHandler == null)
-            {
-                _authorizerCallback = new SQLiteAuthorizerCallback(AuthorizerCallback);
-                if (_sql != null) _sql.SetAuthorizerHook(_authorizerCallback);
-            }
-            _authorizerHandler += value;
-        }
-        remove
+        if (_authorizerHandler == null)
         {
-            CheckDisposed();
-
-            _authorizerHandler -= value;
-            if (_authorizerHandler == null)
-            {
-                if (_sql != null) _sql.SetAuthorizerHook(null);
-                _authorizerCallback = null;
-            }
+          _authorizerCallback = new SQLiteAuthorizerCallback(AuthorizerCallback);
+          if (_sql != null) _sql.SetAuthorizerHook(_authorizerCallback);
         }
+        _authorizerHandler += value;
+      }
+      remove
+      {
+        CheckDisposed();
+
+        _authorizerHandler -= value;
+        if (_authorizerHandler == null)
+        {
+          if (_sql != null) _sql.SetAuthorizerHook(null);
+          _authorizerCallback = null;
+        }
+      }
     }
 
     /// <summary>
@@ -5075,47 +5078,47 @@ namespace System.Data.SQLite
         IntPtr pUserData /* NOT USED: Always IntPtr.Zero. */
         )
     {
+      try
+      {
+        ProgressEventArgs eventArgs = new ProgressEventArgs(
+            pUserData, SQLiteProgressReturnCode.Continue);
+
+        if (_progressHandler != null)
+          _progressHandler(this, eventArgs);
+
+        return eventArgs.ReturnCode;
+      }
+      catch (Exception e) /* NOTE: Must catch ALL. */
+      {
         try
         {
-            ProgressEventArgs eventArgs = new ProgressEventArgs(
-                pUserData, SQLiteProgressReturnCode.Continue);
-
-            if (_progressHandler != null)
-                _progressHandler(this, eventArgs);
-
-            return eventArgs.ReturnCode;
+          if ((_flags & SQLiteConnectionFlags.LogCallbackException) ==
+                  SQLiteConnectionFlags.LogCallbackException)
+          {
+            SQLiteLog.LogMessage(SQLiteBase.COR_E_EXCEPTION,
+                UnsafeNativeMethods.StringFormat(CultureInfo.CurrentCulture,
+                "Caught exception in \"Progress\" method: {1}",
+                e)); /* throw */
+          }
         }
-        catch (Exception e) /* NOTE: Must catch ALL. */
+        catch
         {
-            try
-            {
-                if ((_flags & SQLiteConnectionFlags.LogCallbackException) ==
-                        SQLiteConnectionFlags.LogCallbackException)
-                {
-                    SQLiteLog.LogMessage(SQLiteBase.COR_E_EXCEPTION,
-                        UnsafeNativeMethods.StringFormat(CultureInfo.CurrentCulture,
-                        "Caught exception in \"Progress\" method: {1}",
-                        e)); /* throw */
-                }
-            }
-            catch
-            {
-                // do nothing.
-            }
+          // do nothing.
         }
+      }
 
-        //
-        // NOTE: Should throwing an exception interrupt the operation?
-        //
-        if ((_flags & SQLiteConnectionFlags.InterruptOnException) ==
-                SQLiteConnectionFlags.InterruptOnException)
-        {
-            return SQLiteProgressReturnCode.Interrupt;
-        }
-        else
-        {
-            return SQLiteProgressReturnCode.Continue;
-        }
+      //
+      // NOTE: Should throwing an exception interrupt the operation?
+      //
+      if ((_flags & SQLiteConnectionFlags.InterruptOnException) ==
+              SQLiteConnectionFlags.InterruptOnException)
+      {
+        return SQLiteProgressReturnCode.Interrupt;
+      }
+      else
+      {
+        return SQLiteProgressReturnCode.Continue;
+      }
     }
 
     private SQLiteAuthorizerReturnCode AuthorizerCallback(
@@ -5126,49 +5129,49 @@ namespace System.Data.SQLite
         IntPtr pDatabase,
         IntPtr pAuthContext)
     {
+      try
+      {
+        AuthorizerEventArgs eventArgs = new AuthorizerEventArgs(pUserData, actionCode,
+            SQLiteBase.UTF8ToString(pArgument1, -1), SQLiteBase.UTF8ToString(pArgument2, -1),
+            SQLiteBase.UTF8ToString(pDatabase, -1), SQLiteBase.UTF8ToString(pAuthContext, -1),
+            SQLiteAuthorizerReturnCode.Ok);
+
+        if (_authorizerHandler != null)
+          _authorizerHandler(this, eventArgs);
+
+        return eventArgs.ReturnCode;
+      }
+      catch (Exception e) /* NOTE: Must catch ALL. */
+      {
         try
         {
-            AuthorizerEventArgs eventArgs = new AuthorizerEventArgs(pUserData, actionCode,
-                SQLiteBase.UTF8ToString(pArgument1, -1), SQLiteBase.UTF8ToString(pArgument2, -1),
-                SQLiteBase.UTF8ToString(pDatabase, -1), SQLiteBase.UTF8ToString(pAuthContext, -1),
-                SQLiteAuthorizerReturnCode.Ok);
-
-            if (_authorizerHandler != null)
-                _authorizerHandler(this, eventArgs);
-
-            return eventArgs.ReturnCode;
+          if ((_flags & SQLiteConnectionFlags.LogCallbackException) ==
+                  SQLiteConnectionFlags.LogCallbackException)
+          {
+            SQLiteLog.LogMessage(SQLiteBase.COR_E_EXCEPTION,
+                UnsafeNativeMethods.StringFormat(CultureInfo.CurrentCulture,
+                "Caught exception in \"Authorize\" method: {1}",
+                e)); /* throw */
+          }
         }
-        catch (Exception e) /* NOTE: Must catch ALL. */
+        catch
         {
-            try
-            {
-                if ((_flags & SQLiteConnectionFlags.LogCallbackException) ==
-                        SQLiteConnectionFlags.LogCallbackException)
-                {
-                    SQLiteLog.LogMessage(SQLiteBase.COR_E_EXCEPTION,
-                        UnsafeNativeMethods.StringFormat(CultureInfo.CurrentCulture,
-                        "Caught exception in \"Authorize\" method: {1}",
-                        e)); /* throw */
-                }
-            }
-            catch
-            {
-                // do nothing.
-            }
+          // do nothing.
         }
+      }
 
-        //
-        // NOTE: Should throwing an exception deny the action?
-        //
-        if ((_flags & SQLiteConnectionFlags.DenyOnException) ==
-                SQLiteConnectionFlags.DenyOnException)
-        {
-            return SQLiteAuthorizerReturnCode.Deny;
-        }
-        else
-        {
-            return SQLiteAuthorizerReturnCode.Ok;
-        }
+      //
+      // NOTE: Should throwing an exception deny the action?
+      //
+      if ((_flags & SQLiteConnectionFlags.DenyOnException) ==
+              SQLiteConnectionFlags.DenyOnException)
+      {
+        return SQLiteAuthorizerReturnCode.Deny;
+      }
+      else
+      {
+        return SQLiteAuthorizerReturnCode.Ok;
+      }
     }
 
     private void UpdateCallback(
@@ -5179,32 +5182,32 @@ namespace System.Data.SQLite
         Int64 rowid
         )
     {
+      try
+      {
+        _updateHandler(this, new UpdateEventArgs(
+          SQLiteBase.UTF8ToString(database, -1),
+          SQLiteBase.UTF8ToString(table, -1),
+          (UpdateEventType)type,
+          rowid));
+      }
+      catch (Exception e) /* NOTE: Must catch ALL. */
+      {
         try
         {
-            _updateHandler(this, new UpdateEventArgs(
-              SQLiteBase.UTF8ToString(database, -1),
-              SQLiteBase.UTF8ToString(table, -1),
-              (UpdateEventType)type,
-              rowid));
+          if ((_flags & SQLiteConnectionFlags.LogCallbackException) ==
+                  SQLiteConnectionFlags.LogCallbackException)
+          {
+            SQLiteLog.LogMessage(SQLiteBase.COR_E_EXCEPTION,
+                UnsafeNativeMethods.StringFormat(CultureInfo.CurrentCulture,
+                "Caught exception in \"Update\" method: {1}",
+                e)); /* throw */
+          }
         }
-        catch (Exception e) /* NOTE: Must catch ALL. */
+        catch
         {
-            try
-            {
-                if ((_flags & SQLiteConnectionFlags.LogCallbackException) ==
-                        SQLiteConnectionFlags.LogCallbackException)
-                {
-                    SQLiteLog.LogMessage(SQLiteBase.COR_E_EXCEPTION,
-                        UnsafeNativeMethods.StringFormat(CultureInfo.CurrentCulture,
-                        "Caught exception in \"Update\" method: {1}",
-                        e)); /* throw */
-                }
-            }
-            catch
-            {
-                // do nothing.
-            }
+          // do nothing.
         }
+      }
     }
 
     /// <summary>
@@ -5262,7 +5265,7 @@ namespace System.Data.SQLite
         if (_traceHandler == null)
         {
           if (_sql != null) _sql.SetTraceCallback(null);
-            _traceCallback = null;
+          _traceCallback = null;
         }
       }
     }
@@ -5272,30 +5275,30 @@ namespace System.Data.SQLite
         IntPtr statement
         )
     {
+      try
+      {
+        if (_traceHandler != null)
+          _traceHandler(this, new TraceEventArgs(
+            SQLiteBase.UTF8ToString(statement, -1)));
+      }
+      catch (Exception e) /* NOTE: Must catch ALL. */
+      {
         try
         {
-            if (_traceHandler != null)
-                _traceHandler(this, new TraceEventArgs(
-                  SQLiteBase.UTF8ToString(statement, -1)));
+          if ((_flags & SQLiteConnectionFlags.LogCallbackException) ==
+                  SQLiteConnectionFlags.LogCallbackException)
+          {
+            SQLiteLog.LogMessage(SQLiteBase.COR_E_EXCEPTION,
+                UnsafeNativeMethods.StringFormat(CultureInfo.CurrentCulture,
+                "Caught exception in \"Trace\" method: {1}",
+                e)); /* throw */
+          }
         }
-        catch (Exception e) /* NOTE: Must catch ALL. */
+        catch
         {
-            try
-            {
-                if ((_flags & SQLiteConnectionFlags.LogCallbackException) ==
-                        SQLiteConnectionFlags.LogCallbackException)
-                {
-                    SQLiteLog.LogMessage(SQLiteBase.COR_E_EXCEPTION,
-                        UnsafeNativeMethods.StringFormat(CultureInfo.CurrentCulture,
-                        "Caught exception in \"Trace\" method: {1}",
-                        e)); /* throw */
-                }
-            }
-            catch
-            {
-                // do nothing.
-            }
+          // do nothing.
         }
+      }
     }
 
     /// <summary>
@@ -5331,75 +5334,75 @@ namespace System.Data.SQLite
         IntPtr parg /* NOT USED */
         )
     {
+      try
+      {
+        CommitEventArgs e = new CommitEventArgs();
+
+        if (_commitHandler != null)
+          _commitHandler(this, e);
+
+        return (e.AbortTransaction == true) ? 1 : 0;
+      }
+      catch (Exception e) /* NOTE: Must catch ALL. */
+      {
         try
         {
-            CommitEventArgs e = new CommitEventArgs();
-
-            if (_commitHandler != null)
-                _commitHandler(this, e);
-
-            return (e.AbortTransaction == true) ? 1 : 0;
+          if ((_flags & SQLiteConnectionFlags.LogCallbackException) ==
+                  SQLiteConnectionFlags.LogCallbackException)
+          {
+            SQLiteLog.LogMessage(SQLiteBase.COR_E_EXCEPTION,
+                UnsafeNativeMethods.StringFormat(CultureInfo.CurrentCulture,
+                "Caught exception in \"Commit\" method: {1}",
+                e)); /* throw */
+          }
         }
-        catch (Exception e) /* NOTE: Must catch ALL. */
+        catch
         {
-            try
-            {
-                if ((_flags & SQLiteConnectionFlags.LogCallbackException) ==
-                        SQLiteConnectionFlags.LogCallbackException)
-                {
-                    SQLiteLog.LogMessage(SQLiteBase.COR_E_EXCEPTION,
-                        UnsafeNativeMethods.StringFormat(CultureInfo.CurrentCulture,
-                        "Caught exception in \"Commit\" method: {1}",
-                        e)); /* throw */
-                }
-            }
-            catch
-            {
-                // do nothing.
-            }
+          // do nothing.
         }
+      }
 
-        //
-        // NOTE: Should throwing an exception rollback the transaction?
-        //
-        if ((_flags & SQLiteConnectionFlags.RollbackOnException) ==
-                SQLiteConnectionFlags.RollbackOnException)
-        {
-            return 1; // rollback
-        }
-        else
-        {
-            return 0; // commit
-        }
+      //
+      // NOTE: Should throwing an exception rollback the transaction?
+      //
+      if ((_flags & SQLiteConnectionFlags.RollbackOnException) ==
+              SQLiteConnectionFlags.RollbackOnException)
+      {
+        return 1; // rollback
+      }
+      else
+      {
+        return 0; // commit
+      }
     }
 
     private void RollbackCallback(
         IntPtr parg /* NOT USED */
         )
     {
+      try
+      {
+        if (_rollbackHandler != null)
+          _rollbackHandler(this, EventArgs.Empty);
+      }
+      catch (Exception e) /* NOTE: Must catch ALL. */
+      {
         try
         {
-            if (_rollbackHandler != null)
-                _rollbackHandler(this, EventArgs.Empty);
+          if ((_flags & SQLiteConnectionFlags.LogCallbackException) ==
+                  SQLiteConnectionFlags.LogCallbackException)
+          {
+            SQLiteLog.LogMessage(SQLiteBase.COR_E_EXCEPTION,
+                UnsafeNativeMethods.StringFormat(CultureInfo.CurrentCulture,
+                "Caught exception in \"Rollback\" method: {1}",
+                e)); /* throw */
+          }
         }
-        catch (Exception e) /* NOTE: Must catch ALL. */
+        catch
         {
-            try
-            {
-                if ((_flags & SQLiteConnectionFlags.LogCallbackException) ==
-                        SQLiteConnectionFlags.LogCallbackException)
-                {
-                    SQLiteLog.LogMessage(SQLiteBase.COR_E_EXCEPTION,
-                        UnsafeNativeMethods.StringFormat(CultureInfo.CurrentCulture,
-                        "Caught exception in \"Rollback\" method: {1}",
-                        e)); /* throw */
-                }
-            }
-            catch
-            {
-                // do nothing.
-            }
+          // do nothing.
         }
+      }
     }
   }
 
@@ -5554,44 +5557,44 @@ namespace System.Data.SQLite
   /// </summary>
   public class ProgressEventArgs : EventArgs
   {
-      /// <summary>
-      /// The user-defined native data associated with this event.  Currently,
-      /// this will always contain the value of <see cref="IntPtr.Zero" />.
-      /// </summary>
-      public readonly IntPtr UserData;
+    /// <summary>
+    /// The user-defined native data associated with this event.  Currently,
+    /// this will always contain the value of <see cref="IntPtr.Zero" />.
+    /// </summary>
+    public readonly IntPtr UserData;
 
-      /// <summary>
-      /// The return code for the current call into the progress callback.
-      /// </summary>
-      public SQLiteProgressReturnCode ReturnCode;
+    /// <summary>
+    /// The return code for the current call into the progress callback.
+    /// </summary>
+    public SQLiteProgressReturnCode ReturnCode;
 
-      /// <summary>
-      /// Constructs an instance of this class with default property values.
-      /// </summary>
-      private ProgressEventArgs()
-      {
-          this.UserData = IntPtr.Zero;
-          this.ReturnCode = SQLiteProgressReturnCode.Continue;
-      }
+    /// <summary>
+    /// Constructs an instance of this class with default property values.
+    /// </summary>
+    private ProgressEventArgs()
+    {
+      this.UserData = IntPtr.Zero;
+      this.ReturnCode = SQLiteProgressReturnCode.Continue;
+    }
 
-      /// <summary>
-      /// Constructs an instance of this class with specific property values.
-      /// </summary>
-      /// <param name="pUserData">
-      /// The user-defined native data associated with this event.
-      /// </param>
-      /// <param name="returnCode">
-      /// The progress return code.
-      /// </param>
-      internal ProgressEventArgs(
-          IntPtr pUserData,
-          SQLiteProgressReturnCode returnCode
-          )
-          : this()
-      {
-          this.UserData = pUserData;
-          this.ReturnCode = returnCode;
-      }
+    /// <summary>
+    /// Constructs an instance of this class with specific property values.
+    /// </summary>
+    /// <param name="pUserData">
+    /// The user-defined native data associated with this event.
+    /// </param>
+    /// <param name="returnCode">
+    /// The progress return code.
+    /// </param>
+    internal ProgressEventArgs(
+        IntPtr pUserData,
+        SQLiteProgressReturnCode returnCode
+        )
+        : this()
+    {
+      this.UserData = pUserData;
+      this.ReturnCode = returnCode;
+    }
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -5601,114 +5604,114 @@ namespace System.Data.SQLite
   /// </summary>
   public class AuthorizerEventArgs : EventArgs
   {
-      /// <summary>
-      /// The user-defined native data associated with this event.  Currently,
-      /// this will always contain the value of <see cref="IntPtr.Zero" />.
-      /// </summary>
-      public readonly IntPtr UserData;
+    /// <summary>
+    /// The user-defined native data associated with this event.  Currently,
+    /// this will always contain the value of <see cref="IntPtr.Zero" />.
+    /// </summary>
+    public readonly IntPtr UserData;
 
-      /// <summary>
-      /// The action code responsible for the current call into the authorizer.
-      /// </summary>
-      public readonly SQLiteAuthorizerActionCode ActionCode;
+    /// <summary>
+    /// The action code responsible for the current call into the authorizer.
+    /// </summary>
+    public readonly SQLiteAuthorizerActionCode ActionCode;
 
-      /// <summary>
-      /// The first string argument for the current call into the authorizer.
-      /// The exact value will vary based on the action code, see the
-      /// <see cref="SQLiteAuthorizerActionCode" /> enumeration for possible
-      /// values.
-      /// </summary>
-      public readonly string Argument1;
+    /// <summary>
+    /// The first string argument for the current call into the authorizer.
+    /// The exact value will vary based on the action code, see the
+    /// <see cref="SQLiteAuthorizerActionCode" /> enumeration for possible
+    /// values.
+    /// </summary>
+    public readonly string Argument1;
 
-      /// <summary>
-      /// The second string argument for the current call into the authorizer.
-      /// The exact value will vary based on the action code, see the
-      /// <see cref="SQLiteAuthorizerActionCode" /> enumeration for possible
-      /// values.
-      /// </summary>
-      public readonly string Argument2;
+    /// <summary>
+    /// The second string argument for the current call into the authorizer.
+    /// The exact value will vary based on the action code, see the
+    /// <see cref="SQLiteAuthorizerActionCode" /> enumeration for possible
+    /// values.
+    /// </summary>
+    public readonly string Argument2;
 
-      /// <summary>
-      /// The database name for the current call into the authorizer, if
-      /// applicable.
-      /// </summary>
-      public readonly string Database;
+    /// <summary>
+    /// The database name for the current call into the authorizer, if
+    /// applicable.
+    /// </summary>
+    public readonly string Database;
 
-      /// <summary>
-      /// The name of the inner-most trigger or view that is responsible for
-      /// the access attempt or a null value if this access attempt is directly
-      /// from top-level SQL code.
-      /// </summary>
-      public readonly string Context;
+    /// <summary>
+    /// The name of the inner-most trigger or view that is responsible for
+    /// the access attempt or a null value if this access attempt is directly
+    /// from top-level SQL code.
+    /// </summary>
+    public readonly string Context;
 
-      /// <summary>
-      /// The return code for the current call into the authorizer.
-      /// </summary>
-      public SQLiteAuthorizerReturnCode ReturnCode;
+    /// <summary>
+    /// The return code for the current call into the authorizer.
+    /// </summary>
+    public SQLiteAuthorizerReturnCode ReturnCode;
 
-      ///////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////
 
-      /// <summary>
-      /// Constructs an instance of this class with default property values.
-      /// </summary>
-      private AuthorizerEventArgs()
-      {
-          this.UserData = IntPtr.Zero;
-          this.ActionCode = SQLiteAuthorizerActionCode.None;
-          this.Argument1 = null;
-          this.Argument2 = null;
-          this.Database = null;
-          this.Context = null;
-          this.ReturnCode = SQLiteAuthorizerReturnCode.Ok;
-      }
+    /// <summary>
+    /// Constructs an instance of this class with default property values.
+    /// </summary>
+    private AuthorizerEventArgs()
+    {
+      this.UserData = IntPtr.Zero;
+      this.ActionCode = SQLiteAuthorizerActionCode.None;
+      this.Argument1 = null;
+      this.Argument2 = null;
+      this.Database = null;
+      this.Context = null;
+      this.ReturnCode = SQLiteAuthorizerReturnCode.Ok;
+    }
 
-      ///////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////
 
-      /// <summary>
-      /// Constructs an instance of this class with specific property values.
-      /// </summary>
-      /// <param name="pUserData">
-      /// The user-defined native data associated with this event.
-      /// </param>
-      /// <param name="actionCode">
-      /// The authorizer action code.
-      /// </param>
-      /// <param name="argument1">
-      /// The first authorizer argument.
-      /// </param>
-      /// <param name="argument2">
-      /// The second authorizer argument.
-      /// </param>
-      /// <param name="database">
-      /// The database name, if applicable.
-      /// </param>
-      /// <param name="context">
-      /// The name of the inner-most trigger or view that is responsible for
-      /// the access attempt or a null value if this access attempt is directly
-      /// from top-level SQL code.
-      /// </param>
-      /// <param name="returnCode">
-      /// The authorizer return code.
-      /// </param>
-      internal AuthorizerEventArgs(
-          IntPtr pUserData,
-          SQLiteAuthorizerActionCode actionCode,
-          string argument1,
-          string argument2,
-          string database,
-          string context,
-          SQLiteAuthorizerReturnCode returnCode
-          )
-          : this()
-      {
-          this.UserData = pUserData;
-          this.ActionCode = actionCode;
-          this.Argument1 = argument1;
-          this.Argument2 = argument2;
-          this.Database = database;
-          this.Context = context;
-          this.ReturnCode = returnCode;
-      }
+    /// <summary>
+    /// Constructs an instance of this class with specific property values.
+    /// </summary>
+    /// <param name="pUserData">
+    /// The user-defined native data associated with this event.
+    /// </param>
+    /// <param name="actionCode">
+    /// The authorizer action code.
+    /// </param>
+    /// <param name="argument1">
+    /// The first authorizer argument.
+    /// </param>
+    /// <param name="argument2">
+    /// The second authorizer argument.
+    /// </param>
+    /// <param name="database">
+    /// The database name, if applicable.
+    /// </param>
+    /// <param name="context">
+    /// The name of the inner-most trigger or view that is responsible for
+    /// the access attempt or a null value if this access attempt is directly
+    /// from top-level SQL code.
+    /// </param>
+    /// <param name="returnCode">
+    /// The authorizer return code.
+    /// </param>
+    internal AuthorizerEventArgs(
+        IntPtr pUserData,
+        SQLiteAuthorizerActionCode actionCode,
+        string argument1,
+        string argument2,
+        string database,
+        string context,
+        SQLiteAuthorizerReturnCode returnCode
+        )
+        : this()
+    {
+      this.UserData = pUserData;
+      this.ActionCode = actionCode;
+      this.Argument1 = argument1;
+      this.Argument2 = argument2;
+      this.Database = database;
+      this.Context = context;
+      this.ReturnCode = returnCode;
+    }
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////

@@ -60,7 +60,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Info")]
     public static void WriteInfo(String msg)
     {
-      Log.LogInformation(msg);
+      if (s_log != null)
+        s_log.LogInformation(msg);
     }
 
     /// <summary>输出信息日志</summary>
@@ -72,7 +73,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Info")]
     public static void WriteInfo(String formatMsg, params Object[] args)
     {
-      Log.LogInformation(formatMsg, args);
+      if (s_log != null)
+        s_log.LogInformation(formatMsg, args);
     }
 
     #endregion
@@ -87,7 +89,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Warn")]
     public static void WriteWarn(String msg)
     {
-      Log.LogWarning(msg);
+      if (s_log != null)
+        s_log.LogWarning(msg);
     }
 
     /// <summary>输出警告日志</summary>
@@ -99,7 +102,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Warn")]
     public static void WriteWarn(String formatMsg, params Object[] args)
     {
-      Log.LogWarning(formatMsg, args);
+      if (s_log != null)
+        s_log.LogWarning(formatMsg, args);
     }
 
     #endregion
@@ -114,7 +118,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Error")]
     public static void WriteException(String msg)
     {
-      Log.LogError(msg);
+      if (s_log != null)
+        s_log.LogError(msg);
     }
 
     /// <summary>输出错误日志</summary>
@@ -126,7 +131,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Error")]
     public static void WriteException(String formatMsg, params Object[] args)
     {
-      Log.LogError(formatMsg, args);
+      if (s_log != null)
+        s_log.LogError(formatMsg, args);
     }
 
     /// <summary>输出错误日志</summary>
@@ -137,7 +143,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Error")]
     public static void WriteException(Exception ex)
     {
-      Log.LogError(ex.ToString());
+      if (s_log != null)
+        s_log.LogError(ex.ToString());
     }
 
     /// <summary>输出错误日志</summary>
@@ -149,7 +156,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Error")]
     public static void WriteException(Exception ex, String msg)
     {
-      Log.LogError(msg, ex);
+      if (s_log != null)
+        s_log.LogError(msg, ex);
     }
 
     /// <summary>输出错误日志</summary>
@@ -162,7 +170,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Error")]
     public static void WriteException(Exception ex, String formatMsg, params Object[] args)
     {
-      Log.LogError(string.Format(formatMsg, args), ex);
+      if (s_log != null)
+        s_log.LogError(string.Format(formatMsg, args), ex);
     }
 
     #endregion
@@ -177,7 +186,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Fatal")]
     public static void WriteFatal(String msg)
     {
-      Log.LogCritical(msg);
+      if (s_log != null)
+        s_log.LogCritical(msg);
     }
 
     /// <summary>输出严重错误日志</summary>
@@ -189,7 +199,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Fatal")]
     public static void WriteFatal(String formatMsg, params Object[] args)
     {
-      Log.LogCritical(formatMsg, args);
+      if (s_log != null)
+        s_log.LogCritical(formatMsg, args);
     }
 
     /// <summary>输出严重错误日志</summary>
@@ -200,7 +211,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Fatal")]
     public static void WriteFatal(Exception ex)
     {
-      Log.LogCritical(ex.Message, ex);
+      if (s_log != null)
+        s_log.LogCritical(ex.Message, ex);
     }
 
     /// <summary>输出严重错误日志</summary>
@@ -212,7 +224,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Fatal")]
     public static void WriteFatal(Exception ex, String msg)
     {
-      Log.LogCritical(msg, ex);
+      if (s_log != null)
+        s_log.LogCritical(msg, ex);
     }
 
     /// <summary>输出严重错误日志</summary>
@@ -225,7 +238,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Fatal")]
     public static void WriteFatal(Exception ex, String formatMsg, params Object[] args)
     {
-      Log.LogCritical(string.Format(formatMsg, args), ex);
+      if (s_log != null)
+        s_log.LogCritical(string.Format(formatMsg, args), ex);
     }
 
     #endregion
@@ -240,7 +254,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Debug")]
     public static void WriteDebug(String msg)
     {
-      Log.LogDebug(msg);
+      if (s_log != null)
+        s_log.LogDebug(msg);
     }
 
     /// <summary>输出调试日志</summary>
@@ -252,7 +267,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Debug")]
     public static void WriteDebug(String formatMsg, params Object[] args)
     {
-      Log.LogDebug(formatMsg, args);
+      if (s_log != null)
+        s_log.LogDebug(formatMsg, args);
     }
 
     /// <summary>输出调试异常日志</summary>
@@ -263,7 +279,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Debug")]
     public static void WriteDebug(Exception ex)
     {
-      Log.LogDebug(ex.Message, ex);
+      if (s_log != null)
+        s_log.LogDebug(ex.Message, ex);
     }
 
     /// <summary>输出调试异常日志</summary>
@@ -275,7 +292,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Debug")]
     public static void WriteDebug(Exception ex, String msg)
     {
-      Log.LogDebug(msg, ex);
+      if (s_log != null)
+        s_log.LogDebug(msg, ex);
     }
 
     /// <summary>输出调试异常日志</summary>
@@ -288,7 +306,8 @@ namespace CuteAnt.Log
     //[Obsolete("Use Log.Debug")]
     public static void WriteDebug(Exception ex, String formatMsg, params Object[] args)
     {
-      Log.LogDebug(string.Format(formatMsg, args), ex);
+      if (s_log != null)
+        s_log.LogDebug(string.Format(formatMsg, args), ex);
     }
 
     #endregion
@@ -346,7 +365,8 @@ namespace CuteAnt.Log
       if (e.IsTerminating)
       {
         //WriteException("异常退出！");
-        Log.LogCritical("异常退出！");
+        if (s_log != null)
+          s_log.LogCritical("异常退出！");
 
         //HmTrace.WriteMiniDump(null);
         if (show)

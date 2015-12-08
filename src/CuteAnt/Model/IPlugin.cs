@@ -182,7 +182,7 @@ namespace CuteAnt.Model
         catch (Exception ex)
         {
           //XTrace.WriteExceptionWhenDebug(ex);
-          Log.LogDebug("插件初始化失败", ex);
+          if (_Log != null) { _Log.LogDebug("插件初始化失败", ex); }
           ps.RemoveAt(i);
         }
       }
