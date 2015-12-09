@@ -19,30 +19,6 @@ namespace System
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	internal static class HmEnumUtils
 	{
-#if !NET_3_5_GREATER
-		/// <summary>枚举变量是否包含指定标识</summary>
-		/// <param name="value">枚举变量</param>
-		/// <param name="flag">要判断的标识</param>
-		/// <returns></returns>
-		[Obsolete("Has => HasFlag")]
-		internal static Boolean Has(this Enum value, Enum flag)
-		{
-			return HasFlag(value, flag);
-		}
-
-		/// <summary>枚举变量是否包含指定标识</summary>
-		/// <param name="value">枚举变量</param>
-		/// <param name="flag">要判断的标识</param>
-		/// <returns></returns>
-		internal static Boolean HasFlag(this Enum value, Enum flag)
-		{
-			if (value.GetType() != flag.GetType()) throw new ArgumentException("flag", "枚举标识判断必须是相同的类型！");
-
-			UInt64 num = Convert.ToUInt64(flag);
-			return (Convert.ToUInt64(value) & num) == num;
-		}
-#endif
-
 		/// <summary>设置标识位</summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="source"></param>

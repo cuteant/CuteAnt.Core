@@ -149,44 +149,6 @@ namespace System
 
 		#region 复制数据流
 
-#if !NET_3_5_GREATER
-		//We pick a value that is the largest multiple of 4096 that is still smaller than the large object heap threshold (85K).
-		// The CopyTo/CopyToAsync buffer is short-lived and is likely to be collected at Gen0, and it offers a significant
-		// improvement in Copy performance.
-		private const int _DefaultCopyBufferSize = 81920;
-
-		/// <summary>复制数据流</summary>
-		/// <param name="src">源数据流</param>
-		/// <param name="des">目的数据流</param>
-		internal static void CopyTo(this Stream src, Stream des)
-		{
-			src.CopyTo(des, _DefaultCopyBufferSize);
-		}
-
-		/// <summary>复制数据流</summary>
-		/// <param name="src">源数据流</param>
-		/// <param name="des">目的数据流</param>
-		/// <param name="bufferSize">缓冲区大小，也就是每次复制的大小，默认大小为 4096</param>
-		internal static void CopyTo(this Stream src, Stream des, Int32 bufferSize)
-		{
-			if (src == null) { throw new ArgumentNullException("src"); }
-			if (des == null) { throw new ArgumentNullException("des"); }
-			if (!src.CanRead && !src.CanWrite) { throw new ObjectDisposedException("des", "源数据流已经关闭"); }
-			if (!des.CanRead && !des.CanWrite) { throw new ObjectDisposedException("des", "目的数据流已经关闭"); }
-			if (!src.CanRead) { throw new NotSupportedException("源数据流不能读取"); }
-			if (!des.CanWrite) { throw new NotSupportedException("目的数据流不支持写入"); }
-			if (bufferSize < 128) { throw new ArgumentException("Buffer is too small", "bufferSize"); }
-
-			var buffer = new Byte[bufferSize];
-			Int32 read;
-			while ((read = src.Read(buffer, 0, buffer.Length)) != 0)
-			{
-				des.Write(buffer, 0, read);
-			}
-		}
-
-#endif
-
 		/// <summary>复制数据流</summary>
 		/// <param name="src">源数据流</param>
 		/// <param name="des">目的数据流</param>

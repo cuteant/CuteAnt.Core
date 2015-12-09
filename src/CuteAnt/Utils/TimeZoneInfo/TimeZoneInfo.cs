@@ -1386,7 +1386,7 @@ namespace CuteAnt.Utils
 			try
 			{
 				//str = Path.Combine(folderPath, str3);
-				str = PathHelper.PathCombineFix(folderPath, str3);
+				str = Path.Combine(folderPath, str3);
 			}
 			catch (ArgumentException)
 			{

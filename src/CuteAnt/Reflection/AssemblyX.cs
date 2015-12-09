@@ -222,8 +222,9 @@ namespace CuteAnt.Reflection
       get
       {
         String name = Asm.FullName;
-        if (name.EndsWith("PublicKeyToken=b77a5c561934e089")) return true;
-        if (name.EndsWith("PublicKeyToken=b03f5f7f11d50a3a")) return true;
+        if (name.EndsWith("PublicKeyToken=b77a5c561934e089", StringComparison.OrdinalIgnoreCase)) return true;
+        if (name.EndsWith("PublicKeyToken=b03f5f7f11d50a3a", StringComparison.OrdinalIgnoreCase)) return true;
+        if (name.EndsWith("PublicKeyToken=adb9793829ddae60", StringComparison.OrdinalIgnoreCase)) return true; // dnx
 
         return false;
       }
@@ -408,8 +409,7 @@ namespace CuteAnt.Reflection
       if (isLoadAssembly)
       {
 #if !DESKTOPCLR
-        var loadedAssemblies = new List<AssemblyX>();
-        loadedAssemblies.AddRange(GetAssemblies());
+        var loadedAssemblies = new HashSet<AssemblyX>(GetAssemblies());
         IEnumerable<Library> refLibs = null;
         var lm = PlatformServices.Default?.LibraryManager;
         var loadContext = PlatformServices.Default?.AssemblyLoadContextAccessor?.Default;
@@ -417,16 +417,24 @@ namespace CuteAnt.Reflection
         if (!refLibs.IsNullOrEmpty())
         {
           var loadeds = GetAssemblies().ToList();
-          var aspnetAsms = refLibs.SelectMany(_ => _.Assemblies)
-                                  .Select(_ => Create(loadContext.Load(_)));
+          var aspnetAsms = refLibs.SelectMany(_ => _.Assemblies);
           foreach (var item in aspnetAsms)
           {
-            if (loadeds.Any(e => string.Equals(e.Location, item.Location, StringComparison.OrdinalIgnoreCase))) continue;
+            AssemblyX asmx = null;
+            try
+            {
+              asmx = Create(loadContext.Load(item));
+            }
+            catch { }
+            if (asmx == null) { continue; }
+            if (loadedAssemblies.Contains(asmx)) { continue; }
+
+            if (loadeds.Any(e => string.Equals(e.Location, asmx.Location, StringComparison.OrdinalIgnoreCase))) continue;
             // 尽管目录不一样，但这两个可能是相同的程序集
             // 这里导致加载了不同目录的同一个程序集，然后导致对象容器频繁报错
-            if (loadeds.Any(e => string.Equals(e.Asm.FullName, item.Asm.FullName, StringComparison.OrdinalIgnoreCase))) continue;
+            if (loadeds.Any(e => string.Equals(e.Asm.FullName, asmx.Asm.FullName, StringComparison.OrdinalIgnoreCase))) continue;
 
-            loadedAssemblies.Add(item);
+            loadedAssemblies.Add(asmx);
           }
         }
 
@@ -560,12 +568,14 @@ namespace CuteAnt.Reflection
       //var path = AppDomain.CurrentDomain.BaseDirectory;
       //if (HttpRuntime.AppDomainId != null) path = HttpRuntime.BinDirectory;
 
-      var loadeds = GetAssemblies().ToList();
+      var loadeds = new HashSet<AssemblyX>(GetAssemblies());
 
       // 先返回已加载的只加载程序集
       var loadeds2 = AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies().Select(e => Create(e)).ToList();
       foreach (var item in loadeds2)
       {
+        if (loadeds.Contains(item)) { continue; }
+
         if (loadeds.Any(e => string.Equals(e.Location, item.Location, StringComparison.OrdinalIgnoreCase))) continue;
         // 尽管目录不一样，但这两个可能是相同的程序集
         // 这里导致加载了不同目录的同一个程序集，然后导致对象容器频繁报错

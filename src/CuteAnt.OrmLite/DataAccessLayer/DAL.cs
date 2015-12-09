@@ -519,7 +519,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
         //{
         //	dataPath = elDataPath.Value;
         //}
-        bulider.Add("Data Source", PathHelper.PathCombineFix(OrmLiteConfig.Current.FileDataBasePath, dbName + @".db"));
+        bulider.Add("Data Source", Path.Combine(OrmLiteConfig.Current.FileDataBasePath, dbName + @".db"));
 
         var attrOptional = elProvider.Attribute("optional");
         if (attrOptional != null && !attrOptional.Value.IsNullOrWhiteSpace())
@@ -546,7 +546,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
         //{
         //	dataPath = elDataPath.Value;
         //}
-        bulider.Add("Data Source", PathHelper.PathCombineFix(OrmLiteConfig.Current.FileDataBasePath, dbName + @".sdf"));
+        bulider.Add("Data Source", Path.Combine(OrmLiteConfig.Current.FileDataBasePath, dbName + @".sdf"));
 
         var attrOptional = elProvider.Attribute("optional");
         if (attrOptional != null && !attrOptional.Value.IsNullOrWhiteSpace())

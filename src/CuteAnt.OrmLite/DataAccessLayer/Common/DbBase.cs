@@ -441,7 +441,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
         //if (machine != ImageFileMachine.I386)
         if (RuntimeHelper.Is64BitProcess)
         {
-          var tmpfile = FileHelper.FileExists(PathHelper.PathCombineFix(dir, zipfile + "64.zip"));
+          var tmpfile = FileHelper.FileExists(Path.Combine(dir, zipfile + "64.zip"));
           if (!tmpfile.IsNullOrWhiteSpace())
           {
             zipfile += "64.zip";
@@ -458,7 +458,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
         #endregion
 
-        ZipExtract(PathHelper.PathCombineFix(dir, zipfile), dir);
+        ZipExtract(Path.Combine(dir, zipfile), dir);
         DAL.WriteLog("解压完成！");
       }
       catch (Exception ex)

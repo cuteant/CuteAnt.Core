@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-151209",
+  "version": "2.0.0-rc2-151211",
   "description": "CuteAnt.OrmLite Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.OrmLite" ],
@@ -26,30 +26,30 @@
   "dependencies": {
     "NLog": "4.2.2",
     "ICSharpCode.SharpZipLib": "2.0.0-rc2-150808",
-    "CuteAnt.AsyncEx": "2.0.0-rc2-151209",
-    "protobuf-net": "2.0.0-rc2-151209",
+    "CuteAnt.AsyncEx": "2.0.0-rc2-151211",
+    "protobuf-net": "2.0.0-rc2-151211",
     "CuteAnt.Extensions.Sources": {
-      "version": "2.0.0-rc2-151209",
+      "version": "2.0.0-rc2-151211",
       "type": "build"
     },
     "CuteAnt.Extensions.Reflection.Sources": {
-      "version": "2.0.0-rc2-151209",
+      "version": "2.0.0-rc2-151211",
       "type": "build"
     },
     "Nito.AsyncEx.Tasks.Sources": {
-      "version": "2.0.0-rc2-151209",
+      "version": "2.0.0-rc2-151211",
       "type": "build"
     },
     "CuteAnt.Extensions.Security.Sources": {
-      "version": "2.0.0-rc2-151209",
+      "version": "2.0.0-rc2-151211",
       "type": "build"
     },
     "CuteAnt.Extensions.IO.Sources": {
-      "version": "2.0.0-rc2-151209",
+      "version": "2.0.0-rc2-151211",
       "type": "build"
     },
-    "MySql.Data": "2.0.0-rc2-151209",
-    "System.Data.SQLite": "2.0.0-rc2-151209"
+    "MySql.Data": "2.0.0-rc2-151211",
+    "System.Data.SQLite": "2.0.0-rc2-151211"
   },
 
   "frameworks": {

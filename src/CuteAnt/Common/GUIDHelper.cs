@@ -257,18 +257,8 @@ namespace CuteAnt
 #endif
 		public static Boolean IsGuid(String value)
 		{
-#if NET_3_5_GREATER
 			Guid guid;
 			return Guid.TryParse(value, out guid);
-#else
-			var isGuid = true;
-			try
-			{
-				var guid = new Guid(value);
-			}
-			catch { isGuid = false; }
-			return isGuid;
-#endif
 		}
 
 		#endregion

@@ -977,7 +977,7 @@ namespace CuteAnt.OrmLite
 
 				var entities = LoadDataToList(dt);
 				var tmpPath = PathHelper.EnsureDirectory(PathHelper.ApplicationBasePathCombine(HmTrace.TempPath));
-				var file = PathHelper.PathCombineFix(tmpPath, Guid.NewGuid().ToString("N"));
+				var file = Path.Combine(tmpPath, Guid.NewGuid().ToString("N"));
 				CreateCSV(entities, keepIdentity, file);
 
 				var dbSession = dal.Session;

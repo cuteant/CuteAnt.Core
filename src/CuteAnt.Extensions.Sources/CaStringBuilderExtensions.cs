@@ -24,16 +24,5 @@ namespace System.Text
 
 			return sb;
 		}
-
-#if !NET_3_5_GREATER
-		/// <summary>从当前 StringBuilder 实例中移除所有字符</summary>
-		/// <param name="sb"></param>
-		/// <returns>其 Length 为 0（零）的 StringBuilder 对象</returns>
-		internal static StringBuilder Clear(this StringBuilder sb)
-		{
-			sb.Length = 0;
-			return sb;
-		}
-#endif
 	}
 }

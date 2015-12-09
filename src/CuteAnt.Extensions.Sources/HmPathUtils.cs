@@ -122,11 +122,7 @@ namespace System.IO
       list.Add(path);
       list.AddRange(ps);
 
-#if !NET_3_5_GREATER
-      return PathHelper.Combine(list.ToArray());
-#else
       return Path.Combine(list.ToArray());
-#endif
     }
 
     #endregion

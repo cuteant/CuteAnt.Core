@@ -82,7 +82,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			{
 				return String.Format("CREATE DATABASE {0}", Quoter.QuoteDataBaseName(dbName));
 			}
-			var file = PathHelper.PathCombineFix(dataPath, dbName + ".mdf");
+			var file = Path.Combine(dataPath, dbName + ".mdf");
 
 			if (!Path.IsPathRooted(file))
 			{

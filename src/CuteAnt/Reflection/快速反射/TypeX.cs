@@ -413,7 +413,7 @@ namespace CuteAnt.Reflection
         {
           try
           {
-            var loadContext = PlatformServices.Default.AssemblyLoadContextAccessor.Default;
+            var loadContext = PlatformServices.Default?.AssemblyLoadContextAccessor.Default;
             if (loadContext != null)
             {
               assembly = loadContext.Load(assemblyName);
@@ -449,7 +449,7 @@ namespace CuteAnt.Reflection
                 AssemblyX.Create(Assembly.GetExecutingAssembly()),
                 AssemblyX.Create(Assembly.GetCallingAssembly()),
                 AssemblyX.Create(Assembly.GetEntryAssembly()) };
-      var loads = new List<AssemblyX>();
+      var loads = new HashSet<AssemblyX>();
 
       foreach (var asm in asms)
       {
@@ -469,10 +469,11 @@ namespace CuteAnt.Reflection
         type = asm.GetType(typeName);
         if (type != null) { return type; }
       }
-#if DESKTOPCLR
+
       // 尝试加载只读程序集
       if (isLoadAssembly)
       {
+#if DESKTOPCLR
         foreach (var asm in AssemblyX.ReflectionOnlyGetAssemblies())
         {
           type = asm.GetType(typeName);
@@ -494,8 +495,48 @@ namespace CuteAnt.Reflection
             return type;
           }
         }
-      }
+#else
+        IEnumerable<Library> refLibs = null;
+        var lm = PlatformServices.Default?.LibraryManager;
+        var loadContext = PlatformServices.Default?.AssemblyLoadContextAccessor?.Default;
+        if (lm != null && loadContext != null) { refLibs = lm.GetLibraries(); }
+        if (!refLibs.IsNullOrEmpty())
+        {
+          var aspnetAsms = refLibs.SelectMany(_ => _.Assemblies);
+          foreach (var item in aspnetAsms)
+          {
+            AssemblyX asmx = null;
+            try
+            {
+              asmx = AssemblyX.Create(loadContext.Load(item));
+            }
+            catch { }
+            if (asmx == null) { continue; }
+            if (loads.Contains(asmx)) { continue; }
+
+            if (loads.Any(e => string.Equals(e.Location, asmx.Location, StringComparison.OrdinalIgnoreCase))) continue;
+            // 尽管目录不一样，但这两个可能是相同的程序集
+            // 这里导致加载了不同目录的同一个程序集，然后导致对象容器频繁报错
+            if (loads.Any(e => string.Equals(e.Asm.FullName, asmx.Asm.FullName, StringComparison.OrdinalIgnoreCase))) continue;
+
+            loads.Add(asmx);
+
+            type = asmx.GetType(typeName);
+            if (type != null)
+            {
+              // ASP.Net中不会锁定原始DLL文件，注意这段代码在dnx环境中是否需要待验证
+              var file = asmx.Asm.Location;
+              if (HmTrace.Debug) { HmTrace.WriteInfo("TypeX.GetType(\"{0}\")导致加载{1}", typeName, file); }
+              var asm2 = Assembly.LoadFile(file);
+              var type2 = AssemblyX.Create(asm2).GetType(typeName);
+              if (type2 != null) { type = type2; }
+
+              return type;
+            }
+          }
+        }
 #endif
+      }
 
       return null;
     }

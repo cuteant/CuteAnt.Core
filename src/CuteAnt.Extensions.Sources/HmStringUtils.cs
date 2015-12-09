@@ -191,18 +191,7 @@ namespace System
 #endif
 		internal static Boolean IsNullOrWhiteSpace(this String value)
 		{
-#if !NET_3_5_GREATER
-			if (value == null) { return true; }
-
-			for (int i = 0; i < value.Length; i++)
-			{
-				if (!Char.IsWhiteSpace(value[i])) { return false; }
-			}
-
-			return true;
-#else
 			return String.IsNullOrWhiteSpace(value);
-#endif
 		}
 
 		#endregion
@@ -471,20 +460,8 @@ namespace System
 #endif
 		internal static String Join<T>(this IEnumerable<T> value, String separator = ",")
 		{
-#if NET_3_5_GREATER
 			if (null == value) { return null; }
 			return String.Join(separator, value);
-#else
-			var sb = new StringBuilder();
-			if (value != null)
-			{
-				foreach (var item in value)
-				{
-					sb.AppendSeparate(separator).Append(item + "");
-				}
-			}
-			return sb.ToString();
-#endif
 		}
 
 		/// <summary>把一个列表组合成为一个字符串，默认逗号分隔</summary>
@@ -868,20 +845,7 @@ namespace System
 		internal static Boolean TryParseEnum<T>(this String value, Boolean ignoreCase, out T enumValue)
 				where T : struct
 		{
-#if NET_3_5_GREATER
 			return Enum.TryParse<T>(value, ignoreCase, out enumValue);
-#else
-			try
-			{
-				enumValue = (T)Enum.Parse(typeof(T), value, ignoreCase);
-				return true;
-			}
-			catch
-			{
-				enumValue = default(T);
-				return false;
-			}
-#endif
 		}
 
 		#endregion
@@ -897,20 +861,7 @@ namespace System
 #endif
 		internal static Boolean TryParseGuid(this String value, out Guid guid)
 		{
-#if NET_3_5_GREATER
 			return Guid.TryParse(value, out guid);
-#else
-			try
-			{
-				guid = new Guid(value);
-				return true;
-			}
-			catch
-			{
-				guid = Guid.Empty;
-				return false;
-			}
-#endif
 		}
 
 		#endregion

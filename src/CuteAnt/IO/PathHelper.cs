@@ -67,15 +67,11 @@ namespace CuteAnt.IO
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
+    [Obsolete("Path.Combine")]
     public static String PathCombineFix(String path1, String path2)
     {
       //String path;
-#if !NET_3_5_GREATER
-      return Combine(path1, path2);
-#else
       return Path.Combine(path1, path2);
-#endif
-
       //return Path.GetFullPath(PathFix(path));
     }
 
@@ -87,16 +83,11 @@ namespace CuteAnt.IO
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
+    [Obsolete("Path.Combine")]
     public static String PathCombineFix(String path1, String path2, String path3)
     {
       //String path;
-#if !NET_3_5_GREATER
-      return Combine(path1, path2, path3);
-#else
       return Path.Combine(path1, path2, path3);
-#endif
-
-      //return Path.GetFullPath(PathFix(path));
     }
 
     /// <summary>将四个字符串组合成一个路径</summary>
@@ -108,16 +99,10 @@ namespace CuteAnt.IO
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
+    [Obsolete("Path.Combine")]
     public static String PathCombineFix(String path1, String path2, String path3, String path4)
     {
-      //String path;
-#if !NET_3_5_GREATER
-      return Combine(path1, path2, path3, path4);
-#else
       return Path.Combine(path1, path2, path3, path4);
-#endif
-
-      //return Path.GetFullPath(PathFix(path));
     }
 
     /// <summary>将字符串数组组合成一个路径</summary>
@@ -126,16 +111,10 @@ namespace CuteAnt.IO
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
+    [Obsolete("Path.Combine")]
     public static String PathCombineFix(params String[] paths)
     {
-      //String path;
-#if !NET_3_5_GREATER
-      return Combine(paths);
-#else
       return Path.Combine(paths);
-#endif
-
-      //return Path.GetFullPath(PathFix(path));
     }
 
     #endregion
@@ -147,7 +126,7 @@ namespace CuteAnt.IO
 #endif
     public static String ApplicationBasePathCombine(String path1)
     {
-      return Path.GetFullPath(PathCombineFix(ApplicationBasePath, path1));
+      return Path.GetFullPath(Path.Combine(ApplicationBasePath, path1));
     }
 
 #if !NET40
@@ -155,7 +134,7 @@ namespace CuteAnt.IO
 #endif
     public static String ApplicationBasePathCombine(String path1, String path2)
     {
-      return Path.GetFullPath(PathCombineFix(ApplicationBasePath, path1, path2));
+      return Path.GetFullPath(Path.Combine(ApplicationBasePath, path1, path2));
     }
 
 #if !NET40
@@ -163,7 +142,7 @@ namespace CuteAnt.IO
 #endif
     public static String ApplicationBasePathCombine(String path1, String path2, String path3)
     {
-      return Path.GetFullPath(PathCombineFix(ApplicationBasePath, path1, path2, path3));
+      return Path.GetFullPath(Path.Combine(ApplicationBasePath, path1, path2, path3));
     }
 
 #if !NET40
@@ -176,7 +155,7 @@ namespace CuteAnt.IO
       var list = new List<String>(paths.Length + 1);
       list.Add(ApplicationBasePath);
       list.AddRange(paths);
-      return Path.GetFullPath(PathCombineFix(list.ToArray()));
+      return Path.GetFullPath(Path.Combine(list.ToArray()));
     }
 
     #endregion
@@ -355,7 +334,7 @@ namespace CuteAnt.IO
     /// <param name="subDirName">子目录名称</param>
     public static void CreateDirectory(String parentDir, String subDirName)
     {
-      CreateDirectory(PathCombineFix(parentDir, subDirName));
+      CreateDirectory(Path.Combine(parentDir, subDirName));
     }
 
     #endregion
@@ -451,142 +430,6 @@ namespace CuteAnt.IO
     {
       return Directory.GetLogicalDrives();
     }
-
-    #endregion
-
-    #region -- Combine Methods --
-
-#if !NET_3_5_GREATER
-
-    public static String Combine(String path1, String path2)
-    {
-      if ((path1 == null) || (path2 == null))
-      {
-        throw new ArgumentNullException((path1 == null) ? "path1" : "path2");
-      }
-      CheckInvalidPathChars(path1);
-      CheckInvalidPathChars(path2);
-      return CombineNoChecks(path1, path2);
-    }
-
-    public static String Combine(String path1, String path2, String path3)
-    {
-      if (((path1 == null) || (path2 == null)) || (path3 == null))
-      {
-        throw new ArgumentNullException((path1 == null) ? "path1" : ((path2 == null) ? "path2" : "path3"));
-      }
-      CheckInvalidPathChars(path1);
-      CheckInvalidPathChars(path2);
-      CheckInvalidPathChars(path3);
-      return CombineNoChecks(CombineNoChecks(path1, path2), path3);
-    }
-
-    public static String Combine(String path1, String path2, String path3, String path4)
-    {
-      if (((path1 == null) || (path2 == null)) || ((path3 == null) || (path4 == null)))
-      {
-        throw new ArgumentNullException((path1 == null) ? "path1" : ((path2 == null) ? "path2" : ((path3 == null) ? "path3" : "path4")));
-      }
-      CheckInvalidPathChars(path1);
-      CheckInvalidPathChars(path2);
-      CheckInvalidPathChars(path3);
-      CheckInvalidPathChars(path4);
-      return CombineNoChecks(CombineNoChecks(CombineNoChecks(path1, path2), path3), path4);
-    }
-
-    private static String CombineNoChecks(String path1, String path2)
-    {
-      if (path2.Length == 0)
-      {
-        return path1;
-      }
-      if (path1.Length == 0)
-      {
-        return path2;
-      }
-      if (Path.IsPathRooted(path2))
-      {
-        return path2;
-      }
-      Char ch = path1[path1.Length - 1];
-      if (((ch != Path.DirectorySeparatorChar) && (ch != Path.AltDirectorySeparatorChar)) && (ch != Path.VolumeSeparatorChar))
-      {
-        return (path1 + Path.DirectorySeparatorChar + path2);
-      }
-      return (path1 + path2);
-    }
-
-    public static String Combine(params String[] paths)
-    {
-      if (paths == null)
-      {
-        throw new ArgumentNullException("paths");
-      }
-      Int32 capacity = 0;
-      Int32 num2 = 0;
-
-      for (Int32 i = 0; i < paths.Length; i++)
-      {
-        if (paths[i] == null)
-        {
-          throw new ArgumentNullException("paths");
-        }
-        if (paths[i].Length != 0)
-        {
-          CheckInvalidPathChars(paths[i]);
-          if (Path.IsPathRooted(paths[i]))
-          {
-            num2 = i;
-            capacity = paths[i].Length;
-          }
-          else
-          {
-            capacity += paths[i].Length;
-          }
-          Char ch = paths[i][paths[i].Length - 1];
-          if (((ch != Path.DirectorySeparatorChar) && (ch != Path.AltDirectorySeparatorChar)) && (ch != Path.VolumeSeparatorChar))
-          {
-            capacity++;
-          }
-        }
-      }
-      StringBuilder builder = new StringBuilder(capacity);
-
-      for (Int32 j = num2; j < paths.Length; j++)
-      {
-        if (paths[j].Length != 0)
-        {
-          if (builder.Length == 0)
-          {
-            builder.Append(paths[j]);
-          }
-          else
-          {
-            Char ch2 = builder[builder.Length - 1];
-            if (((ch2 != Path.DirectorySeparatorChar) && (ch2 != Path.AltDirectorySeparatorChar)) && (ch2 != Path.VolumeSeparatorChar))
-            {
-              builder.Append(Path.DirectorySeparatorChar);
-            }
-            builder.Append(paths[j]);
-          }
-        }
-      }
-      return builder.ToString();
-    }
-
-    internal static void CheckInvalidPathChars(String path)
-    {
-      for (Int32 i = 0; i < path.Length; i++)
-      {
-        Int32 num2 = path[i];
-        if (((num2 == 0x22) || (num2 == 60)) || (((num2 == 0x3e) || (num2 == 0x7c)) || (num2 < 0x20)))
-        {
-          throw new ArgumentException("Argument_InvalidPathChars");
-        }
-      }
-    }
-
-#endif
 
     #endregion
 

@@ -523,16 +523,7 @@ namespace CuteAnt
 
 				Guid guid = defaultValue;
 				Boolean success = false;
-#if NET_3_5_GREATER
 				success = Guid.TryParse(str, out guid);
-#else
-				try
-				{
-					guid = new Guid(str);
-					success = true;
-				}
-				catch { }
-#endif
 				return success ? guid : defaultValue;
 			}
 

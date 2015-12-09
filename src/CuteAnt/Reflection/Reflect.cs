@@ -588,7 +588,6 @@ namespace CuteAnt.Reflection
 
 		#region - MemberInfo -
 
-#if NET_3_5_GREATER
 		/// <summary>获取包含该成员的自定义特性的集合。</summary>
 		/// <param name="member"></param>
 		/// <returns></returns>
@@ -603,7 +602,6 @@ namespace CuteAnt.Reflection
 			return member.GetCustomAttributesData(); ;
 #endif
 		}
-#endif
 
 		/// <summary>获取成员绑定的显示名，优先DisplayName，然后Description</summary>
 		/// <param name="member"></param>

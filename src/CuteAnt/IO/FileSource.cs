@@ -39,7 +39,7 @@ namespace CuteAnt.IO
 				var str = PathHelper.ApplicationBasePath;
 
 				//dest = Path.Combine(str, dest);
-				dest = Path.GetFullPath(PathHelper.PathCombineFix(str, dest));
+				dest = Path.GetFullPath(Path.Combine(str, dest));
 			}
 			if (File.Exists(dest) && !overWrite) { return; }
 
@@ -143,7 +143,7 @@ namespace CuteAnt.IO
 					filenName = filenName.Replace(".", @"\") + ext;
 
 					//filenName = Path.Combine(dest, filenName);
-					filenName = PathHelper.PathCombineFix(dest, filenName);
+					filenName = Path.Combine(dest, filenName);
 				}
 				if (File.Exists(filenName) && !overWrite) { return; }
 

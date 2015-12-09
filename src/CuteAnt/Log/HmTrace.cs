@@ -460,7 +460,7 @@ namespace CuteAnt.Log
         if (!TempPath.IsNullOrWhiteSpace())
         {
           //dumpFile = Path.Combine(LogPath, dumpFile);
-          dumpFile = PathHelper.PathCombineFix(TempPath, dumpFile);
+          dumpFile = Path.Combine(TempPath, dumpFile);
         }
       }
       MiniDump.TryDump(dumpFile, MiniDump.MiniDumpType.WithFullMemory);
