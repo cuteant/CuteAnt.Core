@@ -15,7 +15,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using CuteAnt.Collections;
 using CuteAnt.Log;
-#if ASPNET
+#if DNXCLR
 using Microsoft.Extensions.PlatformAbstractions;
 #endif
 

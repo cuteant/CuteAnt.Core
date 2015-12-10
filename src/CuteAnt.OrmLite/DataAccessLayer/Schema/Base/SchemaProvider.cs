@@ -8,8 +8,12 @@ using System.Text;
 using System.Threading;
 using CuteAnt.OrmLite.Common;
 using CuteAnt.OrmLite.Exceptions;
-using CuteAnt.Log;
 using CuteAnt.Reflection;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 
 namespace CuteAnt.OrmLite.DataAccessLayer
 {
@@ -566,7 +570,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 				// 检查是否已正确识别类型
 				if (field.DataType == null)
 				{
-					DAL.Logger.Warn("无法识别{0}.{1}的类型{2}！", table.TableName, field.ColumnName, field.RawType);
+					DAL.Logger.LogWarning("无法识别{0}.{1}的类型{2}！", table.TableName, field.ColumnName, field.RawType);
 				}
 
 				field.Fix();
@@ -1039,7 +1043,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			{
 				if (!setting.CheckOnly)
 				{
-					DAL.Logger.Info("创建数据库：{0}", ConnName);
+					DAL.Logger.LogInformation("创建数据库：{0}", ConnName);
 					CreateDatabase(null, null);
 				}
 				else
@@ -1047,11 +1051,11 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 					var sql = Generator.CreateDatabaseSQL(null, null);
 					if (sql.IsNullOrWhiteSpace())
 					{
-						DAL.Logger.Warn("请为连接{0}创建数据库！", ConnName);
+						DAL.Logger.LogWarning("请为连接{0}创建数据库！", ConnName);
 					}
 					else
 					{
-						DAL.Logger.Warn("请为连接{0}创建数据库，使用以下语句：{1}", ConnName, Environment.NewLine + sql);
+						DAL.Logger.LogWarning("请为连接{0}创建数据库，使用以下语句：{1}", ConnName, Environment.NewLine + sql);
 					}
 				}
 			}
@@ -1112,14 +1116,14 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 			if (setting.CheckOnly)
 			{
-				DAL.Logger.Info("只检查不对数据库进行操作, 请手工执行 SQL 语句：" + Environment.NewLine);
+				DAL.Logger.LogInformation("只检查不对数据库进行操作, 请手工执行 SQL 语句：" + Environment.NewLine);
 				foreach (var results in resultsList)
 				{
 					var rebulid = results.Find(e => e.ResultType == ResultType.RebulidTable);
 					// 如果存在重建表操作
 					if (rebulid != null)
 					{
-						DAL.Logger.Info(rebulid.ToString());
+						DAL.Logger.LogInformation(rebulid.ToString());
 					}
 					else
 					{
@@ -1127,7 +1131,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 						{
 							if (!item.Script.IsNullOrWhiteSpace())
 							{
-								DAL.Logger.Info(item.ToString());
+								DAL.Logger.LogInformation(item.ToString());
 							}
 						}
 					}
@@ -1141,14 +1145,14 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 					// 如果存在重建表操作
 					if (rebulid != null)
 					{
-						DAL.Logger.Info("--{0}{1}：{2}", rebulid.ResultType.GetDescription(), rebulid.SchemaObjectType.GetDescription(), rebulid.Remark);
+						DAL.Logger.LogInformation("--{0}{1}：{2}", rebulid.ResultType.GetDescription(), rebulid.SchemaObjectType.GetDescription(), rebulid.Remark);
 						try
 						{
 							Execute(rebulid.Script);
 						}
 						catch (Exception ex)
 						{
-							DAL.Logger.Error(ex, "{0}{1}：{2} 失败！", rebulid.ResultType.GetDescription(), rebulid.SchemaObjectType.GetDescription(), rebulid.Remark);
+							DAL.WriteLog(ex, "{0}{1}：{2} 失败！", rebulid.ResultType.GetDescription(), rebulid.SchemaObjectType.GetDescription(), rebulid.Remark);
 						}
 					}
 					else
@@ -1158,20 +1162,20 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 							if (setting.NoDelete && item.ResultType == ResultType.Delete && item.SchemaObjectType == SchemaObjectType.Column)
 							{
 								//不许删除列，显示日志
-								DAL.Logger.Info("数据表中发现有多余字段，请手工执行以下语句删除：" + Environment.NewLine + item.Script);
+								DAL.Logger.LogInformation("数据表中发现有多余字段，请手工执行以下语句删除：" + Environment.NewLine + item.Script);
 							}
 							else
 							{
 								if (!item.Script.IsNullOrWhiteSpace())
 								{
-									DAL.Logger.Info("--{0}{1}：{2}", item.ResultType.GetDescription(), item.SchemaObjectType.GetDescription(), item.Remark);
+									DAL.Logger.LogInformation("--{0}{1}：{2}", item.ResultType.GetDescription(), item.SchemaObjectType.GetDescription(), item.Remark);
 									try
 									{
 										Execute(item.Script);
 									}
 									catch (Exception ex)
 									{
-										DAL.Logger.Error(ex, "{0}{1}：{2} 失败！", item.ResultType.GetDescription(), item.SchemaObjectType.GetDescription(), item.Remark);
+										DAL.WriteLog(ex, "{0}{1}：{2} 失败！", item.ResultType.GetDescription(), item.SchemaObjectType.GetDescription(), item.Remark);
 									}
 								}
 							}

@@ -1,0 +1,40 @@
+{
+  "version": "1.0.0-*",
+  "description": "CuteAnt.Extensions.Caching.Redis Class Library",
+  "authors": [ "SeaBiscuit" ],
+  "tags": [ "CuteAnt", "CuteAnt.Extensions.Caching.Redis" ],
+  "projectUrl": "http://www.cuteant.net",
+  "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+  "requireLicenseAcceptance": true,
+
+  "repository": {
+    "type": "git",
+    "url": "http://git.oschina.net/cuteant/"
+  },
+
+  "compilationOptions": {
+    "define": [ "TRACE", "NET_3_5_GREATER" ],
+    "keyFile": "../../tools/StrongKey.snk",
+    "warningsAsErrors": false,
+    "allowUnsafe": false
+  },
+  "compile": [
+    "**/*.cs",
+    "../../Common/*.cs"
+  ],
+  "compileExclude": [ ],
+  "exclude": [ ],
+  "preprocess": [ ],
+  "preprocessExclude": [ ],
+  "resource": [ "**/*.resx" ],
+
+  "dependencies": {
+    "CuteAnt.Extensions.Caching.Abstractions": "2.0.0-rc1-final",
+    "CuteAnt.Extensions.OptionsModel": "2.0.0-rc1-final",
+    "StackExchange.Redis.StrongName": "1.0.488"
+  },
+
+  "frameworks": {
+    "net451": { }
+  }
+}

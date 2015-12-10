@@ -252,7 +252,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 			catch (Exception ex)
 			{
-				DAL.Logger.Error(ex);
+				DAL.WriteLog(ex);
 				throw new OrmLiteDbSchemaException(this, "取得所有表构架出错！", ex);
 			}
 		}
@@ -277,7 +277,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 			catch (Exception ex)
 			{
-				DAL.Logger.Error(ex);
+				DAL.WriteLog(ex);
 				throw new OrmLiteDbSchemaException(this, "取得所有表构架出错！", ex);
 			}
 		}

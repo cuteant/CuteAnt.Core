@@ -19,8 +19,11 @@ using System.Windows.Forms;
 #endif
 using CuteAnt.Configuration;
 using CuteAnt.IO;
-using CuteAnt.Reflection;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
 using Microsoft.Extensions.Logging;
+#endif
 #if !NET40
 using System.Runtime.CompilerServices;
 #endif
@@ -38,7 +41,7 @@ namespace CuteAnt.Log
   {
     #region -- 写日志 --
 
-    public const String GlobalLoggerName = "CA_Global";
+    public const String GlobalLoggerName = "Global";
 
     /// <summary>文本文件日志</summary>
     private static ILogger s_log;
@@ -46,9 +49,31 @@ namespace CuteAnt.Log
     /// <summary>日志提供者，默认使用文本文件日志</summary>
     public static ILogger Log
     {
-      get { return s_log; }
+      get
+      {
+        if (s_log == null)
+        {
+          var log = Interlocked.CompareExchange(ref s_log, LoggerFactory.CreateLogger(GlobalLoggerName), null);
+        }
+        return s_log;
+      }
       set { s_log = value; }
     }
+
+    private static ILoggerFactory s_loggerFactory;
+    public static ILoggerFactory LoggerFactory
+    {
+      get
+      {
+        if (s_loggerFactory == null)
+        {
+          var factory = Interlocked.CompareExchange(ref s_loggerFactory, new LoggerFactory(), null);
+        }
+        return s_loggerFactory;
+      }
+      set { s_loggerFactory = value; }
+    }
+    //public static readonly ILoggerFactory=new lo
 
     #region - Info -
 
@@ -443,6 +468,32 @@ namespace CuteAnt.Log
         _TempPath = PathHelper.ApplicationBasePathCombine(_TempPath);
 
         #endregion
+      }
+    }
+
+    public static ILoggerFactory S_loggerFactory
+    {
+      get
+      {
+        return S_loggerFactory1;
+      }
+
+      set
+      {
+        S_loggerFactory1 = value;
+      }
+    }
+
+    public static ILoggerFactory S_loggerFactory1
+    {
+      get
+      {
+        return s_loggerFactory;
+      }
+
+      set
+      {
+        s_loggerFactory = value;
       }
     }
 

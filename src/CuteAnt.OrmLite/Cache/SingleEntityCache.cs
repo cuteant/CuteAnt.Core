@@ -13,11 +13,15 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CuteAnt;
 using CuteAnt.OrmLite.DataAccessLayer;
 using CuteAnt.Log;
 using CuteAnt.Reflection;
 using CuteAnt.Threading;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 
 namespace CuteAnt.OrmLite.Cache
 {
@@ -203,7 +207,7 @@ namespace CuteAnt.OrmLite.Cache
 			}
 			catch (Exception ex)
 			{
-				DAL.Logger.Error(ex);
+				DAL.WriteLog(ex);
 			}
 
 			if (_Timer != null) { _Timer.Dispose(); }
@@ -414,7 +418,7 @@ namespace CuteAnt.OrmLite.Cache
 				if (Shoot2 > 0) { sb.AppendFormat("，二级命中{0}（{1,6:P02}）", Shoot2, (Double)Shoot2 / Total); }
 				if (Invalid > 0) { sb.AppendFormat("，无效次数{0}（{1,6:P02}）", Invalid, (Double)Invalid / Total); }
 
-				DAL.Logger.Info(sb.ToString());
+				DAL.Logger.LogInformation(sb.ToString());
 			}
 		}
 
@@ -806,7 +810,7 @@ namespace CuteAnt.OrmLite.Cache
 						AutoUpdate(item, "清空缓存 " + reason);
 					}
 				}
-				catch (Exception ex) { DAL.Logger.Error(ex); }
+				catch (Exception ex) { DAL.WriteLog(ex); }
 			}
 
 			Entities.Clear();

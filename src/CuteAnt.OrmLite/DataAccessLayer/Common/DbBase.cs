@@ -27,6 +27,11 @@ using ICSharpCode.SharpZipLib.BZip2;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Zip;
 using Overwrite = ICSharpCode.SharpZipLib.Zip.FastZip.Overwrite;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 
 namespace CuteAnt.OrmLite.DataAccessLayer
 {
@@ -226,7 +231,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
         }
         catch (Exception ex)
         {
-          DAL.Logger.Info("查询[{0}]的版本时出错！{1}", ConnName, ex);
+          DAL.WriteLog(ex, "查询[{0}]的版本时出错！{1}", ConnName);
           return _ServerVersion;
         }
         finally { session.AutoClose(); }
@@ -404,7 +409,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
       var type = className.GetTypeEx(true);
       if (type == null)
       {
-        DAL.Logger.Info("驱动文件{0}非法或不适用于当前环境，准备删除后重新下载！", file);
+        DAL.Logger.LogInformation("驱动文件{0}非法或不适用于当前环境，准备删除后重新下载！", file);
 
         File.Delete(file);
 

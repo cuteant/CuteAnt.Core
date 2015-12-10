@@ -593,7 +593,7 @@ namespace CuteAnt.OrmLite.Cache
 				{
 					sb.AppendFormat("£¬ÃüÖÐ{0,7:n0}£¨{1,6:P02}£©", Shoot, (Double)Shoot / Total);
 				}
-				DAL.Logger.Info(sb.ToString());
+				DAL.WriteLog(sb.ToString());
 			}
 		}
 

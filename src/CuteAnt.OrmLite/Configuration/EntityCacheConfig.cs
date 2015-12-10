@@ -144,7 +144,7 @@ namespace CuteAnt.OrmLite.Configuration
 		/// <returns></returns>
 		public EntityCacheInfo Find(String modelkey)
 		{
-			//DAL.Logger.Warn("开始查找：{0}".FormatWith(modelkey));
+			//DAL.Logger.LogWarning("开始查找：{0}".FormatWith(modelkey));
 
 			if (EntityCaches == null || EntityCaches.Count <= 0) { return _Default; }
 
@@ -152,12 +152,12 @@ namespace CuteAnt.OrmLite.Configuration
 
 			if (EntityCaches.TryGetValue(modelkey, out cache))
 			{
-				//DAL.Logger.Warn("缓存配置找到：{0}", cache.EntityCacheExpriod);
+				//DAL.Logger.LogWarning("缓存配置找到：{0}", cache.EntityCacheExpriod);
 				return cache;
 			}
 			else
 			{
-				//DAL.Logger.Warn("缓存配置未找到！");
+				//DAL.Logger.LogWarning("缓存配置未找到！");
 				return _Default;
 			}
 		}

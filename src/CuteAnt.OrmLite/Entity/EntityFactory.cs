@@ -14,8 +14,12 @@ using CuteAnt.Collections;
 using CuteAnt.OrmLite.Configuration;
 using CuteAnt.OrmLite.DataAccessLayer;
 using CuteAnt.OrmLite.Exceptions;
-using CuteAnt.Log;
 using CuteAnt.Reflection;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 
 namespace CuteAnt.OrmLite
 {
@@ -212,7 +216,7 @@ namespace CuteAnt.OrmLite
 					else
 					{
 						String msg = String.Format("设计错误！发现表{0}同时被两个实体类（{1}和{2}）使用！", table.TableName, type.FullName, item.FullName);
-						DAL.Logger.Warn(msg);
+						DAL.Logger.LogWarning(msg);
 						throw new OrmLiteException(msg);
 					}
 				}

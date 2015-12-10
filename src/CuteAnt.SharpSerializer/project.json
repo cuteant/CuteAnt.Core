@@ -32,7 +32,16 @@
   },
 
   "frameworks": {
-    "net451": { }
+    "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      }
+    },
+    "dnx451": {
+      "compilationOptions": {
+        "define": [ "DNXCLR" ]
+      }
+    }
   },
 
   "repository": {

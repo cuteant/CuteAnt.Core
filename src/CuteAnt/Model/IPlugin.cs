@@ -11,7 +11,11 @@ using System.Collections.Generic;
 using System.Linq;
 using CuteAnt.Log;
 using CuteAnt.Reflection;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
 using Microsoft.Extensions.Logging;
+#endif
 
 namespace CuteAnt.Model
 {

@@ -588,7 +588,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 					else
 					{
 						// 其它的不支持，跳过
-						DAL.Logger.Debug("不支持的类型[{0} {1}]！", pi.PropertyType.Name, pi.Name);
+						DAL.WriteDebugLog("不支持的类型[{0} {1}]！", pi.PropertyType.Name, pi.Name);
 
 						continue;
 					}

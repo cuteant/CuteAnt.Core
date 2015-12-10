@@ -29,7 +29,6 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "NLog": "4.2.2",
     "ICSharpCode.SharpZipLib": "2.0.0-rc2-150808",
     "CuteAnt.AsyncEx": "2.0.0-rc2-151212",
     "protobuf-net": "2.0.0-rc2-151212",

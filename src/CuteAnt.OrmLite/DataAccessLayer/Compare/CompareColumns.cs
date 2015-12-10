@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using CuteAnt.Log;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 
 namespace CuteAnt.OrmLite.DataAccessLayer
 {
@@ -39,7 +42,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			{
 				if (entitydic.ContainsKey(item.ColumnName))
 				{
-					DAL.Logger.Warn("《{0}》实体中存在重复列名，请检查《{1}》表《{2}》属性的ColumnName配置（目前配置为：{3}）。",
+					DAL.Logger.LogWarning("《{0}》实体中存在重复列名，请检查《{1}》表《{2}》属性的ColumnName配置（目前配置为：{3}）。",
 														entityTable.Name, entityTable.TableName, item.Name, item.ColumnName);
 					continue;
 				}

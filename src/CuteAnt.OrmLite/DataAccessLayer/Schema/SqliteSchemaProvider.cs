@@ -6,7 +6,11 @@ using System.Data.SQLite;
 using System.Linq;
 using CuteAnt.OrmLite.Common;
 using CuteAnt.OrmLite.Exceptions;
-using CuteAnt.Log;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 
 namespace CuteAnt.OrmLite.DataAccessLayer
 {
@@ -118,7 +122,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 			catch (Exception ex)
 			{
-				DAL.Logger.Error(ex);
+				DAL.WriteLog(ex);
 				throw new OrmLiteDbSchemaException(this, "取得所有表构架出错！", ex);
 			}
 		}
@@ -149,7 +153,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 			catch (Exception ex)
 			{
-				DAL.Logger.Error(ex);
+				DAL.WriteLog(ex);
 				throw new OrmLiteDbSchemaException(this, "取得所有表构架出错！", ex);
 			}
 		}
@@ -318,7 +322,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 						// 检查是否已正确识别类型
 						if (field.DataType == null)
 						{
-							DAL.Logger.Warn("无法识别{0}.{1}的类型{2}！", table.TableName, field.ColumnName, rawType);
+							DAL.Logger.LogWarning("无法识别{0}.{1}的类型{2}！", table.TableName, field.ColumnName, rawType);
 						}
 
 						field.Fix();
@@ -451,11 +455,11 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			//	if (!session.Opened) { session.Open(); }
 			//	var dtIndex = session.Conn.GetSchema(_.IndexColumns, new String[] { null, table.TableName, item.Name });
 			//	session.AutoClose();
-			//	DAL.Logger.Warn("{0} - {1} - {2}", table.TableName, item.Name, dtIndex.Rows.Count);
+			//	DAL.Logger.LogWarning("{0} - {1} - {2}", table.TableName, item.Name, dtIndex.Rows.Count);
 			//	var list = new List<String>();
 			//	foreach (DataRow indexRow in dtIndex.Rows)
 			//	{
-			//		DAL.Logger.Warn("{0} - {1} - {2}", table.TableName, item.Name, indexRow["COLUMN_NAME"].ToString());
+			//		DAL.Logger.LogWarning("{0} - {1} - {2}", table.TableName, item.Name, indexRow["COLUMN_NAME"].ToString());
 			//		list.Add(indexRow["COLUMN_NAME"].ToString());
 			//	}
 			//	item.Columns = list.ToArray();

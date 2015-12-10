@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "2.0.0-rc1-final",
   "description": "CuteAnt.Extensions.Logging.Console Class Library",
   "authors": [ "SeaBiscuit" ],
@@ -28,7 +28,10 @@
   "preprocessExclude": [ ],
   "resource": [ "**/*.resx" ],
 
-  "dependencies": { },
+  "dependencies": {
+    "CuteAnt.Extensions.Configuration.Abstractions": "2.0.0-rc1-final",
+    "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc1-final"
+  },
 
   "frameworks": {
     "net451": { }

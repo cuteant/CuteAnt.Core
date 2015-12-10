@@ -69,7 +69,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 			catch (Exception ex)
 			{
-				DAL.Logger.Error(ex);
+				DAL.WriteLog(ex);
 				throw;
 			}
 		}

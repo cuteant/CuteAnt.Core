@@ -16,6 +16,11 @@ using CuteAnt.AsyncEx;
 using CuteAnt.Log;
 using CuteAnt.OrmLite.Configuration;
 using CuteAnt.OrmLite.DataAccessLayer;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 
 namespace CuteAnt.OrmLite.Cache
 {
@@ -312,7 +317,7 @@ namespace CuteAnt.OrmLite.Cache
 				if (Shoot1 > c_zero) { sb.AppendFormat("，命中{0,7:n0}（{1,6:P02}）", Shoot1, (Double)Shoot1 / Total); }
 				if (Shoot2 > c_zero) { sb.AppendFormat("，二级命中{0,3:n0}（{1,6:P02}）", Shoot2, (Double)Shoot2 / Total); }
 
-				DAL.Logger.Info(sb.ToString());
+				DAL.Logger.LogInformation(sb.ToString());
 			}
 		}
 

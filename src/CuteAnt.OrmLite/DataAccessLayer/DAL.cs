@@ -9,25 +9,25 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml.Linq;
-using CuteAnt;
 using CuteAnt.AsyncEx;
+using CuteAnt.IO;
 using CuteAnt.OrmLite.Code;
 using CuteAnt.OrmLite.Configuration;
 using CuteAnt.OrmLite.Exceptions;
-using CuteAnt.IO;
-using CuteAnt.Log;
 using CuteAnt.Reflection;
-using CuteAnt.Threading;
 using CuteAnt.Xml;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 
 namespace CuteAnt.OrmLite.DataAccessLayer
 {
@@ -59,7 +59,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
           dbpath = PathHelper.ApplicationBasePathCombine("Data");
         }
         var connstr = "Data Source={0}\\{1}.db".FormatWith(dbpath, connName);
-        DAL.Logger.Info("自动为[{0}]设置连接字符串：{1}", connName, connstr);
+        DAL.Logger.LogInformation("自动为[{0}]设置连接字符串：{1}", connName, connstr);
         AddConnStr(connName, connstr, null, "SQLite");
       }
 
@@ -650,7 +650,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
                   //if (type == null) throw new HmCodeException("无法识别的提供者" + set.ProviderName + "！");
                   if (type == null)
                   {
-                    DAL.Logger.Warn("无法识别{0}的提供者{1}！", connName, providerName);
+                    DAL.Logger.LogWarning("无法识别{0}的提供者{1}！", connName, providerName);
                   }
                   cs.Add(connName, new ConnectionStringSettings(connName, connStr, providerName));
                   _connTypes.Add(connName, type);
@@ -682,7 +682,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
               if (type == null)
               {
-                DAL.Logger.Warn("无法识别{0}的提供者{1}！", set.Name, set.ProviderName);
+                DAL.Logger.LogWarning("无法识别{0}的提供者{1}！", set.Name, set.ProviderName);
               }
               cs.Add(set.Name, set);
               _connTypes.Add(set.Name, type);
@@ -773,7 +773,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
                   //if (type == null) throw new HmCodeException("无法识别的提供者" + set.ProviderName + "！");
                   if (type == null)
                   {
-                    DAL.Logger.Warn("无法识别{0}的提供者{1}！", connName, providerName);
+                    DAL.Logger.LogWarning("无法识别{0}的提供者{1}！", connName, providerName);
                   }
                   _connStrs.Add(connName, new ConnectionStringSettings(connName, connStr, providerName));
                   _connTypes.Add(connName, type);
@@ -807,7 +807,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
               if (type == null)
               {
-                DAL.Logger.Warn("无法识别{0}的提供者{1}！", set.Name, set.ProviderName);
+                DAL.Logger.LogWarning("无法识别{0}的提供者{1}！", set.Name, set.ProviderName);
               }
               _connStrs.Add(set.Name, set);
               _connTypes.Add(set.Name, type);
@@ -1092,7 +1092,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
       }
       catch (Exception ex)
       {
-        if (Debug) { DAL.Logger.Error(ex); }
+        if (Debug) { DAL.WriteLog(ex); }
       }
     }
 

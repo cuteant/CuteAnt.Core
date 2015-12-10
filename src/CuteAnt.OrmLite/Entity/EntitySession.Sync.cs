@@ -81,7 +81,7 @@ namespace CuteAnt.OrmLite
 					}
 					catch (Exception ex)
 					{
-						DAL.Logger.Error(ex, "初始化数据出错！");
+						DAL.WriteLog(ex, "初始化数据出错！");
 					}
 				}
 

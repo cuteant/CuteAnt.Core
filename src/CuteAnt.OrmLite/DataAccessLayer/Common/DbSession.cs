@@ -16,13 +16,16 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Web;
 using CuteAnt.AsyncEx;
 using CuteAnt.Collections;
 using CuteAnt.OrmLite.Exceptions;
-using CuteAnt.Log;
 #if !NET40
 using System.Runtime.CompilerServices;
+#endif
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
 #endif
 
 namespace CuteAnt.OrmLite.DataAccessLayer
@@ -55,7 +58,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			catch (ObjectDisposedException) { }
 			catch (Exception ex)
 			{
-				DAL.Logger.Error(ex, "执行" + DbType.ToString() + "的Dispose时出错：");
+				DAL.WriteLog(ex, "执行" + DbType.ToString() + "的Dispose时出错：");
 			}
 		}
 
@@ -188,7 +191,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 				try { Conn.Close(); }
 				catch (Exception ex)
 				{
-					DAL.Logger.Error(ex, "执行" + DbType.ToString() + "的Close时出错：");
+					DAL.WriteLog(ex, "执行" + DbType.ToString() + "的Close时出错：");
 				}
 			}
 		}
@@ -1327,7 +1330,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			//	if (logger == null) logger = TextFileLog.Create(DAL.SQLPath);
 			//	logger.WriteLine(sql);
 			//}
-			DAL.Logger.Info(sql);
+			DAL.WriteLog(sql);
 
 			#endregion
 		}
@@ -1410,7 +1413,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			if (!_trace_sqls.TryAdd(sql)) { return; }
 			#endregion
 
-			DAL.Logger.Warn("SQL耗时较长，建议优化 {0:n}毫秒 {1}", _swSql.ElapsedMilliseconds, sql);
+			DAL.Logger.LogWarning("SQL耗时较长，建议优化 {0:n}毫秒 {1}", _swSql.ElapsedMilliseconds, sql);
 		}
 
 		#endregion

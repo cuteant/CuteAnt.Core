@@ -15,7 +15,11 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using CuteAnt.Collections;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
 using Microsoft.Extensions.Logging;
+#endif
 
 namespace CuteAnt.Reflection
 {
