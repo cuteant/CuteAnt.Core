@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 #if NET40
 [assembly: AssemblyTitle("CuteAnt.IdentityModel for .NetFx4.0")]
-#elif NET451
+#elif DESKTOPCLR || DNXCLR
 [assembly: AssemblyTitle("CuteAnt.IdentityModel for .NetFx4.5")]
 #endif
 #if DEBUG

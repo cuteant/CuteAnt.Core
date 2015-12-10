@@ -1,11 +1,16 @@
 {
-  "version": "2.0.0-rc2-151211",
+  "version": "2.0.0-rc2-151212",
   "description": "CuteAnt.OrmLite Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.OrmLite" ],
   "projectUrl": "http://www.cuteant.net",
   "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
   "requireLicenseAcceptance": true,
+
+  "repository": {
+    "type": "git",
+    "url": "http://git.oschina.net/cuteant/"
+  },
 
   "compilationOptions": {
     "define": [ "TRACE", "NET_3_5_GREATER" ],
@@ -26,30 +31,30 @@
   "dependencies": {
     "NLog": "4.2.2",
     "ICSharpCode.SharpZipLib": "2.0.0-rc2-150808",
-    "CuteAnt.AsyncEx": "2.0.0-rc2-151211",
-    "protobuf-net": "2.0.0-rc2-151211",
+    "CuteAnt.AsyncEx": "2.0.0-rc2-151212",
+    "protobuf-net": "2.0.0-rc2-151212",
     "CuteAnt.Extensions.Sources": {
-      "version": "2.0.0-rc2-151211",
+      "version": "2.0.0-rc2-151212",
       "type": "build"
     },
     "CuteAnt.Extensions.Reflection.Sources": {
-      "version": "2.0.0-rc2-151211",
+      "version": "2.0.0-rc2-151212",
       "type": "build"
     },
     "Nito.AsyncEx.Tasks.Sources": {
-      "version": "2.0.0-rc2-151211",
+      "version": "2.0.0-rc2-151212",
       "type": "build"
     },
     "CuteAnt.Extensions.Security.Sources": {
-      "version": "2.0.0-rc2-151211",
+      "version": "2.0.0-rc2-151212",
       "type": "build"
     },
     "CuteAnt.Extensions.IO.Sources": {
-      "version": "2.0.0-rc2-151211",
+      "version": "2.0.0-rc2-151212",
       "type": "build"
     },
-    "MySql.Data": "2.0.0-rc2-151211",
-    "System.Data.SQLite": "2.0.0-rc2-151211"
+    "MySql.Data": "2.6.98",
+    "System.Data.SQLite": "2.0.98"
   },
 
   "frameworks": {

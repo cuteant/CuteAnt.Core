@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#if NET451
+#if DESKTOPCLR || DNXCLR
 
 using System.Diagnostics.Contracts;
 using System.Xml;

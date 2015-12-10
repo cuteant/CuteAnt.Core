@@ -31,10 +31,10 @@ namespace CuteAnt
 #if NET40
     /// <summary>4</summary>
     public const String NETVersion = "4";
-#elif NET451 || DNX451
+#elif NET451 || DNX451 || DNX451
     /// <summary>5</summary>
     public const String NETVersion = "5";
-#elif NET46
+#elif NET46 || DNX46
     /// <summary>6</summary>
     public const String NETVersion = "6";
 #endif

@@ -1,8 +1,8 @@
 ﻿{
-  "version": "2.0.0-rc2-151211",
+  "version": "2.0.0-rc2-151212",
   "description": "CuteAnt.SharpSerializer Class Library",
   "authors": [ "SeaBiscuit" ],
-  "tags": [ "CuteAnt", "CuteAnt.Core" ],
+  "tags": [ "CuteAnt", "CuteAnt.SharpSerializer" ],
   "projectUrl": "http://www.cuteant.net",
   "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
   "requireLicenseAcceptance": true,
@@ -11,7 +11,7 @@
     "define": [ "TRACE", "NET_3_5_GREATER" ],
     "keyFile": "../../tools/StrongKey.snk",
     "warningsAsErrors": false,
-    "allowUnsafe": true
+    "allowUnsafe": false
   },
   "compile": [
     "**/*.cs",
@@ -24,9 +24,9 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt": "2.0.0-rc2-151211",
+    "CuteAnt": "2.0.0-rc2-151212",
     "CuteAnt.Extensions.Sources": {
-      "version": "2.0.0-rc2-151211",
+      "version": "2.0.0-rc2-151212",
       "type": "build"
     }
   },

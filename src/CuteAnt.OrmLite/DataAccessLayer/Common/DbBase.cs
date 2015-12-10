@@ -362,7 +362,22 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
     #endregion
 
-    #region -- 下载驱动 --
+    #region -- 获取提供者工厂 --
+
+    /// <summary>获取提供者工厂</summary>
+    /// <param name="className"></param>
+    /// <returns></returns>
+    protected static DbProviderFactory GetProviderFactory(String className)
+    {
+      //反射实现获取数据库工厂
+      var type = className.GetTypeEx(true);
+      if (type == null) { throw new NotSupportedException(string.Format("无法获取数据库工厂：{0}", className)); }
+
+      var field = type.GetFieldEx("Instance");
+      if (field == null) { return Activator.CreateInstance(type) as DbProviderFactory; }
+
+      return Reflect.GetValue(null, field) as DbProviderFactory;
+    }
 
     /// <summary>获取提供者工厂</summary>
     /// <param name="assemblyFile"></param>
@@ -413,6 +428,10 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
       return Reflect.GetValue(null, field) as DbProviderFactory;
     }
+
+    #endregion
+
+    #region -- 下载驱动 --
 
     protected static void CheckAndDownload(String file, String targetPath = null)
     {

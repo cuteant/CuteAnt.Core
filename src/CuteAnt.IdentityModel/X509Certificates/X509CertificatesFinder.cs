@@ -49,7 +49,7 @@ namespace CuteAnt.IdentityModel
             }
             finally
             {
-#if NET451
+#if DESKTOPCLR || DNXCLR
                 store.Close();
 #endif
             }

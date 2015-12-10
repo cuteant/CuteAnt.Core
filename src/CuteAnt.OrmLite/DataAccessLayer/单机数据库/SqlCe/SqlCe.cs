@@ -40,7 +40,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 				{
 					lock (typeof(SqlCe))
 					{
-						if (_dbProviderFactory == null) _dbProviderFactory = GetProviderFactory("System.Data.SqlServerCe.dll", "System.Data.SqlServerCe.SqlCeProviderFactory");
+						if (_dbProviderFactory == null) _dbProviderFactory = GetProviderFactory("System.Data.SqlServerCe.dll", "System.Data.SqlServerCe.SqlCeProviderFactory, System.Data.SqlServerCe");
 
 						if (_dbProviderFactory != null)
 						{

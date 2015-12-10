@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-151211",
+  "version": "2.0.98",
   "description": "The official SQLite database engine for both x86 and x64 along with the ADO.NET provider.",
   "authors": [ "SQLite Development Team" ],
   "tags": [ "SQLite" ],
@@ -27,7 +27,7 @@
   ],
 
   "dependencies": {
-    "CuteAnt": "2.0.0-rc2-151211"
+    "CuteAnt": "2.0.0-rc2-151212"
   },
 
   "frameworks": {

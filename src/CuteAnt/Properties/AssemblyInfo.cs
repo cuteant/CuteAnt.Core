@@ -11,9 +11,9 @@ using CuteAnt;
 // 与程序集关联的信息。
 #if NET40
 [assembly: AssemblyTitle("CuteAnt for .NetFx4.0")]
-#elif NET451
+#elif NET451 || DNX451
 [assembly: AssemblyTitle("CuteAnt for .NetFx4.5")]
-#elif NET46
+#elif NET46 || DNX46
 [assembly: AssemblyTitle("CuteAnt for .NetFx4.6")]
 #endif
 #if DEBUG

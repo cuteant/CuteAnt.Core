@@ -1,0 +1,42 @@
+﻿{
+  "version": "2.0.0-rc1-final",
+  "description": "CuteAnt.Extensions.FileProviders.Physical Class Library",
+  "authors": [ "SeaBiscuit" ],
+  "tags": [ "CuteAnt", "CuteAnt.Extensions.FileProviders.Physical" ],
+  "projectUrl": "http://www.cuteant.net",
+  "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+  "requireLicenseAcceptance": true,
+
+  "repository": {
+    "type": "git",
+    "url": "http://git.oschina.net/cuteant/"
+  },
+
+  "compilationOptions": {
+    "define": [ "TRACE", "NET_3_5_GREATER" ],
+    "keyFile": "../../tools/StrongKey.snk",
+    "warningsAsErrors": false,
+    "allowUnsafe": false
+  },
+  "compile": [
+    "**/*.cs",
+    "../../Common/*.cs"
+  ],
+  "compileExclude": [ ],
+  "exclude": [ ],
+  "preprocess": [ ],
+  "preprocessExclude": [ ],
+  "resource": [ "**/*.resx" ],
+
+  "dependencies": {
+    "CuteAnt.Extensions.FileProviders.Abstractions": "2.0.0-rc1-final",
+    "CuteAnt.Extensions.FileProviders.Sources": {
+      "version": "2.0.0-rc1-final",
+      "type": "build"
+    }
+  },
+
+  "frameworks": {
+    "net451": { }
+  }
+}

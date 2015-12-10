@@ -52,7 +52,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 				{
 					lock (typeof(PostgreSQL))
 					{
-						if (_dbProviderFactory == null) _dbProviderFactory = GetProviderFactory("Npgsql.dll", "Npgsql.NpgsqlFactory");
+						if (_dbProviderFactory == null) _dbProviderFactory = GetProviderFactory("Npgsql.dll", "Npgsql.NpgsqlFactory, Npgsql");
 					}
 				}
 

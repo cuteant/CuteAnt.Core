@@ -95,7 +95,7 @@ namespace CuteAnt.IdentityModel
                     claims.Add(new Claim(ClaimTypes.Uri, name, ClaimValueTypes.String, issuer));
                 }
 
-#if NET451
+#if DESKTOPCLR || DNXCLR
                 RSA key = certificate.PublicKey.Key as RSA;
                 if (key != null)
                 {
