@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿#if DESKTOPCLR
+using CuteAnt.Extensions.Configuration;
+#else
+using Microsoft.Extensions.Configuration;
+#endif
 
 namespace Autofac.Configuration
 {

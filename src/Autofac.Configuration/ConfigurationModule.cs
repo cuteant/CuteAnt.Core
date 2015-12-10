@@ -1,5 +1,9 @@
 ﻿using Autofac.Configuration.Core;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Configuration;
+#else
 using Microsoft.Extensions.Configuration;
+#endif
 using System;
 
 namespace Autofac.Configuration

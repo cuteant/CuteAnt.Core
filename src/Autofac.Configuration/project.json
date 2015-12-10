@@ -23,8 +23,7 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "Autofac": "4.0.0-rc1-151205",
-    "Microsoft.Extensions.Configuration": "1.0.0-rc1-final"
+    "Autofac": "4.0.0-rc1-151205"
   },
 
   "frameworks": {
@@ -33,6 +32,7 @@
         "define": [ "DNXCLR" ]
       },
       "dependencies": {
+        "Microsoft.Extensions.Configuration": "1.0.0-rc1-final"
       }
     },
     "net451": {
@@ -40,6 +40,7 @@
         "define": [ "DESKTOPCLR" ]
       },
       "dependencies": {
+        "CuteAnt.Extensions.Configuration": "2.0.0-rc1-final"
       }
     }
   },

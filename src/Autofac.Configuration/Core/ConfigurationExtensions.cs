@@ -5,7 +5,11 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Core;
 using Autofac.Configuration.Util;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Configuration;
+#else
 using Microsoft.Extensions.Configuration;
+#endif
 
 namespace Autofac.Configuration.Core
 {

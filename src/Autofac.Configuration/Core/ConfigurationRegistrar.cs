@@ -24,7 +24,11 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Configuration;
+#else
 using Microsoft.Extensions.Configuration;
+#endif
 
 namespace Autofac.Configuration.Core
 {

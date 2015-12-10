@@ -21,7 +21,11 @@ using System.Reflection;
 using Autofac.Builder;
 using Autofac.Configuration.Util;
 using Autofac.Core;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Configuration;
+#else
 using Microsoft.Extensions.Configuration;
+#endif
 
 namespace Autofac.Configuration.Core
 {
