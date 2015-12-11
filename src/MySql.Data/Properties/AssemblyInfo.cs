@@ -43,7 +43,7 @@ using System.Security;
 #if !CF
 [assembly: AssemblyTitle("MySql.Data.dll")]
 #if !RT
-[assembly: AllowPartiallyTrustedCallers()]
+//[assembly: AllowPartiallyTrustedCallers()]
 #endif
 #else
 [assembly: AssemblyTitle("MySql.Data.CF.dll")]

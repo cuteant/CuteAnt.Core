@@ -1,5 +1,5 @@
 {
-  "version": "2.0.98",
+  "version": "2.0.98.1",
   "description": "The official SQLite database engine for both x86 and x64 along with the ADO.NET provider.",
   "authors": [ "SQLite Development Team" ],
   "tags": [ "SQLite" ],

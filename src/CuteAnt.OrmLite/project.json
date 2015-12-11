@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-151212",
+  "version": "2.0.0-rc2-151212-01",
   "description": "CuteAnt.OrmLite Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.OrmLite" ],
@@ -52,8 +52,8 @@
       "version": "2.0.0-rc2-151212",
       "type": "build"
     },
-    "MySql.Data": "2.6.98",
-    "System.Data.SQLite": "2.0.98"
+    "MySql.Data": "2.6.98.1",
+    "System.Data.SQLite": "2.0.98.1"
   },
 
   "frameworks": {

@@ -50,7 +50,7 @@ using System.Runtime.ConstrainedExecution;
 
 #if !PLATFORM_COMPACTFRAMEWORK
 #if !NET_40 && !NET_45 && !NET_451 && !NET_46
-[assembly: AllowPartiallyTrustedCallers]
+//[assembly: AllowPartiallyTrustedCallers]
 #endif
 
 [assembly: ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
