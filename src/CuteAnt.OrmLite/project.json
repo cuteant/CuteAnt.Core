@@ -30,26 +30,26 @@
 
   "dependencies": {
     "ICSharpCode.SharpZipLib": "2.0.0-rc2-150808",
-    "CuteAnt.AsyncEx": "2.0.0-rc2-151212",
-    "protobuf-net": "2.0.0-rc2-151212",
+    "CuteAnt.AsyncEx": "2.0.0-rc2-151213",
+    "protobuf-net": "2.0.0-rc2-151213",
     "CuteAnt.Extensions.Sources": {
-      "version": "2.0.0-rc2-151212",
+      "version": "2.0.0-rc2-151213",
       "type": "build"
     },
     "CuteAnt.Extensions.Reflection.Sources": {
-      "version": "2.0.0-rc2-151212",
+      "version": "2.0.0-rc2-151213",
       "type": "build"
     },
     "Nito.AsyncEx.Tasks.Sources": {
-      "version": "2.0.0-rc2-151212",
+      "version": "2.0.0-rc2-151213",
       "type": "build"
     },
     "CuteAnt.Extensions.Security.Sources": {
-      "version": "2.0.0-rc2-151212",
+      "version": "2.0.0-rc2-151213",
       "type": "build"
     },
     "CuteAnt.Extensions.IO.Sources": {
-      "version": "2.0.0-rc2-151212",
+      "version": "2.0.0-rc2-151213",
       "type": "build"
     },
     "MySql.Data": "2.6.98.1",

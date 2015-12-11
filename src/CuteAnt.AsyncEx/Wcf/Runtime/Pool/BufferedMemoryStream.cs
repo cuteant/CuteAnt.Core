@@ -41,13 +41,13 @@ namespace CuteAnt.Pool
     #region @@ Constructors @@
 
     internal BufferedMemoryStream(int capacity, InternalBufferManager bufferManager)
-      : this(bufferManager.TakeBuffer(capacity), true, bufferManager)
+      : this(bufferManager.TakeBuffer(capacity), 0, capacity, true, bufferManager)
     {
       if (null == bufferManager) { Fx.Exception.ArgumentNull("bufferManager"); }
     }
 
     internal BufferedMemoryStream(int capacity, Encoding encoding, InternalBufferManager bufferManager)
-      : this(bufferManager.TakeBuffer(capacity), true, encoding, bufferManager)
+      : this(bufferManager.TakeBuffer(capacity), 0, capacity, true, encoding, bufferManager)
     {
       if (null == bufferManager) { Fx.Exception.ArgumentNull("bufferManager"); }
     }
