@@ -7,7 +7,7 @@
   "shared": "**/*.cs",
   "dependencies": { },
   "frameworks": {
-    "net40": { },
-    "net451": { }
+    "net451": { },
+    "dnx451": { }
   }
 }
