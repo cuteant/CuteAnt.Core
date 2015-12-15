@@ -15,9 +15,6 @@ using CuteAnt.IO;
 #if !NET40
 using System.Runtime.CompilerServices;
 #endif
-#if !DESKTOPCLR
-using Microsoft.Extensions.PlatformAbstractions;
-#endif
 
 namespace System.IO
 {
