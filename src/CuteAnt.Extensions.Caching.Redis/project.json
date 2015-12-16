@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "2.0.0-rc1-final",
   "description": "CuteAnt.Extensions.Caching.Redis Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Caching.Redis" ],

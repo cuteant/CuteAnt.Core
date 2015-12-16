@@ -170,6 +170,12 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CuteAnt.Extensions.Localiza
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CuteAnt.Extensions.Localization.Abstractions", "src\CuteAnt.Extensions.Localization.Abstractions\CuteAnt.Extensions.Localization.Abstractions.xproj", "{314B6E02-2D1C-4438-824A-25CCF18EBB1E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{98352AFB-64AF-456F-9E44-CB5CCB186F62}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CuteAnt.OrmLite.Testing", "Samples\CuteAnt.OrmLite.Testing\CuteAnt.OrmLite.Testing.xproj", "{9E4B7D18-EFA4-4B26-8BF9-F7EC85EE8EB8}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CuteAnt.OrmLite.Sprite", "src\CuteAnt.OrmLite.Sprite\CuteAnt.OrmLite.Sprite.xproj", "{BE5188D2-C7FE-4A08-AA1E-3E4DD0D33800}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -436,6 +442,14 @@ Global
 		{314B6E02-2D1C-4438-824A-25CCF18EBB1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{314B6E02-2D1C-4438-824A-25CCF18EBB1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{314B6E02-2D1C-4438-824A-25CCF18EBB1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E4B7D18-EFA4-4B26-8BF9-F7EC85EE8EB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E4B7D18-EFA4-4B26-8BF9-F7EC85EE8EB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E4B7D18-EFA4-4B26-8BF9-F7EC85EE8EB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E4B7D18-EFA4-4B26-8BF9-F7EC85EE8EB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE5188D2-C7FE-4A08-AA1E-3E4DD0D33800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE5188D2-C7FE-4A08-AA1E-3E4DD0D33800}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE5188D2-C7FE-4A08-AA1E-3E4DD0D33800}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE5188D2-C7FE-4A08-AA1E-3E4DD0D33800}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -519,5 +533,7 @@ Global
 		{DA1301F9-11D9-407F-A469-06FD59163E2D} = {FA50D8C4-D01C-4CD4-B29B-9F4A89C79F8E}
 		{CB3F9695-99A4-4A22-9B13-09D2D811A1C1} = {FA50D8C4-D01C-4CD4-B29B-9F4A89C79F8E}
 		{314B6E02-2D1C-4438-824A-25CCF18EBB1E} = {FA50D8C4-D01C-4CD4-B29B-9F4A89C79F8E}
+		{9E4B7D18-EFA4-4B26-8BF9-F7EC85EE8EB8} = {98352AFB-64AF-456F-9E44-CB5CCB186F62}
+		{BE5188D2-C7FE-4A08-AA1E-3E4DD0D33800} = {36B8150D-FD40-4558-B0E2-BB273016C981}
 	EndGlobalSection
 EndGlobal

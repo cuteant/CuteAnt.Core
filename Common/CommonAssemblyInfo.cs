@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: CLSCompliant(false)]
 
 [assembly: AssemblyMetadata("Serviceable", "True")]
-[assembly: NeutralResourcesLanguage("en-US")]
+[assembly: NeutralResourcesLanguage("zh-Hans")]
 
 #if NET40 || PORTABLE
 namespace System.Reflection

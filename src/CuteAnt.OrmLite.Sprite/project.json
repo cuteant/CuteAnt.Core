@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0-rc2-151215",
+  "description": "CuteAnt.OrmLite.Sprite Class Library",
+  "summary": "This library is primarily based on the XCode library, with some additional features not available in the original code. You can refer (http: //www.newlifex.com/) for more details.",
+  "authors": [ "SeaBiscuit" ],
+  "tags": [ "CuteAnt", "CuteAnt.OrmLite" ],
+  "projectUrl": "http://www.cuteant.net",
+  "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+  "requireLicenseAcceptance": true,
+
+  "repository": {
+    "type": "git",
+    "url": "http://git.oschina.net/cuteant/"
+  },
+
+  "compilationOptions": {
+    "define": [ "TRACE", "NET_3_5_GREATER" ],
+    "keyFile": "../../tools/StrongKey.snk",
+    "warningsAsErrors": false,
+    "allowUnsafe": true
+  },
+  "compile": [
+    "**/*.cs",
+    "../../Common/*.cs"
+  ],
+  "compileExclude": [ ],
+  "exclude": [ ],
+  "preprocess": [ ],
+  "preprocessExclude": [ ],
+  "resource": [ "**/*.resx" ],
+
+  "dependencies": {
+    "CuteAnt.Extensions.Sources": "2.0.0-rc2-151215",
+    "CuteAnt.OrmLite": "2.0.0-rc2-151215"
+  },
+
+  "frameworks": {
+    "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      }
+    },
+    "dnx451": {
+      "compilationOptions": {
+        "define": [ "DNXCLR" ]
+      }
+    }
+  }
+}

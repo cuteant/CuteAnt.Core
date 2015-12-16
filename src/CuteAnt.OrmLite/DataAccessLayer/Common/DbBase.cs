@@ -848,7 +848,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
       var sep = Path.DirectorySeparatorChar + "";
       var sep2 = sep == "/" ? "\\" : "/";
-      var bpath = AppDomain.CurrentDomain.BaseDirectory.EnsureEnd(sep);
+      var bpath = PathHelper.ApplicationBasePath.EnsureEnd(sep);
       if (file.StartsWith("~" + sep) || file.StartsWith("~" + sep2))
       {
         file = file.Replace(sep2, sep).Replace("~" + sep, bpath);

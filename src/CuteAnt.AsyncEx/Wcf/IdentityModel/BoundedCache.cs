@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------------------
+ï»¿//-----------------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //-----------------------------------------------------------------------------
 
@@ -45,14 +45,14 @@ namespace CuteAnt.Collections
     {
       if (capacity <= 0)
       {
-        // ## ¿àÖñ ÐÞ¸Ä ##
+        // ## è‹¦ç«¹ ä¿®æ”¹ ##
         //throw DiagnosticUtility.ThrowHelperArgumentOutOfRange("capacity", capacity, SR.GetString(SR.ID0002));
         throw Fx.Exception.ArgumentOutOfRange("capacity", capacity, InternalSR.ValueMustBeNonNegative);
       }
 
       if (purgeInterval <= TimeSpan.Zero)
       {
-        // ## ¿àÖñ ÐÞ¸Ä ##
+        // ## è‹¦ç«¹ ä¿®æ”¹ ##
         //throw DiagnosticUtility.ThrowHelperArgumentOutOfRange("purgeInterval", purgeInterval, SR.GetString(SR.ID0016));
         throw Fx.Exception.ArgumentOutOfRange("purgeInterval", purgeInterval, InternalSR.ValueMustBeNonNegative);
       }
@@ -93,7 +93,7 @@ namespace CuteAnt.Collections
         if (value <= 0)
         {
           //throw DiagnosticUtility.ThrowHelperArgumentOutOfRange("value", value, SR.GetString(SR.ID0002));
-          // ## ¿àÖñ ÐÞ¸Ä ##
+          // ## è‹¦ç«¹ ä¿®æ”¹ ##
           throw Fx.Exception.ArgumentOutOfRange("value", value, InternalSR.ValueMustBeNonNegative);
         }
         _capacity = value;
@@ -133,7 +133,7 @@ namespace CuteAnt.Collections
       if (_items.Count >= _capacity)
       {
         //throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new LimitExceededException(SR.GetString(SR.ID0021, _capacity)));
-        // ## ¿àÖñ ÐÞ¸Ä ##
+        // ## è‹¦ç«¹ ä¿®æ”¹ ##
         throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new LimitExceededException(string.Format("count > capacity {0}", _capacity)));
       }
     }
@@ -150,7 +150,7 @@ namespace CuteAnt.Collections
       if (size <= 0)
       {
         //throw DiagnosticUtility.ThrowHelperArgumentOutOfRange("size", size, SR.GetString(SR.ID0002));
-        // ## ¿àÖñ ÐÞ¸Ä ##
+        // ## è‹¦ç«¹ ä¿®æ”¹ ##
         throw Fx.Exception.ArgumentOutOfRange("size", size, InternalSR.ValueMustBeNonNegative);
       }
 
@@ -239,7 +239,7 @@ namespace CuteAnt.Collections
         if (value <= TimeSpan.Zero)
         {
           //throw DiagnosticUtility.ThrowHelperArgumentOutOfRange("value", value, SR.GetString(SR.ID0016));
-          // ## ¿àÖñ ÐÞ¸Ä ##
+          // ## è‹¦ç«¹ ä¿®æ”¹ ##
           throw Fx.Exception.ArgumentOutOfRange("value", value, InternalSR.ValueMustBeNonNegative);
         }
 

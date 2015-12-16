@@ -14,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using CuteAnt.Collections;
+using CuteAnt.IO;
 using CuteAnt.Log;
 #if DNXCLR
 using Microsoft.Extensions.PlatformAbstractions;
@@ -408,7 +409,7 @@ namespace CuteAnt.Reflection
       }
       if (isLoadAssembly)
       {
-#if !DESKTOPCLR
+#if DNXCLR
         var loadedAssemblies = new HashSet<AssemblyX>(GetAssemblies());
         IEnumerable<Library> refLibs = null;
         var lm = PlatformServices.Default?.LibraryManager;
@@ -457,10 +458,20 @@ namespace CuteAnt.Reflection
             {
               // 如果是本目录的程序集，去掉目录前缀
               var p = item.Asm.Location;
-              var cur = AppDomain.CurrentDomain.BaseDirectory;
+              var cur = PathHelper.ApplicationBasePath;
               if (p.StartsWithIgnoreCase(cur)) p = p.Substring(cur.Length).TrimStart("\\");
               HmTrace.WriteInfo("AssemblyX.FindAllPlugins(\"{0}\")导致加载{1}", baseType.FullName, p);
             }
+#if DNXCLR
+            foreach (var elm in ts)
+            {
+              if (!list.Contains(elm))
+              {
+                list.Add(elm);
+                yield return elm;
+              }
+            }
+#else
             var asm2 = Assembly.LoadFile(item.Asm.Location);
             ts = Create(asm2).FindPlugins(baseType);
 
@@ -475,6 +486,7 @@ namespace CuteAnt.Reflection
                 }
               }
             }
+#endif
           }
         }
       }
@@ -608,9 +620,9 @@ namespace CuteAnt.Reflection
 
       var loadeds = GetAssemblies().ToList();
 
-      #region ## 苦竹 屏蔽 ##
+    #region ## 苦竹 屏蔽 ##
       //var ver = new Version(Assembly.GetExecutingAssembly().ImageRuntimeVersion.TrimStart('v'));
-      #endregion
+    #endregion
 
       foreach (var item in ss)
       {
@@ -623,13 +635,13 @@ namespace CuteAnt.Reflection
         if (loadeds.Any(e => e.Location.EqualIgnoreCase(item)) ||
             loadeds2.Any(e => e.Location.EqualIgnoreCase(item))) continue;
 
-        #region ## 苦竹 屏蔽 ##
+    #region ## 苦竹 屏蔽 ##
         //// 仅加载.Net文件，并且小于等于当前版本
         //var pe = PEImage.Read(item);
         //if (pe == null || !pe.IsNet) continue;
         //// 只判断主次版本，只要这两个相同，后面可以兼容
         //if (pe.Version.Major > ver.Major || pe.Version.Minor > pe.Version.Minor) continue;
-        #endregion
+    #endregion
 
         AssemblyX asmx = null;
         try

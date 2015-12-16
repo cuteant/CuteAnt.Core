@@ -1,0 +1,34 @@
+{
+  "version": "1.0.0-*",
+  "description": "CuteAnt.OrmLite.Testing Console Application",
+  "authors": [ "Administrator" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "compilationOptions": {
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "CuteAnt.OrmLite": "2.0.0-rc2-151215",
+    "CuteAnt.OrmLite.Sprite": "2.0.0-rc2-151215"
+  },
+
+  "commands": {
+    "CuteAnt.OrmLite.Testing": "CuteAnt.OrmLite.Testing"
+  },
+
+  "frameworks": {
+    "dnx451": {
+      "compilationOptions": { "define": [ "DNXCLR" ] },
+      "dependencies": {
+      },
+      "frameworkAssemblies": {
+        "System.Data": "4.0.0.0",
+        "System.XML": "4.0.0.0",
+        "System.Xml.Linq": "4.0.0.0"
+      }
+    }
+  }
+}

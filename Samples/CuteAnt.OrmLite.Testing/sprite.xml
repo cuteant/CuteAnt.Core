@@ -1,0 +1,353 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DataModel Version="2.5.2.168">
+  <Name>EmeTesting</Name>
+  <IsSystem>False</IsSystem>
+  <IsStatic>True</IsStatic>
+  <IsEnabled>True</IsEnabled>
+  <ConnName>EmeTesting</ConnName>
+  <NameSpace>CuteAnt.OrmLite.Testing</NameSpace>
+  <IsDeleted>False</IsDeleted>
+  <AllowEdit>False</AllowEdit>
+  <AllowDelete>False</AllowDelete>
+  <Tables>
+    <Table Name="TestingCombGuid" DbType="AnsiStringFixedLength" Description="测试表CombGuid" PrimaryColumn="Name" AllowImport="True" AllowExport="True">
+      <Columns>
+        <Column Name="ID" DataType="CombGuid" RawType="uniqueidentifier" DbType="CombGuid" PrimaryKey="True" ControlType="String" IsUnicode="True" Description="主键" ReadOnly="True" AllowAdvSearch="False" />
+        <Column Name="Category" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="用户分类" AllowAdvSearch="False" />
+        <Column Name="OrganizeID" DataType="Int32" DbType="Integer" ControlType="SingleReference" Length="10" Precision="10" Description="组织机构" BindTable="Organize" BindField="ID" AllowAdvSearch="False" />
+        <Column Name="RoleID" DataType="Int32" DbType="Integer" ControlType="SingleReference" Length="10" Precision="10" Description="默认角色" BindTable="Role" BindField="ID" AllowAdvSearch="False" />
+        <Column Name="Code" DataType="String" DbType="String" ControlType="String" Description="编号" AllowAdvSearch="False" />
+        <Column Name="Name" DataType="String" DbType="String" ControlType="String" Nullable="False" Description="用户名" AllowAdvSearch="False" />
+        <Column Name="DisplayName" DataType="String" DbType="String" ControlType="String" Description="显示名称" AllowAdvSearch="False" />
+        <Column Name="Password" DataType="String" DbType="String" ControlType="String" Description="登录密码" AllowAdvSearch="False" />
+        <Column Name="AuditStatus" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="审核状态" AllowAdvSearch="False" />
+        <Column Name="FirstVisit" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Description="第一次登录时间" AllowAdvSearch="False" />
+        <Column Name="PreviousVisit" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Description="上一次登录时间" AllowAdvSearch="False" />
+        <Column Name="LastVisit" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Description="最后登录时间" AllowAdvSearch="False" />
+        <Column Name="LastIPAddress" DataType="String" DbType="String" ControlType="String" Description="最后访问IP地址" AllowAdvSearch="False" />
+        <Column Name="LastMACAddress" DataType="String" DbType="String" ControlType="String" Description="最后访问MAC地址" AllowAdvSearch="False" />
+        <Column Name="LastIPPort" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="最后访问IP端口" AllowAdvSearch="False" />
+        <Column Name="lastNetClass" DataType="Byte" DbType="TinyInt" ControlType="TinyInt" Length="-1" Description="最后访问网络类型" AllowAdvSearch="False" />
+        <Column Name="OnlineDateLength" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="在线时间" AllowAdvSearch="False" />
+        <Column Name="CreateGroupMax" DataType="Byte" DbType="TinyInt" ControlType="TinyInt" Length="-1" Description="创建群组上限" AllowAdvSearch="False" />
+        <Column Name="IsSendSMS" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Description="是发送短信提醒" AllowAdvSearch="False" />
+        <Column Name="IsVisible" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Description="是否显示" AllowAdvSearch="False" />
+        <Column Name="LogOnCount" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="登录次数" AllowAdvSearch="False" />
+        <Column Name="OnLineStatus" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Description="在线状态" AllowAdvSearch="False" />
+        <Column Name="OpenId" DataType="String" DbType="String" ControlType="String" Description="单点登录标识" AllowAdvSearch="False" />
+        <Column Name="Question" DataType="String" DbType="String" ControlType="String" Description="提示问题" AllowAdvSearch="False" />
+        <Column Name="AnswerQuestion" DataType="String" DbType="String" ControlType="String" Description="回答提示问题" AllowAdvSearch="False" />
+        <Column Name="UserAddressId" DataType="String" DbType="String" ControlType="String" Description="用户默认地址" AllowAdvSearch="False" />
+        <Column Name="Description" DataType="String" DbType="String" ControlType="String" Length="800" Description="备注" AllowAdvSearch="False" />
+        <Column Name="Sort" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="排序" AllowAdvSearch="False" />
+        <Column Name="UserAdminAccredit" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="用户授权权限" AllowAdvSearch="False" />
+        <Column Name="PermissionScope" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="数据集权限范围" AllowAdvSearch="False" />
+        <Column Name="IMScope" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="即时通讯使用范围" AllowAdvSearch="False" />
+        <Column Name="DisableLoginMIS" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录MIS服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginIM" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录IM服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginFile" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录File服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginSMTP" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录SMTP服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginIMAP" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录IMAP服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginPOP" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录POP服务器" AllowAdvSearch="False" />
+        <Column Name="MaxFileCabinetSize" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="个人文件柜容量" AllowAdvSearch="False" />
+        <Column Name="MaxMailboxSize" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="内部邮箱容量" AllowAdvSearch="False" />
+        <Column Name="BindIPAddress" DataType="String" DbType="String" ControlType="String" Length="250" Description="绑定IP地址" AllowAdvSearch="False" />
+        <Column Name="IsEnable" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="有效" AllowAdvSearch="False" />
+        <Column Name="IsDelete" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="逻辑删除" AllowAdvSearch="False" />
+        <Column Name="ModifiedOn" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Nullable="False" Description="修改时间" AllowAdvSearch="False" />
+        <Column Name="ModifiedUserID" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="修改用户" AllowAdvSearch="False" />
+        <Column Name="ModifiedBy" DataType="String" DbType="String" ControlType="String" Nullable="False" Description="修改用户名" AllowAdvSearch="False" />
+        <Column Name="CreateOn" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Nullable="False" Description="创建时间" AllowAdvSearch="False" />
+        <Column Name="CreateUserID" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="创建用户" AllowAdvSearch="False" />
+        <Column Name="CreateBy" DataType="String" DbType="String" ControlType="String" Nullable="False" Description="创建用户名" AllowAdvSearch="False" />
+      </Columns>
+      <Indexes>
+        <Index Name="IX_TestingCombGuid_CreateUserID" Columns="CreateUserID" />
+        <Index Name="IX_TestingCombGuid_OrganizeID" Columns="OrganizeID" />
+        <Index Name="IX_TestingCombGuid_Name" Columns="Name" Unique="True" />
+        <Index Name="IX_TestingCombGuid_RoleID" Columns="RoleID" />
+      </Indexes>
+      <Relations>
+        <Relation Column="RoleID" RelationTable="Role" RelationColumn="ID" />
+        <Relation Column="OrganizeID" RelationTable="Organize" RelationColumn="ID" />
+        <Relation Column="ID" RelationTable="AdministratorOrganize" RelationColumn="AdministratorID" Unique="True" />
+        <Relation Column="ID" RelationTable="AdministratorRole" RelationColumn="AdministratorID" Unique="True" />
+      </Relations>
+    </Table>
+    <Table Name="TestingGuid" DbType="AnsiStringFixedLength" Description="测试表GUID" PrimaryColumn="Name" AllowImport="True" AllowExport="True">
+      <Columns>
+        <Column Name="ID" DataType="Guid" RawType="uniqueidentifier" DbType="Guid" PrimaryKey="True" ControlType="String" IsUnicode="True" Description="主键" ReadOnly="True" AllowAdvSearch="False" />
+        <Column Name="Category" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="用户分类" AllowAdvSearch="False" />
+        <Column Name="OrganizeID" DataType="Int32" DbType="Integer" ControlType="SingleReference" Length="10" Precision="10" Description="组织机构" BindTable="Organize" BindField="ID" AllowAdvSearch="False" />
+        <Column Name="RoleID" DataType="Int32" DbType="Integer" ControlType="SingleReference" Length="10" Precision="10" Description="默认角色" BindTable="Role" BindField="ID" AllowAdvSearch="False" />
+        <Column Name="Code" DataType="String" DbType="String" ControlType="String" Description="编号" AllowAdvSearch="False" />
+        <Column Name="Name" DataType="String" DbType="String" ControlType="String" Nullable="False" Description="用户名" AllowAdvSearch="False" />
+        <Column Name="DisplayName" DataType="String" DbType="String" ControlType="String" Description="显示名称" AllowAdvSearch="False" />
+        <Column Name="Password" DataType="String" DbType="String" ControlType="String" Description="登录密码" AllowAdvSearch="False" />
+        <Column Name="AuditStatus" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="审核状态" AllowAdvSearch="False" />
+        <Column Name="FirstVisit" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Description="第一次登录时间" AllowAdvSearch="False" />
+        <Column Name="PreviousVisit" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Description="上一次登录时间" AllowAdvSearch="False" />
+        <Column Name="LastVisit" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Description="最后登录时间" AllowAdvSearch="False" />
+        <Column Name="LastIPAddress" DataType="String" DbType="String" ControlType="String" Description="最后访问IP地址" AllowAdvSearch="False" />
+        <Column Name="LastMACAddress" DataType="String" DbType="String" ControlType="String" Description="最后访问MAC地址" AllowAdvSearch="False" />
+        <Column Name="LastIPPort" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="最后访问IP端口" AllowAdvSearch="False" />
+        <Column Name="lastNetClass" DataType="Byte" DbType="TinyInt" ControlType="TinyInt" Length="-1" Description="最后访问网络类型" AllowAdvSearch="False" />
+        <Column Name="OnlineDateLength" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="在线时间" AllowAdvSearch="False" />
+        <Column Name="CreateGroupMax" DataType="Byte" DbType="TinyInt" ControlType="TinyInt" Length="-1" Description="创建群组上限" AllowAdvSearch="False" />
+        <Column Name="IsSendSMS" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Description="是发送短信提醒" AllowAdvSearch="False" />
+        <Column Name="IsVisible" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Description="是否显示" AllowAdvSearch="False" />
+        <Column Name="LogOnCount" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="登录次数" AllowAdvSearch="False" />
+        <Column Name="OnLineStatus" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Description="在线状态" AllowAdvSearch="False" />
+        <Column Name="OpenId" DataType="String" DbType="String" ControlType="String" Description="单点登录标识" AllowAdvSearch="False" />
+        <Column Name="Question" DataType="String" DbType="String" ControlType="String" Description="提示问题" AllowAdvSearch="False" />
+        <Column Name="AnswerQuestion" DataType="String" DbType="String" ControlType="String" Description="回答提示问题" AllowAdvSearch="False" />
+        <Column Name="UserAddressId" DataType="String" DbType="String" ControlType="String" Description="用户默认地址" AllowAdvSearch="False" />
+        <Column Name="Description" DataType="String" DbType="String" ControlType="String" Length="800" Description="备注" AllowAdvSearch="False" />
+        <Column Name="Sort" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="排序" AllowAdvSearch="False" />
+        <Column Name="UserAdminAccredit" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="用户授权权限" AllowAdvSearch="False" />
+        <Column Name="PermissionScope" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="数据集权限范围" AllowAdvSearch="False" />
+        <Column Name="IMScope" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="即时通讯使用范围" AllowAdvSearch="False" />
+        <Column Name="DisableLoginMIS" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录MIS服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginIM" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录IM服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginFile" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录File服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginSMTP" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录SMTP服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginIMAP" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录IMAP服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginPOP" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录POP服务器" AllowAdvSearch="False" />
+        <Column Name="MaxFileCabinetSize" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="个人文件柜容量" AllowAdvSearch="False" />
+        <Column Name="MaxMailboxSize" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="内部邮箱容量" AllowAdvSearch="False" />
+        <Column Name="BindIPAddress" DataType="String" DbType="String" ControlType="String" Length="250" Description="绑定IP地址" AllowAdvSearch="False" />
+        <Column Name="IsEnable" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="有效" AllowAdvSearch="False" />
+        <Column Name="IsDelete" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="逻辑删除" AllowAdvSearch="False" />
+        <Column Name="ModifiedOn" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Nullable="False" Description="修改时间" AllowAdvSearch="False" />
+        <Column Name="ModifiedUserID" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="修改用户" AllowAdvSearch="False" />
+        <Column Name="ModifiedBy" DataType="String" DbType="String" ControlType="String" Nullable="False" Description="修改用户名" AllowAdvSearch="False" />
+        <Column Name="CreateOn" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Nullable="False" Description="创建时间" AllowAdvSearch="False" />
+        <Column Name="CreateUserID" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="创建用户" AllowAdvSearch="False" />
+        <Column Name="CreateBy" DataType="String" DbType="String" ControlType="String" Nullable="False" Description="创建用户名" AllowAdvSearch="False" />
+      </Columns>
+      <Indexes>
+        <Index Name="IX_TestingGuid_RoleID" Columns="RoleID" />
+        <Index Name="IX_TestingGuid_Name" Columns="Name" Unique="True" />
+        <Index Name="IX_TestingGuid_OrganizeID" Columns="OrganizeID" />
+        <Index Name="IX_TestingGuid_CreateUserID" Columns="CreateUserID" />
+      </Indexes>
+      <Relations>
+        <Relation Column="ID" RelationTable="AdministratorRole" RelationColumn="AdministratorID" Unique="True" />
+        <Relation Column="ID" RelationTable="AdministratorOrganize" RelationColumn="AdministratorID" Unique="True" />
+        <Relation Column="OrganizeID" RelationTable="Organize" RelationColumn="ID" />
+        <Relation Column="RoleID" RelationTable="Role" RelationColumn="ID" />
+      </Relations>
+    </Table>
+    <Table Name="TestingInt" DbType="AnsiStringFixedLength" Description="测试表INT" PrimaryColumn="Name" AllowImport="True" AllowExport="True">
+      <Columns>
+        <Column Name="ID" DataType="Int32" DbType="Integer" Identity="True" PrimaryKey="True" ControlType="Integer" Length="10" Precision="10" Description="编号" ReadOnly="True" AllowAdvSearch="False" />
+        <Column Name="Category" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="用户分类" AllowAdvSearch="False" />
+        <Column Name="OrganizeID" DataType="Int32" DbType="Integer" ControlType="SingleReference" Length="10" Precision="10" Description="组织机构" BindTable="Organize" BindField="ID" AllowAdvSearch="False" />
+        <Column Name="RoleID" DataType="Int32" DbType="Integer" ControlType="SingleReference" Length="10" Precision="10" Description="默认角色" BindTable="Role" BindField="ID" AllowAdvSearch="False" />
+        <Column Name="Code" DataType="String" DbType="String" ControlType="String" Description="编号" AllowAdvSearch="False" />
+        <Column Name="Name" DataType="String" DbType="String" ControlType="String" Nullable="False" Description="用户名" AllowAdvSearch="False" />
+        <Column Name="DisplayName" DataType="String" DbType="String" ControlType="String" Description="显示名称" AllowAdvSearch="False" />
+        <Column Name="Password" DataType="String" DbType="String" ControlType="String" Description="登录密码" AllowAdvSearch="False" />
+        <Column Name="AuditStatus" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="审核状态" AllowAdvSearch="False" />
+        <Column Name="FirstVisit" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Description="第一次登录时间" AllowAdvSearch="False" />
+        <Column Name="PreviousVisit" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Description="上一次登录时间" AllowAdvSearch="False" />
+        <Column Name="LastVisit" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Description="最后登录时间" AllowAdvSearch="False" />
+        <Column Name="LastIPAddress" DataType="String" DbType="String" ControlType="String" Description="最后访问IP地址" AllowAdvSearch="False" />
+        <Column Name="LastMACAddress" DataType="String" DbType="String" ControlType="String" Description="最后访问MAC地址" AllowAdvSearch="False" />
+        <Column Name="LastIPPort" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="最后访问IP端口" AllowAdvSearch="False" />
+        <Column Name="lastNetClass" DataType="Byte" DbType="TinyInt" ControlType="TinyInt" Length="-1" Description="最后访问网络类型" AllowAdvSearch="False" />
+        <Column Name="OnlineDateLength" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="在线时间" AllowAdvSearch="False" />
+        <Column Name="CreateGroupMax" DataType="Byte" DbType="TinyInt" ControlType="TinyInt" Length="-1" Description="创建群组上限" AllowAdvSearch="False" />
+        <Column Name="IsSendSMS" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Description="是发送短信提醒" AllowAdvSearch="False" />
+        <Column Name="IsVisible" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Description="是否显示" AllowAdvSearch="False" />
+        <Column Name="LogOnCount" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="登录次数" AllowAdvSearch="False" />
+        <Column Name="OnLineStatus" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Description="在线状态" AllowAdvSearch="False" />
+        <Column Name="OpenId" DataType="String" DbType="String" ControlType="String" Description="单点登录标识" AllowAdvSearch="False" />
+        <Column Name="Question" DataType="String" DbType="String" ControlType="String" Description="提示问题" AllowAdvSearch="False" />
+        <Column Name="AnswerQuestion" DataType="String" DbType="String" ControlType="String" Description="回答提示问题" AllowAdvSearch="False" />
+        <Column Name="UserAddressId" DataType="String" DbType="String" ControlType="String" Description="用户默认地址" AllowAdvSearch="False" />
+        <Column Name="Description" DataType="String" DbType="String" ControlType="String" Length="800" Description="备注" AllowAdvSearch="False" />
+        <Column Name="Sort" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="排序" AllowAdvSearch="False" />
+        <Column Name="UserAdminAccredit" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="用户授权权限" AllowAdvSearch="False" />
+        <Column Name="PermissionScope" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="数据集权限范围" AllowAdvSearch="False" />
+        <Column Name="IMScope" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="即时通讯使用范围" AllowAdvSearch="False" />
+        <Column Name="DisableLoginMIS" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录MIS服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginIM" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录IM服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginFile" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录File服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginSMTP" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录SMTP服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginIMAP" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录IMAP服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginPOP" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录POP服务器" AllowAdvSearch="False" />
+        <Column Name="MaxFileCabinetSize" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="个人文件柜容量" AllowAdvSearch="False" />
+        <Column Name="MaxMailboxSize" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="内部邮箱容量" AllowAdvSearch="False" />
+        <Column Name="BindIPAddress" DataType="String" DbType="String" ControlType="String" Length="250" Nullable="False" Description="绑定IP地址" AllowAdvSearch="False" />
+        <Column Name="TestNChar" DataType="String" RawType="nchar(50)" DbType="StringFixedLength" ControlType="String" Nullable="False" Description="测试定长Utf8" AllowAdvSearch="False" />
+        <Column Name="TestChar" DataType="String" RawType="char(50)" DbType="AnsiStringFixedLength" ControlType="String" Nullable="False" Description="测试定长" AllowAdvSearch="False" />
+        <Column Name="TestVarChar" DataType="String" RawType="varchar(50)" DbType="AnsiString" ControlType="String" Nullable="False" Description="测试变长" AllowAdvSearch="False" />
+        <Column Name="TestInt64" DataType="Int64" DbType="BigInt" ControlType="BigInt" Length="-1" Nullable="False" Description="测试长整形" AllowAdvSearch="False" />
+        <Column Name="TestMoney" DataType="Decimal" DbType="Currency" ControlType="Currency" Length="-1" Precision="18" Nullable="False" Description="测试货币" AllowAdvSearch="False" />
+        <Column Name="TestNum" DataType="Decimal" RawType="decimal" DbType="Decimal" ControlType="Currency" Length="18" Precision="18" Scale="4" Nullable="False" Description="测试精确数值" AllowAdvSearch="False" />
+        <Column Name="TestDate" DataType="DateTime" RawType="date" DbType="Date" ControlType="DateTime" Length="3" Precision="3" Nullable="False" Description="测试日期" AllowAdvSearch="False" />
+        <Column Name="TestDateTime2" DataType="DateTime" RawType="datetime2" DbType="DateTime2" ControlType="DateTime" Length="3" Precision="3" Nullable="False" Description="测试精确时间" AllowAdvSearch="False" />
+        <Column Name="TestDateTimeOffset" DataType="SerializableDateTimeOffset" RawType="datetimeoffset" DbType="DateTimeOffset" ControlType="String" IsUnicode="True" Description="测试时区" AllowAdvSearch="False" />
+        <Column Name="TestGuid" DataType="Guid" RawType="uniqueidentifier" DbType="Guid" ControlType="String" IsUnicode="True" Description="测试Guid" AllowAdvSearch="False" />
+        <Column Name="TestGuid32" DataType="Guid" RawType="char(32)" DbType="Guid32Digits" ControlType="String" IsUnicode="True" Description="测试Guid32" AllowAdvSearch="False" />
+        <Column Name="TestCombGuid" DataType="CombGuid" RawType="uniqueidentifier" DbType="CombGuid" ControlType="String" IsUnicode="True" Description="测试CombGuid" AllowAdvSearch="False" />
+        <Column Name="TestCombGuid32" DataType="CombGuid" RawType="char(32)" DbType="CombGuid32Digits" ControlType="String" IsUnicode="True" Description="测试CombGuid32" AllowAdvSearch="False" />
+        <Column Name="TestSmallInt" DataType="Int16" DbType="SmallInt" ControlType="SmallInt" Length="-1" Nullable="False" Description="测试短整形" AllowAdvSearch="False" />
+        <Column Name="TestByte" DataType="Byte" DbType="TinyInt" ControlType="TinyInt" Length="-1" Nullable="False" Description="测试字节" AllowAdvSearch="False" />
+        <Column Name="TestSByte" DataType="SByte" RawType="tinysint" DbType="SignedTinyInt" ControlType="TinyInt" Length="-1" Nullable="False" Description="测试有字节" AllowAdvSearch="False" />
+        <Column Name="TestTime" DataType="TimeSpan" RawType="time" DbType="Time" ControlType="String" IsUnicode="True" Description="测试时间" AllowAdvSearch="False" />
+        <Column Name="TestFloat" DataType="Single" DbType="Float" ControlType="Double" Length="-1" Nullable="False" Description="测试单精度" AllowAdvSearch="False" />
+        <Column Name="TestDouble" DataType="Double" DbType="Double" ControlType="Double" Length="-1" Nullable="False" Description="测试双精度" AllowAdvSearch="False" />
+        <Column Name="IsEnable" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="有效" AllowAdvSearch="False" />
+        <Column Name="IsDelete" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="逻辑删除" AllowAdvSearch="False" />
+        <Column Name="ModifiedOn" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Nullable="False" Description="修改时间" AllowAdvSearch="False" />
+        <Column Name="ModifiedUserID" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="修改用户" AllowAdvSearch="False" />
+        <Column Name="ModifiedBy" DataType="String" DbType="String" ControlType="String" Nullable="False" Description="修改用户名" AllowAdvSearch="False" />
+        <Column Name="CreateOn" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Nullable="False" Description="创建时间" AllowAdvSearch="False" />
+        <Column Name="CreateUserID" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="创建用户" AllowAdvSearch="False" />
+        <Column Name="CreateBy" DataType="String" DbType="String" ControlType="String" Nullable="False" Description="创建用户名" AllowAdvSearch="False" />
+      </Columns>
+      <Indexes>
+        <Index Name="IX_TestingInt_RoleID" Columns="RoleID" />
+        <Index Name="IX_TestingInt_Name" Columns="Name" Unique="True" />
+        <Index Name="IX_TestingInt_OrganizeID" Columns="OrganizeID" />
+        <Index Name="IX_TestingInt_CreateUserID" Columns="CreateUserID" />
+      </Indexes>
+      <Relations>
+        <Relation Column="ID" RelationTable="AdministratorRole" RelationColumn="AdministratorID" Unique="True" />
+        <Relation Column="ID" RelationTable="AdministratorOrganize" RelationColumn="AdministratorID" Unique="True" />
+        <Relation Column="OrganizeID" RelationTable="Organize" RelationColumn="ID" />
+        <Relation Column="RoleID" RelationTable="Role" RelationColumn="ID" />
+      </Relations>
+    </Table>
+    <Table Name="TestingLong" DbType="AnsiStringFixedLength" Description="测试表LONG" PrimaryColumn="Name" AllowImport="True" AllowExport="True">
+      <Columns>
+        <Column Name="ID" DataType="Int64" DbType="BigInt" Identity="True" PrimaryKey="True" ControlType="BigInt" Length="-1" Description="编号" ReadOnly="True" AllowAdvSearch="False" />
+        <Column Name="Category" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="用户分类" AllowAdvSearch="False" />
+        <Column Name="OrganizeID" DataType="Int32" DbType="Integer" ControlType="SingleReference" Length="10" Precision="10" Description="组织机构" BindTable="Organize" BindField="ID" AllowAdvSearch="False" />
+        <Column Name="RoleID" DataType="Int32" DbType="Integer" ControlType="SingleReference" Length="10" Precision="10" Description="默认角色" BindTable="Role" BindField="ID" AllowAdvSearch="False" />
+        <Column Name="Code" DataType="String" DbType="String" ControlType="String" Description="编号" AllowAdvSearch="False" />
+        <Column Name="Name" DataType="String" DbType="String" ControlType="String" Nullable="False" Description="用户名" AllowAdvSearch="False" />
+        <Column Name="DisplayName" DataType="String" DbType="String" ControlType="String" Description="显示名称" AllowAdvSearch="False" />
+        <Column Name="Password" DataType="String" DbType="String" ControlType="String" Description="登录密码" AllowAdvSearch="False" />
+        <Column Name="AuditStatus" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="审核状态" AllowAdvSearch="False" />
+        <Column Name="FirstVisit" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Description="第一次登录时间" AllowAdvSearch="False" />
+        <Column Name="PreviousVisit" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Description="上一次登录时间" AllowAdvSearch="False" />
+        <Column Name="LastVisit" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Description="最后登录时间" AllowAdvSearch="False" />
+        <Column Name="LastIPAddress" DataType="String" DbType="String" ControlType="String" Description="最后访问IP地址" AllowAdvSearch="False" />
+        <Column Name="LastMACAddress" DataType="String" DbType="String" ControlType="String" Description="最后访问MAC地址" AllowAdvSearch="False" />
+        <Column Name="LastIPPort" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="最后访问IP端口" AllowAdvSearch="False" />
+        <Column Name="lastNetClass" DataType="Byte" DbType="TinyInt" ControlType="TinyInt" Length="-1" Description="最后访问网络类型" AllowAdvSearch="False" />
+        <Column Name="OnlineDateLength" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="在线时间" AllowAdvSearch="False" />
+        <Column Name="CreateGroupMax" DataType="Byte" DbType="TinyInt" ControlType="TinyInt" Length="-1" Description="创建群组上限" AllowAdvSearch="False" />
+        <Column Name="IsSendSMS" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Description="是发送短信提醒" AllowAdvSearch="False" />
+        <Column Name="IsVisible" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Description="是否显示" AllowAdvSearch="False" />
+        <Column Name="LogOnCount" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="登录次数" AllowAdvSearch="False" />
+        <Column Name="OnLineStatus" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Description="在线状态" AllowAdvSearch="False" />
+        <Column Name="OpenId" DataType="String" DbType="String" ControlType="String" Description="单点登录标识" AllowAdvSearch="False" />
+        <Column Name="Question" DataType="String" DbType="String" ControlType="String" Description="提示问题" AllowAdvSearch="False" />
+        <Column Name="AnswerQuestion" DataType="String" DbType="String" ControlType="String" Description="回答提示问题" AllowAdvSearch="False" />
+        <Column Name="UserAddressId" DataType="String" DbType="String" ControlType="String" Description="用户默认地址" AllowAdvSearch="False" />
+        <Column Name="Description" DataType="String" DbType="String" ControlType="String" Length="800" Description="备注" AllowAdvSearch="False" />
+        <Column Name="Sort" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="排序" AllowAdvSearch="False" />
+        <Column Name="UserAdminAccredit" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="用户授权权限" AllowAdvSearch="False" />
+        <Column Name="PermissionScope" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="数据集权限范围" AllowAdvSearch="False" />
+        <Column Name="IMScope" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="即时通讯使用范围" AllowAdvSearch="False" />
+        <Column Name="DisableLoginMIS" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录MIS服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginIM" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录IM服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginFile" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录File服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginSMTP" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录SMTP服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginIMAP" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录IMAP服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginPOP" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录POP服务器" AllowAdvSearch="False" />
+        <Column Name="MaxFileCabinetSize" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="个人文件柜容量" AllowAdvSearch="False" />
+        <Column Name="MaxMailboxSize" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="内部邮箱容量" AllowAdvSearch="False" />
+        <Column Name="BindIPAddress" DataType="String" DbType="String" ControlType="String" Length="250" Description="绑定IP地址" AllowAdvSearch="False" />
+        <Column Name="IsEnable" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="有效" AllowAdvSearch="False" />
+        <Column Name="IsDelete" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="逻辑删除" AllowAdvSearch="False" />
+        <Column Name="ModifiedOn" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Nullable="False" Description="修改时间" AllowAdvSearch="False" />
+        <Column Name="ModifiedUserID" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="修改用户" AllowAdvSearch="False" />
+        <Column Name="ModifiedBy" DataType="String" DbType="String" ControlType="String" Nullable="False" Description="修改用户名" AllowAdvSearch="False" />
+        <Column Name="CreateOn" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Nullable="False" Description="创建时间" AllowAdvSearch="False" />
+        <Column Name="CreateUserID" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="创建用户" AllowAdvSearch="False" />
+        <Column Name="CreateBy" DataType="String" DbType="String" ControlType="String" Nullable="False" Description="创建用户名" AllowAdvSearch="False" />
+      </Columns>
+      <Indexes>
+        <Index Name="IX_TestingLong_RoleID" Columns="RoleID" />
+        <Index Name="IX_TestingLong_Name" Columns="Name" Unique="True" />
+        <Index Name="IX_TestingLong_OrganizeID" Columns="OrganizeID" />
+        <Index Name="IX_TestingLong_CreateUserID" Columns="CreateUserID" />
+      </Indexes>
+      <Relations>
+        <Relation Column="ID" RelationTable="AdministratorRole" RelationColumn="AdministratorID" Unique="True" />
+        <Relation Column="ID" RelationTable="AdministratorOrganize" RelationColumn="AdministratorID" Unique="True" />
+        <Relation Column="OrganizeID" RelationTable="Organize" RelationColumn="ID" />
+        <Relation Column="RoleID" RelationTable="Role" RelationColumn="ID" />
+      </Relations>
+    </Table>
+    <Table Name="TestingStr" DbType="AnsiStringFixedLength" Description="测试表String" PrimaryColumn="Name" AllowImport="True" AllowExport="True">
+      <Columns>
+        <Column Name="ID" DataType="String" RawType="varchar(32)" DbType="AnsiString" PrimaryKey="True" ControlType="String" Length="32" Nullable="False" Description="主键" ReadOnly="True" AllowAdvSearch="False" />
+        <Column Name="Category" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="用户分类" AllowAdvSearch="False" />
+        <Column Name="OrganizeID" DataType="Int32" DbType="Integer" ControlType="SingleReference" Length="10" Precision="10" Description="组织机构" BindTable="Organize" BindField="ID" AllowAdvSearch="False" />
+        <Column Name="RoleID" DataType="Int32" DbType="Integer" ControlType="SingleReference" Length="10" Precision="10" Description="默认角色" BindTable="Role" BindField="ID" AllowAdvSearch="False" />
+        <Column Name="Code" DataType="String" DbType="String" ControlType="String" Description="编号" AllowAdvSearch="False" />
+        <Column Name="Name" DataType="String" DbType="String" ControlType="String" Nullable="False" Description="用户名" AllowAdvSearch="False" />
+        <Column Name="DisplayName" DataType="String" DbType="String" ControlType="String" Description="显示名称" AllowAdvSearch="False" />
+        <Column Name="Password" DataType="String" DbType="String" ControlType="String" Description="登录密码" AllowAdvSearch="False" />
+        <Column Name="AuditStatus" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="审核状态" AllowAdvSearch="False" />
+        <Column Name="FirstVisit" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Description="第一次登录时间" AllowAdvSearch="False" />
+        <Column Name="PreviousVisit" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Description="上一次登录时间" AllowAdvSearch="False" />
+        <Column Name="LastVisit" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Description="最后登录时间" AllowAdvSearch="False" />
+        <Column Name="LastIPAddress" DataType="String" DbType="String" ControlType="String" Description="最后访问IP地址" AllowAdvSearch="False" />
+        <Column Name="LastMACAddress" DataType="String" DbType="String" ControlType="String" Description="最后访问MAC地址" AllowAdvSearch="False" />
+        <Column Name="LastIPPort" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="最后访问IP端口" AllowAdvSearch="False" />
+        <Column Name="lastNetClass" DataType="Byte" DbType="TinyInt" ControlType="TinyInt" Length="-1" Description="最后访问网络类型" AllowAdvSearch="False" />
+        <Column Name="OnlineDateLength" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="在线时间" AllowAdvSearch="False" />
+        <Column Name="CreateGroupMax" DataType="Byte" DbType="TinyInt" ControlType="TinyInt" Length="-1" Description="创建群组上限" AllowAdvSearch="False" />
+        <Column Name="IsSendSMS" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Description="是发送短信提醒" AllowAdvSearch="False" />
+        <Column Name="IsVisible" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Description="是否显示" AllowAdvSearch="False" />
+        <Column Name="LogOnCount" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="登录次数" AllowAdvSearch="False" />
+        <Column Name="OnLineStatus" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Description="在线状态" AllowAdvSearch="False" />
+        <Column Name="OpenId" DataType="String" DbType="String" ControlType="String" Description="单点登录标识" AllowAdvSearch="False" />
+        <Column Name="Question" DataType="String" DbType="String" ControlType="String" Description="提示问题" AllowAdvSearch="False" />
+        <Column Name="AnswerQuestion" DataType="String" DbType="String" ControlType="String" Description="回答提示问题" AllowAdvSearch="False" />
+        <Column Name="UserAddressId" DataType="String" DbType="String" ControlType="String" Description="用户默认地址" AllowAdvSearch="False" />
+        <Column Name="Description" DataType="String" DbType="String" ControlType="String" Length="800" Description="备注" AllowAdvSearch="False" />
+        <Column Name="Sort" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="排序" AllowAdvSearch="False" />
+        <Column Name="UserAdminAccredit" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="用户授权权限" AllowAdvSearch="False" />
+        <Column Name="PermissionScope" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="数据集权限范围" AllowAdvSearch="False" />
+        <Column Name="IMScope" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Description="即时通讯使用范围" AllowAdvSearch="False" />
+        <Column Name="DisableLoginMIS" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录MIS服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginIM" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录IM服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginFile" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录File服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginSMTP" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录SMTP服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginIMAP" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录IMAP服务器" AllowAdvSearch="False" />
+        <Column Name="DisableLoginPOP" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="禁止登录POP服务器" AllowAdvSearch="False" />
+        <Column Name="MaxFileCabinetSize" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="个人文件柜容量" AllowAdvSearch="False" />
+        <Column Name="MaxMailboxSize" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="内部邮箱容量" AllowAdvSearch="False" />
+        <Column Name="BindIPAddress" DataType="String" DbType="String" ControlType="String" Length="250" Description="绑定IP地址" AllowAdvSearch="False" />
+        <Column Name="IsEnable" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="有效" AllowAdvSearch="False" />
+        <Column Name="IsDelete" DataType="Boolean" DbType="Boolean" ControlType="Boolean" Length="1" Nullable="False" Description="逻辑删除" AllowAdvSearch="False" />
+        <Column Name="ModifiedOn" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Nullable="False" Description="修改时间" AllowAdvSearch="False" />
+        <Column Name="ModifiedUserID" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="修改用户" AllowAdvSearch="False" />
+        <Column Name="ModifiedBy" DataType="String" DbType="String" ControlType="String" Nullable="False" Description="修改用户名" AllowAdvSearch="False" />
+        <Column Name="CreateOn" DataType="DateTime" DbType="DateTime" ControlType="DateTime" Length="3" Precision="3" Nullable="False" Description="创建时间" AllowAdvSearch="False" />
+        <Column Name="CreateUserID" DataType="Int32" DbType="Integer" ControlType="Integer" Length="10" Precision="10" Nullable="False" Description="创建用户" AllowAdvSearch="False" />
+        <Column Name="CreateBy" DataType="String" DbType="String" ControlType="String" Nullable="False" Description="创建用户名" AllowAdvSearch="False" />
+      </Columns>
+      <Indexes>
+        <Index Name="IX_TestingStr_RoleID" Columns="RoleID" />
+        <Index Name="IX_TestingStr_Name" Columns="Name" Unique="True" />
+        <Index Name="IX_TestingStr_OrganizeID" Columns="OrganizeID" />
+        <Index Name="IX_TestingStr_CreateUserID" Columns="CreateUserID" />
+      </Indexes>
+      <Relations>
+        <Relation Column="ID" RelationTable="AdministratorRole" RelationColumn="AdministratorID" Unique="True" />
+        <Relation Column="ID" RelationTable="AdministratorOrganize" RelationColumn="AdministratorID" Unique="True" />
+        <Relation Column="OrganizeID" RelationTable="Organize" RelationColumn="ID" />
+        <Relation Column="RoleID" RelationTable="Role" RelationColumn="ID" />
+      </Relations>
+    </Table>
+  </Tables>
+</DataModel>

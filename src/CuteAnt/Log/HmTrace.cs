@@ -1,9 +1,9 @@
-/*
- * ×÷Õß£ºĞÂÉúÃü¿ª·¢ÍÅ¶Ó£¨http://www.newlifex.com/£©
+ï»¿/*
+ * ä½œè€…ï¼šæ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿï¼ˆhttp://www.newlifex.com/ï¼‰
  * 
- * °æÈ¨£º°æÈ¨ËùÓĞ (C) ĞÂÉúÃü¿ª·¢ÍÅ¶Ó 2002-2014
+ * ç‰ˆæƒï¼šç‰ˆæƒæ‰€æœ‰ (C) æ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿ 2002-2014
  * 
- * ĞŞ¸Ä£ºº£Ñó±ı¸É£¨cuteant@outlook.com£©
+ * ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²ï¼ˆcuteant@outlook.comï¼‰
 */
 
 using System;
@@ -30,23 +30,23 @@ using System.Runtime.CompilerServices;
 
 namespace CuteAnt.Log
 {
-  /// <summary>ÈÕÖ¾Àà£¬°üº¬¸ú×Ùµ÷ÊÔ¹¦ÄÜ</summary>
+  /// <summary>æ—¥å¿—ç±»ï¼ŒåŒ…å«è·Ÿè¸ªè°ƒè¯•åŠŸèƒ½</summary>
   /// <remarks>
-  /// ¸Ã¾²Ì¬Àà°üÀ¨Ğ´ÈÕÖ¾¡¢Ğ´µ÷ÓÃÕ»ºÍDump½ø³ÌÄÚ´æµÈµ÷ÊÔ¹¦ÄÜ¡£
+  /// è¯¥é™æ€ç±»åŒ…æ‹¬å†™æ—¥å¿—ã€å†™è°ƒç”¨æ ˆå’ŒDumpè¿›ç¨‹å†…å­˜ç­‰è°ƒè¯•åŠŸèƒ½ã€‚
   /// 
-  /// Ä¬ÈÏĞ´ÈÕÖ¾µ½ÎÄ±¾ÎÄ¼ş£¬¿ÉÍ¨¹ıĞŞ¸Ä<see cref="Log"/>ÊôĞÔÀ´Ôö¼ÓÈÕÖ¾Êä³ö·½Ê½¡£
-  /// ¶ÔÓÚ¿ØÖÆÌ¨¹¤³Ì£¬¿ÉÒÔÖ±½ÓÍ¨¹ı<see cref="UseConsole"/>·½·¨£¬°ÑÈÕÖ¾Êä³öÖØ¶¨ÏòÎª¿ØÖÆÌ¨Êä³ö£¬²¢ÇÒ¿ÉÒÔÎª²»Í¬Ïß³ÌÊ¹ÓÃ²»Í¬ÑÕÉ«¡£
+  /// é»˜è®¤å†™æ—¥å¿—åˆ°æ–‡æœ¬æ–‡ä»¶ï¼Œå¯é€šè¿‡ä¿®æ”¹<see cref="Log"/>å±æ€§æ¥å¢åŠ æ—¥å¿—è¾“å‡ºæ–¹å¼ã€‚
+  /// å¯¹äºæ§åˆ¶å°å·¥ç¨‹ï¼Œå¯ä»¥ç›´æ¥é€šè¿‡<see cref="UseConsole"/>æ–¹æ³•ï¼ŒæŠŠæ—¥å¿—è¾“å‡ºé‡å®šå‘ä¸ºæ§åˆ¶å°è¾“å‡ºï¼Œå¹¶ä¸”å¯ä»¥ä¸ºä¸åŒçº¿ç¨‹ä½¿ç”¨ä¸åŒé¢œè‰²ã€‚
   /// </remarks>
   public static class HmTrace
   {
-    #region -- Ğ´ÈÕÖ¾ --
+    #region -- å†™æ—¥å¿— --
 
     public const String GlobalLoggerName = "Global";
 
-    /// <summary>ÎÄ±¾ÎÄ¼şÈÕÖ¾</summary>
+    /// <summary>æ–‡æœ¬æ–‡ä»¶æ—¥å¿—</summary>
     private static ILogger s_log;
 
-    /// <summary>ÈÕÖ¾Ìá¹©Õß£¬Ä¬ÈÏÊ¹ÓÃÎÄ±¾ÎÄ¼şÈÕÖ¾</summary>
+    /// <summary>æ—¥å¿—æä¾›è€…ï¼Œé»˜è®¤ä½¿ç”¨æ–‡æœ¬æ–‡ä»¶æ—¥å¿—</summary>
     public static ILogger Log
     {
       get
@@ -77,8 +77,8 @@ namespace CuteAnt.Log
 
     #region - Info -
 
-    /// <summary>Êä³öĞÅÏ¢ÈÕÖ¾</summary>
-    /// <param name="msg">ĞÅÏ¢</param>
+    /// <summary>è¾“å‡ºä¿¡æ¯æ—¥å¿—</summary>
+    /// <param name="msg">ä¿¡æ¯</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -88,9 +88,9 @@ namespace CuteAnt.Log
       Log.LogInformation(msg);
     }
 
-    /// <summary>Êä³öĞÅÏ¢ÈÕÖ¾</summary>
-    /// <param name="formatMsg">¸ñÊ½»¯×Ö·û´®</param>
-    /// <param name="args">¸ñÊ½»¯²ÎÊı</param>
+    /// <summary>è¾“å‡ºä¿¡æ¯æ—¥å¿—</summary>
+    /// <param name="formatMsg">æ ¼å¼åŒ–å­—ç¬¦ä¸²</param>
+    /// <param name="args">æ ¼å¼åŒ–å‚æ•°</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -104,8 +104,8 @@ namespace CuteAnt.Log
 
     #region - Warn -
 
-    /// <summary>Êä³ö¾¯¸æÈÕÖ¾</summary>
-    /// <param name="msg">ĞÅÏ¢</param>
+    /// <summary>è¾“å‡ºè­¦å‘Šæ—¥å¿—</summary>
+    /// <param name="msg">ä¿¡æ¯</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -115,9 +115,9 @@ namespace CuteAnt.Log
       Log.LogWarning(msg);
     }
 
-    /// <summary>Êä³ö¾¯¸æÈÕÖ¾</summary>
-    /// <param name="formatMsg">¸ñÊ½»¯×Ö·û´®</param>
-    /// <param name="args">¸ñÊ½»¯²ÎÊı</param>
+    /// <summary>è¾“å‡ºè­¦å‘Šæ—¥å¿—</summary>
+    /// <param name="formatMsg">æ ¼å¼åŒ–å­—ç¬¦ä¸²</param>
+    /// <param name="args">æ ¼å¼åŒ–å‚æ•°</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -131,8 +131,8 @@ namespace CuteAnt.Log
 
     #region - Error -
 
-    /// <summary>Êä³ö´íÎóÈÕÖ¾</summary>
-    /// <param name="msg">´íÎóĞÅÏ¢</param>
+    /// <summary>è¾“å‡ºé”™è¯¯æ—¥å¿—</summary>
+    /// <param name="msg">é”™è¯¯ä¿¡æ¯</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -142,9 +142,9 @@ namespace CuteAnt.Log
       Log.LogError(msg);
     }
 
-    /// <summary>Êä³ö´íÎóÈÕÖ¾</summary>
-    /// <param name="formatMsg">¸ñÊ½»¯×Ö·û´®</param>
-    /// <param name="args">¸ñÊ½»¯²ÎÊı</param>
+    /// <summary>è¾“å‡ºé”™è¯¯æ—¥å¿—</summary>
+    /// <param name="formatMsg">æ ¼å¼åŒ–å­—ç¬¦ä¸²</param>
+    /// <param name="args">æ ¼å¼åŒ–å‚æ•°</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -154,8 +154,8 @@ namespace CuteAnt.Log
       Log.LogError(formatMsg, args);
     }
 
-    /// <summary>Êä³ö´íÎóÈÕÖ¾</summary>
-    /// <param name="ex">Òì³£</param>
+    /// <summary>è¾“å‡ºé”™è¯¯æ—¥å¿—</summary>
+    /// <param name="ex">å¼‚å¸¸</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -165,9 +165,9 @@ namespace CuteAnt.Log
       Log.LogError(ex.ToString());
     }
 
-    /// <summary>Êä³ö´íÎóÈÕÖ¾</summary>
-    /// <param name="ex">Òì³£</param>
-    /// <param name="msg">´íÎóĞÅÏ¢</param>
+    /// <summary>è¾“å‡ºé”™è¯¯æ—¥å¿—</summary>
+    /// <param name="ex">å¼‚å¸¸</param>
+    /// <param name="msg">é”™è¯¯ä¿¡æ¯</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -177,10 +177,10 @@ namespace CuteAnt.Log
       Log.LogError(msg, ex);
     }
 
-    /// <summary>Êä³ö´íÎóÈÕÖ¾</summary>
-    /// <param name="ex">Òì³£</param>
-    /// <param name="formatMsg">¸ñÊ½»¯×Ö·û´®</param>
-    /// <param name="args">¸ñÊ½»¯²ÎÊı</param>
+    /// <summary>è¾“å‡ºé”™è¯¯æ—¥å¿—</summary>
+    /// <param name="ex">å¼‚å¸¸</param>
+    /// <param name="formatMsg">æ ¼å¼åŒ–å­—ç¬¦ä¸²</param>
+    /// <param name="args">æ ¼å¼åŒ–å‚æ•°</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -194,8 +194,8 @@ namespace CuteAnt.Log
 
     #region - Fatal -
 
-    /// <summary>Êä³öÑÏÖØ´íÎóÈÕÖ¾</summary>
-    /// <param name="msg">´íÎóĞÅÏ¢</param>
+    /// <summary>è¾“å‡ºä¸¥é‡é”™è¯¯æ—¥å¿—</summary>
+    /// <param name="msg">é”™è¯¯ä¿¡æ¯</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -206,9 +206,9 @@ namespace CuteAnt.Log
       Log.LogCritical(msg);
     }
 
-    /// <summary>Êä³öÑÏÖØ´íÎóÈÕÖ¾</summary>
-    /// <param name="formatMsg">¸ñÊ½»¯×Ö·û´®</param>
-    /// <param name="args">¸ñÊ½»¯²ÎÊı</param>
+    /// <summary>è¾“å‡ºä¸¥é‡é”™è¯¯æ—¥å¿—</summary>
+    /// <param name="formatMsg">æ ¼å¼åŒ–å­—ç¬¦ä¸²</param>
+    /// <param name="args">æ ¼å¼åŒ–å‚æ•°</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -219,8 +219,8 @@ namespace CuteAnt.Log
       Log.LogCritical(formatMsg, args);
     }
 
-    /// <summary>Êä³öÑÏÖØ´íÎóÈÕÖ¾</summary>
-    /// <param name="ex">Òì³£</param>
+    /// <summary>è¾“å‡ºä¸¥é‡é”™è¯¯æ—¥å¿—</summary>
+    /// <param name="ex">å¼‚å¸¸</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -230,9 +230,9 @@ namespace CuteAnt.Log
       Log.LogCritical(ex.ToString());
     }
 
-    /// <summary>Êä³öÑÏÖØ´íÎóÈÕÖ¾</summary>
-    /// <param name="ex">Òì³£</param>
-    /// <param name="msg">´íÎóĞÅÏ¢</param>
+    /// <summary>è¾“å‡ºä¸¥é‡é”™è¯¯æ—¥å¿—</summary>
+    /// <param name="ex">å¼‚å¸¸</param>
+    /// <param name="msg">é”™è¯¯ä¿¡æ¯</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -242,10 +242,10 @@ namespace CuteAnt.Log
       Log.LogCritical(msg, ex);
     }
 
-    /// <summary>Êä³öÑÏÖØ´íÎóÈÕÖ¾</summary>
-    /// <param name="ex">Òì³£</param>
-    /// <param name="formatMsg">¸ñÊ½»¯×Ö·û´®</param>
-    /// <param name="args">¸ñÊ½»¯²ÎÊı</param>
+    /// <summary>è¾“å‡ºä¸¥é‡é”™è¯¯æ—¥å¿—</summary>
+    /// <param name="ex">å¼‚å¸¸</param>
+    /// <param name="formatMsg">æ ¼å¼åŒ–å­—ç¬¦ä¸²</param>
+    /// <param name="args">æ ¼å¼åŒ–å‚æ•°</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -259,8 +259,8 @@ namespace CuteAnt.Log
 
     #region - Debug -
 
-    /// <summary>Êä³öµ÷ÊÔÈÕÖ¾</summary>
-    /// <param name="msg">ĞÅÏ¢</param>
+    /// <summary>è¾“å‡ºè°ƒè¯•æ—¥å¿—</summary>
+    /// <param name="msg">ä¿¡æ¯</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -270,9 +270,9 @@ namespace CuteAnt.Log
       Log.LogDebug(msg);
     }
 
-    /// <summary>Êä³öµ÷ÊÔÈÕÖ¾</summary>
-    /// <param name="formatMsg">¸ñÊ½»¯×Ö·û´®</param>
-    /// <param name="args">¸ñÊ½»¯²ÎÊı</param>
+    /// <summary>è¾“å‡ºè°ƒè¯•æ—¥å¿—</summary>
+    /// <param name="formatMsg">æ ¼å¼åŒ–å­—ç¬¦ä¸²</param>
+    /// <param name="args">æ ¼å¼åŒ–å‚æ•°</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -282,8 +282,8 @@ namespace CuteAnt.Log
       Log.LogDebug(formatMsg, args);
     }
 
-    /// <summary>Êä³öµ÷ÊÔÒì³£ÈÕÖ¾</summary>
-    /// <param name="ex">Òì³£</param>
+    /// <summary>è¾“å‡ºè°ƒè¯•å¼‚å¸¸æ—¥å¿—</summary>
+    /// <param name="ex">å¼‚å¸¸</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -293,9 +293,9 @@ namespace CuteAnt.Log
       Log.LogDebug(ex.ToString());
     }
 
-    /// <summary>Êä³öµ÷ÊÔÒì³£ÈÕÖ¾</summary>
-    /// <param name="ex">Òì³£</param>
-    /// <param name="msg">ĞÅÏ¢</param>
+    /// <summary>è¾“å‡ºè°ƒè¯•å¼‚å¸¸æ—¥å¿—</summary>
+    /// <param name="ex">å¼‚å¸¸</param>
+    /// <param name="msg">ä¿¡æ¯</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -305,10 +305,10 @@ namespace CuteAnt.Log
       Log.LogDebug(msg, ex);
     }
 
-    /// <summary>Êä³öµ÷ÊÔÒì³£ÈÕÖ¾</summary>
-    /// <param name="ex">Òì³£</param>
-    /// <param name="formatMsg">¸ñÊ½»¯×Ö·û´®</param>
-    /// <param name="args">¸ñÊ½»¯²ÎÊı</param>
+    /// <summary>è¾“å‡ºè°ƒè¯•å¼‚å¸¸æ—¥å¿—</summary>
+    /// <param name="ex">å¼‚å¸¸</param>
+    /// <param name="formatMsg">æ ¼å¼åŒ–å­—ç¬¦ä¸²</param>
+    /// <param name="args">æ ¼å¼åŒ–å‚æ•°</param>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -322,7 +322,7 @@ namespace CuteAnt.Log
 
     #endregion
 
-    #region -- ¹¹Ôì --
+    #region -- æ„é€  --
 
     static HmTrace()
     {
@@ -333,7 +333,7 @@ namespace CuteAnt.Log
 
     #endregion
 
-    #region -- À¹½ØWinForm/WinServiceÒì³£ --
+    #region -- æ‹¦æˆªWinForm/WinServiceå¼‚å¸¸ --
 
     private static Int32 initWF = 0;
     private static Boolean _ShowErrorMessage = false;
@@ -341,8 +341,8 @@ namespace CuteAnt.Log
 
 #if DESKTOPCLR
     //private static String _Title;
-    /// <summary>À¹½ØWinFormÒì³£²¢¼ÇÂ¼ÈÕÖ¾£¬¿ÉÖ¸¶¨ÊÇ·ñÓÃ<see cref="MessageBox"/>ÏÔÊ¾¡£</summary>
-    /// <param name="showErrorMessage">·¢Îª²¶»ñÒì³£Ê±£¬ÊÇ·ñÏÔÊ¾ÌáÊ¾£¬Ä¬ÈÏÏÔÊ¾</param>
+    /// <summary>æ‹¦æˆªWinFormå¼‚å¸¸å¹¶è®°å½•æ—¥å¿—ï¼Œå¯æŒ‡å®šæ˜¯å¦ç”¨<see cref="MessageBox"/>æ˜¾ç¤ºã€‚</summary>
+    /// <param name="showErrorMessage">å‘ä¸ºæ•è·å¼‚å¸¸æ—¶ï¼Œæ˜¯å¦æ˜¾ç¤ºæç¤ºï¼Œé»˜è®¤æ˜¾ç¤º</param>
     public static void UseWinForm(Boolean showErrorMessage = true)
     {
       //_IsServiceMode = false;
@@ -372,21 +372,21 @@ namespace CuteAnt.Log
 
       if (e.IsTerminating)
       {
-        //WriteException("Òì³£ÍË³ö£¡");
+        //WriteException("å¼‚å¸¸é€€å‡ºï¼");
 
-        Log.LogCritical("Òì³£ÍË³ö£¡");
+        Log.LogCritical("å¼‚å¸¸é€€å‡ºï¼");
 
         //HmTrace.WriteMiniDump(null);
         if (show)
         {
-          MessageBox.Show(msg, "Òì³£ÍË³ö", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBox.Show(msg, "å¼‚å¸¸é€€å‡º", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
       else
       {
         if (show)
         {
-          MessageBox.Show(msg, "³ö´í", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBox.Show(msg, "å‡ºé”™", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
     }
@@ -396,18 +396,18 @@ namespace CuteAnt.Log
       WriteException(e.Exception);
       if (_ShowErrorMessage && Application.MessageLoop)
       {
-        MessageBox.Show("" + e.Exception, "³ö´í", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show("" + e.Exception, "å‡ºé”™", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 #endif
 
     #endregion
 
-    #region -- ÊôĞÔ --
+    #region -- å±æ€§ --
 
     private static Boolean? _Debug;
 
-    /// <summary>ÊÇ·ñµ÷ÊÔ¡£Èç¹û´úÂëÖ¸¶¨ÁËÖµ£¬ÔòÖ»»áÊ¹ÓÃ´úÂëÖ¸¶¨µÄÖµ£¬·ñÔòÃ¿´Î¶¼¶ÁÈ¡ÅäÖÃ¡£</summary>
+    /// <summary>æ˜¯å¦è°ƒè¯•ã€‚å¦‚æœä»£ç æŒ‡å®šäº†å€¼ï¼Œåˆ™åªä¼šä½¿ç”¨ä»£ç æŒ‡å®šçš„å€¼ï¼Œå¦åˆ™æ¯æ¬¡éƒ½è¯»å–é…ç½®ã€‚</summary>
     public static Boolean Debug
     {
       get
@@ -425,14 +425,14 @@ namespace CuteAnt.Log
 
     private static String _TempPath;
 
-    /// <summary>ÁÙÊ±Ä¿Â¼</summary>
+    /// <summary>ä¸´æ—¶ç›®å½•</summary>
     public static String TempPath
     {
       get
       {
         if (_TempPath != null) { return _TempPath; }
 
-        // ÕâÀïÊÇTempPath¶ø²»ÊÇ_TempPath£¬ÒòÎªĞèÒª¸ñÊ½»¯´¦ÀíÒ»ÏÂ
+        // è¿™é‡Œæ˜¯TempPathè€Œä¸æ˜¯_TempPathï¼Œå› ä¸ºéœ€è¦æ ¼å¼åŒ–å¤„ç†ä¸€ä¸‹
         TempPath = SystemConfigs.GetConfig().TempPath;
         return _TempPath;
       }
@@ -441,7 +441,7 @@ namespace CuteAnt.Log
         _TempPath = value;
         if (_TempPath.IsNullOrWhiteSpace()) { _TempPath = "Temp4Hm"; }
 
-        #region ## ¿àÖñ ĞŞ¸Ä ##
+        #region ## è‹¦ç«¹ ä¿®æ”¹ ##
 
         //if (!Path.IsPathRooted(_TempPath))
         //{
@@ -484,8 +484,8 @@ namespace CuteAnt.Log
 
     #region -- Dump --
 
-    /// <summary>Ğ´µ±Ç°Ïß³ÌµÄMiniDump</summary>
-    /// <param name="dumpFile">Èç¹û²»Ö¸¶¨£¬Ôò×Ô¶¯Ğ´ÈëÈÕÖ¾Ä¿Â¼</param>
+    /// <summary>å†™å½“å‰çº¿ç¨‹çš„MiniDump</summary>
+    /// <param name="dumpFile">å¦‚æœä¸æŒ‡å®šï¼Œåˆ™è‡ªåŠ¨å†™å…¥æ—¥å¿—ç›®å½•</param>
     public static void WriteMiniDump(String dumpFile)
     {
       if (dumpFile.IsNullOrWhiteSpace())
@@ -501,8 +501,8 @@ namespace CuteAnt.Log
     }
 
     /// <summary>
-    /// ¸ÃÀàÒªÊ¹ÓÃÔÚwindows 5.1 ÒÔºóµÄ°æ±¾£¬Èç¹ûÄãµÄwindowsºÜ¾É£¬¾Í°ÑWindbgÀïÃæµÄdll¿½±´¹ıÀ´£¬Ò»°ã¶¼Ã»ÓĞÎÊÌâ¡£
-    /// DbgHelp.dll ÊÇwindows×Ô´øµÄ dllÎÄ¼ş ¡£
+    /// è¯¥ç±»è¦ä½¿ç”¨åœ¨windows 5.1 ä»¥åçš„ç‰ˆæœ¬ï¼Œå¦‚æœä½ çš„windowså¾ˆæ—§ï¼Œå°±æŠŠWindbgé‡Œé¢çš„dllæ‹·è´è¿‡æ¥ï¼Œä¸€èˆ¬éƒ½æ²¡æœ‰é—®é¢˜ã€‚
+    /// DbgHelp.dll æ˜¯windowsè‡ªå¸¦çš„ dllæ–‡ä»¶ ã€‚
     /// </summary>
     private static class MiniDump
     {
@@ -522,24 +522,24 @@ namespace CuteAnt.Log
 
       public static Boolean TryDump(String dmpPath, MiniDumpType dmpType)
       {
-        //Ê¹ÓÃÎÄ¼şÁ÷À´´´½¡ .dmpÎÄ¼ş
+        //ä½¿ç”¨æ–‡ä»¶æµæ¥åˆ›å¥ .dmpæ–‡ä»¶
         using (var stream = new FileStream(dmpPath, FileMode.Create))
         {
-          //È¡µÃ½ø³ÌĞÅÏ¢
+          //å–å¾—è¿›ç¨‹ä¿¡æ¯
           var process = Process.GetCurrentProcess();
 
-          // MINIDUMP_EXCEPTION_INFORMATION ĞÅÏ¢µÄ³õÊ¼»¯
+          // MINIDUMP_EXCEPTION_INFORMATION ä¿¡æ¯çš„åˆå§‹åŒ–
           var mei = new MinidumpExceptionInfo();
 
           mei.ThreadId = (UInt32)GetCurrentThreadId();
           mei.ExceptionPointers = Marshal.GetExceptionPointers();
           mei.ClientPointers = 1;
 
-          //ÕâÀïµ÷ÓÃµÄWin32 API
+          //è¿™é‡Œè°ƒç”¨çš„Win32 API
           var fileHandle = stream.SafeFileHandle.DangerousGetHandle();
           var res = MiniDumpWriteDump(process.Handle, process.Id, fileHandle, dmpType, ref mei, IntPtr.Zero, IntPtr.Zero);
 
-          //Çå¿Õ stream
+          //æ¸…ç©º stream
           stream.Flush();
           stream.Close();
 
@@ -570,45 +570,45 @@ namespace CuteAnt.Log
 
     #endregion
 
-    #region -- µ÷ÓÃÕ» --
+    #region -- è°ƒç”¨æ ˆ --
 
-    /// <summary>¶ÑÕ»µ÷ÊÔ¡£
-    /// Êä³ö¶ÑÕ»ĞÅÏ¢£¬ÓÃÓÚµ÷ÊÔÊ±´¦Àíµ÷ÓÃÉÏÏÂÎÄ¡£
-    /// ±¾·½·¨»áÔì³É´óÁ¿ÈÕÖ¾£¬ÇëÉ÷ÓÃ¡£
+    /// <summary>å †æ ˆè°ƒè¯•ã€‚
+    /// è¾“å‡ºå †æ ˆä¿¡æ¯ï¼Œç”¨äºè°ƒè¯•æ—¶å¤„ç†è°ƒç”¨ä¸Šä¸‹æ–‡ã€‚
+    /// æœ¬æ–¹æ³•ä¼šé€ æˆå¤§é‡æ—¥å¿—ï¼Œè¯·æ…ç”¨ã€‚
     /// </summary>
     public static void DebugStack()
     {
       var msg = GetCaller(2, 0, Environment.NewLine);
-      WriteInfo("µ÷ÓÃ¶ÑÕ»£º" + Environment.NewLine + msg);
+      WriteInfo("è°ƒç”¨å †æ ˆï¼š" + Environment.NewLine + msg);
     }
 
-    /// <summary>¶ÑÕ»µ÷ÊÔ¡£</summary>
-    /// <param name="maxNum">×î´ó²¶»ñ¶ÑÕ»·½·¨Êı</param>
+    /// <summary>å †æ ˆè°ƒè¯•ã€‚</summary>
+    /// <param name="maxNum">æœ€å¤§æ•è·å †æ ˆæ–¹æ³•æ•°</param>
     public static void DebugStack(Int32 maxNum)
     {
       var msg = GetCaller(2, maxNum, Environment.NewLine);
-      WriteInfo("µ÷ÓÃ¶ÑÕ»£º" + Environment.NewLine + msg);
+      WriteInfo("è°ƒç”¨å †æ ˆï¼š" + Environment.NewLine + msg);
     }
 
-    /// <summary>¶ÑÕ»µ÷ÊÔ</summary>
-    /// <param name="start">¿ªÊ¼·½·¨Êı£¬0ÊÇDebugStackµÄÖ±½Óµ÷ÓÃÕß</param>
-    /// <param name="maxNum">×î´ó²¶»ñ¶ÑÕ»·½·¨Êı</param>
+    /// <summary>å †æ ˆè°ƒè¯•</summary>
+    /// <param name="start">å¼€å§‹æ–¹æ³•æ•°ï¼Œ0æ˜¯DebugStackçš„ç›´æ¥è°ƒç”¨è€…</param>
+    /// <param name="maxNum">æœ€å¤§æ•è·å †æ ˆæ–¹æ³•æ•°</param>
     public static void DebugStack(Int32 start, Int32 maxNum)
     {
-      // ÖÁÉÙÌø¹ıµ±Ç°Õâ¸ö
+      // è‡³å°‘è·³è¿‡å½“å‰è¿™ä¸ª
       if (start < 1) { start = 1; }
       var msg = GetCaller(start + 1, maxNum, Environment.NewLine);
-      WriteInfo("µ÷ÓÃ¶ÑÕ»£º" + Environment.NewLine + msg);
+      WriteInfo("è°ƒç”¨å †æ ˆï¼š" + Environment.NewLine + msg);
     }
 
-    /// <summary>»ñÈ¡µ÷ÓÃÕ»</summary>
+    /// <summary>è·å–è°ƒç”¨æ ˆ</summary>
     /// <param name="start"></param>
     /// <param name="maxNum"></param>
     /// <param name="split"></param>
     /// <returns></returns>
     public static String GetCaller(Int32 start = 1, Int32 maxNum = 0, String split = null)
     {
-      // ÖÁÉÙÌø¹ıµ±Ç°Õâ¸ö
+      // è‡³å°‘è·³è¿‡å½“å‰è¿™ä¸ª
       if (start < 1) { start = 1; }
       var st = new StackTrace(start, true);
 
@@ -626,10 +626,10 @@ namespace CuteAnt.Log
         var sf = st.GetFrame(i);
         var method = sf.GetMethod();
 
-        // Ìø¹ı<>ÀàĞÍµÄÄäÃû·½·¨
+        // è·³è¿‡<>ç±»å‹çš„åŒ¿åæ–¹æ³•
         if (method == null || method.Name.IsNullOrWhiteSpace() || method.Name[0] == '<' && method.Name.Contains(">")) { continue; }
 
-        // Ìø¹ıÓĞ[DebuggerHidden]ÌØĞÔµÄ·½·¨
+        // è·³è¿‡æœ‰[DebuggerHidden]ç‰¹æ€§çš„æ–¹æ³•
         if (method.GetCustomAttribute<DebuggerHiddenAttribute>() != null) continue;
 
         var type = method.DeclaringType ?? method.ReflectedType;
@@ -637,17 +637,17 @@ namespace CuteAnt.Log
         sb.Append(".");
 
         var name = method.ToString();
-        // È¥µôÇ°ÃæµÄ·µ»ØÀàĞÍ
+        // å»æ‰å‰é¢çš„è¿”å›ç±»å‹
         var p = name.IndexOf(" ");
         if (p >= 0) name = name.Substring(p + 1);
-        // È¥µôÇ°ÃæµÄSystem
+        // å»æ‰å‰é¢çš„System
         name = name
             .Replace("System.Web.", null)
             .Replace("System.", null);
 
         sb.Append(name);
 
-        // Èç¹ûµ½´ïÁËÈë¿Úµã£¬¿ÉÒÔ½áÊøÁË
+        // å¦‚æœåˆ°è¾¾äº†å…¥å£ç‚¹ï¼Œå¯ä»¥ç»“æŸäº†
         if (method == entry) { break; }
 
         if (i < count - 1) { sb.Append(split); }

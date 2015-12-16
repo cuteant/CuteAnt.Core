@@ -1,4 +1,4 @@
-//------------------------------------------------------------
+ï»¿//------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
 using System;
@@ -45,7 +45,7 @@ namespace CuteAnt
       if (timespan <= TimeSpan.Zero)
       {
         //throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new InvalidOperationException(SR.GetString(SR.ID2082)));
-        // ## ¿àÖñ ÐÞ¸Ä ##
+        // ## è‹¦ç«¹ ä¿®æ”¹ ##
         throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new InvalidOperationException(InternalSR.ValueMustBeNonNegative));
       }
       return Add(time, timespan);

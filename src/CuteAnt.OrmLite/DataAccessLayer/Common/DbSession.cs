@@ -1,9 +1,9 @@
-/*
- * ×÷Õß£ºĞÂÉúÃü¿ª·¢ÍÅ¶Ó£¨http://www.newlifex.com/£©
+ï»¿/*
+ * ä½œè€…ï¼šæ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿï¼ˆhttp://www.newlifex.com/ï¼‰
  * 
- * °æÈ¨£º°æÈ¨ËùÓĞ (C) ĞÂÉúÃü¿ª·¢ÍÅ¶Ó 2002-2014
+ * ç‰ˆæƒï¼šç‰ˆæƒæ‰€æœ‰ (C) æ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿ 2002-2014
  * 
- * ĞŞ¸Ä£ºº£Ñó±ı¸É£¨cuteant@outlook.com£©
+ * ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²ï¼ˆcuteant@outlook.comï¼‰
 */
 
 using System;
@@ -30,12 +30,12 @@ using Microsoft.Extensions.Logging;
 
 namespace CuteAnt.OrmLite.DataAccessLayer
 {
-	/// <summary>Êı¾İ¿â»á»°»ùÀà</summary>
+	/// <summary>æ•°æ®åº“ä¼šè¯åŸºç±»</summary>
 	abstract partial class DbSession : DisposeBase, IDbSession
 	{
-		#region -- ¹¹Ôìº¯Êı --
+		#region -- æ„é€ å‡½æ•° --
 
-		/// <summary>Ïú»Ù×ÊÔ´Ê±£¬»Ø¹öÎ´Ìá½»ÊÂÎñ£¬²¢¹Ø±ÕÊı¾İ¿âÁ¬½Ó</summary>
+		/// <summary>é”€æ¯èµ„æºæ—¶ï¼Œå›æ»šæœªæäº¤äº‹åŠ¡ï¼Œå¹¶å…³é—­æ•°æ®åº“è¿æ¥</summary>
 		/// <param name="disposing"></param>
 		protected override void OnDispose(bool disposing)
 		{
@@ -43,9 +43,9 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 			try
 			{
-				// ×¢Òâ£¬Ã»ÓĞCommitµÄÊı¾İ£¬ÔÚÕâÀï½«»á±»»Ø¹ö
+				// æ³¨æ„ï¼Œæ²¡æœ‰Commitçš„æ•°æ®ï¼Œåœ¨è¿™é‡Œå°†ä¼šè¢«å›æ»š
 				//if (Trans != null) Rollback();
-				// ÔÚÇ¶Ì×ÊÂÎñÖĞ£¬RollbackÖ»ÄÜ¼õÉÙÇ¶Ì×²ãÊı£¬¶ø_Trans.RollbackÄÜÈÃÊÂÎñÂíÉÏ»Ø¹ö
+				// åœ¨åµŒå¥—äº‹åŠ¡ä¸­ï¼ŒRollbackåªèƒ½å‡å°‘åµŒå¥—å±‚æ•°ï¼Œè€Œ_Trans.Rollbackèƒ½è®©äº‹åŠ¡é©¬ä¸Šå›æ»š
 				if (_Trans != null && Opened) { _Trans.Rollback(); }
 				if (_Conn != null) { Close(); }
 				if (_Conn != null)
@@ -58,15 +58,15 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			catch (ObjectDisposedException) { }
 			catch (Exception ex)
 			{
-				DAL.WriteLog(ex, "Ö´ĞĞ" + DbType.ToString() + "µÄDisposeÊ±³ö´í£º");
+				DAL.WriteLog(ex, "æ‰§è¡Œ" + DbType.ToString() + "çš„Disposeæ—¶å‡ºé”™ï¼š");
 			}
 		}
 
 		#endregion
 
-		#region -- ÊôĞÔ --
+		#region -- å±æ€§ --
 
-		/// <summary>Êı¾İ¿â</summary>
+		/// <summary>æ•°æ®åº“</summary>
 		public IDatabase Database
 		{
 			get { return DbInternal; }
@@ -74,30 +74,30 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		private DbBase _DbInternal;
 
-		/// <summary>Êı¾İ¿â</summary>
+		/// <summary>æ•°æ®åº“</summary>
 		internal virtual DbBase DbInternal
 		{
 			get { return _DbInternal; }
 			set { _DbInternal = value; }
 		}
 
-		/// <summary>×ªÒåÃû³Æ¡¢Êı¾İÖµÎªSQLÓï¾äÖĞµÄ×Ö·û´®</summary>
+		/// <summary>è½¬ä¹‰åç§°ã€æ•°æ®å€¼ä¸ºSQLè¯­å¥ä¸­çš„å­—ç¬¦ä¸²</summary>
 		public IQuoter Quoter { get { return DbInternal.Quoter; } }
 
-		/// <summary>·µ»ØÊı¾İ¿âÀàĞÍ¡£Íâ²¿DALÊı¾İ¿âÀàÇëÊ¹ÓÃOther</summary>
+		/// <summary>è¿”å›æ•°æ®åº“ç±»å‹ã€‚å¤–éƒ¨DALæ•°æ®åº“ç±»è¯·ä½¿ç”¨Other</summary>
 		private DatabaseType DbType { get { return DbInternal.DbType; } }
 
-		/// <summary>¹¤³§</summary>
+		/// <summary>å·¥å‚</summary>
 		private DbProviderFactory Factory { get { return DbInternal.Factory; } }
 
 		private String _ConnectionString;
 
-		/// <summary>Á´½Ó×Ö·û´®£¬»á»°µ¥¶À±£´æ£¬ÔÊĞíĞŞ¸Ä£¬ĞŞ¸Ä²»»áÓ°ÏìÊı¾İ¿âÖĞµÄÁ¬½Ó×Ö·û´®</summary>
+		/// <summary>é“¾æ¥å­—ç¬¦ä¸²ï¼Œä¼šè¯å•ç‹¬ä¿å­˜ï¼Œå…è®¸ä¿®æ”¹ï¼Œä¿®æ”¹ä¸ä¼šå½±å“æ•°æ®åº“ä¸­çš„è¿æ¥å­—ç¬¦ä¸²</summary>
 		public String ConnectionString { get { return _ConnectionString; } set { _ConnectionString = value; } }
 
 		private DbConnection _Conn;
 
-		/// <summary>Êı¾İÁ¬½Ó¶ÔÏó¡£</summary>
+		/// <summary>æ•°æ®è¿æ¥å¯¹è±¡ã€‚</summary>
 		public DbConnection Conn
 		{
 			get
@@ -123,46 +123,46 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 		{
 			if (ConnectionString.IsNullOrWhiteSpace())
 			{
-				throw new OrmLiteException("[{0}]Î´Ö¸¶¨Á¬½Ó×Ö·û´®£¡", DbInternal == null ? "" : DbInternal.ConnName);
+				throw new OrmLiteException("[{0}]æœªæŒ‡å®šè¿æ¥å­—ç¬¦ä¸²ï¼", DbInternal == null ? "" : DbInternal.ConnName);
 			}
 		}
 
 		private Int32 _QueryTimes;
 
-		/// <summary>²éÑ¯´ÎÊı</summary>
+		/// <summary>æŸ¥è¯¢æ¬¡æ•°</summary>
 		public Int32 QueryTimes { get { return _QueryTimes; } set { _QueryTimes = value; } }
 
 		private Int32 _ExecuteTimes;
 
-		/// <summary>Ö´ĞĞ´ÎÊı</summary>
+		/// <summary>æ‰§è¡Œæ¬¡æ•°</summary>
 		public Int32 ExecuteTimes { get { return _ExecuteTimes; } set { _ExecuteTimes = value; } }
 
 		private Int32 _ThreadID = TaskShim.CurrentManagedThreadId;
 
-		/// <summary>Ïß³Ì±àºÅ£¬Ã¿¸öÊı¾İ¿â»á»°Ó¦¸ÃÖ»ÊôÓÚÒ»¸öÏß³Ì£¬¸ÃÊôĞÔÓÃÓÚ¼ì²é´íÎóµÄ¿çÏß³Ì²Ù×÷</summary>
+		/// <summary>çº¿ç¨‹ç¼–å·ï¼Œæ¯ä¸ªæ•°æ®åº“ä¼šè¯åº”è¯¥åªå±äºä¸€ä¸ªçº¿ç¨‹ï¼Œè¯¥å±æ€§ç”¨äºæ£€æŸ¥é”™è¯¯çš„è·¨çº¿ç¨‹æ“ä½œ</summary>
 		public Int32 ThreadID { get { return _ThreadID; } set { _ThreadID = value; } }
 
 		#endregion
 
-		#region -- ´ò¿ª/¹Ø±Õ --
+		#region -- æ‰“å¼€/å…³é—­ --
 
 		private Boolean _IsAutoClose = true;
 
-		/// <summary>ÊÇ·ñ×Ô¶¯¹Ø±Õ¡£
-		/// ÆôÓÃÊÂÎñºó£¬¸ÃÉèÖÃÎŞĞ§¡£
-		/// ÔÚÌá½»»ò»Ø¹öÊÂÎñÊ±£¬Èç¹ûIsAutoCloseÎªtrue£¬Ôò»á×Ô¶¯¹Ø±Õ
+		/// <summary>æ˜¯å¦è‡ªåŠ¨å…³é—­ã€‚
+		/// å¯ç”¨äº‹åŠ¡åï¼Œè¯¥è®¾ç½®æ— æ•ˆã€‚
+		/// åœ¨æäº¤æˆ–å›æ»šäº‹åŠ¡æ—¶ï¼Œå¦‚æœIsAutoCloseä¸ºtrueï¼Œåˆ™ä¼šè‡ªåŠ¨å…³é—­
 		/// </summary>
 		public Boolean IsAutoClose { get { return _IsAutoClose; } set { _IsAutoClose = value; } }
 
-		/// <summary>Á¬½ÓÊÇ·ñÒÑ¾­´ò¿ª</summary>
+		/// <summary>è¿æ¥æ˜¯å¦å·²ç»æ‰“å¼€</summary>
 		public Boolean Opened { get { return _Conn != null && _Conn.State != ConnectionState.Closed; } }
 
-		/// <summary>´ò¿ª</summary>
+		/// <summary>æ‰“å¼€</summary>
 		public virtual void Open()
 		{
 			if (DAL.Debug && ThreadID != TaskShim.CurrentManagedThreadId)
 			{
-				DAL.WriteLog("±¾»á»°ÓÉÏß³Ì{0}´´½¨£¬µ±Ç°Ïß³Ì{1}·Ç·¨Ê¹ÓÃ¸Ã»á»°£¡");
+				DAL.WriteLog("æœ¬ä¼šè¯ç”±çº¿ç¨‹{0}åˆ›å»ºï¼Œå½“å‰çº¿ç¨‹{1}éæ³•ä½¿ç”¨è¯¥ä¼šè¯ï¼");
 			}
 
 			if (Conn != null && Conn.State == ConnectionState.Closed)
@@ -174,7 +174,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 				}
 				catch (DbException)
 				{
-					DAL.WriteLog("µ¼ÖÂOpen´íÎóµÄÁ¬½Ó×Ö·û´®£º{0}", Conn.ConnectionString);
+					DAL.WriteLog("å¯¼è‡´Opené”™è¯¯çš„è¿æ¥å­—ç¬¦ä¸²ï¼š{0}", Conn.ConnectionString);
 					throw;
 				}
 #else
@@ -183,7 +183,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 		}
 
-		/// <summary>¹Ø±Õ</summary>
+		/// <summary>å…³é—­</summary>
 		public virtual void Close()
 		{
 			if (_Conn != null && Conn.State != ConnectionState.Closed)
@@ -191,21 +191,21 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 				try { Conn.Close(); }
 				catch (Exception ex)
 				{
-					DAL.WriteLog(ex, "Ö´ĞĞ" + DbType.ToString() + "µÄCloseÊ±³ö´í£º");
+					DAL.WriteLog(ex, "æ‰§è¡Œ" + DbType.ToString() + "çš„Closeæ—¶å‡ºé”™ï¼š");
 				}
 			}
 		}
 
-		/// <summary>×Ô¶¯¹Ø±Õ¡£
-		/// ÆôÓÃÊÂÎñºó£¬²»¹Ø±ÕÁ¬½Ó¡£
-		/// ÔÚÌá½»»ò»Ø¹öÊÂÎñÊ±£¬Èç¹ûIsAutoCloseÎªtrue£¬Ôò»á×Ô¶¯¹Ø±Õ
+		/// <summary>è‡ªåŠ¨å…³é—­ã€‚
+		/// å¯ç”¨äº‹åŠ¡åï¼Œä¸å…³é—­è¿æ¥ã€‚
+		/// åœ¨æäº¤æˆ–å›æ»šäº‹åŠ¡æ—¶ï¼Œå¦‚æœIsAutoCloseä¸ºtrueï¼Œåˆ™ä¼šè‡ªåŠ¨å…³é—­
 		/// </summary>
 		public void AutoClose()
 		{
 			if (IsAutoClose && Trans == null && Opened) { Close(); }
 		}
 
-		/// <summary>Êı¾İ¿âÃû</summary>
+		/// <summary>æ•°æ®åº“å</summary>
 		public String DatabaseName
 		{
 			get
@@ -216,11 +216,11 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			{
 				if (DatabaseName == value) { return; }
 
-				// ÒòÎªMSSQL¶à´Î³öÏÖÒòÁ¬½Ó×Ö·û´®´íÎó¶øµ¼ÖÂµÄ±¨´í£¬Á¬½Ó×Ö·û´®±ä´íÉèÖÃ±ä¿ÕÁË£¬ÕâÀïÍ³Ò»¹Ø±ÕÁ¬½Ó£¬²ÉÓÃ±£ÊØ×ö·¨ĞŞ¸Ä×Ö·û´®
+				// å› ä¸ºMSSQLå¤šæ¬¡å‡ºç°å› è¿æ¥å­—ç¬¦ä¸²é”™è¯¯è€Œå¯¼è‡´çš„æŠ¥é”™ï¼Œè¿æ¥å­—ç¬¦ä¸²å˜é”™è®¾ç½®å˜ç©ºäº†ï¼Œè¿™é‡Œç»Ÿä¸€å…³é—­è¿æ¥ï¼Œé‡‡ç”¨ä¿å®ˆåšæ³•ä¿®æ”¹å­—ç¬¦ä¸²
 				var b = Opened;
 				if (b) { Close(); }
 
-				//Èç¹ûÃ»ÓĞ´ò¿ª£¬Ôò¸Ä±äÁ´½Ó×Ö·û´®
+				//å¦‚æœæ²¡æœ‰æ‰“å¼€ï¼Œåˆ™æ”¹å˜é“¾æ¥å­—ç¬¦ä¸²
 				var builder = new HmDbConnectionStringBuilder();
 				builder.ConnectionString = ConnectionString;
 				var flag = false;
@@ -244,12 +244,12 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 		}
 
-		/// <summary>µ±Òì³£·¢ÉúÊ±´¥·¢¡£¹Ø±ÕÊı¾İ¿âÁ¬½Ó£¬»òÕß·µ»¹Á¬½Óµ½Á¬½Ó³Ø¡£</summary>
+		/// <summary>å½“å¼‚å¸¸å‘ç”Ÿæ—¶è§¦å‘ã€‚å…³é—­æ•°æ®åº“è¿æ¥ï¼Œæˆ–è€…è¿”è¿˜è¿æ¥åˆ°è¿æ¥æ± ã€‚</summary>
 		/// <param name="ex"></param>
 		/// <returns></returns>
 		protected virtual OrmLiteDbException OnException(Exception ex)
 		{
-			if (Trans == null && Opened) Close(); // Ç¿ÖÆ¹Ø±ÕÊı¾İ¿â
+			if (Trans == null && Opened) Close(); // å¼ºåˆ¶å…³é—­æ•°æ®åº“
 			if (ex != null)
 			{
 				return new OrmLiteDbSessionException(this, ex);
@@ -260,13 +260,13 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 		}
 
-		/// <summary>µ±Òì³£·¢ÉúÊ±´¥·¢¡£¹Ø±ÕÊı¾İ¿âÁ¬½Ó£¬»òÕß·µ»¹Á¬½Óµ½Á¬½Ó³Ø¡£</summary>
+		/// <summary>å½“å¼‚å¸¸å‘ç”Ÿæ—¶è§¦å‘ã€‚å…³é—­æ•°æ®åº“è¿æ¥ï¼Œæˆ–è€…è¿”è¿˜è¿æ¥åˆ°è¿æ¥æ± ã€‚</summary>
 		/// <param name="ex"></param>
 		/// <param name="sql"></param>
 		/// <returns></returns>
 		protected virtual OrmLiteSqlException OnException(Exception ex, String sql)
 		{
-			if (Trans == null && Opened) { Close(); } // Ç¿ÖÆ¹Ø±ÕÊı¾İ¿â
+			if (Trans == null && Opened) { Close(); } // å¼ºåˆ¶å…³é—­æ•°æ®åº“
 			if (ex != null)
 			{
 				return new OrmLiteSqlException(sql, this, ex);
@@ -279,18 +279,18 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		#endregion
 
-		#region -- ÊÂÎñ --
+		#region -- äº‹åŠ¡ --
 
 		private DbTransaction _Trans;
 
-		/// <summary>Êı¾İ¿âÊÂÎñ</summary>
+		/// <summary>æ•°æ®åº“äº‹åŠ¡</summary>
 		protected DbTransaction Trans
 		{
 			get { return _Trans; }
 			set { _Trans = value; }
 		}
 
-		/// <summary>ÊÂÎñ¼ÆÊı¡£µ±ÇÒ½öµ±ÊÂÎñ¼ÆÊıµÈÓÚ1Ê±£¬²ÅÌá½»»ò»Ø¹ö¡£</summary>
+		/// <summary>äº‹åŠ¡è®¡æ•°ã€‚å½“ä¸”ä»…å½“äº‹åŠ¡è®¡æ•°ç­‰äº1æ—¶ï¼Œæ‰æäº¤æˆ–å›æ»šã€‚</summary>
 		private Int32 TransactionCount = 0;
 #if ASYNC
 #if !NET40
@@ -302,8 +302,8 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 		private Dictionary<String, DirtiedEntitySession> _EntitySession = new Dictionary<String, DirtiedEntitySession>();
 #endif
 
-		/// <summary>¿ªÊ¼ÊÂÎñ</summary>
-		/// <returns>Ê£ÏÂµÄÊÂÎñ¼ÆÊı</returns>
+		/// <summary>å¼€å§‹äº‹åŠ¡</summary>
+		/// <returns>å‰©ä¸‹çš„äº‹åŠ¡è®¡æ•°</returns>
 		public virtual Int32 BeginTransaction()
 		{
 			if (Disposed) { throw new ObjectDisposedException(this.GetType().Name); }
@@ -332,15 +332,15 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 		}
 
-		/// <summary>Ìá½»ÊÂÎñ</summary>
-		/// <returns>Ê£ÏÂµÄÊÂÎñ¼ÆÊı</returns>
+		/// <summary>æäº¤äº‹åŠ¡</summary>
+		/// <returns>å‰©ä¸‹çš„äº‹åŠ¡è®¡æ•°</returns>
 		public Int32 Commit()
 		{
 			TransactionCount--;
 			//Interlocked.Decrement(ref TransactionCount);
 			if (TransactionCount > 0) { return TransactionCount; }
 
-			if (Trans == null) { throw new OrmLiteDbSessionException(this, "µ±Ç°²¢Î´¿ªÊ¼ÊÂÎñ£¬ÇëÓÃBeginTransaction·½·¨¿ªÊ¼ĞÂÊÂÎñ£¡"); }
+			if (Trans == null) { throw new OrmLiteDbSessionException(this, "å½“å‰å¹¶æœªå¼€å§‹äº‹åŠ¡ï¼Œè¯·ç”¨BeginTransactionæ–¹æ³•å¼€å§‹æ–°äº‹åŠ¡ï¼"); }
 			try
 			{
 				if (Trans.Connection != null)
@@ -370,18 +370,18 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			return TransactionCount;
 		}
 
-		/// <summary>»Ø¹öÊÂÎñ</summary>
-		/// <param name="ignoreException">ÊÇ·ñºöÂÔÒì³£</param>
-		/// <returns>Ê£ÏÂµÄÊÂÎñ¼ÆÊı</returns>
+		/// <summary>å›æ»šäº‹åŠ¡</summary>
+		/// <param name="ignoreException">æ˜¯å¦å¿½ç•¥å¼‚å¸¸</param>
+		/// <returns>å‰©ä¸‹çš„äº‹åŠ¡è®¡æ•°</returns>
 		public virtual Int32 Rollback(Boolean ignoreException = true)
 		{
-			// ÕâÀïÒªĞ¡ĞÄ£¬ÔÚ¶à²ãÊÂÎñÖĞ£¬Èç¹ûÄÚ²ã»Ø¹ö£¬¶ø×îÍâ²ãÌá½»£¬ÔòÄÚ²ãµÄ»Ø¹ö»á±ä³ÉÌá½»
+			// è¿™é‡Œè¦å°å¿ƒï¼Œåœ¨å¤šå±‚äº‹åŠ¡ä¸­ï¼Œå¦‚æœå†…å±‚å›æ»šï¼Œè€Œæœ€å¤–å±‚æäº¤ï¼Œåˆ™å†…å±‚çš„å›æ»šä¼šå˜æˆæäº¤
 			TransactionCount--;
 			//Interlocked.Decrement(ref TransactionCount);
 			if (TransactionCount > 0) { return TransactionCount; }
 
 			var tr = Trans;
-			if (tr == null) { throw new OrmLiteDbSessionException(this, "µ±Ç°²¢Î´¿ªÊ¼ÊÂÎñ£¬ÇëÓÃBeginTransaction·½·¨¿ªÊ¼ĞÂÊÂÎñ£¡"); }
+			if (tr == null) { throw new OrmLiteDbSessionException(this, "å½“å‰å¹¶æœªå¼€å§‹äº‹åŠ¡ï¼Œè¯·ç”¨BeginTransactionæ–¹æ³•å¼€å§‹æ–°äº‹åŠ¡ï¼"); }
 			Trans = null;
 			try
 			{
@@ -412,12 +412,12 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			return TransactionCount;
 		}
 
-		/// <summary>Ìí¼ÓÔàÊµÌå»á»°</summary>
-		/// <param name="key">ÊµÌå»á»°¹Ø¼ü×Ö</param>
-		/// <param name="entitySession">ÊÂÎñÇ¶Ì×´¦ÀíÖĞ£¬ÊÂÎñÕæÕıÌá½»»ò»Ø¹öÖ®Ç°£¬½øĞĞÁË×ÓÊÂÎñÌá½»µÄÊµÌå»á»°</param>
-		/// <param name="executeCount">ÊµÌå²Ù×÷´ÎÊı</param>
-		/// <param name="updateCount">ÊµÌå¸üĞÂ²Ù×÷´ÎÊı</param>
-		/// <param name="directExecuteSQLCount">Ö±½ÓÖ´ĞĞSQLÓï¾ä´ÎÊı</param>
+		/// <summary>æ·»åŠ è„å®ä½“ä¼šè¯</summary>
+		/// <param name="key">å®ä½“ä¼šè¯å…³é”®å­—</param>
+		/// <param name="entitySession">äº‹åŠ¡åµŒå¥—å¤„ç†ä¸­ï¼Œäº‹åŠ¡çœŸæ­£æäº¤æˆ–å›æ»šä¹‹å‰ï¼Œè¿›è¡Œäº†å­äº‹åŠ¡æäº¤çš„å®ä½“ä¼šè¯</param>
+		/// <param name="executeCount">å®ä½“æ“ä½œæ¬¡æ•°</param>
+		/// <param name="updateCount">å®ä½“æ›´æ–°æ“ä½œæ¬¡æ•°</param>
+		/// <param name="directExecuteSQLCount">ç›´æ¥æ‰§è¡ŒSQLè¯­å¥æ¬¡æ•°</param>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddDirtiedEntitySession(String key, IEntitySession entitySession, Int32 executeCount, Int32 updateCount, Int32 directExecuteSQLCount)
 		{
@@ -454,8 +454,8 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 		}
 
-		/// <summary>ÒÆ³ıÔàÊµÌå»á»°</summary>
-		/// <param name="key">ÊµÌå»á»°¹Ø¼ü×Ö</param>
+		/// <summary>ç§»é™¤è„å®ä½“ä¼šè¯</summary>
+		/// <param name="key">å®ä½“ä¼šè¯å…³é”®å­—</param>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void RemoveDirtiedEntitySession(String key)
 		{
@@ -471,9 +471,9 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 #endif
 		}
 
-		/// <summary>»ñÈ¡ÔàÊµÌå»á»°</summary>
-		/// <param name="key">ÊµÌå»á»°¹Ø¼ü×Ö</param>
-		/// <param name="session">ÔàÊµÌå»á»°</param>
+		/// <summary>è·å–è„å®ä½“ä¼šè¯</summary>
+		/// <param name="key">å®ä½“ä¼šè¯å…³é”®å­—</param>
+		/// <param name="session">è„å®ä½“ä¼šè¯</param>
 		/// <returns></returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public Boolean TryGetDirtiedEntitySession(String key, out DirtiedEntitySession session)
@@ -483,31 +483,31 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		#endregion
 
-		#region -- »ù±¾·½·¨ ²éÑ¯/Ö´ĞĞ --
+		#region -- åŸºæœ¬æ–¹æ³• æŸ¥è¯¢/æ‰§è¡Œ --
 
-		#region - ²éÑ¯ -
+		#region - æŸ¥è¯¢ -
 
 		#region Query
 
-		/// <summary>Ö´ĞĞSQL²éÑ¯£¬·µ»Ø¼ÇÂ¼¼¯</summary>
-		/// <param name="sql">SQLÓï¾ä</param>
+		/// <summary>æ‰§è¡ŒSQLæŸ¥è¯¢ï¼Œè¿”å›è®°å½•é›†</summary>
+		/// <param name="sql">SQLè¯­å¥</param>
 		/// <returns></returns>
 		public DataSet Query(String sql)
 		{
 			return Query(CreateCommand(sql, CommandType.Text, null));
 		}
 
-		/// <summary>Ö´ĞĞSQL²éÑ¯£¬·µ»Ø¼ÇÂ¼¼¯</summary>
-		/// <param name="sql">SQLÓï¾ä</param>
-		/// <param name="type">ÃüÁîÀàĞÍ£¬Ä¬ÈÏSQLÎÄ±¾</param>
-		/// <param name="ps">ÃüÁî²ÎÊı</param>
+		/// <summary>æ‰§è¡ŒSQLæŸ¥è¯¢ï¼Œè¿”å›è®°å½•é›†</summary>
+		/// <param name="sql">SQLè¯­å¥</param>
+		/// <param name="type">å‘½ä»¤ç±»å‹ï¼Œé»˜è®¤SQLæ–‡æœ¬</param>
+		/// <param name="ps">å‘½ä»¤å‚æ•°</param>
 		/// <returns></returns>
 		public DataSet Query(String sql, CommandType type, DbParameter[] ps)
 		{
 			return Query(CreateCommand(sql, type, ps));
 		}
 
-		/// <summary>Ö´ĞĞDbCommand£¬·µ»Ø¼ÇÂ¼¼¯</summary>
+		/// <summary>æ‰§è¡ŒDbCommandï¼Œè¿”å›è®°å½•é›†</summary>
 		/// <param name="cmd">DbCommand</param>
 		/// <returns></returns>
 		public DataSet Query(DbCommand cmd)
@@ -544,29 +544,29 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 		}
 
-		/// <summary>Ö´ĞĞSQL²éÑ¯£¬·µ»Ø¼ÇÂ¼¼¯</summary>
-		/// <param name="sql">SQLÓï¾ä</param>
-		/// <param name="type">ÃüÁîÀàĞÍ£¬Ä¬ÈÏSQLÎÄ±¾</param>
-		/// <param name="ps">ÃüÁî²ÎÊı</param>
-		/// <returns>¼ÇÂ¼¼¯</returns>
+		/// <summary>æ‰§è¡ŒSQLæŸ¥è¯¢ï¼Œè¿”å›è®°å½•é›†</summary>
+		/// <param name="sql">SQLè¯­å¥</param>
+		/// <param name="type">å‘½ä»¤ç±»å‹ï¼Œé»˜è®¤SQLæ–‡æœ¬</param>
+		/// <param name="ps">å‘½ä»¤å‚æ•°</param>
+		/// <returns>è®°å½•é›†</returns>
 		public IList<QueryRecords> QueryRecords(String sql)
 		{
 			return QueryRecords(CreateCommand(sql, CommandType.Text, null));
 		}
 
-		/// <summary>Ö´ĞĞSQL²éÑ¯£¬·µ»Ø¼ÇÂ¼¼¯</summary>
-		/// <param name="sql">SQLÓï¾ä</param>
-		/// <param name="type">ÃüÁîÀàĞÍ£¬Ä¬ÈÏSQLÎÄ±¾</param>
-		/// <param name="ps">ÃüÁî²ÎÊı</param>
-		/// <returns>¼ÇÂ¼¼¯</returns>
+		/// <summary>æ‰§è¡ŒSQLæŸ¥è¯¢ï¼Œè¿”å›è®°å½•é›†</summary>
+		/// <param name="sql">SQLè¯­å¥</param>
+		/// <param name="type">å‘½ä»¤ç±»å‹ï¼Œé»˜è®¤SQLæ–‡æœ¬</param>
+		/// <param name="ps">å‘½ä»¤å‚æ•°</param>
+		/// <returns>è®°å½•é›†</returns>
 		public IList<QueryRecords> QueryRecords(String sql, CommandType type, DbParameter[] ps)
 		{
 			return QueryRecords(CreateCommand(sql, type, ps));
 		}
 
-		/// <summary>Ö´ĞĞDbCommand£¬·µ»Ø¼ÇÂ¼¼¯</summary>
+		/// <summary>æ‰§è¡ŒDbCommandï¼Œè¿”å›è®°å½•é›†</summary>
 		/// <param name="cmd">DbCommand</param>
-		/// <returns>¼ÇÂ¼¼¯</returns>
+		/// <returns>è®°å½•é›†</returns>
 		public IList<QueryRecords> QueryRecords(DbCommand cmd)
 		{
 			QueryTimes++;
@@ -636,31 +636,31 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		#region ExecuteReader
 
-		/// <summary>Ö´ĞĞDbCommand£¬¶ÁÈ¡DbDataReader</summary>
-		/// <typeparam name="TResult">·µ»ØÀàĞÍ</typeparam>
-		/// <param name="func">·½·¨</param>
-		/// <param name="sql">SQLÓï¾ä</param>
+		/// <summary>æ‰§è¡ŒDbCommandï¼Œè¯»å–DbDataReader</summary>
+		/// <typeparam name="TResult">è¿”å›ç±»å‹</typeparam>
+		/// <param name="func">æ–¹æ³•</param>
+		/// <param name="sql">SQLè¯­å¥</param>
 		/// <returns></returns>
 		public TResult ExecuteReader<TResult>(Func<DbDataReader, TResult> func, String sql)
 		{
 			return ExecuteReader(func, CreateCommand(sql, CommandType.Text, null));
 		}
 
-		/// <summary>Ö´ĞĞDbCommand£¬¶ÁÈ¡DbDataReader</summary>
-		/// <typeparam name="TResult">·µ»ØÀàĞÍ</typeparam>
-		/// <param name="func">·½·¨</param>
-		/// <param name="sql">SQLÓï¾ä</param>
-		/// <param name="type">ÃüÁîÀàĞÍ£¬Ä¬ÈÏSQLÎÄ±¾</param>
-		/// <param name="ps">ÃüÁî²ÎÊı</param>
+		/// <summary>æ‰§è¡ŒDbCommandï¼Œè¯»å–DbDataReader</summary>
+		/// <typeparam name="TResult">è¿”å›ç±»å‹</typeparam>
+		/// <param name="func">æ–¹æ³•</param>
+		/// <param name="sql">SQLè¯­å¥</param>
+		/// <param name="type">å‘½ä»¤ç±»å‹ï¼Œé»˜è®¤SQLæ–‡æœ¬</param>
+		/// <param name="ps">å‘½ä»¤å‚æ•°</param>
 		/// <returns></returns>
 		public TResult ExecuteReader<TResult>(Func<DbDataReader, TResult> func, String sql, CommandType type, DbParameter[] ps)
 		{
 			return ExecuteReader(func, CreateCommand(sql, type, ps));
 		}
 
-		/// <summary>Ö´ĞĞDbCommand£¬¶ÁÈ¡DbDataReader</summary>
-		/// <typeparam name="TResult">·µ»ØÀàĞÍ</typeparam>
-		/// <param name="func">·½·¨</param>
+		/// <summary>æ‰§è¡ŒDbCommandï¼Œè¯»å–DbDataReader</summary>
+		/// <typeparam name="TResult">è¿”å›ç±»å‹</typeparam>
+		/// <param name="func">æ–¹æ³•</param>
 		/// <param name="cmd">DbCommand</param>
 		/// <returns></returns>
 		public TResult ExecuteReader<TResult>(Func<DbDataReader, TResult> func, DbCommand cmd)
@@ -699,10 +699,10 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 		}
 
-		/// <summary>Ö´ĞĞDbCommand£¬¶ÁÈ¡DbDataReader</summary>
-		/// <typeparam name="TResult">·µ»ØÀàĞÍ</typeparam>
-		/// <param name="func">·½·¨</param>
-		/// <param name="sql">SQLÓï¾ä</param>
+		/// <summary>æ‰§è¡ŒDbCommandï¼Œè¯»å–DbDataReader</summary>
+		/// <typeparam name="TResult">è¿”å›ç±»å‹</typeparam>
+		/// <param name="func">æ–¹æ³•</param>
+		/// <param name="sql">SQLè¯­å¥</param>
 		/// <param name="behavior"></param>
 		/// <returns></returns>
 		public TResult ExecuteReader<TResult>(Func<DbDataReader, TResult> func, String sql, CommandBehavior behavior)
@@ -710,22 +710,22 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			return ExecuteReader(func, CreateCommand(sql, CommandType.Text, null), behavior);
 		}
 
-		/// <summary>Ö´ĞĞDbCommand£¬¶ÁÈ¡DbDataReader</summary>
-		/// <typeparam name="TResult">·µ»ØÀàĞÍ</typeparam>
-		/// <param name="func">·½·¨</param>
-		/// <param name="sql">SQLÓï¾ä</param>
+		/// <summary>æ‰§è¡ŒDbCommandï¼Œè¯»å–DbDataReader</summary>
+		/// <typeparam name="TResult">è¿”å›ç±»å‹</typeparam>
+		/// <param name="func">æ–¹æ³•</param>
+		/// <param name="sql">SQLè¯­å¥</param>
 		/// <param name="behavior"></param>
-		/// <param name="type">ÃüÁîÀàĞÍ£¬Ä¬ÈÏSQLÎÄ±¾</param>
-		/// <param name="ps">ÃüÁî²ÎÊı</param>
+		/// <param name="type">å‘½ä»¤ç±»å‹ï¼Œé»˜è®¤SQLæ–‡æœ¬</param>
+		/// <param name="ps">å‘½ä»¤å‚æ•°</param>
 		/// <returns></returns>
 		public TResult ExecuteReader<TResult>(Func<DbDataReader, TResult> func, String sql, CommandBehavior behavior, CommandType type, DbParameter[] ps)
 		{
 			return ExecuteReader(func, CreateCommand(sql, type, ps), behavior);
 		}
 
-		/// <summary>Ö´ĞĞDbCommand£¬¶ÁÈ¡DbDataReader</summary>
-		/// <typeparam name="TResult">·µ»ØÀàĞÍ</typeparam>
-		/// <param name="func">·½·¨</param>
+		/// <summary>æ‰§è¡ŒDbCommandï¼Œè¯»å–DbDataReader</summary>
+		/// <typeparam name="TResult">è¿”å›ç±»å‹</typeparam>
+		/// <param name="func">æ–¹æ³•</param>
 		/// <param name="cmd">DbCommand</param>
 		/// <param name="behavior"></param>
 		/// <returns></returns>
@@ -768,22 +768,22 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		#endregion
 
-		#region - ×Ü¼ÇÂ¼Êı -
+		#region - æ€»è®°å½•æ•° -
 
 		private static Regex reg_QueryCount = new Regex(@"^\s*select\s+\*\s+from\s+([\w\W]+)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-		/// <summary>Ö´ĞĞSQL²éÑ¯£¬·µ»Ø×Ü¼ÇÂ¼Êı</summary>
-		/// <param name="sql">SQLÓï¾ä</param>
+		/// <summary>æ‰§è¡ŒSQLæŸ¥è¯¢ï¼Œè¿”å›æ€»è®°å½•æ•°</summary>
+		/// <param name="sql">SQLè¯­å¥</param>
 		/// <returns></returns>
 		public Int64 QueryCount(String sql)
 		{
 			return QueryCount(sql, CommandType.Text, null);
 		}
 
-		/// <summary>Ö´ĞĞSQL²éÑ¯£¬·µ»Ø×Ü¼ÇÂ¼Êı</summary>
-		/// <param name="sql">SQLÓï¾ä</param>
-		/// <param name="type">ÃüÁîÀàĞÍ£¬Ä¬ÈÏSQLÎÄ±¾</param>
-		/// <param name="ps">ÃüÁî²ÎÊı</param>
+		/// <summary>æ‰§è¡ŒSQLæŸ¥è¯¢ï¼Œè¿”å›æ€»è®°å½•æ•°</summary>
+		/// <param name="sql">SQLè¯­å¥</param>
+		/// <param name="type">å‘½ä»¤ç±»å‹ï¼Œé»˜è®¤SQLæ–‡æœ¬</param>
+		/// <param name="ps">å‘½ä»¤å‚æ•°</param>
 		/// <returns></returns>
 		public Int64 QueryCount(String sql, CommandType type, DbParameter[] ps)
 		{
@@ -812,15 +812,15 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			return ExecuteScalar<Int64>(sql, type, ps);
 		}
 
-		/// <summary>Ö´ĞĞSQL²éÑ¯£¬·µ»Ø×Ü¼ÇÂ¼Êı</summary>
-		/// <param name="builder">²éÑ¯Éú³ÉÆ÷</param>
-		/// <returns>×Ü¼ÇÂ¼Êı</returns>
+		/// <summary>æ‰§è¡ŒSQLæŸ¥è¯¢ï¼Œè¿”å›æ€»è®°å½•æ•°</summary>
+		/// <param name="builder">æŸ¥è¯¢ç”Ÿæˆå™¨</param>
+		/// <returns>æ€»è®°å½•æ•°</returns>
 		public Int64 QueryCount(SelectBuilder builder)
 		{
 			return ExecuteScalar<Int64>(builder.SelectCount().ToString(), CommandType.Text, builder.Parameters.ToArray());
 		}
 
-		/// <summary>¿ìËÙ²éÑ¯µ¥±í¼ÇÂ¼Êı£¬ÉÔÓĞÆ«²î</summary>
+		/// <summary>å¿«é€ŸæŸ¥è¯¢å•è¡¨è®°å½•æ•°ï¼Œç¨æœ‰åå·®</summary>
 		/// <param name="tableName"></param>
 		/// <returns></returns>
 		public virtual Int64 QueryCountFast(String tableName)
@@ -830,29 +830,29 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		#endregion
 
-		#region - ²éÑ¯¼ÇÂ¼ÊÇ·ñ´æÔÚ -
+		#region - æŸ¥è¯¢è®°å½•æ˜¯å¦å­˜åœ¨ -
 
 		#region - Exists -
 
-		/// <summary>Ö´ĞĞSQLÓï¾ä£¬²éÑ¯¼ÇÂ¼ÊÇ·ñ´æÔÚ</summary>
-		/// <param name="sql">SQLÓï¾ä</param>
+		/// <summary>æ‰§è¡ŒSQLè¯­å¥ï¼ŒæŸ¥è¯¢è®°å½•æ˜¯å¦å­˜åœ¨</summary>
+		/// <param name="sql">SQLè¯­å¥</param>
 		/// <returns></returns>
 		public Boolean Exists(String sql)
 		{
 			return Exists(CreateCommand(sql, CommandType.Text, null));
 		}
 
-		/// <summary>Ö´ĞĞSQLÓï¾ä£¬²éÑ¯¼ÇÂ¼ÊÇ·ñ´æÔÚ</summary>
-		/// <param name="sql">SQLÓï¾ä</param>
-		/// <param name="type">ÃüÁîÀàĞÍ£¬Ä¬ÈÏSQLÎÄ±¾</param>
-		/// <param name="ps">ÃüÁî²ÎÊı</param>
+		/// <summary>æ‰§è¡ŒSQLè¯­å¥ï¼ŒæŸ¥è¯¢è®°å½•æ˜¯å¦å­˜åœ¨</summary>
+		/// <param name="sql">SQLè¯­å¥</param>
+		/// <param name="type">å‘½ä»¤ç±»å‹ï¼Œé»˜è®¤SQLæ–‡æœ¬</param>
+		/// <param name="ps">å‘½ä»¤å‚æ•°</param>
 		/// <returns></returns>
 		public Boolean Exists(String sql, CommandType type, DbParameter[] ps)
 		{
 			return Exists(CreateCommand(sql, type, ps));
 		}
 
-		/// <summary>Ö´ĞĞDbCommand£¬²éÑ¯¼ÇÂ¼ÊÇ·ñ´æÔÚ</summary>
+		/// <summary>æ‰§è¡ŒDbCommandï¼ŒæŸ¥è¯¢è®°å½•æ˜¯å¦å­˜åœ¨</summary>
 		/// <param name="cmd"></param>
 		/// <returns></returns>
 		public Boolean Exists(DbCommand cmd)
@@ -892,20 +892,20 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		#region - ExecuteScalar -
 
-		/// <summary>Ö´ĞĞSQLÓï¾ä£¬·µ»Ø½á¹ûÖĞµÄµÚÒ»ĞĞµÚÒ»ÁĞ</summary>
-		/// <typeparam name="T">·µ»ØÀàĞÍ</typeparam>
-		/// <param name="sql">SQLÓï¾ä</param>
+		/// <summary>æ‰§è¡ŒSQLè¯­å¥ï¼Œè¿”å›ç»“æœä¸­çš„ç¬¬ä¸€è¡Œç¬¬ä¸€åˆ—</summary>
+		/// <typeparam name="T">è¿”å›ç±»å‹</typeparam>
+		/// <param name="sql">SQLè¯­å¥</param>
 		/// <returns></returns>
 		public T ExecuteScalar<T>(String sql)
 		{
 			return ExecuteScalar<T>(CreateCommand(sql, CommandType.Text, null));
 		}
 
-		/// <summary>Ö´ĞĞSQLÓï¾ä£¬·µ»Ø½á¹ûÖĞµÄµÚÒ»ĞĞµÚÒ»ÁĞ</summary>
-		/// <typeparam name="T">·µ»ØÀàĞÍ</typeparam>
-		/// <param name="sql">SQLÓï¾ä</param>
-		/// <param name="type">ÃüÁîÀàĞÍ£¬Ä¬ÈÏSQLÎÄ±¾</param>
-		/// <param name="ps">ÃüÁî²ÎÊı</param>
+		/// <summary>æ‰§è¡ŒSQLè¯­å¥ï¼Œè¿”å›ç»“æœä¸­çš„ç¬¬ä¸€è¡Œç¬¬ä¸€åˆ—</summary>
+		/// <typeparam name="T">è¿”å›ç±»å‹</typeparam>
+		/// <param name="sql">SQLè¯­å¥</param>
+		/// <param name="type">å‘½ä»¤ç±»å‹ï¼Œé»˜è®¤SQLæ–‡æœ¬</param>
+		/// <param name="ps">å‘½ä»¤å‚æ•°</param>
 		/// <returns></returns>
 		public T ExecuteScalar<T>(String sql, CommandType type, DbParameter[] ps)
 		{
@@ -948,29 +948,29 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		#endregion
 
-		#region - Ö´ĞĞSQLÓï¾ä -
+		#region - æ‰§è¡ŒSQLè¯­å¥ -
 
 		#region - Execute -
 
-		/// <summary>Ö´ĞĞSQLÓï¾ä£¬·µ»ØÊÜÓ°ÏìµÄĞĞÊı</summary>
-		/// <param name="sql">SQLÓï¾ä</param>
+		/// <summary>æ‰§è¡ŒSQLè¯­å¥ï¼Œè¿”å›å—å½±å“çš„è¡Œæ•°</summary>
+		/// <param name="sql">SQLè¯­å¥</param>
 		/// <returns></returns>
 		public virtual Int32 Execute(String sql)
 		{
 			return Execute(sql, CommandType.Text, null);
 		}
 
-		/// <summary>Ö´ĞĞSQLÓï¾ä£¬·µ»ØÊÜÓ°ÏìµÄĞĞÊı</summary>
-		/// <param name="sql">SQLÓï¾ä</param>
-		/// <param name="type">ÃüÁîÀàĞÍ£¬Ä¬ÈÏSQLÎÄ±¾</param>
-		/// <param name="ps">ÃüÁî²ÎÊı</param>
+		/// <summary>æ‰§è¡ŒSQLè¯­å¥ï¼Œè¿”å›å—å½±å“çš„è¡Œæ•°</summary>
+		/// <param name="sql">SQLè¯­å¥</param>
+		/// <param name="type">å‘½ä»¤ç±»å‹ï¼Œé»˜è®¤SQLæ–‡æœ¬</param>
+		/// <param name="ps">å‘½ä»¤å‚æ•°</param>
 		/// <returns></returns>
 		public virtual Int32 Execute(String sql, CommandType type, DbParameter[] ps)
 		{
 			return Execute(CreateCommand(sql, type, ps));
 		}
 
-		/// <summary>Ö´ĞĞDbCommand£¬·µ»ØÊÜÓ°ÏìµÄĞĞÊı</summary>
+		/// <summary>æ‰§è¡ŒDbCommandï¼Œè¿”å›å—å½±å“çš„è¡Œæ•°</summary>
 		/// <param name="cmd">DbCommand</param>
 		/// <returns></returns>
 		public virtual Int32 Execute(DbCommand cmd)
@@ -1005,21 +1005,21 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		#region - InsertAndGetIdentity -
 
-		/// <summary>Ö´ĞĞ²åÈëÓï¾ä²¢·µ»ØĞÂÔöĞĞµÄ×Ô¶¯±àºÅ</summary>
-		/// <param name="sql">SQLÓï¾ä</param>
-		/// <param name="type">ÃüÁîÀàĞÍ£¬Ä¬ÈÏSQLÎÄ±¾</param>
-		/// <param name="ps">ÃüÁî²ÎÊı</param>
-		/// <returns>ĞÂÔöĞĞµÄ×Ô¶¯±àºÅ</returns>
+		/// <summary>æ‰§è¡Œæ’å…¥è¯­å¥å¹¶è¿”å›æ–°å¢è¡Œçš„è‡ªåŠ¨ç¼–å·</summary>
+		/// <param name="sql">SQLè¯­å¥</param>
+		/// <param name="type">å‘½ä»¤ç±»å‹ï¼Œé»˜è®¤SQLæ–‡æœ¬</param>
+		/// <param name="ps">å‘½ä»¤å‚æ•°</param>
+		/// <returns>æ–°å¢è¡Œçš„è‡ªåŠ¨ç¼–å·</returns>
 		public Int64 InsertAndGetIdentity(String sql)
 		{
 			return InsertAndGetIdentity(sql, CommandType.Text, null);
 		}
 
-		/// <summary>Ö´ĞĞ²åÈëÓï¾ä²¢·µ»ØĞÂÔöĞĞµÄ×Ô¶¯±àºÅ</summary>
-		/// <param name="sql">SQLÓï¾ä</param>
-		/// <param name="type">ÃüÁîÀàĞÍ£¬Ä¬ÈÏSQLÎÄ±¾</param>
-		/// <param name="ps">ÃüÁî²ÎÊı</param>
-		/// <returns>ĞÂÔöĞĞµÄ×Ô¶¯±àºÅ</returns>
+		/// <summary>æ‰§è¡Œæ’å…¥è¯­å¥å¹¶è¿”å›æ–°å¢è¡Œçš„è‡ªåŠ¨ç¼–å·</summary>
+		/// <param name="sql">SQLè¯­å¥</param>
+		/// <param name="type">å‘½ä»¤ç±»å‹ï¼Œé»˜è®¤SQLæ–‡æœ¬</param>
+		/// <param name="ps">å‘½ä»¤å‚æ•°</param>
+		/// <returns>æ–°å¢è¡Œçš„è‡ªåŠ¨ç¼–å·</returns>
 		public virtual Int64 InsertAndGetIdentity(String sql, CommandType type, DbParameter[] ps)
 		{
 			return Execute(sql, type, ps);
@@ -1029,12 +1029,12 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		#endregion
 
-		#region - »ñÈ¡DbCommand -
+		#region - è·å–DbCommand -
 
-		/// <summary>»ñÈ¡Ò»¸öDbCommand¡£
-		/// ÅäÖÃÁËÁ¬½Ó£¬²¢¹ØÁªÁËÊÂÎñ¡£
-		/// Á¬½ÓÒÑ´ò¿ª¡£
-		/// Ê¹ÓÃÍê±Ïºó£¬±ØĞëµ÷ÓÃAutoClose·½·¨£¬ÒÔÊ¹µÃÔÚ·ÇÊÂÎñ¼°ÉèÖÃÁË×Ô¶¯¹Ø±ÕµÄÇé¿öÏÂ¹Ø±ÕÁ¬½Ó
+		/// <summary>è·å–ä¸€ä¸ªDbCommandã€‚
+		/// é…ç½®äº†è¿æ¥ï¼Œå¹¶å…³è”äº†äº‹åŠ¡ã€‚
+		/// è¿æ¥å·²æ‰“å¼€ã€‚
+		/// ä½¿ç”¨å®Œæ¯•åï¼Œå¿…é¡»è°ƒç”¨AutoCloseæ–¹æ³•ï¼Œä»¥ä½¿å¾—åœ¨éäº‹åŠ¡åŠè®¾ç½®äº†è‡ªåŠ¨å…³é—­çš„æƒ…å†µä¸‹å…³é—­è¿æ¥
 		/// </summary>
 		/// <returns></returns>
 		public virtual DbCommand CreateCommand()
@@ -1048,14 +1048,14 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			return Factory.CreateCommand();
 		}
 
-		/// <summary>»ñÈ¡Ò»¸öDbCommand¡£
-		/// ÅäÖÃÁËÁ¬½Ó£¬²¢¹ØÁªÁËÊÂÎñ¡£
-		/// Á¬½ÓÒÑ´ò¿ª¡£
-		/// Ê¹ÓÃÍê±Ïºó£¬±ØĞëµ÷ÓÃAutoClose·½·¨£¬ÒÔÊ¹µÃÔÚ·ÇÊÂÎñ¼°ÉèÖÃÁË×Ô¶¯¹Ø±ÕµÄÇé¿öÏÂ¹Ø±ÕÁ¬½Ó
+		/// <summary>è·å–ä¸€ä¸ªDbCommandã€‚
+		/// é…ç½®äº†è¿æ¥ï¼Œå¹¶å…³è”äº†äº‹åŠ¡ã€‚
+		/// è¿æ¥å·²æ‰“å¼€ã€‚
+		/// ä½¿ç”¨å®Œæ¯•åï¼Œå¿…é¡»è°ƒç”¨AutoCloseæ–¹æ³•ï¼Œä»¥ä½¿å¾—åœ¨éäº‹åŠ¡åŠè®¾ç½®äº†è‡ªåŠ¨å…³é—­çš„æƒ…å†µä¸‹å…³é—­è¿æ¥
 		/// </summary>
-		/// <param name="sql">SQLÓï¾ä</param>
-		/// <param name="type">ÃüÁîÀàĞÍ£¬Ä¬ÈÏSQLÎÄ±¾</param>
-		/// <param name="ps">ÃüÁî²ÎÊı</param>
+		/// <param name="sql">SQLè¯­å¥</param>
+		/// <param name="type">å‘½ä»¤ç±»å‹ï¼Œé»˜è®¤SQLæ–‡æœ¬</param>
+		/// <param name="ps">å‘½ä»¤å‚æ•°</param>
 		/// <returns></returns>
 		public virtual DbCommand CreateCommand(String sql, CommandType type, DbParameter[] ps)
 		{
@@ -1072,7 +1072,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		#endregion
 
-		#region -- ¼Ü¹¹ --
+		#region -- æ¶æ„ --
 
 		private DictionaryCache<String, DataTable> _schCache = new DictionaryCache<String, DataTable>(StringComparer.OrdinalIgnoreCase)
 		{
@@ -1080,17 +1080,17 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			//ClearExpriod = 10 * 60//,
 			Expriod = 10 * 60,
 
-			// ²»ÄÜÒì²½¡£·ñÔò£¬ĞŞ¸Ä±í½á¹¹ºó£¬µÚÒ»´Î»ñÈ¡»áÊÇ¾ÉµÄ
+			// ä¸èƒ½å¼‚æ­¥ã€‚å¦åˆ™ï¼Œä¿®æ”¹è¡¨ç»“æ„åï¼Œç¬¬ä¸€æ¬¡è·å–ä¼šæ˜¯æ—§çš„
 			//Asynchronous = true
 		};
 
-		/// <summary>·µ»ØÊı¾İÔ´µÄ¼Ü¹¹ĞÅÏ¢¡£»º´æ10·ÖÖÓ</summary>
-		/// <param name="collectionName">Ö¸¶¨Òª·µ»ØµÄ¼Ü¹¹µÄÃû³Æ¡£</param>
-		/// <param name="restrictionValues">ÎªÇëÇóµÄ¼Ü¹¹Ö¸¶¨Ò»×éÏŞÖÆÖµ¡£</param>
+		/// <summary>è¿”å›æ•°æ®æºçš„æ¶æ„ä¿¡æ¯ã€‚ç¼“å­˜10åˆ†é’Ÿ</summary>
+		/// <param name="collectionName">æŒ‡å®šè¦è¿”å›çš„æ¶æ„çš„åç§°ã€‚</param>
+		/// <param name="restrictionValues">ä¸ºè¯·æ±‚çš„æ¶æ„æŒ‡å®šä¸€ç»„é™åˆ¶å€¼ã€‚</param>
 		/// <returns></returns>
 		public virtual DataTable GetSchema(String collectionName, String[] restrictionValues)
 		{
-			// Ğ¡ĞÄcollectionNameÎª¿Õ£¬´ËÊ±ÁĞ³öËùÓĞ¼Ü¹¹Ãû³Æ
+			// å°å¿ƒcollectionNameä¸ºç©ºï¼Œæ­¤æ—¶åˆ—å‡ºæ‰€æœ‰æ¶æ„åç§°
 			var key = "" + collectionName;
 			if (restrictionValues != null && restrictionValues.Length > 0)
 			{
@@ -1103,7 +1103,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 		{
 			QueryTimes++;
 
-			// Èç¹ûÆôÓÃÁËÊÂÎñ±£»¤£¬ÕâÀïÒªĞÂ¿ªÒ»¸öÁ¬½Ó£¬·ñÔòMSSQLÀïÃæ±¨´í£¬SQLite²»±¨´í£¬ÆäËüÊı¾İ¿âÎ´²âÊÔ
+			// å¦‚æœå¯ç”¨äº†äº‹åŠ¡ä¿æŠ¤ï¼Œè¿™é‡Œè¦æ–°å¼€ä¸€ä¸ªè¿æ¥ï¼Œå¦åˆ™MSSQLé‡Œé¢æŠ¥é”™ï¼ŒSQLiteä¸æŠ¥é”™ï¼Œå…¶å®ƒæ•°æ®åº“æœªæµ‹è¯•
 			var isTrans = TransactionCount > 0;
 
 			DbConnection conn = null;
@@ -1119,8 +1119,8 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 				}
 				catch (DbException ex)
 				{
-					DAL.WriteLog("µ¼ÖÂGetSchema´íÎóµÄÁ¬½Ó×Ö·û´®£º{0}", conn.ConnectionString);
-					throw new OrmLiteDbSessionException(this, "È¡µÃËùÓĞ±í¹¹¼Ü³ö´í£¡Á¬½Ó×Ö·û´®ÓĞÎÊÌâ£¬Çë²é¿´ÈÕÖ¾£¡", ex);
+					DAL.WriteLog("å¯¼è‡´GetSchemaé”™è¯¯çš„è¿æ¥å­—ç¬¦ä¸²ï¼š{0}", conn.ConnectionString);
+					throw new OrmLiteDbSessionException(this, "å–å¾—æ‰€æœ‰è¡¨æ„æ¶å‡ºé”™ï¼è¿æ¥å­—ç¬¦ä¸²æœ‰é—®é¢˜ï¼Œè¯·æŸ¥çœ‹æ—¥å¿—ï¼", ex);
 				}
 #else
 				conn = Factory.CreateConnection();
@@ -1144,7 +1144,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 					if (collectionName.IsNullOrWhiteSpace())
 					{
 						WriteSQL("[" + DbInternal.ConnName + "]GetSchema");
-						if (conn.State != ConnectionState.Closed) //ahuang 2013¡£06¡£25 µ±Êı¾İ¿âÁ¬½Ó×Ö·û´®ÓĞÎó
+						if (conn.State != ConnectionState.Closed) //ahuang 2013ã€‚06ã€‚25 å½“æ•°æ®åº“è¿æ¥å­—ç¬¦ä¸²æœ‰è¯¯
 						{
 							dt = conn.GetSchema();
 						}
@@ -1196,7 +1196,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 			catch (DbException ex)
 			{
-				throw new OrmLiteDbSessionException(this, "È¡µÃËùÓĞ±í¹¹¼Ü³ö´í£¡", ex);
+				throw new OrmLiteDbSessionException(this, "å–å¾—æ‰€æœ‰è¡¨æ„æ¶å‡ºé”™ï¼", ex);
 			}
 			finally
 			{
@@ -1213,11 +1213,11 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		#endregion
 
-		#region -- SqlÈÕÖ¾Êä³ö --
+		#region -- Sqlæ—¥å¿—è¾“å‡º --
 
 		private Boolean? _ShowSQL;
 
-		/// <summary>ÊÇ·ñÊä³öSQLÓï¾ä£¬Ä¬ÈÏÎªORMConfigInfoµ÷ÊÔ¿ª¹ØIsORMShowSQL</summary>
+		/// <summary>æ˜¯å¦è¾“å‡ºSQLè¯­å¥ï¼Œé»˜è®¤ä¸ºORMConfigInfoè°ƒè¯•å¼€å…³IsORMShowSQL</summary>
 		public Boolean ShowSQL
 		{
 			get
@@ -1227,7 +1227,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 			set
 			{
-				// Èç¹ûÉè¶¨Öµ¸úDatabase.ShowSQLÏàÍ¬£¬ÔòÖ±½ÓÊ¹ÓÃDatabase.ShowSQL
+				// å¦‚æœè®¾å®šå€¼è·ŸDatabase.ShowSQLç›¸åŒï¼Œåˆ™ç›´æ¥ä½¿ç”¨Database.ShowSQL
 				if (value == DbInternal.ShowSQL)
 					_ShowSQL = null;
 				else
@@ -1235,13 +1235,13 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 		}
 
-		#region ## ¿àÖñ ÆÁ±Î 2012,12,17 PM 18:57 ##
+		#region ## è‹¦ç«¹ å±è”½ 2012,12,17 PM 18:57 ##
 
 		//private static TextFileLog logger;
 
 		#endregion
 
-		/// <summary>Ğ´ÈëSQLµ½ÎÄ±¾ÖĞ</summary>
+		/// <summary>å†™å…¥SQLåˆ°æ–‡æœ¬ä¸­</summary>
 		/// <param name="sql"></param>
 		/// <param name="ps"></param>
 		public void WriteSQL(String sql, params DbParameter[] ps)
@@ -1257,7 +1257,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 				{
 					if (i > 0) { sb.Append(", "); }
 					var v = ps[i].Value;
-					#region ## ¿àÖñ ĞŞ¸Ä ##
+					#region ## è‹¦ç«¹ ä¿®æ”¹ ##
 					//var sv = "";
 					//if (v is Byte[])
 					//{
@@ -1311,8 +1311,8 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 				sql = sb.ToString();
 			}
 
-			#region ## ¿àÖñ ÆÁ±Î ##
-			//// Èç¹ûÒ³ÃæÉè¶¨ÓĞXCode_SQLListÁĞ±í£¬ÔòÍùÁĞ±íĞ´ÈëSQLÓï¾ä
+			#region ## è‹¦ç«¹ å±è”½ ##
+			//// å¦‚æœé¡µé¢è®¾å®šæœ‰XCode_SQLListåˆ—è¡¨ï¼Œåˆ™å¾€åˆ—è¡¨å†™å…¥SQLè¯­å¥
 			//var context = HttpContext.Current;
 			//if (context != null)
 			//{
@@ -1321,7 +1321,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			//}
 			#endregion
 
-			#region ## ¿àÖñ ĞŞ¸Ä 2012,12,17 PM 18:58 ##
+			#region ## è‹¦ç«¹ ä¿®æ”¹ 2012,12,17 PM 18:58 ##
 
 			//if (DAL.SQLPath.IsNullOrWhiteSpace())
 			//	WriteLog(sql);
@@ -1356,16 +1356,16 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			WriteSQL(sql, ps);
 		}
 
-		#region ## ¿àÖñ ÆÁ±Î 2012.12.17 PM 19.02 ##
+		#region ## è‹¦ç«¹ å±è”½ 2012.12.17 PM 19.02 ##
 
-		///// <summary>Êä³öÈÕÖ¾</summary>
+		///// <summary>è¾“å‡ºæ—¥å¿—</summary>
 		///// <param name="msg"></param>
 		//public static void WriteLog(String msg)
 		//{
 		//	DAL.WriteLog(msg);
 		//}
 
-		///// <summary>Êä³öÈÕÖ¾</summary>
+		///// <summary>è¾“å‡ºæ—¥å¿—</summary>
 		///// <param name="format"></param>
 		///// <param name="args"></param>
 		//public static void WriteLog(String format, params Object[] args)
@@ -1377,7 +1377,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		#endregion
 
-		#region -- SQLÊ±¼ä¸ú×Ù --
+		#region -- SQLæ—¶é—´è·Ÿè¸ª --
 
 		private Stopwatch _swSql;
 		private static ConcurrentHashSet<String> _trace_sqls = new ConcurrentHashSet<String>(StringComparer.OrdinalIgnoreCase);
@@ -1402,7 +1402,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 			if (_swSql.ElapsedMilliseconds < DAL.TraceSQLTime) { return; }
 
-			#region ## ¿àÖñ ĞŞ¸Ä ##
+			#region ## è‹¦ç«¹ ä¿®æ”¹ ##
 			//if (_trace_sqls.Contains(sql)) { return; }
 			//lock (_trace_sqls)
 			//{
@@ -1413,7 +1413,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			if (!_trace_sqls.TryAdd(sql)) { return; }
 			#endregion
 
-			DAL.Logger.LogWarning("SQLºÄÊ±½Ï³¤£¬½¨ÒéÓÅ»¯ {0:n}ºÁÃë {1}", _swSql.ElapsedMilliseconds, sql);
+			DAL.Logger.LogWarning("SQLè€—æ—¶è¾ƒé•¿ï¼Œå»ºè®®ä¼˜åŒ– {0:n}æ¯«ç§’ {1}", _swSql.ElapsedMilliseconds, sql);
 		}
 
 		#endregion

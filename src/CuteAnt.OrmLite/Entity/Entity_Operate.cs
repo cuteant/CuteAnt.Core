@@ -25,7 +25,7 @@ namespace CuteAnt.OrmLite
 	partial class Entity<TEntity>
 	{
 		/// <summary>默认的实体操作者</summary>
-		internal class EntityOperate : IEntityOperate
+		public class EntityOperate : IEntityOperate
 		{
 			#region -- 主要属性 --
 

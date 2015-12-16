@@ -1,4 +1,10 @@
-﻿using System;
+﻿#if DESKTOPCLR
+/*
+ * 作者：新生命开发团队（http://www.newlifex.com/）
+ * 
+ * 版权：版权所有 (C) 新生命开发团队 2002-2014
+*/
+using System;
 using System.IO;
 using System.Net;
 using System.Linq;
@@ -172,3 +178,4 @@ namespace CuteAnt.Web
 		#endregion
 	}
 }
+#endif

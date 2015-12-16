@@ -1,5 +1,5 @@
 ﻿{
-  "version": "2.0.0-rc2-151213",
+  "version": "2.0.0-rc2-151215",
   "description": "CuteAnt.SharpSerializer Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.SharpSerializer" ],
@@ -24,9 +24,9 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt": "2.0.0-rc2-151213",
+    "CuteAnt": "2.0.0-rc2-151215",
     "CuteAnt.Extensions.Sources": {
-      "version": "2.0.0-rc2-151213",
+      "version": "2.0.0-rc2-151215",
       "type": "build"
     }
   },

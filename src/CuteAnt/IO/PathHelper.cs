@@ -7,7 +7,7 @@ using System.Web;
 #if !NET40
 using System.Runtime.CompilerServices;
 #endif
-#if !DESKTOPCLR
+#if DNXCLR
 using Microsoft.Extensions.PlatformAbstractions;
 #endif
 

@@ -19,7 +19,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using CuteAnt.Collections;
 using CuteAnt.Log;
-#if !DESKTOPCLR
+#if DNXCLR
 using Microsoft.Extensions.PlatformAbstractions;
 #endif
 
@@ -408,7 +408,7 @@ namespace CuteAnt.Reflection
           assembly = Assembly.Load(assemblyName);
         }
         catch { }
-#if !DESKTOPCLR
+#if DNXCLR
         if (assembly == null)
         {
           try
