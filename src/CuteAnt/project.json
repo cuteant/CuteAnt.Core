@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-151215",
+  "version": "2.0.0-rc2-151216",
   "description": "CuteAnt.Core Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Core" ],
@@ -31,15 +31,15 @@
   "dependencies": {
     "CuteAnt.Extensions.Reflection.Sources": {
       "type": "build",
-      "version": "2.0.0-rc2-151215"
+      "version": "2.0.0-rc2-151216"
     },
     "CuteAnt.Extensions.Sources": {
       "type": "build",
-      "version": "2.0.0-rc2-151215"
+      "version": "2.0.0-rc2-151216"
     },
     "CuteAnt.Extensions.IO.Sources": {
       "type": "build",
-      "version": "2.0.0-rc2-151215"
+      "version": "2.0.0-rc2-151216"
     }
   },
 

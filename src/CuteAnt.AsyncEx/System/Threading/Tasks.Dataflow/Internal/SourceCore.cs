@@ -102,7 +102,7 @@ namespace System.Threading.Tasks.Dataflow.Internal
 		/// <summary>Whether someone has reserved the right to call CompleteBlockOncePossible.</summary>
 		private Boolean _completionReserved; // Protected by OutgoingLock
 
-		/// <summary>Exceptions that may have occured and gone unhandled during processing.</summary>
+		/// <summary>Exceptions that may have occurred and gone unhandled during processing.</summary>
 		private List<Exception> _exceptions; // Protected by ValueLock, sometimes read with volatile reads
 
 		#endregion

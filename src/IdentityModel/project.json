@@ -1,0 +1,58 @@
+﻿{
+  "version": "2.0.0-rc2-151216",
+  "description": "Helper library for claims-based identity, System.IdentityModel, JSON Web Tokens, OAuth 2.0 and OpenID Connect client libraries",
+  "authors": [ "Brock Allen & Dominick Baier" ],
+  "owners": [ "Brock Allen & Dominick Baier" ],
+  "tags": [ "OAuth2 OIDC OpenID Connect JWT Tokens Federation API Authorization Security" ],
+  "iconUrl": "https://identityserver.github.io/Documentation/assets/images/icons/IDmodel_icon128.png",
+  "projectUrl": "https://github.com/IdentityModel/IdentityModel",
+  "licenseUrl": "https://github.com/IdentityModel/IdentityModel/blob/master/LICENSE",
+  "requireLicenseAcceptance": true,
+
+  "compilationOptions": {
+    "define": [ "TRACE", "NET_3_5_GREATER" ],
+    "keyFile": "../../tools/StrongKey.snk",
+    "warningsAsErrors": false,
+    "allowUnsafe": false
+  },
+  "compile": [ "**/*.cs" ],
+  "compileExclude": [ ],
+  "exclude": [ ],
+  "preprocess": [ ],
+  "preprocessExclude": [ ],
+  "resource": [ "**/*.resx" ],
+
+  "dependencies": {
+    "Newtonsoft.Json": "7.0.1"
+  },
+
+  "frameworks": {
+    "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      },
+      "frameworkAssemblies": {
+        "System.IdentityModel": "4.0.0.0",
+        "System.Net.Http": "4.0.0.0",
+        "System.XML": "4.0.0.0",
+        "System.Xml.Linq": "4.0.0.0"
+      }
+    },
+    "dnx451": {
+      "compilationOptions": {
+        "define": [ "DNXCLR" ]
+      },
+      "frameworkAssemblies": {
+        "System.IdentityModel": "4.0.0.0",
+        "System.Net.Http": "4.0.0.0",
+        "System.XML": "4.0.0.0",
+        "System.Xml.Linq": "4.0.0.0"
+      }
+    }
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IdentityModel/IdentityModel"
+  }
+}

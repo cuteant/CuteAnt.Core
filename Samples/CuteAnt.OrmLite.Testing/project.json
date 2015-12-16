@@ -11,8 +11,8 @@
   },
 
   "dependencies": {
-    "CuteAnt.OrmLite": "2.0.0-rc2-151215",
-    "CuteAnt.OrmLite.Sprite": "2.0.0-rc2-151215"
+    "CuteAnt.OrmLite": "2.0.0-rc2-151216",
+    "CuteAnt.OrmLite.Sprite": "2.0.0-rc2-151216"
   },
 
   "commands": {

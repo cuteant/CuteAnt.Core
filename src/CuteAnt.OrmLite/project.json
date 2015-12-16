@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-151215",
+  "version": "2.0.0-rc2-151216",
   "description": "CuteAnt.OrmLite Class Library",
   "summary": "This library is primarily based on the XCode library, with some additional features not available in the original code. You can refer (http: //www.newlifex.com/) for more details.",
   "authors": [ "SeaBiscuit" ],
@@ -31,30 +31,30 @@
 
   "dependencies": {
     "ICSharpCode.SharpZipLib": "2.0.0-rc2-150808",
-    "CuteAnt.AsyncEx": "2.0.0-rc2-151215",
-    "protobuf-net": "2.0.0-rc2-151215",
+    "CuteAnt.AsyncEx": "2.0.0-rc2-151216",
+    "protobuf-net": "2.0.0-rc2-151216",
     "CuteAnt.Extensions.Sources": {
-      "version": "2.0.0-rc2-151215",
+      "version": "2.0.0-rc2-151216",
       "type": "build"
     },
     "CuteAnt.Extensions.Reflection.Sources": {
-      "version": "2.0.0-rc2-151215",
+      "version": "2.0.0-rc2-151216",
       "type": "build"
     },
     "Nito.AsyncEx.Tasks.Sources": {
-      "version": "2.0.0-rc2-151215",
+      "version": "2.0.0-rc2-151216",
       "type": "build"
     },
     "CuteAnt.Extensions.Security.Sources": {
-      "version": "2.0.0-rc2-151215",
+      "version": "2.0.0-rc2-151216",
       "type": "build"
     },
     "CuteAnt.Extensions.IO.Sources": {
-      "version": "2.0.0-rc2-151215",
+      "version": "2.0.0-rc2-151216",
       "type": "build"
     },
-    "MySql.Data": "2.0.0-rc2-151215",
-    "System.Data.SQLite": "2.0.0-rc2-151215"
+    "MySql.Data": "2.0.0-rc2-151216",
+    "System.Data.SQLite": "2.0.0-rc2-151216"
   },
 
   "frameworks": {

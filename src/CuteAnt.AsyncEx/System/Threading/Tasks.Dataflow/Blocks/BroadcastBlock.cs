@@ -651,7 +651,7 @@ namespace System.Threading.Tasks.Dataflow
 			/// <summary>The task used to process the output and offer it to targets.</summary>
 			private Task _taskForOutputProcessing;
 
-			/// <summary>Exceptions that may have occured and gone unhandled during processing.</summary>
+			/// <summary>Exceptions that may have occurred and gone unhandled during processing.</summary>
 			private List<Exception> _exceptions;
 
 			/// <summary>Counter for message IDs unique within this source block.</summary>
