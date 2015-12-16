@@ -1,9 +1,9 @@
-/*
- * ×÷Õß£ºĞÂÉúÃü¿ª·¢ÍÅ¶Ó£¨http://www.newlifex.com/£©
+ï»¿/*
+ * ä½œè€…ï¼šæ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿï¼ˆhttp://www.newlifex.com/ï¼‰
  * 
- * °æÈ¨£º°æÈ¨ËùÓĞ (C) ĞÂÉúÃü¿ª·¢ÍÅ¶Ó 2002-2014
+ * ç‰ˆæƒï¼šç‰ˆæƒæ‰€æœ‰ (C) æ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿ 2002-2014
  * 
- * ĞŞ¸Ä£ºº£Ñó±ı¸É£¨cuteant@outlook.com£©
+ * ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²ï¼ˆcuteant@outlook.comï¼‰
 */
 
 using System;
@@ -16,9 +16,9 @@ namespace CuteAnt.OrmLite.DataAccessLayer
   /// <summary>Sql Server</summary>
   internal class SqlServer : RemoteDb
   {
-    #region -- ÊôĞÔ --
+    #region -- å±æ€§ --
 
-    /// <summary>·µ»ØÊı¾İ¿âÀàĞÍ¡£Íâ²¿DALÊı¾İ¿âÀàÇëÊ¹ÓÃOther</summary>
+    /// <summary>è¿”å›æ•°æ®åº“ç±»å‹ã€‚å¤–éƒ¨DALæ•°æ®åº“ç±»è¯·ä½¿ç”¨Other</summary>
     public override DatabaseType DbType
     {
       get { return DatabaseType.SQLServer; }
@@ -63,7 +63,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
     }
 
     private SqlServerSchemaProvider _SchemaProvider;
-    /// <summary>¼Ü¹¹¶ÔÏó</summary>
+    /// <summary>æ¶æ„å¯¹è±¡</summary>
     public override ISchemaProvider SchemaProvider
     {
       get
@@ -77,13 +77,13 @@ namespace CuteAnt.OrmLite.DataAccessLayer
       }
     }
 
-    /// <summary>¹¤³§</summary>
+    /// <summary>å·¥å‚</summary>
     public override DbProviderFactory Factory
     {
       get { return SqlClientFactory.Instance; }
     }
 
-    /// <summary>ÊÇ·ñSQL2005¼°ÒÔÉÏ°æ±¾</summary>
+    /// <summary>æ˜¯å¦SQL2005åŠä»¥ä¸Šç‰ˆæœ¬</summary>
     public Boolean IsSQL2005 { get { return Version.Major > 8; } }
 
     //private SqlServerVersionType? _VersionType;
@@ -96,7 +96,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
         var versionNumber = "{0}.{1}".FormatWith(Version.Major, Version.Minor).ToSingle();
 
-        // SQL Server °æ±¾ºÅ£º
+        // SQL Server ç‰ˆæœ¬å·ï¼š
         // http://sqlserverbuilds.blogspot.com/ 
         // http://support2.microsoft.com/kb/321185
         //an open connection contains a server version
@@ -156,7 +156,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
     private String _DataPath;
 
-    /// <summary>Êı¾İÄ¿Â¼</summary>
+    /// <summary>æ•°æ®ç›®å½•</summary>
     public String DataPath
     {
       get { return _DataPath; }
@@ -169,7 +169,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
     {
       String str = null;
 
-      // »ñÈ¡Êı¾İÄ¿Â¼£¬ÓÃÓÚ·´Ïò¹¤³Ì´´½¨Êı¾İ¿â
+      // è·å–æ•°æ®ç›®å½•ï¼Œç”¨äºåå‘å·¥ç¨‹åˆ›å»ºæ•°æ®åº“
       if (builder.TryGetAndRemove("DataPath", out str) && !str.IsNullOrWhiteSpace())
       {
         DataPath = str;
@@ -189,9 +189,9 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
     #endregion
 
-    #region -- ·½·¨ --
+    #region -- æ–¹æ³• --
 
-    /// <summary>´´½¨Êı¾İ¿â»á»°</summary>
+    /// <summary>åˆ›å»ºæ•°æ®åº“ä¼šè¯</summary>
     /// <returns></returns>
     protected override IDbSession OnCreateSession()
     {
@@ -214,20 +214,20 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
     #endregion
 
-    #region -- ·ÖÒ³ --
+    #region -- åˆ†é¡µ --
 
-    /// <summary>¹¹Ôì·ÖÒ³SQL</summary>
-    /// <param name="sql">SQLÓï¾ä</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <param name="keyColumn">Î¨Ò»¼ü¡£ÓÃÓÚnot in·ÖÒ³</param>
-    /// <returns>·ÖÒ³SQL</returns>
+    /// <summary>æ„é€ åˆ†é¡µSQL</summary>
+    /// <param name="sql">SQLè¯­å¥</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <param name="keyColumn">å”¯ä¸€é”®ã€‚ç”¨äºnot inåˆ†é¡µ</param>
+    /// <returns>åˆ†é¡µSQL</returns>
     public override String PageSplit(String sql, Int64 startRowIndex, Int32 maximumRows, String keyColumn)
     {
-      // ´ÓµÚÒ»ĞĞ¿ªÊ¼£¬²»ĞèÒª·ÖÒ³
+      // ä»ç¬¬ä¸€è¡Œå¼€å§‹ï¼Œä¸éœ€è¦åˆ†é¡µ
       if (startRowIndex <= 0L && maximumRows < 1) { return sql; }
 
-      // Ö¸¶¨ÁËÆğÊ¼ĞĞ£¬²¢ÇÒÊÇSQL2005¼°ÒÔÉÏ°æ±¾£¬Ê¹ÓÃRowNumberËã·¨
+      // æŒ‡å®šäº†èµ·å§‹è¡Œï¼Œå¹¶ä¸”æ˜¯SQL2005åŠä»¥ä¸Šç‰ˆæœ¬ï¼Œä½¿ç”¨RowNumberç®—æ³•
       if (startRowIndex > 0L && IsSQL2005)
       {
         //return PageSplitRowNumber(sql, startRowIndex, maximumRows, keyColumn);
@@ -236,8 +236,8 @@ namespace CuteAnt.OrmLite.DataAccessLayer
         return MSPageSplit.PageSplit(builder, startRowIndex, maximumRows, IsSQL2005).ToString();
       }
 
-      // Èç¹ûÃ»ÓĞOrder By£¬Ö±½Óµ÷ÓÃ»ùÀà·½·¨
-      // ÏÈÓÃ×Ö·û´®ÅĞ¶Ï£¬ÃüÖĞÂÊ¸ß£¬ÕâÑù¿ÉÒÔÌá¸ß´¦ÀíĞ§ÂÊ
+      // å¦‚æœæ²¡æœ‰Order Byï¼Œç›´æ¥è°ƒç”¨åŸºç±»æ–¹æ³•
+      // å…ˆç”¨å­—ç¬¦ä¸²åˆ¤æ–­ï¼Œå‘½ä¸­ç‡é«˜ï¼Œè¿™æ ·å¯ä»¥æé«˜å¤„ç†æ•ˆç‡
       if (!sql.Contains(" Order "))
       {
         if (!sql.ToLowerInvariant().Contains(" order "))
@@ -245,7 +245,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
           return base.PageSplit(sql, startRowIndex, maximumRows, keyColumn);
         }
       }
-      //// Ê¹ÓÃÕıÔò½øĞĞÑÏ¸ñÅĞ¶Ï¡£±ØĞë°üº¬Order By£¬²¢ÇÒËüÓÒ±ßÃ»ÓĞÓÒÀ¨ºÅ)£¬±íÃ÷ÓĞorder by£¬ÇÒ²»ÊÇ×Ó²éÑ¯µÄ£¬²ÅĞèÒªÌØÊâ´¦Àí
+      //// ä½¿ç”¨æ­£åˆ™è¿›è¡Œä¸¥æ ¼åˆ¤æ–­ã€‚å¿…é¡»åŒ…å«Order Byï¼Œå¹¶ä¸”å®ƒå³è¾¹æ²¡æœ‰å³æ‹¬å·)ï¼Œè¡¨æ˜æœ‰order byï¼Œä¸”ä¸æ˜¯å­æŸ¥è¯¢çš„ï¼Œæ‰éœ€è¦ç‰¹æ®Šå¤„ç†
       //MatchCollection ms = Regex.Matches(sql, @"\border\s*by\b([^)]+)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
       //if (ms == null || ms.Count < 1 || ms[0].Index < 1)
       String sql2 = sql;
@@ -255,14 +255,14 @@ namespace CuteAnt.OrmLite.DataAccessLayer
         return base.PageSplit(sql, startRowIndex, maximumRows, keyColumn);
       }
 
-      // ÒÑÈ·¶¨¸Ãsql×îÍâ²ãº¬ÓĞorder by£¬ÔÙ¼ì²é×îÍâ²ãÊÇ·ñÓĞtop¡£ÒòÎªÃ»ÓĞtopµÄorder byÊÇ²»ÔÊĞí×÷Îª×Ó²éÑ¯µÄ
+      // å·²ç¡®å®šè¯¥sqlæœ€å¤–å±‚å«æœ‰order byï¼Œå†æ£€æŸ¥æœ€å¤–å±‚æ˜¯å¦æœ‰topã€‚å› ä¸ºæ²¡æœ‰topçš„order byæ˜¯ä¸å…è®¸ä½œä¸ºå­æŸ¥è¯¢çš„
       if (Regex.IsMatch(sql, @"^[^(]+\btop\b", RegexOptions.Compiled | RegexOptions.IgnoreCase))
       {
         return base.PageSplit(sql, startRowIndex, maximumRows, keyColumn);
       }
 
       //String orderBy = sql.Substring(ms[0].Index);
-      // ´ÓµÚÒ»ĞĞ¿ªÊ¼£¬²»ĞèÒª·ÖÒ³
+      // ä»ç¬¬ä¸€è¡Œå¼€å§‹ï¼Œä¸éœ€è¦åˆ†é¡µ
       if (startRowIndex <= 0L)
       {
         if (maximumRows < 1)
@@ -277,9 +277,9 @@ namespace CuteAnt.OrmLite.DataAccessLayer
         //return String.Format("Select Top {0} * From {1} {2}", maximumRows, CheckSimpleSQL(sql.Substring(0, ms[0].Index)), orderBy);
       }
 
-      #region Max/Min·ÖÒ³
+      #region Max/Minåˆ†é¡µ
 
-      // Èç¹ûÒªÊ¹ÓÃmax/min·ÖÒ³·¨£¬Ê×ÏÈkeyColumn±ØĞëÓĞasc»òÕßdesc
+      // å¦‚æœè¦ä½¿ç”¨max/minåˆ†é¡µæ³•ï¼Œé¦–å…ˆkeyColumnå¿…é¡»æœ‰ascæˆ–è€…desc
       String kc = keyColumn.ToLowerInvariant();
       if (kc.EndsWith(" desc") || kc.EndsWith(" asc") || kc.EndsWith(" unknown"))
       {
@@ -291,7 +291,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
       #endregion
 
       sql = CheckSimpleSQL(sql2);
-      if (keyColumn.IsNullOrWhiteSpace()) throw new ArgumentNullException("keyColumn", "·ÖÒ³ÒªÇóÖ¸¶¨Ö÷¼üÁĞ»òÕßÅÅĞò×Ö¶Î£¡");
+      if (keyColumn.IsNullOrWhiteSpace()) throw new ArgumentNullException("keyColumn", "åˆ†é¡µè¦æ±‚æŒ‡å®šä¸»é”®åˆ—æˆ–è€…æ’åºå­—æ®µï¼");
       if (maximumRows < 1)
       {
         sql = String.Format("Select * From {1} Where {2} Not In(Select Top {0} {2} From {1} {3}) {3}", startRowIndex, sql, keyColumn, orderBy);
@@ -310,50 +310,50 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
     #endregion
 
-    #region -- Êı¾İ¿âÌØĞÔ --
+    #region -- æ•°æ®åº“ç‰¹æ€§ --
 
-    /// <summary>µ±Ç°Ê±¼äº¯Êı</summary>
+    /// <summary>å½“å‰æ—¶é—´å‡½æ•°</summary>
     public override String DateTimeNow
     {
       get { return "getdate()"; }
     }
 
-    /// <summary>³¤ÎÄ±¾³¤¶È</summary>
+    /// <summary>é•¿æ–‡æœ¬é•¿åº¦</summary>
     public override Int32 LongTextLength
     {
       get { return 4000; }
     }
 
-    /// <summary>»ñÈ¡GuidµÄº¯Êı</summary>
+    /// <summary>è·å–Guidçš„å‡½æ•°</summary>
     public override String NewGuid
     {
       get { return "newid()"; }
     }
 
-    /// <summary>ÏµÍ³Êı¾İ¿âÃû</summary>
+    /// <summary>ç³»ç»Ÿæ•°æ®åº“å</summary>
     public override String SystemDatabaseName
     {
       get { return "master"; }
     }
 
-    #region ## ¿àÖñ ÆÁ±Î ##
+    #region ## è‹¦ç«¹ å±è”½ ##
 
-    ///// <summary>×îĞ¡Ê±¼ä</summary>
+    ///// <summary>æœ€å°æ—¶é—´</summary>
     //public override DateTime DateTimeMin
     //{
     //	get { return SqlDateTime.MinValue.Value; }
     //}
 
-    ///// <summary>¸ñÊ½»¯Ê±¼äÎªSQL×Ö·û´®</summary>
-    ///// <param name="dateTime">Ê±¼äÖµ</param>
+    ///// <summary>æ ¼å¼åŒ–æ—¶é—´ä¸ºSQLå­—ç¬¦ä¸²</summary>
+    ///// <param name="dateTime">æ—¶é—´å€¼</param>
     ///// <returns></returns>
     //public override String FormatDateTime(DateTime dateTime)
     //{
     //	return "{ts" + String.Format("'{0:yyyy-MM-dd HH:mm:ss}'", dateTime) + "}";
     //}
 
-    ///// <summary>¸ñÊ½»¯¹Ø¼ü×Ö</summary>
-    ///// <param name="keyWord">¹Ø¼ü×Ö</param>
+    ///// <summary>æ ¼å¼åŒ–å…³é”®å­—</summary>
+    ///// <param name="keyWord">å…³é”®å­—</param>
     ///// <returns></returns>
     //public override String FormatKeyWord(String keyWord)
     //{
@@ -369,7 +369,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
     //	Boolean isNullable = field.Nullable;
     //	if (code == TypeCode.String)
     //	{
-    //		// ÈÈĞÄÍøÓÑ Hannibal ÔÚ´¦ÀíÈÕÎÄÍøÕ¾Ê±·¢ÏÖ²åÈëµÄÈÕÎÄÎªÂÒÂë£¬ÕâÀï¼ÓÉÏNÇ°×º
+    //		// çƒ­å¿ƒç½‘å‹ Hannibal åœ¨å¤„ç†æ—¥æ–‡ç½‘ç«™æ—¶å‘ç°æ’å…¥çš„æ—¥æ–‡ä¸ºä¹±ç ï¼Œè¿™é‡ŒåŠ ä¸ŠNå‰ç¼€
     //		if (value == null)
     //		{
     //			return isNullable ? "null" : "''";
@@ -379,12 +379,12 @@ namespace CuteAnt.OrmLite.DataAccessLayer
     //			return "null";
     //		}
 
-    //		// ÕâÀïÖ±½ÓÅĞ¶ÏÔ­Ê¼Êı¾İÀàĞÍÓĞËù²»Í×£¬Èç¹ûÔ­Ê¼Êı¾İ¿â²»ÊÇµ±Ç°Êı¾İ¿â£¬ÄÇÃ´ÕâÀïµÄÅĞ¶Ï½«»áÊ§Ğ§
-    //		// Ò»¸ö¿ÉĞĞµÄ°ì·¨¾ÍÊÇ¸øXFieldÔö¼ÓÒ»¸öIsUnicodeÊôĞÔ£¬µ«Èç´ËÒ»À´£¬XField¾ÍÉÔÎ¢±ä´óÁË
-    //		// Ä¿Ç°ÔİÊ±Ó°Ïì²»´ó£¬ºóÃæ¿´Çé¿ö¾ö¶¨ÊÇ·ñÔö¼Ó°É
+    //		// è¿™é‡Œç›´æ¥åˆ¤æ–­åŸå§‹æ•°æ®ç±»å‹æœ‰æ‰€ä¸å¦¥ï¼Œå¦‚æœåŸå§‹æ•°æ®åº“ä¸æ˜¯å½“å‰æ•°æ®åº“ï¼Œé‚£ä¹ˆè¿™é‡Œçš„åˆ¤æ–­å°†ä¼šå¤±æ•ˆ
+    //		// ä¸€ä¸ªå¯è¡Œçš„åŠæ³•å°±æ˜¯ç»™XFieldå¢åŠ ä¸€ä¸ªIsUnicodeå±æ€§ï¼Œä½†å¦‚æ­¤ä¸€æ¥ï¼ŒXFieldå°±ç¨å¾®å˜å¤§äº†
+    //		// ç›®å‰æš‚æ—¶å½±å“ä¸å¤§ï¼Œåé¢çœ‹æƒ…å†µå†³å®šæ˜¯å¦å¢åŠ å§
     //		//if (field.RawType == "ntext" ||
     //		//    !field.RawType.IsNullOrWhiteSpace() && (field.RawType.StartsWith("nchar") || field.RawType.StartsWith("nvarchar")))
-    //		// ÎªÁË¼æÈİ¾É°æ±¾ÊµÌåÀà
+    //		// ä¸ºäº†å…¼å®¹æ—§ç‰ˆæœ¬å®ä½“ç±»
     //		if (field.IsUnicode || IsUnicode(field.RawType))
     //		{
     //			return "N'" + value.ToString().Replace("'", "''") + "'";

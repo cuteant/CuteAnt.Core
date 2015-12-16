@@ -1,9 +1,9 @@
-/*
- * ×÷Õß£ºĞÂÉúÃü¿ª·¢ÍÅ¶Ó£¨http://www.newlifex.com/£©
+ï»¿/*
+ * ä½œè€…ï¼šæ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿï¼ˆhttp://www.newlifex.com/ï¼‰
  * 
- * °æÈ¨£º°æÈ¨ËùÓĞ (C) ĞÂÉúÃü¿ª·¢ÍÅ¶Ó 2002-2014
+ * ç‰ˆæƒï¼šç‰ˆæƒæ‰€æœ‰ (C) æ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿ 2002-2014
  * 
- * ĞŞ¸Ä£ºº£Ñó±ı¸É£¨cuteant@outlook.com£©
+ * ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²ï¼ˆcuteant@outlook.comï¼‰
 */
 
 using System;
@@ -33,7 +33,7 @@ namespace CuteAnt.Reflection
 			var codeTRInterface = new CodeTypeReference(interfaceType.GetName(true));
 			var references = new ReferenceList();
 
-			// ±éÀú´¦ÀíÃ¿Ò»¸öĞèÒª´úÀíµÄÀà
+			// éå†å¤„ç†æ¯ä¸€ä¸ªéœ€è¦ä»£ç†çš„ç±»
 			for (Int32 i = 0; i < duckedTypes.Length; i++)
 			{
 				Type objectType = duckedTypes[i];
@@ -48,12 +48,12 @@ namespace CuteAnt.Reflection
 				codeType.TypeAttributes = TypeAttributes.Public;
 				codeType.BaseTypes.Add(codeTRInterface);
 
-				// ÉùÃ÷Ò»¸ö×Ö¶Î
+				// å£°æ˜ä¸€ä¸ªå­—æ®µ
 				CodeMemberField codeFldObj = new CodeMemberField(codeTRObject, "_obj");
 				codeType.Members.Add(codeFldObj);
 				CodeFieldReferenceExpression codeFldRef = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), codeFldObj.Name);
 
-				// ´´½¨Ò»¸ö¹¹Ôìº¯Êı
+				// åˆ›å»ºä¸€ä¸ªæ„é€ å‡½æ•°
 				CodeConstructor codeCtor = new CodeConstructor();
 				codeType.Members.Add(codeCtor);
 				codeCtor.Attributes = MemberAttributes.Public;
@@ -65,11 +65,11 @@ namespace CuteAnt.Reflection
 						)
 				);
 
-				// ´´½¨³ÉÔ±
+				// åˆ›å»ºæˆå‘˜
 				CreateMember(interfaceType, objectType, codeType, references, codeFldRef);
 			}
 
-			#region ±àÒë
+			#region ç¼–è¯‘
 
 			CSharpCodeProvider codeprov = new CSharpCodeProvider();
 #if DEBUG
@@ -93,7 +93,7 @@ namespace CuteAnt.Reflection
 				{
 					sw.WriteLine(err.ErrorText);
 				}
-				throw new InvalidOperationException("±àÒë´íÎó: \n\n" + sw.ToString());
+				throw new InvalidOperationException("ç¼–è¯‘é”™è¯¯: \n\n" + sw.ToString());
 			}
 			Assembly assembly = cres.CompiledAssembly;
 			Type[] res = new Type[duckedTypes.Length];
@@ -111,17 +111,17 @@ namespace CuteAnt.Reflection
 		{
 			var codeTRInterface = new CodeTypeReference(interfaceType.GetName(true));
 
-			//// ÕÒµ½duckTypeÀïÃæÊÇ·ñÓĞ¹«¹²µÄ_obj;
+			//// æ‰¾åˆ°duckTypeé‡Œé¢æ˜¯å¦æœ‰å…¬å…±çš„_obj;
 			//FieldInfo fiObj = duckType.GetField("_obj", BindingFlags.Public | BindingFlags.Instance);
 			//Type innerType = fiObj != null ? fiObj.FieldType : null;
 
 			CodeFieldReferenceExpression fdRef = null;
 
-			#region ·½·¨
+			#region æ–¹æ³•
 
 			foreach (var mi in interfaceType.GetMethods())
 			{
-				// ºöÂÔ×¨ÓÃÃû×ÖµÄ·½·¨£¬ÈçÊôĞÔµÄget/set£¬»¹ÓĞ¹¹Ôìº¯Êı
+				// å¿½ç•¥ä¸“ç”¨åå­—çš„æ–¹æ³•ï¼Œå¦‚å±æ€§çš„get/setï¼Œè¿˜æœ‰æ„é€ å‡½æ•°
 				if ((mi.Attributes & MethodAttributes.SpecialName) != 0) { continue; }
 				CodeMemberMethod codeMethod = new CodeMemberMethod();
 				codeType.Members.Add(codeMethod);
@@ -155,7 +155,7 @@ namespace CuteAnt.Reflection
 
 			#endregion
 
-			#region ÊôĞÔ
+			#region å±æ€§
 
 			foreach (PropertyInfo pi in interfaceType.GetProperties())
 			{
@@ -237,7 +237,7 @@ namespace CuteAnt.Reflection
 
 			#endregion
 
-			#region ÊÂ¼ş
+			#region äº‹ä»¶
 
 			foreach (EventInfo ei in interfaceType.GetEvents())
 			{
@@ -264,7 +264,7 @@ namespace CuteAnt.Reflection
 
 			#endregion
 
-			#region µİ¹é»ù½Ó¿Ú
+			#region é€’å½’åŸºæ¥å£
 
 			Type[] ts = interfaceType.GetInterfaces();
 			if (ts != null && ts.Length > 0)
@@ -287,7 +287,7 @@ namespace CuteAnt.Reflection
 			}
 			else
 			{
-				// ÕÒµ½duckTypeÀïÃæÊÇ·ñÓĞ¹«¹²µÄ_obj;
+				// æ‰¾åˆ°duckTypeé‡Œé¢æ˜¯å¦æœ‰å…¬å…±çš„_obj;
 				FieldInfo fiObj = duckType.GetField("_obj", BindingFlags.Public | BindingFlags.Instance);
 				if (fiObj != null)
 				{

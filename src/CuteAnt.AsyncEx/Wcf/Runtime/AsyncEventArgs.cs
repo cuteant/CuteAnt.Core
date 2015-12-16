@@ -1,4 +1,4 @@
-// <copyright>
+Ôªø// <copyright>
 //   Copyright (c) Microsoft Corporation.  All rights reserved.
 // </copyright>
 
@@ -41,7 +41,7 @@ namespace CuteAnt.AsyncEx
             {
               throw Fx.Exception.AsError(new InvalidOperationException(InternalSR.AsyncEventArgsCompletionPending(GetType())));
             }
-            // ## ø‡÷Ò ∆¡±Œ ##
+            // ## Ëã¶Á´π Â±èËîΩ ##
             //#if DEBUG
             //            if (!Fx.FastDebug)
             //            {
@@ -55,7 +55,7 @@ namespace CuteAnt.AsyncEx
             {
               throw Fx.Exception.AsError(new InvalidOperationException(InternalSR.AsyncEventArgsCompletedTwice(GetType())));
             }
-            // ## ø‡÷Ò ∆¡±Œ ##
+            // ## Ëã¶Á´π Â±èËîΩ ##
             //#if DEBUG
             //            if (!Fx.FastDebug)
             //            {

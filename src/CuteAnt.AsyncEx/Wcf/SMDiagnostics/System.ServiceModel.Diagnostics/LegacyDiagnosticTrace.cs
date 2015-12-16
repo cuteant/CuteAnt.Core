@@ -1,4 +1,4 @@
-//------------------------------------------------------------
+Ôªø//------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
 
@@ -209,7 +209,7 @@ namespace CuteAnt.ServiceModel.Diagnostics
             values["AppDomain.FriendlyName"] = AppDomain.CurrentDomain.FriendlyName;
             values["ProcessName"] = DiagnosticTraceBase.ProcessName;
             values["ProcessId"] = DiagnosticTraceBase.ProcessId.ToString(CultureInfo.CurrentCulture);
-            // ## ø‡÷Ò ∆¡±Œ ##
+            // ## Ëã¶Á´π Â±èËîΩ ##
             //this.TraceEvent(TraceEventType.Information, DiagnosticsTraceCode.AppDomainUnload, LegacyDiagnosticTrace.GenerateMsdnTraceCode("CuteAnt.ServiceModel.Diagnostics", "AppDomainUnload"), TraceSR.GetString(TraceSR.TraceCodeAppDomainUnload),
             //    new DictionaryTraceRecord(values), null, null);
           }
@@ -220,7 +220,7 @@ namespace CuteAnt.ServiceModel.Diagnostics
 
     protected override void OnUnhandledException(Exception exception)
     {
-      // ## ø‡÷Ò ∆¡±Œ ##
+      // ## Ëã¶Á´π Â±èËîΩ ##
       //TraceEvent(TraceEventType.Critical, DiagnosticsTraceCode.UnhandledException, "UnhandledException", TraceSR.GetString(TraceSR.UnhandledException), null, exception, null);
     }
 
@@ -304,7 +304,7 @@ namespace CuteAnt.ServiceModel.Diagnostics
 
     public override void TraceEventLogEvent(TraceEventType type, TraceRecord traceRecord)
     {
-      // ## ø‡÷Ò ∆¡±Œ ##
+      // ## Ëã¶Á´π Â±èËîΩ ##
       //TraceEvent(type,
       //    DiagnosticsTraceCode.EventLog, LegacyDiagnosticTrace.GenerateMsdnTraceCode("CuteAnt.ServiceModel.Diagnostics", "EventLog"),
       //    TraceSR.GetString(TraceSR.TraceCodeEventLog),

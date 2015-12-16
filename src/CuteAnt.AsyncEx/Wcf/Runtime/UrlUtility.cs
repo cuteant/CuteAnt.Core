@@ -1,5 +1,5 @@
-
-// ## ¿àÖñ Ç¨ÒÆ OSIN ##
+ï»¿
+// ## è‹¦ç«¹ è¿ç§» OSIN ##
 
 //// Copyright (c) Microsoft. All rights reserved.
 //// Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -14,7 +14,7 @@
 //  //copied from System.Web.HttpUtility code (renamed here) to remove dependency on System.Web.dll
 //  internal static class UrlUtility
 //  {
-//    #region ## ¿àÖñ ÆÁ±Î ##
+//    #region ## è‹¦ç«¹ å±è”½ ##
 //    //private static Encoding s_asciiEncoding;
 
 //    //private static Encoding AsciiEncoding
@@ -91,7 +91,7 @@
 //        return null;
 //      }
 
-//      #region ## ¿àÖñ ĞŞ¸Ä ##
+//      #region ## è‹¦ç«¹ ä¿®æ”¹ ##
 //      //var bytes = UrlEncodeToBytes(str, encoding);
 //      //return AsciiEncoding.GetString(bytes, 0, bytes.Length);
 //      return Encoding.ASCII.GetString(UrlEncodeToBytes(str, encoding));
@@ -158,7 +158,7 @@
 //      byte[] bytes = e.GetBytes(str);
 //      bytes = UrlEncodeBytesToBytesInternalNonAscii(bytes, 0, bytes.Length, false);
 
-//      #region ## ¿àÖñ ĞŞ¸Ä ##
+//      #region ## è‹¦ç«¹ ä¿®æ”¹ ##
 //      //return AsciiEncoding.GetString(bytes, 0, bytes.Length);
 //      return Encoding.ASCII.GetString(bytes);
 //      #endregion

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+ï»¿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -800,7 +800,7 @@ namespace CuteAnt.Pool
       private bool _expired;
       private InputQueue<T> _inputQueue;
       private T _item;
-      #region ## ¿àÖñ  ÐÞ¸Ä ##
+      #region ## è‹¦ç«¹  ä¿®æ”¹ ##
       //private Timer _timer;
 
       //public AsyncQueueReader(InputQueue<T> inputQueue, TimeSpan timeout, AsyncCallback callback, object state)
@@ -856,7 +856,7 @@ namespace CuteAnt.Pool
         _item = item.Value;
         if (_timer != null)
         {
-          #region ## ¿àÖñ ÐÞ¸Ä ##
+          #region ## è‹¦ç«¹ ä¿®æ”¹ ##
           //_timer.Change(TimeSpan.FromMilliseconds(-1), TimeSpan.FromMilliseconds(-1));
           _timer.Cancel();
           #endregion
@@ -883,7 +883,7 @@ namespace CuteAnt.Pool
       [Fx.Tag.SynchronizationObject(Blocking = false)]
       private object _thisLock = new object();
 
-      #region ## ¿àÖñ ÐÞ¸Ä ##
+      #region ## è‹¦ç«¹ ä¿®æ”¹ ##
       //private Timer _timer;
       //public AsyncQueueWaiter(TimeSpan timeout, AsyncCallback callback, object state) : base(callback, state)
       //{
@@ -924,7 +924,7 @@ namespace CuteAnt.Pool
 
         lock (ThisLock)
         {
-          #region ## ¿àÖñ ÐÞ¸Ä ##
+          #region ## è‹¦ç«¹ ä¿®æ”¹ ##
           //timely = (_timer == null) || _timer.Change(TimeSpan.FromMilliseconds(-1), TimeSpan.FromMilliseconds(-1));
           timely = (_timer == null) || _timer.Cancel();
           #endregion

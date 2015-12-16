@@ -1,4 +1,4 @@
-// Copyright (c) .NET Foundation. All rights reserved.
+Ôªø// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -12,7 +12,7 @@ namespace CuteAnt.Extensions.Configuration.Xml
     /// <summary>
     /// Accesses the singleton decryptor instance.
     /// </summary>
-    //#if NET451 // ## ø‡÷Ò ∆¡±Œ ##
+    //#if NET451 // ## Ëã¶Á´π Â±èËîΩ ##
     public static readonly XmlDocumentDecryptor Instance = new EncryptedXmlDocumentDecryptor();
     //#else
     //        public static readonly XmlDocumentDecryptor Instance = new XmlDocumentDecryptor();
@@ -29,7 +29,7 @@ namespace CuteAnt.Extensions.Configuration.Xml
       // us that it did so, so we need to perform a check to see if EncryptedXml
       // will actually do anything. The below check for an encrypted data blob
       // is the same one that EncryptedXml would have performed.
-      //#if NET451 // ## ø‡÷Ò ∆¡±Œ ##
+      //#if NET451 // ## Ëã¶Á´π Â±èËîΩ ##
       var namespaceManager = new XmlNamespaceManager(document.NameTable);
       namespaceManager.AddNamespace("enc", "http://www.w3.org/2001/04/xmlenc#");
       return (document.SelectSingleNode("//enc:EncryptedData", namespaceManager) != null);

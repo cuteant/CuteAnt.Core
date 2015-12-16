@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 /* Contains conversion support elements such as classes, interfaces and static methods. */
 namespace zlib

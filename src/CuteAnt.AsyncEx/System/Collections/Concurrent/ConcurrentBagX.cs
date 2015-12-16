@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+ï»¿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 // =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
@@ -529,7 +529,7 @@ namespace System.Collections.Concurrent
 			// Short path if the bag is empty
 			if (_headList == null)
 			{
-				#region ## ¿àÖñ ÐÞ¸Ä .Net45/40 ÎÞ·¨±àÒë ##
+				#region ## è‹¦ç«¹ ä¿®æ”¹ .Net45/40 æ— æ³•ç¼–è¯‘ ##
 				//return ((IEnumerable<T>)Array.Empty<T>()).GetEnumerator();
 				return new List<T>().GetEnumerator(); // empty list
 				#endregion

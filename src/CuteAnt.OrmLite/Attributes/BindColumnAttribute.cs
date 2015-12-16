@@ -1,9 +1,9 @@
-/*
- * ×÷Õß£ºĞÂÉúÃü¿ª·¢ÍÅ¶Ó£¨http://www.newlifex.com/£©
+ï»¿/*
+ * ä½œè€…ï¼šæ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿï¼ˆhttp://www.newlifex.com/ï¼‰
  * 
- * °æÈ¨£º°æÈ¨ËùÓĞ (C) ĞÂÉúÃü¿ª·¢ÍÅ¶Ó 2002-2014
+ * ç‰ˆæƒï¼šç‰ˆæƒæ‰€æœ‰ (C) æ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿ 2002-2014
  * 
- * ĞŞ¸Ä£ºº£Ñó±ı¸É£¨cuteant@outlook.com£©
+ * ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²ï¼ˆcuteant@outlook.comï¼‰
 */
 
 using System;
@@ -11,15 +11,15 @@ using System.Reflection;
 
 namespace CuteAnt.OrmLite
 {
-	/// <summary>Ö¸¶¨ÊµÌåÀàÊôĞÔËù°ó¶¨Êı¾İ×Ö¶ÎĞÅÏ¢¡£</summary>
+	/// <summary>æŒ‡å®šå®ä½“ç±»å±æ€§æ‰€ç»‘å®šæ•°æ®å­—æ®µä¿¡æ¯ã€‚</summary>
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
 	public sealed class BindColumnAttribute : Attribute
 	{
-		#region -- ÊôĞÔ --
+		#region -- å±æ€§ --
 
 		private Int32 _Order;
 
-		/// <summary>Ë³Ğò</summary>
+		/// <summary>é¡ºåº</summary>
 		public Int32 Order
 		{
 			get { return _Order; }
@@ -28,7 +28,7 @@ namespace CuteAnt.OrmLite
 
 		private String _Name;
 
-		/// <summary>×Ö¶ÎÃû</summary>
+		/// <summary>å­—æ®µå</summary>
 		public String Name
 		{
 			get { return _Name; }
@@ -37,7 +37,7 @@ namespace CuteAnt.OrmLite
 
 		private String _Description;
 
-		/// <summary>ÃèÊö</summary>
+		/// <summary>æè¿°</summary>
 		public String Description
 		{
 			get { return _Description; }
@@ -46,7 +46,7 @@ namespace CuteAnt.OrmLite
 
 		private String _DefaultValue;
 
-		/// <summary>Ä¬ÈÏÖµ</summary>
+		/// <summary>é»˜è®¤å€¼</summary>
 		public String DefaultValue
 		{
 			get { return _DefaultValue; }
@@ -55,7 +55,7 @@ namespace CuteAnt.OrmLite
 
 		private String _RawType;
 
-		/// <summary>±êÊ¶Ô­Ê¼Êı¾İÀàĞÍ£¬Ö»×öÏÔÊ¾ÓÃ¡£</summary>
+		/// <summary>æ ‡è¯†åŸå§‹æ•°æ®ç±»å‹ï¼Œåªåšæ˜¾ç¤ºç”¨ã€‚</summary>
 		public String RawType
 		{
 			get { return _RawType; }
@@ -64,7 +64,7 @@ namespace CuteAnt.OrmLite
 
 		private CommonDbType _DbType;
 
-		/// <summary>Í¨ÓÃÊı¾İ¿âÊı¾İÀàĞÍ</summary>
+		/// <summary>é€šç”¨æ•°æ®åº“æ•°æ®ç±»å‹</summary>
 		public CommonDbType DbType
 		{
 			get { return _DbType; }
@@ -73,7 +73,7 @@ namespace CuteAnt.OrmLite
 
 		private Int32 _Precision;
 
-		/// <summary>¾«¶È</summary>
+		/// <summary>ç²¾åº¦</summary>
 		public Int32 Precision
 		{
 			get { return _Precision; }
@@ -82,7 +82,7 @@ namespace CuteAnt.OrmLite
 
 		private Int32 _Scale;
 
-		/// <summary>Î»Êı</summary>
+		/// <summary>ä½æ•°</summary>
 		public Int32 Scale
 		{
 			get { return _Scale; }
@@ -91,7 +91,7 @@ namespace CuteAnt.OrmLite
 
 		private Boolean _IsUnicode;
 
-		/// <summary>ÊÇ·ñUnicode</summary>
+		/// <summary>æ˜¯å¦Unicode</summary>
 		public Boolean IsUnicode
 		{
 			get { return _IsUnicode; }
@@ -100,7 +100,7 @@ namespace CuteAnt.OrmLite
 
 		private Boolean _Master;
 
-		/// <summary>ÊÇ·ñÖ÷×Ö¶Î¡£Ö÷×Ö¶Î×÷ÎªÒµÎñÖ÷Òª×Ö¶Î£¬´ú±íµ±Ç°Êı¾İĞĞÒâÒå</summary>
+		/// <summary>æ˜¯å¦ä¸»å­—æ®µã€‚ä¸»å­—æ®µä½œä¸ºä¸šåŠ¡ä¸»è¦å­—æ®µï¼Œä»£è¡¨å½“å‰æ•°æ®è¡Œæ„ä¹‰</summary>
 		public Boolean Master
 		{
 			get { return _Master; }
@@ -109,23 +109,23 @@ namespace CuteAnt.OrmLite
 
 		#endregion
 
-		#region -- ¹¹Ôì --
+		#region -- æ„é€  --
 
-		/// <summary>¹¹Ôìº¯Êı</summary>
+		/// <summary>æ„é€ å‡½æ•°</summary>
 		public BindColumnAttribute()
 		{
 		}
 
-		/// <summary>¹¹Ôìº¯Êı</summary>
-		/// <param name="name">×Ö¶ÎÃû</param>
+		/// <summary>æ„é€ å‡½æ•°</summary>
+		/// <param name="name">å­—æ®µå</param>
 		public BindColumnAttribute(String name)
 		{
 			Name = name;
 		}
 
-		/// <summary>¹¹Ôìº¯Êı</summary>
+		/// <summary>æ„é€ å‡½æ•°</summary>
 		/// <param name="order"></param>
-		/// <param name="name">Ãû³Æ</param>
+		/// <param name="name">åç§°</param>
 		/// <param name="description"></param>
 		/// <param name="defaultValue"></param>
 		public BindColumnAttribute(Int32 order, String name, String description, String defaultValue)
@@ -136,9 +136,9 @@ namespace CuteAnt.OrmLite
 			DefaultValue = defaultValue;
 		}
 
-		/// <summary>¹¹Ôìº¯Êı</summary>
+		/// <summary>æ„é€ å‡½æ•°</summary>
 		/// <param name="order"></param>
-		/// <param name="name">Ãû³Æ</param>
+		/// <param name="name">åç§°</param>
 		/// <param name="description"></param>
 		/// <param name="defaultValue"></param>
 		/// <param name="rawType"></param>
@@ -153,9 +153,9 @@ namespace CuteAnt.OrmLite
 			IsUnicode = isUnicode;
 		}
 
-		/// <summary>¹¹Ôìº¯Êı</summary>
+		/// <summary>æ„é€ å‡½æ•°</summary>
 		/// <param name="order"></param>
-		/// <param name="name">Ãû³Æ</param>
+		/// <param name="name">åç§°</param>
 		/// <param name="description"></param>
 		/// <param name="defaultValue"></param>
 		/// <param name="rawType"></param>
@@ -173,9 +173,9 @@ namespace CuteAnt.OrmLite
 
 		#endregion
 
-		#region -- ·½·¨ --
+		#region -- æ–¹æ³• --
 
-		/// <summary>¼ìË÷Ó¦ÓÃÓÚÀàĞÍ³ÉÔ±µÄ×Ô¶¨ÒåÊôĞÔ¡£</summary>
+		/// <summary>æ£€ç´¢åº”ç”¨äºç±»å‹æˆå‘˜çš„è‡ªå®šä¹‰å±æ€§ã€‚</summary>
 		/// <param name="element"></param>
 		/// <returns></returns>
 		public static BindColumnAttribute GetCustomAttribute(MemberInfo element)

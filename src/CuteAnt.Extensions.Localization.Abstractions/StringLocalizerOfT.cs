@@ -1,4 +1,4 @@
-// Copyright (c) .NET Foundation. All rights reserved. 
+ï»¿// Copyright (c) .NET Foundation. All rights reserved. 
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using System;
@@ -18,7 +18,7 @@ namespace CuteAnt.Extensions.Localization
     /// <summary>Creates a new <see cref="StringLocalizer{TResourceSource}"/>.</summary>
     /// <param name="factory">The <see cref="IStringLocalizerFactory"/> to use.</param>
     /// <param name="applicationName">The application name.</param>
-    public StringLocalizer(IStringLocalizerFactory factory, string applicationName) // ## ¿àÖñ Ìí¼Ó ##
+    public StringLocalizer(IStringLocalizerFactory factory, string applicationName) // ## è‹¦ç«¹ æ·»åŠ  ##
     {
       if (factory == null) { throw new ArgumentNullException(nameof(factory)); }
 

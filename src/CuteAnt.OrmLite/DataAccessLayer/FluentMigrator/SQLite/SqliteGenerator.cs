@@ -1,4 +1,4 @@
-/* ±¾Ä£¿é»ùÓÚ¿ªÔ´ÏîÄ¿ FluentMigrator µÄ×ÓÄ£¿é Runner.Generators ĞŞ¸Ä¶ø³É¡£ĞŞ¸Ä£ºº£Ñó±ı¸É(cuteant@outlook.com)
+ï»¿/* æœ¬æ¨¡å—åŸºäºå¼€æºé¡¹ç›® FluentMigrator çš„å­æ¨¡å— Runner.Generators ä¿®æ”¹è€Œæˆã€‚ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²(cuteant@outlook.com)
  * 
  * h1. FluentMigrator
  * 
@@ -39,7 +39,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 {
 	internal class SqliteGenerator : GenericGenerator<SqliteColumn, SqliteTypeMap, SqliteQuoter, StandardDescriptionGenerator>
 	{
-		#region -- ¹¹Ôì --
+		#region -- æ„é€  --
 
 		internal SqliteGenerator()
 		{
@@ -47,13 +47,13 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		#endregion
 
-		#region -- SQLÓï¾ä¶¨Òå --
+		#region -- SQLè¯­å¥å®šä¹‰ --
 
 		internal override String RenameTableSQLTemplate { get { return "ALTER TABLE {0} RENAME TO {1}"; } }
 
 		#endregion
 
-		#region -- SQLÓï¾äÉú³É --
+		#region -- SQLè¯­å¥ç”Ÿæˆ --
 
 		#region - Column -
 
@@ -74,7 +74,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		internal override Boolean IsColumnTypeChanged(IDataColumn entityColumn, IDataColumn dbColumn)
 		{
-			// ÏÈÅĞ¶ÏÊı¾İÀàĞÍ
+			// å…ˆåˆ¤æ–­æ•°æ®ç±»å‹
 			if (entityColumn.DbType == dbColumn.DbType) { return false; }
 
 			switch (entityColumn.DbType)

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+ï»¿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -38,7 +38,7 @@ namespace CuteAnt.AsyncEx
     // that isn't cancelled if _cts.Cancel() is called. This happens only on the Abort paths, so it's not an issue. 
     private void InitializeCancellationToken(TimeSpan timeout)
     {
-      if (timeout == TimeSpan.MaxValue || timeout == TaskShim.InfiniteTimeSpan) // ## ¿àÖñ ÐÞ¸Ä Timeout.InfiniteTimeSpan ##
+      if (timeout == TimeSpan.MaxValue || timeout == TaskShim.InfiniteTimeSpan) // ## è‹¦ç«¹ ä¿®æ”¹ Timeout.InfiniteTimeSpan ##
       {
         _cancellationToken = CancellationToken.None;
       }
@@ -246,7 +246,7 @@ namespace CuteAnt.AsyncEx
         //// http://msdn.microsoft.com/en-us/library/85bbbxt9(v=vs.110).aspx 
         //// with exitContext was used in Desktop which is not supported in Net Native or CoreClr
         //return waitHandle.WaitOne(timeout);
-        // ## ¿àÖñ ÐÞ¸Ä ##
+        // ## è‹¦ç«¹ ä¿®æ”¹ ##
         return waitHandle.WaitOne(timeout, false);
       }
     }

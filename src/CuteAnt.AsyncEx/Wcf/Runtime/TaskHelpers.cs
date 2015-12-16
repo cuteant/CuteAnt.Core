@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+ï»¿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -238,7 +238,7 @@ namespace CuteAnt.AsyncEx
 
     public static Task CompletedTask()
     {
-      // ## ¿àÖñ ÐÞ¸Ä ##
+      // ## è‹¦ç«¹ ä¿®æ”¹ ##
       //return TaskShim.FromResult(true);
       return TaskConstants.BooleanTrue;
     }

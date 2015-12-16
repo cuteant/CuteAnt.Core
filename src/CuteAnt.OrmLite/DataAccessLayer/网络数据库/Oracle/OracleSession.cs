@@ -1,9 +1,9 @@
-/*
- * ×÷Õß£ºĞÂÉúÃü¿ª·¢ÍÅ¶Ó£¨http://www.newlifex.com/£©
+ï»¿/*
+ * ä½œè€…ï¼šæ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿï¼ˆhttp://www.newlifex.com/ï¼‰
  * 
- * °æÈ¨£º°æÈ¨ËùÓĞ (C) ĞÂÉúÃü¿ª·¢ÍÅ¶Ó 2002-2014
+ * ç‰ˆæƒï¼šç‰ˆæƒæ‰€æœ‰ (C) æ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿ 2002-2014
  * 
- * ĞŞ¸Ä£ºº£Ñó±ı¸É£¨cuteant@outlook.com£©
+ * ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²ï¼ˆcuteant@outlook.comï¼‰
 */
 
 using System;
@@ -15,19 +15,19 @@ using System.Text.RegularExpressions;
 
 namespace CuteAnt.OrmLite.DataAccessLayer
 {
-	/// <summary>OracleÊı¾İ¿â</summary>
+	/// <summary>Oracleæ•°æ®åº“</summary>
 	internal partial class OracleSession : RemoteDbSession
 	{
 		static OracleSession()
 		{
-			// ¾É°æOracleÔËĞĞÊ±»áÒòÎªÃ»ÓĞÕâ¸ö¶ø±¨´í
+			// æ—§ç‰ˆOracleè¿è¡Œæ—¶ä¼šå› ä¸ºæ²¡æœ‰è¿™ä¸ªè€ŒæŠ¥é”™
 			String name = "NLS_LANG";
 			if (Environment.GetEnvironmentVariable(name).IsNullOrWhiteSpace()) Environment.SetEnvironmentVariable(name, "SIMPLIFIED CHINESE_CHINA.ZHS16GBK");
 		}
 
-		#region »ù±¾·½·¨ ²éÑ¯/Ö´ĞĞ
+		#region åŸºæœ¬æ–¹æ³• æŸ¥è¯¢/æ‰§è¡Œ
 
-		/// <summary>¿ìËÙ²éÑ¯µ¥±í¼ÇÂ¼Êı£¬ÉÔÓĞÆ«²î</summary>
+		/// <summary>å¿«é€ŸæŸ¥è¯¢å•è¡¨è®°å½•æ•°ï¼Œç¨æœ‰åå·®</summary>
 		/// <param name="tableName"></param>
 		/// <returns></returns>
 		public override Int64 QueryCountFast(String tableName)
@@ -48,16 +48,16 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		private static Regex reg_SEQ = new Regex(@"\b(\w+)\.nextval\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-		/// <summary>Ö´ĞĞ²åÈëÓï¾ä²¢·µ»ØĞÂÔöĞĞµÄ×Ô¶¯±àºÅ</summary>
-		/// <param name="sql">SQLÓï¾ä</param>
-		/// <param name="type">ÃüÁîÀàĞÍ£¬Ä¬ÈÏSQLÎÄ±¾</param>
-		/// <param name="ps">ÃüÁî²ÎÊı</param>
-		/// <returns>ĞÂÔöĞĞµÄ×Ô¶¯±àºÅ</returns>
+		/// <summary>æ‰§è¡Œæ’å…¥è¯­å¥å¹¶è¿”å›æ–°å¢è¡Œçš„è‡ªåŠ¨ç¼–å·</summary>
+		/// <param name="sql">SQLè¯­å¥</param>
+		/// <param name="type">å‘½ä»¤ç±»å‹ï¼Œé»˜è®¤SQLæ–‡æœ¬</param>
+		/// <param name="ps">å‘½ä»¤å‚æ•°</param>
+		/// <returns>æ–°å¢è¡Œçš„è‡ªåŠ¨ç¼–å·</returns>
 		public override Int64 InsertAndGetIdentity(String sql, CommandType type, DbParameter[] ps)
 		{
 			var b = IsAutoClose;
 
-			// ½ûÓÃ×Ô¶¯¹Ø±Õ£¬±£Ö¤Á½´ÎÔÚÍ¬Ò»»á»°
+			// ç¦ç”¨è‡ªåŠ¨å…³é—­ï¼Œä¿è¯ä¸¤æ¬¡åœ¨åŒä¸€ä¼šè¯
 			IsAutoClose = false;
 
 			BeginTransaction();
@@ -81,10 +81,10 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			}
 		}
 
-		/// <summary>Ö´ĞĞSQLÓï¾ä£¬·µ»ØÊÜÓ°ÏìµÄĞĞÊı</summary>
-		/// <param name="sql">SQLÓï¾ä</param>
-		/// <param name="type">ÃüÁîÀàĞÍ£¬Ä¬ÈÏSQLÎÄ±¾</param>
-		/// <param name="ps">ÃüÁî²ÎÊı</param>
+		/// <summary>æ‰§è¡ŒSQLè¯­å¥ï¼Œè¿”å›å—å½±å“çš„è¡Œæ•°</summary>
+		/// <param name="sql">SQLè¯­å¥</param>
+		/// <param name="type">å‘½ä»¤ç±»å‹ï¼Œé»˜è®¤SQLæ–‡æœ¬</param>
+		/// <param name="ps">å‘½ä»¤å‚æ•°</param>
 		/// <returns></returns>
 		public override Int32 Execute(String sql, CommandType type, DbParameter[] ps)
 		{

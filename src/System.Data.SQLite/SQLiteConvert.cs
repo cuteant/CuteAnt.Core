@@ -1,4 +1,4 @@
-/********************************************************
+ï»¿/********************************************************
  * ADO.NET 2.0 Data Provider for SQLite Version 3.X
  * Written by Robert Simpson (robert@blackcastlesoft.com)
  *
@@ -1236,7 +1236,7 @@ namespace System.Data.SQLite
     /// <returns>The corresponding (closest match) DbType</returns>
     internal static DbType TypeToDbType(Type typ)
     {
-      #region ## ¿àÖñ Ìí¼Ó ##
+      #region ## è‹¦ç«¹ æ·»åŠ  ##
       if (typ == typeof(CombGuid)) { return DbType.Guid; }
       #endregion
       TypeCode tc = Type.GetTypeCode(typ);

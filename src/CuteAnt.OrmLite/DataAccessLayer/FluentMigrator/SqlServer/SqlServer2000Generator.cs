@@ -1,4 +1,4 @@
-/* ±¾Ä£¿é»ùÓÚ¿ªÔ´ÏîÄ¿ FluentMigrator µÄ×ÓÄ£¿é Runner.Generators ĞŞ¸Ä¶ø³É¡£ĞŞ¸Ä£ºº£Ñó±ı¸É(cuteant@outlook.com)
+ï»¿/* æœ¬æ¨¡å—åŸºäºå¼€æºé¡¹ç›® FluentMigrator çš„å­æ¨¡å— Runner.Generators ä¿®æ”¹è€Œæˆã€‚ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²(cuteant@outlook.com)
  * 
  * h1. FluentMigrator
  * 
@@ -49,14 +49,14 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 		where TQuoter : SqlServer2000Quoter, new()
 		where TDescriptionGenerator : StandardDescriptionGenerator, new()
 	{
-		#region -- ¹¹Ôì --
+		#region -- æ„é€  --
 
 		internal SqlServer2000Generator()
 			: base() { }
 
 		#endregion
 
-		#region -- SQLÓï¾ä¶¨Òå --
+		#region -- SQLè¯­å¥å®šä¹‰ --
 
 		internal override String RenameTableSQLTemplate { get { return "EXECUTE sp_rename N'{0}', N'{1}', 'OBJECT'"; } }
 
@@ -72,7 +72,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		#endregion
 
-		#region -- SQLÓï¾äÉú³É --
+		#region -- SQLè¯­å¥ç”Ÿæˆ --
 
 		#region - DataBase -
 
@@ -171,25 +171,25 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		internal override Boolean IsColumnTypeChanged(IDataColumn entityColumn, IDataColumn dbColumn)
 		{
-			// ÏÈÅĞ¶ÏÊı¾İÀàĞÍ
+			// å…ˆåˆ¤æ–­æ•°æ®ç±»å‹
 			if (entityColumn.DbType == dbColumn.DbType)
 			{
 				if (entityColumn.DbType == CommonDbType.Decimal)
 				{
-					if (entityColumn.Precision > 38) { return false; } // ÎŞĞ§¾«¶È
+					if (entityColumn.Precision > 38) { return false; } // æ— æ•ˆç²¾åº¦
 					if (dbColumn.Precision >= entityColumn.Precision && dbColumn.Scale >= entityColumn.Scale) { return false; }
 					return true;
 				}
 				else if (entityColumn.DbType == CommonDbType.String || entityColumn.DbType == CommonDbType.StringFixedLength)
 				{
-					// ´óÓÚ1073741823ÊôÓÚÎŞĞ§³¤¶È
+					// å¤§äº1073741823å±äºæ— æ•ˆé•¿åº¦
 					return (dbColumn.Length >= entityColumn.Length || entityColumn.Length > 1073741823) ? false : true;
 				}
 				else if (entityColumn.DbType == CommonDbType.AnsiString || entityColumn.DbType == CommonDbType.AnsiStringFixedLength)
 				{
 					return dbColumn.Length >= entityColumn.Length ? false : true;
 				}
-				else // ÆäËûÊı¾İÀàĞÍ
+				else // å…¶ä»–æ•°æ®ç±»å‹
 				{
 					return false;
 				}
@@ -200,18 +200,18 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 				case CommonDbType.AnsiString:
 					if (dbColumn.DbType == CommonDbType.String || dbColumn.DbType == CommonDbType.Text)
 					{
-						// ·ÇUnicodeÀàĞÍ×Ö·ûÔÊĞí±£´æÔÚUnicodeÀàĞÍ×Ö¶ÎÖĞ
+						// éUnicodeç±»å‹å­—ç¬¦å…è®¸ä¿å­˜åœ¨Unicodeç±»å‹å­—æ®µä¸­
 						if (dbColumn.Length >= entityColumn.Length) { return false; }
-						// 1073741823¸ö×Ö·ûÊµ¼Ê´æ´¢ÈİÁ¿Îª 1 GB£¬ºöÂÔ·ÇUnicodeÀàĞÍ×Ö·û´óÓÚ1073741823µÄÇé¿ö
+						// 1073741823ä¸ªå­—ç¬¦å®é™…å­˜å‚¨å®¹é‡ä¸º 1 GBï¼Œå¿½ç•¥éUnicodeç±»å‹å­—ç¬¦å¤§äº1073741823çš„æƒ…å†µ
 						if (entityColumn.Length > 1073741823) { return false; }
 					}
 					return true;
 				case CommonDbType.AnsiStringFixedLength:
 					if (dbColumn.DbType == CommonDbType.AnsiString || dbColumn.DbType == CommonDbType.String || dbColumn.DbType == CommonDbType.Text)
 					{
-						// ·ÇUnicodeÀàĞÍ×Ö·ûÔÊĞí±£´æÔÚUnicodeÀàĞÍ×Ö¶ÎÖĞ
+						// éUnicodeç±»å‹å­—ç¬¦å…è®¸ä¿å­˜åœ¨Unicodeç±»å‹å­—æ®µä¸­
 						if (dbColumn.Length >= entityColumn.Length) { return false; }
-						// 1073741823¸ö×Ö·ûÊµ¼Ê´æ´¢ÈİÁ¿Îª 1 GB£¬ºöÂÔ·ÇUnicodeÀàĞÍ×Ö·û´óÓÚ1073741823µÄÇé¿ö
+						// 1073741823ä¸ªå­—ç¬¦å®é™…å­˜å‚¨å®¹é‡ä¸º 1 GBï¼Œå¿½ç•¥éUnicodeç±»å‹å­—ç¬¦å¤§äº1073741823çš„æƒ…å†µ
 						if (entityColumn.Length > 1073741823) { return false; }
 					}
 					return true;

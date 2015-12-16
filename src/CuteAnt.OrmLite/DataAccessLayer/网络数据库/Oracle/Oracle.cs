@@ -1,9 +1,9 @@
-/*
- * ×÷Õß£ºĞÂÉúÃü¿ª·¢ÍÅ¶Ó£¨http://www.newlifex.com/£©
+ï»¿/*
+ * ä½œè€…ï¼šæ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿï¼ˆhttp://www.newlifex.com/ï¼‰
  * 
- * °æÈ¨£º°æÈ¨ËùÓĞ (C) ĞÂÉúÃü¿ª·¢ÍÅ¶Ó 2002-2014
+ * ç‰ˆæƒï¼šç‰ˆæƒæ‰€æœ‰ (C) æ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿ 2002-2014
  * 
- * ĞŞ¸Ä£ºº£Ñó±ı¸É£¨cuteant@outlook.com£©
+ * ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²ï¼ˆcuteant@outlook.comï¼‰
 */
 
 using System;
@@ -22,9 +22,9 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 {
   internal class Oracle : RemoteDb
   {
-    #region ÊôĞÔ
+    #region å±æ€§
 
-    /// <summary>·µ»ØÊı¾İ¿âÀàĞÍ¡£Íâ²¿DALÊı¾İ¿âÀàÇëÊ¹ÓÃOther</summary>
+    /// <summary>è¿”å›æ•°æ®åº“ç±»å‹ã€‚å¤–éƒ¨DALæ•°æ®åº“ç±»è¯·ä½¿ç”¨Other</summary>
     public override DatabaseType DbType { get { return DatabaseType.Oracle; } }
 
     private static GeneratorBase _StandardGenerator;
@@ -60,7 +60,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
     internal override GeneratorBase Generator { get { return UseQuotedIdentifiers ? QuotedIdentifierGenerator : StandardGenerator; } }
 
     private OracleSchemaProvider _SchemaProvider;
-    /// <summary>¼Ü¹¹¶ÔÏó</summary>
+    /// <summary>æ¶æ„å¯¹è±¡</summary>
     public override ISchemaProvider SchemaProvider
     {
       get
@@ -76,19 +76,19 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
     private static DbProviderFactory _dbProviderFactory;
 
-    /// <summary>Ìá¹©Õß¹¤³§</summary>
+    /// <summary>æä¾›è€…å·¥å‚</summary>
     private static DbProviderFactory dbProviderFactory
     {
       get
       {
-        // Ê×ÏÈ³¢ÊÔÊ¹ÓÃOracle.DataAccess
+        // é¦–å…ˆå°è¯•ä½¿ç”¨Oracle.DataAccess
         if (_dbProviderFactory == null)
         {
           lock (typeof(Oracle))
           {
             if (_dbProviderFactory == null)
             {
-              // Òì²½¼ì²éOracle¿Í»§¶ËÔËĞĞÊ±£¬´ËÊ±¿ÉÄÜ»áÏÈÓÃÏµÍ³Çı¶¯
+              // å¼‚æ­¥æ£€æŸ¥Oracleå®¢æˆ·ç«¯è¿è¡Œæ—¶ï¼Œæ­¤æ—¶å¯èƒ½ä¼šå…ˆç”¨ç³»ç»Ÿé©±åŠ¨
               TaskShim.Run(new Action(CheckRuntime));
 
               //CheckRuntime();
@@ -100,7 +100,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
                 if (_dbProviderFactory != null && DAL.Debug)
                 {
                   var asm = _dbProviderFactory.GetType().Assembly;
-                  if (DAL.Debug) DAL.WriteLog("OracleÊ¹ÓÃÎÄ¼şÇı¶¯{0} °æ±¾v{1}", asm.Location, asm.GetName().Version);
+                  if (DAL.Debug) DAL.WriteLog("Oracleä½¿ç”¨æ–‡ä»¶é©±åŠ¨{0} ç‰ˆæœ¬v{1}", asm.Location, asm.GetName().Version);
                 }
               }
               catch (FileNotFoundException) { }
@@ -110,17 +110,17 @@ namespace CuteAnt.OrmLite.DataAccessLayer
               }
             }
 
-            // ÒÔÏÂÈıÖÖ·½Ê½¶¼¿ÉÒÔ¼ÓÔØ£¬Ç°Á½ÖÖÖ»ÊÇÎªÁË¼õÉÙ¶Ô³ÌĞò¼¯µÄÒıÓÃ£¬µÚ¶şÖÖÊÇÎªÁË±ÜÃâµÚÒ»ÖÖÖĞÃ»ÓĞ×¢²á
+            // ä»¥ä¸‹ä¸‰ç§æ–¹å¼éƒ½å¯ä»¥åŠ è½½ï¼Œå‰ä¸¤ç§åªæ˜¯ä¸ºäº†å‡å°‘å¯¹ç¨‹åºé›†çš„å¼•ç”¨ï¼Œç¬¬äºŒç§æ˜¯ä¸ºäº†é¿å…ç¬¬ä¸€ç§ä¸­æ²¡æœ‰æ³¨å†Œ
             if (_dbProviderFactory == null)
             {
               _dbProviderFactory = DbProviderFactories.GetFactory("System.Data.OracleClient");
-              if (_dbProviderFactory != null && DAL.Debug) DAL.WriteLog("OracleÊ¹ÓÃÅäÖÃÇı¶¯{0}", _dbProviderFactory.GetType().Assembly.Location);
+              if (_dbProviderFactory != null && DAL.Debug) DAL.WriteLog("Oracleä½¿ç”¨é…ç½®é©±åŠ¨{0}", _dbProviderFactory.GetType().Assembly.Location);
             }
             if (_dbProviderFactory == null)
             {
               String fileName = "System.Data.OracleClient.dll";
               _dbProviderFactory = GetProviderFactory(fileName, "System.Data.OracleClient.OracleClientFactory, System.Data.OracleClient");
-              if (_dbProviderFactory != null && DAL.Debug) DAL.WriteLog("OracleÊ¹ÓÃÏµÍ³Çı¶¯{0}", _dbProviderFactory.GetType().Assembly.Location);
+              if (_dbProviderFactory != null && DAL.Debug) DAL.WriteLog("Oracleä½¿ç”¨ç³»ç»Ÿé©±åŠ¨{0}", _dbProviderFactory.GetType().Assembly.Location);
             }
 
             //if (_dbProviderFactory == null) _dbProviderFactory = OracleClientFactory.Instance;
@@ -131,12 +131,12 @@ namespace CuteAnt.OrmLite.DataAccessLayer
       }
     }
 
-    /// <summary>¹¤³§</summary>
+    /// <summary>å·¥å‚</summary>
     public override DbProviderFactory Factory { get { return dbProviderFactory; } }
 
     private String _UserID;
 
-    /// <summary>ÓÃ»§ÃûUserID</summary>
+    /// <summary>ç”¨æˆ·åUserID</summary>
     public String UserID
     {
       get
@@ -157,12 +157,12 @@ namespace CuteAnt.OrmLite.DataAccessLayer
       }
     }
 
-    /// <summary>ÓµÓĞÕß</summary>
+    /// <summary>æ‹¥æœ‰è€…</summary>
     public override String Owner
     {
       get
       {
-        // ÀûÓÃnullºÍEmptyµÄÇø±ğÀ´ÅĞ¶ÏÊÇ·ñÒÑ¼ÆËã
+        // åˆ©ç”¨nullå’ŒEmptyçš„åŒºåˆ«æ¥åˆ¤æ–­æ˜¯å¦å·²è®¡ç®—
         if (base.Owner == null)
         {
           base.Owner = UserID;
@@ -185,7 +185,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
     private static String _DllPath;
 
-    /// <summary>OCIÄ¿Â¼ </summary>
+    /// <summary>OCIç›®å½• </summary>
     public static String DllPath
     {
       get
@@ -225,7 +225,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
     private static String _OracleHome;
 
-    /// <summary>OracleÔËĞĞÊ±Ö÷Ä¿Â¼</summary>
+    /// <summary>Oracleè¿è¡Œæ—¶ä¸»ç›®å½•</summary>
     public static String OracleHome
     {
       get
@@ -234,16 +234,16 @@ namespace CuteAnt.OrmLite.DataAccessLayer
         {
           _OracleHome = String.Empty;
 
-          // Èç¹ûDllPathÄ¿Â¼´æÔÚ£¬Ôò»ùÓÚËüÕÒÖ÷Ä¿Â¼
+          // å¦‚æœDllPathç›®å½•å­˜åœ¨ï¼Œåˆ™åŸºäºå®ƒæ‰¾ä¸»ç›®å½•
           var dir = DllPath;
           if (!dir.IsNullOrWhiteSpace() && Directory.Exists(dir))
           {
             _OracleHome = dir;
 
-            // Èç¹û¸ÃÄ¿Â¼¾ÍÓĞnetworkÄ¿Â¼£¬ÔòÊ¹ÓÃËü×÷ÎªÖ÷Ä¿Â¼
+            // å¦‚æœè¯¥ç›®å½•å°±æœ‰networkç›®å½•ï¼Œåˆ™ä½¿ç”¨å®ƒä½œä¸ºä¸»ç›®å½•
             if (!Directory.Exists(Path.Combine(dir, "network")))
             {
-              // ·ñÔòÕÒÉÏÒ»¼¶
+              // å¦åˆ™æ‰¾ä¸Šä¸€çº§
               var di = new DirectoryInfo(dir);
               di = di.Parent;
 
@@ -257,7 +257,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
       //set { _OracleHome = value; }
     }
 
-    /// <summary>ÉèÖÃµÄdllÂ·¾¶</summary>
+    /// <summary>è®¾ç½®çš„dllè·¯å¾„</summary>
     private static String _settingDllPath = OrmLiteConfig.Current.OracleDllPath;
 
     protected override void OnSetConnectionString(HmDbConnectionStringBuilder builder)
@@ -270,10 +270,10 @@ namespace CuteAnt.OrmLite.DataAccessLayer
       }
 
       str = null;
-      // »ñÈ¡OCIÄ¿Â¼
+      // è·å–OCIç›®å½•
       if (builder.TryGetAndRemove("DllPath", out str) && !str.IsNullOrWhiteSpace())
       {
-        // Á¬½Ó×Ö·û´®ÀïÃæÖ¸¶¨µÄOCIÓÅÏÈÓÚÅäÖÃ
+        // è¿æ¥å­—ç¬¦ä¸²é‡Œé¢æŒ‡å®šçš„OCIä¼˜å…ˆäºé…ç½®
         if (_settingDllPath.IsNullOrWhiteSpace() || Directory.Exists(str)) _settingDllPath = str;
         SetDllPath(str);
 
@@ -284,16 +284,16 @@ namespace CuteAnt.OrmLite.DataAccessLayer
       {
         if (!(str = DllPath).IsNullOrWhiteSpace()) SetDllPath(str);
 
-        // Òì²½ÉèÖÃDLLÄ¿Â¼
+        // å¼‚æ­¥è®¾ç½®DLLç›®å½•
         //ThreadPool.QueueUserWorkItem(ss => SetDllPath(DllPath));
         //Thread.Sleep(500);
       }
     }
 
     /*
-     * ¶Ô PInvoke º¯Êı¡°SetDllDirectory¡±µÄµ÷ÓÃµ¼ÖÂ¶ÑÕ»²»¶Ô³Æ
+     * å¯¹ PInvoke å‡½æ•°â€œSetDllDirectoryâ€çš„è°ƒç”¨å¯¼è‡´å †æ ˆä¸å¯¹ç§°
      * http://www.newlifex.com/showtopic-985.aspx
-     * ´íÎóĞÅÏ¢£ºMessage: ¶Ô PInvoke º¯Êı¡°XCode!XCode.DataAccessLayer.DbBase::SetDllDirectory¡±µÄµ÷ÓÃµ¼ÖÂ¶ÑÕ»²»¶Ô³Æ¡£Ô­Òò¿ÉÄÜÊÇÍĞ¹ÜµÄ PInvoke Ç©ÃûÓë·ÇÍĞ¹ÜµÄÄ¿±êÇ©Ãû²»Æ¥Åä¡£Çë¼ì²é PInvoke Ç©ÃûµÄµ÷ÓÃÔ¼¶¨ºÍ²ÎÊıÓë·ÇÍĞ¹ÜµÄÄ¿±êÇ©ÃûÊÇ·ñÆ¥Åä¡£
+     * é”™è¯¯ä¿¡æ¯ï¼šMessage: å¯¹ PInvoke å‡½æ•°â€œXCode!XCode.DataAccessLayer.DbBase::SetDllDirectoryâ€çš„è°ƒç”¨å¯¼è‡´å †æ ˆä¸å¯¹ç§°ã€‚åŸå› å¯èƒ½æ˜¯æ‰˜ç®¡çš„ PInvoke ç­¾åä¸éæ‰˜ç®¡çš„ç›®æ ‡ç­¾åä¸åŒ¹é…ã€‚è¯·æ£€æŸ¥ PInvoke ç­¾åçš„è°ƒç”¨çº¦å®šå’Œå‚æ•°ä¸éæ‰˜ç®¡çš„ç›®æ ‡ç­¾åæ˜¯å¦åŒ¹é…ã€‚
      */
     [DllImport("kernel32.dll")]
     static extern IntPtr LoadLibrary(string fileName);
@@ -303,9 +303,9 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
     #endregion
 
-    #region ·½·¨
+    #region æ–¹æ³•
 
-    /// <summary>´´½¨Êı¾İ¿â»á»°</summary>
+    /// <summary>åˆ›å»ºæ•°æ®åº“ä¼šè¯</summary>
     /// <returns></returns>
     protected override IDbSession OnCreateSession()
     {
@@ -323,17 +323,17 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
     #endregion
 
-    #region ·ÖÒ³
+    #region åˆ†é¡µ
 
-    /// <summary>ÒÑÖØĞ´¡£»ñÈ¡·ÖÒ³ 2012.9.26 HUIYUEĞŞÕı·ÖÒ³BUG</summary>
-    /// <param name="sql">SQLÓï¾ä</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <param name="keyColumn">Ö÷¼üÁĞ¡£ÓÃÓÚnot in·ÖÒ³</param>
+    /// <summary>å·²é‡å†™ã€‚è·å–åˆ†é¡µ 2012.9.26 HUIYUEä¿®æ­£åˆ†é¡µBUG</summary>
+    /// <param name="sql">SQLè¯­å¥</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <param name="keyColumn">ä¸»é”®åˆ—ã€‚ç”¨äºnot inåˆ†é¡µ</param>
     /// <returns></returns>
     public override String PageSplit(String sql, Int64 startRowIndex, Int32 maximumRows, String keyColumn)
     {
-      // ´ÓµÚÒ»ĞĞ¿ªÊ¼
+      // ä»ç¬¬ä¸€è¡Œå¼€å§‹
       if (startRowIndex <= 0L)
       {
         if (maximumRows > 0)
@@ -355,19 +355,19 @@ namespace CuteAnt.OrmLite.DataAccessLayer
       return sql;
     }
 
-    /// <summary>¹¹Ôì·ÖÒ³SQL</summary>
+    /// <summary>æ„é€ åˆ†é¡µSQL</summary>
     /// <remarks>
-    /// Á½¸ö¹¹Ôì·ÖÒ³SQLµÄ·½·¨£¬Çø±ğ¾ÍÔÚÓÚ²éÑ¯Éú³ÉÆ÷ÄÜ¹»¹¹Ôì³öÀ´¸üºÃµÄ·ÖÒ³Óï¾ä£¬¾¡¿ÉÄÜµÄ±ÜÃâ×Ó²éÑ¯¡£
-    /// MSÌåÏµµÄ·ÖÒ³¾«Ëè¾ÍÔÚÓÚÎ¨Ò»¼ü£¬µ±Î¨Ò»¼ü´øÓĞAsc/Desc/UnkownµÈÅÅĞò½áÎ²Ê±£¬¾Í²ÉÓÃ×î´ó×îĞ¡Öµ·ÖÒ³£¬·ñÔòÊ¹ÓÃ½Ï´ÎµÄTopNotIn·ÖÒ³¡£
-    /// TopNotIn·ÖÒ³ºÍMaxMin·ÖÒ³µÄ±×¶Ë¾ÍÔÚÓÚÎŞ·¨ÍêÃÀµÄÖ§³ÖGroupBy²éÑ¯·ÖÒ³£¬Ö»ÄÜ²éµ½µÚÒ»Ò³£¬Íùºó·ÖÒ³¾Í²»ĞĞÁË£¬ÒòÎªÃ»ÓĞÖ÷¼ü¡£
+    /// ä¸¤ä¸ªæ„é€ åˆ†é¡µSQLçš„æ–¹æ³•ï¼ŒåŒºåˆ«å°±åœ¨äºæŸ¥è¯¢ç”Ÿæˆå™¨èƒ½å¤Ÿæ„é€ å‡ºæ¥æ›´å¥½çš„åˆ†é¡µè¯­å¥ï¼Œå°½å¯èƒ½çš„é¿å…å­æŸ¥è¯¢ã€‚
+    /// MSä½“ç³»çš„åˆ†é¡µç²¾é«“å°±åœ¨äºå”¯ä¸€é”®ï¼Œå½“å”¯ä¸€é”®å¸¦æœ‰Asc/Desc/Unkownç­‰æ’åºç»“å°¾æ—¶ï¼Œå°±é‡‡ç”¨æœ€å¤§æœ€å°å€¼åˆ†é¡µï¼Œå¦åˆ™ä½¿ç”¨è¾ƒæ¬¡çš„TopNotInåˆ†é¡µã€‚
+    /// TopNotInåˆ†é¡µå’ŒMaxMinåˆ†é¡µçš„å¼Šç«¯å°±åœ¨äºæ— æ³•å®Œç¾çš„æ”¯æŒGroupByæŸ¥è¯¢åˆ†é¡µï¼Œåªèƒ½æŸ¥åˆ°ç¬¬ä¸€é¡µï¼Œå¾€ååˆ†é¡µå°±ä¸è¡Œäº†ï¼Œå› ä¸ºæ²¡æœ‰ä¸»é”®ã€‚
     /// </remarks>
-    /// <param name="builder">²éÑ¯Éú³ÉÆ÷</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>·ÖÒ³SQL</returns>
+    /// <param name="builder">æŸ¥è¯¢ç”Ÿæˆå™¨</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>åˆ†é¡µSQL</returns>
     public override SelectBuilder PageSplit(SelectBuilder builder, Int64 startRowIndex, Int32 maximumRows)
     {
-      // ´ÓµÚÒ»ĞĞ¿ªÊ¼£¬²»ĞèÒª·ÖÒ³
+      // ä»ç¬¬ä¸€è¡Œå¼€å§‹ï¼Œä¸éœ€è¦åˆ†é¡µ
       if (startRowIndex <= 0L)
       {
         if (maximumRows > 0)
@@ -390,17 +390,17 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
     #endregion
 
-    #region Êı¾İ¿âÌØĞÔ
+    #region æ•°æ®åº“ç‰¹æ€§
 
-    /// <summary>µ±Ç°Ê±¼äº¯Êı</summary>
+    /// <summary>å½“å‰æ—¶é—´å‡½æ•°</summary>
     public override String DateTimeNow { get { return "sysdate"; } }
 
-    /// <summary>»ñÈ¡GuidµÄº¯Êı</summary>
+    /// <summary>è·å–Guidçš„å‡½æ•°</summary>
     public override String NewGuid { get { return "sys_guid()"; } }
 
-    #region ## ¿àÖñ ÆÁ±Î ##
+    #region ## è‹¦ç«¹ å±è”½ ##
 
-    ///// <summary>ÒÑÖØÔØ¡£¸ñÊ½»¯Ê±¼ä</summary>
+    ///// <summary>å·²é‡è½½ã€‚æ ¼å¼åŒ–æ—¶é—´</summary>
     ///// <param name="dateTime"></param>
     ///// <returns></returns>
     //public override String FormatDateTime(DateTime dateTime)
@@ -434,9 +434,9 @@ namespace CuteAnt.OrmLite.DataAccessLayer
       return Owner.IsNullOrWhiteSpace() ? Quoter.QuoteTableName(tableName) : "{0}.{1}".FormatWith(Quoter.QuoteSchemaName(Owner), Quoter.QuoteTableName(tableName));
     }
 
-    /// <summary>¸ñÊ½»¯±êÊ¶ÁĞ£¬·µ»Ø²åÈëÊı¾İÊ±ËùÓÃµÄ±í´ïÊ½£¬Èç¹û×Ö¶Î±¾ÉíÖ§³Ö×ÔÔö£¬Ôò·µ»Ø¿Õ</summary>
-    /// <param name="field">×Ö¶Î</param>
-    /// <param name="value">ÊıÖµ</param>
+    /// <summary>æ ¼å¼åŒ–æ ‡è¯†åˆ—ï¼Œè¿”å›æ’å…¥æ•°æ®æ—¶æ‰€ç”¨çš„è¡¨è¾¾å¼ï¼Œå¦‚æœå­—æ®µæœ¬èº«æ”¯æŒè‡ªå¢ï¼Œåˆ™è¿”å›ç©º</summary>
+    /// <param name="field">å­—æ®µ</param>
+    /// <param name="value">æ•°å€¼</param>
     /// <returns></returns>
     public override String FormatIdentity(IDataColumn field, Object value)
     {
@@ -445,7 +445,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
     protected internal override String ParamPrefix { get { return ":"; } }
 
-    /// <summary>×Ö·û´®Ïà¼Ó</summary>
+    /// <summary>å­—ç¬¦ä¸²ç›¸åŠ </summary>
     /// <param name="left"></param>
     /// <param name="right"></param>
     /// <returns></returns>
@@ -456,17 +456,17 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
     #endregion
 
-    #region ¹Ø¼ü×Ö
+    #region å…³é”®å­—
 
-    #region ## ¿àÖñ ÆÁ±Î ##
+    #region ## è‹¦ç«¹ å±è”½ ##
 
     //protected override String ReservedWordsStr
     //{
     //	get { return "Sort,Level,ALL,ALTER,AND,ANY,AS,ASC,BETWEEN,BY,CHAR,CHECK,CLUSTER,COMPRESS,CONNECT,CREATE,DATE,DECIMAL,DEFAULT,DELETE,DESC,DISTINCT,DROP,ELSE,EXCLUSIVE,EXISTS,FLOAT,FOR,FROM,GRANT,GROUP,HAVING,IDENTIFIED,IN,INDEX,INSERT,INTEGER,INTERSECT,INTO,IS,LIKE,LOCK,LONG,MINUS,MODE,NOCOMPRESS,NOT,NOWAIT,NULL,NUMBER,OF,ON,OPTION,OR,ORDER,PCTFREE,PRIOR,PUBLIC,RAW,RENAME,RESOURCE,REVOKE,SELECT,SET,SHARE,SIZE,SMALLINT,START,SYNONYM,TABLE,THEN,TO,TRIGGER,UNION,UNIQUE,UPDATE,VALUES,VARCHAR,VARCHAR2,VIEW,WHERE,WITH"; }
     //}
 
-    ///// <summary>¸ñÊ½»¯¹Ø¼ü×Ö</summary>
-    ///// <param name="keyWord">±íÃû</param>
+    ///// <summary>æ ¼å¼åŒ–å…³é”®å­—</summary>
+    ///// <param name="keyWord">è¡¨å</param>
     ///// <returns></returns>
     //public override String FormatKeyWord(String keyWord)
     //{
@@ -501,7 +501,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
     #endregion
 
-    #region ¸¨Öú
+    #region è¾…åŠ©
 
     private Dictionary<String, DateTime> cache = new Dictionary<String, DateTime>();
 
@@ -517,7 +517,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
       if (dt > DateTime.Now) { return false; }
 
-      // Ò»·ÖÖÓºó²Å¿ÉÒÔÔÙ´Î·ÖÎö
+      // ä¸€åˆ†é’Ÿåæ‰å¯ä»¥å†æ¬¡åˆ†æ
       dt = DateTime.Now.AddSeconds(10);
       cache[key] = dt;
 
@@ -530,11 +530,11 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
       var dir = DllPath = str;
 
-      // ÉèÖÃÂ·¾¶
+      // è®¾ç½®è·¯å¾„
       var ocifile = Path.Combine(dir, "oci.dll");
       if (File.Exists(ocifile))
       {
-        if (DAL.Debug) DAL.WriteLog("ÉèÖÃOCIÄ¿Â¼£º{0}", dir);
+        if (DAL.Debug) DAL.WriteLog("è®¾ç½®OCIç›®å½•ï¼š{0}", dir);
 
         try
         {
@@ -546,7 +546,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
       if (Environment.GetEnvironmentVariable("ORACLE_HOME").IsNullOrWhiteSpace() && !OracleHome.IsNullOrWhiteSpace())
       {
-        if (DAL.Debug) DAL.WriteLog("ÉèÖÃ»·¾³±äÁ¿£º{0}={1}", "ORACLE_HOME", OracleHome);
+        if (DAL.Debug) DAL.WriteLog("è®¾ç½®ç¯å¢ƒå˜é‡ï¼š{0}={1}", "ORACLE_HOME", OracleHome);
 
         Environment.SetEnvironmentVariable("ORACLE_HOME", OracleHome);
       }
@@ -557,16 +557,16 @@ namespace CuteAnt.OrmLite.DataAccessLayer
       var dp = DllPath;
       if (!dp.IsNullOrWhiteSpace())
       {
-        if (DAL.Debug) DAL.WriteLog("OracleµÄOCIÄ¿Â¼£º{0}", dp);
+        if (DAL.Debug) DAL.WriteLog("Oracleçš„OCIç›®å½•ï¼š{0}", dp);
         return;
       }
 
       var file = "oci.dll";
       if (File.Exists(file)) { return; }
 
-      DAL.WriteLog(@"ÒÑËÑË÷µ±Ç°Ä¿Â¼¡¢ÉÏ¼¶Ä¿Â¼¡¢¸÷¸öÅÌ¸ùÄ¿Â¼£¬Ã»ÓĞÕÒµ½OracleClient\OCI.dll£¬¿ÉÄÜÊÇÅäÖÃ²»µ±£¬×¼±¸´ÓÍøÂçÏÂÔØ£¡");
+      DAL.WriteLog(@"å·²æœç´¢å½“å‰ç›®å½•ã€ä¸Šçº§ç›®å½•ã€å„ä¸ªç›˜æ ¹ç›®å½•ï¼Œæ²¡æœ‰æ‰¾åˆ°OracleClient\OCI.dllï¼Œå¯èƒ½æ˜¯é…ç½®ä¸å½“ï¼Œå‡†å¤‡ä»ç½‘ç»œä¸‹è½½ï¼");
 
-      // ³¢ÊÔÊ¹ÓÃÉèÖÃ£¬È»ºó²ÅÊ¹ÓÃÉÏ¼¶Ä¿Â¼
+      // å°è¯•ä½¿ç”¨è®¾ç½®ï¼Œç„¶åæ‰ä½¿ç”¨ä¸Šçº§ç›®å½•
       var target = "";
       try
       {
@@ -589,7 +589,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
         }
       }
 
-      DAL.WriteLog("×¼±¸ÏÂÔØOracle¿Í»§¶ËÔËĞĞÊ±µ½{0}£¬¿É±£´æÑ¹Ëõ°ü¹©½«À´Ö±½Ó½âÑ¹Ê¹ÓÃ£¡", target);
+      DAL.WriteLog("å‡†å¤‡ä¸‹è½½Oracleå®¢æˆ·ç«¯è¿è¡Œæ—¶åˆ°{0}ï¼Œå¯ä¿å­˜å‹ç¼©åŒ…ä¾›å°†æ¥ç›´æ¥è§£å‹ä½¿ç”¨ï¼", target);
       CheckAndDownload("OracleClient.zip", target);
 
       file = Path.Combine(target, file);
@@ -625,12 +625,12 @@ namespace CuteAnt.OrmLite.DataAccessLayer
       ocifile = @"..\OracleClient\oci.dll".GetFullPath();
       if (File.Exists(ocifile)) return ocifile;
 
-      // È«ÅÌËÑË÷
+      // å…¨ç›˜æœç´¢
       try
       {
         foreach (var item in DriveInfo.GetDrives())
         {
-          // ½öËÑË÷Ó²ÅÌºÍÒÆ¶¯´æ´¢
+          // ä»…æœç´¢ç¡¬ç›˜å’Œç§»åŠ¨å­˜å‚¨
           if (item.DriveType != DriveType.Fixed && item.DriveType != DriveType.Removable || !item.IsReady) { continue; }
 
           ocifile = Path.Combine(item.RootDirectory.FullName, @"Oracle\oci.dll");
@@ -642,7 +642,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
       }
       catch { }
 
-      // »·¾³±äÁ¿ËÑË÷
+      // ç¯å¢ƒå˜é‡æœç´¢
       try
       {
         var vpath = Environment.GetEnvironmentVariable("Path");
@@ -657,7 +657,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
       }
       catch { }
 
-      // ×¢²á±íËÑË÷
+      // æ³¨å†Œè¡¨æœç´¢
       try
       {
         var reg = Registry.LocalMachine.OpenSubKey(@"Software\Oracle");

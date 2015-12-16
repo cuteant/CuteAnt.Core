@@ -1,4 +1,4 @@
-#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
+ï»¿#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
 
 //  ***********************************************************************
 //  Project: sharpSerializer
@@ -45,7 +45,7 @@ namespace CuteAnt.Serialization
 	/// <summary>This is the main class of SharpSerializer. It serializes and deserializes objects.</summary>
 	public sealed class SharpSerializer
 	{
-		#region -- ÊôĞÔ --
+		#region -- å±æ€§ --
 
 		private IPropertyDeserializer m_deserializer;
 		private IPropertySerializer m_serializer;
@@ -87,7 +87,7 @@ namespace CuteAnt.Serialization
 
 		#endregion
 
-		#region -- ¹¹Ôì --
+		#region -- æ„é€  --
 
 		/// <summary>Standard Constructor. Default is Xml serializing</summary>
 		/// <param name="xmlSerialization" type="bool">
@@ -219,11 +219,11 @@ namespace CuteAnt.Serialization
 
 		#endregion
 
-		#region -- ¾²Ì¬ XML Serializing/Deserializing --
+		#region -- é™æ€ XML Serializing/Deserializing --
 
 		#region - method XmlSerialize -
 
-		/// <summary>Xml ĞòÁĞ»¯</summary>
+		/// <summary>Xml åºåˆ—åŒ–</summary>
 		/// <param name="data" type="object">
 		/// <para></para>
 		/// </param>
@@ -258,7 +258,7 @@ namespace CuteAnt.Serialization
 			}
 		}
 
-		/// <summary>Xml ĞòÁĞ»¯</summary>
+		/// <summary>Xml åºåˆ—åŒ–</summary>
 		/// <param name="data" type="object">
 		/// <para></para>
 		/// </param>
@@ -291,7 +291,7 @@ namespace CuteAnt.Serialization
 			}
 		}
 
-		/// <summary>Xml ĞòÁĞ»¯</summary>
+		/// <summary>Xml åºåˆ—åŒ–</summary>
 		/// <param name="data" type="object">
 		/// <para></para>
 		/// </param>
@@ -324,7 +324,7 @@ namespace CuteAnt.Serialization
 			}
 		}
 
-		/// <summary>Xml ĞòÁĞ»¯</summary>
+		/// <summary>Xml åºåˆ—åŒ–</summary>
 		/// <param name="data" type="object">
 		/// <para></para>
 		/// </param>
@@ -361,7 +361,7 @@ namespace CuteAnt.Serialization
 
 		#region - method XmlDeserialize --
 
-		/// <summary>Xml ·´ĞòÁĞ»¯</summary>
+		/// <summary>Xml ååºåˆ—åŒ–</summary>
 		/// <param name="outputFileName" type="string">
 		/// <para></para>
 		/// </param>
@@ -372,7 +372,7 @@ namespace CuteAnt.Serialization
 			return serializer.XmlDeserializeInternal(inputUri);
 		}
 
-		/// <summary>Xml ·´ĞòÁĞ»¯</summary>
+		/// <summary>Xml ååºåˆ—åŒ–</summary>
 		/// <param name="inputUri" type="string">
 		/// <para></para>
 		/// </param>
@@ -386,7 +386,7 @@ namespace CuteAnt.Serialization
 			}
 			else
 			{
-				throw new DeserializingException("·´ĞòÁĞ»¯¶ÔÏóÊ§°Ü£¡");
+				throw new DeserializingException("ååºåˆ—åŒ–å¯¹è±¡å¤±è´¥ï¼");
 			}
 		}
 
@@ -411,7 +411,7 @@ namespace CuteAnt.Serialization
 			}
 		}
 
-		/// <summary>Xml ·´ĞòÁĞ»¯</summary>
+		/// <summary>Xml ååºåˆ—åŒ–</summary>
 		/// <param name="output" type="System.IO.Stream">
 		/// <para></para>
 		/// </param>
@@ -423,7 +423,7 @@ namespace CuteAnt.Serialization
 			return serializer.XmlDeserializeInternal(input);
 		}
 
-		/// <summary>Xml ·´ĞòÁĞ»¯</summary>
+		/// <summary>Xml ååºåˆ—åŒ–</summary>
 		/// <param name="input" type="System.IO.Stream">
 		/// <para></para>
 		/// </param>
@@ -437,7 +437,7 @@ namespace CuteAnt.Serialization
 			}
 			else
 			{
-				throw new DeserializingException("·´ĞòÁĞ»¯¶ÔÏóÊ§°Ü£¡");
+				throw new DeserializingException("ååºåˆ—åŒ–å¯¹è±¡å¤±è´¥ï¼");
 			}
 		}
 
@@ -462,7 +462,7 @@ namespace CuteAnt.Serialization
 			}
 		}
 
-		/// <summary>Xml ·´ĞòÁĞ»¯</summary>
+		/// <summary>Xml ååºåˆ—åŒ–</summary>
 		/// <param name="output" type="System.IO.TextWriter">
 		/// <para></para>
 		/// </param>
@@ -474,7 +474,7 @@ namespace CuteAnt.Serialization
 			return serializer.XmlDeserializeInternal(input);
 		}
 
-		/// <summary>Xml ·´ĞòÁĞ»¯</summary>
+		/// <summary>Xml ååºåˆ—åŒ–</summary>
 		/// <param name="input" type="System.IO.TextReader">
 		/// <para></para>
 		/// </param>
@@ -488,7 +488,7 @@ namespace CuteAnt.Serialization
 			}
 			else
 			{
-				throw new DeserializingException("·´ĞòÁĞ»¯¶ÔÏóÊ§°Ü£¡");
+				throw new DeserializingException("ååºåˆ—åŒ–å¯¹è±¡å¤±è´¥ï¼");
 			}
 		}
 
@@ -601,7 +601,7 @@ namespace CuteAnt.Serialization
 			}
 			else
 			{
-				throw new DeserializingException("·´ĞòÁĞ»¯¶ÔÏóÊ§°Ü£¡");
+				throw new DeserializingException("ååºåˆ—åŒ–å¯¹è±¡å¤±è´¥ï¼");
 			}
 		}
 
@@ -648,7 +648,7 @@ namespace CuteAnt.Serialization
 			}
 			else
 			{
-				throw new DeserializingException("·´ĞòÁĞ»¯¶ÔÏóÊ§°Ü£¡");
+				throw new DeserializingException("ååºåˆ—åŒ–å¯¹è±¡å¤±è´¥ï¼");
 			}
 		}
 

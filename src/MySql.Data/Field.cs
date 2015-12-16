@@ -1,4 +1,4 @@
-// Copyright ?2004, 2015, Oracle and/or its affiliates. All rights reserved.
+ï»¿// Copyright ?2004, 2015, Oracle and/or its affiliates. All rights reserved.
 //
 // MySQL Connector/NET is licensed under the terms of the GPLv2
 // <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>, like most 
@@ -272,7 +272,7 @@ namespace MySql.Data.MySqlClient
       if (driver.Settings.RespectBinaryFlags)
         CheckForExceptions();
 
-      // ## ¿àÖñ ĞŞ¸Ä ##
+      // ## è‹¦ç«¹ ä¿®æ”¹ ##
       //if (Type == MySqlDbType.String && CharacterLength == 36 && !driver.Settings.OldGuids)
       if (Type == MySqlDbType.String && CharacterLength == 36)
         mySqlDbType = MySqlDbType.Guid;
@@ -291,7 +291,7 @@ namespace MySql.Data.MySqlClient
       if (CharacterSetIndex == 63)
         CharacterSetIndex = driver.ConnectionCharSetIndex;
 
-      // ## ¿àÖñ ĞŞ¸Ä ##
+      // ## è‹¦ç«¹ ä¿®æ”¹ ##
       //if (Type == MySqlDbType.Binary && ColumnLength == 16 && driver.Settings.OldGuids)
       if (Type == MySqlDbType.Binary && ColumnLength == 16)
         mySqlDbType = MySqlDbType.CombGuid;
@@ -330,7 +330,7 @@ namespace MySql.Data.MySqlClient
       else if (v is MySqlGuid)
       {
         MySqlGuid g = (MySqlGuid)v;
-        // ## ¿àÖñ ÆÁ±Î ##
+        // ## è‹¦ç«¹ å±è”½ ##
         //g.OldGuids = driver.Settings.OldGuids;
         v = g;
       }

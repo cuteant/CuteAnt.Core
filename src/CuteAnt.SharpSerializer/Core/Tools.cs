@@ -1,4 +1,4 @@
-#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
+ï»¿#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
 
 //  ***********************************************************************
 //  Project: sharpSerializer
@@ -81,12 +81,12 @@ namespace CuteAnt.Serialization.Core
 			}
 			if (type == typeof(Color))
 			{
-				// ## ¿àÖñ 2012.10.12 ##
+				// ## è‹¦ç«¹ 2012.10.12 ##
 				return true;
 			}
 			if (type == typeof(Font))
 			{
-				// ## ¿àÖñ 2012.10.12 ##
+				// ## è‹¦ç«¹ 2012.10.12 ##
 				return true;
 			}
 			return type.IsPrimitive;

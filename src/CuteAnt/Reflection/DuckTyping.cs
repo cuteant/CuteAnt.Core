@@ -1,9 +1,9 @@
-/*
- * ×÷Õß£ºĞÂÉúÃü¿ª·¢ÍÅ¶Ó£¨http://www.newlifex.com/£©
+ï»¿/*
+ * ä½œè€…ï¼šæ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿï¼ˆhttp://www.newlifex.com/ï¼‰
  * 
- * °æÈ¨£º°æÈ¨ËùÓĞ (C) ĞÂÉúÃü¿ª·¢ÍÅ¶Ó 2002-2014
+ * ç‰ˆæƒï¼šç‰ˆæƒæ‰€æœ‰ (C) æ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿ 2002-2014
  * 
- * ĞŞ¸Ä£ºº£Ñó±ı¸É£¨cuteant@outlook.com£©
+ * ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²ï¼ˆcuteant@outlook.comï¼‰
 */
 
 using System;
@@ -13,13 +13,13 @@ using CuteAnt.Collections;
 
 namespace CuteAnt.Reflection
 {
-	/// <summary>Ñ¼×ÓÀàĞÍ¡£ÓÃÓÚ½â¾ö±àĞ´²å¼şÊ±±ØĞëÊµÏÖ²å¼ş½Ó¿ÚµÄÎÊÌâ¡£Ê¹ÓÃÊÊÅäÆ÷Ä£Ê½£¬¶¯Ì¬Éú³É´úÀíÀà¡£</summary>
+	/// <summary>é¸­å­ç±»å‹ã€‚ç”¨äºè§£å†³ç¼–å†™æ’ä»¶æ—¶å¿…é¡»å®ç°æ’ä»¶æ¥å£çš„é—®é¢˜ã€‚ä½¿ç”¨é€‚é…å™¨æ¨¡å¼ï¼ŒåŠ¨æ€ç”Ÿæˆä»£ç†ç±»ã€‚</summary>
 	internal static class DuckTyping
 	{
 		private static DictionaryCache<KeyValuePair<Type, Type>, Type> _cache = new DictionaryCache<KeyValuePair<Type, Type>, Type>();
 		private static CodeDomDuckTypeGenerator _generator = new CodeDomDuckTypeGenerator();
 
-		/// <summary>×ª»»¶à¸ö¶ÔÏó</summary>
+		/// <summary>è½¬æ¢å¤šä¸ªå¯¹è±¡</summary>
 		/// <typeparam name="TInterface"></typeparam>
 		/// <param name="objects"></param>
 		/// <returns></returns>
@@ -45,7 +45,7 @@ namespace CuteAnt.Reflection
 			return ducks;
 		}
 
-		/// <summary>×ª»»µ¥¸ö¶ÔÏó</summary>
+		/// <summary>è½¬æ¢å•ä¸ªå¯¹è±¡</summary>
 		/// <typeparam name="TInterface"></typeparam>
 		/// <param name="obj"></param>
 		/// <returns></returns>
@@ -62,7 +62,7 @@ namespace CuteAnt.Reflection
 			//return duck;
 		}
 
-		/// <summary>×ª»»µ¥¸ö¶ÔÏó</summary>
+		/// <summary>è½¬æ¢å•ä¸ªå¯¹è±¡</summary>
 		/// <param name="obj"></param>
 		/// <param name="interfaceType"></param>
 		/// <returns></returns>
@@ -80,7 +80,7 @@ namespace CuteAnt.Reflection
 			return duckType.CreateInstance(obj);
 		}
 
-		/// <summary>×¼±¸Ñ¼×ÓÀàĞÍ</summary>
+		/// <summary>å‡†å¤‡é¸­å­ç±»å‹</summary>
 		/// <typeparam name="TInterface"></typeparam>
 		/// <param name="duckedTypes"></param>
 		public static void PrepareDuckTypes<TInterface>(params Type[] duckedTypes)
@@ -116,7 +116,7 @@ namespace CuteAnt.Reflection
 			}
 			//lock (_cache)
 			{
-				// ÕÒµ½ËùÓĞÎ´´´½¨µÄÀàĞÍ
+				// æ‰¾åˆ°æ‰€æœ‰æœªåˆ›å»ºçš„ç±»å‹
 				List<Type> list = new List<Type>();
 
 				for (Int32 i = 0; i < duckedTypes.Length; i++)
@@ -128,7 +128,7 @@ namespace CuteAnt.Reflection
 					}
 				}
 
-				// Í³Ò»´´½¨
+				// ç»Ÿä¸€åˆ›å»º
 				if (list.Count > 0)
 				{
 					Type[] dts = CreateDuckTypes(interfaceType, list.ToArray());
@@ -140,7 +140,7 @@ namespace CuteAnt.Reflection
 				}
 			}
 
-			// ·´ÕıÈ«²¿¶¼ÓĞ»º´æÁË£¬ÕâÀïÖ±½ÓÄÃ
+			// åæ­£å…¨éƒ¨éƒ½æœ‰ç¼“å­˜äº†ï¼Œè¿™é‡Œç›´æ¥æ‹¿
 			Type[] duckTypes = new Type[duckedTypes.Length];
 
 			for (Int32 i = 0; i < duckedTypes.Length; i++)

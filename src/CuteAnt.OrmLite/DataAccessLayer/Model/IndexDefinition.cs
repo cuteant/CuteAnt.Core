@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -50,9 +50,9 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 				if (item.Columns == null || item.Columns.Length < 1) { continue; }
 
-				//// Èç¹ûÕâ¸öË÷ÒýµÄÎ¨Ò»×Ö¶ÎÊÇÖ÷¼ü£¬ÔòÎÞÐè½¨Á¢Ë÷Òý
+				//// å¦‚æžœè¿™ä¸ªç´¢å¼•çš„å”¯ä¸€å­—æ®µæ˜¯ä¸»é”®ï¼Œåˆ™æ— éœ€å»ºç«‹ç´¢å¼•
 				//if (item.Columns.Length == 1 && table.GetColumn(item.Columns[0]).PrimaryKey) { continue; }
-				// Èç¹ûË÷ÒýÈ«²¿¾ÍÊÇÖ÷¼ü£¬ÎÞÐè´´½¨Ë÷Òý
+				// å¦‚æžœç´¢å¼•å…¨éƒ¨å°±æ˜¯ä¸»é”®ï¼Œæ— éœ€åˆ›å»ºç´¢å¼•
 				if (table.GetColumns(item.Columns).All(e => e.PrimaryKey)) { continue; }
 
 				list.Add(Create(schemaName, item));

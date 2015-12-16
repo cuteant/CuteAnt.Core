@@ -1,5 +1,5 @@
-// This software is part of the Autofac IoC container
-// Copyright � 2011 Autofac Contributors
+﻿// This software is part of the Autofac IoC container
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person

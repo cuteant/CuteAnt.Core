@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------------------
+ï»¿//-----------------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //-----------------------------------------------------------------------------
 
@@ -482,7 +482,7 @@ namespace CuteAnt.Diagnostics
         {
           OnShutdownTracing();
         }
-        // ## ¿àÖñ ÐÞ¸Ä ##
+        // ## è‹¦ç«¹ ä¿®æ”¹ ##
         //#pragma warning suppress 56500 //Microsoft; Taken care of by FxCop
 #pragma warning restore 56500 //Microsoft; Taken care of by FxCop
         catch (Exception exception)

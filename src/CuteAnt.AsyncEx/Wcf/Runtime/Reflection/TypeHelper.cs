@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------------------
+ï»¿//-----------------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //-----------------------------------------------------------------------------
 
@@ -107,7 +107,7 @@ namespace CuteAnt.Reflection
       // first check the common cases
       if (source is T) { return (T)source; }
 
-      #region ## ¿àÖñ ĞŞ¸Ä ##
+      #region ## è‹¦ç«¹ ä¿®æ”¹ ##
       //if (source == null)
       //{
       //  if (typeof(T).IsValueType && !IsNullableType(typeof(T)))
@@ -155,7 +155,7 @@ namespace CuteAnt.Reflection
 
       //if (source is IConvertible)
       //{
-      //  // ÉÏº£Ê¯Í· ·¢ÏÖÕâÀïµ¼ÖÂJsonĞòÁĞ»¯ÎÊÌâ
+      //  // ä¸Šæµ·çŸ³å¤´ å‘ç°è¿™é‡Œå¯¼è‡´Jsonåºåˆ—åŒ–é—®é¢˜
       //  // http://www.newlifex.com/showtopic-282.aspx
       //  if (conversionType.IsGenericType && conversionType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
       //  {

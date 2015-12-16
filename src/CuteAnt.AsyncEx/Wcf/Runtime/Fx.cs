@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+ï»¿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -73,7 +73,7 @@ namespace CuteAnt
     {
       EtwDiagnosticTrace trace = new EtwDiagnosticTrace(defaultEventSource, EtwDiagnosticTrace.DefaultEtwProviderId);
 
-      #region ## ¿àÖñ Ìí¼Ó ##
+      #region ## è‹¦ç«¹ æ·»åŠ  ##
       if (null != trace.EtwProvider)
       {
         trace.RefreshState += delegate ()
@@ -91,7 +91,7 @@ namespace CuteAnt
     {
       [Fx.Tag.SecurityNote(Critical = "access critical field", Safe = "ok for get-only access")]
       [SecuritySafeCritical]
-      [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)] // ## ¿àÖñ Ìí¼Ó ##
+      [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)] // ## è‹¦ç«¹ æ·»åŠ  ##
       get
       {
         return Fx.s_asynchronousThreadExceptionHandler;
@@ -197,7 +197,7 @@ namespace CuteAnt
     {
       while (exception != null)
       {
-        #region ## ¿àÖñ ÐÞ¸Ä ##
+        #region ## è‹¦ç«¹ ä¿®æ”¹ ##
         //if (exception is FatalException ||
         //    exception is OutOfMemoryException ||
         //    exception is FatalInternalException)
@@ -399,7 +399,7 @@ namespace CuteAnt
       }
       catch (OutOfMemoryException exception)
       {
-        #region ## ¿àÖñ ÐÞ¸Ä ##
+        #region ## è‹¦ç«¹ ä¿®æ”¹ ##
         //// Desktop wraps the OOM inside a new InsufficientMemoryException, traces, and then throws it.
         //// Project N and K trace and throw the original OOM.  InsufficientMemoryException does not exist in N and K.
         //Fx.Exception.AsError(exception);
@@ -421,7 +421,7 @@ namespace CuteAnt
       }
       catch (OutOfMemoryException exception)
       {
-        #region ## ¿àÖñ ÐÞ¸Ä ##
+        #region ## è‹¦ç«¹ ä¿®æ”¹ ##
         //// Desktop wraps the OOM inside a new InsufficientMemoryException, traces, and then throws it.
         //// Project N and K trace and throw the original OOM.  InsufficientMemoryException does not exist in N and K.
         //Fx.Exception.AsError(exception);
@@ -1022,7 +1022,7 @@ namespace CuteAnt
       [SecuritySafeCritical]
       private void UnhandledExceptionFrame(T1 result)
       {
-        #region ## ¿àÖñ Ìí¼Ó ##
+        #region ## è‹¦ç«¹ æ·»åŠ  ##
         RuntimeHelpers.PrepareConstrainedRegions();
         #endregion
         try
@@ -1058,7 +1058,7 @@ namespace CuteAnt
       [SecuritySafeCritical]
       private void UnhandledExceptionFrame(IAsyncResult result)
       {
-        #region ## ¿àÖñ Ìí¼Ó ##
+        #region ## è‹¦ç«¹ æ·»åŠ  ##
         RuntimeHelpers.PrepareConstrainedRegions();
         #endregion
         try

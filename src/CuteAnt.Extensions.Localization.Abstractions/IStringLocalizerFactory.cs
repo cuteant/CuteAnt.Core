@@ -1,4 +1,4 @@
-// Copyright (c) .NET Foundation. All rights reserved. 
+ï»¿// Copyright (c) .NET Foundation. All rights reserved. 
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using System;
@@ -10,7 +10,7 @@ namespace CuteAnt.Extensions.Localization
   /// </summary>
   public interface IStringLocalizerFactory
   {
-    #region ## ¿àÖñ ÐÞ¸Ä ##
+    #region ## è‹¦ç«¹ ä¿®æ”¹ ##
     ///// <summary>
     ///// Creates an <see cref="IStringLocalizer"/> using the <see cref="System.Reflection.Assembly"/> and
     ///// <see cref="Type.FullName"/> of the specified <see cref="Type"/>.

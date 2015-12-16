@@ -1,4 +1,4 @@
-/* ±¾Ä£¿é»ùÓÚ¿ªÔ´ÏîÄ¿ FluentMigrator µÄ×ÓÄ£¿é Runner.Generators ĞŞ¸Ä¶ø³É¡£ĞŞ¸Ä£ºº£Ñó±ı¸É(cuteant@outlook.com)
+ï»¿/* æœ¬æ¨¡å—åŸºäºå¼€æºé¡¹ç›® FluentMigrator çš„å­æ¨¡å— Runner.Generators ä¿®æ”¹è€Œæˆã€‚ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²(cuteant@outlook.com)
  * 
  * h1. FluentMigrator
  * 
@@ -77,14 +77,14 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		internal override Boolean IsColumnTypeChanged(IDataColumn entityColumn, IDataColumn dbColumn)
 		{
-			// ÏÈÅĞ¶ÏÊı¾İÀàĞÍ
+			// å…ˆåˆ¤æ–­æ•°æ®ç±»å‹
 			if (entityColumn.DbType == dbColumn.DbType) { return false; }
 
-			//// ÀàĞÍ²»Æ¥Åä£¬²»Ò»¶¨¾ÍÊÇÓĞ¸Ä±ä£¬»¹Òª²éÕÒÀàĞÍ¶ÔÕÕ±íÊÇ·ñÓĞÆ¥ÅäµÄ£¬Ö»Òª´æÔÚÈÎÒâÒ»¸öÆ¥Åä£¬¾ÍËµÃ÷ÊÇºÏ·¨µÄ
+			//// ç±»å‹ä¸åŒ¹é…ï¼Œä¸ä¸€å®šå°±æ˜¯æœ‰æ”¹å˜ï¼Œè¿˜è¦æŸ¥æ‰¾ç±»å‹å¯¹ç…§è¡¨æ˜¯å¦æœ‰åŒ¹é…çš„ï¼Œåªè¦å­˜åœ¨ä»»æ„ä¸€ä¸ªåŒ¹é…ï¼Œå°±è¯´æ˜æ˜¯åˆæ³•çš„
 			//foreach (var item in FieldTypeMaps)
 			//{
 			//	//if (entityColumn.DataType == item.Key && dbColumn.DataType == item.Value) { return false; }
-			//	// °Ñ²»³£ÓÃµÄÀàĞÍÓ³Éäµ½³£ÓÃÀàĞÍ£¬±ÈÈçÊı¾İ¿âSByteÓ³Éäµ½ÊµÌåÀàByte£¬UInt32Ó³Éäµ½Int32£¬¶ø²»ĞèÒªÖØĞÂĞŞ¸ÄÊı¾İ¿â
+			//	// æŠŠä¸å¸¸ç”¨çš„ç±»å‹æ˜ å°„åˆ°å¸¸ç”¨ç±»å‹ï¼Œæ¯”å¦‚æ•°æ®åº“SByteæ˜ å°„åˆ°å®ä½“ç±»Byteï¼ŒUInt32æ˜ å°„åˆ°Int32ï¼Œè€Œä¸éœ€è¦é‡æ–°ä¿®æ”¹æ•°æ®åº“
 			//	if (dbColumn.DataType == item.Key && entityColumn.DataType == item.Value) { return false; }
 			//}
 			switch (entityColumn.DbType)

@@ -1,19 +1,19 @@
-namespace CuteAnt.OrmLite.DataAccessLayer
+ï»¿namespace CuteAnt.OrmLite.DataAccessLayer
 {
-	/// <summary>·´Ïò¹¤³ÌÉèÖÃ</summary>
+	/// <summary>åå‘å·¥ç¨‹è®¾ç½®</summary>
 	public class NegativeSetting
 	{
 		private bool _CheckOnly;
 		private bool _NoDelete;
 
-		/// <summary>ÊÇ·ñÖ»¼ì²é¡£Éú³ÉÈÕÖ¾£¬µ«²»Ö´ĞĞ²Ù×÷</summary>
+		/// <summary>æ˜¯å¦åªæ£€æŸ¥ã€‚ç”Ÿæˆæ—¥å¿—ï¼Œä½†ä¸æ‰§è¡Œæ“ä½œ</summary>
 		public bool CheckOnly
 		{
 			get { return _CheckOnly; }
 			set { _CheckOnly = value; }
 		}
 
-		/// <summary>ÊÇ·ñ²»É¾³ı¡£ÔÚÖ´ĞĞ·´Ïò²Ù×÷µÄÊ±ºò£¬ËùÓĞÉæ¼°É¾³ı±íºÍÉ¾³ı×Ö¶ÎµÄ²Ù×÷¾ù²»½øĞĞ¡£</summary>
+		/// <summary>æ˜¯å¦ä¸åˆ é™¤ã€‚åœ¨æ‰§è¡Œåå‘æ“ä½œçš„æ—¶å€™ï¼Œæ‰€æœ‰æ¶‰åŠåˆ é™¤è¡¨å’Œåˆ é™¤å­—æ®µçš„æ“ä½œå‡ä¸è¿›è¡Œã€‚</summary>
 		public bool NoDelete
 		{
 			get { return _NoDelete; }

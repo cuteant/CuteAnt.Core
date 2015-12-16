@@ -1,9 +1,9 @@
-/*
- * ×÷Õß£ºĞÂÉúÃü¿ª·¢ÍÅ¶Ó£¨http://www.newlifex.com/£©
+ï»¿/*
+ * ä½œè€…ï¼šæ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿï¼ˆhttp://www.newlifex.com/ï¼‰
  * 
- * °æÈ¨£º°æÈ¨ËùÓĞ (C) ĞÂÉúÃü¿ª·¢ÍÅ¶Ó 2002-2014
+ * ç‰ˆæƒï¼šç‰ˆæƒæ‰€æœ‰ (C) æ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿ 2002-2014
  * 
- * ĞŞ¸Ä£ºº£Ñó±ı¸É£¨cuteant@outlook.com£©
+ * ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²ï¼ˆcuteant@outlook.comï¼‰
 */
 
 using System;
@@ -36,74 +36,74 @@ using System.Runtime.CompilerServices;
 #endif
 
 /*
- * ÊµÌåÊı¾İ Save ·½·¨¸üĞÂ¹æÔòÈçÏÂ£º
- * 1¡¢ÅĞ¶ÏÊµÌåÀ´Ô´ÊÇ·ñÀ´×ÔÊı¾İ¿â£¬½á¹ûÎª·ñ£ºÈç¹ûÊÇ×ÔÔöÖ÷¼üÀàĞÍÊµÌåÔòÇ¿ÖÆ¸³¿ÕÖ÷¼üÖµ£¬Ö´ĞĞ²åÈë²Ù×÷¡£
- * 2¡¢ÅĞ¶ÏÊµÌåÀ´Ô´ÊÇ·ñÀ´×ÔÊı¾İ¿â£¬½á¹ûÎªÕæ£ºÅĞ¶ÏÖ÷¼üÖµÊÇ·ñÎª¿Õ£¬Èç¹ûÎª¿ÕÔòÖ´ĞĞ²åÈë²Ù×÷£»Èç¹û²»Îª¿ÕÔòÖ´ĞĞ¸üĞÂ²Ù×÷¡£
- * 3¡¢ÉÏÃæÁ½ÖÖÇé¿öÎŞ·¨ÖÇÄÜÊ¶±ğ²åÈë»ò¸üĞÂ²Ù×÷Ê±£¬¸ù¾İÒµÎñĞèÒªÊÖ¶¯µ÷ÓÃ Insert¡¢Update ·½·¨´¦Àí¡£
+ * å®ä½“æ•°æ® Save æ–¹æ³•æ›´æ–°è§„åˆ™å¦‚ä¸‹ï¼š
+ * 1ã€åˆ¤æ–­å®ä½“æ¥æºæ˜¯å¦æ¥è‡ªæ•°æ®åº“ï¼Œç»“æœä¸ºå¦ï¼šå¦‚æœæ˜¯è‡ªå¢ä¸»é”®ç±»å‹å®ä½“åˆ™å¼ºåˆ¶èµ‹ç©ºä¸»é”®å€¼ï¼Œæ‰§è¡Œæ’å…¥æ“ä½œã€‚
+ * 2ã€åˆ¤æ–­å®ä½“æ¥æºæ˜¯å¦æ¥è‡ªæ•°æ®åº“ï¼Œç»“æœä¸ºçœŸï¼šåˆ¤æ–­ä¸»é”®å€¼æ˜¯å¦ä¸ºç©ºï¼Œå¦‚æœä¸ºç©ºåˆ™æ‰§è¡Œæ’å…¥æ“ä½œï¼›å¦‚æœä¸ä¸ºç©ºåˆ™æ‰§è¡Œæ›´æ–°æ“ä½œã€‚
+ * 3ã€ä¸Šé¢ä¸¤ç§æƒ…å†µæ— æ³•æ™ºèƒ½è¯†åˆ«æ’å…¥æˆ–æ›´æ–°æ“ä½œæ—¶ï¼Œæ ¹æ®ä¸šåŠ¡éœ€è¦æ‰‹åŠ¨è°ƒç”¨ Insertã€Update æ–¹æ³•å¤„ç†ã€‚
  * */
 
 namespace CuteAnt.OrmLite
 {
   #region -- ActionLockTokenType --
 
-  /// <summary>ÅúÁ¿´¦ÀíÖĞ²Ù×÷·½·¨ËøÁîÅÆ·½Ê½</summary>
+  /// <summary>æ‰¹é‡å¤„ç†ä¸­æ“ä½œæ–¹æ³•é”ä»¤ç‰Œæ–¹å¼</summary>
   public enum ActionLockTokenType
   {
-    /// <summary>²»Ê¹ÓÃËøÁîÅÆ</summary>
+    /// <summary>ä¸ä½¿ç”¨é”ä»¤ç‰Œ</summary>
     None,
 
-    /// <summary>Ê¹ÓÃ¶ÁËøÁîÅÆ</summary>
+    /// <summary>ä½¿ç”¨è¯»é”ä»¤ç‰Œ</summary>
     UseReadLockToken,
 
-    /// <summary>Ê¹ÓÃĞ´ËøÁîÅÆ</summary>
+    /// <summary>ä½¿ç”¨å†™é”ä»¤ç‰Œ</summary>
     UseWriteLockToken
   }
 
   #endregion
 
-  /// <summary>Êı¾İÊµÌåÀà»ùÀà¡£ËùÓĞÊı¾İÊµÌåÀà¶¼±ØĞë¼Ì³Ğ¸ÃÀà¡£</summary>
+  /// <summary>æ•°æ®å®ä½“ç±»åŸºç±»ã€‚æ‰€æœ‰æ•°æ®å®ä½“ç±»éƒ½å¿…é¡»ç»§æ‰¿è¯¥ç±»ã€‚</summary>
   //[Serializable]
   //[ProtoContract(ImplicitFields = ImplicitFields.AllPublic, ImplicitFirstTag = 2)]
   public partial class Entity<TEntity> : EntityBase, IEquatable<TEntity>
     where TEntity : Entity<TEntity>, new()
   {
-    #region -- ¹¹Ôìº¯Êı --
+    #region -- æ„é€ å‡½æ•° --
 
-    /// <summary>¾²Ì¬¹¹Ôì</summary>
+    /// <summary>é™æ€æ„é€ </summary>
     static Entity()
     {
-      DAL.WriteDebugLog("¿ªÊ¼³õÊ¼»¯ÊµÌåÀà{0}", Meta.ThisType.Name);
+      DAL.WriteDebugLog("å¼€å§‹åˆå§‹åŒ–å®ä½“ç±»{0}", Meta.ThisType.Name);
       EntityFactory.Register(Meta.ThisType, new EntityOperate());
 
-      // 1£¬¿ÉÒÔ³õÊ¼»¯¸ÃÊµÌåÀàĞÍµÄ²Ù×÷¹¤³§
-      // 2£¬CreateOperate½«»áÊµÀı»¯Ò»¸öTEntity¶ÔÏó£¬´Ó¶øÒı·¢TEntityµÄ¾²Ì¬¹¹Ôìº¯Êı£¬
-      // ±ÜÃâÊµ¼ÊÓ¦ÓÃÖĞ£¬Ö±½Óµ÷ÓÃEntityµÄ¾²Ì¬·½·¨Ê±£¬Ã»ÓĞÒı·¢TEntityµÄ¾²Ì¬¹¹Ôìº¯Êı¡£
+      // 1ï¼Œå¯ä»¥åˆå§‹åŒ–è¯¥å®ä½“ç±»å‹çš„æ“ä½œå·¥å‚
+      // 2ï¼ŒCreateOperateå°†ä¼šå®ä¾‹åŒ–ä¸€ä¸ªTEntityå¯¹è±¡ï¼Œä»è€Œå¼•å‘TEntityçš„é™æ€æ„é€ å‡½æ•°ï¼Œ
+      // é¿å…å®é™…åº”ç”¨ä¸­ï¼Œç›´æ¥è°ƒç”¨Entityçš„é™æ€æ–¹æ³•æ—¶ï¼Œæ²¡æœ‰å¼•å‘TEntityçš„é™æ€æ„é€ å‡½æ•°ã€‚
       TEntity entity = new TEntity();
-      ////! ´óÊ¯Í· 2011-03-14 ÒÔÏÂ¹ı³Ì¸ÄÎªÒì²½´¦Àí
-      ////  ÒÑÈ·ÈÏ£¬µ±ÊµÌåÀà¾²Ì¬¹¹Ôìº¯ÊıÖĞÊ¹ÓÃÁËEntityFactory.CreateOperate(Type)·½·¨Ê±£¬¿ÉÄÜ³öÏÖËÀËø¡£
-      ////  ÒòÎªÁ½Õß¶¼»áÕù¶áEntityFactoryÖĞµÄop_cache£¬¶øCreateOperate(Type)ÄÃµ½op_cacheºó£¬»¹ĞèÒªµÈ´ıµ±Ç°¾²Ì¬¹¹Ôìº¯ÊıÖ´ĞĞÍê³É¡£
-      ////  ²»È·¶¨ÕâÑù×ÓÊÇ·ñ´øÀ´ºóÒÅÖ¢
+      ////! å¤§çŸ³å¤´ 2011-03-14 ä»¥ä¸‹è¿‡ç¨‹æ”¹ä¸ºå¼‚æ­¥å¤„ç†
+      ////  å·²ç¡®è®¤ï¼Œå½“å®ä½“ç±»é™æ€æ„é€ å‡½æ•°ä¸­ä½¿ç”¨äº†EntityFactory.CreateOperate(Type)æ–¹æ³•æ—¶ï¼Œå¯èƒ½å‡ºç°æ­»é”ã€‚
+      ////  å› ä¸ºä¸¤è€…éƒ½ä¼šäº‰å¤ºEntityFactoryä¸­çš„op_cacheï¼Œè€ŒCreateOperate(Type)æ‹¿åˆ°op_cacheåï¼Œè¿˜éœ€è¦ç­‰å¾…å½“å‰é™æ€æ„é€ å‡½æ•°æ‰§è¡Œå®Œæˆã€‚
+      ////  ä¸ç¡®å®šè¿™æ ·å­æ˜¯å¦å¸¦æ¥åé—ç—‡
       //ThreadPool.QueueUserWorkItem(delegate
       //{
       //    EntityFactory.CreateOperate(Meta.ThisType, entity);
       //});
-      DAL.WriteDebugLog("Íê³É³õÊ¼»¯ÊµÌåÀà{0}", Meta.ThisType.Name);
+      DAL.WriteDebugLog("å®Œæˆåˆå§‹åŒ–å®ä½“ç±»{0}", Meta.ThisType.Name);
     }
 
-    /// <summary>´´½¨ÊµÌå¡£</summary>
+    /// <summary>åˆ›å»ºå®ä½“ã€‚</summary>
     /// <remarks>
-    /// ¿ÉÒÔÖØĞ´¸Ä·½·¨ÒÔÊµÏÖÊµÌå¶ÔÏóµÄÒ»Ğ©³õÊ¼»¯¹¤×÷¡£
-    /// ÇĞ¼Ç£¬Ğ´ÎªÊµÀı·½·¨½ö½öÊÇÎªÁË·½±ãÖØÔØ£¬ËùÒª·µ»ØµÄÊµÀı¾ø¶Ô²»»áÊÇµ±Ç°ÊµÀı¡£
+    /// å¯ä»¥é‡å†™æ”¹æ–¹æ³•ä»¥å®ç°å®ä½“å¯¹è±¡çš„ä¸€äº›åˆå§‹åŒ–å·¥ä½œã€‚
+    /// åˆ‡è®°ï¼Œå†™ä¸ºå®ä¾‹æ–¹æ³•ä»…ä»…æ˜¯ä¸ºäº†æ–¹ä¾¿é‡è½½ï¼Œæ‰€è¦è¿”å›çš„å®ä¾‹ç»å¯¹ä¸ä¼šæ˜¯å½“å‰å®ä¾‹ã€‚
     /// </remarks>
-    /// <param name="forEdit">ÊÇ·ñÎªÁË±à¼­¶ø´´½¨£¬Èç¹ûÊÇ£¬¿ÉÒÔÔÙ´Î×öÒ»Ğ©Ïà¹ØµÄ³õÊ¼»¯¹¤×÷</param>
+    /// <param name="forEdit">æ˜¯å¦ä¸ºäº†ç¼–è¾‘è€Œåˆ›å»ºï¼Œå¦‚æœæ˜¯ï¼Œå¯ä»¥å†æ¬¡åšä¸€äº›ç›¸å…³çš„åˆå§‹åŒ–å·¥ä½œ</param>
     /// <returns></returns>
     //[Obsolete("=>IEntityOperate")]
     //[EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual TEntity CreateInstance(Boolean forEdit = false)
     {
       //return new TEntity();
-      // new TEntity»á±»±àÒëÎªActivator.CreateInstance<TEntity>()£¬»¹²»ÈçActivator.CreateInstance()ÄØ
-      // Activator.CreateInstance()ÓĞ»º´æ¹¦ÄÜ£¬¶ø·ºĞÍµÄÄÇ¸öÃ»ÓĞ
+      // new TEntityä¼šè¢«ç¼–è¯‘ä¸ºActivator.CreateInstance<TEntity>()ï¼Œè¿˜ä¸å¦‚Activator.CreateInstance()å‘¢
+      // Activator.CreateInstance()æœ‰ç¼“å­˜åŠŸèƒ½ï¼Œè€Œæ³›å‹çš„é‚£ä¸ªæ²¡æœ‰
       //return Activator.CreateInstance(Meta.ThisType) as TEntity;
       var entity = Meta.ThisType.CreateInstance() as TEntity;
       Meta._Modules.Create(entity, forEdit);
@@ -112,32 +112,32 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- Ìî³äÊı¾İ --
+    #region -- å¡«å……æ•°æ® --
 
     #region - DataSet/DataTable to EntityList -
 
-    /// <summary>¼ÓÔØ¼ÇÂ¼¼¯¡£ÎŞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <param name="ds">¼ÇÂ¼¼¯</param>
-    /// <returns>ÊµÌåÊı×é</returns>
-    [Obsolete("ÇëÊ¹ÓÃLoadDataToList£¡")]
+    /// <summary>åŠ è½½è®°å½•é›†ã€‚æ— æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <param name="ds">è®°å½•é›†</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
+    [Obsolete("è¯·ä½¿ç”¨LoadDataToListï¼")]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static EntityList<TEntity> LoadData(DataSet ds)
     {
       return LoadDataToList(ds);
     }
 
-    /// <summary>¼ÓÔØ¼ÇÂ¼¼¯¡£ÎŞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <param name="ds">¼ÇÂ¼¼¯</param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>åŠ è½½è®°å½•é›†ã€‚æ— æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <param name="ds">è®°å½•é›†</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     public static EntityList<TEntity> LoadDataToList(DataSet ds)
     {
       return LoadDataToList(ds, false);
     }
 
-    /// <summary>¼ÓÔØ¼ÇÂ¼¼¯¡£ÎŞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <param name="ds">¼ÇÂ¼¼¯</param>
+    /// <summary>åŠ è½½è®°å½•é›†ã€‚æ— æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <param name="ds">è®°å½•é›†</param>
     /// <param name="isReverse"></param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     private static EntityList<TEntity> LoadDataToList(DataSet ds, Boolean isReverse)
     {
       if (ds == null || ds.Tables.Count < 1)
@@ -148,33 +148,33 @@ namespace CuteAnt.OrmLite
       return LoadDataToList(ds.Tables[0], isReverse);
     }
 
-    /// <summary>¼ÓÔØÊı¾İ±í¡£ÎŞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <param name="dt">Êı¾İ±í</param>
-    /// <returns>ÊµÌåÊı×é</returns>
-    [Obsolete("ÇëÊ¹ÓÃLoadDataToList£¡")]
+    /// <summary>åŠ è½½æ•°æ®è¡¨ã€‚æ— æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <param name="dt">æ•°æ®è¡¨</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
+    [Obsolete("è¯·ä½¿ç”¨LoadDataToListï¼")]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static EntityList<TEntity> LoadData(DataTable dt)
     {
       return LoadDataToList(dt);
     }
 
-    /// <summary>¼ÓÔØÊı¾İ±í¡£ÎŞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <param name="dt">Êı¾İ±í</param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>åŠ è½½æ•°æ®è¡¨ã€‚æ— æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <param name="dt">æ•°æ®è¡¨</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     public static EntityList<TEntity> LoadDataToList(DataTable dt)
     {
       return LoadDataToList(dt, false);
     }
 
-    /// <summary>¼ÓÔØÊı¾İ±í¡£ÎŞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <param name="dt">Êı¾İ±í</param>
+    /// <summary>åŠ è½½æ•°æ®è¡¨ã€‚æ— æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <param name="dt">æ•°æ®è¡¨</param>
     /// <param name="isReverse"></param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     private static EntityList<TEntity> LoadDataToList(DataTable dt, Boolean isReverse)
     {
       var list = DataRowAccessor.LoadDataToList(dt, isReverse);
 
-      // ÉèÖÃÄ¬ÈÏÀÛ¼Ó×Ö¶Î
+      // è®¾ç½®é»˜è®¤ç´¯åŠ å­—æ®µ
       EntityAddition.SetField(list);
 
       return list;
@@ -184,18 +184,18 @@ namespace CuteAnt.OrmLite
 
     #region - DataSet/DataTable to EntitySet -
 
-    /// <summary>¼ÓÔØ¼ÇÂ¼¼¯¡£ÎŞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <param name="ds">¼ÇÂ¼¼¯</param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>åŠ è½½è®°å½•é›†ã€‚æ— æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <param name="ds">è®°å½•é›†</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     public static EntitySet<TEntity> LoadDataToSet(DataSet ds)
     {
       return LoadDataToSet(ds, false);
     }
 
-    /// <summary>¼ÓÔØ¼ÇÂ¼¼¯¡£ÎŞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <param name="ds">¼ÇÂ¼¼¯</param>
+    /// <summary>åŠ è½½è®°å½•é›†ã€‚æ— æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <param name="ds">è®°å½•é›†</param>
     /// <param name="isReverse"></param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     private static EntitySet<TEntity> LoadDataToSet(DataSet ds, Boolean isReverse)
     {
       if (ds == null || ds.Tables.Count < 1)
@@ -206,23 +206,23 @@ namespace CuteAnt.OrmLite
       return LoadDataToSet(ds.Tables[0], isReverse);
     }
 
-    /// <summary>¼ÓÔØÊı¾İ±í¡£ÎŞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <param name="dt">Êı¾İ±í</param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>åŠ è½½æ•°æ®è¡¨ã€‚æ— æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <param name="dt">æ•°æ®è¡¨</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     public static EntitySet<TEntity> LoadDataToSet(DataTable dt)
     {
       return LoadDataToSet(dt, false);
     }
 
-    /// <summary>¼ÓÔØÊı¾İ±í¡£ÎŞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <param name="dt">Êı¾İ±í</param>
+    /// <summary>åŠ è½½æ•°æ®è¡¨ã€‚æ— æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <param name="dt">æ•°æ®è¡¨</param>
     /// <param name="isReverse"></param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     private static EntitySet<TEntity> LoadDataToSet(DataTable dt, Boolean isReverse)
     {
       var set = DataRowAccessor.LoadDataToSet(dt, isReverse);
 
-      // ÉèÖÃÄ¬ÈÏÀÛ¼Ó×Ö¶Î
+      // è®¾ç½®é»˜è®¤ç´¯åŠ å­—æ®µ
       EntityAddition.SetField(set.Cast<IEntity>());
       foreach (EntityBase entity in set)
       {
@@ -244,7 +244,7 @@ namespace CuteAnt.OrmLite
       {
         if (_DataRowAccessor == null)
         {
-          // »ñÈ¡Ò»´ÎÊµÌå²Ù×÷Õß
+          // è·å–ä¸€æ¬¡å®ä½“æ“ä½œè€…
           var eop = Meta.Factory;
           Interlocked.CompareExchange<DataRowEntityAccessor<TEntity>>(ref _DataRowAccessor, new DataRowEntityAccessor<TEntity>(), null);
         }
@@ -254,17 +254,17 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- ²Ù×÷ --
+    #region -- æ“ä½œ --
 
-    /// <summary>²åÈëÊı¾İ£¬<see cref="Valid"/>ºó£¬ÔÚÊÂÎñÖĞµ÷ÓÃ<see cref="OnInsert"/>¡£</summary>
+    /// <summary>æ’å…¥æ•°æ®ï¼Œ<see cref="Valid"/>åï¼Œåœ¨äº‹åŠ¡ä¸­è°ƒç”¨<see cref="OnInsert"/>ã€‚</summary>
     /// <returns></returns>
     public override Int32 Insert()
     {
       return DoAction(OnInsert, true);
     }
 
-    /// <summary>²»ĞèÒªÑéÖ¤µÄ²åÈë£¬²»Ö´ĞĞValid£¬Ò»°ãÓÃÓÚ¿ìËÙµ¼ÈëÊı¾İ</summary>
-    /// <remarks>## ¿àÖñ Ìí¼Ó 2014.04.01 23:45 ##</remarks>
+    /// <summary>ä¸éœ€è¦éªŒè¯çš„æ’å…¥ï¼Œä¸æ‰§è¡ŒValidï¼Œä¸€èˆ¬ç”¨äºå¿«é€Ÿå¯¼å…¥æ•°æ®</summary>
+    /// <remarks>## è‹¦ç«¹ æ·»åŠ  2014.04.01 23:45 ##</remarks>
     /// <returns></returns>
     public override Int32 InsertWithoutValid()
     {
@@ -274,7 +274,7 @@ namespace CuteAnt.OrmLite
       finally { enableValid = true; }
     }
 
-    /// <summary>°Ñ¸Ã¶ÔÏó³Ö¾Ã»¯µ½Êı¾İ¿â£¬Ìí¼Ó/¸üĞÂÊµÌå»º´æ¡£</summary>
+    /// <summary>æŠŠè¯¥å¯¹è±¡æŒä¹…åŒ–åˆ°æ•°æ®åº“ï¼Œæ·»åŠ /æ›´æ–°å®ä½“ç¼“å­˜ã€‚</summary>
     /// <returns></returns>
     protected virtual Int32 OnInsert()
     {
@@ -293,14 +293,14 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>¸üĞÂÊı¾İ£¬<see cref="Valid"/>ºó£¬ÔÚÊÂÎñÖĞµ÷ÓÃ<see cref="OnUpdate"/>¡£</summary>
+    /// <summary>æ›´æ–°æ•°æ®ï¼Œ<see cref="Valid"/>åï¼Œåœ¨äº‹åŠ¡ä¸­è°ƒç”¨<see cref="OnUpdate"/>ã€‚</summary>
     /// <returns></returns>
     public override Int32 Update()
     {
       return DoAction(OnUpdate, false);
     }
 
-    /// <summary>¸üĞÂÊı¾İ¿â£¬Í¬Ê±¸üĞÂÊµÌå»º´æ</summary>
+    /// <summary>æ›´æ–°æ•°æ®åº“ï¼ŒåŒæ—¶æ›´æ–°å®ä½“ç¼“å­˜</summary>
     /// <returns></returns>
     protected virtual Int32 OnUpdate()
     {
@@ -319,33 +319,33 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>É¾³ıÊı¾İ£¬Í¨¹ıÔÚÊÂÎñÖĞµ÷ÓÃOnDeleteÊµÏÖ¡£</summary>
+    /// <summary>åˆ é™¤æ•°æ®ï¼Œé€šè¿‡åœ¨äº‹åŠ¡ä¸­è°ƒç”¨OnDeleteå®ç°ã€‚</summary>
     /// <remarks>
-    /// É¾³ıÊ±£¬Èç¹ûÓĞÇÒ½öÓĞÖ÷¼üÓĞÔàÊı¾İ£¬Ôò¿ÉÄÜÊÇObjectDataSourceÖ®ÀàµÄÉ¾³ı²Ù×÷¡£
-    /// ¸ÃÇé¿öÏÂ£¬ÊµÌåÀàÃ»ÓĞÍêÕûµÄĞÅÏ¢£¨½öÓĞÖ÷¼üĞÅÏ¢£©£¬½«»áµ¼ÖÂÎŞ·¨Í¨¹ıÀ©Õ¹ÊôĞÔÉ¾³ı¸½ÊôÊı¾İ¡£
-    /// Èç¹ûĞèÒª±Ü¿ª¸Ã»úÖÆ£¬ÇëÇå¿ÕÔàÊı¾İ¡£
+    /// åˆ é™¤æ—¶ï¼Œå¦‚æœæœ‰ä¸”ä»…æœ‰ä¸»é”®æœ‰è„æ•°æ®ï¼Œåˆ™å¯èƒ½æ˜¯ObjectDataSourceä¹‹ç±»çš„åˆ é™¤æ“ä½œã€‚
+    /// è¯¥æƒ…å†µä¸‹ï¼Œå®ä½“ç±»æ²¡æœ‰å®Œæ•´çš„ä¿¡æ¯ï¼ˆä»…æœ‰ä¸»é”®ä¿¡æ¯ï¼‰ï¼Œå°†ä¼šå¯¼è‡´æ— æ³•é€šè¿‡æ‰©å±•å±æ€§åˆ é™¤é™„å±æ•°æ®ã€‚
+    /// å¦‚æœéœ€è¦é¿å¼€è¯¥æœºåˆ¶ï¼Œè¯·æ¸…ç©ºè„æ•°æ®ã€‚
     /// </remarks>
     /// <returns></returns>
     public override Int32 Delete()
     {
       if (HasDirty)
       {
-        // ÊÇ·ñÓĞÇÒ½öÓĞÖ÷¼üÓĞÔàÊı¾İ
+        // æ˜¯å¦æœ‰ä¸”ä»…æœ‰ä¸»é”®æœ‰è„æ•°æ®
         var names = Meta.Table.PrimaryKeys.Select(f => f.Name).OrderBy(k => k);
 
-        // ÔàÊı¾İÀïÃæÊÇ·ñ´æÔÚ·ÇÖ÷¼üÇÒÎªtrueµÄ
+        // è„æ•°æ®é‡Œé¢æ˜¯å¦å­˜åœ¨éä¸»é”®ä¸”ä¸ºtrueçš„
         var names2 = Dirtys.Where(d => d.Value).Select(d => d.Key).OrderBy(k => k);
 
-        // ĞòÁĞÏàµÈ£¬·ûºÏÌõ¼ş
+        // åºåˆ—ç›¸ç­‰ï¼Œç¬¦åˆæ¡ä»¶
         if (names.SequenceEqual(names2))
         {
-          // ÔÙ´Î²éÑ¯
+          // å†æ¬¡æŸ¥è¯¢
           var entity = Find(EntityPersistence<TEntity>.GetPrimaryCondition(this as TEntity));
 
-          // Èç¹ûÄ¿±êÊı¾İ²»´æÔÚ£¬¾ÍÃ»±ØÒªÉ¾³ıÁË
+          // å¦‚æœç›®æ ‡æ•°æ®ä¸å­˜åœ¨ï¼Œå°±æ²¡å¿…è¦åˆ é™¤äº†
           if (entity == null) { return 0; }
 
-          // ¸´ÖÆÔàÊı¾İºÍÀ©Õ¹Êı¾İ
+          // å¤åˆ¶è„æ•°æ®å’Œæ‰©å±•æ•°æ®
           foreach (var item in names)
           {
             entity.Dirtys[item] = true;
@@ -362,7 +362,7 @@ namespace CuteAnt.OrmLite
       return DoAction(OnDelete, null);
     }
 
-    /// <summary>´ÓÊı¾İ¿âÖĞÉ¾³ı¸Ã¶ÔÏó£¬Í¬Ê±´ÓÊµÌå»º´æÖĞÉ¾³ı</summary>
+    /// <summary>ä»æ•°æ®åº“ä¸­åˆ é™¤è¯¥å¯¹è±¡ï¼ŒåŒæ—¶ä»å®ä½“ç¼“å­˜ä¸­åˆ é™¤</summary>
     /// <returns></returns>
     protected virtual Int32 OnDelete()
     {
@@ -401,7 +401,7 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>±£´æ¡£¸ù¾İÖ÷¼ü¼ì²éÊı¾İ¿âÖĞÊÇ·ñÒÑ´æÔÚ¸Ã¶ÔÏó£¬ÔÙ¾ö¶¨µ÷ÓÃInsert»òUpdate</summary>
+    /// <summary>ä¿å­˜ã€‚æ ¹æ®ä¸»é”®æ£€æŸ¥æ•°æ®åº“ä¸­æ˜¯å¦å·²å­˜åœ¨è¯¥å¯¹è±¡ï¼Œå†å†³å®šè°ƒç”¨Insertæˆ–Update</summary>
     /// <returns></returns>
     public override Int32 Save()
     {
@@ -416,13 +416,13 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>ÅĞ¶ÏÊµÌå¶ÔÏóÊÇ·ñÎªĞÂÔöÊµÌå£¬±£´æÊµÌåÊ±Ö´ĞĞ²åÈë²Ù×÷¡£</summary>
+    /// <summary>åˆ¤æ–­å®ä½“å¯¹è±¡æ˜¯å¦ä¸ºæ–°å¢å®ä½“ï¼Œä¿å­˜å®ä½“æ—¶æ‰§è¡Œæ’å…¥æ“ä½œã€‚</summary>
     /// <returns></returns>
     protected virtual Boolean? IsNew()
     {
       if (_IsFromDatabase)
       {
-        // ÓÅÏÈÊ¹ÓÃ×ÔÔö×Ö¶ÎÅĞ¶Ï
+        // ä¼˜å…ˆä½¿ç”¨è‡ªå¢å­—æ®µåˆ¤æ–­
         var fi = Meta.Table.Identity;
         if (fi != null)
         {
@@ -430,12 +430,12 @@ namespace CuteAnt.OrmLite
         }
 
         fi = Meta.Unique;
-        // Èç¹ûÎ¨Ò»Ö÷¼ü²»Îª¿Õ£¬Ó¦¸ÃÍ¨¹ıºóÃæÅĞ¶Ï£¬¶ø²»ÊÇÖ±½ÓUpdate
+        // å¦‚æœå”¯ä¸€ä¸»é”®ä¸ä¸ºç©ºï¼Œåº”è¯¥é€šè¿‡åé¢åˆ¤æ–­ï¼Œè€Œä¸æ˜¯ç›´æ¥Update
         if (fi != null && Helper.IsNullKey(this[fi.Name], fi.Field.DbType)) { return true; }
       }
       else
       {
-        // Èç¹ûÖ÷¼üÎª×ÔÔö×Ö¶Î£¬Ç¿ÖÆÇå¿ÕÖ÷¼üÖµ
+        // å¦‚æœä¸»é”®ä¸ºè‡ªå¢å­—æ®µï¼Œå¼ºåˆ¶æ¸…ç©ºä¸»é”®å€¼
         var fi = Meta.Table.Identity;
         if (fi != null) { this[fi.Name] = 0; }
         return true;
@@ -444,7 +444,7 @@ namespace CuteAnt.OrmLite
       return null;
     }
 
-    /// <summary>²»ĞèÒªÑéÖ¤µÄ±£´æ£¬²»Ö´ĞĞValid£¬Ò»°ãÓÃÓÚ¿ìËÙµ¼ÈëÊı¾İ</summary>
+    /// <summary>ä¸éœ€è¦éªŒè¯çš„ä¿å­˜ï¼Œä¸æ‰§è¡ŒValidï¼Œä¸€èˆ¬ç”¨äºå¿«é€Ÿå¯¼å…¥æ•°æ®</summary>
     /// <returns></returns>
     public override Int32 SaveWithoutValid()
     {
@@ -457,36 +457,36 @@ namespace CuteAnt.OrmLite
     [NonSerialized, IgnoreDataMember, XmlIgnore]
     private Boolean enableValid = true;
 
-    /// <summary>ÑéÖ¤Êı¾İ£¬Í¨¹ıÅ×³öÒì³£µÄ·½Ê½ÌáÊ¾ÑéÖ¤Ê§°Ü¡£</summary>
-    /// <remarks>½¨ÒéÖØĞ´Õßµ÷ÓÃ»ùÀàµÄÊµÏÖ£¬ÒòÎª»ùÀà¸ù¾İÊı¾İ×Ö¶ÎµÄÎ¨Ò»Ë÷Òı½øĞĞÊı¾İÑéÖ¤¡£</remarks>
-    /// <param name="isNew">ÊÇ·ñĞÂÊı¾İ</param>
+    /// <summary>éªŒè¯æ•°æ®ï¼Œé€šè¿‡æŠ›å‡ºå¼‚å¸¸çš„æ–¹å¼æç¤ºéªŒè¯å¤±è´¥ã€‚</summary>
+    /// <remarks>å»ºè®®é‡å†™è€…è°ƒç”¨åŸºç±»çš„å®ç°ï¼Œå› ä¸ºåŸºç±»æ ¹æ®æ•°æ®å­—æ®µçš„å”¯ä¸€ç´¢å¼•è¿›è¡Œæ•°æ®éªŒè¯ã€‚</remarks>
+    /// <param name="isNew">æ˜¯å¦æ–°æ•°æ®</param>
     public virtual void Valid(Boolean isNew)
     {
-      // ¸ù¾İË÷Òı£¬ÅĞ¶ÏÎ¨Ò»ĞÔ
+      // æ ¹æ®ç´¢å¼•ï¼Œåˆ¤æ–­å”¯ä¸€æ€§
       var table = Meta.Table.DataTable;
       if (table.Indexes != null && table.Indexes.Count > 0)
       {
-        // ±éÀúËùÓĞË÷Òı
+        // éå†æ‰€æœ‰ç´¢å¼•
         foreach (var item in table.Indexes)
         {
-          // Ö»´¦ÀíÎ¨Ò»Ë÷Òı
+          // åªå¤„ç†å”¯ä¸€ç´¢å¼•
           if (!item.Unique) { continue; }
 
-          // ĞèÒª×ªÎª±ğÃû£¬Ò²¾ÍÊÇ×Ö¶ÎÃû
+          // éœ€è¦è½¬ä¸ºåˆ«åï¼Œä¹Ÿå°±æ˜¯å­—æ®µå
           var columns = table.GetColumns(item.Columns);
           if (columns == null || columns.Length < 1) { continue; }
 
-          // ²»´¦Àí×ÔÔö
+          // ä¸å¤„ç†è‡ªå¢
           if (columns.All(c => c.Identity)) { continue; }
 
-          // ¼ÇÂ¼×Ö¶ÎÊÇ·ñÓĞ¸üĞÂ
+          // è®°å½•å­—æ®µæ˜¯å¦æœ‰æ›´æ–°
           Boolean changed = false;
           if (!isNew)
           {
             changed = columns.Any(c => Dirtys[c.Name]);
           }
 
-          // ´æÔÚ¼ì²é
+          // å­˜åœ¨æ£€æŸ¥
           if (isNew || changed)
           {
             CheckExist(isNew, columns.Select(c => c.Name).Distinct().ToArray());
@@ -495,15 +495,15 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>¸ù¾İÖ¸¶¨¼ü¼ì²éÊı¾İÊÇ·ñÒÑ´æÔÚ£¬ÈôÒÑ´æÔÚ£¬Å×³öArgumentOutOfRangeExceptionÒì³£</summary>
+    /// <summary>æ ¹æ®æŒ‡å®šé”®æ£€æŸ¥æ•°æ®æ˜¯å¦å·²å­˜åœ¨ï¼Œè‹¥å·²å­˜åœ¨ï¼ŒæŠ›å‡ºArgumentOutOfRangeExceptionå¼‚å¸¸</summary>
     /// <param name="names"></param>
     public virtual void CheckExist(params String[] names)
     {
       CheckExist(true, names);
     }
 
-    /// <summary>¸ù¾İÖ¸¶¨¼ü¼ì²éÊı¾İÊÇ·ñÒÑ´æÔÚ£¬ÈôÒÑ´æÔÚ£¬Å×³öArgumentOutOfRangeExceptionÒì³£</summary>
-    /// <param name="isNew">ÊÇ·ñĞÂÊı¾İ</param>
+    /// <summary>æ ¹æ®æŒ‡å®šé”®æ£€æŸ¥æ•°æ®æ˜¯å¦å·²å­˜åœ¨ï¼Œè‹¥å·²å­˜åœ¨ï¼ŒæŠ›å‡ºArgumentOutOfRangeExceptionå¼‚å¸¸</summary>
+    /// <param name="isNew">æ˜¯å¦æ–°æ•°æ®</param>
     /// <param name="names"></param>
     public virtual void CheckExist(Boolean isNew, params String[] names)
     {
@@ -514,7 +514,7 @@ namespace CuteAnt.OrmLite
 
         for (int i = 0; i < names.Length; i++)
         {
-          if (sb.Length > 0) { sb.Append("£¬"); }
+          if (sb.Length > 0) { sb.Append("ï¼Œ"); }
           FieldItem field = Meta.Table.FindByName(names[i]);
           if (field != null) { name = field.Description; }
           if (name.IsNullOrWhiteSpace()) { name = names[i]; }
@@ -525,12 +525,12 @@ namespace CuteAnt.OrmLite
         {
           name = Meta.ThisType.Name;
         }
-        sb.AppendFormat(" µÄ{0}ÒÑ´æÔÚ£¡", name);
+        sb.AppendFormat(" çš„{0}å·²å­˜åœ¨ï¼", name);
         throw new ArgumentOutOfRangeException(String.Join(",", names), this[names[0]], sb.ToString());
       }
     }
 
-    /// <summary>¸ù¾İÖ¸¶¨¼ü¼ì²éÊı¾İ£¬·µ»ØÊı¾İÊÇ·ñÒÑ´æÔÚ</summary>
+    /// <summary>æ ¹æ®æŒ‡å®šé”®æ£€æŸ¥æ•°æ®ï¼Œè¿”å›æ•°æ®æ˜¯å¦å·²å­˜åœ¨</summary>
     /// <param name="names"></param>
     /// <returns></returns>
     public virtual Boolean Exist(params String[] names)
@@ -538,14 +538,14 @@ namespace CuteAnt.OrmLite
       return Exist(true, names);
     }
 
-    /// <summary>¸ù¾İÖ¸¶¨¼ü¼ì²éÊı¾İ£¬·µ»ØÊı¾İÊÇ·ñÒÑ´æÔÚ</summary>
-    /// <param name="isNew">ÊÇ·ñĞÂÊı¾İ</param>
+    /// <summary>æ ¹æ®æŒ‡å®šé”®æ£€æŸ¥æ•°æ®ï¼Œè¿”å›æ•°æ®æ˜¯å¦å·²å­˜åœ¨</summary>
+    /// <param name="isNew">æ˜¯å¦æ–°æ•°æ®</param>
     /// <param name="names"></param>
     /// <returns></returns>
     public virtual Boolean Exist(Boolean isNew, params String[] names)
     {
-      // ¸ù¾İÖ¸¶¨¼ü²éÕÒËùÓĞ·ûºÏµÄÊı¾İ£¬È»ºó±È¶Ô¡£
-      // µ±È»£¬Ò²¿ÉÒÔÍ¨¹ıÖ¸¶¨¼üºÍÖ÷¼üÅäºÏ£¬ÕÒµ½ÓµÓĞÖ¸¶¨¼ü£¬µ«ÊÇ²»ÊÇµ±Ç°Ö÷¼üµÄÊı¾İ£¬Ö»²é¼ÇÂ¼Êı¡£
+      // æ ¹æ®æŒ‡å®šé”®æŸ¥æ‰¾æ‰€æœ‰ç¬¦åˆçš„æ•°æ®ï¼Œç„¶åæ¯”å¯¹ã€‚
+      // å½“ç„¶ï¼Œä¹Ÿå¯ä»¥é€šè¿‡æŒ‡å®šé”®å’Œä¸»é”®é…åˆï¼Œæ‰¾åˆ°æ‹¥æœ‰æŒ‡å®šé”®ï¼Œä½†æ˜¯ä¸æ˜¯å½“å‰ä¸»é”®çš„æ•°æ®ï¼ŒåªæŸ¥è®°å½•æ•°ã€‚
       Object[] values = new Object[names.Length];
       for (int i = 0; i < names.Length; i++)
       {
@@ -557,28 +557,28 @@ namespace CuteAnt.OrmLite
       var cache = Meta.Session.Cache;
       if (!cache.Using)
       {
-        // Èç¹ûÊÇ¿ÕÖ÷¼ü£¬Ôò²ÉÓÃÖ±½ÓÅĞ¶Ï¼ÇÂ¼ÊıµÄ·½Ê½£¬ÒÔ¼Ó¿ìËÙ¶È
+        // å¦‚æœæ˜¯ç©ºä¸»é”®ï¼Œåˆ™é‡‡ç”¨ç›´æ¥åˆ¤æ–­è®°å½•æ•°çš„æ–¹å¼ï¼Œä»¥åŠ å¿«é€Ÿåº¦
         if (Helper.IsNullKey(val, field.Field.DbType)) { return FindCount(names, values) > 0; }
 
         var list = FindAll(names, values);
         if (list == null || list.Count < 1) { return false; }
         if (list.Count > 1) { return true; }
 
-        // Èç¹ûÊÇGuidµÈÖ÷¼ü£¬¿ÉÄÜÌáÇ°¸³Öµ£¬²åÈë²Ù×÷²»ÄÜ±È½ÏÖ÷¼ü£¬Ö±½ÓÅĞ¶ÏÅĞ¶Ï´æÔÚµÄÎ¨Ò»Ë÷Òı¼´¿É
+        // å¦‚æœæ˜¯Guidç­‰ä¸»é”®ï¼Œå¯èƒ½æå‰èµ‹å€¼ï¼Œæ’å…¥æ“ä½œä¸èƒ½æ¯”è¾ƒä¸»é”®ï¼Œç›´æ¥åˆ¤æ–­åˆ¤æ–­å­˜åœ¨çš„å”¯ä¸€ç´¢å¼•å³å¯
         if (isNew && !field.IsIdentity) { return true; }
 
         return !Object.Equals(val, list[0][field.Name]);
       }
       else
       {
-        // Èç¹ûÊÇ¿ÕÖ÷¼ü£¬Ôò²ÉÓÃÖ±½ÓÅĞ¶Ï¼ÇÂ¼ÊıµÄ·½Ê½£¬ÒÔ¼Ó¿ìËÙ¶È
+        // å¦‚æœæ˜¯ç©ºä¸»é”®ï¼Œåˆ™é‡‡ç”¨ç›´æ¥åˆ¤æ–­è®°å½•æ•°çš„æ–¹å¼ï¼Œä»¥åŠ å¿«é€Ÿåº¦
         var list = cache.Entities.FindAll(names, values, true);
         if (Helper.IsNullKey(val, field.Field.DbType)) { return list.Count > 0; }
 
         if (list == null || list.Count < 1) { return false; }
         if (list.Count > 1) { return true; }
 
-        // Èç¹ûÊÇGuidµÈÖ÷¼ü£¬¿ÉÄÜÌáÇ°¸³Öµ£¬²åÈë²Ù×÷²»ÄÜ±È½ÏÖ÷¼ü£¬Ö±½ÓÅĞ¶ÏÅĞ¶Ï´æÔÚµÄÎ¨Ò»Ë÷Òı¼´¿É
+        // å¦‚æœæ˜¯Guidç­‰ä¸»é”®ï¼Œå¯èƒ½æå‰èµ‹å€¼ï¼Œæ’å…¥æ“ä½œä¸èƒ½æ¯”è¾ƒä¸»é”®ï¼Œç›´æ¥åˆ¤æ–­åˆ¤æ–­å­˜åœ¨çš„å”¯ä¸€ç´¢å¼•å³å¯
         if (isNew && !field.IsIdentity) { return true; }
 
         return !Object.Equals(val, list[0][field.Name]);
@@ -587,15 +587,15 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- ÅúÁ¿²Ù×÷ --
+    #region -- æ‰¹é‡æ“ä½œ --
 
     #region - DeleteAll -
 
-    /// <summary>¸ù¾İÌõ¼şÉ¾³ıÊµÌå¼ÇÂ¼£¬Ê¹ÓÃÊÂÎñ±£»¤
-    /// <para>Èç¹ûÉ¾³ı²Ù×÷²»´øÒµÎñ£¬¿ÉÖ±½ÓÊ¹ÓÃ¾²Ì¬·½·¨ Delete(String whereClause)</para>
+    /// <summary>æ ¹æ®æ¡ä»¶åˆ é™¤å®ä½“è®°å½•ï¼Œä½¿ç”¨äº‹åŠ¡ä¿æŠ¤
+    /// <para>å¦‚æœåˆ é™¤æ“ä½œä¸å¸¦ä¸šåŠ¡ï¼Œå¯ç›´æ¥ä½¿ç”¨é™æ€æ–¹æ³• Delete(String whereClause)</para>
     /// </summary>
-    /// <param name="whereClause">Ìõ¼ş£¬²»´øWhere</param>
-    /// <param name="batchSize">Ã¿´ÎÉ¾³ı¼ÇÂ¼Êı</param>
+    /// <param name="whereClause">æ¡ä»¶ï¼Œä¸å¸¦Where</param>
+    /// <param name="batchSize">æ¯æ¬¡åˆ é™¤è®°å½•æ•°</param>
     public static void DeleteAll(String whereClause, Int32 batchSize = 500)
     {
       var count = FindCount(whereClause, null, null, 0L, 0);
@@ -623,11 +623,11 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>¸ù¾İÌõ¼şÉ¾³ıÊµÌå¼ÇÂ¼£¬Ê¹ÓÃ¶ÁĞ´ËøÁîÅÆ£¬ËõĞ¡ÊÂÎñ·¶Î§¡£
-    /// <para>Èç¹ûÉ¾³ı²Ù×÷²»´øÒµÎñ£¬¿ÉÖ±½ÓÊ¹ÓÃ¾²Ì¬·½·¨ Delete(String whereClause)</para>
+    /// <summary>æ ¹æ®æ¡ä»¶åˆ é™¤å®ä½“è®°å½•ï¼Œä½¿ç”¨è¯»å†™é”ä»¤ç‰Œï¼Œç¼©å°äº‹åŠ¡èŒƒå›´ã€‚
+    /// <para>å¦‚æœåˆ é™¤æ“ä½œä¸å¸¦ä¸šåŠ¡ï¼Œå¯ç›´æ¥ä½¿ç”¨é™æ€æ–¹æ³• Delete(String whereClause)</para>
     /// </summary>
-    /// <param name="whereClause">Ìõ¼ş£¬²»´øWhere</param>
-    /// <param name="batchSize">Ã¿´ÎÉ¾³ı¼ÇÂ¼Êı</param>
+    /// <param name="whereClause">æ¡ä»¶ï¼Œä¸å¸¦Where</param>
+    /// <param name="batchSize">æ¯æ¬¡åˆ é™¤è®°å½•æ•°</param>
     public static void DeleteAllWithLockToken(String whereClause, Int32 batchSize = 500)
     {
       var count = FindCountWithLockToken(whereClause);
@@ -665,39 +665,39 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region - ProcessAllÓëEntity_OperateÀàµÄProcessAll·½·¨´úÂëÍ¬²½ -
+    #region - ProcessAllä¸Entity_Operateç±»çš„ProcessAllæ–¹æ³•ä»£ç åŒæ­¥ -
 
-    /// <summary>ÅúÁ¿´¦ÀíÊµÌå¼ÇÂ¼£¬´Ë²Ù×÷¿çÔ½»º´æ</summary>
-    /// <param name="action">´¦ÀíÊµÌå¼ÇÂ¼¼¯·½·¨</param>
-    /// <param name="useTransition">ÊÇ·ñÊ¹ÓÃÊÂÎñ±£»¤</param>
-    /// <param name="batchSize">Ã¿´Î´¦Àí¼ÇÂ¼Êı</param>
-    /// <param name="maxCount">´¦Àí×î´ó¼ÇÂ¼Êı£¬Ä¬ÈÏ0£¬´¦ÀíËùÓĞĞĞ</param>
+    /// <summary>æ‰¹é‡å¤„ç†å®ä½“è®°å½•ï¼Œæ­¤æ“ä½œè·¨è¶Šç¼“å­˜</summary>
+    /// <param name="action">å¤„ç†å®ä½“è®°å½•é›†æ–¹æ³•</param>
+    /// <param name="useTransition">æ˜¯å¦ä½¿ç”¨äº‹åŠ¡ä¿æŠ¤</param>
+    /// <param name="batchSize">æ¯æ¬¡å¤„ç†è®°å½•æ•°</param>
+    /// <param name="maxCount">å¤„ç†æœ€å¤§è®°å½•æ•°ï¼Œé»˜è®¤0ï¼Œå¤„ç†æ‰€æœ‰è¡Œ</param>
     public static void ProcessAll(Action<EntityList<TEntity>> action,
       Boolean useTransition = true, Int32 batchSize = 500, Int32 maxCount = 0)
     {
       ProcessAll(action, null, null, null, useTransition, batchSize, maxCount);
     }
 
-    /// <summary>ÅúÁ¿´¦ÀíÊµÌå¼ÇÂ¼£¬´Ë²Ù×÷¿çÔ½»º´æ</summary>
-    /// <param name="action">´¦ÀíÊµÌå¼ÇÂ¼¼¯·½·¨</param>
-    /// <param name="whereClause">Ìõ¼ş£¬²»´øWhere</param>
-    /// <param name="useTransition">ÊÇ·ñÊ¹ÓÃÊÂÎñ±£»¤</param>
-    /// <param name="batchSize">Ã¿´Î´¦Àí¼ÇÂ¼Êı</param>
-    /// <param name="maxCount">´¦Àí×î´ó¼ÇÂ¼Êı£¬Ä¬ÈÏ0£¬´¦ÀíËùÓĞĞĞ</param>
+    /// <summary>æ‰¹é‡å¤„ç†å®ä½“è®°å½•ï¼Œæ­¤æ“ä½œè·¨è¶Šç¼“å­˜</summary>
+    /// <param name="action">å¤„ç†å®ä½“è®°å½•é›†æ–¹æ³•</param>
+    /// <param name="whereClause">æ¡ä»¶ï¼Œä¸å¸¦Where</param>
+    /// <param name="useTransition">æ˜¯å¦ä½¿ç”¨äº‹åŠ¡ä¿æŠ¤</param>
+    /// <param name="batchSize">æ¯æ¬¡å¤„ç†è®°å½•æ•°</param>
+    /// <param name="maxCount">å¤„ç†æœ€å¤§è®°å½•æ•°ï¼Œé»˜è®¤0ï¼Œå¤„ç†æ‰€æœ‰è¡Œ</param>
     public static void ProcessAll(Action<EntityList<TEntity>> action, String whereClause,
       Boolean useTransition = true, Int32 batchSize = 500, Int32 maxCount = 0)
     {
       ProcessAll(action, whereClause, null, null, useTransition, batchSize, maxCount);
     }
 
-    /// <summary>ÅúÁ¿´¦ÀíÊµÌå¼ÇÂ¼£¬´Ë²Ù×÷¿çÔ½»º´æ</summary>
-    /// <param name="action">´¦ÀíÊµÌå¼ÇÂ¼¼¯·½·¨</param>
-    /// <param name="whereClause">Ìõ¼ş£¬²»´øWhere</param>
-    /// <param name="orderClause">ÅÅĞò£¬²»´øOrder By</param>
-    /// <param name="selects">²éÑ¯ÁĞ</param>
-    /// <param name="useTransition">ÊÇ·ñÊ¹ÓÃÊÂÎñ±£»¤</param>
-    /// <param name="batchSize">Ã¿´Î´¦Àí¼ÇÂ¼Êı</param>
-    /// <param name="maxCount">´¦Àí×î´ó¼ÇÂ¼Êı£¬Ä¬ÈÏ0£¬´¦ÀíËùÓĞĞĞ</param>
+    /// <summary>æ‰¹é‡å¤„ç†å®ä½“è®°å½•ï¼Œæ­¤æ“ä½œè·¨è¶Šç¼“å­˜</summary>
+    /// <param name="action">å¤„ç†å®ä½“è®°å½•é›†æ–¹æ³•</param>
+    /// <param name="whereClause">æ¡ä»¶ï¼Œä¸å¸¦Where</param>
+    /// <param name="orderClause">æ’åºï¼Œä¸å¸¦Order By</param>
+    /// <param name="selects">æŸ¥è¯¢åˆ—</param>
+    /// <param name="useTransition">æ˜¯å¦ä½¿ç”¨äº‹åŠ¡ä¿æŠ¤</param>
+    /// <param name="batchSize">æ¯æ¬¡å¤„ç†è®°å½•æ•°</param>
+    /// <param name="maxCount">å¤„ç†æœ€å¤§è®°å½•æ•°ï¼Œé»˜è®¤0ï¼Œå¤„ç†æ‰€æœ‰è¡Œ</param>
     public static void ProcessAll(Action<EntityList<TEntity>> action, String whereClause, String orderClause, String selects,
       Boolean useTransition = true, Int32 batchSize = 500, Int32 maxCount = 0)
     {
@@ -731,39 +731,39 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region - ProcessAllWithLockTokenÓëEntity_OperateÀàµÄProcessAllWithLockToken·½·¨´úÂëÍ¬²½ -
+    #region - ProcessAllWithLockTokenä¸Entity_Operateç±»çš„ProcessAllWithLockTokenæ–¹æ³•ä»£ç åŒæ­¥ -
 
-    /// <summary>ÅúÁ¿´¦ÀíÊµÌå¼ÇÂ¼£¬´Ë²Ù×÷¿çÔ½»º´æ£¬Ö´ĞĞ²éÑ¯SQLÓï¾äÊ±Ê¹ÓÃ¶ÁËøÁîÅÆ</summary>
-    /// <param name="action">´¦ÀíÊµÌå¼ÇÂ¼¼¯·½·¨</param>
-    /// <param name="actionLockType">²Ù×÷·½·¨ËøÁîÅÆ·½Ê½</param>
-    /// <param name="batchSize">Ã¿´Î´¦Àí¼ÇÂ¼Êı</param>
-    /// <param name="maxCount">´¦Àí×î´ó¼ÇÂ¼Êı£¬Ä¬ÈÏ0£¬´¦ÀíËùÓĞĞĞ</param>
+    /// <summary>æ‰¹é‡å¤„ç†å®ä½“è®°å½•ï¼Œæ­¤æ“ä½œè·¨è¶Šç¼“å­˜ï¼Œæ‰§è¡ŒæŸ¥è¯¢SQLè¯­å¥æ—¶ä½¿ç”¨è¯»é”ä»¤ç‰Œ</summary>
+    /// <param name="action">å¤„ç†å®ä½“è®°å½•é›†æ–¹æ³•</param>
+    /// <param name="actionLockType">æ“ä½œæ–¹æ³•é”ä»¤ç‰Œæ–¹å¼</param>
+    /// <param name="batchSize">æ¯æ¬¡å¤„ç†è®°å½•æ•°</param>
+    /// <param name="maxCount">å¤„ç†æœ€å¤§è®°å½•æ•°ï¼Œé»˜è®¤0ï¼Œå¤„ç†æ‰€æœ‰è¡Œ</param>
     public static void ProcessAllWithLockToken(Action<EntityList<TEntity>> action, ActionLockTokenType actionLockType,
       Int32 batchSize = 500, Int32 maxCount = 0)
     {
       ProcessAllWithLockToken(action, actionLockType, null, null, null, batchSize, maxCount);
     }
 
-    /// <summary>ÅúÁ¿´¦ÀíÊµÌå¼ÇÂ¼£¬´Ë²Ù×÷¿çÔ½»º´æ£¬Ö´ĞĞ²éÑ¯SQLÓï¾äÊ±Ê¹ÓÃ¶ÁËøÁîÅÆ</summary>
-    /// <param name="action">´¦ÀíÊµÌå¼ÇÂ¼¼¯·½·¨</param>
-    /// <param name="actionLockType">²Ù×÷·½·¨ËøÁîÅÆ·½Ê½</param>
-    /// <param name="whereClause">Ìõ¼ş£¬²»´øWhere</param>
-    /// <param name="batchSize">Ã¿´Î´¦Àí¼ÇÂ¼Êı</param>
-    /// <param name="maxCount">´¦Àí×î´ó¼ÇÂ¼Êı£¬Ä¬ÈÏ0£¬´¦ÀíËùÓĞĞĞ</param>
+    /// <summary>æ‰¹é‡å¤„ç†å®ä½“è®°å½•ï¼Œæ­¤æ“ä½œè·¨è¶Šç¼“å­˜ï¼Œæ‰§è¡ŒæŸ¥è¯¢SQLè¯­å¥æ—¶ä½¿ç”¨è¯»é”ä»¤ç‰Œ</summary>
+    /// <param name="action">å¤„ç†å®ä½“è®°å½•é›†æ–¹æ³•</param>
+    /// <param name="actionLockType">æ“ä½œæ–¹æ³•é”ä»¤ç‰Œæ–¹å¼</param>
+    /// <param name="whereClause">æ¡ä»¶ï¼Œä¸å¸¦Where</param>
+    /// <param name="batchSize">æ¯æ¬¡å¤„ç†è®°å½•æ•°</param>
+    /// <param name="maxCount">å¤„ç†æœ€å¤§è®°å½•æ•°ï¼Œé»˜è®¤0ï¼Œå¤„ç†æ‰€æœ‰è¡Œ</param>
     public static void ProcessAllWithLockToken(Action<EntityList<TEntity>> action, ActionLockTokenType actionLockType,
       String whereClause, Int32 batchSize = 500, Int32 maxCount = 0)
     {
       ProcessAllWithLockToken(action, actionLockType, whereClause, null, null, batchSize, maxCount);
     }
 
-    /// <summary>ÅúÁ¿´¦ÀíÊµÌå¼ÇÂ¼£¬´Ë²Ù×÷¿çÔ½»º´æ£¬Ö´ĞĞ²éÑ¯SQLÓï¾äÊ±Ê¹ÓÃ¶ÁËøÁîÅÆ</summary>
-    /// <param name="action">´¦ÀíÊµÌå¼ÇÂ¼¼¯·½·¨</param>
-    /// <param name="actionLockType">²Ù×÷·½·¨ËøÁîÅÆ·½Ê½</param>
-    /// <param name="whereClause">Ìõ¼ş£¬²»´øWhere</param>
-    /// <param name="orderClause">ÅÅĞò£¬²»´øOrder By</param>
-    /// <param name="selects">²éÑ¯ÁĞ</param>
-    /// <param name="batchSize">Ã¿´Î´¦Àí¼ÇÂ¼Êı</param>
-    /// <param name="maxCount">´¦Àí×î´ó¼ÇÂ¼Êı£¬Ä¬ÈÏ0£¬´¦ÀíËùÓĞĞĞ</param>
+    /// <summary>æ‰¹é‡å¤„ç†å®ä½“è®°å½•ï¼Œæ­¤æ“ä½œè·¨è¶Šç¼“å­˜ï¼Œæ‰§è¡ŒæŸ¥è¯¢SQLè¯­å¥æ—¶ä½¿ç”¨è¯»é”ä»¤ç‰Œ</summary>
+    /// <param name="action">å¤„ç†å®ä½“è®°å½•é›†æ–¹æ³•</param>
+    /// <param name="actionLockType">æ“ä½œæ–¹æ³•é”ä»¤ç‰Œæ–¹å¼</param>
+    /// <param name="whereClause">æ¡ä»¶ï¼Œä¸å¸¦Where</param>
+    /// <param name="orderClause">æ’åºï¼Œä¸å¸¦Order By</param>
+    /// <param name="selects">æŸ¥è¯¢åˆ—</param>
+    /// <param name="batchSize">æ¯æ¬¡å¤„ç†è®°å½•æ•°</param>
+    /// <param name="maxCount">å¤„ç†æœ€å¤§è®°å½•æ•°ï¼Œé»˜è®¤0ï¼Œå¤„ç†æ‰€æœ‰è¡Œ</param>
     public static void ProcessAllWithLockToken(Action<EntityList<TEntity>> action, ActionLockTokenType actionLockType,
       String whereClause, String orderClause, String selects, Int32 batchSize = 500, Int32 maxCount = 0)
     {
@@ -807,11 +807,11 @@ namespace CuteAnt.OrmLite
 
     #region - TransformAll -
 
-    /// <summary>ÊµÌåÊı¾İÇ¨ÒÆ£¬µ÷ÓÃ´Ë·½·¨Ç°ÇëÈ·¶¨½øĞĞÁËÊı¾İ·ÖÆ¬ÅäÖÃ¡£
-    /// <para>´Ë·½·¨Ê¹ÓÃÖ´ĞĞ SQL Óï¾ä½øĞĞÑ­»·²åÈëµÄ·½·¨¡£</para></summary>
-    /// <param name="entities">ÊµÌåÊı¾İÁĞ±í</param>
-    /// <param name="keepIdentity">ÊÇ·ñÔÊĞíÏò×ÔÔöÁĞ²åÈëÊı¾İ</param>
-    /// <param name="batchSize">µ¥ÌõSQLÓï¾ä²åÈëÊı¾İÊı</param>
+    /// <summary>å®ä½“æ•°æ®è¿ç§»ï¼Œè°ƒç”¨æ­¤æ–¹æ³•å‰è¯·ç¡®å®šè¿›è¡Œäº†æ•°æ®åˆ†ç‰‡é…ç½®ã€‚
+    /// <para>æ­¤æ–¹æ³•ä½¿ç”¨æ‰§è¡Œ SQL è¯­å¥è¿›è¡Œå¾ªç¯æ’å…¥çš„æ–¹æ³•ã€‚</para></summary>
+    /// <param name="entities">å®ä½“æ•°æ®åˆ—è¡¨</param>
+    /// <param name="keepIdentity">æ˜¯å¦å…è®¸å‘è‡ªå¢åˆ—æ’å…¥æ•°æ®</param>
+    /// <param name="batchSize">å•æ¡SQLè¯­å¥æ’å…¥æ•°æ®æ•°</param>
     public static void TransformAll(EntityList<TEntity> entities, Boolean keepIdentity = true, Int32 batchSize = 10)
     {
       if (entities == null || entities.Count <= 0) { return; }
@@ -822,15 +822,15 @@ namespace CuteAnt.OrmLite
       var oldII = Meta.Factory.AllowInsertIdentity;
       Meta.Factory.AllowInsertIdentity = keepIdentity;
 
-      // ÊµÌåÄ£ĞÍ¼ì²é
+      // å®ä½“æ¨¡å‹æ£€æŸ¥
       if (dal.Db.SchemaProvider.TableExists(session.TableName))
       {
         session.WaitForInitData();
       }
       else
       {
-        // Èç¹ûÊı¾İ¿âÖĞ²»´æÔÚÄ¿±êÊı¾İ±í£¬ĞÂÔö±íÊ±²»½¨Á¢Ö÷¼üÔ¼ÊøÒÔÍâµÄË÷Òı
-        // Ô­ÒòÎ´Öª£ºSQL ServerĞÂ½¨±íºóÁ¢¼´Ç¨ÒÆÊı¾İ£¬ĞÔÄÜ±ÈÏòÒÑ´æÔÚµÄ¿Õ±íÇ¨ÒÆÊı¾İÂıºÃ¶à
+        // å¦‚æœæ•°æ®åº“ä¸­ä¸å­˜åœ¨ç›®æ ‡æ•°æ®è¡¨ï¼Œæ–°å¢è¡¨æ—¶ä¸å»ºç«‹ä¸»é”®çº¦æŸä»¥å¤–çš„ç´¢å¼•
+        // åŸå› æœªçŸ¥ï¼šSQL Serveræ–°å»ºè¡¨åç«‹å³è¿ç§»æ•°æ®ï¼Œæ€§èƒ½æ¯”å‘å·²å­˜åœ¨çš„ç©ºè¡¨è¿ç§»æ•°æ®æ…¢å¥½å¤š
         session.WaitForInitData(true);
       }
 
@@ -860,7 +860,7 @@ namespace CuteAnt.OrmLite
       }
       else
       {
-        #region µ¥ÌõÊı¾İ²åÈë
+        #region å•æ¡æ•°æ®æ’å…¥
 
         using (var trans = new EntityTransaction<TEntity>())
         {
@@ -888,13 +888,13 @@ namespace CuteAnt.OrmLite
       Meta.Factory.AllowInsertIdentity = oldII;
     }
 
-    /// <summary>ÊµÌåÊı¾İÇ¨ÒÆ£¬µ÷ÓÃ´Ë·½·¨Ç°ÇëÈ·¶¨½øĞĞÁËÊı¾İ·ÖÆ¬ÅäÖÃ£¬´Ë·½·¨Õë¶Ô Sql Server Óë MySQL ½øĞĞÁËÌØÊâ´¦Àí¡£
-    /// <para>Õë¶Ô Sql Server Ê¹ÓÃÁË SqlBulkCopy Àà½øĞĞÅúÁ¿²åÈë²Ù×÷£»MySQL Ê¹ÓÃÁË MySqlBulkLoader Àà½øĞĞÁËÅúÁ¿²åÈë²Ù×÷£»</para>
-    /// <para>ÆäËûÀàĞÍÊı¾İ¿âÊ¹ÓÃÖ´ĞĞ SQL Óï¾ä½øĞĞÑ­»·²åÈëµÄ·½·¨¡£</para></summary>
-    /// <param name="dt">ÊµÌåÊı¾İ±í</param>
-    /// <param name="keepIdentity">ÊÇ·ñÔÊĞíÏò×ÔÔöÁĞ²åÈëÊı¾İ</param>
-    /// <param name="batchSize">µ¥ÌõSQLÓï¾ä²åÈëÊı¾İÊı£¬´Ë²ÎÊı¶ÔSQL ServerºÍMySQLÁ½ÖÖÊı¾İ¿âÎŞĞ§¡£</param>
-    /// <remarks>SQL Server 2008»ò2008ÒÔÉÏ°æ±¾Ê¹ÓÃ±íÖµ²ÎÊı£¨Table-valued parameters£©½øĞĞÅúÁ¿²åÈë»á¸ü¿ì£¬µ«ĞèÒªÎªÃ¿¸ö±íµ¥¶À½¨Á¢TVP¡£</remarks>
+    /// <summary>å®ä½“æ•°æ®è¿ç§»ï¼Œè°ƒç”¨æ­¤æ–¹æ³•å‰è¯·ç¡®å®šè¿›è¡Œäº†æ•°æ®åˆ†ç‰‡é…ç½®ï¼Œæ­¤æ–¹æ³•é’ˆå¯¹ Sql Server ä¸ MySQL è¿›è¡Œäº†ç‰¹æ®Šå¤„ç†ã€‚
+    /// <para>é’ˆå¯¹ Sql Server ä½¿ç”¨äº† SqlBulkCopy ç±»è¿›è¡Œæ‰¹é‡æ’å…¥æ“ä½œï¼›MySQL ä½¿ç”¨äº† MySqlBulkLoader ç±»è¿›è¡Œäº†æ‰¹é‡æ’å…¥æ“ä½œï¼›</para>
+    /// <para>å…¶ä»–ç±»å‹æ•°æ®åº“ä½¿ç”¨æ‰§è¡Œ SQL è¯­å¥è¿›è¡Œå¾ªç¯æ’å…¥çš„æ–¹æ³•ã€‚</para></summary>
+    /// <param name="dt">å®ä½“æ•°æ®è¡¨</param>
+    /// <param name="keepIdentity">æ˜¯å¦å…è®¸å‘è‡ªå¢åˆ—æ’å…¥æ•°æ®</param>
+    /// <param name="batchSize">å•æ¡SQLè¯­å¥æ’å…¥æ•°æ®æ•°ï¼Œæ­¤å‚æ•°å¯¹SQL Serverå’ŒMySQLä¸¤ç§æ•°æ®åº“æ— æ•ˆã€‚</param>
+    /// <remarks>SQL Server 2008æˆ–2008ä»¥ä¸Šç‰ˆæœ¬ä½¿ç”¨è¡¨å€¼å‚æ•°ï¼ˆTable-valued parametersï¼‰è¿›è¡Œæ‰¹é‡æ’å…¥ä¼šæ›´å¿«ï¼Œä½†éœ€è¦ä¸ºæ¯ä¸ªè¡¨å•ç‹¬å»ºç«‹TVPã€‚</remarks>
     public static void TransformAll(DataTable dt, Boolean keepIdentity = true, Int32 batchSize = 10)
     {
       if (dt == null || dt.Rows.Count <= 0) { return; }
@@ -912,11 +912,11 @@ namespace CuteAnt.OrmLite
         }
         else
         {
-          // Èç¹ûÊı¾İ¿âÖĞ²»´æÔÚÄ¿±êÊı¾İ±í£¬ĞÂÔö±íÊ±²»½¨Á¢Ö÷¼üÔ¼ÊøÒÔÍâµÄË÷Òı
+          // å¦‚æœæ•°æ®åº“ä¸­ä¸å­˜åœ¨ç›®æ ‡æ•°æ®è¡¨ï¼Œæ–°å¢è¡¨æ—¶ä¸å»ºç«‹ä¸»é”®çº¦æŸä»¥å¤–çš„ç´¢å¼•
           session.WaitForInitData(true);
         }
 
-        // ¼ì²éÊÇ·ñÓĞ±êÊ¶ÁĞ£¬±êÊ¶ÁĞĞèÒªÌØÊâ´¦Àí
+        // æ£€æŸ¥æ˜¯å¦æœ‰æ ‡è¯†åˆ—ï¼Œæ ‡è¯†åˆ—éœ€è¦ç‰¹æ®Šå¤„ç†
         var identity = Meta.Table.Identity;
         var hasIdentity = identity != null && identity.IsIdentity && keepIdentity;
         var dbSession = dal.Session;
@@ -955,7 +955,7 @@ namespace CuteAnt.OrmLite
         }
         else
         {
-          throw new Exception("Êı¾İ¿â»á»°ÖĞµÄÊı¾İÁ¬½ÓÎŞ·¨×ª»»Îª SqlConnection £¡");
+          throw new Exception("æ•°æ®åº“ä¼šè¯ä¸­çš„æ•°æ®è¿æ¥æ— æ³•è½¬æ¢ä¸º SqlConnection ï¼");
         }
       }
 
@@ -971,7 +971,7 @@ namespace CuteAnt.OrmLite
         }
         else
         {
-          // Èç¹ûÊı¾İ¿âÖĞ²»´æÔÚÄ¿±êÊı¾İ±í£¬ĞÂÔö±íÊ±²»½¨Á¢Ö÷¼üÔ¼ÊøÒÔÍâµÄË÷Òı
+          // å¦‚æœæ•°æ®åº“ä¸­ä¸å­˜åœ¨ç›®æ ‡æ•°æ®è¡¨ï¼Œæ–°å¢è¡¨æ—¶ä¸å»ºç«‹ä¸»é”®çº¦æŸä»¥å¤–çš„ç´¢å¼•
           session.WaitForInitData(true);
         }
 
@@ -1016,13 +1016,13 @@ namespace CuteAnt.OrmLite
         }
         else
         {
-          throw new Exception("Êı¾İ¿â»á»°ÖĞµÄÊı¾İÁ¬½ÓÎŞ·¨×ª»»Îª MySqlConnection £¡");
+          throw new Exception("æ•°æ®åº“ä¼šè¯ä¸­çš„æ•°æ®è¿æ¥æ— æ³•è½¬æ¢ä¸º MySqlConnection ï¼");
         }
       }
 
       #endregion
 
-      #region ÆäËûÊı¾İ¿â
+      #region å…¶ä»–æ•°æ®åº“
 
       else
       {
@@ -1055,7 +1055,7 @@ namespace CuteAnt.OrmLite
 
       foreach (var entity in entities)
       {
-        // ×Ö¶ÎÅÅÁĞË³Ğò£¬Ê×ÏÈÆ¥ÅäÄ¿±êÊı¾İ±í×Ö¶ÎË³Ğò
+        // å­—æ®µæ’åˆ—é¡ºåºï¼Œé¦–å…ˆåŒ¹é…ç›®æ ‡æ•°æ®è¡¨å­—æ®µé¡ºåº
         for (int i = 0; i < colCount; i++)
         {
           if (i != 0) { sw.Write(","); }
@@ -1069,11 +1069,11 @@ namespace CuteAnt.OrmLite
           {
             fi = fields[i];
           }
-          // ±êÊ¶ÁĞ
+          // æ ‡è¯†åˆ—
           if (fi.IsIdentity && !keepIdentity) { sw.Write(0); continue; }
 
           var value = entity[fi.Name];
-          // ĞèÒªÖÇÄÜÊ¶±ğ²»ÔÊĞíÎª¿ÕµÄ×Ö¶Î£¬²¢Ìí¼ÓÏàÓ¦µÄÄ¬ÈÏÊı¾İ
+          // éœ€è¦æ™ºèƒ½è¯†åˆ«ä¸å…è®¸ä¸ºç©ºçš„å­—æ®µï¼Œå¹¶æ·»åŠ ç›¸åº”çš„é»˜è®¤æ•°æ®
           value = EntityPersistence<TEntity>.FormatParamValue(quoter, fi, value);
           var quoteValue = String.Empty;
           var field = fi.Field;
@@ -1148,11 +1148,11 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- ²éÕÒµ¥¸öÊµÌå --
+    #region -- æŸ¥æ‰¾å•ä¸ªå®ä½“ --
 
-    /// <summary>¸ù¾İÊôĞÔÒÔ¼°¶ÔÓ¦µÄÖµ£¬²éÕÒµ¥¸öÊµÌå</summary>
-    /// <param name="name">ÊôĞÔÃû³Æ</param>
-    /// <param name="value">ÊôĞÔÖµ</param>
+    /// <summary>æ ¹æ®å±æ€§ä»¥åŠå¯¹åº”çš„å€¼ï¼ŒæŸ¥æ‰¾å•ä¸ªå®ä½“</summary>
+    /// <param name="name">å±æ€§åç§°</param>
+    /// <param name="value">å±æ€§å€¼</param>
     /// <returns></returns>
     [DataObjectMethod(DataObjectMethodType.Select, false)]
     public static TEntity Find(String name, Object value)
@@ -1160,25 +1160,25 @@ namespace CuteAnt.OrmLite
       return Find(new String[] { name }, new Object[] { value });
     }
 
-    /// <summary>¸ù¾İÊôĞÔÁĞ±íÒÔ¼°¶ÔÓ¦µÄÖµÁĞ±í£¬²éÕÒµ¥¸öÊµÌå</summary>
-    /// <param name="names">ÊôĞÔÃû³Æ¼¯ºÏ</param>
-    /// <param name="values">ÊôĞÔÖµ¼¯ºÏ</param>
+    /// <summary>æ ¹æ®å±æ€§åˆ—è¡¨ä»¥åŠå¯¹åº”çš„å€¼åˆ—è¡¨ï¼ŒæŸ¥æ‰¾å•ä¸ªå®ä½“</summary>
+    /// <param name="names">å±æ€§åç§°é›†åˆ</param>
+    /// <param name="values">å±æ€§å€¼é›†åˆ</param>
     /// <returns></returns>
     public static TEntity Find(String[] names, Object[] values)
     {
-      // ÅĞ¶Ï×ÔÔöºÍÖ÷¼ü
+      // åˆ¤æ–­è‡ªå¢å’Œä¸»é”®
       if (names != null && names.Length == 1)
       {
         FieldItem field = Meta.Table.FindByName(names[0]);
         if (field != null && (field.IsIdentity || field.PrimaryKey))
         {
-          // Î¨Ò»¼üÎª×ÔÔöÇÒ²ÎÊıĞ¡ÓÚµÈÓÚ0Ê±£¬·µ»Ø¿Õ
+          // å”¯ä¸€é”®ä¸ºè‡ªå¢ä¸”å‚æ•°å°äºç­‰äº0æ—¶ï¼Œè¿”å›ç©º
           if (Helper.IsNullKey(values[0], field.Field.DbType)) { return null; }
           return FindUnique(MakeCondition(field, values[0], "="));
         }
       }
 
-      // ÅĞ¶ÏÎ¨Ò»Ë÷Òı£¬Î¨Ò»Ë÷ÒıÒ²²»ĞèÒª·ÖÒ³
+      // åˆ¤æ–­å”¯ä¸€ç´¢å¼•ï¼Œå”¯ä¸€ç´¢å¼•ä¹Ÿä¸éœ€è¦åˆ†é¡µ
       IDataIndex di = Meta.Table.DataTable.GetIndex(names);
       if (di != null && di.Unique)
       {
@@ -1188,10 +1188,10 @@ namespace CuteAnt.OrmLite
     }
 
     /// <summary>
-    /// ¸ù¾İÌõ¼ş²éÕÒÎ¨Ò»µÄµ¥¸öÊµÌå£¬ÒòÎªÊÇÎ¨Ò»µÄ£¬ËùÒÔ²»ĞèÒª·ÖÒ³ºÍÅÅĞò¡£
-    /// Èç¹û²»È·¶¨ÊÇ·ñÎ¨Ò»£¬Ò»¶¨²»Òªµ÷ÓÃ¸Ã·½·¨£¬·ñÔò»á·µ»Ø´óÁ¿µÄÊı¾İ¡£
+    /// æ ¹æ®æ¡ä»¶æŸ¥æ‰¾å”¯ä¸€çš„å•ä¸ªå®ä½“ï¼Œå› ä¸ºæ˜¯å”¯ä¸€çš„ï¼Œæ‰€ä»¥ä¸éœ€è¦åˆ†é¡µå’Œæ’åºã€‚
+    /// å¦‚æœä¸ç¡®å®šæ˜¯å¦å”¯ä¸€ï¼Œä¸€å®šä¸è¦è°ƒç”¨è¯¥æ–¹æ³•ï¼Œå¦åˆ™ä¼šè¿”å›å¤§é‡çš„æ•°æ®ã€‚
     /// </summary>
-    /// <param name="whereClause">²éÑ¯Ìõ¼ş</param>
+    /// <param name="whereClause">æŸ¥è¯¢æ¡ä»¶</param>
     /// <returns></returns>
     private static TEntity FindUnique(String whereClause)
     {
@@ -1199,20 +1199,20 @@ namespace CuteAnt.OrmLite
       var builder = new SelectBuilder();
       builder.Table = session.FormatedTableName;
 
-      // ½÷¼Ç£ºÄ³Ğ©ÏîÄ¿ÖĞ¿ÉÄÜÔÚwhereÖĞÊ¹ÓÃÁËGroupBy£¬ÔÚ·ÖÒ³Ê±¿ÉÄÜ±¨´í
+      // è°¨è®°ï¼šæŸäº›é¡¹ç›®ä¸­å¯èƒ½åœ¨whereä¸­ä½¿ç”¨äº†GroupByï¼Œåœ¨åˆ†é¡µæ—¶å¯èƒ½æŠ¥é”™
       builder.Where = whereClause;
       var list = LoadDataToList(session.Query(builder, 0L, 0));
       if (list == null || list.Count < 1) { return null; }
       if (list.Count > 1 && DAL.Debug)
       {
-        DAL.WriteDebugLog("µ÷ÓÃFindUnique(\"{0}\")²»ºÏÀí£¬Ö»ÓĞ·µ»ØÎ¨Ò»¼ÇÂ¼µÄ²éÑ¯Ìõ¼ş²ÅÔÊĞíµ÷ÓÃ£¡", whereClause);
+        DAL.WriteDebugLog("è°ƒç”¨FindUnique(\"{0}\")ä¸åˆç†ï¼Œåªæœ‰è¿”å›å”¯ä¸€è®°å½•çš„æŸ¥è¯¢æ¡ä»¶æ‰å…è®¸è°ƒç”¨ï¼", whereClause);
         CuteAnt.Log.HmTrace.DebugStack(5);
       }
       return list[0];
     }
 
-    /// <summary>¸ù¾İÌõ¼ş²éÕÒµ¥¸öÊµÌå</summary>
-    /// <param name="whereClause">²éÑ¯Ìõ¼ş</param>
+    /// <summary>æ ¹æ®æ¡ä»¶æŸ¥æ‰¾å•ä¸ªå®ä½“</summary>
+    /// <param name="whereClause">æŸ¥è¯¢æ¡ä»¶</param>
     /// <returns></returns>
     [DataObjectMethod(DataObjectMethodType.Select, false)]
     public static TEntity Find(String whereClause)
@@ -1221,8 +1221,8 @@ namespace CuteAnt.OrmLite
       return list.Count < 1 ? null : list[0];
     }
 
-    /// <summary>¸ù¾İÖ÷¼ü²éÕÒµ¥¸öÊµÌå</summary>
-    /// <param name="key">Î¨Ò»Ö÷¼üµÄÖµ</param>
+    /// <summary>æ ¹æ®ä¸»é”®æŸ¥æ‰¾å•ä¸ªå®ä½“</summary>
+    /// <param name="key">å”¯ä¸€ä¸»é”®çš„å€¼</param>
     /// <returns></returns>
     [DataObjectMethod(DataObjectMethodType.Select, false)]
     public static TEntity FindByKey(Object key)
@@ -1230,16 +1230,16 @@ namespace CuteAnt.OrmLite
       FieldItem field = Meta.Unique;
       if (field == null)
       {
-        throw new ArgumentNullException("Meta.Unique", "FindByKey·½·¨ÒªÇó" + Meta.ThisType.FullName + "ÓĞÎ¨Ò»Ö÷¼ü£¡");
+        throw new ArgumentNullException("Meta.Unique", "FindByKeyæ–¹æ³•è¦æ±‚" + Meta.ThisType.FullName + "æœ‰å”¯ä¸€ä¸»é”®ï¼");
       }
 
-      // Î¨Ò»¼üÎª×ÔÔöÇÒ²ÎÊıĞ¡ÓÚµÈÓÚ0Ê±£¬·µ»Ø¿Õ
+      // å”¯ä¸€é”®ä¸ºè‡ªå¢ä¸”å‚æ•°å°äºç­‰äº0æ—¶ï¼Œè¿”å›ç©º
       if (Helper.IsNullKey(key, field.Field.DbType)) { return null; }
       return Find(field.Name, key);
     }
 
-    /// <summary>¸ù¾İÖ÷¼ü²éÑ¯Ò»¸öÊµÌå¶ÔÏóÓÃÓÚ±íµ¥±à¼­</summary>
-    /// <param name="key">Î¨Ò»Ö÷¼üµÄÖµ</param>
+    /// <summary>æ ¹æ®ä¸»é”®æŸ¥è¯¢ä¸€ä¸ªå®ä½“å¯¹è±¡ç”¨äºè¡¨å•ç¼–è¾‘</summary>
+    /// <param name="key">å”¯ä¸€ä¸»é”®çš„å€¼</param>
     /// <returns></returns>
     [DataObjectMethod(DataObjectMethodType.Select, false)]
     public static TEntity FindByKeyForEdit(Object key)
@@ -1247,10 +1247,10 @@ namespace CuteAnt.OrmLite
       FieldItem field = Meta.Unique;
       if (field == null)
       {
-        throw new ArgumentNullException("Meta.Unique", "FindByKeyForEdit·½·¨ÒªÇó¸Ã±íÓĞÎ¨Ò»Ö÷¼ü£¡");
+        throw new ArgumentNullException("Meta.Unique", "FindByKeyForEditæ–¹æ³•è¦æ±‚è¯¥è¡¨æœ‰å”¯ä¸€ä¸»é”®ï¼");
       }
 
-      // ²ÎÊıÎª¿ÕÊ±£¬·µ»ØĞÂÊµÀı
+      // å‚æ•°ä¸ºç©ºæ—¶ï¼Œè¿”å›æ–°å®ä¾‹
       if (key == null)
       {
         //IEntityOperate _Factory = EntityFactory.CreateOperate(Meta.ThisType);
@@ -1259,39 +1259,39 @@ namespace CuteAnt.OrmLite
 
       var dbType = field.Field.DbType;
 
-      // Î¨Ò»¼üÎª¿ÕÖµ£¬·µ»ØĞÂÊµÀı
+      // å”¯ä¸€é”®ä¸ºç©ºå€¼ï¼Œè¿”å›æ–°å®ä¾‹
       if (Helper.IsNullKey(key, dbType))
       {
         if (dbType.IsIntType() && !field.IsIdentity && DAL.Debug)
         {
-          DAL.WriteLog("{0}µÄ{1}×Ö¶ÎÊÇÕûĞÍÖ÷¼ü£¬ÄãÊÇ·ñÍü¼ÇÁËÉèÖÃ×ÔÔö£¿", Meta.TableName, field.ColumnName);
+          DAL.WriteLog("{0}çš„{1}å­—æ®µæ˜¯æ•´å‹ä¸»é”®ï¼Œä½ æ˜¯å¦å¿˜è®°äº†è®¾ç½®è‡ªå¢ï¼Ÿ", Meta.TableName, field.ColumnName);
         }
         return Meta.Factory.Create(true) as TEntity;
       }
 
-      // ´ËÍâ£¬Ò»ÂÉ·µ»Ø ²éÕÒÖµ£¬¼´Ê¹¿ÉÄÜÊÇ¿Õ¡£¶ø¾ø²»ÄÜÔÚÕÒ²»µ½Êı¾İµÄÇé¿öÏÂ¸øËü·µ»Ø¿Õ£¬ÒòÎª¿ÉÄÜÊÇÕÒ²»µ½Êı¾İ¶øÒÑ£¬¶ø·µ»ØĞÂÊµÀı»áµ¼ÖÂÇ°¶ËÒÔÎªÕâÀïÊÇĞÂÔöÊı¾İ
+      // æ­¤å¤–ï¼Œä¸€å¾‹è¿”å› æŸ¥æ‰¾å€¼ï¼Œå³ä½¿å¯èƒ½æ˜¯ç©ºã€‚è€Œç»ä¸èƒ½åœ¨æ‰¾ä¸åˆ°æ•°æ®çš„æƒ…å†µä¸‹ç»™å®ƒè¿”å›ç©ºï¼Œå› ä¸ºå¯èƒ½æ˜¯æ‰¾ä¸åˆ°æ•°æ®è€Œå·²ï¼Œè€Œè¿”å›æ–°å®ä¾‹ä¼šå¯¼è‡´å‰ç«¯ä»¥ä¸ºè¿™é‡Œæ˜¯æ–°å¢æ•°æ®
       TEntity entity = Find(field.Name, key);
 
-      // ÅĞ¶ÏÊµÌå
+      // åˆ¤æ–­å®ä½“
       if (entity == null)
       {
         String msg = null;
         if (Helper.IsNullKey(key, dbType))
         {
-          msg = String.Format("²ÎÊı´íÎó£¡ÎŞ·¨È¡µÃ±àºÅÎª{0}µÄ{1}£¡¿ÉÄÜÎ´ÉèÖÃ×ÔÔöÖ÷¼ü£¡", key, Meta.Table.Description);
+          msg = String.Format("å‚æ•°é”™è¯¯ï¼æ— æ³•å–å¾—ç¼–å·ä¸º{0}çš„{1}ï¼å¯èƒ½æœªè®¾ç½®è‡ªå¢ä¸»é”®ï¼", key, Meta.Table.Description);
         }
         else
         {
-          msg = String.Format("²ÎÊı´íÎó£¡ÎŞ·¨È¡µÃ±àºÅÎª{0}µÄ{1}£¡", key, Meta.Table.Description);
+          msg = String.Format("å‚æ•°é”™è¯¯ï¼æ— æ³•å–å¾—ç¼–å·ä¸º{0}çš„{1}ï¼", key, Meta.Table.Description);
         }
         throw new OrmLiteException(msg);
       }
       return entity;
     }
 
-    /// <summary>²éÑ¯Ö¸¶¨×Ö¶ÎµÄ×îĞ¡Öµ</summary>
-    /// <param name="fieldName">Ö¸¶¨×Ö¶ÎÃû³Æ</param>
-    /// <param name="whereClause">Ìõ¼ş×Ö¾ä</param>
+    /// <summary>æŸ¥è¯¢æŒ‡å®šå­—æ®µçš„æœ€å°å€¼</summary>
+    /// <param name="fieldName">æŒ‡å®šå­—æ®µåç§°</param>
+    /// <param name="whereClause">æ¡ä»¶å­—å¥</param>
     /// <returns></returns>
     public static Object FindMin(String fieldName, String whereClause = null)
     {
@@ -1299,9 +1299,9 @@ namespace CuteAnt.OrmLite
       return FindMin(fd, whereClause);
     }
 
-    /// <summary>²éÑ¯Ö¸¶¨×Ö¶ÎµÄ×îĞ¡Öµ</summary>
-    /// <param name="field">Ö¸¶¨×Ö¶Î</param>
-    /// <param name="whereClause">Ìõ¼ş×Ö¾ä</param>
+    /// <summary>æŸ¥è¯¢æŒ‡å®šå­—æ®µçš„æœ€å°å€¼</summary>
+    /// <param name="field">æŒ‡å®šå­—æ®µ</param>
+    /// <param name="whereClause">æ¡ä»¶å­—å¥</param>
     /// <returns></returns>
     public static Object FindMin(FieldItem field, String whereClause = null)
     {
@@ -1311,9 +1311,9 @@ namespace CuteAnt.OrmLite
       return list.Count < 1 ? 0 : list[0][field.Name];
     }
 
-    /// <summary>²éÑ¯Ö¸¶¨×Ö¶ÎµÄ×î´óÖµ</summary>
-    /// <param name="fieldName">Ö¸¶¨×Ö¶ÎÃû³Æ</param>
-    /// <param name="whereClause">Ìõ¼ş×Ö¾ä</param>
+    /// <summary>æŸ¥è¯¢æŒ‡å®šå­—æ®µçš„æœ€å¤§å€¼</summary>
+    /// <param name="fieldName">æŒ‡å®šå­—æ®µåç§°</param>
+    /// <param name="whereClause">æ¡ä»¶å­—å¥</param>
     /// <returns></returns>
     public static Object FindMax(String fieldName, String whereClause = null)
     {
@@ -1321,9 +1321,9 @@ namespace CuteAnt.OrmLite
       return FindMax(fd, whereClause);
     }
 
-    /// <summary>²éÑ¯Ö¸¶¨×Ö¶ÎµÄ×î´óÖµ</summary>
-    /// <param name="field">Ö¸¶¨×Ö¶Î</param>
-    /// <param name="whereClause">Ìõ¼ş×Ö¾ä</param>
+    /// <summary>æŸ¥è¯¢æŒ‡å®šå­—æ®µçš„æœ€å¤§å€¼</summary>
+    /// <param name="field">æŒ‡å®šå­—æ®µ</param>
+    /// <param name="whereClause">æ¡ä»¶å­—å¥</param>
     /// <returns></returns>
     public static Object FindMax(FieldItem field, String whereClause = null)
     {
@@ -1334,27 +1334,27 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- ¾²Ì¬²éÑ¯ --
+    #region -- é™æ€æŸ¥è¯¢ --
 
     #region - EntityList -
 
-    /// <summary>»ñÈ¡ËùÓĞÊı¾İ¡£»ñÈ¡´óÁ¿Êı¾İÊ±»á·Ç³£Âı£¬É÷ÓÃ¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>è·å–æ‰€æœ‰æ•°æ®ã€‚è·å–å¤§é‡æ•°æ®æ—¶ä¼šéå¸¸æ…¢ï¼Œæ…ç”¨ã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     [DataObjectMethod(DataObjectMethodType.Select, false)]
     public static EntityList<TEntity> FindAll()
     {
       return FindAll(null, null, null, 0L, 0);
     }
 
-    /// <summary>×î±ê×¼µÄ²éÑ¯Êı¾İ¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
-    /// <remarks>×î¾­µäµÄÅúÁ¿²éÑ¯£¬¿´Õâ¸öSelect @selects From Table Where @whereClause Order By @orderClause Limit @startRowIndex,@maximumRows£¬
-    /// Äã¾ÍÃ÷°×¸÷²ÎÊıµÄÒâË¼ÁË¡£</remarks>
-    /// <param name="whereClause">Ìõ¼ş×Ö¾ä£¬²»´øWhere</param>
-    /// <param name="orderClause">ÅÅĞò×Ö¾ä£¬²»´øOrder By</param>
-    /// <param name="selects">²éÑ¯ÁĞ£¬Ä¬ÈÏnull±íÊ¾ËùÓĞ×Ö¶Î</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>ÊµÌå¼¯</returns>
+    /// <summary>æœ€æ ‡å‡†çš„æŸ¥è¯¢æ•°æ®ã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
+    /// <remarks>æœ€ç»å…¸çš„æ‰¹é‡æŸ¥è¯¢ï¼Œçœ‹è¿™ä¸ªSelect @selects From Table Where @whereClause Order By @orderClause Limit @startRowIndex,@maximumRowsï¼Œ
+    /// ä½ å°±æ˜ç™½å„å‚æ•°çš„æ„æ€äº†ã€‚</remarks>
+    /// <param name="whereClause">æ¡ä»¶å­—å¥ï¼Œä¸å¸¦Where</param>
+    /// <param name="orderClause">æ’åºå­—å¥ï¼Œä¸å¸¦Order By</param>
+    /// <param name="selects">æŸ¥è¯¢åˆ—ï¼Œé»˜è®¤nullè¡¨ç¤ºæ‰€æœ‰å­—æ®µ</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>å®ä½“é›†</returns>
     [DataObjectMethod(DataObjectMethodType.Select, false)]
     public static EntityList<TEntity> FindAll(String whereClause, String orderClause, String selects, Int64 startRowIndex, Int32 maximumRows)
     {
@@ -1372,8 +1372,8 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>Í¬Ê±²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼¼¯ºÍ¼ÇÂ¼×ÜÊı¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
-    /// <param name="param">·ÖÒ³ÅÅĞò²ÎÊı£¬Í¬Ê±·µ»ØÂú×ãÌõ¼şµÄ×Ü¼ÇÂ¼Êı</param>
+    /// <summary>åŒæ—¶æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•é›†å’Œè®°å½•æ€»æ•°ã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
+    /// <param name="param">åˆ†é¡µæ’åºå‚æ•°ï¼ŒåŒæ—¶è¿”å›æ»¡è¶³æ¡ä»¶çš„æ€»è®°å½•æ•°</param>
     /// <returns></returns>
     public static EntityList<TEntity> FindAll(PageParameter param)
     {
@@ -1382,18 +1382,18 @@ namespace CuteAnt.OrmLite
       var whereExp = param.WhereExp;
       String whereClause = whereExp != null ? whereExp.ToExpression(Meta.Factory) : null;
 
-      // ÏÈ²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼Êı£¬Èç¹ûÃ»ÓĞÊı¾İ£¬ÔòÖ±½Ó·µ»Ø¿Õ¼¯ºÏ£¬²»ÔÙ²éÑ¯Êı¾İ
+      // å…ˆæŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•æ•°ï¼Œå¦‚æœæ²¡æœ‰æ•°æ®ï¼Œåˆ™ç›´æ¥è¿”å›ç©ºé›†åˆï¼Œä¸å†æŸ¥è¯¢æ•°æ®
       param.TotalCount = FindCount(whereClause, null, null, 0, 0);
       if (param.TotalCount <= 0) { return new EntityList<TEntity>(); }
 
-      // ÑéÖ¤ÅÅĞò×Ö¶Î£¬±ÜÃâ·Ç·¨
+      // éªŒè¯æ’åºå­—æ®µï¼Œé¿å…éæ³•
       //if (!param.Sort.IsNullOrEmpty())
       //{
       //	FieldItem st = Meta.Table.FindByName(param.Sort);
       //	param.Sort = st != null ? st.Name : null;
       //}
 
-      // ÑéÖ¤Êı¾İ×Ö¶Î
+      // éªŒè¯æ•°æ®å­—æ®µ
       String selects = null;
       var selFields = param.SelectFields;
       if (!selFields.IsNullOrWhiteSpace())
@@ -1405,17 +1405,17 @@ namespace CuteAnt.OrmLite
     }
 
 #if DESKTOPCLR
-    /// <summary>Í¬Ê±²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼¼¯ºÍ¼ÇÂ¼×ÜÊı¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
-    /// <param name="whereClause">Ìõ¼ş£¬²»´øWhere</param>
-    /// <param name="param">·ÖÒ³ÅÅĞò²ÎÊı£¬Í¬Ê±·µ»ØÂú×ãÌõ¼şµÄ×Ü¼ÇÂ¼Êı</param>
+    /// <summary>åŒæ—¶æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•é›†å’Œè®°å½•æ€»æ•°ã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
+    /// <param name="whereClause">æ¡ä»¶ï¼Œä¸å¸¦Where</param>
+    /// <param name="param">åˆ†é¡µæ’åºå‚æ•°ï¼ŒåŒæ—¶è¿”å›æ»¡è¶³æ¡ä»¶çš„æ€»è®°å½•æ•°</param>
     /// <returns></returns>
     public static EntityList<TEntity> FindAllX(String whereClause, CuteAnt.Data.PageParameter param)
     {
-      // ÏÈ²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼Êı£¬Èç¹ûÃ»ÓĞÊı¾İ£¬ÔòÖ±½Ó·µ»Ø¿Õ¼¯ºÏ£¬²»ÔÙ²éÑ¯Êı¾İ
+      // å…ˆæŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•æ•°ï¼Œå¦‚æœæ²¡æœ‰æ•°æ®ï¼Œåˆ™ç›´æ¥è¿”å›ç©ºé›†åˆï¼Œä¸å†æŸ¥è¯¢æ•°æ®
       param.TotalCount = (int)FindCount(whereClause, null, null, 0, 0);
       if (param.TotalCount <= 0) return new EntityList<TEntity>();
 
-      // ÑéÖ¤ÅÅĞò×Ö¶Î£¬±ÜÃâ·Ç·¨
+      // éªŒè¯æ’åºå­—æ®µï¼Œé¿å…éæ³•
       if (!string.IsNullOrEmpty(param.Sort))
       {
         FieldItem st = Meta.Table.FindByName(param.Sort);
@@ -1426,42 +1426,42 @@ namespace CuteAnt.OrmLite
     }
 #endif
 
-    /// <summary>¸ù¾İÊôĞÔÁĞ±íÒÔ¼°¶ÔÓ¦µÄÖµÁĞ±í²éÑ¯Êı¾İ¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
-    /// <param name="names">ÊôĞÔÁĞ±í</param>
-    /// <param name="values">ÖµÁĞ±í</param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>æ ¹æ®å±æ€§åˆ—è¡¨ä»¥åŠå¯¹åº”çš„å€¼åˆ—è¡¨æŸ¥è¯¢æ•°æ®ã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
+    /// <param name="names">å±æ€§åˆ—è¡¨</param>
+    /// <param name="values">å€¼åˆ—è¡¨</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     public static EntityList<TEntity> FindAll(String[] names, Object[] values)
     {
-      // ÅĞ¶Ï×ÔÔöºÍÖ÷¼ü
+      // åˆ¤æ–­è‡ªå¢å’Œä¸»é”®
       if (names != null && names.Length == 1)
       {
         FieldItem field = Meta.Table.FindByName(names[0]);
         if (field != null && (field.IsIdentity || field.PrimaryKey))
         {
-          // Î¨Ò»¼üÎª×ÔÔöÇÒ²ÎÊıĞ¡ÓÚµÈÓÚ0Ê±£¬·µ»Ø¿Õ
+          // å”¯ä¸€é”®ä¸ºè‡ªå¢ä¸”å‚æ•°å°äºç­‰äº0æ—¶ï¼Œè¿”å›ç©º
           if (Helper.IsNullKey(values[0], field.Field.DbType)) { return null; }
         }
       }
       return FindAll(MakeCondition(names, values, "And"), null, null, 0L, 0);
     }
 
-    /// <summary>¸ù¾İÊôĞÔÒÔ¼°¶ÔÓ¦µÄÖµ²éÑ¯Êı¾İ¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
-    /// <param name="name">ÊôĞÔ</param>
-    /// <param name="value">Öµ</param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>æ ¹æ®å±æ€§ä»¥åŠå¯¹åº”çš„å€¼æŸ¥è¯¢æ•°æ®ã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
+    /// <param name="name">å±æ€§</param>
+    /// <param name="value">å€¼</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     [DataObjectMethod(DataObjectMethodType.Select, false)]
     public static EntityList<TEntity> FindAll(String name, Object value)
     {
       return FindAll(new String[] { name }, new Object[] { value });
     }
 
-    /// <summary>¸ù¾İÊôĞÔÒÔ¼°¶ÔÓ¦µÄÖµ²éÑ¯Êı¾İ£¬´øÅÅĞò¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
-    /// <param name="name">ÊôĞÔ</param>
-    /// <param name="value">Öµ</param>
-    /// <param name="orderClause">ÅÅĞò£¬²»´øOrder By</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>æ ¹æ®å±æ€§ä»¥åŠå¯¹åº”çš„å€¼æŸ¥è¯¢æ•°æ®ï¼Œå¸¦æ’åºã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
+    /// <param name="name">å±æ€§</param>
+    /// <param name="value">å€¼</param>
+    /// <param name="orderClause">æ’åºï¼Œä¸å¸¦Order By</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     [DataObjectMethod(DataObjectMethodType.Select, true)]
     public static EntityList<TEntity> FindAllByName(String name, Object value, String orderClause, Int64 startRowIndex, Int32 maximumRows)
     {
@@ -1472,13 +1472,13 @@ namespace CuteAnt.OrmLite
       FieldItem field = Meta.Table.FindByName(name);
       if (field != null && (field.IsIdentity || field.PrimaryKey))
       {
-        // Î¨Ò»¼üÎª×ÔÔöÇÒ²ÎÊıĞ¡ÓÚµÈÓÚ0Ê±£¬·µ»Ø¿Õ
+        // å”¯ä¸€é”®ä¸ºè‡ªå¢ä¸”å‚æ•°å°äºç­‰äº0æ—¶ï¼Œè¿”å›ç©º
         if (Helper.IsNullKey(value, field.Field.DbType))
         {
           return new EntityList<TEntity>();
         }
 
-        // ×ÔÔö»òÕßÖ÷¼ü²éÑ¯£¬¼ÇÂ¼¼¯¿Ï¶¨ÊÇÎ¨Ò»µÄ£¬²»ĞèÒªÖ¸¶¨¼ÇÂ¼ÊıºÍÅÅĞò
+        // è‡ªå¢æˆ–è€…ä¸»é”®æŸ¥è¯¢ï¼Œè®°å½•é›†è‚¯å®šæ˜¯å”¯ä¸€çš„ï¼Œä¸éœ€è¦æŒ‡å®šè®°å½•æ•°å’Œæ’åº
         return FindAll(MakeCondition(field, value, "="), null, null, 0L, 0);
         //var builder = new SelectBuilder();
         //builder.Table = Meta.FormatName(Meta.TableName);
@@ -1488,11 +1488,11 @@ namespace CuteAnt.OrmLite
       return FindAll(MakeCondition(new String[] { name }, new Object[] { value }, "And"), orderClause, null, startRowIndex, maximumRows);
     }
 
-    /// <summary>²éÑ¯SQL²¢·µ»ØÊµÌå¶ÔÏóÊı×é¡£
-    /// Select·½·¨½«Ö±½ÓÊ¹ÓÃ²ÎÊıÖ¸¶¨µÄ²éÑ¯Óï¾ä½øĞĞ²éÑ¯£¬²»½øĞĞÈÎºÎ×ª»»¡£
+    /// <summary>æŸ¥è¯¢SQLå¹¶è¿”å›å®ä½“å¯¹è±¡æ•°ç»„ã€‚
+    /// Selectæ–¹æ³•å°†ç›´æ¥ä½¿ç”¨å‚æ•°æŒ‡å®šçš„æŸ¥è¯¢è¯­å¥è¿›è¡ŒæŸ¥è¯¢ï¼Œä¸è¿›è¡Œä»»ä½•è½¬æ¢ã€‚
     /// </summary>
-    /// <param name="sql">²éÑ¯Óï¾ä</param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <param name="sql">æŸ¥è¯¢è¯­å¥</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     //[Obsolete("=>Session")]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static EntityList<TEntity> FindAll(String sql)
@@ -1504,23 +1504,23 @@ namespace CuteAnt.OrmLite
 
     #region - EntityList WithLockToken -
 
-    /// <summary>»ñÈ¡ËùÓĞÊµÌå¶ÔÏó£¬Ö´ĞĞSQL²éÑ¯Ê±Ê¹ÓÃ¶ÁËøÁîÅÆ¡£»ñÈ¡´óÁ¿Êı¾İÊ±»á·Ç³£Âı£¬É÷ÓÃ£¡Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <returns>ÊµÌå¼¯ºÏ</returns>
+    /// <summary>è·å–æ‰€æœ‰å®ä½“å¯¹è±¡ï¼Œæ‰§è¡ŒSQLæŸ¥è¯¢æ—¶ä½¿ç”¨è¯»é”ä»¤ç‰Œã€‚è·å–å¤§é‡æ•°æ®æ—¶ä¼šéå¸¸æ…¢ï¼Œæ…ç”¨ï¼æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <returns>å®ä½“é›†åˆ</returns>
     [DataObjectMethod(DataObjectMethodType.Select, false)]
     public static EntityList<TEntity> FindAllWithLockToken()
     {
       return FindAllWithLockToken(null, null, null, 0L, 0);
     }
 
-    /// <summary>²éÑ¯²¢·µ»ØÊµÌå¶ÔÏó¼¯ºÏ£¬Ö´ĞĞSQL²éÑ¯Ê±Ê¹ÓÃ¶ÁËøÁîÅÆ¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <remarks>×î¾­µäµÄÅúÁ¿²éÑ¯£¬¿´Õâ¸öSelect @selects From Table Where @whereClause Order By @orderClause Limit @startRowIndex,@maximumRows£¬
-    /// Äã¾ÍÃ÷°×¸÷²ÎÊıµÄÒâË¼ÁË¡£</remarks>
-    /// <param name="whereClause">Ìõ¼ş×Ö¾ä£¬²»´øWhere</param>
-    /// <param name="orderClause">ÅÅĞò×Ö¾ä£¬²»´øOrder By</param>
-    /// <param name="selects">²éÑ¯ÁĞ£¬Ä¬ÈÏnull±íÊ¾ËùÓĞ×Ö¶Î</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>ÊµÌå¼¯</returns>
+    /// <summary>æŸ¥è¯¢å¹¶è¿”å›å®ä½“å¯¹è±¡é›†åˆï¼Œæ‰§è¡ŒSQLæŸ¥è¯¢æ—¶ä½¿ç”¨è¯»é”ä»¤ç‰Œã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <remarks>æœ€ç»å…¸çš„æ‰¹é‡æŸ¥è¯¢ï¼Œçœ‹è¿™ä¸ªSelect @selects From Table Where @whereClause Order By @orderClause Limit @startRowIndex,@maximumRowsï¼Œ
+    /// ä½ å°±æ˜ç™½å„å‚æ•°çš„æ„æ€äº†ã€‚</remarks>
+    /// <param name="whereClause">æ¡ä»¶å­—å¥ï¼Œä¸å¸¦Where</param>
+    /// <param name="orderClause">æ’åºå­—å¥ï¼Œä¸å¸¦Order By</param>
+    /// <param name="selects">æŸ¥è¯¢åˆ—ï¼Œé»˜è®¤nullè¡¨ç¤ºæ‰€æœ‰å­—æ®µ</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>å®ä½“é›†</returns>
     [DataObjectMethod(DataObjectMethodType.Select, false)]
     public static EntityList<TEntity> FindAllWithLockToken(String whereClause, String orderClause, String selects, Int64 startRowIndex, Int32 maximumRows)
     {
@@ -1546,8 +1546,8 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>Í¬Ê±²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼¼¯ºÍ¼ÇÂ¼×ÜÊı¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
-    /// <param name="param">·ÖÒ³ÅÅĞò²ÎÊı£¬Í¬Ê±·µ»ØÂú×ãÌõ¼şµÄ×Ü¼ÇÂ¼Êı</param>
+    /// <summary>åŒæ—¶æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•é›†å’Œè®°å½•æ€»æ•°ã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
+    /// <param name="param">åˆ†é¡µæ’åºå‚æ•°ï¼ŒåŒæ—¶è¿”å›æ»¡è¶³æ¡ä»¶çš„æ€»è®°å½•æ•°</param>
     /// <returns></returns>
     public static EntityList<TEntity> FindAllWithLockToken(PageParameter param)
     {
@@ -1556,18 +1556,18 @@ namespace CuteAnt.OrmLite
       var whereExp = param.WhereExp;
       String whereClause = whereExp != null ? whereExp.ToExpression(Meta.Factory) : null;
 
-      // ÏÈ²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼Êı£¬Èç¹ûÃ»ÓĞÊı¾İ£¬ÔòÖ±½Ó·µ»Ø¿Õ¼¯ºÏ£¬²»ÔÙ²éÑ¯Êı¾İ
+      // å…ˆæŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•æ•°ï¼Œå¦‚æœæ²¡æœ‰æ•°æ®ï¼Œåˆ™ç›´æ¥è¿”å›ç©ºé›†åˆï¼Œä¸å†æŸ¥è¯¢æ•°æ®
       param.TotalCount = FindCountWithLockToken(whereClause);
       if (param.TotalCount <= 0) { return new EntityList<TEntity>(); }
 
-      // ÑéÖ¤ÅÅĞò×Ö¶Î£¬±ÜÃâ·Ç·¨
+      // éªŒè¯æ’åºå­—æ®µï¼Œé¿å…éæ³•
       //if (!param.Sort.IsNullOrEmpty())
       //{
       //	FieldItem st = Meta.Table.FindByName(param.Sort);
       //	param.Sort = st != null ? st.Name : null;
       //}
 
-      // ÑéÖ¤Êı¾İ×Ö¶Î
+      // éªŒè¯æ•°æ®å­—æ®µ
       String selects = null;
       var selFields = param.SelectFields;
       if (!selFields.IsNullOrWhiteSpace())
@@ -1582,22 +1582,22 @@ namespace CuteAnt.OrmLite
 
     #region - EntitySet -
 
-    /// <summary>»ñÈ¡ËùÓĞÊµÌå¹şÏ£¼¯ºÏ¡£»ñÈ¡´óÁ¿Êı¾İÊ±»á·Ç³£Âı£¬É÷ÓÃ£¡Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>è·å–æ‰€æœ‰å®ä½“å“ˆå¸Œé›†åˆã€‚è·å–å¤§é‡æ•°æ®æ—¶ä¼šéå¸¸æ…¢ï¼Œæ…ç”¨ï¼æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     public static EntitySet<TEntity> FindAllSet()
     {
       return FindAllSet(null, null, null, 0L, 0);
     }
 
-    /// <summary>²éÑ¯²¢·µ»ØÊµÌå¶ÔÏó¹şÏ£¼¯ºÏ¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <remarks>×î¾­µäµÄÅúÁ¿²éÑ¯£¬¿´Õâ¸öSelect @selects From Table Where @whereClause Order By @orderClause Limit @startRowIndex,@maximumRows£¬
-    /// Äã¾ÍÃ÷°×¸÷²ÎÊıµÄÒâË¼ÁË¡£</remarks>
-    /// <param name="whereClause">Ìõ¼ş×Ö¾ä£¬²»´øWhere</param>
-    /// <param name="orderClause">ÅÅĞò×Ö¾ä£¬²»´øOrder By</param>
-    /// <param name="selects">²éÑ¯ÁĞ£¬Ä¬ÈÏnull±íÊ¾ËùÓĞ×Ö¶Î</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>ÊµÌå¼¯</returns>
+    /// <summary>æŸ¥è¯¢å¹¶è¿”å›å®ä½“å¯¹è±¡å“ˆå¸Œé›†åˆã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <remarks>æœ€ç»å…¸çš„æ‰¹é‡æŸ¥è¯¢ï¼Œçœ‹è¿™ä¸ªSelect @selects From Table Where @whereClause Order By @orderClause Limit @startRowIndex,@maximumRowsï¼Œ
+    /// ä½ å°±æ˜ç™½å„å‚æ•°çš„æ„æ€äº†ã€‚</remarks>
+    /// <param name="whereClause">æ¡ä»¶å­—å¥ï¼Œä¸å¸¦Where</param>
+    /// <param name="orderClause">æ’åºå­—å¥ï¼Œä¸å¸¦Order By</param>
+    /// <param name="selects">æŸ¥è¯¢åˆ—ï¼Œé»˜è®¤nullè¡¨ç¤ºæ‰€æœ‰å­—æ®µ</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>å®ä½“é›†</returns>
     public static EntitySet<TEntity> FindAllSet(String whereClause, String orderClause, String selects, Int64 startRowIndex, Int32 maximumRows)
     {
       var session = Meta.Session;
@@ -1614,8 +1614,8 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>Í¬Ê±²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼¼¯ºÍ¼ÇÂ¼×ÜÊı¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
-    /// <param name="param">·ÖÒ³ÅÅĞò²ÎÊı£¬Í¬Ê±·µ»ØÂú×ãÌõ¼şµÄ×Ü¼ÇÂ¼Êı</param>
+    /// <summary>åŒæ—¶æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•é›†å’Œè®°å½•æ€»æ•°ã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
+    /// <param name="param">åˆ†é¡µæ’åºå‚æ•°ï¼ŒåŒæ—¶è¿”å›æ»¡è¶³æ¡ä»¶çš„æ€»è®°å½•æ•°</param>
     /// <returns></returns>
     public static EntitySet<TEntity> FindAllSet(PageParameter param)
     {
@@ -1624,18 +1624,18 @@ namespace CuteAnt.OrmLite
       var whereExp = param.WhereExp;
       String whereClause = whereExp != null ? whereExp.ToExpression(Meta.Factory) : null;
 
-      // ÏÈ²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼Êı£¬Èç¹ûÃ»ÓĞÊı¾İ£¬ÔòÖ±½Ó·µ»Ø¿Õ¼¯ºÏ£¬²»ÔÙ²éÑ¯Êı¾İ
+      // å…ˆæŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•æ•°ï¼Œå¦‚æœæ²¡æœ‰æ•°æ®ï¼Œåˆ™ç›´æ¥è¿”å›ç©ºé›†åˆï¼Œä¸å†æŸ¥è¯¢æ•°æ®
       param.TotalCount = FindCount(whereClause, null, null, 0, 0);
       if (param.TotalCount <= 0) { return new EntitySet<TEntity>(); }
 
-      // ÑéÖ¤ÅÅĞò×Ö¶Î£¬±ÜÃâ·Ç·¨
+      // éªŒè¯æ’åºå­—æ®µï¼Œé¿å…éæ³•
       //if (!param.Sort.IsNullOrEmpty())
       //{
       //	FieldItem st = Meta.Table.FindByName(param.Sort);
       //	param.Sort = st != null ? st.Name : null;
       //}
 
-      // ÑéÖ¤Êı¾İ×Ö¶Î
+      // éªŒè¯æ•°æ®å­—æ®µ
       String selects = null;
       var selFields = param.SelectFields;
       if (!selFields.IsNullOrWhiteSpace())
@@ -1646,41 +1646,41 @@ namespace CuteAnt.OrmLite
       return FindAllSet(whereClause, param.OrderBy, selects, param.RowIndex, param.RowCount);
     }
 
-    /// <summary>¸ù¾İÊôĞÔÁĞ±íÒÔ¼°¶ÔÓ¦µÄÖµÁĞ±í²éÑ¯Êı¾İ¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <param name="names">ÊôĞÔÁĞ±í</param>
-    /// <param name="values">ÖµÁĞ±í</param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>æ ¹æ®å±æ€§åˆ—è¡¨ä»¥åŠå¯¹åº”çš„å€¼åˆ—è¡¨æŸ¥è¯¢æ•°æ®ã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <param name="names">å±æ€§åˆ—è¡¨</param>
+    /// <param name="values">å€¼åˆ—è¡¨</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     public static EntitySet<TEntity> FindAllSet(String[] names, Object[] values)
     {
-      // ÅĞ¶Ï×ÔÔöºÍÖ÷¼ü
+      // åˆ¤æ–­è‡ªå¢å’Œä¸»é”®
       if (names != null && names.Length == 1)
       {
         FieldItem field = Meta.Table.FindByName(names[0]);
         if (field != null && (field.IsIdentity || field.PrimaryKey))
         {
-          // Î¨Ò»¼üÎª×ÔÔöÇÒ²ÎÊıĞ¡ÓÚµÈÓÚ0Ê±£¬·µ»Ø¿Õ
+          // å”¯ä¸€é”®ä¸ºè‡ªå¢ä¸”å‚æ•°å°äºç­‰äº0æ—¶ï¼Œè¿”å›ç©º
           if (Helper.IsNullKey(values[0], field.Field.DbType)) { return null; }
         }
       }
       return FindAllSet(MakeCondition(names, values, "And"), null, null, 0L, 0);
     }
 
-    /// <summary>¸ù¾İÊôĞÔÒÔ¼°¶ÔÓ¦µÄÖµ²éÑ¯Êı¾İ¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <param name="name">ÊôĞÔ</param>
-    /// <param name="value">Öµ</param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>æ ¹æ®å±æ€§ä»¥åŠå¯¹åº”çš„å€¼æŸ¥è¯¢æ•°æ®ã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <param name="name">å±æ€§</param>
+    /// <param name="value">å€¼</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     public static EntitySet<TEntity> FindAllSet(String name, Object value)
     {
       return FindAllSet(new String[] { name }, new Object[] { value });
     }
 
-    /// <summary>¸ù¾İÊôĞÔÒÔ¼°¶ÔÓ¦µÄÖµ²éÑ¯Êı¾İ£¬´øÅÅĞò¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <param name="name">ÊôĞÔ</param>
-    /// <param name="value">Öµ</param>
-    /// <param name="orderClause">ÅÅĞò£¬²»´øOrder By</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>æ ¹æ®å±æ€§ä»¥åŠå¯¹åº”çš„å€¼æŸ¥è¯¢æ•°æ®ï¼Œå¸¦æ’åºã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <param name="name">å±æ€§</param>
+    /// <param name="value">å€¼</param>
+    /// <param name="orderClause">æ’åºï¼Œä¸å¸¦Order By</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     public static EntitySet<TEntity> FindAllSetByName(String name, Object value, String orderClause, Int64 startRowIndex, Int32 maximumRows)
     {
       if (name.IsNullOrWhiteSpace())
@@ -1690,13 +1690,13 @@ namespace CuteAnt.OrmLite
       FieldItem field = Meta.Table.FindByName(name);
       if (field != null && (field.IsIdentity || field.PrimaryKey))
       {
-        // Î¨Ò»¼üÎª×ÔÔöÇÒ²ÎÊıĞ¡ÓÚµÈÓÚ0Ê±£¬·µ»Ø¿Õ
+        // å”¯ä¸€é”®ä¸ºè‡ªå¢ä¸”å‚æ•°å°äºç­‰äº0æ—¶ï¼Œè¿”å›ç©º
         if (Helper.IsNullKey(value, field.Field.DbType))
         {
           return new EntitySet<TEntity>();
         }
 
-        // ×ÔÔö»òÕßÖ÷¼ü²éÑ¯£¬¼ÇÂ¼¼¯¿Ï¶¨ÊÇÎ¨Ò»µÄ£¬²»ĞèÒªÖ¸¶¨¼ÇÂ¼ÊıºÍÅÅĞò
+        // è‡ªå¢æˆ–è€…ä¸»é”®æŸ¥è¯¢ï¼Œè®°å½•é›†è‚¯å®šæ˜¯å”¯ä¸€çš„ï¼Œä¸éœ€è¦æŒ‡å®šè®°å½•æ•°å’Œæ’åº
         return FindAllSet(MakeCondition(field, value, "="), null, null, 0L, 0);
         //var builder = new SelectBuilder();
         //builder.Table = Meta.FormatName(Meta.TableName);
@@ -1706,9 +1706,9 @@ namespace CuteAnt.OrmLite
       return FindAllSet(MakeCondition(new String[] { name }, new Object[] { value }, "And"), orderClause, null, startRowIndex, maximumRows);
     }
 
-    /// <summary>²éÑ¯SQL²¢·µ»ØÊµÌå¶ÔÏó¹şÏ£¼¯ºÏ¡£Select·½·¨½«Ö±½ÓÊ¹ÓÃ²ÎÊıÖ¸¶¨µÄ²éÑ¯Óï¾ä½øĞĞ²éÑ¯£¬²»½øĞĞÈÎºÎ×ª»»¡£</summary>
-    /// <param name="sql">²éÑ¯Óï¾ä</param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>æŸ¥è¯¢SQLå¹¶è¿”å›å®ä½“å¯¹è±¡å“ˆå¸Œé›†åˆã€‚Selectæ–¹æ³•å°†ç›´æ¥ä½¿ç”¨å‚æ•°æŒ‡å®šçš„æŸ¥è¯¢è¯­å¥è¿›è¡ŒæŸ¥è¯¢ï¼Œä¸è¿›è¡Œä»»ä½•è½¬æ¢ã€‚</summary>
+    /// <param name="sql">æŸ¥è¯¢è¯­å¥</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     public static EntitySet<TEntity> FindAllSet(String sql)
     {
       return LoadDataToSet(Meta.Session.Query(sql));
@@ -1718,22 +1718,22 @@ namespace CuteAnt.OrmLite
 
     #region - EntitySet WithLockToken -
 
-    /// <summary>»ñÈ¡ËùÓĞÊµÌå¶ÔÏó¹şÏ£¼¯ºÏ£¬Ö´ĞĞSQL²éÑ¯Ê±Ê¹ÓÃ¶ÁËøÁîÅÆ¡£»ñÈ¡´óÁ¿Êı¾İÊ±»á·Ç³£Âı£¬É÷ÓÃ£¡Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <returns>ÊµÌå¼¯ºÏ</returns>
+    /// <summary>è·å–æ‰€æœ‰å®ä½“å¯¹è±¡å“ˆå¸Œé›†åˆï¼Œæ‰§è¡ŒSQLæŸ¥è¯¢æ—¶ä½¿ç”¨è¯»é”ä»¤ç‰Œã€‚è·å–å¤§é‡æ•°æ®æ—¶ä¼šéå¸¸æ…¢ï¼Œæ…ç”¨ï¼æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <returns>å®ä½“é›†åˆ</returns>
     public static EntitySet<TEntity> FindAllSetWithLockToken()
     {
       return FindAllSetWithLockToken(null, null, null, 0L, 0);
     }
 
-    /// <summary>²éÑ¯²¢·µ»ØÊµÌå¶ÔÏó¹şÏ£¼¯ºÏ£¬Ö´ĞĞSQL²éÑ¯Ê±Ê¹ÓÃ¶ÁËøÁîÅÆ¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull¡£</summary>
-    /// <remarks>×î¾­µäµÄÅúÁ¿²éÑ¯£¬¿´Õâ¸öSelect @selects From Table Where @whereClause Order By @orderClause Limit @startRowIndex,@maximumRows£¬
-    /// Äã¾ÍÃ÷°×¸÷²ÎÊıµÄÒâË¼ÁË¡£</remarks>
-    /// <param name="whereClause">Ìõ¼ş×Ö¾ä£¬²»´øWhere</param>
-    /// <param name="orderClause">ÅÅĞò×Ö¾ä£¬²»´øOrder By</param>
-    /// <param name="selects">²éÑ¯ÁĞ£¬Ä¬ÈÏnull±íÊ¾ËùÓĞ×Ö¶Î</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>ÊµÌå¼¯</returns>
+    /// <summary>æŸ¥è¯¢å¹¶è¿”å›å®ä½“å¯¹è±¡å“ˆå¸Œé›†åˆï¼Œæ‰§è¡ŒSQLæŸ¥è¯¢æ—¶ä½¿ç”¨è¯»é”ä»¤ç‰Œã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯nullã€‚</summary>
+    /// <remarks>æœ€ç»å…¸çš„æ‰¹é‡æŸ¥è¯¢ï¼Œçœ‹è¿™ä¸ªSelect @selects From Table Where @whereClause Order By @orderClause Limit @startRowIndex,@maximumRowsï¼Œ
+    /// ä½ å°±æ˜ç™½å„å‚æ•°çš„æ„æ€äº†ã€‚</remarks>
+    /// <param name="whereClause">æ¡ä»¶å­—å¥ï¼Œä¸å¸¦Where</param>
+    /// <param name="orderClause">æ’åºå­—å¥ï¼Œä¸å¸¦Order By</param>
+    /// <param name="selects">æŸ¥è¯¢åˆ—ï¼Œé»˜è®¤nullè¡¨ç¤ºæ‰€æœ‰å­—æ®µ</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>å®ä½“é›†</returns>
     public static EntitySet<TEntity> FindAllSetWithLockToken(String whereClause, String orderClause, String selects, Int64 startRowIndex, Int32 maximumRows)
     {
       var session = Meta.Session;
@@ -1757,8 +1757,8 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>Í¬Ê±²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼¼¯ºÍ¼ÇÂ¼×ÜÊı¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
-    /// <param name="param">·ÖÒ³ÅÅĞò²ÎÊı£¬Í¬Ê±·µ»ØÂú×ãÌõ¼şµÄ×Ü¼ÇÂ¼Êı</param>
+    /// <summary>åŒæ—¶æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•é›†å’Œè®°å½•æ€»æ•°ã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
+    /// <param name="param">åˆ†é¡µæ’åºå‚æ•°ï¼ŒåŒæ—¶è¿”å›æ»¡è¶³æ¡ä»¶çš„æ€»è®°å½•æ•°</param>
     /// <returns></returns>
     public static EntitySet<TEntity> FindAllSetWithLockToken(PageParameter param)
     {
@@ -1767,18 +1767,18 @@ namespace CuteAnt.OrmLite
       var whereExp = param.WhereExp;
       String whereClause = whereExp != null ? whereExp.ToExpression(Meta.Factory) : null;
 
-      // ÏÈ²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼Êı£¬Èç¹ûÃ»ÓĞÊı¾İ£¬ÔòÖ±½Ó·µ»Ø¿Õ¼¯ºÏ£¬²»ÔÙ²éÑ¯Êı¾İ
+      // å…ˆæŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•æ•°ï¼Œå¦‚æœæ²¡æœ‰æ•°æ®ï¼Œåˆ™ç›´æ¥è¿”å›ç©ºé›†åˆï¼Œä¸å†æŸ¥è¯¢æ•°æ®
       param.TotalCount = FindCountWithLockToken(whereClause);
       if (param.TotalCount <= 0) { return new EntitySet<TEntity>(); }
 
-      // ÑéÖ¤ÅÅĞò×Ö¶Î£¬±ÜÃâ·Ç·¨
+      // éªŒè¯æ’åºå­—æ®µï¼Œé¿å…éæ³•
       //if (!param.Sort.IsNullOrEmpty())
       //{
       //	FieldItem st = Meta.Table.FindByName(param.Sort);
       //	param.Sort = st != null ? st.Name : null;
       //}
 
-      // ÑéÖ¤Êı¾İ×Ö¶Î
+      // éªŒè¯æ•°æ®å­—æ®µ
       String selects = null;
       var selFields = param.SelectFields;
       if (!selFields.IsNullOrWhiteSpace())
@@ -1793,22 +1793,22 @@ namespace CuteAnt.OrmLite
 
     #region - DataSet -
 
-    /// <summary>»ñÈ¡ËùÓĞ¼ÇÂ¼¼¯¡£»ñÈ¡´óÁ¿Êı¾İÊ±»á·Ç³£Âı£¬É÷ÓÃ</summary>
-    /// <returns>DataSet¶ÔÏó</returns>
+    /// <summary>è·å–æ‰€æœ‰è®°å½•é›†ã€‚è·å–å¤§é‡æ•°æ®æ—¶ä¼šéå¸¸æ…¢ï¼Œæ…ç”¨</summary>
+    /// <returns>DataSetå¯¹è±¡</returns>
     public static DataSet FindAllDataSet()
     {
       return FindAllDataSet(null, null, null, 0L, 0);
     }
 
-    /// <summary>²éÑ¯²¢·µ»ØÊµÌå¶ÔÏó¼¯ºÏ¡£</summary>
-    /// <remarks>×î¾­µäµÄÅúÁ¿²éÑ¯£¬¿´Õâ¸öSelect @selects From Table Where @whereClause Order By @orderClause Limit @startRowIndex,@maximumRows£¬
-    /// Äã¾ÍÃ÷°×¸÷²ÎÊıµÄÒâË¼ÁË¡£</remarks>
-    /// <param name="whereClause">Ìõ¼ş×Ö¾ä£¬²»´øWhere</param>
-    /// <param name="orderClause">ÅÅĞò×Ö¾ä£¬²»´øOrder By</param>
-    /// <param name="selects">²éÑ¯ÁĞ£¬Ä¬ÈÏnull±íÊ¾ËùÓĞ×Ö¶Î</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>DataSet¶ÔÏó</returns>
+    /// <summary>æŸ¥è¯¢å¹¶è¿”å›å®ä½“å¯¹è±¡é›†åˆã€‚</summary>
+    /// <remarks>æœ€ç»å…¸çš„æ‰¹é‡æŸ¥è¯¢ï¼Œçœ‹è¿™ä¸ªSelect @selects From Table Where @whereClause Order By @orderClause Limit @startRowIndex,@maximumRowsï¼Œ
+    /// ä½ å°±æ˜ç™½å„å‚æ•°çš„æ„æ€äº†ã€‚</remarks>
+    /// <param name="whereClause">æ¡ä»¶å­—å¥ï¼Œä¸å¸¦Where</param>
+    /// <param name="orderClause">æ’åºå­—å¥ï¼Œä¸å¸¦Order By</param>
+    /// <param name="selects">æŸ¥è¯¢åˆ—ï¼Œé»˜è®¤nullè¡¨ç¤ºæ‰€æœ‰å­—æ®µ</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>DataSetå¯¹è±¡</returns>
     public static DataSet FindAllDataSet(String whereClause, String orderClause, String selects, Int64 startRowIndex, Int32 maximumRows)
     {
       var session = Meta.Session;
@@ -1816,7 +1816,7 @@ namespace CuteAnt.OrmLite
       DataSet ds;
       if (TryFindLargeData(session, whereClause, orderClause, selects, startRowIndex, maximumRows, false, out ds))
       {
-        // ÒòÎªÕâÑùÈ¡µÃµÄÊı¾İÊÇµ¹¹ıÀ´µÄ£¬ËùÒÔÕâÀïĞèÒªÔÙµ¹Ò»´Î
+        // å› ä¸ºè¿™æ ·å–å¾—çš„æ•°æ®æ˜¯å€’è¿‡æ¥çš„ï¼Œæ‰€ä»¥è¿™é‡Œéœ€è¦å†å€’ä¸€æ¬¡
         return ReverseDataSet(ds);
       }
       else
@@ -1826,8 +1826,8 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>Í¬Ê±²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼¼¯ºÍ¼ÇÂ¼×ÜÊı¡£</summary>
-    /// <param name="param">·ÖÒ³ÅÅĞò²ÎÊı£¬Í¬Ê±·µ»ØÂú×ãÌõ¼şµÄ×Ü¼ÇÂ¼Êı</param>
+    /// <summary>åŒæ—¶æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•é›†å’Œè®°å½•æ€»æ•°ã€‚</summary>
+    /// <param name="param">åˆ†é¡µæ’åºå‚æ•°ï¼ŒåŒæ—¶è¿”å›æ»¡è¶³æ¡ä»¶çš„æ€»è®°å½•æ•°</param>
     /// <returns></returns>
     public static DataSet FindAllDataSet(PageParameter param)
     {
@@ -1836,18 +1836,18 @@ namespace CuteAnt.OrmLite
       var whereExp = param.WhereExp;
       String whereClause = whereExp != null ? whereExp.ToExpression(Meta.Factory) : null;
 
-      // ÏÈ²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼Êı£¬Èç¹ûÃ»ÓĞÊı¾İ£¬ÔòÖ±½Ó·µ»Ø¿Õ¼¯ºÏ£¬²»ÔÙ²éÑ¯Êı¾İ
+      // å…ˆæŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•æ•°ï¼Œå¦‚æœæ²¡æœ‰æ•°æ®ï¼Œåˆ™ç›´æ¥è¿”å›ç©ºé›†åˆï¼Œä¸å†æŸ¥è¯¢æ•°æ®
       param.TotalCount = FindCount(whereClause, null, null, 0, 0);
       if (param.TotalCount <= 0) { return null; }
 
-      // ÑéÖ¤ÅÅĞò×Ö¶Î£¬±ÜÃâ·Ç·¨
+      // éªŒè¯æ’åºå­—æ®µï¼Œé¿å…éæ³•
       //if (!param.Sort.IsNullOrEmpty())
       //{
       //	FieldItem st = Meta.Table.FindByName(param.Sort);
       //	param.Sort = st != null ? st.Name : null;
       //}
 
-      // ÑéÖ¤Êı¾İ×Ö¶Î
+      // éªŒè¯æ•°æ®å­—æ®µ
       String selects = null;
       var selFields = param.SelectFields;
       if (!selFields.IsNullOrWhiteSpace())
@@ -1858,41 +1858,41 @@ namespace CuteAnt.OrmLite
       return FindAllDataSet(whereClause, param.OrderBy, selects, param.RowIndex, param.RowCount);
     }
 
-    /// <summary>¸ù¾İÊôĞÔÁĞ±íÒÔ¼°¶ÔÓ¦µÄÖµÁĞ±í²éÑ¯Êı¾İ¡£</summary>
-    /// <param name="names">ÊôĞÔÁĞ±í</param>
-    /// <param name="values">ÖµÁĞ±í</param>
-    /// <returns>DataSet¶ÔÏó</returns>
+    /// <summary>æ ¹æ®å±æ€§åˆ—è¡¨ä»¥åŠå¯¹åº”çš„å€¼åˆ—è¡¨æŸ¥è¯¢æ•°æ®ã€‚</summary>
+    /// <param name="names">å±æ€§åˆ—è¡¨</param>
+    /// <param name="values">å€¼åˆ—è¡¨</param>
+    /// <returns>DataSetå¯¹è±¡</returns>
     public static DataSet FindAllDataSet(String[] names, Object[] values)
     {
-      // ÅĞ¶Ï×ÔÔöºÍÖ÷¼ü
+      // åˆ¤æ–­è‡ªå¢å’Œä¸»é”®
       if (names != null && names.Length == 1)
       {
         FieldItem field = Meta.Table.FindByName(names[0]);
         if (field != null && (field.IsIdentity || field.PrimaryKey))
         {
-          // Î¨Ò»¼üÎª×ÔÔöÇÒ²ÎÊıĞ¡ÓÚµÈÓÚ0Ê±£¬·µ»Ø¿Õ
+          // å”¯ä¸€é”®ä¸ºè‡ªå¢ä¸”å‚æ•°å°äºç­‰äº0æ—¶ï¼Œè¿”å›ç©º
           if (Helper.IsNullKey(values[0], field.Field.DbType)) { return null; }
         }
       }
       return FindAllDataSet(MakeCondition(names, values, "And"), null, null, 0L, 0);
     }
 
-    /// <summary>¸ù¾İÊôĞÔÒÔ¼°¶ÔÓ¦µÄÖµ²éÑ¯Êı¾İ¡£</summary>
-    /// <param name="name">ÊôĞÔ</param>
-    /// <param name="value">Öµ</param>
-    /// <returns>DataSet¶ÔÏó</returns>
+    /// <summary>æ ¹æ®å±æ€§ä»¥åŠå¯¹åº”çš„å€¼æŸ¥è¯¢æ•°æ®ã€‚</summary>
+    /// <param name="name">å±æ€§</param>
+    /// <param name="value">å€¼</param>
+    /// <returns>DataSetå¯¹è±¡</returns>
     public static DataSet FindAllDataSet(String name, Object value)
     {
       return FindAllDataSet(new String[] { name }, new Object[] { value });
     }
 
-    /// <summary>¸ù¾İÊôĞÔÒÔ¼°¶ÔÓ¦µÄÖµ²éÑ¯Êı¾İ£¬´øÅÅĞò¡£</summary>
-    /// <param name="name">ÊôĞÔ</param>
-    /// <param name="value">Öµ</param>
-    /// <param name="orderClause">ÅÅĞò£¬²»´øOrder By</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>æ ¹æ®å±æ€§ä»¥åŠå¯¹åº”çš„å€¼æŸ¥è¯¢æ•°æ®ï¼Œå¸¦æ’åºã€‚</summary>
+    /// <param name="name">å±æ€§</param>
+    /// <param name="value">å€¼</param>
+    /// <param name="orderClause">æ’åºï¼Œä¸å¸¦Order By</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     public static DataSet FindAllByNameDataSet(String name, Object value, String orderClause, Int64 startRowIndex, Int32 maximumRows)
     {
       if (name.IsNullOrWhiteSpace())
@@ -1902,10 +1902,10 @@ namespace CuteAnt.OrmLite
       FieldItem field = Meta.Table.FindByName(name);
       if (field != null && (field.IsIdentity || field.PrimaryKey))
       {
-        // Î¨Ò»¼üÎª×ÔÔöÇÒ²ÎÊıĞ¡ÓÚµÈÓÚ0Ê±£¬·µ»Ø¿Õ
+        // å”¯ä¸€é”®ä¸ºè‡ªå¢ä¸”å‚æ•°å°äºç­‰äº0æ—¶ï¼Œè¿”å›ç©º
         if (Helper.IsNullKey(value, field.Field.DbType)) { return null; }
 
-        // ×ÔÔö»òÕßÖ÷¼ü²éÑ¯£¬¼ÇÂ¼¼¯¿Ï¶¨ÊÇÎ¨Ò»µÄ£¬²»ĞèÒªÖ¸¶¨¼ÇÂ¼ÊıºÍÅÅĞò
+        // è‡ªå¢æˆ–è€…ä¸»é”®æŸ¥è¯¢ï¼Œè®°å½•é›†è‚¯å®šæ˜¯å”¯ä¸€çš„ï¼Œä¸éœ€è¦æŒ‡å®šè®°å½•æ•°å’Œæ’åº
         return FindAllDataSet(MakeCondition(field, value, "="), null, null, 0L, 0);
         //var builder = new SelectBuilder();
         //builder.Table = Meta.FormatName(Meta.TableName);
@@ -1915,9 +1915,9 @@ namespace CuteAnt.OrmLite
       return FindAllDataSet(MakeCondition(new String[] { name }, new Object[] { value }, "And"), orderClause, null, startRowIndex, maximumRows);
     }
 
-    /// <summary>²éÑ¯SQL²¢·µ»ØÊµÌå¶ÔÏóÊı×é¡£Select·½·¨½«Ö±½ÓÊ¹ÓÃ²ÎÊıÖ¸¶¨µÄ²éÑ¯Óï¾ä½øĞĞ²éÑ¯£¬²»½øĞĞÈÎºÎ×ª»»¡£</summary>
-    /// <param name="sql">²éÑ¯Óï¾ä</param>
-    /// <returns>DataSet¶ÔÏó</returns>
+    /// <summary>æŸ¥è¯¢SQLå¹¶è¿”å›å®ä½“å¯¹è±¡æ•°ç»„ã€‚Selectæ–¹æ³•å°†ç›´æ¥ä½¿ç”¨å‚æ•°æŒ‡å®šçš„æŸ¥è¯¢è¯­å¥è¿›è¡ŒæŸ¥è¯¢ï¼Œä¸è¿›è¡Œä»»ä½•è½¬æ¢ã€‚</summary>
+    /// <param name="sql">æŸ¥è¯¢è¯­å¥</param>
+    /// <returns>DataSetå¯¹è±¡</returns>
     //[Obsolete("=>Session")]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static DataSet FindAllDataSet(String sql)
@@ -1929,20 +1929,20 @@ namespace CuteAnt.OrmLite
 
     #region - DataSet WithLockToken -
 
-    /// <summary>»ñÈ¡ËùÓĞ¼ÇÂ¼¼¯£¬Ö´ĞĞSQL²éÑ¯Ê±Ê¹ÓÃ¶ÁËøÁîÅÆ¡£»ñÈ¡´óÁ¿Êı¾İÊ±»á·Ç³£Âı£¬É÷ÓÃ</summary>
-    /// <returns>DataSet¶ÔÏó</returns>
+    /// <summary>è·å–æ‰€æœ‰è®°å½•é›†ï¼Œæ‰§è¡ŒSQLæŸ¥è¯¢æ—¶ä½¿ç”¨è¯»é”ä»¤ç‰Œã€‚è·å–å¤§é‡æ•°æ®æ—¶ä¼šéå¸¸æ…¢ï¼Œæ…ç”¨</summary>
+    /// <returns>DataSetå¯¹è±¡</returns>
     public static DataSet FindAllDataSetWithLockToken()
     {
       return FindAllDataSetWithLockToken(null, null, null, 0L, 0);
     }
 
-    /// <summary>²éÑ¯²¢·µ»ØÊµÌå¶ÔÏó¼¯ºÏ£¬Ö´ĞĞSQL²éÑ¯Ê±Ê¹ÓÃ¶ÁËøÁîÅÆ¡£</summary>
-    /// <param name="whereClause">Ìõ¼ş×Ö¾ä£¬²»´øWhere</param>
-    /// <param name="orderClause">ÅÅĞò×Ö¾ä£¬²»´øOrder By</param>
-    /// <param name="selects">²éÑ¯ÁĞ£¬Ä¬ÈÏnull±íÊ¾ËùÓĞ×Ö¶Î</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>ÊÇ·ñ»ñÈ¡³É¹¦</returns>
+    /// <summary>æŸ¥è¯¢å¹¶è¿”å›å®ä½“å¯¹è±¡é›†åˆï¼Œæ‰§è¡ŒSQLæŸ¥è¯¢æ—¶ä½¿ç”¨è¯»é”ä»¤ç‰Œã€‚</summary>
+    /// <param name="whereClause">æ¡ä»¶å­—å¥ï¼Œä¸å¸¦Where</param>
+    /// <param name="orderClause">æ’åºå­—å¥ï¼Œä¸å¸¦Order By</param>
+    /// <param name="selects">æŸ¥è¯¢åˆ—ï¼Œé»˜è®¤nullè¡¨ç¤ºæ‰€æœ‰å­—æ®µ</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>æ˜¯å¦è·å–æˆåŠŸ</returns>
     public static DataSet FindAllDataSetWithLockToken(String whereClause, String orderClause, String selects, Int64 startRowIndex, Int32 maximumRows)
     {
       var session = Meta.Session;
@@ -1950,7 +1950,7 @@ namespace CuteAnt.OrmLite
       DataSet ds;
       if (TryFindLargeData(session, whereClause, orderClause, selects, startRowIndex, maximumRows, true, out ds))
       {
-        // ÒòÎªÕâÑùÈ¡µÃµÄÊı¾İÊÇµ¹¹ıÀ´µÄ£¬ËùÒÔÕâÀïĞèÒªÔÙµ¹Ò»´Î
+        // å› ä¸ºè¿™æ ·å–å¾—çš„æ•°æ®æ˜¯å€’è¿‡æ¥çš„ï¼Œæ‰€ä»¥è¿™é‡Œéœ€è¦å†å€’ä¸€æ¬¡
         return ReverseDataSet(ds);
       }
       else
@@ -1968,8 +1968,8 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>Í¬Ê±²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼¼¯ºÍ¼ÇÂ¼×ÜÊı¡£</summary>
-    /// <param name="param">·ÖÒ³ÅÅĞò²ÎÊı£¬Í¬Ê±·µ»ØÂú×ãÌõ¼şµÄ×Ü¼ÇÂ¼Êı</param>
+    /// <summary>åŒæ—¶æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•é›†å’Œè®°å½•æ€»æ•°ã€‚</summary>
+    /// <param name="param">åˆ†é¡µæ’åºå‚æ•°ï¼ŒåŒæ—¶è¿”å›æ»¡è¶³æ¡ä»¶çš„æ€»è®°å½•æ•°</param>
     /// <returns></returns>
     public static DataSet FindAllDataSetWithLockToken(PageParameter param)
     {
@@ -1978,18 +1978,18 @@ namespace CuteAnt.OrmLite
       var whereExp = param.WhereExp;
       String whereClause = whereExp != null ? whereExp.ToExpression(Meta.Factory) : null;
 
-      // ÏÈ²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼Êı£¬Èç¹ûÃ»ÓĞÊı¾İ£¬ÔòÖ±½Ó·µ»Ø¿Õ¼¯ºÏ£¬²»ÔÙ²éÑ¯Êı¾İ
+      // å…ˆæŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•æ•°ï¼Œå¦‚æœæ²¡æœ‰æ•°æ®ï¼Œåˆ™ç›´æ¥è¿”å›ç©ºé›†åˆï¼Œä¸å†æŸ¥è¯¢æ•°æ®
       param.TotalCount = FindCountWithLockToken(whereClause);
       if (param.TotalCount <= 0) { return null; }
 
-      // ÑéÖ¤ÅÅĞò×Ö¶Î£¬±ÜÃâ·Ç·¨
+      // éªŒè¯æ’åºå­—æ®µï¼Œé¿å…éæ³•
       //if (!param.Sort.IsNullOrEmpty())
       //{
       //	FieldItem st = Meta.Table.FindByName(param.Sort);
       //	param.Sort = st != null ? st.Name : null;
       //}
 
-      // ÑéÖ¤Êı¾İ×Ö¶Î
+      // éªŒè¯æ•°æ®å­—æ®µ
       String selects = null;
       var selFields = param.SelectFields;
       if (!selFields.IsNullOrWhiteSpace())
@@ -2004,22 +2004,22 @@ namespace CuteAnt.OrmLite
 
     #region - Records -
 
-    /// <summary>»ñÈ¡ËùÓĞ¼ÇÂ¼¼¯¡£»ñÈ¡´óÁ¿Êı¾İÊ±»á·Ç³£Âı£¬É÷ÓÃ</summary>
-    /// <returns>DataSet¶ÔÏó</returns>
+    /// <summary>è·å–æ‰€æœ‰è®°å½•é›†ã€‚è·å–å¤§é‡æ•°æ®æ—¶ä¼šéå¸¸æ…¢ï¼Œæ…ç”¨</summary>
+    /// <returns>DataSetå¯¹è±¡</returns>
     public static IList<QueryRecords> FindAllRecords()
     {
       return FindAllRecords(null, null, null, 0L, 0);
     }
 
-    /// <summary>²éÑ¯²¢·µ»ØÊµÌå¶ÔÏó¼¯ºÏ¡£</summary>
-    /// <remarks>×î¾­µäµÄÅúÁ¿²éÑ¯£¬¿´Õâ¸öSelect @selects From Table Where @whereClause Order By @orderClause Limit @startRowIndex,@maximumRows£¬
-    /// Äã¾ÍÃ÷°×¸÷²ÎÊıµÄÒâË¼ÁË¡£</remarks>
-    /// <param name="whereClause">Ìõ¼ş×Ö¾ä£¬²»´øWhere</param>
-    /// <param name="orderClause">ÅÅĞò×Ö¾ä£¬²»´øOrder By</param>
-    /// <param name="selects">²éÑ¯ÁĞ£¬Ä¬ÈÏnull±íÊ¾ËùÓĞ×Ö¶Î</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>DataSet¶ÔÏó</returns>
+    /// <summary>æŸ¥è¯¢å¹¶è¿”å›å®ä½“å¯¹è±¡é›†åˆã€‚</summary>
+    /// <remarks>æœ€ç»å…¸çš„æ‰¹é‡æŸ¥è¯¢ï¼Œçœ‹è¿™ä¸ªSelect @selects From Table Where @whereClause Order By @orderClause Limit @startRowIndex,@maximumRowsï¼Œ
+    /// ä½ å°±æ˜ç™½å„å‚æ•°çš„æ„æ€äº†ã€‚</remarks>
+    /// <param name="whereClause">æ¡ä»¶å­—å¥ï¼Œä¸å¸¦Where</param>
+    /// <param name="orderClause">æ’åºå­—å¥ï¼Œä¸å¸¦Order By</param>
+    /// <param name="selects">æŸ¥è¯¢åˆ—ï¼Œé»˜è®¤nullè¡¨ç¤ºæ‰€æœ‰å­—æ®µ</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>DataSetå¯¹è±¡</returns>
     public static IList<QueryRecords> FindAllRecords(String whereClause, String orderClause, String selects, Int64 startRowIndex, Int32 maximumRows)
     {
       var session = Meta.Session;
@@ -2027,7 +2027,7 @@ namespace CuteAnt.OrmLite
       IList<QueryRecords> ds;
       if (TryFindLargeRecords(session, whereClause, orderClause, selects, startRowIndex, maximumRows, false, out ds))
       {
-        // ÒòÎªÕâÑùÈ¡µÃµÄÊı¾İÊÇµ¹¹ıÀ´µÄ£¬ËùÒÔÕâÀïĞèÒªÔÙµ¹Ò»´Î
+        // å› ä¸ºè¿™æ ·å–å¾—çš„æ•°æ®æ˜¯å€’è¿‡æ¥çš„ï¼Œæ‰€ä»¥è¿™é‡Œéœ€è¦å†å€’ä¸€æ¬¡
         return ReverseRecords(ds);
       }
       else
@@ -2037,8 +2037,8 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>Í¬Ê±²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼¼¯ºÍ¼ÇÂ¼×ÜÊı¡£</summary>
-    /// <param name="param">·ÖÒ³ÅÅĞò²ÎÊı£¬Í¬Ê±·µ»ØÂú×ãÌõ¼şµÄ×Ü¼ÇÂ¼Êı</param>
+    /// <summary>åŒæ—¶æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•é›†å’Œè®°å½•æ€»æ•°ã€‚</summary>
+    /// <param name="param">åˆ†é¡µæ’åºå‚æ•°ï¼ŒåŒæ—¶è¿”å›æ»¡è¶³æ¡ä»¶çš„æ€»è®°å½•æ•°</param>
     /// <returns></returns>
     public static IList<QueryRecords> FindAllRecords(PageParameter param)
     {
@@ -2047,18 +2047,18 @@ namespace CuteAnt.OrmLite
       var whereExp = param.WhereExp;
       String whereClause = whereExp != null ? whereExp.ToExpression(Meta.Factory) : null;
 
-      // ÏÈ²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼Êı£¬Èç¹ûÃ»ÓĞÊı¾İ£¬ÔòÖ±½Ó·µ»Ø¿Õ¼¯ºÏ£¬²»ÔÙ²éÑ¯Êı¾İ
+      // å…ˆæŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•æ•°ï¼Œå¦‚æœæ²¡æœ‰æ•°æ®ï¼Œåˆ™ç›´æ¥è¿”å›ç©ºé›†åˆï¼Œä¸å†æŸ¥è¯¢æ•°æ®
       param.TotalCount = FindCount(whereClause, null, null, 0, 0);
       if (param.TotalCount <= 0) { return null; }
 
-      // ÑéÖ¤ÅÅĞò×Ö¶Î£¬±ÜÃâ·Ç·¨
+      // éªŒè¯æ’åºå­—æ®µï¼Œé¿å…éæ³•
       //if (!param.Sort.IsNullOrEmpty())
       //{
       //	FieldItem st = Meta.Table.FindByName(param.Sort);
       //	param.Sort = st != null ? st.Name : null;
       //}
 
-      // ÑéÖ¤Êı¾İ×Ö¶Î
+      // éªŒè¯æ•°æ®å­—æ®µ
       String selects = null;
       var selFields = param.SelectFields;
       if (!selFields.IsNullOrWhiteSpace())
@@ -2069,41 +2069,41 @@ namespace CuteAnt.OrmLite
       return FindAllRecords(whereClause, param.OrderBy, selects, param.RowIndex, param.RowCount);
     }
 
-    /// <summary>¸ù¾İÊôĞÔÁĞ±íÒÔ¼°¶ÔÓ¦µÄÖµÁĞ±í²éÑ¯Êı¾İ¡£</summary>
-    /// <param name="names">ÊôĞÔÁĞ±í</param>
-    /// <param name="values">ÖµÁĞ±í</param>
-    /// <returns>DataSet¶ÔÏó</returns>
+    /// <summary>æ ¹æ®å±æ€§åˆ—è¡¨ä»¥åŠå¯¹åº”çš„å€¼åˆ—è¡¨æŸ¥è¯¢æ•°æ®ã€‚</summary>
+    /// <param name="names">å±æ€§åˆ—è¡¨</param>
+    /// <param name="values">å€¼åˆ—è¡¨</param>
+    /// <returns>DataSetå¯¹è±¡</returns>
     public static IList<QueryRecords> FindAllRecords(String[] names, Object[] values)
     {
-      // ÅĞ¶Ï×ÔÔöºÍÖ÷¼ü
+      // åˆ¤æ–­è‡ªå¢å’Œä¸»é”®
       if (names != null && names.Length == 1)
       {
         FieldItem field = Meta.Table.FindByName(names[0]);
         if (field != null && (field.IsIdentity || field.PrimaryKey))
         {
-          // Î¨Ò»¼üÎª×ÔÔöÇÒ²ÎÊıĞ¡ÓÚµÈÓÚ0Ê±£¬·µ»Ø¿Õ
+          // å”¯ä¸€é”®ä¸ºè‡ªå¢ä¸”å‚æ•°å°äºç­‰äº0æ—¶ï¼Œè¿”å›ç©º
           if (Helper.IsNullKey(values[0], field.Field.DbType)) { return null; }
         }
       }
       return FindAllRecords(MakeCondition(names, values, "And"), null, null, 0L, 0);
     }
 
-    /// <summary>¸ù¾İÊôĞÔÒÔ¼°¶ÔÓ¦µÄÖµ²éÑ¯Êı¾İ¡£</summary>
-    /// <param name="name">ÊôĞÔ</param>
-    /// <param name="value">Öµ</param>
-    /// <returns>DataSet¶ÔÏó</returns>
+    /// <summary>æ ¹æ®å±æ€§ä»¥åŠå¯¹åº”çš„å€¼æŸ¥è¯¢æ•°æ®ã€‚</summary>
+    /// <param name="name">å±æ€§</param>
+    /// <param name="value">å€¼</param>
+    /// <returns>DataSetå¯¹è±¡</returns>
     public static IList<QueryRecords> FindAllRecords(String name, Object value)
     {
       return FindAllRecords(new String[] { name }, new Object[] { value });
     }
 
-    /// <summary>¸ù¾İÊôĞÔÒÔ¼°¶ÔÓ¦µÄÖµ²éÑ¯Êı¾İ£¬´øÅÅĞò¡£</summary>
-    /// <param name="name">ÊôĞÔ</param>
-    /// <param name="value">Öµ</param>
-    /// <param name="orderClause">ÅÅĞò£¬²»´øOrder By</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>æ ¹æ®å±æ€§ä»¥åŠå¯¹åº”çš„å€¼æŸ¥è¯¢æ•°æ®ï¼Œå¸¦æ’åºã€‚</summary>
+    /// <param name="name">å±æ€§</param>
+    /// <param name="value">å€¼</param>
+    /// <param name="orderClause">æ’åºï¼Œä¸å¸¦Order By</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     public static IList<QueryRecords> FindAllByNameRecords(String name, Object value, String orderClause, Int64 startRowIndex, Int32 maximumRows)
     {
       if (name.IsNullOrWhiteSpace())
@@ -2113,18 +2113,18 @@ namespace CuteAnt.OrmLite
       FieldItem field = Meta.Table.FindByName(name);
       if (field != null && (field.IsIdentity || field.PrimaryKey))
       {
-        // Î¨Ò»¼üÎª×ÔÔöÇÒ²ÎÊıĞ¡ÓÚµÈÓÚ0Ê±£¬·µ»Ø¿Õ
+        // å”¯ä¸€é”®ä¸ºè‡ªå¢ä¸”å‚æ•°å°äºç­‰äº0æ—¶ï¼Œè¿”å›ç©º
         if (Helper.IsNullKey(value, field.Field.DbType)) { return null; }
 
-        // ×ÔÔö»òÕßÖ÷¼ü²éÑ¯£¬¼ÇÂ¼¼¯¿Ï¶¨ÊÇÎ¨Ò»µÄ£¬²»ĞèÒªÖ¸¶¨¼ÇÂ¼ÊıºÍÅÅĞò
+        // è‡ªå¢æˆ–è€…ä¸»é”®æŸ¥è¯¢ï¼Œè®°å½•é›†è‚¯å®šæ˜¯å”¯ä¸€çš„ï¼Œä¸éœ€è¦æŒ‡å®šè®°å½•æ•°å’Œæ’åº
         return FindAllRecords(MakeCondition(field, value, "="), null, null, 0L, 0);
       }
       return FindAllRecords(MakeCondition(new String[] { name }, new Object[] { value }, "And"), orderClause, null, startRowIndex, maximumRows);
     }
 
-    /// <summary>²éÑ¯SQL²¢·µ»ØÊµÌå¶ÔÏóÊı×é¡£Select·½·¨½«Ö±½ÓÊ¹ÓÃ²ÎÊıÖ¸¶¨µÄ²éÑ¯Óï¾ä½øĞĞ²éÑ¯£¬²»½øĞĞÈÎºÎ×ª»»¡£</summary>
-    /// <param name="sql">²éÑ¯Óï¾ä</param>
-    /// <returns>DataSet¶ÔÏó</returns>
+    /// <summary>æŸ¥è¯¢SQLå¹¶è¿”å›å®ä½“å¯¹è±¡æ•°ç»„ã€‚Selectæ–¹æ³•å°†ç›´æ¥ä½¿ç”¨å‚æ•°æŒ‡å®šçš„æŸ¥è¯¢è¯­å¥è¿›è¡ŒæŸ¥è¯¢ï¼Œä¸è¿›è¡Œä»»ä½•è½¬æ¢ã€‚</summary>
+    /// <param name="sql">æŸ¥è¯¢è¯­å¥</param>
+    /// <returns>DataSetå¯¹è±¡</returns>
     //[Obsolete("=>Session")]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static IList<QueryRecords> FindAllRecords(String sql)
@@ -2136,20 +2136,20 @@ namespace CuteAnt.OrmLite
 
     #region - Records WithLockToken -
 
-    /// <summary>»ñÈ¡ËùÓĞ¼ÇÂ¼¼¯£¬Ö´ĞĞSQL²éÑ¯Ê±Ê¹ÓÃ¶ÁËøÁîÅÆ¡£»ñÈ¡´óÁ¿Êı¾İÊ±»á·Ç³£Âı£¬É÷ÓÃ</summary>
-    /// <returns>DataSet¶ÔÏó</returns>
+    /// <summary>è·å–æ‰€æœ‰è®°å½•é›†ï¼Œæ‰§è¡ŒSQLæŸ¥è¯¢æ—¶ä½¿ç”¨è¯»é”ä»¤ç‰Œã€‚è·å–å¤§é‡æ•°æ®æ—¶ä¼šéå¸¸æ…¢ï¼Œæ…ç”¨</summary>
+    /// <returns>DataSetå¯¹è±¡</returns>
     public static IList<QueryRecords> FindAllRecordsWithLockToken()
     {
       return FindAllRecordsWithLockToken(null, null, null, 0L, 0);
     }
 
-    /// <summary>²éÑ¯²¢·µ»ØÊµÌå¶ÔÏó¼¯ºÏ£¬Ö´ĞĞSQL²éÑ¯Ê±Ê¹ÓÃ¶ÁËøÁîÅÆ¡£</summary>
-    /// <param name="whereClause">Ìõ¼ş×Ö¾ä£¬²»´øWhere</param>
-    /// <param name="orderClause">ÅÅĞò×Ö¾ä£¬²»´øOrder By</param>
-    /// <param name="selects">²éÑ¯ÁĞ£¬Ä¬ÈÏnull±íÊ¾ËùÓĞ×Ö¶Î</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>ÊÇ·ñ»ñÈ¡³É¹¦</returns>
+    /// <summary>æŸ¥è¯¢å¹¶è¿”å›å®ä½“å¯¹è±¡é›†åˆï¼Œæ‰§è¡ŒSQLæŸ¥è¯¢æ—¶ä½¿ç”¨è¯»é”ä»¤ç‰Œã€‚</summary>
+    /// <param name="whereClause">æ¡ä»¶å­—å¥ï¼Œä¸å¸¦Where</param>
+    /// <param name="orderClause">æ’åºå­—å¥ï¼Œä¸å¸¦Order By</param>
+    /// <param name="selects">æŸ¥è¯¢åˆ—ï¼Œé»˜è®¤nullè¡¨ç¤ºæ‰€æœ‰å­—æ®µ</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>æ˜¯å¦è·å–æˆåŠŸ</returns>
     public static IList<QueryRecords> FindAllRecordsWithLockToken(String whereClause, String orderClause, String selects, Int64 startRowIndex, Int32 maximumRows)
     {
       var session = Meta.Session;
@@ -2157,7 +2157,7 @@ namespace CuteAnt.OrmLite
       IList<QueryRecords> ds;
       if (TryFindLargeRecords(session, whereClause, orderClause, selects, startRowIndex, maximumRows, true, out ds))
       {
-        // ÒòÎªÕâÑùÈ¡µÃµÄÊı¾İÊÇµ¹¹ıÀ´µÄ£¬ËùÒÔÕâÀïĞèÒªÔÙµ¹Ò»´Î
+        // å› ä¸ºè¿™æ ·å–å¾—çš„æ•°æ®æ˜¯å€’è¿‡æ¥çš„ï¼Œæ‰€ä»¥è¿™é‡Œéœ€è¦å†å€’ä¸€æ¬¡
         return ReverseRecords(ds);
       }
       else
@@ -2175,8 +2175,8 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>Í¬Ê±²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼¼¯ºÍ¼ÇÂ¼×ÜÊı¡£</summary>
-    /// <param name="param">·ÖÒ³ÅÅĞò²ÎÊı£¬Í¬Ê±·µ»ØÂú×ãÌõ¼şµÄ×Ü¼ÇÂ¼Êı</param>
+    /// <summary>åŒæ—¶æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•é›†å’Œè®°å½•æ€»æ•°ã€‚</summary>
+    /// <param name="param">åˆ†é¡µæ’åºå‚æ•°ï¼ŒåŒæ—¶è¿”å›æ»¡è¶³æ¡ä»¶çš„æ€»è®°å½•æ•°</param>
     /// <returns></returns>
     public static IList<QueryRecords> FindAllRecordsWithLockToken(PageParameter param)
     {
@@ -2185,18 +2185,18 @@ namespace CuteAnt.OrmLite
       var whereExp = param.WhereExp;
       String whereClause = whereExp != null ? whereExp.ToExpression(Meta.Factory) : null;
 
-      // ÏÈ²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼Êı£¬Èç¹ûÃ»ÓĞÊı¾İ£¬ÔòÖ±½Ó·µ»Ø¿Õ¼¯ºÏ£¬²»ÔÙ²éÑ¯Êı¾İ
+      // å…ˆæŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•æ•°ï¼Œå¦‚æœæ²¡æœ‰æ•°æ®ï¼Œåˆ™ç›´æ¥è¿”å›ç©ºé›†åˆï¼Œä¸å†æŸ¥è¯¢æ•°æ®
       param.TotalCount = FindCountWithLockToken(whereClause);
       if (param.TotalCount <= 0) { return null; }
 
-      // ÑéÖ¤ÅÅĞò×Ö¶Î£¬±ÜÃâ·Ç·¨
+      // éªŒè¯æ’åºå­—æ®µï¼Œé¿å…éæ³•
       //if (!param.Sort.IsNullOrEmpty())
       //{
       //	FieldItem st = Meta.Table.FindByName(param.Sort);
       //	param.Sort = st != null ? st.Name : null;
       //}
 
-      // ÑéÖ¤Êı¾İ×Ö¶Î
+      // éªŒè¯æ•°æ®å­—æ®µ
       String selects = null;
       var selFields = param.SelectFields;
       if (!selFields.IsNullOrWhiteSpace())
@@ -2209,7 +2209,7 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region - º£Á¿Êı¾İ²éÑ¯ÓÅ»¯ -
+    #region - æµ·é‡æ•°æ®æŸ¥è¯¢ä¼˜åŒ– -
 
     #region *& TryFindLargeData &*
 
@@ -2219,16 +2219,16 @@ namespace CuteAnt.OrmLite
     {
       ds = null;
 
-      // º£Á¿Êı¾İÎ²Ò³²éÑ¯ÓÅ»¯
-      // ÔÚº£Á¿Êı¾İ·ÖÒ³ÖĞ£¬È¡Ô½ÊÇºóÃæÒ³µÄÊı¾İÔ½Âı£¬¿ÉÒÔ¿¼ÂÇµ¹ĞòµÄ·½Ê½
-      // Ö»ÓĞÔÚ°ÙÍòÊı¾İ£¬ÇÒ¿ªÊ¼ĞĞ´óÓÚÎåÊ®ÍòÊ±²ÅÊ¹ÓÃ
+      // æµ·é‡æ•°æ®å°¾é¡µæŸ¥è¯¢ä¼˜åŒ–
+      // åœ¨æµ·é‡æ•°æ®åˆ†é¡µä¸­ï¼Œå–è¶Šæ˜¯åé¢é¡µçš„æ•°æ®è¶Šæ…¢ï¼Œå¯ä»¥è€ƒè™‘å€’åºçš„æ–¹å¼
+      // åªæœ‰åœ¨ç™¾ä¸‡æ•°æ®ï¼Œä¸”å¼€å§‹è¡Œå¤§äºäº”åä¸‡æ—¶æ‰ä½¿ç”¨
 
-      // ÈçÏÂÓÅ»¯£¬±ÜÃâÁËÃ¿´Î¶¼µ÷ÓÃMeta.Count¶øµ¼ÖÂĞÎ³ÉÒ»´Î²éÑ¯£¬ËäÈ»Õâ´Î²éÑ¯Ê±¼äËğºÄ²»´ó
-      // µ«ÊÇ¾ø´ó¶àÊı²éÑ¯£¬¶¼²»ĞèÒª½øĞĞÀàËÆµÄº£Á¿Êı¾İÓÅ»¯£¬ÏÔÈ»£¬Õâ¸östartRowIndex½«»áµ²×¡99%ÒÔÉÏµÄÀË·Ñ
+      // å¦‚ä¸‹ä¼˜åŒ–ï¼Œé¿å…äº†æ¯æ¬¡éƒ½è°ƒç”¨Meta.Countè€Œå¯¼è‡´å½¢æˆä¸€æ¬¡æŸ¥è¯¢ï¼Œè™½ç„¶è¿™æ¬¡æŸ¥è¯¢æ—¶é—´æŸè€—ä¸å¤§
+      // ä½†æ˜¯ç»å¤§å¤šæ•°æŸ¥è¯¢ï¼Œéƒ½ä¸éœ€è¦è¿›è¡Œç±»ä¼¼çš„æµ·é‡æ•°æ®ä¼˜åŒ–ï¼Œæ˜¾ç„¶ï¼Œè¿™ä¸ªstartRowIndexå°†ä¼šæŒ¡ä½99%ä»¥ä¸Šçš„æµªè´¹
       Int64 count = 0L;
       if (startRowIndex > 500000L && (count = session.Count) > 1000000L)
       {
-        // ¼ÆËã±¾´Î²éÑ¯µÄ½á¹ûĞĞÊı
+        // è®¡ç®—æœ¬æ¬¡æŸ¥è¯¢çš„ç»“æœè¡Œæ•°
         if (!whereClause.IsNullOrWhiteSpace())
         {
           if (withLockToken)
@@ -2241,15 +2241,15 @@ namespace CuteAnt.OrmLite
           }
         }
 
-        // ÓÎ±êÔÚÖĞ¼äÆ«ºó
+        // æ¸¸æ ‡åœ¨ä¸­é—´åå
         if (startRowIndex * 2 > count)
         {
           var order = FormatOrderClause(orderClause);
 
-          // Ã»ÓĞÅÅĞòµÄÊµÔÚ²»ÊÊºÏÕâÖÖ°ì·¨£¬ÒòÎªÃ»°ì·¨µ¹Ğò
+          // æ²¡æœ‰æ’åºçš„å®åœ¨ä¸é€‚åˆè¿™ç§åŠæ³•ï¼Œå› ä¸ºæ²¡åŠæ³•å€’åº
           if (!order.IsNullOrWhiteSpace())
           {
-            // ×î´ó¿ÉÓÃĞĞÊı¸ÄÎªÊµ¼Ê×î´ó¿ÉÓÃĞĞÊı
+            // æœ€å¤§å¯ç”¨è¡Œæ•°æ”¹ä¸ºå®é™…æœ€å¤§å¯ç”¨è¡Œæ•°
             var max = (Int32)Math.Min(maximumRows, count - startRowIndex);
 
             if (max <= 0) { return true; }
@@ -2268,7 +2268,7 @@ namespace CuteAnt.OrmLite
             }
             else
             {
-              // ÒòÎªÕâÑùÈ¡µÃµÄÊı¾İÊÇµ¹¹ıÀ´µÄ£¬ËùÒÔÕâÀïĞèÒªÔÙµ¹Ò»´Î
+              // å› ä¸ºè¿™æ ·å–å¾—çš„æ•°æ®æ˜¯å€’è¿‡æ¥çš„ï¼Œæ‰€ä»¥è¿™é‡Œéœ€è¦å†å€’ä¸€æ¬¡
               ds = session.Query(builder2, start, max);
             }
             return true;
@@ -2289,16 +2289,16 @@ namespace CuteAnt.OrmLite
     {
       ds = null;
 
-      // º£Á¿Êı¾İÎ²Ò³²éÑ¯ÓÅ»¯
-      // ÔÚº£Á¿Êı¾İ·ÖÒ³ÖĞ£¬È¡Ô½ÊÇºóÃæÒ³µÄÊı¾İÔ½Âı£¬¿ÉÒÔ¿¼ÂÇµ¹ĞòµÄ·½Ê½
-      // Ö»ÓĞÔÚ°ÙÍòÊı¾İ£¬ÇÒ¿ªÊ¼ĞĞ´óÓÚÎåÊ®ÍòÊ±²ÅÊ¹ÓÃ
+      // æµ·é‡æ•°æ®å°¾é¡µæŸ¥è¯¢ä¼˜åŒ–
+      // åœ¨æµ·é‡æ•°æ®åˆ†é¡µä¸­ï¼Œå–è¶Šæ˜¯åé¢é¡µçš„æ•°æ®è¶Šæ…¢ï¼Œå¯ä»¥è€ƒè™‘å€’åºçš„æ–¹å¼
+      // åªæœ‰åœ¨ç™¾ä¸‡æ•°æ®ï¼Œä¸”å¼€å§‹è¡Œå¤§äºäº”åä¸‡æ—¶æ‰ä½¿ç”¨
 
-      // ÈçÏÂÓÅ»¯£¬±ÜÃâÁËÃ¿´Î¶¼µ÷ÓÃMeta.Count¶øµ¼ÖÂĞÎ³ÉÒ»´Î²éÑ¯£¬ËäÈ»Õâ´Î²éÑ¯Ê±¼äËğºÄ²»´ó
-      // µ«ÊÇ¾ø´ó¶àÊı²éÑ¯£¬¶¼²»ĞèÒª½øĞĞÀàËÆµÄº£Á¿Êı¾İÓÅ»¯£¬ÏÔÈ»£¬Õâ¸östartRowIndex½«»áµ²×¡99%ÒÔÉÏµÄÀË·Ñ
+      // å¦‚ä¸‹ä¼˜åŒ–ï¼Œé¿å…äº†æ¯æ¬¡éƒ½è°ƒç”¨Meta.Countè€Œå¯¼è‡´å½¢æˆä¸€æ¬¡æŸ¥è¯¢ï¼Œè™½ç„¶è¿™æ¬¡æŸ¥è¯¢æ—¶é—´æŸè€—ä¸å¤§
+      // ä½†æ˜¯ç»å¤§å¤šæ•°æŸ¥è¯¢ï¼Œéƒ½ä¸éœ€è¦è¿›è¡Œç±»ä¼¼çš„æµ·é‡æ•°æ®ä¼˜åŒ–ï¼Œæ˜¾ç„¶ï¼Œè¿™ä¸ªstartRowIndexå°†ä¼šæŒ¡ä½99%ä»¥ä¸Šçš„æµªè´¹
       Int64 count = 0L;
       if (startRowIndex > 500000L && (count = session.Count) > 1000000L)
       {
-        // ¼ÆËã±¾´Î²éÑ¯µÄ½á¹ûĞĞÊı
+        // è®¡ç®—æœ¬æ¬¡æŸ¥è¯¢çš„ç»“æœè¡Œæ•°
         if (!whereClause.IsNullOrWhiteSpace())
         {
           if (withLockToken)
@@ -2311,15 +2311,15 @@ namespace CuteAnt.OrmLite
           }
         }
 
-        // ÓÎ±êÔÚÖĞ¼äÆ«ºó
+        // æ¸¸æ ‡åœ¨ä¸­é—´åå
         if (startRowIndex * 2 > count)
         {
           var order = FormatOrderClause(orderClause);
 
-          // Ã»ÓĞÅÅĞòµÄÊµÔÚ²»ÊÊºÏÕâÖÖ°ì·¨£¬ÒòÎªÃ»°ì·¨µ¹Ğò
+          // æ²¡æœ‰æ’åºçš„å®åœ¨ä¸é€‚åˆè¿™ç§åŠæ³•ï¼Œå› ä¸ºæ²¡åŠæ³•å€’åº
           if (!order.IsNullOrWhiteSpace())
           {
-            // ×î´ó¿ÉÓÃĞĞÊı¸ÄÎªÊµ¼Ê×î´ó¿ÉÓÃĞĞÊı
+            // æœ€å¤§å¯ç”¨è¡Œæ•°æ”¹ä¸ºå®é™…æœ€å¤§å¯ç”¨è¡Œæ•°
             var max = (Int32)Math.Min(maximumRows, count - startRowIndex);
 
             if (max <= 0) { return true; }
@@ -2338,7 +2338,7 @@ namespace CuteAnt.OrmLite
             }
             else
             {
-              // ÒòÎªÕâÑùÈ¡µÃµÄÊı¾İÊÇµ¹¹ıÀ´µÄ£¬ËùÒÔÕâÀïĞèÒªÔÙµ¹Ò»´Î
+              // å› ä¸ºè¿™æ ·å–å¾—çš„æ•°æ®æ˜¯å€’è¿‡æ¥çš„ï¼Œæ‰€ä»¥è¿™é‡Œéœ€è¦å†å€’ä¸€æ¬¡
               ds = session.QueryRecords(builder2, start, max);
             }
             return true;
@@ -2359,11 +2359,11 @@ namespace CuteAnt.OrmLite
     private static String FormatOrderClause(String orderClause)
     {
       var order = orderClause;
-      var bk = false; // ÊÇ·ñÌø¹ı
+      var bk = false; // æ˜¯å¦è·³è¿‡
 
-      #region ÅÅĞòµ¹Ğò
+      #region æ’åºå€’åº
 
-      // Ä¬ÈÏÊÇ×ÔÔö×Ö¶ÎµÄ½µĞò
+      // é»˜è®¤æ˜¯è‡ªå¢å­—æ®µçš„é™åº
       if (order.IsNullOrWhiteSpace())
       {
         FieldItem fi = Meta.Unique;
@@ -2406,10 +2406,10 @@ namespace CuteAnt.OrmLite
       else
       {
         //2014-01-05 Modify by Apex
-        //´¦Àíorder by´øÓĞº¯ÊıµÄÇé¿ö£¬±ÜÃâ·Ö¸ôÊ±½«º¯Êı²ğ·Öµ¼ÖÂ´íÎó
+        //å¤„ç†order byå¸¦æœ‰å‡½æ•°çš„æƒ…å†µï¼Œé¿å…åˆ†éš”æ—¶å°†å‡½æ•°æ‹†åˆ†å¯¼è‡´é”™è¯¯
         foreach (Match match in Regex.Matches(order, @"\([^\)]*\)", RegexOptions.Singleline))
         {
-          order = order.Replace(match.Value, match.Value.Replace(",", "¡ï"));
+          order = order.Replace(match.Value, match.Value.Replace(",", "â˜…"));
         }
       }
       if (!order.IsNullOrWhiteSpace())
@@ -2447,7 +2447,7 @@ namespace CuteAnt.OrmLite
           if (sb.Length > 0) { sb.Append(", "); }
           sb.AppendFormat("{0} {1}", fn, od);
         }
-        order = sb.Replace("¡ï", ",").ToString();
+        order = sb.Replace("â˜…", ",").ToString();
       }
 
       #endregion
@@ -2501,11 +2501,11 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- »º´æ²éÑ¯ --
+    #region -- ç¼“å­˜æŸ¥è¯¢ --
 
-    /// <summary>¸ù¾İÊôĞÔÒÔ¼°¶ÔÓ¦µÄÖµ£¬ÔÚÊµÌå»º´æÖĞ²éÕÒµ¥¸öÊµÌå</summary>
-    /// <param name="name">ÊôĞÔÃû³Æ</param>
-    /// <param name="value">ÊôĞÔÖµ</param>
+    /// <summary>æ ¹æ®å±æ€§ä»¥åŠå¯¹åº”çš„å€¼ï¼Œåœ¨å®ä½“ç¼“å­˜ä¸­æŸ¥æ‰¾å•ä¸ªå®ä½“</summary>
+    /// <param name="name">å±æ€§åç§°</param>
+    /// <param name="value">å±æ€§å€¼</param>
     /// <returns></returns>
     [DataObjectMethod(DataObjectMethodType.Select, false)]
     public static TEntity FindWithCache(String name, Object value)
@@ -2513,7 +2513,7 @@ namespace CuteAnt.OrmLite
       return Meta.Session.Cache.Entities.Find(name, value);
     }
 
-    /// <summary>²éÕÒËùÓĞ»º´æ¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
+    /// <summary>æŸ¥æ‰¾æ‰€æœ‰ç¼“å­˜ã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
     /// <returns></returns>
     [DataObjectMethod(DataObjectMethodType.Select, false)]
     public static EntityList<TEntity> FindAllWithCache()
@@ -2521,10 +2521,10 @@ namespace CuteAnt.OrmLite
       return Meta.Session.Cache.Entities;
     }
 
-    /// <summary>¸ù¾İÊôĞÔÒÔ¼°¶ÔÓ¦µÄÖµ£¬ÔÚ»º´æÖĞ²éÑ¯Êı¾İ¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
-    /// <param name="name">ÊôĞÔ</param>
-    /// <param name="value">Öµ</param>
-    /// <returns>ÊµÌåÊı×é</returns>
+    /// <summary>æ ¹æ®å±æ€§ä»¥åŠå¯¹åº”çš„å€¼ï¼Œåœ¨ç¼“å­˜ä¸­æŸ¥è¯¢æ•°æ®ã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
+    /// <param name="name">å±æ€§</param>
+    /// <param name="value">å€¼</param>
+    /// <returns>å®ä½“æ•°ç»„</returns>
     [DataObjectMethod(DataObjectMethodType.Select, false)]
     public static EntityList<TEntity> FindAllWithCache(String name, Object value)
     {
@@ -2533,27 +2533,27 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- È¡×Ü¼ÇÂ¼Êı --
+    #region -- å–æ€»è®°å½•æ•° --
 
-    /// <summary>·µ»Ø×Ü¼ÇÂ¼Êı</summary>
+    /// <summary>è¿”å›æ€»è®°å½•æ•°</summary>
     /// <returns></returns>
     public static Int64 FindCount()
     {
       return FindCount(null, null, null, 0L, 0);
     }
 
-    /// <summary>·µ»Ø×Ü¼ÇÂ¼Êı</summary>
-    /// <param name="whereClause">Ìõ¼ş£¬²»´øWhere</param>
-    /// <param name="orderClause">ÅÅĞò£¬²»´øOrder By¡£ÕâÀïÎŞÒâÒå£¬½ö½öÎªÁË±£³ÖÓëFindAllÏàÍ¬µÄ·½·¨Ç©Ãû</param>
-    /// <param name="selects">²éÑ¯ÁĞ¡£ÕâÀïÎŞÒâÒå£¬½ö½öÎªÁË±£³ÖÓëFindAllÏàÍ¬µÄ·½·¨Ç©Ãû</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ¡£ÕâÀïÎŞÒâÒå£¬½ö½öÎªÁË±£³ÖÓëFindAllÏàÍ¬µÄ·½·¨Ç©Ãû</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ¡£ÕâÀïÎŞÒâÒå£¬½ö½öÎªÁË±£³ÖÓëFindAllÏàÍ¬µÄ·½·¨Ç©Ãû</param>
-    /// <returns>×ÜĞĞÊı</returns>
+    /// <summary>è¿”å›æ€»è®°å½•æ•°</summary>
+    /// <param name="whereClause">æ¡ä»¶ï¼Œä¸å¸¦Where</param>
+    /// <param name="orderClause">æ’åºï¼Œä¸å¸¦Order Byã€‚è¿™é‡Œæ— æ„ä¹‰ï¼Œä»…ä»…ä¸ºäº†ä¿æŒä¸FindAllç›¸åŒçš„æ–¹æ³•ç­¾å</param>
+    /// <param name="selects">æŸ¥è¯¢åˆ—ã€‚è¿™é‡Œæ— æ„ä¹‰ï¼Œä»…ä»…ä¸ºäº†ä¿æŒä¸FindAllç›¸åŒçš„æ–¹æ³•ç­¾å</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œã€‚è¿™é‡Œæ— æ„ä¹‰ï¼Œä»…ä»…ä¸ºäº†ä¿æŒä¸FindAllç›¸åŒçš„æ–¹æ³•ç­¾å</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œã€‚è¿™é‡Œæ— æ„ä¹‰ï¼Œä»…ä»…ä¸ºäº†ä¿æŒä¸FindAllç›¸åŒçš„æ–¹æ³•ç­¾å</param>
+    /// <returns>æ€»è¡Œæ•°</returns>
     public static Int64 FindCount(String whereClause, String orderClause, String selects, Int64 startRowIndex, Int32 maximumRows)
     {
       var session = Meta.Session;
 
-      // Èç¹û×Ü¼ÇÂ¼Êı³¬¹ıÒ»Íò£¬ÎªÁËÌá¸ßĞÔÄÜ£¬·µ»Ø¿ìËÙ²éÕÒÇÒ´øÓĞ»º´æµÄ×Ü¼ÇÂ¼Êı
+      // å¦‚æœæ€»è®°å½•æ•°è¶…è¿‡ä¸€ä¸‡ï¼Œä¸ºäº†æé«˜æ€§èƒ½ï¼Œè¿”å›å¿«é€ŸæŸ¥æ‰¾ä¸”å¸¦æœ‰ç¼“å­˜çš„æ€»è®°å½•æ•°
       if (whereClause.IsNullOrWhiteSpace() && session.Count > 10000L) { return session.Count; }
 
       var sb = new SelectBuilder();
@@ -2563,19 +2563,19 @@ namespace CuteAnt.OrmLite
       return session.QueryCount(sb);
     }
 
-    /// <summary>¸ù¾İÊôĞÔÁĞ±íÒÔ¼°¶ÔÓ¦µÄÖµÁĞ±í£¬·µ»Ø×Ü¼ÇÂ¼Êı</summary>
-    /// <param name="names">ÊôĞÔÁĞ±í</param>
-    /// <param name="values">ÖµÁĞ±í</param>
-    /// <returns>×ÜĞĞÊı</returns>
+    /// <summary>æ ¹æ®å±æ€§åˆ—è¡¨ä»¥åŠå¯¹åº”çš„å€¼åˆ—è¡¨ï¼Œè¿”å›æ€»è®°å½•æ•°</summary>
+    /// <param name="names">å±æ€§åˆ—è¡¨</param>
+    /// <param name="values">å€¼åˆ—è¡¨</param>
+    /// <returns>æ€»è¡Œæ•°</returns>
     public static Int64 FindCount(String[] names, Object[] values)
     {
-      // ÅĞ¶Ï×ÔÔöºÍÖ÷¼ü
+      // åˆ¤æ–­è‡ªå¢å’Œä¸»é”®
       if (names != null && names.Length == 1)
       {
         FieldItem field = Meta.Table.FindByName(names[0]);
         if (field != null && (field.IsIdentity || field.PrimaryKey))
         {
-          // Î¨Ò»¼üÎª×ÔÔöÇÒ²ÎÊıĞ¡ÓÚµÈÓÚ0Ê±£¬·µ»Ø¿Õ
+          // å”¯ä¸€é”®ä¸ºè‡ªå¢ä¸”å‚æ•°å°äºç­‰äº0æ—¶ï¼Œè¿”å›ç©º
           if (Helper.IsNullKey(values[0], field.Field.DbType)) { return 0L; }
         }
       }
@@ -2583,22 +2583,22 @@ namespace CuteAnt.OrmLite
       return FindCount(MakeCondition(names, values, "And"), null, null, 0L, 0);
     }
 
-    /// <summary>¸ù¾İÊôĞÔÒÔ¼°¶ÔÓ¦µÄÖµ£¬·µ»Ø×Ü¼ÇÂ¼Êı</summary>
-    /// <param name="name">ÊôĞÔ</param>
-    /// <param name="value">Öµ</param>
-    /// <returns>×ÜĞĞÊı</returns>
+    /// <summary>æ ¹æ®å±æ€§ä»¥åŠå¯¹åº”çš„å€¼ï¼Œè¿”å›æ€»è®°å½•æ•°</summary>
+    /// <param name="name">å±æ€§</param>
+    /// <param name="value">å€¼</param>
+    /// <returns>æ€»è¡Œæ•°</returns>
     public static Int64 FindCount(String name, Object value)
     {
       return FindCountByName(name, value, null, 0L, 0);
     }
 
-    /// <summary>¸ù¾İÊôĞÔÒÔ¼°¶ÔÓ¦µÄÖµ£¬·µ»Ø×Ü¼ÇÂ¼Êı</summary>
-    /// <param name="name">ÊôĞÔ</param>
-    /// <param name="value">Öµ</param>
-    /// <param name="orderClause">ÅÅĞò£¬²»´øOrder By¡£ÕâÀïÎŞÒâÒå£¬½ö½öÎªÁË±£³ÖÓëFindAllÏàÍ¬µÄ·½·¨Ç©Ãû</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ¡£ÕâÀïÎŞÒâÒå£¬½ö½öÎªÁË±£³ÖÓëFindAllÏàÍ¬µÄ·½·¨Ç©Ãû</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ¡£ÕâÀïÎŞÒâÒå£¬½ö½öÎªÁË±£³ÖÓëFindAllÏàÍ¬µÄ·½·¨Ç©Ãû</param>
-    /// <returns>×ÜĞĞÊı</returns>
+    /// <summary>æ ¹æ®å±æ€§ä»¥åŠå¯¹åº”çš„å€¼ï¼Œè¿”å›æ€»è®°å½•æ•°</summary>
+    /// <param name="name">å±æ€§</param>
+    /// <param name="value">å€¼</param>
+    /// <param name="orderClause">æ’åºï¼Œä¸å¸¦Order Byã€‚è¿™é‡Œæ— æ„ä¹‰ï¼Œä»…ä»…ä¸ºäº†ä¿æŒä¸FindAllç›¸åŒçš„æ–¹æ³•ç­¾å</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œã€‚è¿™é‡Œæ— æ„ä¹‰ï¼Œä»…ä»…ä¸ºäº†ä¿æŒä¸FindAllç›¸åŒçš„æ–¹æ³•ç­¾å</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œã€‚è¿™é‡Œæ— æ„ä¹‰ï¼Œä»…ä»…ä¸ºäº†ä¿æŒä¸FindAllç›¸åŒçš„æ–¹æ³•ç­¾å</param>
+    /// <returns>æ€»è¡Œæ•°</returns>
     public static Int64 FindCountByName(String name, Object value, String orderClause, Int64 startRowIndex, Int32 maximumRows)
     {
       if (name.IsNullOrWhiteSpace())
@@ -2611,14 +2611,14 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>»ñÈ¡×Ü¼ÇÂ¼Êı£¬Ö´ĞĞSQL²éÑ¯Ê±Ê¹ÓÃ¶ÁËøÁîÅÆ</summary>
-    /// <param name="whereClause">Ìõ¼ş£¬²»´øWhere</param>
-    /// <returns>·µ»Ø×Ü¼ÇÂ¼Êı</returns>
+    /// <summary>è·å–æ€»è®°å½•æ•°ï¼Œæ‰§è¡ŒSQLæŸ¥è¯¢æ—¶ä½¿ç”¨è¯»é”ä»¤ç‰Œ</summary>
+    /// <param name="whereClause">æ¡ä»¶ï¼Œä¸å¸¦Where</param>
+    /// <returns>è¿”å›æ€»è®°å½•æ•°</returns>
     public static Int64 FindCountWithLockToken(String whereClause = null)
     {
       var session = Meta.Session;
 
-      // Èç¹û×Ü¼ÇÂ¼Êı³¬¹ıÒ»Íò£¬ÎªÁËÌá¸ßĞÔÄÜ£¬·µ»Ø¿ìËÙ²éÕÒÇÒ´øÓĞ»º´æµÄ×Ü¼ÇÂ¼Êı
+      // å¦‚æœæ€»è®°å½•æ•°è¶…è¿‡ä¸€ä¸‡ï¼Œä¸ºäº†æé«˜æ€§èƒ½ï¼Œè¿”å›å¿«é€ŸæŸ¥æ‰¾ä¸”å¸¦æœ‰ç¼“å­˜çš„æ€»è®°å½•æ•°
       if (whereClause.IsNullOrWhiteSpace() && session.Count > 10000L)
       {
         return session.Count;
@@ -2642,22 +2642,22 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- »ñÈ¡²éÑ¯SQL --
+    #region -- è·å–æŸ¥è¯¢SQL --
 
-    /// <summary>»ñÈ¡²éÑ¯SQL¡£Ö÷ÒªÓÃÓÚ¹¹Ôì×Ó²éÑ¯</summary>
-    /// <param name="whereClause">Ìõ¼ş£¬²»´øWhere</param>
-    /// <param name="orderClause">ÅÅĞò£¬²»´øOrder By</param>
-    /// <param name="selects">²éÑ¯ÁĞ</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>ÊµÌå¼¯</returns>
+    /// <summary>è·å–æŸ¥è¯¢SQLã€‚ä¸»è¦ç”¨äºæ„é€ å­æŸ¥è¯¢</summary>
+    /// <param name="whereClause">æ¡ä»¶ï¼Œä¸å¸¦Where</param>
+    /// <param name="orderClause">æ’åºï¼Œä¸å¸¦Order By</param>
+    /// <param name="selects">æŸ¥è¯¢åˆ—</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>å®ä½“é›†</returns>
     public static SelectBuilder FindSQL(String whereClause, String orderClause, String selects, Int64 startRowIndex = 0L, Int32 maximumRows = 0)
     {
       var builder = CreateBuilder(whereClause, orderClause, selects, startRowIndex, maximumRows, false);
       return Meta.Session.PageSplit(builder, startRowIndex, maximumRows);
     }
 
-    /// <summary>»ñÈ¡²éÑ¯Î¨Ò»¼üµÄSQL¡£±ÈÈçSelect ID From Table</summary>
+    /// <summary>è·å–æŸ¥è¯¢å”¯ä¸€é”®çš„SQLã€‚æ¯”å¦‚Select ID From Table</summary>
     /// <param name="whereClause"></param>
     /// <returns></returns>
     public static SelectBuilder FindSQLWithKey(String whereClause = null)
@@ -2668,34 +2668,34 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- ¸ß¼¶²éÑ¯ --
+    #region -- é«˜çº§æŸ¥è¯¢ --
 
-    /// <summary>²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼¼¯£¬·ÖÒ³¡¢ÅÅĞò¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
-    /// <param name="key">¹Ø¼ü×Ö</param>
-    /// <param name="orderClause">ÅÅĞò£¬²»´øOrder By</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>ÊµÌå¼¯</returns>
+    /// <summary>æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•é›†ï¼Œåˆ†é¡µã€æ’åºã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
+    /// <param name="key">å…³é”®å­—</param>
+    /// <param name="orderClause">æ’åºï¼Œä¸å¸¦Order By</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>å®ä½“é›†</returns>
     [DataObjectMethod(DataObjectMethodType.Select, true)]
     public static EntityList<TEntity> Search(String key, String orderClause, Int64 startRowIndex, Int32 maximumRows)
     {
       return FindAll(SearchWhereByKeys(key, null), orderClause, null, startRowIndex, maximumRows);
     }
 
-    /// <summary>²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼×ÜÊı£¬·ÖÒ³ºÍÅÅĞòÎŞĞ§£¬´ø²ÎÊıÊÇÒòÎªObjectDataSourceÒªÇóËü¸úSearchÍ³Ò»</summary>
-    /// <param name="key">¹Ø¼ü×Ö</param>
-    /// <param name="orderClause">ÅÅĞò£¬²»´øOrder By</param>
-    /// <param name="startRowIndex">¿ªÊ¼ĞĞ£¬0±íÊ¾µÚÒ»ĞĞ</param>
-    /// <param name="maximumRows">×î´ó·µ»ØĞĞÊı£¬0±íÊ¾ËùÓĞĞĞ</param>
-    /// <returns>¼ÇÂ¼Êı</returns>
+    /// <summary>æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•æ€»æ•°ï¼Œåˆ†é¡µå’Œæ’åºæ— æ•ˆï¼Œå¸¦å‚æ•°æ˜¯å› ä¸ºObjectDataSourceè¦æ±‚å®ƒè·ŸSearchç»Ÿä¸€</summary>
+    /// <param name="key">å…³é”®å­—</param>
+    /// <param name="orderClause">æ’åºï¼Œä¸å¸¦Order By</param>
+    /// <param name="startRowIndex">å¼€å§‹è¡Œï¼Œ0è¡¨ç¤ºç¬¬ä¸€è¡Œ</param>
+    /// <param name="maximumRows">æœ€å¤§è¿”å›è¡Œæ•°ï¼Œ0è¡¨ç¤ºæ‰€æœ‰è¡Œ</param>
+    /// <returns>è®°å½•æ•°</returns>
     public static Int64 SearchCount(String key, String orderClause, Int64 startRowIndex, Int32 maximumRows)
     {
       return FindCount(SearchWhereByKeys(key, null), null, null, 0L, 0);
     }
 
-    /// <summary>Í¬Ê±²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼¼¯ºÍ¼ÇÂ¼×ÜÊı¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
+    /// <summary>åŒæ—¶æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•é›†å’Œè®°å½•æ€»æ•°ã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
     /// <param name="key"></param>
-    /// <param name="param">·ÖÒ³ÅÅĞò²ÎÊı£¬Í¬Ê±·µ»ØÂú×ãÌõ¼şµÄ×Ü¼ÇÂ¼Êı</param>
+    /// <param name="param">åˆ†é¡µæ’åºå‚æ•°ï¼ŒåŒæ—¶è¿”å›æ»¡è¶³æ¡ä»¶çš„æ€»è®°å½•æ•°</param>
     /// <returns></returns>
     public static EntityList<TEntity> Search(String key, PageParameter param)
     {
@@ -2703,9 +2703,9 @@ namespace CuteAnt.OrmLite
     }
 
 #if DESKTOPCLR
-    /// <summary>Í¬Ê±²éÑ¯Âú×ãÌõ¼şµÄ¼ÇÂ¼¼¯ºÍ¼ÇÂ¼×ÜÊı¡£Ã»ÓĞÊı¾İÊ±·µ»Ø¿Õ¼¯ºÏ¶ø²»ÊÇnull</summary>
+    /// <summary>åŒæ—¶æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„è®°å½•é›†å’Œè®°å½•æ€»æ•°ã€‚æ²¡æœ‰æ•°æ®æ—¶è¿”å›ç©ºé›†åˆè€Œä¸æ˜¯null</summary>
     /// <param name="key"></param>
-    /// <param name="param">·ÖÒ³ÅÅĞò²ÎÊı£¬Í¬Ê±·µ»ØÂú×ãÌõ¼şµÄ×Ü¼ÇÂ¼Êı</param>
+    /// <param name="param">åˆ†é¡µæ’åºå‚æ•°ï¼ŒåŒæ—¶è¿”å›æ»¡è¶³æ¡ä»¶çš„æ€»è®°å½•æ•°</param>
     /// <returns></returns>
     public static EntityList<TEntity> SearchX(String key, CuteAnt.Data.PageParameter param)
     {
@@ -2713,10 +2713,10 @@ namespace CuteAnt.OrmLite
     }
 #endif
 
-    /// <summary>¸ù¾İ¿Õ¸ñ·Ö¸îµÄ¹Ø¼ü×Ö¼¯ºÏ¹¹½¨²éÑ¯Ìõ¼ş</summary>
-    /// <param name="keys">¿Õ¸ñ·Ö¸îµÄ¹Ø¼ü×Ö¼¯ºÏ</param>
-    /// <param name="fields">Òª²éÑ¯µÄ×Ö¶Î£¬Ä¬ÈÏÎª¿Õ±íÊ¾²éÑ¯ËùÓĞ×Ö·û´®×Ö¶Î</param>
-    /// <param name="func">´¦ÀíÃ¿Ò»¸ö²éÑ¯¹Ø¼ü×ÖµÄ»Øµ÷º¯Êı</param>
+    /// <summary>æ ¹æ®ç©ºæ ¼åˆ†å‰²çš„å…³é”®å­—é›†åˆæ„å»ºæŸ¥è¯¢æ¡ä»¶</summary>
+    /// <param name="keys">ç©ºæ ¼åˆ†å‰²çš„å…³é”®å­—é›†åˆ</param>
+    /// <param name="fields">è¦æŸ¥è¯¢çš„å­—æ®µï¼Œé»˜è®¤ä¸ºç©ºè¡¨ç¤ºæŸ¥è¯¢æ‰€æœ‰å­—ç¬¦ä¸²å­—æ®µ</param>
+    /// <param name="func">å¤„ç†æ¯ä¸€ä¸ªæŸ¥è¯¢å…³é”®å­—çš„å›è°ƒå‡½æ•°</param>
     /// <returns></returns>
     public static WhereExpression SearchWhereByKeys(String keys, IEnumerable<FieldItem> fields = null, Func<String, IEnumerable<FieldItem>, WhereExpression> func = null)
     {
@@ -2735,9 +2735,9 @@ namespace CuteAnt.OrmLite
       return exp;
     }
 
-    /// <summary>¹¹½¨¹Ø¼ü×Ö²éÑ¯Ìõ¼ş</summary>
-    /// <param name="key">¹Ø¼ü×Ö</param>
-    /// <param name="fields">Òª²éÑ¯µÄ×Ö¶Î£¬Ä¬ÈÏÎª¿Õ±íÊ¾²éÑ¯ËùÓĞ×Ö·û´®×Ö¶Î</param>
+    /// <summary>æ„å»ºå…³é”®å­—æŸ¥è¯¢æ¡ä»¶</summary>
+    /// <param name="key">å…³é”®å­—</param>
+    /// <param name="fields">è¦æŸ¥è¯¢çš„å­—æ®µï¼Œé»˜è®¤ä¸ºç©ºè¡¨ç¤ºæŸ¥è¯¢æ‰€æœ‰å­—ç¬¦ä¸²å­—æ®µ</param>
     /// <returns></returns>
     public static WhereExpression SearchWhereByKey(String key, IEnumerable<FieldItem> fields = null)
     {
@@ -2757,42 +2757,42 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- ¾²Ì¬²Ù×÷ --
+    #region -- é™æ€æ“ä½œ --
 
-    ///// <summary>°ÑÒ»¸öÊµÌå¶ÔÏó³Ö¾Ã»¯µ½Êı¾İ¿â</summary>
-    ///// <param name="obj">ÊµÌå¶ÔÏó</param>
-    ///// <returns>·µ»ØÊÜÓ°ÏìµÄĞĞÊı</returns>
+    ///// <summary>æŠŠä¸€ä¸ªå®ä½“å¯¹è±¡æŒä¹…åŒ–åˆ°æ•°æ®åº“</summary>
+    ///// <param name="obj">å®ä½“å¯¹è±¡</param>
+    ///// <returns>è¿”å›å—å½±å“çš„è¡Œæ•°</returns>
     //[DataObjectMethod(DataObjectMethodType.Insert, true)]
     //public static Int32 Insert(TEntity obj)
     //{
     //	return obj.Insert();
     //}
 
-    ///// <summary>°ÑÒ»¸öÊµÌå¶ÔÏó³Ö¾Ã»¯µ½Êı¾İ¿â</summary>
-    ///// <param name="names">¸üĞÂÊôĞÔÁĞ±í</param>
-    ///// <param name="values">¸üĞÂÖµÁĞ±í</param>
-    ///// <returns>·µ»ØÊÜÓ°ÏìµÄĞĞÊı</returns>
+    ///// <summary>æŠŠä¸€ä¸ªå®ä½“å¯¹è±¡æŒä¹…åŒ–åˆ°æ•°æ®åº“</summary>
+    ///// <param name="names">æ›´æ–°å±æ€§åˆ—è¡¨</param>
+    ///// <param name="values">æ›´æ–°å€¼åˆ—è¡¨</param>
+    ///// <returns>è¿”å›å—å½±å“çš„è¡Œæ•°</returns>
     //[EditorBrowsable(EditorBrowsableState.Never)]
-    //[Obsolete("ÇëÊ¹ÓÃ¾²Ì¬·½·¨£ºInsert(TEntity obj)")]
+    //[Obsolete("è¯·ä½¿ç”¨é™æ€æ–¹æ³•ï¼šInsert(TEntity obj)")]
     //public static Int32 Insert(String[] names, Object[] values)
     //{
     //	return persistence.Insert(names, values);
     //}
 
-    ///// <summary>°ÑÒ»¸öÊµÌå¶ÔÏó¸üĞÂµ½Êı¾İ¿â</summary>
-    ///// <param name="obj">ÊµÌå¶ÔÏó</param>
-    ///// <returns>·µ»ØÊÜÓ°ÏìµÄĞĞÊı</returns>
+    ///// <summary>æŠŠä¸€ä¸ªå®ä½“å¯¹è±¡æ›´æ–°åˆ°æ•°æ®åº“</summary>
+    ///// <param name="obj">å®ä½“å¯¹è±¡</param>
+    ///// <returns>è¿”å›å—å½±å“çš„è¡Œæ•°</returns>
     //[DataObjectMethod(DataObjectMethodType.Update, true)]
     //public static Int32 Update(TEntity obj)
     //{
     //	return obj.Update();
     //}
 
-    /// <summary>¸üĞÂÒ»ÅúÖ¸¶¨Ìõ¼şµÄÊµÌåÊı¾İ£¬É÷ÓÃ£¡£¡£¡
-    /// <para>´Ë·½·¨Ö±½ÓÖ´ĞĞSQLÓï¾ä£¬Èç¹ûÊµÌå¿ªÆôÁËÊµÌå»º´æ»òµ¥¶ÔÏó»º´æ£¬½«Çå¿Õ»º´æÊı¾İ</para></summary>
-    /// <param name="setClause">Òª¸üĞÂµÄÏîºÍÊı¾İ</param>
-    /// <param name="whereClause">ÏŞÖÆÌõ¼ş</param>
-    /// <param name="useTransition">ÊÇ·ñÊ¹ÓÃÊÂÎñ±£»¤</param>
+    /// <summary>æ›´æ–°ä¸€æ‰¹æŒ‡å®šæ¡ä»¶çš„å®ä½“æ•°æ®ï¼Œæ…ç”¨ï¼ï¼ï¼
+    /// <para>æ­¤æ–¹æ³•ç›´æ¥æ‰§è¡ŒSQLè¯­å¥ï¼Œå¦‚æœå®ä½“å¼€å¯äº†å®ä½“ç¼“å­˜æˆ–å•å¯¹è±¡ç¼“å­˜ï¼Œå°†æ¸…ç©ºç¼“å­˜æ•°æ®</para></summary>
+    /// <param name="setClause">è¦æ›´æ–°çš„é¡¹å’Œæ•°æ®</param>
+    /// <param name="whereClause">é™åˆ¶æ¡ä»¶</param>
+    /// <param name="useTransition">æ˜¯å¦ä½¿ç”¨äº‹åŠ¡ä¿æŠ¤</param>
     /// <returns></returns>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public static Int32 AdvancedUpdate(String setClause, String whereClause, Boolean useTransition = true)
@@ -2814,13 +2814,13 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>¸üĞÂÒ»ÅúÖ¸¶¨Ìõ¼şµÄÊµÌåÊı¾İ£¬É÷ÓÃ£¡£¡£¡
-    /// <para>´Ë·½·¨Ö±½ÓÖ´ĞĞSQLÓï¾ä£¬Èç¹ûÊµÌå¿ªÆôÁËÊµÌå»º´æ»òµ¥¶ÔÏó»º´æ£¬½«Çå¿Õ»º´æÊı¾İ</para></summary>
-    /// <param name="setNames">¸üĞÂÊôĞÔÁĞ±í</param>
-    /// <param name="setValues">¸üĞÂÖµÁĞ±í</param>
-    /// <param name="whereClause">ÏŞÖÆÌõ¼ş</param>
-    /// <param name="useTransition">ÊÇ·ñÊ¹ÓÃÊÂÎñ±£»¤</param>
-    /// <returns>·µ»ØÊÜÓ°ÏìµÄĞĞÊı</returns>
+    /// <summary>æ›´æ–°ä¸€æ‰¹æŒ‡å®šæ¡ä»¶çš„å®ä½“æ•°æ®ï¼Œæ…ç”¨ï¼ï¼ï¼
+    /// <para>æ­¤æ–¹æ³•ç›´æ¥æ‰§è¡ŒSQLè¯­å¥ï¼Œå¦‚æœå®ä½“å¼€å¯äº†å®ä½“ç¼“å­˜æˆ–å•å¯¹è±¡ç¼“å­˜ï¼Œå°†æ¸…ç©ºç¼“å­˜æ•°æ®</para></summary>
+    /// <param name="setNames">æ›´æ–°å±æ€§åˆ—è¡¨</param>
+    /// <param name="setValues">æ›´æ–°å€¼åˆ—è¡¨</param>
+    /// <param name="whereClause">é™åˆ¶æ¡ä»¶</param>
+    /// <param name="useTransition">æ˜¯å¦ä½¿ç”¨äº‹åŠ¡ä¿æŠ¤</param>
+    /// <returns>è¿”å›å—å½±å“çš„è¡Œæ•°</returns>
     //[EditorBrowsable(EditorBrowsableState.Advanced)]
     public static Int32 AdvancedUpdate(String[] setNames, Object[] setValues, String whereClause, Boolean useTransition = true)
     {
@@ -2841,14 +2841,14 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>¸üĞÂÒ»ÅúÖ¸¶¨ÊôĞÔÁĞ±íºÍÖµÁĞ±íËùÏŞ¶¨µÄÊµÌåÊı¾İ£¬É÷ÓÃ£¡£¡£¡
-    /// <para>´Ë·½·¨Ö±½ÓÖ´ĞĞSQLÓï¾ä£¬Èç¹ûÊµÌå¿ªÆôÁËÊµÌå»º´æ»òµ¥¶ÔÏó»º´æ£¬½«Çå¿Õ»º´æÊı¾İ</para></summary>
-    /// <param name="setNames">¸üĞÂÊôĞÔÁĞ±í</param>
-    /// <param name="setValues">¸üĞÂÖµÁĞ±í</param>
-    /// <param name="whereNames">Ìõ¼şÊôĞÔÁĞ±í</param>
-    /// <param name="whereValues">Ìõ¼şÖµÁĞ±í</param>
-    /// <param name="useTransition">ÊÇ·ñÊ¹ÓÃÊÂÎñ±£»¤</param>
-    /// <returns>·µ»ØÊÜÓ°ÏìµÄĞĞÊı</returns>
+    /// <summary>æ›´æ–°ä¸€æ‰¹æŒ‡å®šå±æ€§åˆ—è¡¨å’Œå€¼åˆ—è¡¨æ‰€é™å®šçš„å®ä½“æ•°æ®ï¼Œæ…ç”¨ï¼ï¼ï¼
+    /// <para>æ­¤æ–¹æ³•ç›´æ¥æ‰§è¡ŒSQLè¯­å¥ï¼Œå¦‚æœå®ä½“å¼€å¯äº†å®ä½“ç¼“å­˜æˆ–å•å¯¹è±¡ç¼“å­˜ï¼Œå°†æ¸…ç©ºç¼“å­˜æ•°æ®</para></summary>
+    /// <param name="setNames">æ›´æ–°å±æ€§åˆ—è¡¨</param>
+    /// <param name="setValues">æ›´æ–°å€¼åˆ—è¡¨</param>
+    /// <param name="whereNames">æ¡ä»¶å±æ€§åˆ—è¡¨</param>
+    /// <param name="whereValues">æ¡ä»¶å€¼åˆ—è¡¨</param>
+    /// <param name="useTransition">æ˜¯å¦ä½¿ç”¨äº‹åŠ¡ä¿æŠ¤</param>
+    /// <returns>è¿”å›å—å½±å“çš„è¡Œæ•°</returns>
     //[EditorBrowsable(EditorBrowsableState.Advanced)]
     public static Int32 AdvancedUpdate(String[] setNames, Object[] setValues, String[] whereNames, Object[] whereValues, Boolean useTransition = true)
     {
@@ -2869,21 +2869,21 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    ///// <summary>´ÓÊı¾İ¿âÖĞÉ¾³ıÖ¸¶¨ÊµÌå¶ÔÏó¡£
-    ///// ÊµÌåÀàÓ¦¸ÃÊµÏÖ¸Ã·½·¨µÄÁíÒ»¸ö¸±±¾£¬ÒÔÎ¨Ò»¼ü»òÖ÷¼ü×÷Îª²ÎÊı
+    ///// <summary>ä»æ•°æ®åº“ä¸­åˆ é™¤æŒ‡å®šå®ä½“å¯¹è±¡ã€‚
+    ///// å®ä½“ç±»åº”è¯¥å®ç°è¯¥æ–¹æ³•çš„å¦ä¸€ä¸ªå‰¯æœ¬ï¼Œä»¥å”¯ä¸€é”®æˆ–ä¸»é”®ä½œä¸ºå‚æ•°
     ///// </summary>
-    ///// <param name="obj">ÊµÌå¶ÔÏó</param>
-    ///// <returns>·µ»ØÊÜÓ°ÏìµÄĞĞÊı£¬¿ÉÓÃÓÚÅĞ¶Ï±»É¾³ıÁË¶àÉÙĞĞ£¬´Ó¶øÖªµÀ²Ù×÷ÊÇ·ñ³É¹¦</returns>
+    ///// <param name="obj">å®ä½“å¯¹è±¡</param>
+    ///// <returns>è¿”å›å—å½±å“çš„è¡Œæ•°ï¼Œå¯ç”¨äºåˆ¤æ–­è¢«åˆ é™¤äº†å¤šå°‘è¡Œï¼Œä»è€ŒçŸ¥é“æ“ä½œæ˜¯å¦æˆåŠŸ</returns>
     //[DataObjectMethod(DataObjectMethodType.Delete, true)]
     //public static Int32 Delete(TEntity obj)
     //{
     //	return obj.Delete();
     //}
 
-    /// <summary>´ÓÊı¾İ¿âÖĞÉ¾³ıÖ¸¶¨Ìõ¼şµÄÊµÌå¶ÔÏó£¬É÷ÓÃ£¡£¡£¡
-    /// <para>´Ë·½·¨Ö±½ÓÖ´ĞĞSQLÓï¾ä£¬Èç¹ûÊµÌå¿ªÆôÁËÊµÌå»º´æ»òµ¥¶ÔÏó»º´æ£¬½«Çå¿Õ»º´æÊı¾İ</para></summary>
-    /// <param name="whereClause">ÏŞÖÆÌõ¼ş</param>
-    /// <param name="useTransition">ÊÇ·ñÊ¹ÓÃÊÂÎñ±£»¤</param>
+    /// <summary>ä»æ•°æ®åº“ä¸­åˆ é™¤æŒ‡å®šæ¡ä»¶çš„å®ä½“å¯¹è±¡ï¼Œæ…ç”¨ï¼ï¼ï¼
+    /// <para>æ­¤æ–¹æ³•ç›´æ¥æ‰§è¡ŒSQLè¯­å¥ï¼Œå¦‚æœå®ä½“å¼€å¯äº†å®ä½“ç¼“å­˜æˆ–å•å¯¹è±¡ç¼“å­˜ï¼Œå°†æ¸…ç©ºç¼“å­˜æ•°æ®</para></summary>
+    /// <param name="whereClause">é™åˆ¶æ¡ä»¶</param>
+    /// <param name="useTransition">æ˜¯å¦ä½¿ç”¨äº‹åŠ¡ä¿æŠ¤</param>
     /// <returns></returns>
     //[EditorBrowsable(EditorBrowsableState.Advanced)]
     public static Int32 AdvancedDelete(String whereClause, Boolean useTransition = true)
@@ -2905,11 +2905,11 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>´ÓÊı¾İ¿âÖĞÉ¾³ıÖ¸¶¨ÊôĞÔÁĞ±íºÍÖµÁĞ±íËùÏŞ¶¨µÄÊµÌå¶ÔÏó£¬É÷ÓÃ£¡£¡£¡
-    /// <para>´Ë·½·¨Ö±½ÓÖ´ĞĞSQLÓï¾ä£¬Èç¹ûÊµÌå¿ªÆôÁËÊµÌå»º´æ»òµ¥¶ÔÏó»º´æ£¬½«Çå¿Õ»º´æÊı¾İ</para></summary>
-    /// <param name="whereNames">Ìõ¼şÊôĞÔÁĞ±í</param>
-    /// <param name="whereValues">Ìõ¼şÖµÁĞ±í</param>
-    /// <param name="useTransition">ÊÇ·ñÊ¹ÓÃÊÂÎñ±£»¤</param>
+    /// <summary>ä»æ•°æ®åº“ä¸­åˆ é™¤æŒ‡å®šå±æ€§åˆ—è¡¨å’Œå€¼åˆ—è¡¨æ‰€é™å®šçš„å®ä½“å¯¹è±¡ï¼Œæ…ç”¨ï¼ï¼ï¼
+    /// <para>æ­¤æ–¹æ³•ç›´æ¥æ‰§è¡ŒSQLè¯­å¥ï¼Œå¦‚æœå®ä½“å¼€å¯äº†å®ä½“ç¼“å­˜æˆ–å•å¯¹è±¡ç¼“å­˜ï¼Œå°†æ¸…ç©ºç¼“å­˜æ•°æ®</para></summary>
+    /// <param name="whereNames">æ¡ä»¶å±æ€§åˆ—è¡¨</param>
+    /// <param name="whereValues">æ¡ä»¶å€¼åˆ—è¡¨</param>
+    /// <param name="useTransition">æ˜¯å¦ä½¿ç”¨äº‹åŠ¡ä¿æŠ¤</param>
     /// <returns></returns>
     //[EditorBrowsable(EditorBrowsableState.Advanced)]
     public static Int32 AdvancedDelete(String[] whereNames, Object[] whereValues, Boolean useTransition = true)
@@ -2931,15 +2931,15 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    ///// <summary>°ÑÒ»¸öÊµÌå¶ÔÏó¸üĞÂµ½Êı¾İ¿â</summary>
-    ///// <param name="obj">ÊµÌå¶ÔÏó</param>
-    ///// <returns>·µ»ØÊÜÓ°ÏìµÄĞĞÊı</returns>
+    ///// <summary>æŠŠä¸€ä¸ªå®ä½“å¯¹è±¡æ›´æ–°åˆ°æ•°æ®åº“</summary>
+    ///// <param name="obj">å®ä½“å¯¹è±¡</param>
+    ///// <returns>è¿”å›å—å½±å“çš„è¡Œæ•°</returns>
     //public static Int32 Save(TEntity obj)
     //{
     //	return obj.Save();
     //}
 
-    /// <summary>Çå³ıµ±Ç°ÊµÌåËùÔÚÊı¾İ±íËùÓĞÊı¾İ£¬²¢ÖØÖÃ±êÊ¶ÁĞÎª¸ÃÁĞµÄÖÖ×Ó¡£</summary>
+    /// <summary>æ¸…é™¤å½“å‰å®ä½“æ‰€åœ¨æ•°æ®è¡¨æ‰€æœ‰æ•°æ®ï¼Œå¹¶é‡ç½®æ ‡è¯†åˆ—ä¸ºè¯¥åˆ—çš„ç§å­ã€‚</summary>
     /// <returns></returns>
     public static Int32 Truncate()
     {
@@ -2948,25 +2948,25 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- ¹¹ÔìSQLÓï¾ä --
+    #region -- æ„é€ SQLè¯­å¥ --
 
     /// <summary>
-    /// ¸ù¾İÊôĞÔÁĞ±íºÍÖµÁĞ±í£¬¹¹Ôì²éÑ¯Ìõ¼ş¡£
-    /// ÀıÈç¹¹Ôì¶àÖ÷¼üÏŞÖÆ²éÑ¯Ìõ¼ş¡£
+    /// æ ¹æ®å±æ€§åˆ—è¡¨å’Œå€¼åˆ—è¡¨ï¼Œæ„é€ æŸ¥è¯¢æ¡ä»¶ã€‚
+    /// ä¾‹å¦‚æ„é€ å¤šä¸»é”®é™åˆ¶æŸ¥è¯¢æ¡ä»¶ã€‚
     /// </summary>
-    /// <param name="names">ÊôĞÔÁĞ±í</param>
-    /// <param name="values">ÖµÁĞ±í</param>
-    /// <param name="action">ÁªºÏ·½Ê½</param>
-    /// <returns>Ìõ¼ş×Ó´®</returns>
+    /// <param name="names">å±æ€§åˆ—è¡¨</param>
+    /// <param name="values">å€¼åˆ—è¡¨</param>
+    /// <param name="action">è”åˆæ–¹å¼</param>
+    /// <returns>æ¡ä»¶å­ä¸²</returns>
     public static String MakeCondition(String[] names, Object[] values, String action)
     {
-      //if (names == null || names.Length <= 0) throw new ArgumentNullException("names", "ÊôĞÔÁĞ±íºÍÖµÁĞ±í²»ÄÜÎª¿Õ");
-      //if (values == null || values.Length <= 0) throw new ArgumentNullException("values", "ÊôĞÔÁĞ±íºÍÖµÁĞ±í²»ÄÜÎª¿Õ");
+      //if (names == null || names.Length <= 0) throw new ArgumentNullException("names", "å±æ€§åˆ—è¡¨å’Œå€¼åˆ—è¡¨ä¸èƒ½ä¸ºç©º");
+      //if (values == null || values.Length <= 0) throw new ArgumentNullException("values", "å±æ€§åˆ—è¡¨å’Œå€¼åˆ—è¡¨ä¸èƒ½ä¸ºç©º");
       if (names == null || names.Length <= 0) { return null; }
       if (values == null || values.Length <= 0) { return null; }
       if (names.Length != values.Length)
       {
-        throw new ArgumentException("ÊôĞÔÁĞ±í±ØĞëºÍÖµÁĞ±íÒ»Ò»¶ÔÓ¦");
+        throw new ArgumentException("å±æ€§åˆ—è¡¨å¿…é¡»å’Œå€¼åˆ—è¡¨ä¸€ä¸€å¯¹åº”");
       }
 
       var sb = new StringBuilder();
@@ -2975,10 +2975,10 @@ namespace CuteAnt.OrmLite
         FieldItem fi = Meta.Table.FindByName(names[i]);
         if (fi == null)
         {
-          throw new ArgumentException("Àà[" + Meta.ThisType.FullName + "]ÖĞ²»´æÔÚ[" + names[i] + "]ÊôĞÔ");
+          throw new ArgumentException("ç±»[" + Meta.ThisType.FullName + "]ä¸­ä¸å­˜åœ¨[" + names[i] + "]å±æ€§");
         }
 
-        // Í¬Ê±¹¹ÔìSQLÓï¾ä¡£namesÊÇÊôĞÔÁĞ±í£¬±ØĞë×ª»»³É¶ÔÓ¦µÄ×Ö¶ÎÁĞ±í
+        // åŒæ—¶æ„é€ SQLè¯­å¥ã€‚namesæ˜¯å±æ€§åˆ—è¡¨ï¼Œå¿…é¡»è½¬æ¢æˆå¯¹åº”çš„å­—æ®µåˆ—è¡¨
         if (i > 0)
         {
           sb.AppendFormat(" {0} ", action.Trim());
@@ -2990,10 +2990,10 @@ namespace CuteAnt.OrmLite
       return sb.ToString();
     }
 
-    /// <summary>¹¹ÔìÌõ¼ş</summary>
-    /// <param name="name">Ãû³Æ</param>
-    /// <param name="value">Öµ</param>
-    /// <param name="action">´óÓÚĞ¡ÓÚµÈ·ûºÅ</param>
+    /// <summary>æ„é€ æ¡ä»¶</summary>
+    /// <param name="name">åç§°</param>
+    /// <param name="value">å€¼</param>
+    /// <param name="action">å¤§äºå°äºç­‰ç¬¦å·</param>
     /// <returns></returns>
     public static String MakeCondition(String name, Object value, String action)
     {
@@ -3005,10 +3005,10 @@ namespace CuteAnt.OrmLite
       return MakeCondition(field, value, action);
     }
 
-    /// <summary>¹¹ÔìÌõ¼ş</summary>
-    /// <param name="field">Ãû³Æ</param>
-    /// <param name="value">Öµ</param>
-    /// <param name="action">´óÓÚĞ¡ÓÚµÈ·ûºÅ</param>
+    /// <summary>æ„é€ æ¡ä»¶</summary>
+    /// <param name="field">åç§°</param>
+    /// <param name="value">å€¼</param>
+    /// <param name="action">å¤§äºå°äºç­‰ç¬¦å·</param>
     /// <returns></returns>
     public static String MakeCondition(FieldItem field, Object value, String action)
     {
@@ -3035,11 +3035,11 @@ namespace CuteAnt.OrmLite
       builder.Table = Meta.Session.FormatedTableName;
       builder.OrderBy = orderClause;
 
-      // ½÷¼Ç£ºÄ³Ğ©ÏîÄ¿ÖĞ¿ÉÄÜÔÚwhereÖĞÊ¹ÓÃÁËGroupBy£¬ÔÚ·ÖÒ³Ê±¿ÉÄÜ±¨´í
+      // è°¨è®°ï¼šæŸäº›é¡¹ç›®ä¸­å¯èƒ½åœ¨whereä¸­ä½¿ç”¨äº†GroupByï¼Œåœ¨åˆ†é¡µæ—¶å¯èƒ½æŠ¥é”™
       builder.Where = whereClause;
 
-      // CuteAnt.OrmLite¶ÔÓÚÄ¬ÈÏÅÅĞòµÄ¹æÔò£º×ÔÔöÖ÷¼ü½µĞò£¬ÆäËüÇé¿öÄ¬ÈÏ
-      // ·µ»ØËùÓĞ¼ÇÂ¼
+      // CuteAnt.OrmLiteå¯¹äºé»˜è®¤æ’åºçš„è§„åˆ™ï¼šè‡ªå¢ä¸»é”®é™åºï¼Œå…¶å®ƒæƒ…å†µé»˜è®¤
+      // è¿”å›æ‰€æœ‰è®°å½•
       if (!needOrderByID && startRowIndex <= 0L && maximumRows <= 0)
       {
         return builder;
@@ -3049,18 +3049,18 @@ namespace CuteAnt.OrmLite
       {
         builder.Key = Meta.Quoter.QuoteColumnName(fi.ColumnName);
 
-        // Ä¬ÈÏ»ñÈ¡Êı¾İÊ±£¬»¹ÊÇĞèÒªÖ¸¶¨°´ÕÕ×ÔÔö×Ö¶Î½µĞò£¬·ûºÏÊ¹ÓÃÏ°¹ß
-        // ÓĞGroupByÒ²²»ÄÜ¼ÓÅÅĞò
+        // é»˜è®¤è·å–æ•°æ®æ—¶ï¼Œè¿˜æ˜¯éœ€è¦æŒ‡å®šæŒ‰ç…§è‡ªå¢å­—æ®µé™åºï¼Œç¬¦åˆä½¿ç”¨ä¹ æƒ¯
+        // æœ‰GroupByä¹Ÿä¸èƒ½åŠ æ’åº
         if (String.IsNullOrWhiteSpace(builder.OrderBy) &&
             String.IsNullOrWhiteSpace(builder.GroupBy) &&
-            // Î´Ö¸¶¨²éÑ¯×Ö¶ÎµÄÊ±ºò²ÅÄ¬ÈÏ¼ÓÉÏÅÅĞò£¬ÒòÎªÖ¸¶¨²éÑ¯×Ö¶ÎµÄºÜ¶àÊ±ºòÊÇÍ³¼Æ
+            // æœªæŒ‡å®šæŸ¥è¯¢å­—æ®µçš„æ—¶å€™æ‰é»˜è®¤åŠ ä¸Šæ’åºï¼Œå› ä¸ºæŒ‡å®šæŸ¥è¯¢å­—æ®µçš„å¾ˆå¤šæ—¶å€™æ˜¯ç»Ÿè®¡
             (String.IsNullOrWhiteSpace(selects) || selects == "*"))
         {
-          // Êı×Ö½µĞò£¬ÆäËüÉıĞò
-          #region ## ¿àÖñ ĞŞ¸Ä ##
+          // æ•°å­—é™åºï¼Œå…¶å®ƒå‡åº
+          #region ## è‹¦ç«¹ ä¿®æ”¹ ##
           //var b = fi.DataType.IsIntType() && fi.IsIdentity;
           //builder.IsDesc = b;
-          //// ĞŞÕıÃ»ÓĞÉèÖÃbuilder.IsIntµ¼ÖÂ·ÖÒ³Ã»ÓĞÑ¡Ôñ×î¼ÑµÄMaxMinµÄBUG£¬¸ĞĞ» @RICH(20371423)
+          //// ä¿®æ­£æ²¡æœ‰è®¾ç½®builder.IsIntå¯¼è‡´åˆ†é¡µæ²¡æœ‰é€‰æ‹©æœ€ä½³çš„MaxMinçš„BUGï¼Œæ„Ÿè°¢ @RICH(20371423)
           //builder.IsInt = b;
           if (fi.IsIdentity)
           {
@@ -3104,7 +3104,7 @@ namespace CuteAnt.OrmLite
       }
       else
       {
-        // Èç¹ûÕÒ²»µ½Î¨Ò»¼ü£¬²¢ÇÒÅÅĞòÓÖÎª¿Õ£¬Ôò²ÉÓÃÈ«²¿×Ö¶ÎÒ»Æğ£¬È·±£ÄÜ¹»·ÖÒ³
+        // å¦‚æœæ‰¾ä¸åˆ°å”¯ä¸€é”®ï¼Œå¹¶ä¸”æ’åºåˆä¸ºç©ºï¼Œåˆ™é‡‡ç”¨å…¨éƒ¨å­—æ®µä¸€èµ·ï¼Œç¡®ä¿èƒ½å¤Ÿåˆ†é¡µ
         if (builder.OrderBy.IsNullOrWhiteSpace())
         {
           builder.Keys = Meta.FieldNames.ToArray();
@@ -3115,15 +3115,15 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- »ñÈ¡/ÉèÖÃ ×Ö¶ÎÖµ --
+    #region -- è·å–/è®¾ç½® å­—æ®µå€¼ --
 
-    /// <summary>»ñÈ¡/ÉèÖÃ ×Ö¶ÎÖµ¡£
-    /// Ò»¸öË÷Òı£¬·´ÉäÊµÏÖ¡£
-    /// ÅÉÉúÊµÌåÀà¿ÉÖØĞ´¸ÃË÷Òı£¬ÒÔ±ÜÃâ·¢Éä´øÀ´µÄĞÔÄÜËğºÄ¡£
-    /// »ùÀàÒÑ¾­ÊµÏÖÁËÍ¨ÓÃµÄ¿ìËÙ·ÃÎÊ£¬µ«ÊÇÕâÀïÈÔÈ»ÖØĞ´£¬ÒÔÔö¼Ó¿ØÖÆ£¬
-    /// ±ÈÈç×Ö¶ÎÃûÊÇÊôĞÔÃûÇ°Ãæ¼ÓÉÏ_£¬²¢ÇÒÒªÇóÊÇÊµÌå×Ö¶Î²ÅÔÊĞíÕâÑù·ÃÎÊ£¬·ñÔòÒ»ÂÉ°´ÊôĞÔ´¦Àí¡£
+    /// <summary>è·å–/è®¾ç½® å­—æ®µå€¼ã€‚
+    /// ä¸€ä¸ªç´¢å¼•ï¼Œåå°„å®ç°ã€‚
+    /// æ´¾ç”Ÿå®ä½“ç±»å¯é‡å†™è¯¥ç´¢å¼•ï¼Œä»¥é¿å…å‘å°„å¸¦æ¥çš„æ€§èƒ½æŸè€—ã€‚
+    /// åŸºç±»å·²ç»å®ç°äº†é€šç”¨çš„å¿«é€Ÿè®¿é—®ï¼Œä½†æ˜¯è¿™é‡Œä»ç„¶é‡å†™ï¼Œä»¥å¢åŠ æ§åˆ¶ï¼Œ
+    /// æ¯”å¦‚å­—æ®µåæ˜¯å±æ€§åå‰é¢åŠ ä¸Š_ï¼Œå¹¶ä¸”è¦æ±‚æ˜¯å®ä½“å­—æ®µæ‰å…è®¸è¿™æ ·è®¿é—®ï¼Œå¦åˆ™ä¸€å¾‹æŒ‰å±æ€§å¤„ç†ã€‚
     /// </summary>
-    /// <param name="name">×Ö¶ÎÃû</param>
+    /// <param name="name">å­—æ®µå</param>
     /// <returns></returns>
     public override Object this[String name]
     {
@@ -3131,24 +3131,24 @@ namespace CuteAnt.OrmLite
       {
         var ti = Meta.Table;
         var isDynamicField = false;
-        // Ê×ÏÈÆ¥ÅäÊı¾İ×Ö¶Î
+        // é¦–å…ˆåŒ¹é…æ•°æ®å­—æ®µ
         var entityfield = ti.FindByName(name);
         if (entityfield != null)
         {
           if (!entityfield.IsDynamic)
           {
-            // Êı¾İ×Ö¶ÎÊôĞÔÔ¼¶¨±ØĞë¿É¶ÁĞ´
+            // æ•°æ®å­—æ®µå±æ€§çº¦å®šå¿…é¡»å¯è¯»å†™
             return this.GetValue(entityfield._Property);
           }
           else
           {
-            // ¶¯Ì¬Ìí¼ÓÊı¾İ×Ö¶Î£¬ÆäÖµ±£´æÔÚÀ©Õ¹ÊôĞÔÖĞ
+            // åŠ¨æ€æ·»åŠ æ•°æ®å­—æ®µï¼Œå…¶å€¼ä¿å­˜åœ¨æ‰©å±•å±æ€§ä¸­
             isDynamicField = true;
           }
         }
         else
         {
-          // Æ¥Åä×Ô¶¨ÒåÊôĞÔ
+          // åŒ¹é…è‡ªå®šä¹‰å±æ€§
           entityfield = ti.FindByName(name, true);
           if (entityfield != null)
           {
@@ -3177,24 +3177,24 @@ namespace CuteAnt.OrmLite
       {
         var ti = Meta.Table;
         var isDynamicField = false;
-        // Ê×ÏÈÆ¥ÅäÊı¾İ×Ö¶Î
+        // é¦–å…ˆåŒ¹é…æ•°æ®å­—æ®µ
         var entityfield = ti.FindByName(name);
         if (entityfield != null)
         {
           if (!entityfield.IsDynamic)
           {
-            // Êı¾İ×Ö¶ÎÊôĞÔÔ¼¶¨±ØĞë¿É¶ÁĞ´
+            // æ•°æ®å­—æ®µå±æ€§çº¦å®šå¿…é¡»å¯è¯»å†™
             this.SetValue(entityfield._Property, value);
           }
           else
           {
-            // ¶¯Ì¬Ìí¼ÓÊı¾İ×Ö¶Î£¬ÆäÖµ±£´æÔÚÀ©Õ¹ÊôĞÔÖĞ
+            // åŠ¨æ€æ·»åŠ æ•°æ®å­—æ®µï¼Œå…¶å€¼ä¿å­˜åœ¨æ‰©å±•å±æ€§ä¸­
             isDynamicField = true;
           }
         }
         else
         {
-          // Æ¥Åä×Ô¶¨ÒåÊôĞÔ
+          // åŒ¹é…è‡ªå®šä¹‰å±æ€§
           entityfield = ti.FindByName(name, true);
           if (entityfield != null)
           {
@@ -3236,25 +3236,25 @@ namespace CuteAnt.OrmLite
       Object oldValue = null;
       var ti = Meta.Table;
       var isDynamicField = false;
-      // Ê×ÏÈÆ¥ÅäÊı¾İ×Ö¶Î
+      // é¦–å…ˆåŒ¹é…æ•°æ®å­—æ®µ
       var entityfield = ti.FindByName(fieldName);
       if (entityfield != null)
       {
         if (!entityfield.IsDynamic)
         {
-          // Êı¾İ×Ö¶ÎÊôĞÔÔ¼¶¨±ØĞë¿É¶ÁĞ´
+          // æ•°æ®å­—æ®µå±æ€§çº¦å®šå¿…é¡»å¯è¯»å†™
           oldValue = this.GetValue(entityfield._Property);
           return CompareFieldValueIfEqual(entityfield.Field.DbType, oldValue, newValue);
         }
         else
         {
-          // ¶¯Ì¬Ìí¼ÓÊı¾İ×Ö¶Î£¬ÆäÖµ±£´æÔÚÀ©Õ¹ÊôĞÔÖĞ
+          // åŠ¨æ€æ·»åŠ æ•°æ®å­—æ®µï¼Œå…¶å€¼ä¿å­˜åœ¨æ‰©å±•å±æ€§ä¸­
           isDynamicField = true;
         }
       }
       else
       {
-        // Æ¥Åä×Ô¶¨ÒåÊôĞÔ
+        // åŒ¹é…è‡ªå®šä¹‰å±æ€§
         entityfield = ti.FindByName(fieldName, true);
         if (entityfield != null)
         {
@@ -3286,17 +3286,17 @@ namespace CuteAnt.OrmLite
         return CompareFieldValueIfEqual(entityfield.Field.DbType, oldValue, newValue);
       }
 
-      //throw new ArgumentException("Àà[" + this.GetType().FullName + "]ÖĞ²»´æÔÚ[" + name + "]ÊôĞÔ");
+      //throw new ArgumentException("ç±»[" + this.GetType().FullName + "]ä¸­ä¸å­˜åœ¨[" + name + "]å±æ€§");
       return Object.Equals(null, newValue);
     }
 
     private Boolean CompareFieldValueIfEqual(Type dataType, Object entityValue, Object compareValue)
     {
-      // ¿ÕÅĞ¶Ï
+      // ç©ºåˆ¤æ–­
       if (entityValue == null) { return compareValue == null; }
       if (compareValue == null) { return false; }
 
-      // Èç¹ûÒÑ¾­ÏàµÈ£¬²»ÓÃ×ö±ğµÄ´¦ÀíÁË
+      // å¦‚æœå·²ç»ç›¸ç­‰ï¼Œä¸ç”¨åšåˆ«çš„å¤„ç†äº†
       if (Object.Equals(entityValue, compareValue)) { return true; }
 
       if (null == dataType) { dataType = entityValue.GetType(); }
@@ -3320,11 +3320,11 @@ namespace CuteAnt.OrmLite
 
     private Boolean CompareFieldValueIfEqual(CommonDbType dbType, Object entityValue, Object compareValue)
     {
-      // ¿ÕÅĞ¶Ï
+      // ç©ºåˆ¤æ–­
       if (entityValue == null) { return compareValue == null; }
       if (compareValue == null) { return false; }
 
-      // Èç¹ûÒÑ¾­ÏàµÈ£¬²»ÓÃ×ö±ğµÄ´¦ÀíÁË
+      // å¦‚æœå·²ç»ç›¸ç­‰ï¼Œä¸ç”¨åšåˆ«çš„å¤„ç†äº†
       if (Object.Equals(entityValue, compareValue)) { return true; }
 
       switch (dbType)
@@ -3348,10 +3348,10 @@ namespace CuteAnt.OrmLite
         case CommonDbType.Date:
           var d1 = (DateTime)entityValue;
           var d2 = (DateTime)compareValue;
-          // Ê±¼ä´æ´¢°üÀ¨ÄêÔÂÈÕÊ±·ÖÃë£¬ºóÃæ»¹ÓĞÎ¢Ãë£¬¶øÎÒÃÇÊı¾İ¿â´æ´¢Ä¬ÈÏ²»ĞèÒªÎ¢Ãë£¬ËùÒÔÊ±¼äµÄÏàµÈÅĞ¶ÏĞèÒª×öÌØÊâ´¦Àí
+          // æ—¶é—´å­˜å‚¨åŒ…æ‹¬å¹´æœˆæ—¥æ—¶åˆ†ç§’ï¼Œåé¢è¿˜æœ‰å¾®ç§’ï¼Œè€Œæˆ‘ä»¬æ•°æ®åº“å­˜å‚¨é»˜è®¤ä¸éœ€è¦å¾®ç§’ï¼Œæ‰€ä»¥æ—¶é—´çš„ç›¸ç­‰åˆ¤æ–­éœ€è¦åšç‰¹æ®Šå¤„ç†
           return d1.Date == d2.Date;
 
-        // ÆäËûÀàĞÍÂÔ¹ı
+        // å…¶ä»–ç±»å‹ç•¥è¿‡
         case CommonDbType.Binary:
         case CommonDbType.BinaryFixedLength:
         case CommonDbType.Boolean:
@@ -3377,12 +3377,12 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- µ¼Èëµ¼³öXML/Json --
+    #region -- å¯¼å…¥å¯¼å‡ºXML/Json --
 
-    /// <summary>µ¼Èë</summary>
+    /// <summary>å¯¼å…¥</summary>
     /// <param name="xml"></param>
     /// <returns></returns>
-    //[Obsolete("¸Ã³ÉÔ±ÔÚºóĞø°æ±¾ÖĞ½«²»ÔÙ±»Ö§³Ö£¡")]
+    //[Obsolete("è¯¥æˆå‘˜åœ¨åç»­ç‰ˆæœ¬ä¸­å°†ä¸å†è¢«æ”¯æŒï¼")]
     public static TEntity FromXml(String xml)
     {
       if (!xml.IsNullOrWhiteSpace()) { xml = xml.Trim(); }
@@ -3390,10 +3390,10 @@ namespace CuteAnt.OrmLite
       return xml.ToXmlEntity<TEntity>();
     }
 
-    /// <summary>µ¼Èë</summary>
+    /// <summary>å¯¼å…¥</summary>
     /// <param name="json"></param>
     /// <returns></returns>
-    //[Obsolete("¸Ã³ÉÔ±ÔÚºóĞø°æ±¾ÖĞ½«²»ÔÙ±»Ö§³Ö£¡")]
+    //[Obsolete("è¯¥æˆå‘˜åœ¨åç»­ç‰ˆæœ¬ä¸­å°†ä¸å†è¢«æ”¯æŒï¼")]
     public static TEntity FromJson(String json)
     {
       //return new Json().Deserialize<TEntity>(json);
@@ -3402,17 +3402,17 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- ¿ËÂ¡ --
+    #region -- å…‹éš† --
 
-    /// <summary>´´½¨µ±Ç°¶ÔÏóµÄ¿ËÂ¡¶ÔÏó£¬½ö¿½±´»ù±¾×Ö¶Î</summary>
+    /// <summary>åˆ›å»ºå½“å‰å¯¹è±¡çš„å…‹éš†å¯¹è±¡ï¼Œä»…æ‹·è´åŸºæœ¬å­—æ®µ</summary>
     /// <returns></returns>
     public override Object Clone()
     {
       return CloneEntity();
     }
 
-    /// <summary>¿ËÂ¡ÊµÌå¡£´´½¨µ±Ç°¶ÔÏóµÄ¿ËÂ¡¶ÔÏó£¬½ö¿½±´»ù±¾×Ö¶Î£¨ÅÅ³ıÖ÷¼ü×Ö¶Î£©</summary>
-    /// <param name="setDirty">ÊÇ·ñÉèÖÃÔàÊı¾İ¡£Ä¬ÈÏ²»ÉèÖÃ</param>
+    /// <summary>å…‹éš†å®ä½“ã€‚åˆ›å»ºå½“å‰å¯¹è±¡çš„å…‹éš†å¯¹è±¡ï¼Œä»…æ‹·è´åŸºæœ¬å­—æ®µï¼ˆæ’é™¤ä¸»é”®å­—æ®µï¼‰</summary>
+    /// <param name="setDirty">æ˜¯å¦è®¾ç½®è„æ•°æ®ã€‚é»˜è®¤ä¸è®¾ç½®</param>
     /// <returns></returns>
     public virtual TEntity CloneEntity(Boolean setDirty = false)
     {
@@ -3421,7 +3421,7 @@ namespace CuteAnt.OrmLite
 
       foreach (var fi in Meta.Fields)
       {
-        // Ö÷¼üÖµ²»×ö¿ËÂ¡
+        // ä¸»é”®å€¼ä¸åšå…‹éš†
         if (fi.PrimaryKey) { continue; }
 
         //obj[fi.Name] = this[fi.Name];
@@ -3445,7 +3445,7 @@ namespace CuteAnt.OrmLite
       return obj;
     }
 
-    /// <summary>¿ËÂ¡ÊµÌå</summary>
+    /// <summary>å…‹éš†å®ä½“</summary>
     /// <param name="setDirty"></param>
     /// <returns></returns>
     internal protected override IEntity CloneEntityInternal(Boolean setDirty)
@@ -3455,16 +3455,16 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- ÆäËü --
+    #region -- å…¶å®ƒ --
 
-    /// <summary>ÒÑÖØÔØ¡£</summary>
+    /// <summary>å·²é‡è½½ã€‚</summary>
     /// <returns></returns>
     public override String ToString()
     {
-      // ÓÅÏÈÖ÷×Ö¶Î×÷ÎªÊµÌå¶ÔÏóµÄ×Ö·û´®ÏÔÊ¾
+      // ä¼˜å…ˆä¸»å­—æ®µä½œä¸ºå®ä½“å¯¹è±¡çš„å­—ç¬¦ä¸²æ˜¾ç¤º
       if (Meta.Master != null && Meta.Master != Meta.Unique) return this[Meta.Master.Name] + "";
 
-      // ÓÅÏÈ²ÉÓÃÒµÎñÖ÷¼ü£¬Ò²¾ÍÊÇÎ¨Ò»Ë÷Òı
+      // ä¼˜å…ˆé‡‡ç”¨ä¸šåŠ¡ä¸»é”®ï¼Œä¹Ÿå°±æ˜¯å”¯ä¸€ç´¢å¼•
       var table = Meta.Table.DataTable;
       if (table.Indexes != null && table.Indexes.Count > 0)
       {
@@ -3480,7 +3480,7 @@ namespace CuteAnt.OrmLite
 
           di = item;
 
-          // Èç¹û²»ÊÇÎ¨Ò»×ÔÔö£¬ÔÙÍùÏÂÕÒ±ğµÄ¡£Èç¹ûºóÃæÊµÔÚÕÒ²»µ½£¬ÖÁÉÙ»¹ÓĞÏÖÔÚÕâ¸ö¡£
+          // å¦‚æœä¸æ˜¯å”¯ä¸€è‡ªå¢ï¼Œå†å¾€ä¸‹æ‰¾åˆ«çš„ã€‚å¦‚æœåé¢å®åœ¨æ‰¾ä¸åˆ°ï¼Œè‡³å°‘è¿˜æœ‰ç°åœ¨è¿™ä¸ªã€‚
           if (!(columns.Length == 1 && columns[0].Identity)) { break; }
         }
         if (di != null)
@@ -3523,11 +3523,11 @@ namespace CuteAnt.OrmLite
       }
       else
       {
-        return "ÊµÌå" + Meta.ThisType.Name;
+        return "å®ä½“" + Meta.ThisType.Name;
       }
     }
 
-    /// <summary>Ä¬ÈÏÀÛ¼Ó×Ö¶Î</summary>
+    /// <summary>é»˜è®¤ç´¯åŠ å­—æ®µ</summary>
     [Obsolete("=>IEntityOperate")]
     [EditorBrowsable(EditorBrowsableState.Never)]
     [ProtoIgnore, IgnoreDataMember, XmlIgnore]
@@ -3538,10 +3538,10 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- ÔàÊı¾İ --
+    #region -- è„æ•°æ® --
 
-    /// <summary>ÉèÖÃËùÓĞÊı¾İµÄÔàÊôĞÔ</summary>
-    /// <param name="isDirty">¸Ä±äÔàÊôĞÔµÄÊôĞÔ¸öÊı</param>
+    /// <summary>è®¾ç½®æ‰€æœ‰æ•°æ®çš„è„å±æ€§</summary>
+    /// <param name="isDirty">æ”¹å˜è„å±æ€§çš„å±æ€§ä¸ªæ•°</param>
     /// <returns></returns>
     protected override Int32 SetDirty(Boolean isDirty)
     {
@@ -3573,7 +3573,7 @@ namespace CuteAnt.OrmLite
       return count;
     }
 
-    /// <summary>ÊÇ·ñÓĞÔàÊı¾İ¡£¾ö¶¨ÊÇ·ñ¿ÉÒÔUpdate</summary>
+    /// <summary>æ˜¯å¦æœ‰è„æ•°æ®ã€‚å†³å®šæ˜¯å¦å¯ä»¥Update</summary>
     [ProtoIgnore, IgnoreDataMember, XmlIgnore]
     protected Boolean HasDirty
     {
@@ -3591,16 +3591,16 @@ namespace CuteAnt.OrmLite
       }
     }
 
-    /// <summary>Èç¹û×Ö¶Î´øÓĞÄ¬ÈÏÖµ£¬ÔòĞèÒªÉèÖÃÔàÊı¾İ£¬ÒòÎªÏÔÈ»ÓÃ»§ÏëÉèÖÃ¸Ã×Ö¶Î£¬¶ø²»ÊÇ²ÉÓÃÊı¾İ¿âµÄÄ¬ÈÏÖµ</summary>
+    /// <summary>å¦‚æœå­—æ®µå¸¦æœ‰é»˜è®¤å€¼ï¼Œåˆ™éœ€è¦è®¾ç½®è„æ•°æ®ï¼Œå› ä¸ºæ˜¾ç„¶ç”¨æˆ·æƒ³è®¾ç½®è¯¥å­—æ®µï¼Œè€Œä¸æ˜¯é‡‡ç”¨æ•°æ®åº“çš„é»˜è®¤å€¼</summary>
     /// <param name="fieldName"></param>
     /// <param name="newValue"></param>
     /// <returns></returns>
     protected override Boolean OnPropertyChanging(string fieldName, object newValue)
     {
-      // Èç¹û·µ»Øtrue£¬±íÊ¾²»ÏàÍ¬£¬»ùÀàÒÑ¾­ÉèÖÃÁËÔàÊı¾İ
+      // å¦‚æœè¿”å›trueï¼Œè¡¨ç¤ºä¸ç›¸åŒï¼ŒåŸºç±»å·²ç»è®¾ç½®äº†è„æ•°æ®
       if (base.OnPropertyChanging(fieldName, newValue)) { return true; }
 
-      // Èç¹û¸Ã×Ö¶Î´æÔÚ£¬ÇÒ´øÓĞÄ¬ÈÏÖµ£¬ÔòĞèÒªÉèÖÃÔàÊı¾İ£¬ÒòÎªÏÔÈ»ÓÃ»§ÏëÉèÖÃ¸Ã×Ö¶Î£¬¶ø²»ÊÇ²ÉÓÃÊı¾İ¿âµÄÄ¬ÈÏÖµ
+      // å¦‚æœè¯¥å­—æ®µå­˜åœ¨ï¼Œä¸”å¸¦æœ‰é»˜è®¤å€¼ï¼Œåˆ™éœ€è¦è®¾ç½®è„æ•°æ®ï¼Œå› ä¸ºæ˜¾ç„¶ç”¨æˆ·æƒ³è®¾ç½®è¯¥å­—æ®µï¼Œè€Œä¸æ˜¯é‡‡ç”¨æ•°æ®åº“çš„é»˜è®¤å€¼
       FieldItem fi = Meta.Table.FindByName(fieldName);
       if (fi != null && !fi.DefaultValue.IsNullOrWhiteSpace())
       {
@@ -3612,12 +3612,12 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- À©Õ¹ÊôĞÔ --
+    #region -- æ‰©å±•å±æ€§ --
 
-    /// <summary>»ñÈ¡ÒÀÀµÓÚµ±Ç°ÊµÌåÀàµÄÀ©Õ¹ÊôĞÔ</summary>
-    /// <typeparam name="TResult">·µ»ØÀàĞÍ</typeparam>
-    /// <param name="key">¼ü</param>
-    /// <param name="func">»Øµ÷</param>
+    /// <summary>è·å–ä¾èµ–äºå½“å‰å®ä½“ç±»çš„æ‰©å±•å±æ€§</summary>
+    /// <typeparam name="TResult">è¿”å›ç±»å‹</typeparam>
+    /// <param name="key">é”®</param>
+    /// <param name="func">å›è°ƒ</param>
     /// <returns></returns>
     [DebuggerHidden]
     protected TResult GetExtend<TResult>(String key, Func<String, Object> func)
@@ -3625,11 +3625,11 @@ namespace CuteAnt.OrmLite
       return Extends.GetExtend<TEntity, TResult>(key, func);
     }
 
-    /// <summary>»ñÈ¡ÒÀÀµÓÚµ±Ç°ÊµÌåÀàµÄÀ©Õ¹ÊôĞÔ</summary>
-    /// <typeparam name="TResult">·µ»ØÀàĞÍ</typeparam>
-    /// <param name="key">¼ü</param>
-    /// <param name="func">»Øµ÷</param>
-    /// <param name="cacheDefault">ÊÇ·ñ»º´æÄ¬ÈÏÖµ£¬¿ÉÑ¡²ÎÊı£¬Ä¬ÈÏ»º´æ</param>
+    /// <summary>è·å–ä¾èµ–äºå½“å‰å®ä½“ç±»çš„æ‰©å±•å±æ€§</summary>
+    /// <typeparam name="TResult">è¿”å›ç±»å‹</typeparam>
+    /// <param name="key">é”®</param>
+    /// <param name="func">å›è°ƒ</param>
+    /// <param name="cacheDefault">æ˜¯å¦ç¼“å­˜é»˜è®¤å€¼ï¼Œå¯é€‰å‚æ•°ï¼Œé»˜è®¤ç¼“å­˜</param>
     /// <returns></returns>
     [DebuggerHidden]
     protected TResult GetExtend<TResult>(String key, Func<String, Object> func, Boolean cacheDefault)
@@ -3637,9 +3637,9 @@ namespace CuteAnt.OrmLite
       return Extends.GetExtend<TEntity, TResult>(key, func, cacheDefault);
     }
 
-    /// <summary>ÉèÖÃÒÀÀµÓÚµ±Ç°ÊµÌåÀàµÄÀ©Õ¹ÊôĞÔ</summary>
-    /// <param name="key">¼ü</param>
-    /// <param name="value">Öµ</param>
+    /// <summary>è®¾ç½®ä¾èµ–äºå½“å‰å®ä½“ç±»çš„æ‰©å±•å±æ€§</summary>
+    /// <param name="key">é”®</param>
+    /// <param name="value">å€¼</param>
     [DebuggerHidden]
     protected void SetExtend(String key, Object value)
     {
@@ -3648,18 +3648,18 @@ namespace CuteAnt.OrmLite
 
     #endregion
 
-    #region -- ÊµÌåÏàµÈ --
+    #region -- å®ä½“ç›¸ç­‰ --
 
-    /// <summary>±È½ÏÁ½¸öÊµÌå¶ÔÏóÊÇ·ñÏàµÈ£¬Ä¬ÈÏ±È½ÏÊµÌåÖ÷¼ü</summary>
+    /// <summary>æ¯”è¾ƒä¸¤ä¸ªå®ä½“å¯¹è±¡æ˜¯å¦ç›¸ç­‰ï¼Œé»˜è®¤æ¯”è¾ƒå®ä½“ä¸»é”®</summary>
     [NonSerialized, IgnoreDataMember, XmlIgnore]
     public static readonly IEqualityComparer<TEntity> EqualityComparer = new Comparer();
 
     #region - Equals -
 
-    /// <summary>ÅĞ¶ÏÁ½¸öÊµÌåÊÇ·ñÏàµÈ¡£ÓĞ¿ÉÄÜÊÇÍ¬Ò»ÌõÊı¾İµÄÁ½¸öÊµÌå¶ÔÏó</summary>
-    /// <remarks>´Ë·½·¨²»ÄÜÖ±½Óµ÷ÓÃ</remarks>
-    /// <param name="right">ÒªÓëµ±Ç°ÊµÌå¶ÔÏó½øĞĞ±È½ÏµÄÊµÌå¶ÔÏó</param>
-    /// <returns>Èç¹ûÖ¸¶¨µÄÊµÌå¶ÔÏóµÈÓÚµ±Ç°ÊµÌå¶ÔÏó£¬ÔòÎª true£»·ñÔòÎª false¡£</returns>
+    /// <summary>åˆ¤æ–­ä¸¤ä¸ªå®ä½“æ˜¯å¦ç›¸ç­‰ã€‚æœ‰å¯èƒ½æ˜¯åŒä¸€æ¡æ•°æ®çš„ä¸¤ä¸ªå®ä½“å¯¹è±¡</summary>
+    /// <remarks>æ­¤æ–¹æ³•ä¸èƒ½ç›´æ¥è°ƒç”¨</remarks>
+    /// <param name="right">è¦ä¸å½“å‰å®ä½“å¯¹è±¡è¿›è¡Œæ¯”è¾ƒçš„å®ä½“å¯¹è±¡</param>
+    /// <returns>å¦‚æœæŒ‡å®šçš„å®ä½“å¯¹è±¡ç­‰äºå½“å‰å®ä½“å¯¹è±¡ï¼Œåˆ™ä¸º trueï¼›å¦åˆ™ä¸º falseã€‚</returns>
     protected virtual Boolean IsEqualTo(TEntity right)
     {
       //if (right == null) { return false; }
@@ -3670,7 +3670,7 @@ namespace CuteAnt.OrmLite
         var v1 = this[item.Name];
         var v2 = right[item.Name];
 
-        //// ÌØÊâ´¦ÀíÕûÊıÀàĞÍ£¬±ÜÃâ³öÏÖÏàÍ¬Öµ²»Í¬ÕûĞÍ¶øµ¼ÖÂ½á¹û²»Í¬
+        //// ç‰¹æ®Šå¤„ç†æ•´æ•°ç±»å‹ï¼Œé¿å…å‡ºç°ç›¸åŒå€¼ä¸åŒæ•´å‹è€Œå¯¼è‡´ç»“æœä¸åŒ
         //if (item.DataType.IsIntType() && Convert.ToInt64(v1) != Convert.ToInt64(v2)) { return false; }
 
         //if (item.DataType == TypeX._.String)
@@ -3687,25 +3687,25 @@ namespace CuteAnt.OrmLite
       return base.Equals(right);
     }
 
-    /// <summary>ÅĞ¶ÏÁ½¸öÊµÌåÊÇ·ñÏàµÈ¡£ÓĞ¿ÉÄÜÊÇÍ¬Ò»ÌõÊı¾İµÄÁ½¸öÊµÌå¶ÔÏó</summary>
-    /// <param name="right">ÒªÓëµ±Ç°ÊµÌå¶ÔÏó½øĞĞ±È½ÏµÄÊµÌå¶ÔÏó</param>
-    /// <returns>Èç¹ûÖ¸¶¨µÄÊµÌå¶ÔÏóµÈÓÚµ±Ç°ÊµÌå¶ÔÏó£¬ÔòÎª true£»·ñÔòÎª false¡£</returns>
+    /// <summary>åˆ¤æ–­ä¸¤ä¸ªå®ä½“æ˜¯å¦ç›¸ç­‰ã€‚æœ‰å¯èƒ½æ˜¯åŒä¸€æ¡æ•°æ®çš„ä¸¤ä¸ªå®ä½“å¯¹è±¡</summary>
+    /// <param name="right">è¦ä¸å½“å‰å®ä½“å¯¹è±¡è¿›è¡Œæ¯”è¾ƒçš„å®ä½“å¯¹è±¡</param>
+    /// <returns>å¦‚æœæŒ‡å®šçš„å®ä½“å¯¹è±¡ç­‰äºå½“å‰å®ä½“å¯¹è±¡ï¼Œåˆ™ä¸º trueï¼›å¦åˆ™ä¸º falseã€‚</returns>
     internal override Boolean IsEqualTo(IEntity right)
     {
       return Equals(right);
     }
 
-    /// <summary>È·¶¨ÊµÌå¶ÔÏóÊÇ·ñÏàµÈ</summary>
-    /// <param name="right">ÒªÓëµ±Ç°ÊµÌå¶ÔÏó½øĞĞ±È½ÏµÄÊµÌå¶ÔÏó</param>
-    /// <returns>Èç¹ûÖ¸¶¨µÄÊµÌå¶ÔÏóµÈÓÚµ±Ç°ÊµÌå¶ÔÏó£¬ÔòÎª true£»·ñÔòÎª false¡£</returns>
+    /// <summary>ç¡®å®šå®ä½“å¯¹è±¡æ˜¯å¦ç›¸ç­‰</summary>
+    /// <param name="right">è¦ä¸å½“å‰å®ä½“å¯¹è±¡è¿›è¡Œæ¯”è¾ƒçš„å®ä½“å¯¹è±¡</param>
+    /// <returns>å¦‚æœæŒ‡å®šçš„å®ä½“å¯¹è±¡ç­‰äºå½“å‰å®ä½“å¯¹è±¡ï¼Œåˆ™ä¸º trueï¼›å¦åˆ™ä¸º falseã€‚</returns>
     public Boolean Equals(TEntity right)
     {
       return EqualityComparer.Equals(this as TEntity, right);
     }
 
-    /// <summary>ÒÑÖØÔØ£¬È·¶¨ÊµÌå¶ÔÏóÊÇ·ñÏàµÈ</summary>
-    /// <param name="obj">ÒªÓëµ±Ç°ÊµÌå¶ÔÏó½øĞĞ±È½ÏµÄÊµÌå¶ÔÏó</param>
-    /// <returns>Èç¹ûÖ¸¶¨µÄÊµÌå¶ÔÏóµÈÓÚµ±Ç°ÊµÌå¶ÔÏó£¬ÔòÎª true£»·ñÔòÎª false¡£</returns>
+    /// <summary>å·²é‡è½½ï¼Œç¡®å®šå®ä½“å¯¹è±¡æ˜¯å¦ç›¸ç­‰</summary>
+    /// <param name="obj">è¦ä¸å½“å‰å®ä½“å¯¹è±¡è¿›è¡Œæ¯”è¾ƒçš„å®ä½“å¯¹è±¡</param>
+    /// <returns>å¦‚æœæŒ‡å®šçš„å®ä½“å¯¹è±¡ç­‰äºå½“å‰å®ä½“å¯¹è±¡ï¼Œåˆ™ä¸º trueï¼›å¦åˆ™ä¸º falseã€‚</returns>
     public override Boolean Equals(Object obj)
     {
       if (obj == null) { return false; }
@@ -3717,14 +3717,14 @@ namespace CuteAnt.OrmLite
 
     #region - HashCode -
 
-    /// <summary>ÒÑÖØÔØ£¬·µ»ØÊµÌå¶ÔÏóµÄ¹şÏ£´úÂë</summary>
+    /// <summary>å·²é‡è½½ï¼Œè¿”å›å®ä½“å¯¹è±¡çš„å“ˆå¸Œä»£ç </summary>
     /// <returns></returns>
     public override Int32 GetHashCode()
     {
       return EqualityComparer.GetHashCode(this as TEntity);
     }
 
-    /// <summary>»ñÈ¡ÊµÌå¶ÔÏóµÄ¹şÏ£´úÂë</summary>
+    /// <summary>è·å–å®ä½“å¯¹è±¡çš„å“ˆå¸Œä»£ç </summary>
     /// <returns></returns>
     protected virtual Int32 GetHash()
     {

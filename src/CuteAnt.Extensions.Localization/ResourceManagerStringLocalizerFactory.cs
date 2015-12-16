@@ -1,11 +1,11 @@
-// Copyright (c) .NET Foundation. All rights reserved. 
+Ôªø// Copyright (c) .NET Foundation. All rights reserved. 
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. 
 
 using System;
 using System.IO;
 using System.Reflection;
 using System.Resources;
-//using CuteAnt.Extensions.PlatformAbstractions; // ## ø‡÷Ò ∆¡±Œ ##
+//using CuteAnt.Extensions.PlatformAbstractions; // ## Ëã¶Á´π Â±èËîΩ ##
 using CuteAnt.Extensions.OptionsModel;
 
 namespace CuteAnt.Extensions.Localization
@@ -17,7 +17,7 @@ namespace CuteAnt.Extensions.Localization
   {
     private readonly IResourceNamesCache _resourceNamesCache = new ResourceNamesCache();
 
-    //private readonly IApplicationEnvironment _applicationEnvironment; // ## ø‡÷Ò ∆¡±Œ ##
+    //private readonly IApplicationEnvironment _applicationEnvironment; // ## Ëã¶Á´π Â±èËîΩ ##
 
     private readonly string _resourcesRelativePath;
 
@@ -48,7 +48,7 @@ namespace CuteAnt.Extensions.Localization
       }
     }
 
-    #region ## ø‡÷Ò –ﬁ∏ƒ ##
+    #region ## Ëã¶Á´π ‰øÆÊîπ ##
     ///// <summary>
     ///// Creates a <see cref="ResourceManagerStringLocalizer"/> using the <see cref="Assembly"/> and
     ///// <see cref="Type.FullName"/> of the specified <see cref="Type"/>.

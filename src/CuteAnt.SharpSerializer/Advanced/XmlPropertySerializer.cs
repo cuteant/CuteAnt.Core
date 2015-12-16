@@ -1,4 +1,4 @@
-#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
+﻿#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
 
 //  ***********************************************************************
 //  Project: sharpSerializer
@@ -116,7 +116,7 @@ namespace CuteAnt.Serialization.Advanced
 			// DimensionInfos
 			writeDimensionInfos(property.Property.DimensionInfos);
 
-			// Eintr�ge
+			// Einträge
 			writeMultiDimensionalArrayItems(property.Property.Items, property.Property.ElementType);
 			writeEndProperty();
 		}

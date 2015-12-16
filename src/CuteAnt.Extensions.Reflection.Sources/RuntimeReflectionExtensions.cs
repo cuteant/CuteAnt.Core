@@ -1,4 +1,4 @@
-#if NET40
+﻿#if NET40
 using System;
 using System.Collections.Generic;
 //using System.Diagnostics.Tracing;

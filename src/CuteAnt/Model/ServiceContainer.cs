@@ -1,30 +1,30 @@
-#if NET_2_0
+ï»¿#if NET_2_0
 using System;
 
 namespace HmFramework.Model
 {
-	/// <summary>·şÎñÈİÆ÷»ùÀà¡£Ê¹ÓÃ·ºĞÍ»ùÀà£¬½ö½öÊÇÎªÁËÒı·¢×ÓÀàµÄ¾²Ì¬¹¹Ôìº¯Êı¡£</summary>
-	/// <typeparam name="TService">¾ßÌå·şÎñÈİÆ÷Àà</typeparam>
+	/// <summary>æœåŠ¡å®¹å™¨åŸºç±»ã€‚ä½¿ç”¨æ³›å‹åŸºç±»ï¼Œä»…ä»…æ˜¯ä¸ºäº†å¼•å‘å­ç±»çš„é™æ€æ„é€ å‡½æ•°ã€‚</summary>
+	/// <typeparam name="TService">å…·ä½“æœåŠ¡å®¹å™¨ç±»</typeparam>
 	/// <remarks>
-	/// ½¨Òé¸÷¸ö×é¼şÍ¨¹ı¼Ì³Ğµ±Ç°ÀàÊµÏÖÒ»¸öË½ÓĞµÄ·şÎñ¶¨Î»Æ÷£¬ÓÃÓÚÎª×é¼şÄÚÌá¹©·şÎñ¶¨Î»·şÎñ¡£
-	/// ×é¼şÄÚ²¿µÄÄ¬ÈÏÊµÏÖ¿ÉÒÔÔÚ¾²Ì¬¹¹Ôìº¯ÊıÖĞ½øĞĞÎŞ¸²¸Ç×¢²á¡£
-	/// ×÷ÎªÔ¼¶¨£¬×é¼şÄÚ²¿µÄ·şÎñ¶¨Î»È«²¿Í¨¹ı¸ÃÀàÍê³É£¬±£Ö¤·şÎñÔÚÊ¹ÓÃÇ°ÒÑÍê³ÉÁË×¢²á¡£
+	/// å»ºè®®å„ä¸ªç»„ä»¶é€šè¿‡ç»§æ‰¿å½“å‰ç±»å®ç°ä¸€ä¸ªç§æœ‰çš„æœåŠ¡å®šä½å™¨ï¼Œç”¨äºä¸ºç»„ä»¶å†…æä¾›æœåŠ¡å®šä½æœåŠ¡ã€‚
+	/// ç»„ä»¶å†…éƒ¨çš„é»˜è®¤å®ç°å¯ä»¥åœ¨é™æ€æ„é€ å‡½æ•°ä¸­è¿›è¡Œæ— è¦†ç›–æ³¨å†Œã€‚
+	/// ä½œä¸ºçº¦å®šï¼Œç»„ä»¶å†…éƒ¨çš„æœåŠ¡å®šä½å…¨éƒ¨é€šè¿‡è¯¥ç±»å®Œæˆï¼Œä¿è¯æœåŠ¡åœ¨ä½¿ç”¨å‰å·²å®Œæˆäº†æ³¨å†Œã€‚
 	/// </remarks>
 	public class ServiceContainer<TService> where TService : ServiceContainer<TService>, new()
 	{
-		#region -- ¾²Ì¬¹¹Ôìº¯Êı --
+		#region -- é™æ€æ„é€ å‡½æ•° --
 
 		static ServiceContainer()
 		{
-			// ÊµÀı»¯Ò»¸ö¶ÔÏó£¬ÎªÁË´¥·¢×ÓÀàµÄ¾²Ì¬¹¹Ôìº¯Êı
+			// å®ä¾‹åŒ–ä¸€ä¸ªå¯¹è±¡ï¼Œä¸ºäº†è§¦å‘å­ç±»çš„é™æ€æ„é€ å‡½æ•°
 			TService service = new TService();
 		}
 
 		#endregion
 
-		#region -- µ±Ç°¾²Ì¬·şÎñÈİÆ÷ --
+		#region -- å½“å‰é™æ€æœåŠ¡å®¹å™¨ --
 
-		/// <summary>µ±Ç°¶ÔÏóÈİÆ÷</summary>
+		/// <summary>å½“å‰å¯¹è±¡å®¹å™¨</summary>
 		public static IObjectContainer Container
 		{
 			get { return ObjectContainer.Current; }
@@ -32,32 +32,32 @@ namespace HmFramework.Model
 
 		#endregion
 
-		#region -- ·şÎñ --
+		#region -- æœåŠ¡ --
 
-		/// <summary>×¢²áÀàĞÍºÍÃû³Æ</summary>
-		/// <typeparam name="TInterface">½Ó¿ÚÀàĞÍ</typeparam>
-		/// <typeparam name="TImplement">ÊµÏÖÀàĞÍ</typeparam>
-		/// <param name="id">±êÊ¶</param>
-		/// <param name="priority">ÓÅÏÈ¼¶</param>
+		/// <summary>æ³¨å†Œç±»å‹å’Œåç§°</summary>
+		/// <typeparam name="TInterface">æ¥å£ç±»å‹</typeparam>
+		/// <typeparam name="TImplement">å®ç°ç±»å‹</typeparam>
+		/// <param name="id">æ ‡è¯†</param>
+		/// <param name="priority">ä¼˜å…ˆçº§</param>
 		/// <returns></returns>
 		public static IObjectContainer Register<TInterface, TImplement>(Object id = null, Int32 priority = 0)
 		{
 			return Container.Register<TInterface, TImplement>(id, priority);
 		}
 
-		/// <summary>×¢²á</summary>
+		/// <summary>æ³¨å†Œ</summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="impl"></param>
-		/// <param name="id">±êÊ¶</param>
+		/// <param name="id">æ ‡è¯†</param>
 		/// <returns></returns>
 		public static IObjectContainer Register<T>(Type impl, Object id = null)
 		{
 			return Container.Register(typeof(T), impl, id);
 		}
 
-		/// <summary>½âÎöÀàĞÍÖ¸¶¨Ãû³ÆµÄÊµÀı</summary>
-		/// <param name="type">ÀàĞÍ</param>
-		/// <param name="id">±êÊ¶</param>
+		/// <summary>è§£æç±»å‹æŒ‡å®šåç§°çš„å®ä¾‹</summary>
+		/// <param name="type">ç±»å‹</param>
+		/// <param name="id">æ ‡è¯†</param>
 		/// <param name="extend"></param>
 		/// <returns></returns>
 		public static Object Resolve(Type type, Object id = null, Boolean extend = false)
@@ -65,19 +65,19 @@ namespace HmFramework.Model
 			return Container.Resolve(type, id, extend);
 		}
 
-		/// <summary>½âÎöÀàĞÍÖ¸¶¨Ãû³ÆµÄÊµÀı</summary>
-		/// <typeparam name="TInterface">½Ó¿ÚÀàĞÍ</typeparam>
-		/// <param name="id">±êÊ¶</param>
-		/// <param name="extend">À©Õ¹¡£ÈôÎªture£¬nameÎªnull¶øÕÒ²»µ½Ê±£¬²ÉÓÃµÚÒ»¸ö×¢²áÏî£»name²»Îªnull¶øÕÒ²»µ½Ê±£¬²ÉÓÃnull×¢²áÏî</param>
+		/// <summary>è§£æç±»å‹æŒ‡å®šåç§°çš„å®ä¾‹</summary>
+		/// <typeparam name="TInterface">æ¥å£ç±»å‹</typeparam>
+		/// <param name="id">æ ‡è¯†</param>
+		/// <param name="extend">æ‰©å±•ã€‚è‹¥ä¸ºtureï¼Œnameä¸ºnullè€Œæ‰¾ä¸åˆ°æ—¶ï¼Œé‡‡ç”¨ç¬¬ä¸€ä¸ªæ³¨å†Œé¡¹ï¼›nameä¸ä¸ºnullè€Œæ‰¾ä¸åˆ°æ—¶ï¼Œé‡‡ç”¨nullæ³¨å†Œé¡¹</param>
 		/// <returns></returns>
 		public static TInterface Resolve<TInterface>(Object id = null, Boolean extend = false)
 		{
 			return Container.Resolve<TInterface>(id, extend);
 		}
 
-		/// <summary>½âÎöÀàĞÍÖ¸¶¨Ãû³ÆµÄÊµÀı</summary>
-		/// <param name="type">ÀàĞÍ</param>
-		/// <param name="id">±êÊ¶</param>
+		/// <summary>è§£æç±»å‹æŒ‡å®šåç§°çš„å®ä¾‹</summary>
+		/// <param name="type">ç±»å‹</param>
+		/// <param name="id">æ ‡è¯†</param>
 		/// <param name="extend"></param>
 		/// <returns></returns>
 		public static Object ResolveInstance(Type type, Object id = null, Boolean extend = false)
@@ -85,20 +85,20 @@ namespace HmFramework.Model
 			return Container.ResolveInstance(type, id, extend);
 		}
 
-		/// <summary>½âÎöÀàĞÍÖ¸¶¨Ãû³ÆµÄÊµÀı</summary>
-		/// <typeparam name="TInterface">½Ó¿ÚÀàĞÍ</typeparam>
-		/// <param name="id">±êÊ¶</param>
-		/// <param name="extend">À©Õ¹¡£ÈôÎªture£¬nameÎªnull¶øÕÒ²»µ½Ê±£¬²ÉÓÃµÚÒ»¸ö×¢²áÏî£»name²»Îªnull¶øÕÒ²»µ½Ê±£¬²ÉÓÃnull×¢²áÏî</param>
+		/// <summary>è§£æç±»å‹æŒ‡å®šåç§°çš„å®ä¾‹</summary>
+		/// <typeparam name="TInterface">æ¥å£ç±»å‹</typeparam>
+		/// <param name="id">æ ‡è¯†</param>
+		/// <param name="extend">æ‰©å±•ã€‚è‹¥ä¸ºtureï¼Œnameä¸ºnullè€Œæ‰¾ä¸åˆ°æ—¶ï¼Œé‡‡ç”¨ç¬¬ä¸€ä¸ªæ³¨å†Œé¡¹ï¼›nameä¸ä¸ºnullè€Œæ‰¾ä¸åˆ°æ—¶ï¼Œé‡‡ç”¨nullæ³¨å†Œé¡¹</param>
 		/// <returns></returns>
 		public static TInterface ResolveInstance<TInterface>(Object id = null, Boolean extend = false)
 		{
 			return Container.ResolveInstance<TInterface>(id, extend);
 		}
 
-		/// <summary>½âÎöÀàĞÍ</summary>
-		/// <typeparam name="TInterface">½Ó¿ÚÀàĞÍ</typeparam>
-		/// <param name="id">±êÊ¶</param>
-		/// <param name="extend">À©Õ¹¡£ÈôÎªture£¬nameÎªnull¶øÕÒ²»µ½Ê±£¬²ÉÓÃµÚÒ»¸ö×¢²áÏî£»name²»Îªnull¶øÕÒ²»µ½Ê±£¬²ÉÓÃnull×¢²áÏî</param>
+		/// <summary>è§£æç±»å‹</summary>
+		/// <typeparam name="TInterface">æ¥å£ç±»å‹</typeparam>
+		/// <param name="id">æ ‡è¯†</param>
+		/// <param name="extend">æ‰©å±•ã€‚è‹¥ä¸ºtureï¼Œnameä¸ºnullè€Œæ‰¾ä¸åˆ°æ—¶ï¼Œé‡‡ç”¨ç¬¬ä¸€ä¸ªæ³¨å†Œé¡¹ï¼›nameä¸ä¸ºnullè€Œæ‰¾ä¸åˆ°æ—¶ï¼Œé‡‡ç”¨nullæ³¨å†Œé¡¹</param>
 		/// <returns></returns>
 		public static Type ResolveType<TInterface>(Object id = null, Boolean extend = false)
 		{

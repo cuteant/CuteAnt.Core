@@ -1,5 +1,5 @@
-/*
- * ÐÔÄÜ¾ÞÂý£¬ÉáÈ¥
+ï»¿/*
+ * æ€§èƒ½å·¨æ…¢ï¼ŒèˆåŽ»
  */
 
 //// Copyright (c) Microsoft Corporation.  All rights reserved.

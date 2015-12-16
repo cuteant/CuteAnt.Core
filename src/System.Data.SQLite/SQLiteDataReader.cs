@@ -1,4 +1,4 @@
-/********************************************************
+ï»¿/********************************************************
  * ADO.NET 2.0 Data Provider for SQLite Version 3.X
  * Written by Robert Simpson (robert@blackcastlesoft.com)
  *
@@ -957,7 +957,7 @@ namespace System.Data.SQLite
 
     ///////////////////////////////////////////////////////////////////////////
 
-    // ## ¿àÖñ ÐÞ¸Ä internal => public ##
+    // ## è‹¦ç«¹ ä¿®æ”¹ internal => public ##
     public DataTable GetSchemaTable(bool wantUniqueInfo, bool wantDefaultValue)
     {
       CheckClosed();

@@ -1,4 +1,4 @@
-//------------------------------------------------------------
+Ôªø//------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
 
@@ -256,7 +256,7 @@ namespace CuteAnt.AsyncEx
         {
           string message = InternalSR.InvalidSemaphoreExit;
 
-          // ## ø‡÷Ò ∆¡±Œ ##
+          // ## Ëã¶Á´π Â±èËîΩ ##
           //#if DEBUG
           //          if (!Fx.FastDebug && exitStack != null)
           //          {
@@ -273,7 +273,7 @@ namespace CuteAnt.AsyncEx
         {
           this.count--;
 
-          // ## ø‡÷Ò ∆¡±Œ ##
+          // ## Ëã¶Á´π Â±èËîΩ ##
           //#if DEBUG
           //          if (!Fx.FastDebug && this.count == 0)
           //          {

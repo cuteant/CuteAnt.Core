@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Runtime.Serialization;
 
 namespace CuteAnt
@@ -11,19 +11,19 @@ namespace CuteAnt
 	[Serializable]
 	public class HmExceptionBase : ApplicationException
 	{
-		/// <summary>³õÊ¼»¯</summary>
+		/// <summary>åˆå§‹åŒ–</summary>
 		public HmExceptionBase()
 		{
 		}
 
-		/// <summary>³õÊ¼»¯</summary>
+		/// <summary>åˆå§‹åŒ–</summary>
 		/// <param name="message"></param>
 		public HmExceptionBase(String message)
 			: base(message)
 		{
 		}
 
-		/// <summary>³õÊ¼»¯</summary>
+		/// <summary>åˆå§‹åŒ–</summary>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
 		public HmExceptionBase(String format, params Object[] args)
@@ -31,7 +31,7 @@ namespace CuteAnt
 		{
 		}
 
-		/// <summary>³õÊ¼»¯</summary>
+		/// <summary>åˆå§‹åŒ–</summary>
 		/// <param name="message"></param>
 		/// <param name="innerException"></param>
 		public HmExceptionBase(String message, Exception innerException)
@@ -39,7 +39,7 @@ namespace CuteAnt
 		{
 		}
 
-		/// <summary>³õÊ¼»¯</summary>
+		/// <summary>åˆå§‹åŒ–</summary>
 		/// <param name="innerException"></param>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
@@ -48,14 +48,14 @@ namespace CuteAnt
 		{
 		}
 
-		/// <summary>³õÊ¼»¯</summary>
+		/// <summary>åˆå§‹åŒ–</summary>
 		/// <param name="innerException"></param>
 		public HmExceptionBase(Exception innerException)
 			: base((innerException != null ? innerException.Message : null), innerException)
 		{
 		}
 
-		/// <summary>³õÊ¼»¯</summary>
+		/// <summary>åˆå§‹åŒ–</summary>
 		/// <param name="info"></param>
 		/// <param name="context"></param>
 		protected HmExceptionBase(SerializationInfo info, StreamingContext context)

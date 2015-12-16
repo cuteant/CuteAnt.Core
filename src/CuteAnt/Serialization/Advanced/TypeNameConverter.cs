@@ -1,4 +1,4 @@
-#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
+ï»¿#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
 
 //  ***********************************************************************
 //  Project: sharpSerializer
@@ -116,7 +116,7 @@ namespace CuteAnt.Serialization.Advanced
 			//	ts[1] += AssemblyInfo.VSuffix;
 			//	if (typeName.Contains("Version="))
 			//	{
-			//		//// ÕâÀïÊÇ°´±ê×¼Type.AssemblyQualifiedNameÊôĞÔÖµµÄ±ê×¼Ë³ĞòÈ¡VersionË÷ÒıµÄ£¬
+			//		//// è¿™é‡Œæ˜¯æŒ‰æ ‡å‡†Type.AssemblyQualifiedNameå±æ€§å€¼çš„æ ‡å‡†é¡ºåºå–Versionç´¢å¼•çš„ï¼Œ
 			//		//// System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
 			//		//if (typeName.StartsWith("CuteAnt.Components", StringComparison.InvariantCultureIgnoreCase))
 			//		//{
@@ -131,7 +131,7 @@ namespace CuteAnt.Serialization.Advanced
 			//		//}
 			//		//typeName = String.Join(",", ts);
 
-			//		// ĞèÒª°ÑPublicKeyTokenÒ²Ìæ»»
+			//		// éœ€è¦æŠŠPublicKeyTokenä¹Ÿæ›¿æ¢
 			//		var file = PathHelper.ApplicationStartupPathCombine(ts[1].Trim() + ".dll");
 			//		var asm = Assembly.LoadFrom(file);
 			//		typeName = "{0}, {1}".FormatWith(ts[0], asm.FullName);

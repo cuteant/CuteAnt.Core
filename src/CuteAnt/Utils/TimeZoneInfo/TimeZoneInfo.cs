@@ -1,4 +1,4 @@
-#if NET_2_0
+ï»¿#if NET_2_0
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -2431,9 +2431,9 @@ namespace CuteAnt.Utils
 				return CompareAlphaNumeric(x.Id, y.Id);
 			}
 
-			/// <summary>±È½ÏÁ½¸ö×Ö·û´®</summary>
-			/// <param name="t">Ô­×Ö·û´®</param>
-			/// <param name="t2">×Ó×Ö·û´®µÄÆğÊ¼Î»ÖÃ</param>
+			/// <summary>æ¯”è¾ƒä¸¤ä¸ªå­—ç¬¦ä¸²</summary>
+			/// <param name="t">åŸå­—ç¬¦ä¸²</param>
+			/// <param name="t2">å­å­—ç¬¦ä¸²çš„èµ·å§‹ä½ç½®</param>
 			/// <returns></returns>
 			private static Int32 CompareAlphaNumeric(String t, String t2)
 			{
@@ -2446,9 +2446,9 @@ namespace CuteAnt.Utils
 				return String.Compare(t, t2, StringComparison.CurrentCulture);
 			}
 
-			/// <summary>È¡×Ö·û´®ÖĞµÄÊı×Ö</summary>
-			/// <param name="s">×Ö·û´®</param>
-			/// <returns>·µ»ØInt64ÕûÊı</returns>
+			/// <summary>å–å­—ç¬¦ä¸²ä¸­çš„æ•°å­—</summary>
+			/// <param name="s">å­—ç¬¦ä¸²</param>
+			/// <returns>è¿”å›Int64æ•´æ•°</returns>
 			private static Int64 GetNumber(String s)
 			{
 				Int64 l = 0;

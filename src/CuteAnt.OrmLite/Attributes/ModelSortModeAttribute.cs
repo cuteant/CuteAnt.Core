@@ -1,39 +1,39 @@
-/*
- * ×÷Õß£ºĞÂÉúÃü¿ª·¢ÍÅ¶Ó£¨http://www.newlifex.com/£©
+ï»¿/*
+ * ä½œè€…ï¼šæ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿï¼ˆhttp://www.newlifex.com/ï¼‰
  * 
- * °æÈ¨£º°æÈ¨ËùÓĞ (C) ĞÂÉúÃü¿ª·¢ÍÅ¶Ó 2002-2014
+ * ç‰ˆæƒï¼šç‰ˆæƒæ‰€æœ‰ (C) æ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿ 2002-2014
  * 
- * ĞŞ¸Ä£ºº£Ñó±ı¸É£¨cuteant@outlook.com£©
+ * ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²ï¼ˆcuteant@outlook.comï¼‰
 */
 
 using System;
 
 namespace CuteAnt.OrmLite
 {
-	/// <summary>Ä£ĞÍ×Ö¶ÎÅÅĞòÄ£Ê½</summary>
+	/// <summary>æ¨¡å‹å­—æ®µæ’åºæ¨¡å¼</summary>
 	public enum ModelSortModes
 	{
-		/// <summary>»ùÀàÓÅÏÈ¡£Ä¬ÈÏÖµ¡£Ò»°ãÓÃÓÚÀ©Õ¹Ä³¸öÊµÌåÀàÔö¼ÓÈô¸ÉÊı¾İ×Ö¶Î¡£</summary>
+		/// <summary>åŸºç±»ä¼˜å…ˆã€‚é»˜è®¤å€¼ã€‚ä¸€èˆ¬ç”¨äºæ‰©å±•æŸä¸ªå®ä½“ç±»å¢åŠ è‹¥å¹²æ•°æ®å­—æ®µã€‚</summary>
 		BaseFirst,
 
-		/// <summary>ÅÉÉúÀàÓÅÏÈ¡£Ò»°ãÓÃÓÚ¾ßÓĞÄ³Ğ©¹«¹²Êı¾İ×Ö¶ÎµÄ»ùÀà¡£</summary>
+		/// <summary>æ´¾ç”Ÿç±»ä¼˜å…ˆã€‚ä¸€èˆ¬ç”¨äºå…·æœ‰æŸäº›å…¬å…±æ•°æ®å­—æ®µçš„åŸºç±»ã€‚</summary>
 		DerivedFirst
 	}
 
-	/// <summary>Ä£ĞÍ×Ö¶ÎÅÅĞòÄ£Ê½¡£ÆäÊµ²»ÊÇºÜÖØÒª£¬½ö½öÓ°ÏìÊı¾İ×Ö¶ÎÔÚÊı¾İ±íÖĞµÄÏÈºóË³Ğò¶øÒÑ</summary>
+	/// <summary>æ¨¡å‹å­—æ®µæ’åºæ¨¡å¼ã€‚å…¶å®ä¸æ˜¯å¾ˆé‡è¦ï¼Œä»…ä»…å½±å“æ•°æ®å­—æ®µåœ¨æ•°æ®è¡¨ä¸­çš„å…ˆåé¡ºåºè€Œå·²</summary>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 	public class ModelSortModeAttribute : Attribute
 	{
 		private ModelSortModes _Mode;
 
-		/// <summary>Ä£Ê½</summary>
+		/// <summary>æ¨¡å¼</summary>
 		public ModelSortModes Mode
 		{
 			get { return _Mode; }
 			set { _Mode = value; }
 		}
 
-		/// <summary>Ö¸¶¨ÊµÌåÀàµÄÄ£ĞÍ×Ö¶ÎÅÅĞòÄ£Ê½</summary>
+		/// <summary>æŒ‡å®šå®ä½“ç±»çš„æ¨¡å‹å­—æ®µæ’åºæ¨¡å¼</summary>
 		/// <param name="mode"></param>
 		public ModelSortModeAttribute(ModelSortModes mode)
 		{

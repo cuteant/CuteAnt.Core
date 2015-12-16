@@ -1,9 +1,9 @@
-/*
- * ×÷Õß£ºĞÂÉúÃü¿ª·¢ÍÅ¶Ó£¨http://www.newlifex.com/£©
+ï»¿/*
+ * ä½œè€…ï¼šæ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿï¼ˆhttp://www.newlifex.com/ï¼‰
  * 
- * °æÈ¨£º°æÈ¨ËùÓĞ (C) ĞÂÉúÃü¿ª·¢ÍÅ¶Ó 2002-2014
+ * ç‰ˆæƒï¼šç‰ˆæƒæ‰€æœ‰ (C) æ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿ 2002-2014
  * 
- * ĞŞ¸Ä£ºº£Ñó±ı¸É£¨cuteant@outlook.com£©
+ * ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²ï¼ˆcuteant@outlook.comï¼‰
 */
 
 using System;
@@ -13,14 +13,14 @@ using System.Text;
 
 namespace CuteAnt.Reflection
 {
-	/// <summary>ILÖ¸Áî</summary>
+	/// <summary>ILæŒ‡ä»¤</summary>
 	public class ILInstruction
 	{
-		#region -- ÊôĞÔ --
+		#region -- å±æ€§ --
 
 		private OpCode _Code;
 
-		/// <summary>Ö¸Áî</summary>
+		/// <summary>æŒ‡ä»¤</summary>
 		public OpCode Code
 		{
 			get { return _Code; }
@@ -29,7 +29,7 @@ namespace CuteAnt.Reflection
 
 		private object _Operand;
 
-		/// <summary>²Ù×÷</summary>
+		/// <summary>æ“ä½œ</summary>
 		public object Operand
 		{
 			get { return _Operand; }
@@ -38,7 +38,7 @@ namespace CuteAnt.Reflection
 
 		private Byte[] _OperandData;
 
-		/// <summary>²Ù×÷Êı¾İ</summary>
+		/// <summary>æ“ä½œæ•°æ®</summary>
 		public Byte[] OperandData
 		{
 			get { return _OperandData; }
@@ -47,7 +47,7 @@ namespace CuteAnt.Reflection
 
 		private Int32 _Offset;
 
-		/// <summary>Æ«ÒÆ</summary>
+		/// <summary>åç§»</summary>
 		public Int32 Offset
 		{
 			get { return _Offset; }
@@ -56,7 +56,7 @@ namespace CuteAnt.Reflection
 
 		#endregion
 
-		/// <summary>ÒÑÖØÔØ¡£·µ»ØÖ¸ÁîµÄ×Ö·û´®ĞÎÊ½</summary>
+		/// <summary>å·²é‡è½½ã€‚è¿”å›æŒ‡ä»¤çš„å­—ç¬¦ä¸²å½¢å¼</summary>
 		/// <returns></returns>
 		public override String ToString()
 		{
@@ -109,14 +109,14 @@ namespace CuteAnt.Reflection
 					break;
 
 				default:
-					sb.Append("²»Ö§³Ö");
+					sb.Append("ä¸æ”¯æŒ");
 					break;
 			}
 			return sb.ToString();
 		}
 
-		/// <summary>È¡µÃÀàĞÍµÄÓÑºÃÃû</summary>
-		/// <param name="type">ÀàĞÍ</param>
+		/// <summary>å–å¾—ç±»å‹çš„å‹å¥½å</summary>
+		/// <param name="type">ç±»å‹</param>
 		/// <returns></returns>
 		private static String FixType(Type type)
 		{

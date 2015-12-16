@@ -1,4 +1,4 @@
-// Copyright (c) .NET Foundation. All rights reserved.
+ï»¿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -42,7 +42,7 @@ namespace CuteAnt.Extensions.Logging.Console
       Filter = filter ?? ((category, logLevel) => true);
       IncludeScopes = includeScopes;
 
-      //if (RuntimeEnvironmentHelper.IsWindows) // ## ¿àÖñ ÆÁ±Î ##
+      //if (RuntimeEnvironmentHelper.IsWindows) // ## è‹¦ç«¹ å±è”½ ##
       //{
       Console = new WindowsLogConsole();
       //}

@@ -1,4 +1,4 @@
-/* ±¾Ä£¿é»ùÓÚ¿ªÔ´ÏîÄ¿ FluentMigrator µÄ×ÓÄ£¿é Runner.Generators ĞŞ¸Ä¶ø³É¡£ĞŞ¸Ä£ºº£Ñó±ı¸É(cuteant@outlook.com)
+ï»¿/* æœ¬æ¨¡å—åŸºäºå¼€æºé¡¹ç›® FluentMigrator çš„å­æ¨¡å— Runner.Generators ä¿®æ”¹è€Œæˆã€‚ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²(cuteant@outlook.com)
  * 
  * h1. FluentMigrator
  * 

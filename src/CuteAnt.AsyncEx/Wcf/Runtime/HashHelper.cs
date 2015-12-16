@@ -1,5 +1,5 @@
-
-// ## ¿àÖñ Ç¨ÒÆ System.ServiceModel.HashHelper.Sources ##
+ï»¿
+// ## è‹¦ç«¹ è¿ç§» System.ServiceModel.HashHelper.Sources ##
 
 ////------------------------------------------------------------
 //// Copyright (c) Microsoft Corporation.  All rights reserved.

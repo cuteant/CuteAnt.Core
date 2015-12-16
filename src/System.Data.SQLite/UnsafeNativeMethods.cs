@@ -1,4 +1,4 @@
-/********************************************************
+ï»¿/********************************************************
  * ADO.NET 2.0 Data Provider for SQLite Version 3.X
  * Written by Robert Simpson (robert@blackcastlesoft.com)
  *
@@ -295,7 +295,7 @@ namespace System.Data.SQLite
 
 #if !PLATFORM_COMPACTFRAMEWORK
       //directory = AppDomain.CurrentDomain.BaseDirectory;
-      directory = CuteAnt.IO.PathHelper.ApplicationBasePath; // ## ¿àÖñ ÐÞ¸Ä ##
+      directory = CuteAnt.IO.PathHelper.ApplicationBasePath; // ## è‹¦ç«¹ ä¿®æ”¹ ##
       fileName = Path.Combine(directory, XmlConfigFileName);
 
       if (File.Exists(fileName))
@@ -840,7 +840,7 @@ namespace System.Data.SQLite
               GetAssemblyDirectory(),
 #if !PLATFORM_COMPACTFRAMEWORK
               //AppDomain.CurrentDomain.BaseDirectory,
-              CuteAnt.IO.PathHelper.ApplicationBasePath, // ## ¿àÖñ ÐÞ¸Ä ##
+              CuteAnt.IO.PathHelper.ApplicationBasePath, // ## è‹¦ç«¹ ä¿®æ”¹ ##
 #endif
     };
 
@@ -922,7 +922,7 @@ namespace System.Data.SQLite
       //       current application domain.
       //
       //return AppDomain.CurrentDomain.BaseDirectory;
-      return CuteAnt.IO.PathHelper.ApplicationBasePath; // ## ¿àÖñ ÐÞ¸Ä ##
+      return CuteAnt.IO.PathHelper.ApplicationBasePath; // ## è‹¦ç«¹ ä¿®æ”¹ ##
 
 #else
           //

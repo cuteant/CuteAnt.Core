@@ -1,9 +1,9 @@
-/*
- * ×÷Õß£ºĞÂÉúÃü¿ª·¢ÍÅ¶Ó£¨http://www.newlifex.com/£©
+ï»¿/*
+ * ä½œè€…ï¼šæ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿï¼ˆhttp://www.newlifex.com/ï¼‰
  * 
- * °æÈ¨£º°æÈ¨ËùÓĞ (C) ĞÂÉúÃü¿ª·¢ÍÅ¶Ó 2002-2014
+ * ç‰ˆæƒï¼šç‰ˆæƒæ‰€æœ‰ (C) æ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿ 2002-2014
  * 
- * ĞŞ¸Ä£ºº£Ñó±ı¸É£¨cuteant@outlook.com£©
+ * ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²ï¼ˆcuteant@outlook.comï¼‰
 */
 
 using System;
@@ -13,12 +13,12 @@ using System.Data.Common;
 
 namespace CuteAnt.OrmLite.DataAccessLayer
 {
-	/// <summary>SqlServerÊı¾İ¿â</summary>
+	/// <summary>SqlServeræ•°æ®åº“</summary>
 	internal partial class SqlServerSession : RemoteDbSession
 	{
-		#region -- ²éÑ¯ --
+		#region -- æŸ¥è¯¢ --
 
-		/// <summary>¿ìËÙ²éÑ¯µ¥±í¼ÇÂ¼Êı£¬ÉÔÓĞÆ«²î</summary>
+		/// <summary>å¿«é€ŸæŸ¥è¯¢å•è¡¨è®°å½•æ•°ï¼Œç¨æœ‰åå·®</summary>
 		/// <param name="tableName"></param>
 		/// <returns></returns>
 		public override Int64 QueryCountFast(String tableName)
@@ -44,18 +44,18 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 				return _index = QueryIndex_();
 			}
 
-			// ¼ì²é¸üĞÂ
+			// æ£€æŸ¥æ›´æ–°
 			if (_next < DateTime.Now)
 			{
-				// ÏÈ¸ÄÊ±¼ä£¬ÈÃ±ğµÄÏß³ÌÏÈÓÃ×Å¾ÉµÄ
+				// å…ˆæ”¹æ—¶é—´ï¼Œè®©åˆ«çš„çº¿ç¨‹å…ˆç”¨ç€æ—§çš„
 				_next = DateTime.Now.AddSeconds(10);
-				//// Í¬Ò»¸ö»á»°ÀïÃæ£¬²»µ£ĞÄ·Ö±í·Ö¿âµÄÎÊÌâ£¬µ¹ÊÇÓĞ¿ÉÄÜÓĞ³åÍ»
+				//// åŒä¸€ä¸ªä¼šè¯é‡Œé¢ï¼Œä¸æ‹…å¿ƒåˆ†è¡¨åˆ†åº“çš„é—®é¢˜ï¼Œå€’æ˜¯æœ‰å¯èƒ½æœ‰å†²çª
 				//ThreadPool.QueueUserWorkItem(s => _index = QueryIndex_());
 
 				_index = QueryIndex_();
 			}
 
-			// Ö±½Ó·µ»Ø¾ÉµÄ
+			// ç›´æ¥è¿”å›æ—§çš„
 			return _index;
 		}
 
@@ -70,11 +70,11 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			return dic;
 		}
 
-		/// <summary>Ö´ĞĞ²åÈëÓï¾ä²¢·µ»ØĞÂÔöĞĞµÄ×Ô¶¯±àºÅ</summary>
-		/// <param name="sql">SQLÓï¾ä</param>
-		/// <param name="type">ÃüÁîÀàĞÍ£¬Ä¬ÈÏSQLÎÄ±¾</param>
-		/// <param name="ps">ÃüÁî²ÎÊı</param>
-		/// <returns>ĞÂÔöĞĞµÄ×Ô¶¯±àºÅ</returns>
+		/// <summary>æ‰§è¡Œæ’å…¥è¯­å¥å¹¶è¿”å›æ–°å¢è¡Œçš„è‡ªåŠ¨ç¼–å·</summary>
+		/// <param name="sql">SQLè¯­å¥</param>
+		/// <param name="type">å‘½ä»¤ç±»å‹ï¼Œé»˜è®¤SQLæ–‡æœ¬</param>
+		/// <param name="ps">å‘½ä»¤å‚æ•°</param>
+		/// <returns>æ–°å¢è¡Œçš„è‡ªåŠ¨ç¼–å·</returns>
 		public override Int64 InsertAndGetIdentity(String sql, CommandType type, DbParameter[] ps)
 		{
 			return ExecuteScalar<Int64>("SET NOCOUNT ON;" + sql + ";Select SCOPE_IDENTITY()", type, ps);

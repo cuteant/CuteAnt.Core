@@ -1,4 +1,4 @@
-/********************************************************
+ï»¿/********************************************************
  * ADO.NET 2.0 Data Provider for SQLite Version 3.X
  * Written by Robert Simpson (robert@blackcastlesoft.com)
  *
@@ -3823,7 +3823,7 @@ namespace System.Data.SQLite
         if (String.IsNullOrEmpty(dataDirectory))
         {
           //dataDirectory = AppDomain.CurrentDomain.BaseDirectory;
-          dataDirectory = CuteAnt.IO.PathHelper.ApplicationBasePath; // ## ¿àÖñ ÐÞ¸Ä ##
+          dataDirectory = CuteAnt.IO.PathHelper.ApplicationBasePath; // ## è‹¦ç«¹ ä¿®æ”¹ ##
         }
 #endif
 

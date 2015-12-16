@@ -1,4 +1,4 @@
-#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
+ï»¿#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
 
 //  ***********************************************************************
 //  Project: sharpSerializer
@@ -129,8 +129,8 @@ namespace CuteAnt.Serialization.Core
 	public abstract class ReferenceTargetProperty : Property
 	{
 		/// <summary></summary>
-		/// <param name="name">Ãû³Æ</param>
-		/// <param name="type">ÀàĞÍ</param>
+		/// <param name="name">åç§°</param>
+		/// <param name="type">ç±»å‹</param>
 		protected ReferenceTargetProperty(String name, Type type)
 			: base(name, type)
 		{
@@ -171,7 +171,7 @@ namespace CuteAnt.Serialization.Core
 	///</summary>
 	public sealed class ReferenceInfo
 	{
-		/// <summary>Ä¬ÈÏ¹¹Ôìº¯Êı</summary>
+		/// <summary>é»˜è®¤æ„é€ å‡½æ•°</summary>
 		public ReferenceInfo()
 		{
 			Count = 1;

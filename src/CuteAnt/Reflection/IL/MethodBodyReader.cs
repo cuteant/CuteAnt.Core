@@ -1,9 +1,9 @@
-/*
- * ×÷Õß£ºĞÂÉúÃü¿ª·¢ÍÅ¶Ó£¨http://www.newlifex.com/£©
+ï»¿/*
+ * ä½œè€…ï¼šæ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿï¼ˆhttp://www.newlifex.com/ï¼‰
  * 
- * °æÈ¨£º°æÈ¨ËùÓĞ (C) ĞÂÉúÃü¿ª·¢ÍÅ¶Ó 2002-2014
+ * ç‰ˆæƒï¼šç‰ˆæƒæ‰€æœ‰ (C) æ–°ç”Ÿå‘½å¼€å‘å›¢é˜Ÿ 2002-2014
  * 
- * ĞŞ¸Ä£ºº£Ñó±ı¸É£¨cuteant@outlook.com£©
+ * ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²ï¼ˆcuteant@outlook.comï¼‰
 */
 
 using System;
@@ -14,14 +14,14 @@ using System.Text;
 
 namespace CuteAnt.Reflection
 {
-	/// <summary>·½·¨Ìå¶ÁÈ¡Æ÷</summary>
+	/// <summary>æ–¹æ³•ä½“è¯»å–å™¨</summary>
 	public class MethodBodyReader
 	{
-		#region -- ÊôĞÔ --
+		#region -- å±æ€§ --
 
 		private MethodInfo _Method;
 
-		/// <summary>·½·¨</summary>
+		/// <summary>æ–¹æ³•</summary>
 		public MethodInfo Method
 		{
 			get { return _Method; }
@@ -31,7 +31,7 @@ namespace CuteAnt.Reflection
 
 		private List<ILInstruction> _Instructions;
 
-		/// <summary>Ö¸Áî¼¯ºÏ</summary>
+		/// <summary>æŒ‡ä»¤é›†åˆ</summary>
 		public List<ILInstruction> Instructions
 		{
 			get
@@ -50,9 +50,9 @@ namespace CuteAnt.Reflection
 
 		#endregion
 
-		#region -- ¹¹Ôìº¯Êı --
+		#region -- æ„é€ å‡½æ•° --
 
-		/// <summary>Îª·½·¨ĞÅÏ¢´´½¨·½·¨Ìå¶ÁÈ¡Æ÷</summary>
+		/// <summary>ä¸ºæ–¹æ³•ä¿¡æ¯åˆ›å»ºæ–¹æ³•ä½“è¯»å–å™¨</summary>
 		/// <param name="method"></param>
 		public MethodBodyReader(MethodInfo method)
 		{
@@ -68,7 +68,7 @@ namespace CuteAnt.Reflection
 
 		#endregion
 
-		#region -- IL¶ÁÈ¡·½·¨ --
+		#region -- ILè¯»å–æ–¹æ³• --
 
 		private static UInt16 ReadUInt16(Byte[] il, ref Int32 p)
 		{
@@ -107,9 +107,9 @@ namespace CuteAnt.Reflection
 
 		#endregion
 
-		#region -- ·½·¨ --
+		#region -- æ–¹æ³• --
 
-		/// <summary>Í¨¹ıIL×Ö½ÚÂë¹¹½¨Ö¸Áî¼¯ºÏ</summary>
+		/// <summary>é€šè¿‡ILå­—èŠ‚ç æ„å»ºæŒ‡ä»¤é›†åˆ</summary>
 		/// <param name="mi"></param>
 		private static List<ILInstruction> ConstructInstructions(MethodInfo mi)
 		{
@@ -125,7 +125,7 @@ namespace CuteAnt.Reflection
 			{
 				ILInstruction instruction = new ILInstruction();
 
-				// µ±Ç°Ö¸ÁîµÄ²Ù×÷Âë
+				// å½“å‰æŒ‡ä»¤çš„æ“ä½œç 
 				OpCode code = OpCodes.Nop;
 				UInt16 value = il[p++];
 				if (value != 0xfe)
@@ -142,7 +142,7 @@ namespace CuteAnt.Reflection
 				instruction.Offset = p - 1;
 				Int32 metadataToken = 0;
 
-				#region ²Ù×÷Êı
+				#region æ“ä½œæ•°
 
 				switch (code.OperandType)
 				{
@@ -244,7 +244,7 @@ namespace CuteAnt.Reflection
 						break;
 
 					default:
-						throw new InvalidOperationException("Î´ÖªµÄ²Ù×÷ÀàĞÍ" + code.OperandType);
+						throw new InvalidOperationException("æœªçŸ¥çš„æ“ä½œç±»å‹" + code.OperandType);
 				}
 
 				#endregion
@@ -254,7 +254,7 @@ namespace CuteAnt.Reflection
 			return list;
 		}
 
-		/// <summary>»ñÈ¡·½·¨ÌåIL´úÂë</summary>
+		/// <summary>è·å–æ–¹æ³•ä½“ILä»£ç </summary>
 		/// <returns></returns>
 		public String GetBodyCode()
 		{
@@ -268,22 +268,22 @@ namespace CuteAnt.Reflection
 			return sb.ToString();
 		}
 
-		/// <summary>»ñÈ¡·½·¨IL´úÂë£¬°üÀ¨Ç©Ãû</summary>
+		/// <summary>è·å–æ–¹æ³•ILä»£ç ï¼ŒåŒ…æ‹¬ç­¾å</summary>
 		/// <returns></returns>
 		public String GetCode()
 		{
-			//TODO: »ñÈ¡·½·¨IL´úÂë£¬°üÀ¨Ç©Ãû
-			throw new NotImplementedException("Î´ÊµÏÖ£¡");
+			//TODO: è·å–æ–¹æ³•ILä»£ç ï¼ŒåŒ…æ‹¬ç­¾å
+			throw new NotImplementedException("æœªå®ç°ï¼");
 		}
 
 		#endregion
 
-		#region -- ¸¨Öú --
+		#region -- è¾…åŠ© --
 
 		private static OpCode[] multiByteOpCodes;
 		private static OpCode[] singleByteOpCodes;
 
-		/// <summary>¼ÓÔØ²Ù×÷Âë</summary>
+		/// <summary>åŠ è½½æ“ä½œç </summary>
 		private static void LoadOpCodes()
 		{
 			if (singleByteOpCodes != null) { return; }
@@ -303,7 +303,7 @@ namespace CuteAnt.Reflection
 					}
 					else
 					{
-						ValidationHelper.InvalidOperationCondition((index & 0xff00) != 0xfe00, "ÎŞĞ§²Ù×÷Âë");
+						ValidationHelper.InvalidOperationCondition((index & 0xff00) != 0xfe00, "æ— æ•ˆæ“ä½œç ");
 						multiByteOpCodes[index & 0xff] = code;
 					}
 				}

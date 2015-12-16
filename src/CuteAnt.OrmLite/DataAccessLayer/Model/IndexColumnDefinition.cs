@@ -1,4 +1,4 @@
-#region License
+ï»¿#region License
 
 //
 // Copyright (c) 2007-2009, Sean Chambers <schambers80@gmail.com>
@@ -35,14 +35,14 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			IsDescending = isDescending;
 		}
 
-		/// <summary>ÖØĞ´Ò»ÏÂ</summary>
+		/// <summary>é‡å†™ä¸€ä¸‹</summary>
 		/// <returns></returns>
 		public override Int32 GetHashCode()
 		{
 			return Name.GetHashCode();
 		}
 
-		/// <summary>ÖØĞ´Ò»ÏÂ</summary>
+		/// <summary>é‡å†™ä¸€ä¸‹</summary>
 		/// <param name="obj"></param>
 		/// <returns></returns>
 		public override Boolean Equals(object obj)
@@ -51,7 +51,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			return Equals(column);
 		}
 
-		/// <summary>ÏàµÈ</summary>
+		/// <summary>ç›¸ç­‰</summary>
 		/// <param name="column"></param>
 		/// <returns></returns>
 		public Boolean Equals(IndexColumnDefinition column)

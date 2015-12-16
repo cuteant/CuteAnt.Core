@@ -1,4 +1,4 @@
-// Copyright (c) 2004-2008 MySQL AB, 2008-2009 Sun Microsystems, Inc.
+ï»¿// Copyright (c) 2004-2008 MySQL AB, 2008-2009 Sun Microsystems, Inc.
 //
 // MySQL Connector/NET is licensed under the terms of the GPLv2
 // <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>, like most 
@@ -32,7 +32,7 @@ namespace MySql.Data.Types
 		Guid mValue;
 		private bool isNull;
 		private byte[] bytes;
-		// ## ¿àÖñ ÆÁ±Î ##
+		// ## è‹¦ç«¹ å±è”½ ##
 		//private bool oldGuids;
 
 		public MySqlGuid(byte[] buff)
@@ -48,7 +48,7 @@ namespace MySql.Data.Types
 			get { return bytes; }
 		}
 
-		// ## ¿àÖñ ÆÁ±Î ##
+		// ## è‹¦ç«¹ å±è”½ ##
 		//public bool OldGuids
 		//{
 		//	get { return oldGuids; }
@@ -84,7 +84,7 @@ namespace MySql.Data.Types
 
 		string IMySqlValue.MySqlTypeName
 		{
-			// ## ¿àÖñ ĞŞ¸Ä ##
+			// ## è‹¦ç«¹ ä¿®æ”¹ ##
 			//get { return OldGuids ? "BINARY(16)" : "CHAR(36)"; }
 			get { return "CHAR(36)"; }
 		}
@@ -112,7 +112,7 @@ namespace MySql.Data.Types
 				}
 			}
 
-			// ## ¿àÖñ ÆÁ±Î ##
+			// ## è‹¦ç«¹ å±è”½ ##
 			//if (OldGuids)
 			//	WriteOldGuid(packet, guid, binary);
 			//else
@@ -173,7 +173,7 @@ namespace MySql.Data.Types
 			byte[] buff = new byte[length];
 			packet.Read(buff, 0, (int)length);
 			MySqlGuid g = new MySqlGuid(buff);
-			// ## ¿àÖñ ÆÁ±Î ##
+			// ## è‹¦ç«¹ å±è”½ ##
 			//g.OldGuids = OldGuids;
 			return g;
 		}
@@ -182,7 +182,7 @@ namespace MySql.Data.Types
 		{
 			MySqlGuid g = new MySqlGuid();
 			g.isNull = true;
-			// ## ¿àÖñ ÆÁ±Î ##
+			// ## è‹¦ç«¹ å±è”½ ##
 			//g.OldGuids = OldGuids;
 			if (!nullVal)
 			{

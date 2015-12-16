@@ -1,4 +1,4 @@
-/* ±¾Ä£¿é»ùÓÚ¿ªÔ´ÏîÄ¿ FluentMigrator µÄ×ÓÄ£¿é Runner.Generators ĞŞ¸Ä¶ø³É¡£ĞŞ¸Ä£ºº£Ñó±ı¸É(cuteant@outlook.com)
+ï»¿/* æœ¬æ¨¡å—åŸºäºå¼€æºé¡¹ç›® FluentMigrator çš„å­æ¨¡å— Runner.Generators ä¿®æ”¹è€Œæˆã€‚ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²(cuteant@outlook.com)
  * 
  * h1. FluentMigrator
  * 
@@ -43,8 +43,8 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 	{
 		internal override String DefaultBlobValue { get { return "E''"; } }
 
-		/// <summary>×ªÒåÊ±¼äÎªSQL×Ö·û´®</summary>
-		/// <param name="value">Ê±¼äÖµ</param>
+		/// <summary>è½¬ä¹‰æ—¶é—´ä¸ºSQLå­—ç¬¦ä¸²</summary>
+		/// <param name="value">æ—¶é—´å€¼</param>
 		/// <returns></returns>
 		public override String FormatDateTime(DateTime value)
 		{
@@ -60,8 +60,8 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			return sb.ToString();
 		}
 
-		/// <summary>×ªÒåÊ±¼äÎªSQL×Ö·û´®</summary>
-		/// <param name="value">Ê±¼äÖµ</param>
+		/// <summary>è½¬ä¹‰æ—¶é—´ä¸ºSQLå­—ç¬¦ä¸²</summary>
+		/// <param name="value">æ—¶é—´å€¼</param>
 		/// <returns></returns>
 		internal override String FormatDateTime2(DateTime value)
 		{
@@ -77,8 +77,8 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			return sb.ToString();
 		}
 
-		/// <summary>×ªÒåÊ±¼äÎªSQL×Ö·û´®</summary>
-		/// <param name="value">Ê±¼äÖµ</param>
+		/// <summary>è½¬ä¹‰æ—¶é—´ä¸ºSQLå­—ç¬¦ä¸²</summary>
+		/// <param name="value">æ—¶é—´å€¼</param>
 		/// <returns></returns>
 		internal override String FormatDateTimeOffset(DateTimeOffset value)
 		{

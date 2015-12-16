@@ -1,4 +1,4 @@
-//------------------------------------------------------------
+Ôªø//------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
 using System;
@@ -41,7 +41,7 @@ namespace CuteAnt.IO
     WriteAsyncArgs m_writeArgs;
     static AsyncEventArgsCallback s_onAsyncFlushComplete;
     static AsyncEventArgsCallback s_onWriteCallback;
-    // ## ø‡÷Ò ∆¡±Œ ##
+    // ## Ëã¶Á´π Â±èËîΩ ##
     //EventTraceActivity activity;
     bool m_closed;
 
@@ -92,7 +92,7 @@ namespace CuteAnt.IO
       }
     }
 
-    // ## ø‡÷Ò ∆¡±Œ ##
+    // ## Ëã¶Á´π Â±èËîΩ ##
     //internal EventTraceActivity EventTraceActivity
     //{
     //  get
@@ -698,7 +698,7 @@ namespace CuteAnt.IO
         m_waiting = false;
         m_writePending = false;
         m_position = 0;
-        // ## ø‡÷Ò –ﬁ∏ƒ ##
+        // ## Ëã¶Á´π ‰øÆÊîπ ##
         //bytes = DiagnosticUtility.Utility.AllocateByteArray(bufferSize);
         m_bytes = Fx.AllocateByteArray(bufferSize);
         m_stream = stream;
@@ -738,7 +738,7 @@ namespace CuteAnt.IO
         ByteBuffer buffer = (ByteBuffer)result.AsyncState;
         try
         {
-          // ## ø‡÷Ò ∆¡±Œ ##
+          // ## Ëã¶Á´π Â±èËîΩ ##
           //if (TD.BufferedAsyncWriteStopIsEnabled())
           //{
           //  TD.BufferedAsyncWriteStop(buffer.parent.EventTraceActivity);
@@ -827,7 +827,7 @@ namespace CuteAnt.IO
         SetWritePending();
         m_position = 0;
 
-        // ## ø‡÷Ò ∆¡±Œ ##
+        // ## Ëã¶Á´π Â±èËîΩ ##
         //if (TD.BufferedAsyncWriteStartIsEnabled())
         //{
         //  TD.BufferedAsyncWriteStart(parent.EventTraceActivity, GetHashCode(), bytesToWrite);
@@ -836,7 +836,7 @@ namespace CuteAnt.IO
         IAsyncResult asyncResult = m_stream.BeginWrite(m_bytes, 0, bytesToWrite, s_flushCallback, this);
         if (asyncResult.CompletedSynchronously)
         {
-          // ## ø‡÷Ò ∆¡±Œ ##
+          // ## Ëã¶Á´π Â±èËîΩ ##
           //if (TD.BufferedAsyncWriteStopIsEnabled())
           //{
           //  TD.BufferedAsyncWriteStop(parent.EventTraceActivity);

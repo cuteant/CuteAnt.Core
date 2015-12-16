@@ -1,4 +1,4 @@
-#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
+ï»¿#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
 
 //  ***********************************************************************
 //  Project: sharpSerializer
@@ -177,7 +177,7 @@ namespace CuteAnt.Serialization.Serializing
 
 		/// <summary></summary>
 		/// <param name="typeInfo"></param>
-		/// <param name="type">ÀàÐÍ</param>
+		/// <param name="type">ç±»åž‹</param>
 		/// <returns>true if the key and value definition was found</returns>
 		private static Boolean fillKeyAndElementType(TypeInfo typeInfo, Type type)
 		{

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * EmeCoder v1.2.1.168
  * 作者：Administrator/PC4APPLE
  * 时间：2014-09-18 22:57:33

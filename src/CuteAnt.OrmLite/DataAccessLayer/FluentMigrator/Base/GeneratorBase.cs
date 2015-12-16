@@ -1,4 +1,4 @@
-/* ±¾Ä£¿é»ùÓÚ¿ªÔ´ÏîÄ¿ FluentMigrator µÄ×ÓÄ£¿é Runner.Generators ĞŞ¸Ä¶ø³É¡£ĞŞ¸Ä£ºº£Ñó±ı¸É(cuteant@outlook.com)
+ï»¿/* æœ¬æ¨¡å—åŸºäºå¼€æºé¡¹ç›® FluentMigrator çš„å­æ¨¡å— Runner.Generators ä¿®æ”¹è€Œæˆã€‚ä¿®æ”¹ï¼šæµ·æ´‹é¥¼å¹²(cuteant@outlook.com)
  * 
  * h1. FluentMigrator
  * 
@@ -46,7 +46,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 		where TQuoter : QuoterBase, new()
 		where TDescriptionGenerator : StandardDescriptionGenerator, new()
 	{
-		#region -- ÊôĞÔ --
+		#region -- å±æ€§ --
 
 		private TColumn _Column;
 
@@ -76,7 +76,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		#endregion
 
-		#region -- ¹¹Ôì --
+		#region -- æ„é€  --
 
 		internal GeneratorBase()
 		{
@@ -94,13 +94,13 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 	internal abstract class GeneratorBase
 	{
-		#region -- ÊôĞÔ --
+		#region -- å±æ€§ --
 
 		internal abstract IQuoter QuoterInternal { get; }
 
 		#endregion
 
-		#region -- SQLÓï¾äÉú³É --
+		#region -- SQLè¯­å¥ç”Ÿæˆ --
 
 		#region - DataBase -
 
@@ -155,7 +155,7 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 
 		internal String CreateIndexSQL(String schemaName, IDataTable table)
 		{
-			// ÅÅ³ıÖ÷¼üË÷Òı¡¢¼ÆËãËùµÃµÄË÷Òı
+			// æ’é™¤ä¸»é”®ç´¢å¼•ã€è®¡ç®—æ‰€å¾—çš„ç´¢å¼•
 			var indexs = IndexDefinition.Create(schemaName, table);
 			if (indexs == null) { return String.Empty; }
 
@@ -180,9 +180,9 @@ namespace CuteAnt.OrmLite.DataAccessLayer
 			{
 				var item = indexs[i];
 
-				// ¼ÆËãµÄË÷Òı²»ĞèÒªÉ¾³ı
+				// è®¡ç®—çš„ç´¢å¼•ä¸éœ€è¦åˆ é™¤
 				if (item.Computed) { continue; }
-				// Ö÷¼üµÄË÷Òı²»ÄÜÉ¾
+				// ä¸»é”®çš„ç´¢å¼•ä¸èƒ½åˆ 
 				if (item.PrimaryKey) { continue; }
 
 				sb.Append(DeleteIndexSQL(schemaName, table.TableName, item.Name));

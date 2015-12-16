@@ -1,4 +1,4 @@
-// Copyright ?2004, 2013, Oracle and/or its affiliates. All rights reserved.
+Ôªø// Copyright ?2004, 2013, Oracle and/or its affiliates. All rights reserved.
 //
 // MySQL Connector/NET is licensed under the terms of the GPLv2
 // <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>, like most 
@@ -259,7 +259,7 @@ namespace MySql.Data.MySqlClient
 				if (ValueObject.MySqlDbType == MySqlDbType.Guid)
         {
           MySqlGuid g = (MySqlGuid)ValueObject;
-					// ## ø‡÷Ò ∆¡±Œ ##
+					// ## Ëã¶Á´π Â±èËîΩ ##
 					//g.OldGuids = settings.OldGuids;
           ValueObject = g;
         }
