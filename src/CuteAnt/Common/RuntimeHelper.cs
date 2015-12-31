@@ -54,68 +54,6 @@ namespace CuteAnt
       }
     }
 
-    private static IntPtr _consoleOutputHandle;
-
-    private static IntPtr ConsoleOutputHandle
-    {
-      [SecurityCritical]
-      get
-      {
-        if (_consoleOutputHandle == IntPtr.Zero) _consoleOutputHandle = Win32Native.GetStdHandle(-11);
-        return _consoleOutputHandle;
-      }
-    }
-
-    ///// <summary>获取PE文件类型。扩展方法</summary>
-    ///// <param name="e"></param>
-    ///// <returns></returns>
-    //public static PEFileKinds GetPEFileKinds(this MemberInfo e)
-    //{
-    //	return GetPEFileKinds(Path.GetFullPath(e.Module.Assembly.Location));
-    //}
-
-    ///// <summary>Parses the PE header and determines whether the given assembly is a console application.</summary>
-    ///// <param name="assemblyPath">The path of the assembly to check.</param>
-    ///// <remarks>The magic numbers in this method are extracted from the PE/COFF file
-    ///// format specification available from http://www.microsoft.com/whdc/system/platform/firmware/pecoff.mspx
-    ///// </remarks>
-    //private static PEFileKinds GetPEFileKinds(string assemblyPath)
-    //{
-    //	using (var s = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read))
-    //	{
-    //		return GetPEFileKinds(s);
-    //	}
-    //}
-
-    //private static PEFileKinds GetPEFileKinds(Stream s)
-    //{
-    //	var rawPeSignatureOffset = new byte[4];
-    //	s.Seek(0x3c, SeekOrigin.Begin);
-    //	s.Read(rawPeSignatureOffset, 0, 4);
-    //	int peSignatureOffset = rawPeSignatureOffset[0];
-    //	peSignatureOffset |= rawPeSignatureOffset[1] << 8;
-    //	peSignatureOffset |= rawPeSignatureOffset[2] << 16;
-    //	peSignatureOffset |= rawPeSignatureOffset[3] << 24;
-    //	var coffHeader = new byte[24];
-    //	s.Seek(peSignatureOffset, SeekOrigin.Begin);
-    //	s.Read(coffHeader, 0, 24);
-    //	byte[] signature = { (byte)'P', (byte)'E', (byte)'\0', (byte)'\0' };
-    //	for (int index = 0; index < 4; index++)
-    //	{
-    //		if (coffHeader[index] != signature[index]) throw new InvalidOperationException("Attempted to check a non PE file for the console subsystem!");
-    //	}
-    //	var subsystemBytes = new byte[2];
-    //	s.Seek(68, SeekOrigin.Current);
-    //	s.Read(subsystemBytes, 0, 2);
-    //	int subSystem = subsystemBytes[0] | subsystemBytes[1] << 8;
-    //	return
-
-    //		// http://support.microsoft.com/kb/90493
-    //			subSystem == 3 ? PEFileKinds.ConsoleApplication :
-    //			subSystem == 2 ? PEFileKinds.WindowApplication :
-    //			PEFileKinds.Dll; /*IMAGE_SUBSYSTEM_WINDOWS_CUI*/
-    //}
-
     #endregion
 
     #region DNX
@@ -161,8 +99,9 @@ namespace CuteAnt
       {
         if (Is64BitProcess) return true;
 
-        Boolean flag;
-        return Win32Native.DoesWin32MethodExist("kernel32.dll", "IsWow64Process") && Win32Native.IsWow64Process(Win32Native.GetCurrentProcess(), out flag) && flag;
+        return Environment.Is64BitOperatingSystem;
+        //Boolean flag;
+        //return Win32Native.DoesWin32MethodExist("kernel32.dll", "IsWow64Process") && Win32Native.IsWow64Process(Win32Native.GetCurrentProcess(), out flag) && flag;
       }
     }
 
@@ -370,6 +309,55 @@ namespace CuteAnt
       return SetProcessWorkingSetSize(0, -1, -1);
     }
 
+    private static Int32? _PhysicalMemory;
+    /// <summary>物理内存大小。单位MB</summary>
+    public static Int32 PhysicalMemory
+    {
+      get
+      {
+        if (_PhysicalMemory == null) Refresh();
+        return _PhysicalMemory.Value;
+      }
+    }
+
+    private static Int32? _AvailableMemory;
+    /// <summary>可用物理内存大小。单位MB</summary>
+    public static Int32 AvailableMemory
+    {
+      get
+      {
+        if (_AvailableMemory == null) Refresh();
+        return _AvailableMemory.Value;
+      }
+    }
+
+    //private static Int32? _VirtualMemory;
+    ///// <summary>虚拟内存大小。单位MB</summary>
+    //public static Int32 VirtualMemory
+    //{
+    //    get
+    //    {
+    //        if (_VirtualMemory == null) Refresh();
+    //        return _VirtualMemory.Value;
+    //    }
+    //}
+
+    private static void Refresh()
+    {
+      //var ci = new ComputerInfo();
+      //_PhysicalMemory = (Int32)(ci.TotalPhysicalMemory / 1024 / 1024);
+      //_VirtualMemory = (Int32)(ci.TotalVirtualMemory / 1024 / 1024);
+
+      var st = default(Win32Native.MEMORYSTATUSEX);
+      st.Init();
+      Win32Native.GlobalMemoryStatusEx(ref st);
+
+      _PhysicalMemory = (Int32)(st.ullTotalPhys / 1024 / 1024);
+      _AvailableMemory = (Int32)(st.ullAvailPhys / 1024 / 1024);
+      //_VirtualMemory = (Int32)(st.ullTotalVirtual / 1024 / 1024);
+
+    }
+
     #endregion
   }
 
@@ -469,5 +457,27 @@ namespace CuteAnt
 
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     public static extern int GetSystemMetrics(int nIndex);
+
+    public struct MEMORYSTATUSEX
+    {
+      internal uint dwLength;
+      internal uint dwMemoryLoad;
+      internal ulong ullTotalPhys;
+      internal ulong ullAvailPhys;
+      internal ulong ullTotalPageFile;
+      internal ulong ullAvailPageFile;
+      internal ulong ullTotalVirtual;
+      internal ulong ullAvailVirtual;
+      internal ulong ullAvailExtendedVirtual;
+      internal void Init()
+      {
+        dwLength = checked((uint)Marshal.SizeOf(typeof(MEMORYSTATUSEX)));
+      }
+    }
+
+    [SecurityCritical]
+    [DllImport("Kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
   }
 }

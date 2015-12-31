@@ -392,10 +392,7 @@ namespace CuteAnt.Common
             _Current = new HardInfo();
             _Current.GetLocal();
           }
-          catch (Exception ex)
-          {
-            HmTrace.WriteException(ex);
-          }
+          catch { }
 
           return _Current;
         }
@@ -450,7 +447,7 @@ namespace CuteAnt.Common
     /// <returns></returns>
     public ExtendData ToExtend()
     {
-      ExtendData data = new ExtendData();
+      var data = new ExtendData();
       data["MachineName"] = MachineName;
       data["BaseBoard"] = BaseBoard;
       data["Processors"] = Processors;
@@ -473,7 +470,7 @@ namespace CuteAnt.Common
     /// <returns></returns>
     public static HardInfo FromExtend(ExtendData data)
     {
-      HardInfo entity = new HardInfo();
+      var entity = new HardInfo();
       entity.MachineName = data["MachineName"];
       entity.BaseBoard = data["BaseBoard"];
       entity.Processors = data["Processors"];

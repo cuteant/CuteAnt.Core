@@ -487,10 +487,19 @@ namespace CuteAnt.Reflection
             //    file = file.Substring("file:///".Length);
             // ASP.Net中不会锁定原始DLL文件
             var file = asm.Asm.Location;
-            if (HmTrace.Debug) { HmTrace.WriteInfo("TypeX.GetType(\"{0}\")导致加载{1}", typeName, file); }
-            var asm2 = Assembly.LoadFile(file);
-            var type2 = AssemblyX.Create(asm2).GetType(typeName);
-            if (type2 != null) { type = type2; }
+            try
+            {
+              type = null;
+              var asm2 = Assembly.LoadFile(file);
+              var type2 = AssemblyX.Create(asm2).GetType(typeName);
+              if (type2 == null) continue;
+              type = type2;
+              if (HmTrace.Debug) HmTrace.WriteInfo("TypeX.GetType(\"{0}\")导致加载{1}", typeName, file);
+            }
+            catch (Exception ex)
+            {
+              if (HmTrace.Debug) HmTrace.WriteException(ex);
+            }
 
             return type;
           }
@@ -526,10 +535,19 @@ namespace CuteAnt.Reflection
             {
               // ASP.Net中不会锁定原始DLL文件，注意这段代码在dnx环境中是否需要待验证
               var file = asmx.Asm.Location;
-              if (HmTrace.Debug) { HmTrace.WriteInfo("TypeX.GetType(\"{0}\")导致加载{1}", typeName, file); }
-              var asm2 = Assembly.LoadFile(file);
-              var type2 = AssemblyX.Create(asm2).GetType(typeName);
-              if (type2 != null) { type = type2; }
+              try
+              {
+                type = null;
+                var asm2 = Assembly.LoadFile(file);
+                var type2 = AssemblyX.Create(asm2).GetType(typeName);
+                if (type2 == null) continue;
+                type = type2;
+                if (HmTrace.Debug) HmTrace.WriteInfo("TypeX.GetType(\"{0}\")导致加载{1}", typeName, file);
+              }
+              catch (Exception ex)
+              {
+                if (HmTrace.Debug) HmTrace.WriteException(ex);
+              }
 
               return type;
             }
