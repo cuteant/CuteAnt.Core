@@ -30,7 +30,7 @@
 
   "dependencies": {
     "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc1-final",
-    "NLog": "4.2.2"
+    "NLog": "4.2.3"
   },
 
   "frameworks": {

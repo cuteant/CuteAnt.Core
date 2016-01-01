@@ -23,7 +23,7 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "Newtonsoft.Json": "7.0.1"
+    "Newtonsoft.Json": "8.0.1"
   },
 
   "frameworks": {
