@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc1-final",
+  "version": "2.0.0-rc2-final",
   "description": "CuteAnt.Extensions.Configuration.Xml Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Configuration.Xml" ],
@@ -29,12 +29,24 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt.Extensions.Configuration": "2.0.0-rc1-final",
-    "CuteAnt.Extensions.Configuration.FileExtensions": "2.0.0-rc1-final"
+    "CuteAnt.Extensions.Configuration": "2.0.0-rc2-final",
+    "CuteAnt.Extensions.Configuration.FileExtensions": "2.0.0-rc2-final"
   },
 
   "frameworks": {
+    "net40": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      },
+      "frameworkAssemblies": {
+        "System.Security": "4.0.0.0",
+        "System.XML": "4.0.0.0"
+      }
+    },
     "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      },
       "frameworkAssemblies": {
         "System.Security": "4.0.0.0",
         "System.XML": "4.0.0.0"

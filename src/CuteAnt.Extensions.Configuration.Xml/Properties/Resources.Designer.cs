@@ -8,7 +8,11 @@ namespace CuteAnt.Extensions.Configuration.Xml
     internal static class Resources
     {
         private static readonly ResourceManager _resourceManager
-            = new ResourceManager("CuteAnt.Extensions.Configuration.Xml.Resources", typeof(Resources).GetTypeInfo().Assembly);
+            = new ResourceManager("CuteAnt.Extensions.Configuration.Xml.Resources", typeof(Resources)
+#if !NET40
+              .GetTypeInfo()
+#endif
+              .Assembly);
 
         /// <summary>
         /// Encrypted XML is not supported on this platform.

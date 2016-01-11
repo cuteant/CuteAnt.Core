@@ -1,5 +1,5 @@
 {
-  "version": "4.0.0-rc2-151205",
+  "version": "4.0.0-rc2-160101",
   "description": "CuteAnt.IdentityModel.Protocol.Extensions Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.IdentityModel.Protocol.Extensions" ],
@@ -25,7 +25,7 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt.IdentityModel.Tokens.Jwt": "4.0.0-rc2-151205"
+    "CuteAnt.IdentityModel.Tokens.Jwt": "4.0.0-rc2-160101"
   },
 
   "frameworks": {

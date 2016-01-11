@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-151231",
+  "version": "2.0.0-rc2-160101",
   "description": "CuteAnt.AsyncEx Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.AsyncEx" ],
@@ -8,7 +8,7 @@
   "requireLicenseAcceptance": true,
 
   "compilationOptions": {
-    "define": [ "TRACE", "NET_3_5_GREATER", "NET_4_0_GREATER", "FEATURE_TRACING" ],
+    "define": [ "TRACE", "NET_3_5_GREATER" ],
     "keyFile": "../../tools/StrongKey.snk",
     "warningsAsErrors": false,
     "allowUnsafe": true
@@ -24,28 +24,46 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "System.Collections.Immutable": "1.1.37",
     "Ix-Main": "1.2.5",
     "Ix-Async": "1.2.5",
-    "CuteAnt": "2.0.0-rc2-151231",
+    "CuteAnt": "2.0.0-rc2-160101",
     "CuteAnt.Extensions.Sources": {
       "type": "build",
-      "version": "2.0.0-rc2-151231"
+      "version": "2.0.0-rc2-160101"
     },
     "CuteAnt.Extensions.Reflection.Sources": {
       "type": "build",
-      "version": "2.0.0-rc2-151231"
+      "version": "2.0.0-rc2-160101"
     },
     "Nito.AsyncEx.Tasks.Sources": {
       "type": "build",
-      "version": "2.0.0-rc2-151231"
+      "version": "2.0.0-rc2-160101"
     }
   },
 
   "frameworks": {
+    "net40": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR", "NONATIVETASKS", "PRENET45" ]
+      },
+      "dependencies": {
+        "Microsoft.Bcl.Build": "1.0.21",
+        "Microsoft.Bcl": "1.1.10",
+        "Microsoft.Bcl.Async": "1.0.168"
+      },
+      "frameworkAssemblies": {
+        "System.Data": "4.0.0.0",
+        "System.Runtime.Serialization": "4.0.0.0",
+        "System.XML": "4.0.0.0",
+        "System.Xml.Linq": "4.0.0.0",
+      }
+    },
     "net451": {
       "compilationOptions": {
-        "define": [ "DESKTOPCLR" ]
+        "define": [ "DESKTOPCLR", "NET_4_0_GREATER", "FEATURE_TRACING" ]
+      },
+      "dependencies": {
+        "System.Collections.Immutable": "1.1.37"
       },
       "frameworkAssemblies": {
         "System.Data": "4.0.0.0",
@@ -59,7 +77,10 @@
     },
     "dnx451": {
       "compilationOptions": {
-        "define": [ "DNXCLR" ]
+        "define": [ "DNXCLR", "NET_4_0_GREATER", "FEATURE_TRACING" ]
+      },
+      "dependencies": {
+        "System.Collections.Immutable": "1.1.37"
       },
       "frameworkAssemblies": {
         "System.Data": "4.0.0.0",

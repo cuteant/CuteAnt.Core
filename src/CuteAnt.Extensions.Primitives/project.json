@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc1-final",
+  "version": "2.0.0-rc2-final",
   "description": "CuteAnt.Extensions.Primitives Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Primitives" ],
@@ -30,12 +30,13 @@
 
   "dependencies": {
     "CuteAnt.Extensions.HashCodeCombiner.Sources": {
-      "version": "2.0.0-rc1-final",
+      "version": "2.0.0-rc2-final",
       "type": "build"
     }
   },
 
   "frameworks": {
+    "net40": { },
     "net451": { }
   }
 }

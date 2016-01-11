@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc1-final",
+  "version": "2.0.0-rc2-final",
   "description": "CuteAnt.Extensions.Logging.Abstractions Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Logging.Abstractions" ],
@@ -30,12 +30,27 @@
 
   "dependencies": {
     "CuteAnt.Extensions.TypeNameHelper.Sources": {
-      "version": "2.0.0-rc1-final",
-      "type": "default"
+      "version": "2.0.0-rc2-final",
+      "type": "build"
     }
   },
 
   "frameworks": {
-    "net451": { }
+    "net40": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      },
+      "dependencies": {
+        "CuteAnt.Extensions.Reflection.Sources": {
+          "version": "2.0.0-rc2-160101",
+          "type": "build"
+        }
+      }
+    },
+    "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      }
+    }
   }
 }

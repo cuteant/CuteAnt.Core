@@ -9,61 +9,69 @@ using CuteAnt.Extensions.Primitives;
 
 namespace CuteAnt.Extensions.FileProviders
 {
-    internal class FileChangeToken : IChangeToken
+  internal class FileChangeToken : IChangeToken
+  {
+    private Regex _searchRegex;
+
+    public FileChangeToken(string pattern)
     {
-        private Regex _searchRegex;
-
-        public FileChangeToken(string pattern)
-        {
-            Pattern = pattern;
-        }
-
-        public string Pattern { get; }
-
-        private CancellationTokenSource TokenSource { get; } = new CancellationTokenSource();
-
-        private Regex SearchRegex
-        {
-            get
-            {
-                if (_searchRegex == null)
-                {
-                    _searchRegex = new Regex(
-                        '^' + Pattern + '$',
-                        RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture,
-                        Constants.RegexMatchTimeout);
-                }
-
-                return _searchRegex;
-            }
-        }
-
-        public bool ActiveChangeCallbacks => true;
-
-        public bool HasChanged => TokenSource.Token.IsCancellationRequested;
-
-        public IDisposable RegisterChangeCallback(Action<object> callback, object state)
-        {
-            return TokenSource.Token.Register(callback, state);
-        }
-
-        public bool IsMatch(string relativePath)
-        {
-            return SearchRegex.IsMatch(relativePath);
-        }
-
-        public void Changed()
-        {
-            Task.Run(() =>
-            {
-                try
-                {
-                    TokenSource.Cancel();
-                }
-                catch
-                {
-                }
-            });
-        }
+      Pattern = pattern;
     }
+
+    public string Pattern { get; }
+
+    private CancellationTokenSource TokenSource { get; } = new CancellationTokenSource();
+
+    private Regex SearchRegex
+    {
+      get
+      {
+        if (_searchRegex == null)
+        {
+          _searchRegex = new Regex(
+              '^' + Pattern + '$',
+              RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture
+#if !NET40 // ## 苦竹 修改 ##
+              ,Constants.RegexMatchTimeout
+#endif
+              );
+        }
+
+        return _searchRegex;
+      }
+    }
+
+    public bool ActiveChangeCallbacks => true;
+
+    public bool HasChanged => TokenSource.Token.IsCancellationRequested;
+
+    public IDisposable RegisterChangeCallback(Action<object> callback, object state)
+    {
+      return TokenSource.Token.Register(callback, state);
+    }
+
+    public bool IsMatch(string relativePath)
+    {
+      return SearchRegex.IsMatch(relativePath);
+    }
+
+    public void Changed()
+    {
+#if NET40
+      TaskEx
+#else
+      Task
+#endif
+        .Run(() =>
+      {
+        try
+        {
+          TokenSource.Cancel();
+        }
+        catch
+        {
+        }
+      });
+    }
+  }
 }

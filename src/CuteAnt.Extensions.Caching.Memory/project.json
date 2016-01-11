@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc1-final",
+  "version": "2.0.0-rc2-final",
   "description": "CuteAnt.Extensions.Caching.Memory Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Caching.Memory" ],
@@ -29,12 +29,22 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt.Extensions.Caching.Abstractions": "2.0.0-rc1-final",
-    "CuteAnt.Extensions.DependencyInjection.Abstractions": "2.0.0-rc1-final",
-    "CuteAnt.Extensions.OptionsModel": "2.0.0-rc1-final"
+    "CuteAnt.Extensions.Caching.Abstractions": "2.0.0-rc2-final",
+    "CuteAnt.Extensions.DependencyInjection.Abstractions": "2.0.0-rc2-final",
+    "CuteAnt.Extensions.OptionsModel": "2.0.0-rc2-final",
+    "CuteAnt.AsyncEx": "2.0.0-rc2-160101"
   },
 
   "frameworks": {
-    "net451": { }
+    "net40": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      }
+    },
+    "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      }
+    }
   }
 }

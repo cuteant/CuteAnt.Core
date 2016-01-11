@@ -5,55 +5,55 @@ using System;
 
 namespace CuteAnt.Extensions.Configuration
 {
-    public static class FileConfigurationExtensions
+  public static class FileConfigurationExtensions
+  {
+    /// <summary>
+    /// Sets the base path to discover files in for file-based providers.
+    /// </summary>
+    /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+    /// <param name="basePath">The absolute path of file-based providers.</param>
+    /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+    public static IConfigurationBuilder SetBasePath(this IConfigurationBuilder configurationBuilder, string basePath)
     {
-        /// <summary>
-        /// Sets the base path to discover files in for file-based providers.
-        /// </summary>
-        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="basePath">The absolute path of file-based providers.</param>
-        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder SetBasePath(this IConfigurationBuilder configurationBuilder, string basePath)
-        {
-            if (configurationBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(configurationBuilder));
-            }
+      if (configurationBuilder == null)
+      {
+        throw new ArgumentNullException(nameof(configurationBuilder));
+      }
 
-            if (basePath == null)
-            {
-                throw new ArgumentNullException(nameof(basePath));
-            }
+      if (basePath == null)
+      {
+        throw new ArgumentNullException(nameof(basePath));
+      }
 
-            configurationBuilder.Properties["BasePath"] = basePath;
-            
-            return configurationBuilder;
-        }
+      configurationBuilder.Properties["BasePath"] = basePath;
 
-        /// <summary>
-        /// Gets the base path to discover files in for file-based providers.
-        /// </summary>
-        /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static string GetBasePath(this IConfigurationBuilder configurationBuilder)
-        {
-            if (configurationBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(configurationBuilder));
-            }
+      return configurationBuilder;
+    }
 
-            object basePath;
-            if (configurationBuilder.Properties.TryGetValue("BasePath", out basePath))
-            {
-                return (string)basePath;
-            }
+    /// <summary>
+    /// Gets the base path to discover files in for file-based providers.
+    /// </summary>
+    /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+    /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+    public static string GetBasePath(this IConfigurationBuilder configurationBuilder)
+    {
+      if (configurationBuilder == null)
+      {
+        throw new ArgumentNullException(nameof(configurationBuilder));
+      }
 
-#if NET451
-            return AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string ??
-                AppDomain.CurrentDomain.BaseDirectory ?? string.Empty;
+      object basePath;
+      if (configurationBuilder.Properties.TryGetValue("BasePath", out basePath))
+      {
+        return (string)basePath;
+      }
+
+#if DESKTOPCLR // ## 苦竹 修改 ##
+      return AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string ??
+          AppDomain.CurrentDomain.BaseDirectory ?? string.Empty;
 #else
             return AppContext.BaseDirectory ?? string.Empty;
 #endif
-        }
     }
+  }
 }

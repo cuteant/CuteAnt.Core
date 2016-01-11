@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc1-final",
+  "version": "2.0.0-rc2-final",
   "description": "CuteAnt.Extensions.FileSystemGlobbing Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.FileSystemGlobbing" ],
@@ -30,12 +30,21 @@
 
   "dependencies": {
     "CuteAnt.Extensions.HashCodeCombiner.Sources": {
-      "version": "2.0.0-rc1-final",
+      "version": "2.0.0-rc2-final",
       "type": "build"
     }
   },
 
   "frameworks": {
-    "net451": { }
+    "net40": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      }
+    },
+    "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      }
+    }
   }
 }

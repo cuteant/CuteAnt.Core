@@ -1,5 +1,5 @@
 ﻿{
-  "version": "2.0.0-rc1-final",
+  "version": "2.0.0-rc2-final",
   "description": "CuteAnt.Extensions.Globalization.CultureInfoCache Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Globalization.CultureInfoCache" ],
@@ -31,6 +31,15 @@
   "dependencies": { },
 
   "frameworks": {
-    "net451": { }
+    "net40": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      }
+    },
+    "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      }
+    }
   }
 }

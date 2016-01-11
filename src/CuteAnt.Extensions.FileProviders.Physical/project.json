@@ -1,5 +1,5 @@
 ﻿{
-  "version": "2.0.0-rc1-final",
+  "version": "2.0.0-rc2-final",
   "description": "CuteAnt.Extensions.FileProviders.Physical Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.FileProviders.Physical" ],
@@ -29,14 +29,28 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt.Extensions.FileProviders.Abstractions": "2.0.0-rc1-final",
+    "CuteAnt.Extensions.FileProviders.Abstractions": "2.0.0-rc2-final",
     "CuteAnt.Extensions.FileProviders.Sources": {
-      "version": "2.0.0-rc1-final",
+      "version": "2.0.0-rc2-final",
       "type": "build"
     }
   },
 
   "frameworks": {
-    "net451": { }
+    "net40": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      },
+      "dependencies": {
+        "Microsoft.Bcl.Build": "1.0.21",
+        "Microsoft.Bcl": "1.1.10",
+        "Microsoft.Bcl.Async": "1.0.168"
+      }
+    },
+    "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      }
+    }
   }
 }

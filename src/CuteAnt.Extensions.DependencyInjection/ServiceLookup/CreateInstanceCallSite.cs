@@ -7,32 +7,33 @@ using System.Runtime.ExceptionServices;
 
 namespace CuteAnt.Extensions.DependencyInjection.ServiceLookup
 {
-    internal class CreateInstanceCallSite : IServiceCallSite
+  internal class CreateInstanceCallSite : IServiceCallSite
+  {
+    private readonly ServiceDescriptor _descriptor;
+
+    public CreateInstanceCallSite(ServiceDescriptor descriptor)
     {
-        private readonly ServiceDescriptor _descriptor;
-
-        public CreateInstanceCallSite(ServiceDescriptor descriptor)
-        {
-            _descriptor = descriptor;
-        }
-
-        public object Invoke(ServiceProvider provider)
-        {
-            try
-            {
-                return Activator.CreateInstance(_descriptor.ImplementationType);
-            }
-            catch (Exception ex) when (ex.InnerException != null)
-            {
-                ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
-                // The above line will always throw, but the compiler requires we throw explicitly.
-                throw;
-            }
-        }
-
-        public Expression Build(Expression provider)
-        {
-            return Expression.New(_descriptor.ImplementationType);
-        }
+      _descriptor = descriptor;
     }
+
+    public object Invoke(ServiceProvider provider)
+    {
+      try
+      {
+        return Activator.CreateInstance(_descriptor.ImplementationType);
+      }
+      catch (Exception ex) when (ex.InnerException != null)
+      {
+        //ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+        //// The above line will always throw, but the compiler requires we throw explicitly.
+        //throw;
+        throw ExceptionEnlightenment.PrepareForRethrow(ex.InnerException); // ## 苦竹 修改 ##
+      }
+    }
+
+    public Expression Build(Expression provider)
+    {
+      return Expression.New(_descriptor.ImplementationType);
+    }
+  }
 }

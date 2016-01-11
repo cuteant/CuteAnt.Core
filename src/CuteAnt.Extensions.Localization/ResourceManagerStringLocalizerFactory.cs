@@ -84,8 +84,11 @@ namespace CuteAnt.Extensions.Localization
     {
       if (resourceSource == null) { throw new ArgumentNullException(nameof(resourceSource)); }
       if (applicationName == null) { throw new ArgumentNullException(nameof(applicationName)); }
-
+#if NET40
+      var typeInfo = resourceSource;
+#else
       var typeInfo = resourceSource.GetTypeInfo();
+#endif
       var assembly = typeInfo.Assembly;
 
       var baseName = applicationName + "." + _resourcesRelativePath + typeInfo.FullName;
@@ -96,7 +99,7 @@ namespace CuteAnt.Extensions.Localization
           baseName,
           _resourceNamesCache);
     }
-    #endregion
+#endregion
 
     /// <summary>
     /// Creates a <see cref="ResourceManagerStringLocalizer"/>.

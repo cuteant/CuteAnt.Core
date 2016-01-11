@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-151231",
+  "version": "2.0.0-rc2-160101",
   "description": "ADO.Net driver for MySQL.",
   "authors": [ "Oracle" ],
   "owners": [ "MySQL" ],
@@ -28,10 +28,23 @@
   ],
 
   "dependencies": {
-    "CuteAnt": "2.0.0-rc2-151231"
+    "CuteAnt": "2.0.0-rc2-160101"
   },
 
   "frameworks": {
+    "net40": {
+      "frameworkAssemblies": {
+        "System.configuration": "4.0.0.0",
+        "System.Configuration.Install": "4.0.0.0",
+        "System.Data": "4.0.0.0",
+        "System.Design": "4.0.0.0",
+        "System.Drawing": "4.0.0.0",
+        "System.Management": "4.0.0.0",
+        "System.Security": "4.0.0.0",
+        "System.Transactions": "4.0.0.0",
+        "System.XML": "4.0.0.0"
+      }
+    },
     "net451": {
       "frameworkAssemblies": {
         "System.configuration": "4.0.0.0",

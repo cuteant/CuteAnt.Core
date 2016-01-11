@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-151231",
+  "version": "2.0.0-rc2-160101",
   "description": "The official SQLite database engine for both x86 and x64 along with the ADO.NET provider.",
   "authors": [ "SQLite Development Team" ],
   "tags": [ "SQLite" ],
@@ -27,11 +27,20 @@
   ],
 
   "dependencies": {
-    "CuteAnt": "2.0.0-rc2-151231"
+    "CuteAnt": "2.0.0-rc2-160101"
   },
 
   "frameworks": {
+    "net40": {
+      "compilationOptions": { "define": [ "NET_40" ] },
+      "frameworkAssemblies": {
+        "System.Data": "4.0.0.0",
+        "System.Transactions": "4.0.0.0",
+        "System.XML": "4.0.0.0"
+      }
+    },
     "net451": {
+      "compilationOptions": { "define": [ "NET_451" ] },
       "frameworkAssemblies": {
         "System.Data": "4.0.0.0",
         "System.Transactions": "4.0.0.0",
@@ -39,6 +48,7 @@
       }
     },
     "dnx451": {
+      "compilationOptions": { "define": [ "NET_451" ] },
       "frameworkAssemblies": {
         "System.Data": "4.0.0.0",
         "System.Transactions": "4.0.0.0",

@@ -1,13 +1,14 @@
 ﻿{
-  "version": "2.0.0-rc2-151231",
+  "version": "2.0.0-rc2-160101",
   "compilationOptions": {
     "warningsAsErrors": false,
     "keyFile": "../../tools/StrongKey.snk"
   },
   "shared": "**/*.cs",
   "dependencies": { },
+
   "frameworks": {
-    "net451": { },
-    "dnx451": { }
+    "net40": { },
+    "net451": { }
   }
 }
