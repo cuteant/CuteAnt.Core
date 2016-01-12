@@ -11,7 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Common\CommonAssemblyInfo.cs = Common\CommonAssemblyInfo.cs
 		Common\CommonVersionInfo.cs = Common\CommonVersionInfo.cs
 		global.json = global.json
+		LICENSE = LICENSE
 		NuGet.Config = NuGet.Config
+		readme.md = readme.md
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CuteAnt", "src\CuteAnt\CuteAnt.xproj", "{7632C398-92E0-4D61-A693-1ECF3B776E3F}"
