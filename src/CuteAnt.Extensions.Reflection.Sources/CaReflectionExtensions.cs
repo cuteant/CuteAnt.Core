@@ -19,6 +19,26 @@ namespace System.Reflection
     {
       return new TypeInfo(type);
     }
+
+    /// <summary>IsConstructedGenericType
+	/// http://stackoverflow.com/questions/14476904/distinguish-between-generic-type-that-is-based-on-non-generic-value-type-and-oth
+	/// </summary>
+    /// <param name="t"></param>
+    /// <returns></returns>
+    public static bool IsConstructedGenericType(this Type t)
+    {
+      if (!t.IsGenericType || t.ContainsGenericParameters)
+      {
+        return false;
+      }
+
+      if (!t.GetGenericArguments().All(a => !a.IsGenericType || a.IsConstructedGenericType()))
+      {
+        return false;
+      }
+
+      return true;
+    }
 #endif
 
     /// <summary>IsNull.</summary>

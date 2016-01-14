@@ -138,6 +138,7 @@ namespace System.Reflection
     public ConstructorInfo TypeInitializer { get { return _type.TypeInitializer; } }
     public Type UnderlyingSystemType { get { return _type.UnderlyingSystemType; } }
 
+    public bool IsConstructedGenericType { get { return _type.IsConstructedGenericType(); } }
     #endregion
 
     #region -- Methods --
@@ -150,6 +151,9 @@ namespace System.Reflection
     //}
 
     public bool IsAssignableFrom(TypeInfo typeInfo) { return _type.IsAssignableFrom(typeInfo.AsType()); }
+    public bool IsAssignableFrom(Type type) { return _type.IsAssignableFrom(type); }
+    public bool IsSubclassOf(TypeInfo typeInfo) { return _type.IsSubclassOf(typeInfo.AsType()); }
+    public bool IsSubclassOf(Type type) { return _type.IsSubclassOf(type); }
 
     public int GetArrayRank()
     {
