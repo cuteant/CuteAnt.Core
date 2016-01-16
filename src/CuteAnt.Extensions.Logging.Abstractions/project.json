@@ -42,7 +42,7 @@
       },
       "dependencies": {
         "CuteAnt.Extensions.Reflection.Sources": {
-          "version": "2.0.0-rc2-160101",
+          "version": "2.0.0-rc2-160104",
           "type": "build"
         }
       }

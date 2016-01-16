@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-160101",
+  "version": "2.0.0-rc2-160104",
   "description": "CuteAnt.AsyncEx Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.AsyncEx" ],
@@ -26,18 +26,18 @@
   "dependencies": {
     "Ix-Main": "1.2.5",
     "Ix-Async": "1.2.5",
-    "CuteAnt": "2.0.0-rc2-160101",
+    "CuteAnt": "2.0.0-rc2-160104",
     "CuteAnt.Extensions.Sources": {
       "type": "build",
-      "version": "2.0.0-rc2-160101"
+      "version": "2.0.0-rc2-160104"
     },
     "CuteAnt.Extensions.Reflection.Sources": {
       "type": "build",
-      "version": "2.0.0-rc2-160101"
+      "version": "2.0.0-rc2-160104"
     },
     "Nito.AsyncEx.Tasks.Sources": {
       "type": "build",
-      "version": "2.0.0-rc2-160101"
+      "version": "2.0.0-rc2-160104"
     }
   },
 
@@ -55,7 +55,7 @@
         "System.Data": "4.0.0.0",
         "System.Runtime.Serialization": "4.0.0.0",
         "System.XML": "4.0.0.0",
-        "System.Xml.Linq": "4.0.0.0",
+        "System.Xml.Linq": "4.0.0.0"
       }
     },
     "net451": {
@@ -63,16 +63,15 @@
         "define": [ "DESKTOPCLR", "NET_4_0_GREATER", "FEATURE_TRACING" ]
       },
       "dependencies": {
-        "System.Collections.Immutable": "1.1.37"
+        "System.Collections.Immutable": "1.1.38-rc1-final"
       },
       "frameworkAssemblies": {
         "System.Data": "4.0.0.0",
         "System.Runtime.Serialization": "4.0.0.0",
         "System.XML": "4.0.0.0",
         "System.Xml.Linq": "4.0.0.0",
-        "System.IO": "4.0.0.0",
-        "System.Runtime": "",
-        "System.Collections": ""
+        "System.Collections": "4.0.0.0",
+        "System.Runtime": "4.0.0.0"
       }
     },
     "dnx451": {
@@ -80,16 +79,15 @@
         "define": [ "DNXCLR", "NET_4_0_GREATER", "FEATURE_TRACING" ]
       },
       "dependencies": {
-        "System.Collections.Immutable": "1.1.37"
+        "System.Collections.Immutable": "1.1.38-rc1-final"
       },
       "frameworkAssemblies": {
         "System.Data": "4.0.0.0",
         "System.Runtime.Serialization": "4.0.0.0",
         "System.XML": "4.0.0.0",
         "System.Xml.Linq": "4.0.0.0",
-        "System.IO": "4.0.0.0",
-        "System.Runtime": "",
-        "System.Collections": ""
+        "System.Collections": "4.0.0.0",
+        "System.Runtime": "4.0.0.0"
       }
     }
   },

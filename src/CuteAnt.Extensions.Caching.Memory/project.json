@@ -32,7 +32,7 @@
     "CuteAnt.Extensions.Caching.Abstractions": "2.0.0-rc2-final",
     "CuteAnt.Extensions.DependencyInjection.Abstractions": "2.0.0-rc2-final",
     "CuteAnt.Extensions.OptionsModel": "2.0.0-rc2-final",
-    "CuteAnt.AsyncEx": "2.0.0-rc2-160101"
+    "CuteAnt.AsyncEx": "2.0.0-rc2-160104"
   },
 
   "frameworks": {
