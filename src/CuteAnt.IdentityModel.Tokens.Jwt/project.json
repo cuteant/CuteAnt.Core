@@ -12,7 +12,7 @@
       "compilationOptions": {
         "define": [ "DEBUG", "TRACE", "NET_3_5_GREATER", "NET_4_0_GREATER" ],
         "keyFile": "../../tools/StrongKey.snk",
-        "warningsAsErrors": false,
+        "warningsAsErrors": true,
         "allowUnsafe": false
       }
     },
@@ -21,7 +21,7 @@
         "define": [ "TRACE", "NET_3_5_GREATER", "NET_4_0_GREATER" ],
         "optimize": true,
         "keyFile": "../../tools/StrongKey.snk",
-        "warningsAsErrors": false,
+        "warningsAsErrors": true,
         "allowUnsafe": false
       }
     }
