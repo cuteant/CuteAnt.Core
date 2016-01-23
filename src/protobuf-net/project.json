@@ -9,11 +9,24 @@
   "licenseUrl": "https://raw.githubusercontent.com/mgravell/protobuf-net/master/Licence.txt",
   "requireLicenseAcceptance": true,
 
-  "compilationOptions": {
-    "define": [ "TRACE", "FEAT_COMPILER", "FEAT_SERVICEMODEL", "PLAT_BINARYFORMATTER", "PLAT_XMLSERIALIZER" ],
-    "keyFile": "../../tools/StrongKey.snk",
-    "warningsAsErrors": false,
-    "allowUnsafe": true
+  "configurations": {
+    "Debug": {
+      "compilationOptions": {
+        "define": [ "DEBUG", "TRACE", "FEAT_COMPILER", "FEAT_SERVICEMODEL", "PLAT_BINARYFORMATTER", "PLAT_XMLSERIALIZER" ],
+        "keyFile": "../../tools/StrongKey.snk",
+        "warningsAsErrors": false,
+        "allowUnsafe": true
+      }
+    },
+    "Release": {
+      "compilationOptions": {
+        "define": [ "TRACE", "FEAT_COMPILER", "FEAT_SERVICEMODEL", "PLAT_BINARYFORMATTER", "PLAT_XMLSERIALIZER" ],
+        "optimize": true,
+        "keyFile": "../../tools/StrongKey.snk",
+        "warningsAsErrors": false,
+        "allowUnsafe": true
+      }
+    }
   },
   "compile": [
     "**/*.cs",

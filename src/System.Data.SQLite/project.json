@@ -8,11 +8,24 @@
   "licenseUrl": "https://www.sqlite.org/copyright.html",
   "requireLicenseAcceptance": true,
 
-  "compilationOptions": {
-    "define": [ "TRACE", "USE_INTEROP_DLL", "USE_PREPARE_V2", "THROW_ON_DISPOSED", "PRELOAD_NATIVE_LIBRARY", "INTEROP_CODEC", "INTEROP_EXTENSION_FUNCTIONS", "INTEROP_VIRTUAL_TABLE", "TRACE_PRELOAD", "TRACE_SHARED", "TRACE_WARNING", "WINDOWS" ],
-    "keyFile": "../../tools/StrongKey.snk",
-    "warningsAsErrors": false,
-    "allowUnsafe": true
+  "configurations": {
+    "Debug": {
+      "compilationOptions": {
+        "define": [ "DEBUG", "TRACE", "USE_INTEROP_DLL", "USE_PREPARE_V2", "THROW_ON_DISPOSED", "PRELOAD_NATIVE_LIBRARY", "INTEROP_CODEC", "INTEROP_EXTENSION_FUNCTIONS", "INTEROP_VIRTUAL_TABLE", "TRACE_PRELOAD", "TRACE_SHARED", "TRACE_WARNING", "WINDOWS" ],
+        "keyFile": "../../tools/StrongKey.snk",
+        "warningsAsErrors": false,
+        "allowUnsafe": true
+      }
+    },
+    "Release": {
+      "compilationOptions": {
+        "define": [ "TRACE", "USE_INTEROP_DLL", "USE_PREPARE_V2", "THROW_ON_DISPOSED", "PRELOAD_NATIVE_LIBRARY", "INTEROP_CODEC", "INTEROP_EXTENSION_FUNCTIONS", "INTEROP_VIRTUAL_TABLE", "TRACE_PRELOAD", "TRACE_SHARED", "TRACE_WARNING", "WINDOWS" ],
+        "optimize": true,
+        "keyFile": "../../tools/StrongKey.snk",
+        "warningsAsErrors": false,
+        "allowUnsafe": true
+      }
+    }
   },
   "compile": [
     "**/*.cs"

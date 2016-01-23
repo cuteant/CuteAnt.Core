@@ -9,11 +9,24 @@
   "licenseUrl": "http://www.gnu.org/licenses/old-licenses/gpl-2.0.html",
   "requireLicenseAcceptance": true,
 
-  "compilationOptions": {
-    "define": [ "TRACE", "ASYNC" ],
-    "keyFile": "../../tools/StrongKey.snk",
-    "warningsAsErrors": false,
-    "allowUnsafe": true
+  "configurations": {
+    "Debug": {
+      "compilationOptions": {
+        "define": [ "DEBUG", "TRACE", "ASYNC" ],
+        "keyFile": "../../tools/StrongKey.snk",
+        "warningsAsErrors": false,
+        "allowUnsafe": true
+      }
+    },
+    "Release": {
+      "compilationOptions": {
+        "define": [ "TRACE", "ASYNC" ],
+        "optimize": true,
+        "keyFile": "../../tools/StrongKey.snk",
+        "warningsAsErrors": false,
+        "allowUnsafe": true
+      }
+    }
   },
   "compile": [
     "**/*.cs"

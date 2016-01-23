@@ -7,11 +7,24 @@
   "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
   "requireLicenseAcceptance": true,
 
-  "compilationOptions": {
-    "define": [ "TRACE", "NET_3_5_GREATER" ],
-    "keyFile": "../../tools/StrongKey.snk",
-    "warningsAsErrors": false,
-    "allowUnsafe": true
+  "configurations": {
+    "Debug": {
+      "compilationOptions": {
+        "define": [ "DEBUG", "TRACE", "NET_3_5_GREATER" ],
+        "keyFile": "../../tools/StrongKey.snk",
+        "warningsAsErrors": false,
+        "allowUnsafe": true
+      }
+    },
+    "Release": {
+      "compilationOptions": {
+        "define": [ "TRACE", "NET_3_5_GREATER" ],
+        "optimize": true,
+        "keyFile": "../../tools/StrongKey.snk",
+        "warningsAsErrors": false,
+        "allowUnsafe": true
+      }
+    }
   },
   "compile": [
     "**/*.cs",
