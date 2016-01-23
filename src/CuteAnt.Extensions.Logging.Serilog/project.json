@@ -1,0 +1,77 @@
+﻿{
+  "version": "2.0.0-rc2-160104",
+  "description": "CuteAnt.Extensions.Logging.Serilog Class Library",
+  "authors": [ "SeaBiscuit" ],
+  "tags": [ "CuteAnt", "CuteAnt.Extensions.Logging.Serilog" ],
+  "projectUrl": "http://www.cuteant.net",
+  "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+  "requireLicenseAcceptance": true,
+
+  "repository": {
+    "type": "git",
+    "url": "http://git.oschina.net/cuteant/"
+  },
+
+  "configurations": {
+    "Debug": {
+      "compilationOptions": {
+        "define": [ "DEBUG", "TRACE", "NET_3_5_GREATER" ],
+        "keyFile": "../../tools/StrongKey.snk",
+        "warningsAsErrors": false,
+        "allowUnsafe": false
+      }
+    },
+    "Release": {
+      "compilationOptions": {
+        "define": [ "TRACE", "NET_3_5_GREATER" ],
+        "optimize": true,
+        "keyFile": "../../tools/StrongKey.snk",
+        "warningsAsErrors": false,
+        "allowUnsafe": false
+      }
+    }
+  },
+  "compile": [
+    "**/*.cs",
+    "../../Common/*.cs"
+  ],
+  "compileExclude": [ ],
+  "exclude": [ ],
+  "preprocess": [ ],
+  "preprocessExclude": [ ],
+  "resource": [ "**/*.resx" ],
+
+  "dependencies": {
+    "Serilog": "2.0.0-beta-456"
+  },
+
+  "frameworks": {
+    "net40": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      },
+      "dependencies": {
+        "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc2-final",
+        "Microsoft.Bcl.Build": "1.0.21",
+        "Microsoft.Bcl": "1.1.10",
+        "Microsoft.Bcl.Async": "1.0.168"
+      }
+    },
+    "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
+      },
+      "dependencies": {
+        "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc2-final"
+      }
+    },
+    "dnx451": {
+      "compilationOptions": {
+        "define": [ "DNXCLR", "NET_4_0_GREATER" ]
+      },
+      "dependencies": {
+        "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final"
+      }
+    }
+  }
+}
