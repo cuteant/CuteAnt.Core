@@ -166,6 +166,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityModel", "src\Identi
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Nito.AsyncEx.ExceptionEnlightenment.Sources", "src\Nito.AsyncEx.ExceptionEnlightenment.Sources\Nito.AsyncEx.ExceptionEnlightenment.Sources.xproj", "{16ABBC37-B41B-4D7B-B497-1FB5B20AFAEF}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CuteAnt.Extensions.Logging.Serilog", "src\CuteAnt.Extensions.Logging.Serilog\CuteAnt.Extensions.Logging.Serilog.xproj", "{60C38815-6FB7-4C2D-BDC3-30DBC58206F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -420,6 +422,10 @@ Global
 		{16ABBC37-B41B-4D7B-B497-1FB5B20AFAEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16ABBC37-B41B-4D7B-B497-1FB5B20AFAEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16ABBC37-B41B-4D7B-B497-1FB5B20AFAEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60C38815-6FB7-4C2D-BDC3-30DBC58206F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60C38815-6FB7-4C2D-BDC3-30DBC58206F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60C38815-6FB7-4C2D-BDC3-30DBC58206F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60C38815-6FB7-4C2D-BDC3-30DBC58206F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -499,5 +505,6 @@ Global
 		{314B6E02-2D1C-4438-824A-25CCF18EBB1E} = {FA50D8C4-D01C-4CD4-B29B-9F4A89C79F8E}
 		{1F85B332-3217-42A0-B085-DEF886BA72CA} = {71490DA1-C6CA-417E-BC9F-A3AD0669A092}
 		{16ABBC37-B41B-4D7B-B497-1FB5B20AFAEF} = {3BE5496D-DB5B-4D8E-AB02-352B7DE87E79}
+		{60C38815-6FB7-4C2D-BDC3-30DBC58206F4} = {314D5AFE-2A7B-4CFF-8476-4929AC47EDEA}
 	EndGlobalSection
 EndGlobal
