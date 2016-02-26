@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-final",
+  "version": "2.0.0-rc2-160105",
   "description": "CuteAnt.Extensions.Logging.NLog Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Logging.NLog" ],
@@ -42,7 +42,6 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc2-final",
     "NLog": "4.2.3"
   },
 
@@ -50,11 +49,35 @@
     "net40": {
       "compilationOptions": {
         "define": [ "DESKTOPCLR" ]
+      },
+      "dependencies": {
+        "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc2-final"
+      },
+      "frameworkAssemblies": {
+        "System.XML": "4.0.0.0"
       }
     },
     "net451": {
       "compilationOptions": {
         "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
+      },
+      "dependencies": {
+        "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc2-final"
+      },
+      "frameworkAssemblies": {
+        "System.XML": "4.0.0.0"
+      }
+    },
+    "dnx451": {
+      "compilationOptions": {
+        "define": [ "DNXCLR", "NET_4_0_GREATER" ]
+      },
+      "dependencies": {
+        "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+        "Microsoft.AspNet.Hosting": "1.0.0-rc1-final"
+      },
+      "frameworkAssemblies": {
+        "System.XML": "4.0.0.0"
       }
     }
   }
