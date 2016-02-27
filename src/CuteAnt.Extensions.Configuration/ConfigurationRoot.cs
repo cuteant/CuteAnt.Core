@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -55,16 +55,15 @@ namespace CuteAnt.Extensions.Configuration
             }
         }
 
-        public IEnumerable<IConfigurationSection> GetChildren() => GetChildrenImplementation(string.Empty);
+        public IEnumerable<IConfigurationSection> GetChildren() => GetChildrenImplementation(null);
 
         internal IEnumerable<IConfigurationSection> GetChildrenImplementation(string path)
         {
-            var prefix = string.IsNullOrEmpty(path) ? "" : (path + Constants.KeyDelimiter);
             return _providers
                 .Aggregate(Enumerable.Empty<string>(),
-                    (seed, source) => source.GetChildKeys(seed, path, Constants.KeyDelimiter))
+                    (seed, source) => source.GetChildKeys(seed, path))
                 .Distinct()
-                .Select(key => GetSection(prefix + key));
+                .Select(key => GetSection(path == null ? key : ConfigurationPath.Combine(path, key)));
         }
 
         public IChangeToken GetReloadToken()

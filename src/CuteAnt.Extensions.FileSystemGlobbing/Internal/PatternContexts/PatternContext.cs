@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -20,7 +20,7 @@ namespace CuteAnt.Extensions.FileSystemGlobbing.Internal.PatternContexts
 
         public abstract void PushDirectory(DirectoryInfoBase directory);
 
-        public void PopDirectory()
+        public virtual void PopDirectory()
         {
             Frame = _stack.Pop();
         }

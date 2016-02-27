@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -8,23 +8,25 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using CuteAnt.Extensions.Primitives;
 
-namespace CuteAnt.Extensions.FileProviders
+namespace CuteAnt.Extensions.FileProviders.Physical
 {
-    internal class PhysicalFilesWatcher : IDisposable
+    public class PhysicalFilesWatcher : IDisposable
     {
         private readonly ConcurrentDictionary<string, FileChangeToken> _tokenCache =
             new ConcurrentDictionary<string, FileChangeToken>(StringComparer.OrdinalIgnoreCase);
-
         private readonly FileSystemWatcher _fileWatcher;
-
         private readonly object _lockObject = new object();
-
         private readonly string _root;
 
-        internal PhysicalFilesWatcher(string root)
+        public PhysicalFilesWatcher(string root)
+            : this(root, new FileSystemWatcher(root))
+        {
+        }
+
+        public PhysicalFilesWatcher(string root, FileSystemWatcher fileSystemWatcher)
         {
             _root = root;
-            _fileWatcher = new FileSystemWatcher(root);
+            _fileWatcher = fileSystemWatcher;
             _fileWatcher.IncludeSubdirectories = true;
             _fileWatcher.Created += OnChanged;
             _fileWatcher.Changed += OnChanged;

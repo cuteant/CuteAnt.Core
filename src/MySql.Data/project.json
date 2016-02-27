@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-160104",
+  "version": "2.0.0-rc3-160201",
   "description": "ADO.Net driver for MySQL.",
   "authors": [ "Oracle" ],
   "owners": [ "MySQL" ],
@@ -41,7 +41,7 @@
   ],
 
   "dependencies": {
-    "CuteAnt": "2.0.0-rc2-160104"
+    "CuteAnt": "2.0.0-rc3-160201"
   },
 
   "frameworks": {

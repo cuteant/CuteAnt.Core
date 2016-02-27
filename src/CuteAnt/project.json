@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-160104",
+  "version": "2.0.0-rc3-160201",
   "description": "CuteAnt.Core Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Core" ],
@@ -44,15 +44,15 @@
   "dependencies": {
     "CuteAnt.Extensions.Reflection.Sources": {
       "type": "build",
-      "version": "2.0.0-rc2-160104"
+      "version": "2.0.0-rc3-160201"
     },
     "CuteAnt.Extensions.Sources": {
       "type": "build",
-      "version": "2.0.0-rc2-160104"
+      "version": "2.0.0-rc3-160201"
     },
     "CuteAnt.Extensions.IO.Sources": {
       "type": "build",
-      "version": "2.0.0-rc2-160104"
+      "version": "2.0.0-rc3-160201"
     }
   },
 
@@ -62,7 +62,7 @@
         "define": [ "DESKTOPCLR" ]
       },
       "dependencies": {
-        "CuteAnt.Extensions.Logging": "2.0.0-rc2-final"
+        "CuteAnt.Extensions.Logging": "2.0.0-rc3-160201"
       },
       "frameworkAssemblies": {
         "Microsoft.VisualBasic": "10.0.0.0",
@@ -83,7 +83,7 @@
         "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
       },
       "dependencies": {
-        "CuteAnt.Extensions.Logging": "2.0.0-rc2-final"
+        "CuteAnt.Extensions.Logging": "2.0.0-rc3-160201"
       },
       "frameworkAssemblies": {
         "Microsoft.VisualBasic": "10.0.0.0",

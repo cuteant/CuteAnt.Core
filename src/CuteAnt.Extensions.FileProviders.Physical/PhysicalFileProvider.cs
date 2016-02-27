@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CuteAnt.Extensions.Primitives;
+using CuteAnt.Extensions.FileProviders.Physical;
 
 namespace CuteAnt.Extensions.FileProviders
 {
@@ -14,6 +15,9 @@ namespace CuteAnt.Extensions.FileProviders
     /// </summary>
     public class PhysicalFileProvider : IFileProvider, IDisposable
     {
+        private static readonly char[] _invalidFileNameChars = Path.GetInvalidFileNameChars()
+            .Where(c => c != Path.DirectorySeparatorChar && c != Path.AltDirectorySeparatorChar).ToArray();
+        private static readonly char[] _pathSeparators = new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
         private readonly PhysicalFilesWatcher _filesWatcher;
 
         /// <summary>
@@ -21,6 +25,11 @@ namespace CuteAnt.Extensions.FileProviders
         /// </summary>
         /// <param name="root">The root directory. This should be an absolute path.</param>
         public PhysicalFileProvider(string root)
+            : this(root, new PhysicalFilesWatcher(EnsureTrailingSlash(Path.GetFullPath(root))))
+        {
+        }
+
+        internal PhysicalFileProvider(string root, PhysicalFilesWatcher physicalFilesWatcher)
         {
             if (!Path.IsPathRooted(root))
             {
@@ -34,8 +43,7 @@ namespace CuteAnt.Extensions.FileProviders
                 throw new DirectoryNotFoundException(Root);
             }
 
-            // Monitor only the application's root folder.
-            _filesWatcher = new PhysicalFilesWatcher(Root);
+            _filesWatcher = physicalFilesWatcher;
         }
 
         public void Dispose()
@@ -46,16 +54,51 @@ namespace CuteAnt.Extensions.FileProviders
         /// <summary>
         /// The root directory for this instance.
         /// </summary>
-        public string Root { get; private set; }
+        public string Root { get; }
 
         private string GetFullPath(string path)
         {
+            if (PathNavigatesAboveRoot(path))
+            {
+                return null;
+            }
+
             var fullPath = Path.GetFullPath(Path.Combine(Root, path));
             if (!IsUnderneathRoot(fullPath))
             {
                 return null;
             }
+
             return fullPath;
+        }
+
+        private bool PathNavigatesAboveRoot(string path)
+        {
+            var tokenizer = new StringTokenizer(path, _pathSeparators);
+            var depth = 0;
+
+            foreach (var segment in tokenizer)
+            {
+                if (segment.Equals(".") || segment.Equals(""))
+                {
+                    continue;
+                }
+                else if (segment.Equals(".."))
+                {
+                    depth--;
+
+                    if (depth == -1)
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    depth++;
+                }
+            }
+
+            return false;
         }
 
         private bool IsUnderneathRoot(string fullPath)
@@ -74,6 +117,11 @@ namespace CuteAnt.Extensions.FileProviders
             return path;
         }
 
+        private static bool HasInvalidPathChars(string path)
+        {
+            return path.IndexOfAny(_invalidFileNameChars) != -1;
+        }
+
         /// <summary>
         /// Locate a file at the given path by directly mapping path segments to physical directories.
         /// </summary>
@@ -81,7 +129,7 @@ namespace CuteAnt.Extensions.FileProviders
         /// <returns>The file information. Caller must check Exists property. </returns>
         public IFileInfo GetFileInfo(string subpath)
         {
-            if (string.IsNullOrEmpty(subpath))
+            if (string.IsNullOrEmpty(subpath) || HasInvalidPathChars(subpath))
             {
                 return new NotFoundFileInfo(subpath);
             }
@@ -122,7 +170,7 @@ namespace CuteAnt.Extensions.FileProviders
         {
             try
             {
-                if (subpath == null)
+                if (subpath == null || HasInvalidPathChars(subpath))
                 {
                     return new NotFoundDirectoryContents();
                 }
@@ -184,6 +232,11 @@ namespace CuteAnt.Extensions.FileProviders
                 return NoopChangeToken.Singleton;
             }
 
+            if (PathNavigatesAboveRoot(filter))
+            {
+                return NoopChangeToken.Singleton;
+            }
+
             // Relative paths starting with a leading slash okay
             if (filter.StartsWith("/", StringComparison.Ordinal))
             {
@@ -197,109 +250,6 @@ namespace CuteAnt.Extensions.FileProviders
             }
 
             return _filesWatcher.CreateFileChangeToken(filter);
-        }
-
-        private class PhysicalFileInfo : IFileInfo
-        {
-            private readonly FileInfo _info;
-
-            public PhysicalFileInfo(FileInfo info)
-            {
-                _info = info;
-            }
-
-            public bool Exists
-            {
-                get { return _info.Exists; }
-            }
-
-            public long Length
-            {
-                get { return _info.Length; }
-            }
-
-            public string PhysicalPath
-            {
-                get { return _info.FullName; }
-            }
-
-            public string Name
-            {
-                get { return _info.Name; }
-            }
-
-            public DateTimeOffset LastModified
-            {
-                get
-                {
-                    return _info.LastWriteTimeUtc;
-                }
-            }
-
-            public bool IsDirectory
-            {
-                get { return false; }
-            }
-
-            public Stream CreateReadStream()
-            {
-                // Note: Buffer size must be greater than zero, even if the file size is zero.
-                return new FileStream(
-                    PhysicalPath,
-                    FileMode.Open,
-                    FileAccess.Read,
-                    FileShare.ReadWrite,
-                    1024 * 64,
-                    FileOptions.Asynchronous | FileOptions.SequentialScan);
-            }
-        }
-
-        private class PhysicalDirectoryInfo : IFileInfo
-        {
-            private readonly DirectoryInfo _info;
-
-            public PhysicalDirectoryInfo(DirectoryInfo info)
-            {
-                _info = info;
-            }
-
-            public bool Exists
-            {
-                get { return _info.Exists; }
-            }
-
-            public long Length
-            {
-                get { return -1; }
-            }
-
-            public string PhysicalPath
-            {
-                get { return _info.FullName; }
-            }
-
-            public string Name
-            {
-                get { return _info.Name; }
-            }
-
-            public DateTimeOffset LastModified
-            {
-                get
-                {
-                    return _info.LastWriteTimeUtc;
-                }
-            }
-
-            public bool IsDirectory
-            {
-                get { return true; }
-            }
-
-            public Stream CreateReadStream()
-            {
-                throw new InvalidOperationException("Cannot create a stream for a directory.");
-            }
         }
     }
 }

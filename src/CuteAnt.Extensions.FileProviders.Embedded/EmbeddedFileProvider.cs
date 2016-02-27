@@ -1,11 +1,13 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
+using CuteAnt.Extensions.FileProviders.Embedded;
 using CuteAnt.Extensions.Primitives;
 
 namespace CuteAnt.Extensions.FileProviders
@@ -16,6 +18,8 @@ namespace CuteAnt.Extensions.FileProviders
     /// </summary>
     public class EmbeddedFileProvider : IFileProvider
     {
+        private static readonly char[] _invalidFileNameChars = Path.GetInvalidFileNameChars()
+            .Where(c => c != Path.DirectorySeparatorChar && c != Path.AltDirectorySeparatorChar).ToArray();
         private readonly Assembly _assembly;
         private readonly string _baseNamespace;
         private readonly DateTimeOffset _lastModified;
@@ -83,11 +87,17 @@ namespace CuteAnt.Extensions.FileProviders
             }
 
             var resourcePath = builder.ToString();
+            if (HasInvalidPathChars(resourcePath))
+            {
+                return new NotFoundFileInfo(resourcePath);
+            }
+
             var name = Path.GetFileName(subpath);
             if (_assembly.GetManifestResourceInfo(resourcePath) == null)
             {
                 return new NotFoundFileInfo(name);
             }
+
             return new EmbeddedResourceFileInfo(_assembly, resourcePath, name, _lastModified);
         }
 
@@ -142,60 +152,9 @@ namespace CuteAnt.Extensions.FileProviders
             return NoopChangeToken.Singleton;
         }
 
-        private class EmbeddedResourceFileInfo : IFileInfo
+        private static bool HasInvalidPathChars(string path)
         {
-            private readonly Assembly _assembly;
-            private readonly string _resourcePath;
-
-            private long? _length;
-
-            public EmbeddedResourceFileInfo(
-                Assembly assembly,
-                string resourcePath,
-                string name,
-                DateTimeOffset lastModified)
-            {
-                _assembly = assembly;
-                _resourcePath = resourcePath;
-                Name = name;
-                LastModified = lastModified;
-            }
-
-            public bool Exists => true;
-
-            public long Length
-            {
-                get
-                {
-                    if (!_length.HasValue)
-                    {
-                        using (var stream = _assembly.GetManifestResourceStream(_resourcePath))
-                        {
-                            _length = stream.Length;
-                        }
-                    }
-                    return _length.Value;
-                }
-            }
-
-            // Not directly accessible.
-            public string PhysicalPath => null;
-
-            public string Name { get; }
-
-            public DateTimeOffset LastModified { get; }
-
-            public bool IsDirectory => false;
-
-            public Stream CreateReadStream()
-            {
-                var stream = _assembly.GetManifestResourceStream(_resourcePath);
-                if (!_length.HasValue)
-                {
-                    _length = stream.Length;
-                }
-                return stream;
-            }
+            return path.IndexOfAny(_invalidFileNameChars) != -1;
         }
     }
 }

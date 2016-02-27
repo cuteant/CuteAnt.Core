@@ -79,7 +79,6 @@ namespace CuteAnt.Extensions.Internal
             {
                 if (_valueSetter == null)
                 {
-                    // We'll allow safe races here.
                     _valueSetter = MakeFastPropertySetter(Property);
                 }
 
@@ -137,7 +136,7 @@ namespace CuteAnt.Extensions.Internal
         /// on the specified type.
         /// </para>
         /// <para>
-        /// <see cref="GetVisibleProperties"/> excludes properties defined on base types that have been
+        /// <see cref="M:GetVisibleProperties"/> excludes properties defined on base types that have been
         /// hidden by definitions using the <c>new</c> keyword.
         /// </para>
         /// </summary>
@@ -156,7 +155,7 @@ namespace CuteAnt.Extensions.Internal
         /// on the specified type.
         /// </para>
         /// <para>
-        /// <see cref="GetVisibleProperties"/> excludes properties defined on base types that have been
+        /// <see cref="M:GetVisibleProperties"/> excludes properties defined on base types that have been
         /// hidden by definitions using the <c>new</c> keyword.
         /// </para>
         /// </summary>
@@ -312,7 +311,7 @@ namespace CuteAnt.Extensions.Internal
         /// Given an object, adds each instance property with a public get method as a key and its
         /// associated value to a dictionary.
         ///
-        /// If the object is already an <see cref="IDictionary{string, object}"/> instance, then a copy
+        /// If the object is already an <see cref="IDictionary{String, Object}"/> instance, then a copy
         /// is returned.
         /// </summary>
         /// <remarks>

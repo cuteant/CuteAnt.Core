@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Threading.Tasks;
@@ -7,10 +7,6 @@ namespace CuteAnt.Extensions.Caching.Distributed
 {
     public interface IDistributedCache
     {
-        void Connect();
-
-        Task ConnectAsync();
-
         byte[] Get(string key);
 
         Task<byte[]> GetAsync(string key);

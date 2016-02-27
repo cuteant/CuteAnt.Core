@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -15,8 +15,7 @@ namespace CuteAnt.Extensions.Configuration.EnvironmentVariables
         private const string SqlServerPrefix = "SQLCONNSTR_";
         private const string CustomPrefix = "CUSTOMCONNSTR_";
 
-        private const string ConnStrKeyFormat = "Data:{0}:ConnectionString";
-        private const string ProviderKeyFormat = "Data:{0}:ProviderName";
+        private const string ProviderKeyFormat = "{0}:ProviderName";
 
         private readonly string _prefix;
 
@@ -51,6 +50,11 @@ namespace CuteAnt.Extensions.Configuration.EnvironmentVariables
             }
         }
 
+        private static string NormalizeKey(string key)
+        {
+            return key.Replace("__", ConfigurationPath.KeyDelimiter);
+        }
+
         private static IEnumerable<DictionaryEntry> AzureEnvToAppEnv(DictionaryEntry entry)
         {
             var key = (string)entry.Key;
@@ -78,21 +82,21 @@ namespace CuteAnt.Extensions.Configuration.EnvironmentVariables
             }
             else
             {
-                entry.Key = key.Replace("__", ":");
+                entry.Key = NormalizeKey(key);
                 yield return entry;
                 yield break;
             }
 
             // Return the key-value pair for connection string
             yield return new DictionaryEntry(
-                string.Format(ConnStrKeyFormat, key.Substring(prefix.Length).Replace("__", ":")),
+                NormalizeKey(key.Substring(prefix.Length)),
                 entry.Value);
 
             if (!string.IsNullOrEmpty(provider))
             {
                 // Return the key-value pair for provider name
                 yield return new DictionaryEntry(
-                    string.Format(ProviderKeyFormat, key.Substring(prefix.Length).Replace("__", ":")),
+                    string.Format(ProviderKeyFormat, NormalizeKey(key.Substring(prefix.Length))),
                     provider);
             }
         }

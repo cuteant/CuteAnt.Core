@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -16,6 +16,8 @@ namespace CuteAnt.Extensions.Caching.Memory
 
     private readonly DateTimeOffset? _absoluteExpiration;
 
+    private IList<PostEvictionCallbackRegistration> _postEvictionCallbacks;
+
     internal readonly object _lock = new object();
 
     internal CacheEntry(
@@ -32,7 +34,7 @@ namespace CuteAnt.Extensions.Caching.Memory
       Options = options;
       _notifyCacheOfExpiration = notifyCacheOfExpiration;
       _absoluteExpiration = absoluteExpiration;
-      PostEvictionCallbacks = options.PostEvictionCallbacks;
+      _postEvictionCallbacks = options.PostEvictionCallbacks;
     }
 
     internal MemoryCacheEntryOptions Options { get; private set; }
@@ -46,8 +48,6 @@ namespace CuteAnt.Extensions.Caching.Memory
     internal EvictionReason EvictionReason { get; private set; }
 
     internal IList<IDisposable> ExpirationTokenRegistrations { get; set; }
-
-    internal IList<PostEvictionCallbackRegistration> PostEvictionCallbacks { get; set; }
 
     internal DateTimeOffset LastAccessed { get; set; }
 
@@ -134,7 +134,7 @@ namespace CuteAnt.Extensions.Caching.Memory
         var entry = (CacheEntry)state;
         entry.SetExpired(EvictionReason.TokenExpired);
         entry._notifyCacheOfExpiration(entry);
-      }, obj, CancellationToken.None, CuteAnt.AsyncEx.AsyncUtils.GetCreationOptions(), TaskScheduler.Default); // TaskCreationOptions.DenyChildAttach
+      }, obj, CancellationToken.None, CuteAnt.AsyncEx.AsyncUtils.GetCreationOptions(), TaskScheduler.Default);
     }
 
     private void DetachTokens()
@@ -154,20 +154,18 @@ namespace CuteAnt.Extensions.Caching.Memory
       }
     }
 
-    // TODO: Ensure a thread safe way to prevent these from being invoked more than once;
     internal void InvokeEvictionCallbacks()
     {
-      if (PostEvictionCallbacks != null)
+      if (_postEvictionCallbacks != null)
       {
         Task.Factory.StartNew(state => InvokeCallbacks((CacheEntry)state), this,
-            CancellationToken.None, CuteAnt.AsyncEx.AsyncUtils.GetCreationOptions(), TaskScheduler.Default); // TaskCreationOptions.DenyChildAttach
+            CancellationToken.None, CuteAnt.AsyncEx.AsyncUtils.GetCreationOptions(), TaskScheduler.Default);
       }
     }
 
     private static void InvokeCallbacks(CacheEntry entry)
     {
-      var callbackRegistrations = entry.PostEvictionCallbacks;
-      entry.PostEvictionCallbacks = null;
+      var callbackRegistrations = Interlocked.Exchange(ref entry._postEvictionCallbacks, null);
 
       if (callbackRegistrations == null)
       {

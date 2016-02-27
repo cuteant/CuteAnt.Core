@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
@@ -37,8 +37,7 @@ namespace CuteAnt.Extensions.Configuration
         /// </summary>
         /// <param name="earlierKeys">The child keys returned by the preceding providers for the same parent path.</param>
         /// <param name="parentPath">The parent path.</param>
-        /// <param name="delimiter">The delimiter to use to identify keys in the <see cref="IConfigurationProvider"/>'s data.</param>
         /// <returns>The child keys.</returns>
-        IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string parentPath, string delimiter);
+        IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string parentPath);
     }
 }

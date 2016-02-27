@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -13,11 +13,11 @@ namespace CuteAnt.Extensions.Configuration
     public static class XmlConfigurationExtensions
     {
         /// <summary>
-        /// Adds the XML configuration provider at <paramref name="path"/> to <paramref name="configuraton"/>.
+        /// Adds the XML configuration provider at <paramref name="path"/> to <paramref name="configurationBuilder"/>.
         /// </summary>
         /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="path">Absolute path or path relative to <see cref="IConfigurationBuilder.BasePath"/> of
-        /// <paramref name="configurationBuilder"/>.</param>
+        /// <param name="path">Absolute path or path relative to the base path store in 
+        /// <see cref="IConfigurationBuilder.Properties"/> of <paramref name="configurationBuilder"/>.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddXmlFile(this IConfigurationBuilder configurationBuilder, string path)
         {
@@ -33,8 +33,8 @@ namespace CuteAnt.Extensions.Configuration
         /// Adds the XML configuration provider at <paramref name="path"/> to <paramref name="configurationBuilder"/>.
         /// </summary>
         /// <param name="configurationBuilder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="path">Absolute path or path relative to <see cref="IConfigurationBuilder.BasePath"/> of
-        /// <paramref name="configurationBuilder"/>.</param>
+        /// <param name="path">Absolute path or path relative to the base path store in 
+        /// <see cref="IConfigurationBuilder.Properties"/> of <paramref name="configurationBuilder"/>.</param>
         /// <param name="optional">Determines if loading the configuration provider is optional.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         /// <exception cref="ArgumentException">If <paramref name="path"/> is null or empty.</exception>

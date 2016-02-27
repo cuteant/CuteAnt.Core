@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -97,6 +97,15 @@ namespace CuteAnt.Extensions.FileSystemGlobbing.Internal.PatternContexts
             }
 
             PushDataFrame(frame);
+        }
+
+        public override void PopDirectory()
+        {
+            base.PopDirectory();
+            if (Frame.StemItems.Count > 0)
+            {
+                Frame.StemItems.RemoveAt(Frame.StemItems.Count - 1);
+            }
         }
 
         public struct FrameData

@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -110,7 +110,7 @@ namespace CuteAnt.Extensions.Configuration.Ini
                     if (line[0] == '[' && line[line.Length - 1] == ']')
                     {
                         // remove the brackets
-                        sectionPrefix = line.Substring(1, line.Length - 2) + Constants.KeyDelimiter;
+                        sectionPrefix = line.Substring(1, line.Length - 2) + ConfigurationPath.KeyDelimiter;
                         continue;
                     }
 

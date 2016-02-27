@@ -7,6 +7,9 @@ using CuteAnt.Extensions.DependencyInjection.Abstractions;
 
 namespace CuteAnt.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// Extension methods for getting services from an <see cref="IServiceProvider" />.
+    /// </summary>
     public static class ServiceProviderExtensions
     {
         /// <summary>

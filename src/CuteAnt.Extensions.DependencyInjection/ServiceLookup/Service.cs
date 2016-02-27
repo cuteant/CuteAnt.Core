@@ -9,151 +9,151 @@ using System.Reflection;
 
 namespace CuteAnt.Extensions.DependencyInjection.ServiceLookup
 {
-  internal class Service : IService
-  {
-    private readonly ServiceDescriptor _descriptor;
-
-    public Service(ServiceDescriptor descriptor)
+    internal class Service : IService
     {
-      _descriptor = descriptor;
-    }
+        private readonly ServiceDescriptor _descriptor;
 
-    public IService Next { get; set; }
-
-    public ServiceLifetime Lifetime
-    {
-      get { return _descriptor.Lifetime; }
-    }
-
-    public IServiceCallSite CreateCallSite(ServiceProvider provider, ISet<Type> callSiteChain)
-    {
-      var constructors = _descriptor.ImplementationType.GetTypeInfo()
-          .DeclaredConstructors
-          .Where(constructor => constructor.IsPublic)
-          .ToArray();
-
-      IServiceCallSite[] parameterCallSites = null;
-
-      if (constructors.Length == 0)
-      {
-        return new CreateInstanceCallSite(_descriptor);
-      }
-      else if (constructors.Length == 1)
-      {
-        var constructor = constructors[0];
-        var parameters = constructor.GetParameters();
-        if (parameters.Length == 0)
+        public Service(ServiceDescriptor descriptor)
         {
-          return new CreateInstanceCallSite(_descriptor);
+            _descriptor = descriptor;
         }
 
-        parameterCallSites = PopulateCallSites(
-            provider,
-            callSiteChain,
-            parameters,
-            throwIfCallSiteNotFound: true);
+        public IService Next { get; set; }
 
-        return new ConstructorCallSite(constructor, parameterCallSites);
-      }
-
-      Array.Sort(constructors,
-          (a, b) => b.GetParameters().Length.CompareTo(a.GetParameters().Length));
-
-      ConstructorInfo bestConstructor = null;
-      HashSet<Type> bestConstructorParameterTypes = null;
-      for (var i = 0; i < constructors.Length; i++)
-      {
-        var parameters = constructors[i].GetParameters();
-
-        var currentParameterCallSites = PopulateCallSites(
-            provider,
-            callSiteChain,
-            parameters,
-            throwIfCallSiteNotFound: false);
-
-        if (currentParameterCallSites != null)
+        public ServiceLifetime Lifetime
         {
-          if (bestConstructor == null)
-          {
-            bestConstructor = constructors[i];
-            parameterCallSites = currentParameterCallSites;
-          }
-          else
-          {
-            // Since we're visiting constructors in decreasing order of number of parameters,
-            // we'll only see ambiguities or supersets once we've seen a 'bestConstructor'.
+            get { return _descriptor.Lifetime; }
+        }
 
-            if (bestConstructorParameterTypes == null)
+        public IServiceCallSite CreateCallSite(ServiceProvider provider, ISet<Type> callSiteChain)
+        {
+            var constructors = _descriptor.ImplementationType.GetTypeInfo()
+                .DeclaredConstructors
+                .Where(constructor => constructor.IsPublic)
+                .ToArray();
+
+            IServiceCallSite[] parameterCallSites = null;
+
+            if (constructors.Length == 0)
             {
-              bestConstructorParameterTypes = new HashSet<Type>(
-                  bestConstructor.GetParameters().Select(p => p.ParameterType));
+                throw new InvalidOperationException(Resources.FormatNoConstructorMatch(_descriptor.ImplementationType));
+            }
+            else if (constructors.Length == 1)
+            {
+                var constructor = constructors[0];
+                var parameters = constructor.GetParameters();
+                if (parameters.Length == 0)
+                {
+                    return new CreateInstanceCallSite(_descriptor);
+                }
+
+                parameterCallSites = PopulateCallSites(
+                    provider,
+                    callSiteChain,
+                    parameters,
+                    throwIfCallSiteNotFound: true);
+
+                return new ConstructorCallSite(constructor, parameterCallSites);
             }
 
-            if (!bestConstructorParameterTypes.IsSupersetOf(parameters.Select(p => p.ParameterType)))
+            Array.Sort(constructors,
+                (a, b) => b.GetParameters().Length.CompareTo(a.GetParameters().Length));
+
+            ConstructorInfo bestConstructor = null;
+            HashSet<Type> bestConstructorParameterTypes = null;
+            for (var i = 0; i < constructors.Length; i++)
             {
-              // Ambigious match exception
-              var message = string.Join(
-                  Environment.NewLine,
-                  Resources.FormatAmbigiousConstructorException(_descriptor.ImplementationType),
-                  bestConstructor,
-                  constructors[i]);
-              throw new InvalidOperationException(message);
+                var parameters = constructors[i].GetParameters();
+
+                var currentParameterCallSites = PopulateCallSites(
+                    provider,
+                    callSiteChain,
+                    parameters,
+                    throwIfCallSiteNotFound: false);
+
+                if (currentParameterCallSites != null)
+                {
+                    if (bestConstructor == null)
+                    {
+                        bestConstructor = constructors[i];
+                        parameterCallSites = currentParameterCallSites;
+                    }
+                    else
+                    {
+                        // Since we're visiting constructors in decreasing order of number of parameters,
+                        // we'll only see ambiguities or supersets once we've seen a 'bestConstructor'.
+
+                        if (bestConstructorParameterTypes == null)
+                        {
+                            bestConstructorParameterTypes = new HashSet<Type>(
+                                bestConstructor.GetParameters().Select(p => p.ParameterType));
+                        }
+
+                        if (!bestConstructorParameterTypes.IsSupersetOf(parameters.Select(p => p.ParameterType)))
+                        {
+                            // Ambigious match exception
+                            var message = string.Join(
+                                Environment.NewLine,
+                                Resources.FormatAmbigiousConstructorException(_descriptor.ImplementationType),
+                                bestConstructor,
+                                constructors[i]);
+                            throw new InvalidOperationException(message);
+                        }
+                    }
+                }
             }
-          }
+
+            if (bestConstructor == null)
+            {
+                throw new InvalidOperationException(
+                    Resources.FormatUnableToActivateTypeException(_descriptor.ImplementationType));
+            }
+            else
+            {
+                Debug.Assert(parameterCallSites != null);
+                return parameterCallSites.Length == 0 ?
+                    (IServiceCallSite)new CreateInstanceCallSite(_descriptor) :
+                    new ConstructorCallSite(bestConstructor, parameterCallSites);
+            }
         }
-      }
 
-      if (bestConstructor == null)
-      {
-        throw new InvalidOperationException(
-            Resources.FormatUnableToActivateTypeException(_descriptor.ImplementationType));
-      }
-      else
-      {
-        Debug.Assert(parameterCallSites != null);
-        return parameterCallSites.Length == 0 ?
-            (IServiceCallSite)new CreateInstanceCallSite(_descriptor) :
-            new ConstructorCallSite(bestConstructor, parameterCallSites);
-      }
-    }
-
-    private bool IsSuperset(IEnumerable<Type> left, IEnumerable<Type> right)
-    {
-      return new HashSet<Type>(left).IsSupersetOf(right);
-    }
-
-    private IServiceCallSite[] PopulateCallSites(
-        ServiceProvider provider,
-        ISet<Type> callSiteChain,
-        ParameterInfo[] parameters,
-        bool throwIfCallSiteNotFound)
-    {
-      var parameterCallSites = new IServiceCallSite[parameters.Length];
-      for (var index = 0; index < parameters.Length; index++)
-      {
-        var callSite = provider.GetServiceCallSite(parameters[index].ParameterType, callSiteChain);
-
-        if (callSite == null && parameters[index].HasDefaultValueEx()) // ## 苦竹 修改 ##
+        private bool IsSuperset(IEnumerable<Type> left, IEnumerable<Type> right)
         {
-          callSite = new ConstantCallSite(parameters[index].DefaultValue);
+            return new HashSet<Type>(left).IsSupersetOf(right);
         }
 
-        if (callSite == null)
+        private IServiceCallSite[] PopulateCallSites(
+            ServiceProvider provider,
+            ISet<Type> callSiteChain,
+            ParameterInfo[] parameters,
+            bool throwIfCallSiteNotFound)
         {
-          if (throwIfCallSiteNotFound)
-          {
-            throw new InvalidOperationException(Resources.FormatCannotResolveService(
-                parameters[index].ParameterType,
-                _descriptor.ImplementationType));
-          }
+            var parameterCallSites = new IServiceCallSite[parameters.Length];
+            for (var index = 0; index < parameters.Length; index++)
+            {
+                var callSite = provider.GetServiceCallSite(parameters[index].ParameterType, callSiteChain);
 
-          return null;
+                if (callSite == null && parameters[index].HasDefaultValueEx()) // ## ¿àÖñ ÐÞ¸Ä ##
+                {
+                    callSite = new ConstantCallSite(parameters[index].DefaultValue);
+                }
+
+                if (callSite == null)
+                {
+                    if (throwIfCallSiteNotFound)
+                    {
+                        throw new InvalidOperationException(Resources.FormatCannotResolveService(
+                            parameters[index].ParameterType,
+                            _descriptor.ImplementationType));
+                    }
+
+                    return null;
+                }
+
+                parameterCallSites[index] = callSite;
+            }
+
+            return parameterCallSites;
         }
-
-        parameterCallSites[index] = callSite;
-      }
-
-      return parameterCallSites;
     }
-  }
 }

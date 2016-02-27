@@ -1,7 +1,8 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using CuteAnt.Extensions.Logging.EventLog.Internal;
 
 namespace CuteAnt.Extensions.Logging.EventLog
 {
@@ -29,5 +30,10 @@ namespace CuteAnt.Extensions.Logging.EventLog
         /// The function used to filter events based on the log level.
         /// </summary>
         public Func<string, LogLevel, bool> Filter { get; set; }
+
+        /// <summary>
+        /// For unit testing purposes only.
+        /// </summary>
+        public IEventLog EventLog { get; set; }
     }
 }

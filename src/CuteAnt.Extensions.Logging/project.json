@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-final",
+  "version": "2.0.0-rc3-160201",
   "description": "CuteAnt.Extensions.Logging Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Logging" ],
@@ -18,7 +18,8 @@
         "define": [ "DEBUG", "TRACE", "NET_3_5_GREATER" ],
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": true,
-        "allowUnsafe": false
+        "allowUnsafe": false,
+        "nowarn": [ "CS1591" ]
       }
     },
     "Release": {
@@ -27,7 +28,9 @@
         "optimize": true,
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": true,
-        "allowUnsafe": false
+        "allowUnsafe": false,
+        "nowarn": [ "CS1591" ],
+        "xmlDoc": true
       }
     }
   },
@@ -42,8 +45,8 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt.Extensions.DependencyInjection.Abstractions": "2.0.0-rc2-final",
-    "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc2-final"
+    "CuteAnt.Extensions.DependencyInjection.Abstractions": "2.0.0-rc3-160201",
+    "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc3-160201"
   },
 
   "frameworks": {

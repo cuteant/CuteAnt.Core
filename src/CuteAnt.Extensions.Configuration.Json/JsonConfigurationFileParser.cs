@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -101,13 +101,13 @@ namespace CuteAnt.Extensions.Configuration.Json
         private void EnterContext(string context)
         {
             _context.Push(context);
-            _currentPath = string.Join(Constants.KeyDelimiter, _context.Reverse());
+            _currentPath = ConfigurationPath.Combine(_context.Reverse());
         }
 
         private void ExitContext()
         {
             _context.Pop();
-            _currentPath = string.Join(Constants.KeyDelimiter, _context.Reverse());
+            _currentPath = ConfigurationPath.Combine(_context.Reverse());
         }
     }
 }

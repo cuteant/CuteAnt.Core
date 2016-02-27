@@ -1,8 +1,10 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using CuteAnt.Extensions.Logging.EventLog.Internal;
 
 namespace CuteAnt.Extensions.Logging.EventLog
 {
@@ -11,9 +13,11 @@ namespace CuteAnt.Extensions.Logging.EventLog
     /// </summary>
     public class EventLogLogger : ILogger
     {
-        private readonly System.Diagnostics.EventLog _eventLog;
         private readonly string _name;
         private readonly EventLogSettings _settings;
+        private const string ContinuationString = "...";
+        private readonly int _beginOrEndMessageSegmentSize;
+        private readonly int _intermediateMessageSegmentSize;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventLogLogger"/> class.
@@ -42,8 +46,19 @@ namespace CuteAnt.Extensions.Logging.EventLog
             // 1. Log name & source name existence check only works on local computer.
             // 2. Source name existence check requires Administrative privileges.
 
-            _eventLog = new System.Diagnostics.EventLog(logName, machineName, sourceName);
+            EventLog = settings.EventLog ?? new WindowsEventLog(logName, machineName, sourceName);
+
+            // Examples:
+            // 1. An error occu...
+            // 2. ...esponse stream
+            _beginOrEndMessageSegmentSize = EventLog.MaxMessageSize - ContinuationString.Length;
+
+            // Example:
+            // ...rred while writ...
+            _intermediateMessageSegmentSize = EventLog.MaxMessageSize - 2 * ContinuationString.Length;
         }
+
+        public IEventLog EventLog { get; }
 
         /// <inheritdoc />
         public IDisposable BeginScopeImpl(object state)
@@ -58,36 +73,24 @@ namespace CuteAnt.Extensions.Logging.EventLog
         }
 
         /// <inheritdoc />
-        public void Log(
+        public void Log<TState>(
             LogLevel logLevel,
-            int eventId,
-            object state,
+            EventId eventId,
+            TState state,
             Exception exception,
-            Func<object, Exception, string> formatter)
+            Func<TState, Exception, string> formatter)
         {
             if (!IsEnabled(logLevel))
             {
                 return;
             }
 
-            string message;
-            var values = state as ILogValues;
-            if (formatter != null)
+            if (formatter == null)
             {
-                message = formatter(state, exception);
+                throw new ArgumentNullException(nameof(formatter));
             }
-            else if (values != null)
-            {
-                message = LogFormatter.FormatLogValues(values);
-                if (exception != null)
-                {
-                    message += Environment.NewLine + exception;
-                }
-            }
-            else
-            {
-                message = LogFormatter.Formatter(state, exception);
-            }
+
+            var message = formatter(state, exception);
 
             if (string.IsNullOrEmpty(message))
             {
@@ -96,8 +99,52 @@ namespace CuteAnt.Extensions.Logging.EventLog
 
             message = _name + Environment.NewLine + message;
 
-            // category '0' translates to 'None' in event log
-            _eventLog.WriteEntry(message, GetEventLogEntryType(logLevel), eventId, category: 0);
+            WriteMessage(message, GetEventLogEntryType(logLevel), eventId.Id);
+        }
+
+        // category '0' translates to 'None' in event log
+        private void WriteMessage(string message, EventLogEntryType eventLogEntryType, int eventId)
+        {
+            if (message.Length <= EventLog.MaxMessageSize)
+            {
+                EventLog.WriteEntry(message, eventLogEntryType, eventId, category: 0);
+                return;
+            }
+
+            var startIndex = 0;
+            string messageSegment = null;
+            while (true)
+            {
+                // Begin segment
+                // Example: An error occu...
+                if (startIndex == 0)
+                {
+                    messageSegment = message.Substring(startIndex, _beginOrEndMessageSegmentSize) + ContinuationString;
+                    startIndex += _beginOrEndMessageSegmentSize;
+                }
+                else
+                {
+                    // Check if rest of the message can fit within the maximum message size
+                    // Example: ...esponse stream
+                    if ((message.Length - (startIndex + 1)) <= _beginOrEndMessageSegmentSize)
+                    {
+                        messageSegment = ContinuationString + message.Substring(startIndex);
+                        EventLog.WriteEntry(messageSegment, eventLogEntryType, eventId, category: 0);
+                        break;
+                    }
+                    else
+                    {
+                        // Example: ...rred while writ...
+                        messageSegment =
+                            ContinuationString
+                            + message.Substring(startIndex, _intermediateMessageSegmentSize)
+                            + ContinuationString;
+                        startIndex += _intermediateMessageSegmentSize;
+                    }
+                }
+
+                EventLog.WriteEntry(messageSegment, eventLogEntryType, eventId, category: 0);
+            }
         }
 
         private EventLogEntryType GetEventLogEntryType(LogLevel level)
@@ -106,7 +153,7 @@ namespace CuteAnt.Extensions.Logging.EventLog
             {
                 case LogLevel.Information:
                 case LogLevel.Debug:
-                case LogLevel.Verbose:
+                case LogLevel.Trace:
                     return EventLogEntryType.Information;
                 case LogLevel.Warning:
                     return EventLogEntryType.Warning;

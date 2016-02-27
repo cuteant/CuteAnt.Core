@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -32,6 +32,7 @@ namespace CuteAnt.Extensions.Logging
         /// <summary>
         /// Adds a console logger that is enabled for <see cref="LogLevel"/>s of minLevel or higher.
         /// </summary>
+        /// <param name="factory">The <see cref="ILoggerFactory"/> to use.</param>
         /// <param name="minLevel">The minimum <see cref="LogLevel"/> to be logged</param>
         public static ILoggerFactory AddConsole(this ILoggerFactory factory, LogLevel minLevel)
         {

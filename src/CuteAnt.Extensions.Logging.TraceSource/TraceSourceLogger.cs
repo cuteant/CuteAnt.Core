@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -16,7 +16,7 @@ namespace CuteAnt.Extensions.Logging.TraceSource
             _traceSource = traceSource;
         }
 
-        public void Log(LogLevel logLevel, int eventId, object state, Exception exception, Func<object, Exception, string> formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             if (!IsEnabled(logLevel))
             {
@@ -40,7 +40,7 @@ namespace CuteAnt.Extensions.Logging.TraceSource
             }
             if (!string.IsNullOrEmpty(message))
             {
-                _traceSource.TraceEvent(GetEventType(logLevel), eventId, message);
+                _traceSource.TraceEvent(GetEventType(logLevel), eventId.Id, message);
             }
         }
 
@@ -58,7 +58,7 @@ namespace CuteAnt.Extensions.Logging.TraceSource
                 case LogLevel.Error: return TraceEventType.Error;
                 case LogLevel.Warning: return TraceEventType.Warning;
                 case LogLevel.Information: return TraceEventType.Information;
-                case LogLevel.Verbose:
+                case LogLevel.Trace:
                 default: return TraceEventType.Verbose;
             }
         }

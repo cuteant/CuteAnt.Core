@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc2-160105",
+  "version": "2.0.0-rc3-160201",
   "description": "CuteAnt.Extensions.Logging.NLog Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Logging.NLog" ],
@@ -18,7 +18,8 @@
         "define": [ "DEBUG", "TRACE", "NET_3_5_GREATER" ],
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": false,
-        "allowUnsafe": false
+        "allowUnsafe": false,
+        "nowarn": [ "CS1591" ]
       }
     },
     "Release": {
@@ -27,7 +28,9 @@
         "optimize": true,
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": false,
-        "allowUnsafe": false
+        "allowUnsafe": false,
+        "nowarn": [ "CS1591" ],
+        "xmlDoc": true
       }
     }
   },
@@ -51,7 +54,7 @@
         "define": [ "DESKTOPCLR" ]
       },
       "dependencies": {
-        "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc2-final"
+        "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc3-160201"
       },
       "frameworkAssemblies": {
         "System.XML": "4.0.0.0"
@@ -62,7 +65,7 @@
         "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
       },
       "dependencies": {
-        "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc2-final"
+        "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc3-160201"
       },
       "frameworkAssemblies": {
         "System.XML": "4.0.0.0"

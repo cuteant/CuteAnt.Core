@@ -1,4 +1,4 @@
-ï»¿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -7,9 +7,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using CuteAnt.Extensions.Primitives;
 
-namespace CuteAnt.Extensions.FileProviders
+namespace CuteAnt.Extensions.FileProviders.Physical
 {
-  internal class FileChangeToken : IChangeToken
+  public class FileChangeToken : IChangeToken
   {
     private Regex _searchRegex;
 
@@ -31,7 +31,7 @@ namespace CuteAnt.Extensions.FileProviders
           _searchRegex = new Regex(
               '^' + Pattern + '$',
               RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture
-#if !NET40 // ## è‹¦ç«¹ ä¿®æ”¹ ##
+#if !NET40 // ## ¿àÖñ ÐÞ¸Ä ##
               ,Constants.RegexMatchTimeout
 #endif
               );

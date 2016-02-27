@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -39,15 +39,7 @@ namespace CuteAnt.Extensions.Configuration
                 if (_key == null)
                 {
                     // Key is calculated lazily as last portion of Path
-                    var lastDelimiterIndex = _path.LastIndexOf(Constants.KeyDelimiter);
-                    if (lastDelimiterIndex == -1)
-                    {
-                        _key = _path;
-                    }
-                    else
-                    {
-                        _key = _path.Substring(lastDelimiterIndex + 1);
-                    }
+                    _key = ConfigurationPath.GetSectionKey(_path);
                 }
                 return _key;
             }
@@ -69,16 +61,16 @@ namespace CuteAnt.Extensions.Configuration
         {
             get
             {
-                return _root[Path + Constants.KeyDelimiter + key];
+                return _root[ConfigurationPath.Combine(Path, key)];
             }
 
             set
             {
-                _root[Path + Constants.KeyDelimiter + key] = value;
+                _root[ConfigurationPath.Combine(Path, key)] = value;
             }
         }
 
-        public IConfigurationSection GetSection(string key) => _root.GetSection(Path + Constants.KeyDelimiter + key);
+        public IConfigurationSection GetSection(string key) => _root.GetSection(ConfigurationPath.Combine(Path, key));
 
         public IEnumerable<IConfigurationSection> GetChildren() => _root.GetChildrenImplementation(Path);
 

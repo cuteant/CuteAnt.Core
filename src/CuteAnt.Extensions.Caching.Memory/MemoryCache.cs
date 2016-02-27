@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CuteAnt.Extensions.Internal;
-using CuteAnt.Extensions.OptionsModel;
+using CuteAnt.Extensions.Options;
 
 namespace CuteAnt.Extensions.Caching.Memory
 {
@@ -26,8 +26,7 @@ namespace CuteAnt.Extensions.Caching.Memory
     /// <summary>
     /// Creates a new MemoryCache instance.
     /// </summary>
-    /// <param name="clock"></param>
-    /// <param name="listenForMemoryPressure"></param>
+    /// <param name="optionsAccessor"></param>
     public MemoryCache(IOptions<MemoryCacheOptions> optionsAccessor)
     {
       if (optionsAccessor == null)
@@ -312,7 +311,7 @@ namespace CuteAnt.Extensions.Caching.Memory
       {
         _lastExpirationScan = now;
         Task.Factory.StartNew(state => ScanForExpiredItems((MemoryCache)state), this,
-            CancellationToken.None, CuteAnt.AsyncEx.AsyncUtils.GetCreationOptions(), TaskScheduler.Default); // TaskCreationOptions.DenyChildAttach
+            CancellationToken.None, CuteAnt.AsyncEx.AsyncUtils.GetCreationOptions(), TaskScheduler.Default);
       }
     }
 

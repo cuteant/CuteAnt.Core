@@ -116,7 +116,7 @@ namespace CuteAnt.Extensions.DependencyInjection
       }
       else if (ImplementationFactory != null)
       {
-        var typeArguments = ImplementationFactory.GetType().GenericTypeArgumentsEx(); // ## 苦竹 修改 ##
+        var typeArguments = ImplementationFactory.GetType().GenericTypeArgumentsEx(); // ## ¿àÖñ ÐÞ¸Ä ## GenericTypeArguments;
 
         Debug.Assert(typeArguments.Length == 2);
 
@@ -288,8 +288,9 @@ namespace CuteAnt.Extensions.DependencyInjection
       return Describe(typeof(TService), implementationFactory, ServiceLifetime.Singleton);
     }
 
-    public static ServiceDescriptor Singleton(Type serviceType,
-                                              Func<IServiceProvider, object> implementationFactory)
+    public static ServiceDescriptor Singleton(
+        Type serviceType,
+        Func<IServiceProvider, object> implementationFactory)
     {
       if (serviceType == null)
       {
@@ -304,7 +305,7 @@ namespace CuteAnt.Extensions.DependencyInjection
       return Describe(serviceType, implementationFactory, ServiceLifetime.Singleton);
     }
 
-    public static ServiceDescriptor Instance<TService>(TService implementationInstance)
+    public static ServiceDescriptor Singleton<TService>(TService implementationInstance)
         where TService : class
     {
       if (implementationInstance == null)
@@ -312,11 +313,12 @@ namespace CuteAnt.Extensions.DependencyInjection
         throw new ArgumentNullException(nameof(implementationInstance));
       }
 
-      return Instance(typeof(TService), implementationInstance);
+      return Singleton(typeof(TService), implementationInstance);
     }
 
-    public static ServiceDescriptor Instance(Type serviceType,
-                                             object implementationInstance)
+    public static ServiceDescriptor Singleton(
+        Type serviceType,
+        object implementationInstance)
     {
       if (serviceType == null)
       {
