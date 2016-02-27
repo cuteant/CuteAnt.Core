@@ -1,4 +1,4 @@
-// Copyright (c) .NET Foundation. All rights reserved.
+ï»¿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -14,7 +14,7 @@ namespace CuteAnt.Extensions.Logging.TraceSource
     // To detect redundant calls
     private bool _isDisposed;
 
-#if DESKTOPCLR // ## ¿àÖñ ÐÞ¸Ä ##
+#if DESKTOPCLR // ## è‹¦ç«¹ ä¿®æ”¹ ##
     /// <summary>
     /// Pushes state onto the LogicalOperationStack by calling 
     /// <see cref="CorrelationManager.StartLogicalOperation(object)"/>
@@ -28,12 +28,12 @@ namespace CuteAnt.Extensions.Logging.TraceSource
 #endif
     public TraceSourceScope(object state)
     {
-#if DESKTOPCLR // ## ¿àÖñ ÐÞ¸Ä ##
+#if DESKTOPCLR // ## è‹¦ç«¹ ä¿®æ”¹ ##
       Trace.CorrelationManager.StartLogicalOperation(state);
 #endif
     }
 
-#if DESKTOPCLR // ## ¿àÖñ ÐÞ¸Ä ##
+#if DESKTOPCLR // ## è‹¦ç«¹ ä¿®æ”¹ ##
     /// <summary>
     /// Pops a state off the LogicalOperationStack by calling
     /// <see cref="CorrelationManager.StopLogicalOperation()"/>
@@ -47,7 +47,7 @@ namespace CuteAnt.Extensions.Logging.TraceSource
     {
       if (!_isDisposed)
       {
-#if DESKTOPCLR // ## ¿àÖñ ÐÞ¸Ä ##
+#if DESKTOPCLR // ## è‹¦ç«¹ ä¿®æ”¹ ##
         Trace.CorrelationManager.StopLogicalOperation();
 #endif
         _isDisposed = true;

@@ -1,4 +1,4 @@
-// Copyright (c) .NET Foundation. All rights reserved.
+ï»¿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -30,7 +30,7 @@ namespace CuteAnt.Extensions.Logging.Abstractions.Internal
 
     public static string GetTypeDisplayName(Type type)
     {
-      // ## ¿àÖñ ÐÞ¸Ä ##
+      // ## è‹¦ç«¹ ä¿®æ”¹ ##
 #if NET40
       if (type.IsGenericType)
 #else

@@ -1,4 +1,4 @@
-// Copyright (c) .NET Foundation. All rights reserved.
+ï»¿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -49,7 +49,7 @@ namespace CuteAnt.Extensions.Configuration
                 return (string)basePath;
             }
 
-#if DESKTOPCLR // ## ¿àÖñ ÐÞ¸Ä ##
+#if DESKTOPCLR // ## è‹¦ç«¹ ä¿®æ”¹ ##
             var stringBasePath = AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string ??
                 AppDomain.CurrentDomain.BaseDirectory ?? 
                 string.Empty;

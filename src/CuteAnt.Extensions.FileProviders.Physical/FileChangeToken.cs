@@ -1,4 +1,4 @@
-// Copyright (c) .NET Foundation. All rights reserved.
+ï»¿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -31,7 +31,7 @@ namespace CuteAnt.Extensions.FileProviders.Physical
           _searchRegex = new Regex(
               '^' + Pattern + '$',
               RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture
-#if !NET40 // ## ¿àÖñ ÐÞ¸Ä ##
+#if !NET40 // ## è‹¦ç«¹ ä¿®æ”¹ ##
               ,Constants.RegexMatchTimeout
 #endif
               );
