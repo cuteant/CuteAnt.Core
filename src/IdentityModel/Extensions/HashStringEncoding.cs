@@ -2,12 +2,11 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-namespace IdentityModel.Client
+namespace IdentityModel.Extensions
 {
-    public enum AuthenticationStyle
+    public enum HashStringEncoding
     {
-        BasicAuthentication,
-        PostValues,
-        None
-    };
+        Base64,
+        Base64Url
+    }
 }
