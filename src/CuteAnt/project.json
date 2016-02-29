@@ -18,7 +18,8 @@
         "define": [ "DEBUG", "TRACE", "NET_3_5_GREATER" ],
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": false,
-        "allowUnsafe": true
+        "allowUnsafe": true,
+        "nowarn": [ "CS1591" ]
       }
     },
     "Release": {
@@ -27,7 +28,9 @@
         "optimize": true,
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": false,
-        "allowUnsafe": true
+        "allowUnsafe": true,
+        "nowarn": [ "CS1591" ],
+        "xmlDoc": true
       }
     }
   },

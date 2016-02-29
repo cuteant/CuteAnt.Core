@@ -18,7 +18,7 @@
         "define": [ "DEBUG", "TRACE", "NET_3_5_GREATER" ],
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": true,
-        "allowUnsafe": false,
+        "allowUnsafe": true,
         "nowarn": [ "CS1591" ]
       }
     },
@@ -28,7 +28,7 @@
         "optimize": true,
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": true,
-        "allowUnsafe": false,
+        "allowUnsafe": true,
         "nowarn": [ "CS1591" ],
         "xmlDoc": true
       }
@@ -52,7 +52,15 @@
   },
 
   "frameworks": {
-    "net40": { },
-    "net451": { }
+    "net40": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR", "NONATIVETASKS", "PRENET45" ]
+      }
+    },
+    "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR", "NET_4_0_GREATER", "FEATURE_TRACING" ]
+      }
+    }
   }
 }

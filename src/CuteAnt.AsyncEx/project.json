@@ -13,7 +13,8 @@
         "define": [ "DEBUG", "TRACE", "NET_3_5_GREATER" ],
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": false,
-        "allowUnsafe": true
+        "allowUnsafe": true,
+        "nowarn": [ "CS1591" ]
       }
     },
     "Release": {
@@ -22,7 +23,9 @@
         "optimize": true,
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": false,
-        "allowUnsafe": true
+        "allowUnsafe": true,
+        "nowarn": [ "CS1591" ],
+        "xmlDoc": true
       }
     }
   },
@@ -51,7 +54,8 @@
     "Nito.AsyncEx.Tasks.Sources": {
       "type": "build",
       "version": "2.0.0-rc3-160201"
-    }
+    },
+    "CuteAnt.Extensions.Primitives": "2.0.0-rc3-160201"
   },
 
   "frameworks": {
@@ -65,10 +69,7 @@
         "Microsoft.Bcl.Async": "1.0.168"
       },
       "frameworkAssemblies": {
-        "System.Data": "4.0.0.0",
-        "System.Runtime.Serialization": "4.0.0.0",
-        "System.XML": "4.0.0.0",
-        "System.Xml.Linq": "4.0.0.0"
+        "System.Runtime.Serialization": "4.0.0.0"
       }
     },
     "net451": {
@@ -79,10 +80,7 @@
         "System.Collections.Immutable": "1.1.38-rc1-final"
       },
       "frameworkAssemblies": {
-        "System.Data": "4.0.0.0",
         "System.Runtime.Serialization": "4.0.0.0",
-        "System.XML": "4.0.0.0",
-        "System.Xml.Linq": "4.0.0.0",
         "System.Collections": "4.0.0.0",
         "System.Runtime": "4.0.0.0"
       }
@@ -95,10 +93,7 @@
         "System.Collections.Immutable": "1.1.38-rc1-final"
       },
       "frameworkAssemblies": {
-        "System.Data": "4.0.0.0",
         "System.Runtime.Serialization": "4.0.0.0",
-        "System.XML": "4.0.0.0",
-        "System.Xml.Linq": "4.0.0.0",
         "System.Collections": "4.0.0.0",
         "System.Runtime": "4.0.0.0"
       }
