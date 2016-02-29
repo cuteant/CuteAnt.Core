@@ -306,28 +306,36 @@ namespace System.Data.SQLite
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    private void ClearDataReader()
+    {
+      if (_activeReader != null)
+      {
+        SQLiteDataReader reader = null;
+
+        try
+        {
+          reader = _activeReader.Target as SQLiteDataReader;
+        }
+        catch (InvalidOperationException)
+        {
+          // do nothing.
+        }
+
+        if (reader != null)
+          reader.Close(); /* Dispose */
+
+        _activeReader = null;
+      }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     /// <summary>
     /// Clears and destroys all statements currently prepared
     /// </summary>
     internal void ClearCommands()
     {
-      if (_activeReader != null)
-      {
-        SQLiteDataReader reader = null;
-        try
-        {
-          reader = _activeReader.Target as SQLiteDataReader;
-        }
-        catch(InvalidOperationException)
-        {
-        }
-
-        if (reader != null)
-          reader.Close();
-
-        _activeReader = null;
-      }
-
+      ClearDataReader();
       DisposeStatements();
 
       _parameterCollection.Unbind();
@@ -881,7 +889,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Called by the SQLiteDataReader when the data reader is closed.
     /// </summary>
-    internal void ClearDataReader()
+    internal void ResetDataReader()
     {
       _activeReader = null;
     }
@@ -949,6 +957,73 @@ namespace System.Data.SQLite
           return reader[0];
       }
       return null;
+    }
+
+    /// <summary>
+    /// This method resets all the prepared statements held by this instance
+    /// back to their initial states, ready to be re-executed.
+    /// </summary>
+    public void Reset()
+    {
+      CheckDisposed();
+      SQLiteConnection.Check(_cnn);
+
+      Reset(true, false);
+    }
+
+    /// <summary>
+    /// This method resets all the prepared statements held by this instance
+    /// back to their initial states, ready to be re-executed.
+    /// </summary>
+    /// <param name="clearBindings">
+    /// Non-zero if the parameter bindings should be cleared as well.
+    /// </param>
+    /// <param name="ignoreErrors">
+    /// If this is zero, a <see cref="SQLiteException" /> may be thrown for
+    /// any unsuccessful return codes from the native library; otherwise, a
+    /// <see cref="SQLiteException" /> will only be thrown if the connection
+    /// or its state is invalid.
+    /// </param>
+    public void Reset(
+        bool clearBindings,
+        bool ignoreErrors
+        )
+    {
+      CheckDisposed();
+      SQLiteConnection.Check(_cnn);
+
+      if (clearBindings && (_parameterCollection != null))
+        _parameterCollection.Unbind();
+
+      ClearDataReader();
+
+      if (_statementList == null)
+        return;
+
+      SQLiteBase sqlBase = _cnn._sql;
+      SQLiteErrorCode rc;
+
+      foreach (SQLiteStatement item in _statementList)
+      {
+        if (item == null)
+          continue;
+
+        SQLiteStatementHandle stmt = item._sqlite_stmt;
+
+        if (stmt == null)
+          continue;
+
+        rc = sqlBase.Reset(item);
+
+        if ((rc == SQLiteErrorCode.Ok) && clearBindings &&
+            (SQLite3.SQLiteVersionNumber >= 3003007))
+        {
+          rc = UnsafeNativeMethods.sqlite3_clear_bindings(stmt);
+        }
+
+        if (!ignoreErrors && (rc != SQLiteErrorCode.Ok))
+          throw new SQLiteException(rc, sqlBase.GetLastError());
+      }
     }
 
     /// <summary>

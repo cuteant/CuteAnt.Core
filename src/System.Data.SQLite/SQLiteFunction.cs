@@ -712,7 +712,7 @@ namespace System.Data.SQLite
               if (at != null)
               {
                 at.InstanceType = arTypes[x];
-                _registeredFunctions.Add(at, null);
+                ReplaceFunction(at, null);
               }
             }
           }
@@ -794,7 +794,48 @@ namespace System.Data.SQLite
         at.Callback1 = callback1;
         at.Callback2 = callback2;
 
-        _registeredFunctions.Add(at, null);
+      ReplaceFunction(at, null);
+    }
+
+    /// <summary>
+    /// Replaces a registered function, disposing of the associated (old)
+    /// value if necessary.
+    /// </summary>
+    /// <param name="at">
+    /// The attribute that describes the function to replace.
+    /// </param>
+    /// <param name="newValue">
+    /// The new value to use.
+    /// </param>
+    /// <returns>
+    /// Non-zero if an existing registered function was replaced; otherwise,
+    /// zero.
+    /// </returns>
+    private static bool ReplaceFunction(
+        SQLiteFunctionAttribute at,
+        object newValue
+        )
+    {
+      object oldValue;
+
+      if (_registeredFunctions.TryGetValue(at, out oldValue))
+      {
+        IDisposable disposable = oldValue as IDisposable;
+
+        if (disposable != null)
+        {
+          disposable.Dispose();
+          disposable = null;
+        }
+
+        _registeredFunctions[at] = newValue;
+        return true;
+      }
+      else
+      {
+        _registeredFunctions.Add(at, newValue);
+        return false;
+      }
     }
 
     /// <summary>

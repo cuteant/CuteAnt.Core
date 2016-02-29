@@ -225,7 +225,7 @@ namespace System.Data.SQLite
                 {
                 }
               }
-              _command.ClearDataReader();
+              _command.ResetDataReader();
             }
             finally
             {
@@ -433,7 +433,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Retrieves the column as a boolean value
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>bool</returns>
     public override bool GetBoolean(int i)
     {
@@ -450,7 +450,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Retrieves the column as a single byte value
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>byte</returns>
     public override byte GetByte(int i)
     {
@@ -467,7 +467,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Retrieves a column as an array of bytes (blob)
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <param name="fieldOffset">The zero-based index of where to begin reading the data</param>
     /// <param name="buffer">The buffer to write the bytes into</param>
     /// <param name="bufferoffset">The zero-based index of where to begin writing into the array</param>
@@ -491,7 +491,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Returns the column as a single character
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>char</returns>
     public override char GetChar(int i)
     {
@@ -508,7 +508,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Retrieves a column as an array of chars (blob)
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <param name="fieldoffset">The zero-based index of where to begin reading the data</param>
     /// <param name="buffer">The buffer to write the characters into</param>
     /// <param name="bufferoffset">The zero-based index of where to begin writing into the array</param>
@@ -532,7 +532,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Retrieves the name of the back-end datatype of the column
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>string</returns>
     public override string GetDataTypeName(int i)
     {
@@ -548,7 +548,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Retrieve the column as a date/time value
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>DateTime</returns>
     public override DateTime GetDateTime(int i)
     {
@@ -565,7 +565,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Retrieve the column as a decimal value
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>decimal</returns>
     public override decimal GetDecimal(int i)
     {
@@ -582,7 +582,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Returns the column as a double
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>double</returns>
     public override double GetDouble(int i)
     {
@@ -599,7 +599,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Returns the .NET type of a given column
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>Type</returns>
     public override Type GetFieldType(int i)
     {
@@ -614,7 +614,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Returns a column as a float value
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>float</returns>
     public override float GetFloat(int i)
     {
@@ -631,7 +631,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Returns the column as a Guid
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>Guid</returns>
     public override Guid GetGuid(int i)
     {
@@ -655,7 +655,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Returns the column as a CombGuid
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>Guid</returns>
     public CombGuid GetCombGuid(int i)
     {
@@ -679,7 +679,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Returns the column as a short
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>Int16</returns>
     public override Int16 GetInt16(int i)
     {
@@ -696,7 +696,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Retrieves the column as an int
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>Int32</returns>
     public override Int32 GetInt32(int i)
     {
@@ -713,7 +713,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Retrieves the column as a long
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>Int64</returns>
     public override Int64 GetInt64(int i)
     {
@@ -730,7 +730,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Retrieves the name of the column
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>string</returns>
     public override string GetName(int i)
     {
@@ -740,6 +740,51 @@ namespace System.Data.SQLite
             return _keyInfo.GetName(i - PrivateVisibleFieldCount);
 
         return _activeStatement._sql.ColumnName(_activeStatement, i);
+    }
+
+    /// <summary>
+    /// Returns the name of the database associated with the specified column.
+    /// </summary>
+    /// <param name="i">The index of the column.</param>
+    /// <returns>string</returns>
+    public string GetDatabaseName(int i)
+    {
+      CheckDisposed();
+
+      if (i >= PrivateVisibleFieldCount && _keyInfo != null)
+        return _keyInfo.GetName(i - PrivateVisibleFieldCount);
+
+      return _activeStatement._sql.ColumnDatabaseName(_activeStatement, i);
+    }
+
+    /// <summary>
+    /// Returns the name of the table associated with the specified column.
+    /// </summary>
+    /// <param name="i">The index of the column.</param>
+    /// <returns>string</returns>
+    public string GetTableName(int i)
+    {
+      CheckDisposed();
+
+      if (i >= PrivateVisibleFieldCount && _keyInfo != null)
+        return _keyInfo.GetName(i - PrivateVisibleFieldCount);
+
+      return _activeStatement._sql.ColumnTableName(_activeStatement, i);
+    }
+
+    /// <summary>
+    /// Returns the original name of the specified column.
+    /// </summary>
+    /// <param name="i">The index of the column.</param>
+    /// <returns>string</returns>
+    public string GetOriginalName(int i)
+    {
+      CheckDisposed();
+
+      if (i >= PrivateVisibleFieldCount && _keyInfo != null)
+        return _keyInfo.GetName(i - PrivateVisibleFieldCount);
+
+      return _activeStatement._sql.ColumnOriginalName(_activeStatement, i);
     }
 
     /// <summary>
@@ -1205,7 +1250,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Retrieves the column as a string
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>string</returns>
     public override string GetString(int i)
     {
@@ -1222,7 +1267,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Retrieves the column as an object corresponding to the underlying datatype of the column
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>object</returns>
     public override object GetValue(int i)
     {
@@ -1343,7 +1388,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Returns True if the specified column is null
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>True or False</returns>
     public override bool IsDBNull(int i)
     {
@@ -1546,7 +1591,7 @@ namespace System.Data.SQLite
     /// Retrieves the SQLiteType for a given column, and caches it to avoid repetetive interop calls.
     /// </summary>
     /// <param name="flags">The flags associated with the parent connection object.</param>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>A SQLiteType structure</returns>
     private SQLiteType GetSQLiteType(SQLiteConnectionFlags flags, int i)
     {
@@ -1641,7 +1686,7 @@ namespace System.Data.SQLite
     /// <summary>
     /// Indexer to retrieve data from a column given its i
     /// </summary>
-    /// <param name="i">The index of the column to retrieve</param>
+    /// <param name="i">The index of the column.</param>
     /// <returns>The value contained in the column</returns>
     public override object this[int i]
     {

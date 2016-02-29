@@ -1323,7 +1323,7 @@ namespace System.Data.SQLite
     //       System.Data.SQLite functionality (e.g. being able to bind
     //       parameters and handle column values of types Int64 and Double).
     //
-    internal const string SQLITE_DLL = "SQLite.Interop.098.dll";
+    internal const string SQLITE_DLL = "SQLite.Interop.099.dll";
 #elif SQLITE_STANDARD
     //
     // NOTE: Otherwise, if the standard SQLite library is enabled, use it.
@@ -1866,6 +1866,13 @@ namespace System.Data.SQLite
     [DllImport(SQLITE_DLL)]
 #endif
     internal static extern SQLiteErrorCode sqlite3_busy_timeout(IntPtr db, int ms);
+
+#if !PLATFORM_COMPACTFRAMEWORK
+    [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+#else
+    [DllImport(SQLITE_DLL)]
+#endif
+    internal static extern SQLiteErrorCode sqlite3_clear_bindings(IntPtr stmt);
 
 #if !PLATFORM_COMPACTFRAMEWORK
     [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
@@ -2852,7 +2859,7 @@ namespace System.Data.SQLite
       /* Inputs */
       public int nConstraint; /* Number of entries in aConstraint */
       public IntPtr aConstraint;
-      public int nOrderBy;
+      public int nOrderBy;    /* Number of entries in aOrderBy */
       public IntPtr aOrderBy;
       /* Outputs */
       public IntPtr aConstraintUsage;
@@ -2861,6 +2868,9 @@ namespace System.Data.SQLite
       public int needToFreeIdxStr; /* Free idxStr using sqlite3_free() if true */
       public int orderByConsumed;  /* True if output is already ordered */
       public double estimatedCost; /* Estimated cost of using this index */
+      public long estimatedRows;   /* Estimated number of rows returned */
+      public SQLiteIndexFlags idxFlags; /* Mask of SQLITE_INDEX_SCAN_* flags */
+      public long colUsed;         /* Input: Mask of columns used by statement */
     }
 #endif
     #endregion

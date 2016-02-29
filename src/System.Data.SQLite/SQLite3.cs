@@ -59,7 +59,7 @@ namespace System.Data.SQLite
         "d8215c18a4349a436dd499e3c385cc683015f886f6c10bd90115eb2bd61b67750839e3a19941dc9c";
 
 #if !PLATFORM_COMPACTFRAMEWORK
-    internal const string DesignerVersion = "1.0.98.0";
+    internal const string DesignerVersion = "1.0.99.0";
 #endif
 
     /// <summary>
@@ -72,7 +72,7 @@ namespace System.Data.SQLite
     protected int _poolVersion;
     private int _cancelCount;
 
-#if (NET_35 || NET_40 || NET_45 || NET_451 || NET_46) && !PLATFORM_COMPACTFRAMEWORK
+#if (NET_35 || NET_40 || NET_45 || NET_451 || NET_452 || NET_46 || NET_461) && !PLATFORM_COMPACTFRAMEWORK
     private bool _buildingSchema;
 #endif
 
@@ -858,6 +858,42 @@ namespace System.Data.SQLite
         return (_sql != null) && !_sql.IsInvalid && !_sql.IsClosed;
     }
 
+    /// <summary>
+    /// Returns the fully qualified path and file name for the currently open
+    /// database, if any.
+    /// </summary>
+    /// <param name="dbName">
+    /// The name of the attached database to query.
+    /// </param>
+    /// <returns>
+    /// The fully qualified path and file name for the currently open database,
+    /// if any.
+    /// </returns>
+    internal override string GetFileName(string dbName)
+    {
+      if (_sql == null)
+        return null;
+
+      IntPtr pDbName = IntPtr.Zero;
+
+      try
+      {
+        pDbName = (dbName != null) ?
+            SQLiteString.Utf8IntPtrFromString(dbName) : IntPtr.Zero;
+
+        return UTF8ToString(UnsafeNativeMethods.sqlite3_db_filename(
+            _sql, pDbName), -1);
+      }
+      finally
+      {
+        if (pDbName != IntPtr.Zero)
+        {
+          SQLiteMemory.Free(pDbName);
+          pDbName = IntPtr.Zero;
+        }
+      }
+    }
+
     internal override void Open(string strFilename, string vfsName, SQLiteConnectionFlags connectionFlags, SQLiteOpenFlagsEnum openFlags, int maxPoolSize, bool usePool)
     {
       //
@@ -1373,7 +1409,7 @@ namespace System.Data.SQLite
 
               return cmd;
             }
-#if (NET_35 || NET_40 || NET_45 || NET_451 || NET_46) && !PLATFORM_COMPACTFRAMEWORK
+#if (NET_35 || NET_40 || NET_45 || NET_451 || NET_452 || NET_46 || NET_461) && !PLATFORM_COMPACTFRAMEWORK
             else if (_buildingSchema == false && String.Compare(GetLastError(), 0, "no such table: TEMP.SCHEMA", 0, 26, StringComparison.OrdinalIgnoreCase) == 0)
             {
               strRemain = "";
@@ -1990,6 +2026,45 @@ namespace System.Data.SQLite
       autoIncrement = (nautoInc == 1);
     }
 
+    internal override object GetObject(SQLiteStatement stmt, int index)
+    {
+      switch (ColumnAffinity(stmt, index))
+      {
+        case TypeAffinity.Int64:
+          {
+            return GetInt64(stmt, index);
+          }
+        case TypeAffinity.Double:
+          {
+            return GetDouble(stmt, index);
+          }
+        case TypeAffinity.Text:
+          {
+            return GetText(stmt, index);
+          }
+        case TypeAffinity.Blob:
+          {
+            long size = GetBytes(stmt, index, 0, null, 0, 0);
+
+            if ((size > 0) && (size <= int.MaxValue))
+            {
+              byte[] bytes = new byte[(int)size];
+
+              GetBytes(stmt, index, 0, bytes, 0, (int)size);
+
+              return bytes;
+            }
+            break;
+          }
+        case TypeAffinity.Null:
+          {
+            return DBNull.Value;
+          }
+      }
+
+      throw new NotImplementedException();
+    }
+
     internal override double GetDouble(SQLiteStatement stmt, int index)
     {
 #if !PLATFORM_COMPACTFRAMEWORK
@@ -2001,6 +2076,11 @@ namespace System.Data.SQLite
 #else
       throw new NotImplementedException();
 #endif
+    }
+
+    internal override bool GetBoolean(SQLiteStatement stmt, int index)
+    {
+      return ToBoolean(GetObject(stmt, index), CultureInfo.InvariantCulture, false);
     }
 
     internal override sbyte GetSByte(SQLiteStatement stmt, int index)
@@ -3048,12 +3128,14 @@ namespace System.Data.SQLite
           return Convert.ChangeType(GetDouble(stmt, index), t, null);
         case TypeAffinity.Int64:
           if (t == null) return GetInt64(stmt, index);
+          if (t == typeof(Boolean)) return GetBoolean(stmt, index);
           if (t == typeof(SByte)) return GetSByte(stmt, index);
           if (t == typeof(Byte)) return GetByte(stmt, index);
           if (t == typeof(Int16)) return GetInt16(stmt, index);
           if (t == typeof(UInt16)) return GetUInt16(stmt, index);
           if (t == typeof(Int32)) return GetInt32(stmt, index);
           if (t == typeof(UInt32)) return GetUInt32(stmt, index);
+          if (t == typeof(Int64)) return GetInt64(stmt, index);
           if (t == typeof(UInt64)) return GetUInt64(stmt, index);
           return Convert.ChangeType(GetInt64(stmt, index), t, null);
         default:

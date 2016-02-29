@@ -9,9 +9,9 @@ using System.Collections.Generic;
 
 namespace System.Data.SQLite
 {
-    internal static class SQLiteDefineConstants
-    {
-        public static readonly IList<string> OptionList = new List<string>(new string[] {
+  internal static class SQLiteDefineConstants
+  {
+    public static readonly IList<string> OptionList = new List<string>(new string[] {
 #if CHECK_STATE
             "CHECK_STATE",
 #endif
@@ -36,6 +36,10 @@ namespace System.Data.SQLite
             "INTEROP_EXTENSION_FUNCTIONS",
 #endif
 
+#if INTEROP_FTS5_EXTENSION
+            "INTEROP_FTS5_EXTENSION",
+#endif
+
 #if INTEROP_INCLUDE_CEROD
             "INTEROP_INCLUDE_CEROD",
 #endif
@@ -52,6 +56,10 @@ namespace System.Data.SQLite
             "INTEROP_INCLUDE_ZIPVFS",
 #endif
 
+#if INTEROP_JSON1_EXTENSION
+            "INTEROP_JSON1_EXTENSION",
+#endif
+
 #if INTEROP_LEGACY_CLOSE
             "INTEROP_LEGACY_CLOSE",
 #endif
@@ -60,8 +68,20 @@ namespace System.Data.SQLite
             "INTEROP_LOG",
 #endif
 
+#if INTEROP_PERCENTILE_EXTENSION
+            "INTEROP_PERCENTILE_EXTENSION",
+#endif
+
+#if INTEROP_REGEXP_EXTENSION
+            "INTEROP_REGEXP_EXTENSION",
+#endif
+
 #if INTEROP_TEST_EXTENSION
             "INTEROP_TEST_EXTENSION",
+#endif
+
+#if INTEROP_TOTYPE_EXTENSION
+            "INTEROP_TOTYPE_EXTENSION",
 #endif
 
 #if INTEROP_VIRTUAL_TABLE
@@ -88,8 +108,16 @@ namespace System.Data.SQLite
             "NET_451",
 #endif
 
+#if NET_452
+            "NET_452",
+#endif
+
 #if NET_46
             "NET_46",
+#endif
+
+#if NET_461
+            "NET_461",
 #endif
 
 #if NET_COMPACT_20
@@ -170,5 +198,5 @@ namespace System.Data.SQLite
 
             null
         });
-    }
+  }
 }
