@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -37,6 +38,7 @@ namespace CuteAnt.Log
   /// 默认写日志到文本文件，可通过修改<see cref="Log"/>属性来增加日志输出方式。
   /// 对于控制台工程，可以直接通过<see cref="UseConsole"/>方法，把日志输出重定向为控制台输出，并且可以为不同线程使用不同颜色。
   /// </remarks>
+  [Obsolete]
   public static class HmTrace
   {
     #region -- 写日志 --
