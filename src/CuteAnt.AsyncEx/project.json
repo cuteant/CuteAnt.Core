@@ -42,20 +42,20 @@
   "dependencies": {
     "Ix-Main": "1.2.5",
     "Ix-Async": "1.2.5",
-    "CuteAnt": "2.0.0-rc3-160201",
+    "CuteAnt": "2.0.0-rc3-*",
     "CuteAnt.Extensions.Sources": {
       "type": "build",
-      "version": "2.0.0-rc3-160201"
+      "version": "2.0.0-rc3-*"
     },
     "CuteAnt.Extensions.Reflection.Sources": {
       "type": "build",
-      "version": "2.0.0-rc3-160201"
+      "version": "2.0.0-rc3-*"
     },
     "Nito.AsyncEx.Tasks.Sources": {
       "type": "build",
-      "version": "2.0.0-rc3-160201"
+      "version": "2.0.0-rc3-*"
     },
-    "CuteAnt.Extensions.Primitives": "2.0.0-rc3-160201"
+    "CuteAnt.Extensions.Primitives": "2.0.0-rc3-*"
   },
 
   "frameworks": {

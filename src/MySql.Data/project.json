@@ -41,7 +41,7 @@
   ],
 
   "dependencies": {
-    "CuteAnt": "2.0.0-rc3-160201"
+    "CuteAnt": "2.0.0-rc3-*"
   },
 
   "frameworks": {

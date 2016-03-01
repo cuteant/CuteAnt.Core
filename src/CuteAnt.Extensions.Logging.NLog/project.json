@@ -54,7 +54,7 @@
         "define": [ "DESKTOPCLR" ]
       },
       "dependencies": {
-        "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc3-160201"
+        "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc3-*"
       },
       "frameworkAssemblies": {
         "System.XML": "4.0.0.0"
@@ -65,7 +65,7 @@
         "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
       },
       "dependencies": {
-        "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc3-160201"
+        "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc3-*"
       },
       "frameworkAssemblies": {
         "System.XML": "4.0.0.0"

@@ -46,10 +46,10 @@
 
   "dependencies": {
     "CuteAnt.Extensions.FileProviders.Sources": {
-      "version": "2.0.0-rc3-160201",
+      "version": "2.0.0-rc3-*",
       "type": "build"
     },
-    "CuteAnt.Extensions.FileProviders.Abstractions": "2.0.0-rc3-160201"
+    "CuteAnt.Extensions.FileProviders.Abstractions": "2.0.0-rc3-*"
   },
 
   "frameworks": {

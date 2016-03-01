@@ -47,15 +47,15 @@
   "dependencies": {
     "CuteAnt.Extensions.Reflection.Sources": {
       "type": "build",
-      "version": "2.0.0-rc3-160201"
+      "version": "2.0.0-rc3-*"
     },
     "CuteAnt.Extensions.Sources": {
       "type": "build",
-      "version": "2.0.0-rc3-160201"
+      "version": "2.0.0-rc3-*"
     },
     "CuteAnt.Extensions.IO.Sources": {
       "type": "build",
-      "version": "2.0.0-rc3-160201"
+      "version": "2.0.0-rc3-*"
     }
   },
 
@@ -65,7 +65,7 @@
         "define": [ "DESKTOPCLR" ]
       },
       "dependencies": {
-        "CuteAnt.Extensions.Logging": "2.0.0-rc3-160201"
+        "CuteAnt.Extensions.Logging": "2.0.0-rc3-*"
       },
       "frameworkAssemblies": {
         "Microsoft.VisualBasic": "10.0.0.0",
@@ -86,7 +86,7 @@
         "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
       },
       "dependencies": {
-        "CuteAnt.Extensions.Logging": "2.0.0-rc3-160201"
+        "CuteAnt.Extensions.Logging": "2.0.0-rc3-*"
       },
       "frameworkAssemblies": {
         "Microsoft.VisualBasic": "10.0.0.0",

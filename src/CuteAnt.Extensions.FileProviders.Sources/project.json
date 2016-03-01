@@ -6,7 +6,7 @@
   },
   "shared": "**/*.cs",
   "dependencies": {
-    "CuteAnt.Extensions.FileProviders.Abstractions": "2.0.0-rc3-160201"
+    "CuteAnt.Extensions.FileProviders.Abstractions": "2.0.0-rc3-*"
   },
   "frameworks": {
     "net40": {

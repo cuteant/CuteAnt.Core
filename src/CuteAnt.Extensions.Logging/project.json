@@ -45,8 +45,8 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt.Extensions.DependencyInjection.Abstractions": "2.0.0-rc3-160201",
-    "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc3-160201"
+    "CuteAnt.Extensions.DependencyInjection.Abstractions": "2.0.0-rc3-*",
+    "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc3-*"
   },
 
   "frameworks": {

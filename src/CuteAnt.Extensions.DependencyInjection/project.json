@@ -45,13 +45,13 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt.Extensions.DependencyInjection.Abstractions": "2.0.0-rc3-160201",
+    "CuteAnt.Extensions.DependencyInjection.Abstractions": "2.0.0-rc3-*",
     "Nito.AsyncEx.ExceptionEnlightenment.Sources": {
-      "version": "2.0.0-rc3-160201",
+      "version": "2.0.0-rc3-*",
       "type": "build"
     },
     "CuteAnt.Extensions.Reflection.Sources": {
-      "version": "2.0.0-rc3-160201",
+      "version": "2.0.0-rc3-*",
       "type": "build"
     }
   },

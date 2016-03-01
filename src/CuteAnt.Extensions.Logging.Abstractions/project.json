@@ -46,7 +46,7 @@
 
   "dependencies": {
     "CuteAnt.Extensions.TypeNameHelper.Sources": {
-      "version": "2.0.0-rc3-160201",
+      "version": "2.0.0-rc3-*",
       "type": "build"
     }
   },
@@ -57,9 +57,9 @@
         "define": [ "DESKTOPCLR" ]
       },
       "dependencies": {
-        "CuteAnt.Extensions.Primitives": "2.0.0-rc3-160201",
+        "CuteAnt.Extensions.Primitives": "2.0.0-rc3-*",
         "CuteAnt.Extensions.Reflection.Sources": {
-          "version": "2.0.0-rc3-160201",
+          "version": "2.0.0-rc3-*",
           "type": "build"
         }
       }

@@ -45,7 +45,7 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt.Extensions.Primitives": "2.0.0-rc3-160201"
+    "CuteAnt.Extensions.Primitives": "2.0.0-rc3-*"
   },
 
   "frameworks": {

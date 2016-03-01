@@ -38,7 +38,7 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt.IdentityModel.Tokens.Jwt": "4.0.0-rc2-160101"
+    "CuteAnt.IdentityModel.Tokens.Jwt": "4.0.0-rc2-*"
   },
 
   "frameworks": {

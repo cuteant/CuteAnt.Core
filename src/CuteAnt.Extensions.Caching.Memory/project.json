@@ -45,10 +45,10 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt.Extensions.Caching.Abstractions": "2.0.0-rc3-160201",
-    "CuteAnt.Extensions.DependencyInjection.Abstractions": "2.0.0-rc3-160201",
-    "CuteAnt.Extensions.Options": "2.0.0-rc3-160201",
-    "CuteAnt.AsyncEx": "2.0.0-rc3-160201"
+    "CuteAnt.Extensions.Caching.Abstractions": "2.0.0-rc3-*",
+    "CuteAnt.Extensions.DependencyInjection.Abstractions": "2.0.0-rc3-*",
+    "CuteAnt.Extensions.Options": "2.0.0-rc3-*",
+    "CuteAnt.AsyncEx": "2.0.0-rc3-*"
   },
 
   "frameworks": {

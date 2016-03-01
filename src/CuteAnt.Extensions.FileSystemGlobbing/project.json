@@ -46,7 +46,7 @@
 
   "dependencies": {
     "CuteAnt.Extensions.HashCodeCombiner.Sources": {
-      "version": "2.0.0-rc3-160201",
+      "version": "2.0.0-rc3-*",
       "type": "build"
     }
   },
