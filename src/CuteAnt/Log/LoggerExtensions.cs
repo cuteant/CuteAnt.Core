@@ -66,6 +66,59 @@ namespace Microsoft.Extensions.Logging
       return logger.IsEnabled(LogLevel.Critical);
     }
 
+#if !DESKTOPCLR
+    /// <summary>
+    /// Formats and writes a trace log message.
+    /// </summary>
+    /// <param name="logger">The <see cref="ILogger"/> to write to.</param>
+    /// <param name="eventId">The event id associated with the log.</param>
+    /// <param name="exception">The exception to log.</param>
+    /// <param name="message">Format string of the log message.</param>
+    /// <param name="args">An object array that contains zero or more objects to format.</param>
+    public static void LogTrace(this ILogger logger, int eventId, Exception exception, string message, params object[] args)
+    {
+      if (logger == null)
+      {
+        throw new ArgumentNullException(nameof(logger));
+      }
+
+      logger.Log(LogLevel.Verbose, eventId, new FormattedLogValues(message, args), exception, _messageFormatter);
+    }
+
+    /// <summary>
+    /// Formats and writes a trace log message.
+    /// </summary>
+    /// <param name="logger">The <see cref="ILogger"/> to write to.</param>
+    /// <param name="eventId">The event id associated with the log.</param>
+    /// <param name="message">Format string of the log message.</param>
+    /// <param name="args">An object array that contains zero or more objects to format.</param>
+    public static void LogTrace(this ILogger logger, int eventId, string message, params object[] args)
+    {
+      if (logger == null)
+      {
+        throw new ArgumentNullException(nameof(logger));
+      }
+
+      logger.Log(LogLevel.Verbose, eventId, new FormattedLogValues(message, args), null, _messageFormatter);
+    }
+
+    /// <summary>
+    /// Formats and writes a trace log message.
+    /// </summary>
+    /// <param name="logger">The <see cref="ILogger"/> to write to.</param>
+    /// <param name="message">Format string of the log message.</param>
+    /// <param name="args">An object array that contains zero or more objects to format.</param>
+    public static void LogTrace(this ILogger logger, string message, params object[] args)
+    {
+      if (logger == null)
+      {
+        throw new ArgumentNullException(nameof(logger));
+      }
+
+      logger.Log(LogLevel.Verbose, 0, new FormattedLogValues(message, args), null, _messageFormatter);
+    }
+#endif
+
     /// <summary>Formats and writes a trace log message.</summary>
     /// <param name="logger">The <see cref="ILogger"/> to write to.</param>
     /// <param name="eventId">The event id associated with the log.</param>
