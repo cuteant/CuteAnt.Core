@@ -55,7 +55,4 @@ copy src\Nito.AsyncEx.ExceptionEnlightenment.Sources\*.cs ..\..\CuteAnt\SharedPr
 del ..\..\CuteAnt\SharedProjects\Nito.AsyncEx.Tasks.Sources\*.cs /s /q
 copy src\Nito.AsyncEx.Tasks.Sources\*.cs ..\..\CuteAnt\SharedProjects\Nito.AsyncEx.Tasks.Sources\ /y
 
-del ..\..\CuteAnt\SharedProjects\System.ServiceModel.Internals.Interop\*.cs /s /q
-copy src\System.ServiceModel.Internals.Interop\*.cs ..\..\CuteAnt\SharedProjects\System.ServiceModel.Internals.Interop\ /y
-
 pause
