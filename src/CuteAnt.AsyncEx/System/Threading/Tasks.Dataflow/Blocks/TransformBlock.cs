@@ -18,517 +18,554 @@ using System.Threading.Tasks.Dataflow.Internal;
 
 namespace System.Threading.Tasks.Dataflow
 {
-	/// <summary>Provides a dataflow block that invokes a provided <see cref="System.Func{TInput,TOutput}"/> delegate for every data element received.</summary>
-	/// <typeparam name="TInput">Specifies the type of data received and operated on by this <see cref="TransformBlock{TInput,TOutput}"/>.</typeparam>
-	/// <typeparam name="TOutput">Specifies the type of data output by this <see cref="TransformBlock{TInput,TOutput}"/>.</typeparam>
-	[DebuggerDisplay("{DebuggerDisplayContent,nq}")]
-	[DebuggerTypeProxy(typeof(TransformBlock<,>.DebugView))]
-	public sealed class TransformBlock<TInput, TOutput> : IPropagatorBlock<TInput, TOutput>, IReceivableSourceBlock<TOutput>, IDebuggerDisplay
-	{
-		#region @@ Fields @@
+  /// <summary>Provides a dataflow block that invokes a provided <see cref="System.Func{TInput,TOutput}"/> delegate for every data element received.</summary>
+  /// <typeparam name="TInput">Specifies the type of data received and operated on by this <see cref="TransformBlock{TInput,TOutput}"/>.</typeparam>
+  /// <typeparam name="TOutput">Specifies the type of data output by this <see cref="TransformBlock{TInput,TOutput}"/>.</typeparam>
+  [DebuggerDisplay("{DebuggerDisplayContent,nq}")]
+  [DebuggerTypeProxy(typeof(TransformBlock<,>.DebugView))]
+  public sealed class TransformBlock<TInput, TOutput> : IPropagatorBlock<TInput, TOutput>, IReceivableSourceBlock<TOutput>, IDebuggerDisplay
+  {
+    #region @@ Fields @@
 
-		/// <summary>The target side.</summary>
-		private readonly TargetCore<TInput> _target;
+    /// <summary>The target side.</summary>
+    private readonly TargetCore<TInput> _target;
 
-		/// <summary>Buffer used to reorder outputs that may have completed out-of-order between the target half and the source half.</summary>
-		private readonly ReorderingBuffer<TOutput> _reorderingBuffer;
+    /// <summary>Buffer used to reorder outputs that may have completed out-of-order between the target half and the source half.</summary>
+    private readonly ReorderingBuffer<TOutput> _reorderingBuffer;
 
-		/// <summary>The source side.</summary>
-		private readonly SourceCore<TOutput> _source;
+    /// <summary>The source side.</summary>
+    private readonly SourceCore<TOutput> _source;
 
-		#endregion
+    /// <summary>Gets the object to use for writing to the source when multiple threads may be involved.</summary>
+    /// <remarks>
+    /// If a reordering buffer is used, it is safe for multiple threads to write to concurrently and handles safe 
+    /// access to the source. If there's no reordering buffer because no parallelism is used, then only one thread at
+    /// a time will try to access the source, anyway.  But, if there's no reordering buffer and parallelism is being
+    /// employed, then multiple threads may try to access the source concurrently, in which case we need to manually
+    /// synchronize all such access, and this lock is used for that purpose.
+    /// </remarks>
+    private object ParallelSourceLock { get { return _source; } }
 
-		#region @@ Properties @@
+    #endregion
 
-		/// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Targets/Member[@name="InputCount"]/*' />
-		public Int32 InputCount { get { return _target.InputCount; } }
+    #region @@ Properties @@
 
-		/// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Sources/Member[@name="OutputCount"]/*' />
-		public Int32 OutputCount { get { return _source.OutputCount; } }
+    /// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Targets/Member[@name="InputCount"]/*' />
+    public Int32 InputCount { get { return _target.InputCount; } }
 
-		#endregion
+    /// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Sources/Member[@name="OutputCount"]/*' />
+    public Int32 OutputCount { get { return _source.OutputCount; } }
 
-		#region @@ Constructors @@
+    #endregion
 
-		/// <summary>Initializes the <see cref="TransformBlock{TInput,TOutput}"/> with the specified <see cref="System.Func{TInput,TOutput}"/>.</summary>
-		/// <param name="transform">The function to invoke with each data element received.</param>
-		/// <exception cref="System.ArgumentNullException">The <paramref name="transform"/> is null (Nothing in Visual Basic).</exception>
-		public TransformBlock(Func<TInput, TOutput> transform) :
-			this(transform, null, ExecutionDataflowBlockOptions.Default)
-		{ }
+    #region @@ Constructors @@
 
-		/// <summary>Initializes the <see cref="TransformBlock{TInput,TOutput}"/> with the specified <see cref="System.Func{TInput,TOutput}"/> 
-		/// and <see cref="ExecutionDataflowBlockOptions"/>.</summary>
-		/// <param name="transform">The function to invoke with each data element received.</param>
-		/// <param name="dataflowBlockOptions">The options with which to configure this <see cref="TransformBlock{TInput,TOutput}"/>.</param>
-		/// <exception cref="System.ArgumentNullException">The <paramref name="transform"/> is null (Nothing in Visual Basic).</exception>
-		/// <exception cref="System.ArgumentNullException">The <paramref name="dataflowBlockOptions"/> is null (Nothing in Visual Basic).</exception>
-		public TransformBlock(Func<TInput, TOutput> transform, ExecutionDataflowBlockOptions dataflowBlockOptions) :
-			this(transform, null, dataflowBlockOptions)
-		{ }
+    /// <summary>Initializes the <see cref="TransformBlock{TInput,TOutput}"/> with the specified <see cref="System.Func{TInput,TOutput}"/>.</summary>
+    /// <param name="transform">The function to invoke with each data element received.</param>
+    /// <exception cref="System.ArgumentNullException">The <paramref name="transform"/> is null (Nothing in Visual Basic).</exception>
+    public TransformBlock(Func<TInput, TOutput> transform) :
+      this(transform, null, ExecutionDataflowBlockOptions.Default)
+    { }
 
-		/// <summary>Initializes the <see cref="TransformBlock{TInput,TOutput}"/> with the specified <see cref="System.Func{TInput,TOutput}"/>.</summary>
-		/// <param name="transform">The function to invoke with each data element received.</param>
-		/// <exception cref="System.ArgumentNullException">The <paramref name="transform"/> is null (Nothing in Visual Basic).</exception>
-		[SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
-		public TransformBlock(Func<TInput, Task<TOutput>> transform) :
-			this(null, transform, ExecutionDataflowBlockOptions.Default)
-		{ }
+    /// <summary>Initializes the <see cref="TransformBlock{TInput,TOutput}"/> with the specified <see cref="System.Func{TInput,TOutput}"/> 
+    /// and <see cref="ExecutionDataflowBlockOptions"/>.</summary>
+    /// <param name="transform">The function to invoke with each data element received.</param>
+    /// <param name="dataflowBlockOptions">The options with which to configure this <see cref="TransformBlock{TInput,TOutput}"/>.</param>
+    /// <exception cref="System.ArgumentNullException">The <paramref name="transform"/> is null (Nothing in Visual Basic).</exception>
+    /// <exception cref="System.ArgumentNullException">The <paramref name="dataflowBlockOptions"/> is null (Nothing in Visual Basic).</exception>
+    public TransformBlock(Func<TInput, TOutput> transform, ExecutionDataflowBlockOptions dataflowBlockOptions) :
+      this(transform, null, dataflowBlockOptions)
+    { }
 
-		/// <summary>Initializes the <see cref="TransformBlock{TInput,TOutput}"/> with the specified <see cref="System.Func{TInput,TOutput}"/>
-		/// and <see cref="ExecutionDataflowBlockOptions"/>.</summary>
-		/// <param name="transform">The function to invoke with each data element received.</param>
-		/// <param name="dataflowBlockOptions">The options with which to configure this <see cref="TransformBlock{TInput,TOutput}"/>.</param>
-		/// <exception cref="System.ArgumentNullException">The <paramref name="transform"/> is null (Nothing in Visual Basic).</exception>
-		/// <exception cref="System.ArgumentNullException">The <paramref name="dataflowBlockOptions"/> is null (Nothing in Visual Basic).</exception>
-		[SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
-		public TransformBlock(Func<TInput, Task<TOutput>> transform, ExecutionDataflowBlockOptions dataflowBlockOptions) :
-			this(null, transform, dataflowBlockOptions)
-		{ }
+    /// <summary>Initializes the <see cref="TransformBlock{TInput,TOutput}"/> with the specified <see cref="System.Func{TInput,TOutput}"/>.</summary>
+    /// <param name="transform">The function to invoke with each data element received.</param>
+    /// <exception cref="System.ArgumentNullException">The <paramref name="transform"/> is null (Nothing in Visual Basic).</exception>
+    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+    public TransformBlock(Func<TInput, Task<TOutput>> transform) :
+      this(null, transform, ExecutionDataflowBlockOptions.Default)
+    { }
 
-		#endregion
+    /// <summary>Initializes the <see cref="TransformBlock{TInput,TOutput}"/> with the specified <see cref="System.Func{TInput,TOutput}"/>
+    /// and <see cref="ExecutionDataflowBlockOptions"/>.</summary>
+    /// <param name="transform">The function to invoke with each data element received.</param>
+    /// <param name="dataflowBlockOptions">The options with which to configure this <see cref="TransformBlock{TInput,TOutput}"/>.</param>
+    /// <exception cref="System.ArgumentNullException">The <paramref name="transform"/> is null (Nothing in Visual Basic).</exception>
+    /// <exception cref="System.ArgumentNullException">The <paramref name="dataflowBlockOptions"/> is null (Nothing in Visual Basic).</exception>
+    [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+    public TransformBlock(Func<TInput, Task<TOutput>> transform, ExecutionDataflowBlockOptions dataflowBlockOptions) :
+      this(null, transform, dataflowBlockOptions)
+    { }
 
-		#region ** TransformBlock **
+    #endregion
 
-		/// <summary>Initializes the <see cref="TransformBlock{TInput,TOutput}"/> with the specified <see cref="System.Func{TInput,TOutput}"/>
-		/// and <see cref="DataflowBlockOptions"/>.</summary>
-		/// <param name="transformSync">The synchronous function to invoke with each data element received.</param>
-		/// <param name="transformAsync">The asynchronous function to invoke with each data element received.</param>
-		/// <param name="dataflowBlockOptions">The options with which to configure this <see cref="TransformBlock{TInput,TOutput}"/>.</param>
-		/// <exception cref="System.ArgumentNullException">The <paramref name="transformSync"/> and <paramref name="transformAsync"/> are both null (Nothing in Visual Basic).</exception>
-		/// <exception cref="System.ArgumentNullException">The <paramref name="dataflowBlockOptions"/> is null (Nothing in Visual Basic).</exception>
-		private TransformBlock(Func<TInput, TOutput> transformSync, Func<TInput, Task<TOutput>> transformAsync, ExecutionDataflowBlockOptions dataflowBlockOptions)
-		{
-			if (transformSync == null && transformAsync == null) { throw new ArgumentNullException("transform"); }
-			if (dataflowBlockOptions == null) { throw new ArgumentNullException("dataflowBlockOptions"); }
+    #region ** TransformBlock **
 
-			Contract.Requires(transformSync == null ^ transformAsync == null, "Exactly one of transformSync and transformAsync must be null.");
-			Contract.EndContractBlock();
+    /// <summary>Initializes the <see cref="TransformBlock{TInput,TOutput}"/> with the specified <see cref="System.Func{TInput,TOutput}"/>
+    /// and <see cref="DataflowBlockOptions"/>.</summary>
+    /// <param name="transformSync">The synchronous function to invoke with each data element received.</param>
+    /// <param name="transformAsync">The asynchronous function to invoke with each data element received.</param>
+    /// <param name="dataflowBlockOptions">The options with which to configure this <see cref="TransformBlock{TInput,TOutput}"/>.</param>
+    /// <exception cref="System.ArgumentNullException">The <paramref name="transformSync"/> and <paramref name="transformAsync"/> are both null (Nothing in Visual Basic).</exception>
+    /// <exception cref="System.ArgumentNullException">The <paramref name="dataflowBlockOptions"/> is null (Nothing in Visual Basic).</exception>
+    private TransformBlock(Func<TInput, TOutput> transformSync, Func<TInput, Task<TOutput>> transformAsync, ExecutionDataflowBlockOptions dataflowBlockOptions)
+    {
+      if (transformSync == null && transformAsync == null) { throw new ArgumentNullException("transform"); }
+      if (dataflowBlockOptions == null) { throw new ArgumentNullException(nameof(dataflowBlockOptions)); }
 
-			// Ensure we have options that can't be changed by the caller
-			dataflowBlockOptions = dataflowBlockOptions.DefaultOrClone();
+      Contract.Requires(transformSync == null ^ transformAsync == null, "Exactly one of transformSync and transformAsync must be null.");
+      Contract.EndContractBlock();
 
-			// Initialize onItemsRemoved delegate if necessary
-			Action<ISourceBlock<TOutput>, Int32> onItemsRemoved = null;
-			if (dataflowBlockOptions.BoundedCapacity > 0)
-			{
-				onItemsRemoved = (owningSource, count) => ((TransformBlock<TInput, TOutput>)owningSource)._target.ChangeBoundingCount(-count);
-			}
+      // Ensure we have options that can't be changed by the caller
+      dataflowBlockOptions = dataflowBlockOptions.DefaultOrClone();
 
-			// Initialize source component.
-			_source = new SourceCore<TOutput>(this, dataflowBlockOptions,
-					owningSource => ((TransformBlock<TInput, TOutput>)owningSource)._target.Complete(exception: null, dropPendingMessages: true),
-					onItemsRemoved);
+      // Initialize onItemsRemoved delegate if necessary
+      Action<ISourceBlock<TOutput>, Int32> onItemsRemoved = null;
+      if (dataflowBlockOptions.BoundedCapacity > 0)
+      {
+        onItemsRemoved = (owningSource, count) => ((TransformBlock<TInput, TOutput>)owningSource)._target.ChangeBoundingCount(-count);
+      }
 
-			// If parallelism is employed, we will need to support reordering messages that complete out-of-order
-			if (dataflowBlockOptions.SupportsParallelExecution)
-			{
-				_reorderingBuffer = new ReorderingBuffer<TOutput>(this, (owningSource, message) => ((TransformBlock<TInput, TOutput>)owningSource)._source.AddMessage(message));
-			}
+      // Initialize source component.
+      _source = new SourceCore<TOutput>(this, dataflowBlockOptions,
+          owningSource => ((TransformBlock<TInput, TOutput>)owningSource)._target.Complete(exception: null, dropPendingMessages: true),
+          onItemsRemoved);
 
-			// Create the underlying target
-			if (transformSync != null) // sync
-			{
-				_target = new TargetCore<TInput>(this,
-						messageWithId => ProcessMessage(transformSync, messageWithId),
-						_reorderingBuffer, dataflowBlockOptions, TargetCoreOptions.None);
-			}
-			else // async
-			{
-				Debug.Assert(transformAsync != null, "Incorrect delegate type.");
-				_target = new TargetCore<TInput>(this,
-						messageWithId => ProcessMessageWithTask(transformAsync, messageWithId),
-						_reorderingBuffer, dataflowBlockOptions, TargetCoreOptions.UsesAsyncCompletion);
-			}
+      // If parallelism is employed, we will need to support reordering messages that complete out-of-order.
+      // However, a developer can override this with EnsureOrdered == false.
+      if (dataflowBlockOptions.SupportsParallelExecution && dataflowBlockOptions.EnsureOrdered)
+      {
+        _reorderingBuffer = new ReorderingBuffer<TOutput>(this, (owningSource, message) => ((TransformBlock<TInput, TOutput>)owningSource)._source.AddMessage(message));
+      }
 
-			// Link up the target half with the source half.  In doing so,
-			// ensure exceptions are propagated, and let the source know no more messages will arrive.
-			// As the target has completed, and as the target synchronously pushes work
-			// through the reordering buffer when async processing completes,
-			// we know for certain that no more messages will need to be sent to the source.
+      // Create the underlying target
+      if (transformSync != null) // sync
+      {
+        _target = new TargetCore<TInput>(this,
+            messageWithId => ProcessMessage(transformSync, messageWithId),
+            _reorderingBuffer, dataflowBlockOptions, TargetCoreOptions.None);
+      }
+      else // async
+      {
+        Debug.Assert(transformAsync != null, "Incorrect delegate type.");
+        _target = new TargetCore<TInput>(this,
+            messageWithId => ProcessMessageWithTask(transformAsync, messageWithId),
+            _reorderingBuffer, dataflowBlockOptions, TargetCoreOptions.UsesAsyncCompletion);
+      }
+
+      // Link up the target half with the source half.  In doing so,
+      // ensure exceptions are propagated, and let the source know no more messages will arrive.
+      // As the target has completed, and as the target synchronously pushes work
+      // through the reordering buffer when async processing completes,
+      // we know for certain that no more messages will need to be sent to the source.
 #if NET_4_0_GREATER
-			_target.Completion.ContinueWith((completed, state) =>
-			{
-				var sourceCore = (SourceCore<TOutput>)state;
-				if (completed.IsFaulted) { sourceCore.AddAndUnwrapAggregateException(completed.Exception); }
-				sourceCore.Complete();
-			}, _source, CancellationToken.None, Common.GetContinuationOptions(), TaskScheduler.Default);
+      _target.Completion.ContinueWith((completed, state) =>
+      {
+        var sourceCore = (SourceCore<TOutput>)state;
+        if (completed.IsFaulted) { sourceCore.AddAndUnwrapAggregateException(completed.Exception); }
+        sourceCore.Complete();
+      }, _source, CancellationToken.None, Common.GetContinuationOptions(), TaskScheduler.Default);
 #else
-			Action<Task> continuationAction1 = completed =>
-			{
-				if (completed.IsFaulted) { _source.AddAndUnwrapAggregateException(completed.Exception); }
-				_source.Complete();
-			};
-			_target.Completion.ContinueWith(continuationAction1, CancellationToken.None, Common.GetContinuationOptions(), TaskScheduler.Default);
+      Action<Task> continuationAction1 = completed =>
+      {
+        if (completed.IsFaulted) { _source.AddAndUnwrapAggregateException(completed.Exception); }
+        _source.Complete();
+      };
+      _target.Completion.ContinueWith(continuationAction1, CancellationToken.None, Common.GetContinuationOptions(), TaskScheduler.Default);
 #endif
 
-			// It is possible that the source half may fault on its own, e.g. due to a task scheduler exception.
-			// In those cases we need to fault the target half to drop its buffered messages and to release its
-			// reservations. This should not create an infinite loop, because all our implementations are designed
-			// to handle multiple completion requests and to carry over only one.
+      // It is possible that the source half may fault on its own, e.g. due to a task scheduler exception.
+      // In those cases we need to fault the target half to drop its buffered messages and to release its
+      // reservations. This should not create an infinite loop, because all our implementations are designed
+      // to handle multiple completion requests and to carry over only one.
 #if NET_4_0_GREATER
-			_source.Completion.ContinueWith((completed, state) =>
-			{
-				var thisBlock = ((TransformBlock<TInput, TOutput>)state) as IDataflowBlock;
-				Debug.Assert(completed.IsFaulted, "The source must be faulted in order to trigger a target completion.");
-				thisBlock.Fault(completed.Exception);
-			}, this, CancellationToken.None, Common.GetContinuationOptions() | TaskContinuationOptions.OnlyOnFaulted, TaskScheduler.Default);
+      _source.Completion.ContinueWith((completed, state) =>
+      {
+        var thisBlock = ((TransformBlock<TInput, TOutput>)state) as IDataflowBlock;
+        Debug.Assert(completed.IsFaulted, "The source must be faulted in order to trigger a target completion.");
+        thisBlock.Fault(completed.Exception);
+      }, this, CancellationToken.None, Common.GetContinuationOptions() | TaskContinuationOptions.OnlyOnFaulted, TaskScheduler.Default);
 #else
-			Action<Task> continuationAction2 = completed =>
-			{
-				var thisBlock = this as IDataflowBlock;
-				Debug.Assert(completed.IsFaulted, "The source must be faulted in order to trigger a target completion.");
-				thisBlock.Fault(completed.Exception);
-			};
-			_source.Completion.ContinueWith(continuationAction2, CancellationToken.None, Common.GetContinuationOptions() | TaskContinuationOptions.OnlyOnFaulted, TaskScheduler.Default);
+      Action<Task> continuationAction2 = completed =>
+      {
+        var thisBlock = this as IDataflowBlock;
+        Debug.Assert(completed.IsFaulted, "The source must be faulted in order to trigger a target completion.");
+        thisBlock.Fault(completed.Exception);
+      };
+      _source.Completion.ContinueWith(continuationAction2, CancellationToken.None, Common.GetContinuationOptions() | TaskContinuationOptions.OnlyOnFaulted, TaskScheduler.Default);
 #endif
-			// Handle async cancellation requests by declining on the target
-			Common.WireCancellationToComplete(
-					dataflowBlockOptions.CancellationToken, Completion, state => ((TargetCore<TInput>)state).Complete(exception: null, dropPendingMessages: true), _target);
+      // Handle async cancellation requests by declining on the target
+      Common.WireCancellationToComplete(
+          dataflowBlockOptions.CancellationToken, Completion, state => ((TargetCore<TInput>)state).Complete(exception: null, dropPendingMessages: true), _target);
 #if FEATURE_TRACING
-			var etwLog = DataflowEtwProvider.Log;
-			if (etwLog.IsEnabled())
-			{
-				etwLog.DataflowBlockCreated(this, dataflowBlockOptions);
-			}
+      var etwLog = DataflowEtwProvider.Log;
+      if (etwLog.IsEnabled())
+      {
+        etwLog.DataflowBlockCreated(this, dataflowBlockOptions);
+      }
 #endif
-		}
+    }
 
-		#endregion
+    #endregion
 
-		#region ** ProcessMessage **
+    #region ** ProcessMessage **
 
-		/// <summary>Processes the message with a user-provided transform function that returns a TOutput.</summary>
-		/// <param name="transform">The transform function to use to process the message.</param>
-		/// <param name="messageWithId">The message to be processed.</param>
-		private void ProcessMessage(Func<TInput, TOutput> transform, KeyValuePair<TInput, Int64> messageWithId)
-		{
-			// Process the input message to get the output message
-			var outputItem = default(TOutput);
-			var itemIsValid = false;
-			try
-			{
-				outputItem = transform(messageWithId.Key);
-				itemIsValid = true;
-			}
-			catch (Exception exc)
-			{
-				// If this exception represents cancellation, swallow it rather than shutting down the block.
-				if (!Common.IsCooperativeCancellation(exc)) { throw; }
-			}
-			finally
-			{
-				// If we were not successful in producing an item, update the bounding
-				// count to reflect that we're done with this input item.
-				if (!itemIsValid) { _target.ChangeBoundingCount(-1); }
+    /// <summary>Processes the message with a user-provided transform function that returns a TOutput.</summary>
+    /// <param name="transform">The transform function to use to process the message.</param>
+    /// <param name="messageWithId">The message to be processed.</param>
+    private void ProcessMessage(Func<TInput, TOutput> transform, KeyValuePair<TInput, Int64> messageWithId)
+    {
+      // Process the input message to get the output message
+      var outputItem = default(TOutput);
+      var itemIsValid = false;
+      try
+      {
+        outputItem = transform(messageWithId.Key);
+        itemIsValid = true;
+      }
+      catch (Exception exc)
+      {
+        // If this exception represents cancellation, swallow it rather than shutting down the block.
+        if (!Common.IsCooperativeCancellation(exc)) { throw; }
+      }
+      finally
+      {
+        // If we were not successful in producing an item, update the bounding
+        // count to reflect that we're done with this input item.
+        if (!itemIsValid) { _target.ChangeBoundingCount(-1); }
 
-				// If there's no reordering buffer (because we're running sequentially),
-				// simply pass the output message through. Otherwise, there's a reordering buffer,
-				// so add to it instead (if a reordering buffer is used, we always need
-				// to output the message to it, even if the operation failed and outputMessage
-				// is null... this is because the reordering buffer cares about a strict sequence
-				// of IDs, and it needs to know when a particular ID has completed. It will eliminate
-				// null messages accordingly.)
-				if (_reorderingBuffer == null)
-				{
-					if (itemIsValid) { _source.AddMessage(outputItem); }
-				}
-				else
-				{
-					_reorderingBuffer.AddItem(messageWithId.Value, outputItem, itemIsValid);
-				}
-			}
-		}
+        // If there's no reordering buffer (because we're running sequentially or ordering was disabled),
+        // simply pass the output message through. Otherwise, there's a reordering buffer, 
+        // so add to it instead (if a reordering buffer is used, we always need
+        // to output the message to it, even if the operation failed and outputMessage
+        // is null... this is because the reordering buffer cares about a strict sequence
+        // of IDs, and it needs to know when a particular ID has completed. It will eliminate
+        // null messages accordingly.)
+        if (_reorderingBuffer == null)
+        {
+          if (itemIsValid)
+          {
+            if (_target.DataflowBlockOptions.MaxDegreeOfParallelism == 1)
+            {
+              _source.AddMessage(outputItem);
+            }
+            else
+            {
+              lock (ParallelSourceLock)
+              {
+                _source.AddMessage(outputItem);
+              }
+            }
+          }
+        }
+        else
+        {
+          _reorderingBuffer.AddItem(messageWithId.Value, outputItem, itemIsValid);
+        }
+      }
+    }
 
-		#endregion
+    #endregion
 
-		#region ** ProcessMessageWithTask **
+    #region ** ProcessMessageWithTask **
 
-		/// <summary>Processes the message with a user-provided transform function that returns a task of TOutput.</summary>
-		/// <param name="transform">The transform function to use to process the message.</param>
-		/// <param name="messageWithId">The message to be processed.</param>
-		[SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-		private void ProcessMessageWithTask(Func<TInput, Task<TOutput>> transform, KeyValuePair<TInput, Int64> messageWithId)
-		{
-			Contract.Requires(transform != null, "Function to invoke is required.");
+    /// <summary>Processes the message with a user-provided transform function that returns a task of TOutput.</summary>
+    /// <param name="transform">The transform function to use to process the message.</param>
+    /// <param name="messageWithId">The message to be processed.</param>
+    [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+    private void ProcessMessageWithTask(Func<TInput, Task<TOutput>> transform, KeyValuePair<TInput, Int64> messageWithId)
+    {
+      Contract.Requires(transform != null, "Function to invoke is required.");
 
-			// Run the transform function to get the task that represents the operation's completion
-			Task<TOutput> task = null;
-			Exception caughtException = null;
-			try
-			{
-				task = transform(messageWithId.Key);
-			}
-			catch (Exception exc) { caughtException = exc; }
+      // Run the transform function to get the task that represents the operation's completion
+      Task<TOutput> task = null;
+      Exception caughtException = null;
+      try
+      {
+        task = transform(messageWithId.Key);
+      }
+      catch (Exception exc) { caughtException = exc; }
 
-			// If no task is available, we're done.
-			if (task == null)
-			{
-				// If we didn't get a task because an exception occurred,
-				// store it (if the exception was cancellation, just ignore it).
-				if (caughtException != null && !Common.IsCooperativeCancellation(caughtException))
-				{
-					Common.StoreDataflowMessageValueIntoExceptionData(caughtException, messageWithId.Key);
-					_target.Complete(caughtException, dropPendingMessages: true, storeExceptionEvenIfAlreadyCompleting: true, unwrapInnerExceptions: false);
-				}
+      // If no task is available, we're done.
+      if (task == null)
+      {
+        // If we didn't get a task because an exception occurred,
+        // store it (if the exception was cancellation, just ignore it).
+        if (caughtException != null && !Common.IsCooperativeCancellation(caughtException))
+        {
+          Common.StoreDataflowMessageValueIntoExceptionData(caughtException, messageWithId.Key);
+          _target.Complete(caughtException, dropPendingMessages: true, storeExceptionEvenIfAlreadyCompleting: true, unwrapInnerExceptions: false);
+        }
 
-				// If there's a reordering buffer, notify it that this message is done.
-				if (_reorderingBuffer != null) { _reorderingBuffer.IgnoreItem(messageWithId.Value); }
+        // If there's a reordering buffer, notify it that this message is done.
+        if (_reorderingBuffer != null) { _reorderingBuffer.IgnoreItem(messageWithId.Value); }
 
-				// Signal that we're done this async operation, and remove the bounding
-				// count for the input item that didn't yield any output.
-				_target.SignalOneAsyncMessageCompleted(boundingCountChange: -1);
-				return;
-			}
+        // Signal that we're done this async operation, and remove the bounding
+        // count for the input item that didn't yield any output.
+        _target.SignalOneAsyncMessageCompleted(boundingCountChange: -1);
+        return;
+      }
 
-			// Otherwise, join with the asynchronous operation when it completes.
+      // Otherwise, join with the asynchronous operation when it completes.
 #if NET_4_0_GREATER
-			task.ContinueWith((completed, state) =>
-			{
-				var tuple = (Tuple<TransformBlock<TInput, TOutput>, KeyValuePair<TInput, Int64>>)state;
-				tuple.Item1.AsyncCompleteProcessMessageWithTask(completed, tuple.Item2);
-			}, Tuple.Create(this, messageWithId), CancellationToken.None,
-			Common.GetContinuationOptions(TaskContinuationOptions.ExecuteSynchronously), TaskScheduler.Default);
+      task.ContinueWith((completed, state) =>
+      {
+        var tuple = (Tuple<TransformBlock<TInput, TOutput>, KeyValuePair<TInput, Int64>>)state;
+        tuple.Item1.AsyncCompleteProcessMessageWithTask(completed, tuple.Item2);
+      }, Tuple.Create(this, messageWithId), CancellationToken.None,
+      Common.GetContinuationOptions(TaskContinuationOptions.ExecuteSynchronously), TaskScheduler.Default);
 #else
-			Action<Task<TOutput>> continuationAction = completed =>
-			{
-				AsyncCompleteProcessMessageWithTask(completed, messageWithId);
-			};
-			task.ContinueWith(continuationAction, CancellationToken.None,
-				Common.GetContinuationOptions(TaskContinuationOptions.ExecuteSynchronously), TaskScheduler.Default);
+      Action<Task<TOutput>> continuationAction = completed =>
+      {
+        AsyncCompleteProcessMessageWithTask(completed, messageWithId);
+      };
+      task.ContinueWith(continuationAction, CancellationToken.None,
+        Common.GetContinuationOptions(TaskContinuationOptions.ExecuteSynchronously), TaskScheduler.Default);
 #endif
-		}
+    }
 
-		#endregion
+    #endregion
 
-		#region ** AsyncCompleteProcessMessageWithTask **
+    #region ** AsyncCompleteProcessMessageWithTask **
 
-		/// <summary>Completes the processing of an asynchronous message.</summary>
-		/// <param name="completed">The completed task storing the output data generated for an input message.</param>
-		/// <param name="messageWithId">The originating message</param>
-		private void AsyncCompleteProcessMessageWithTask(Task<TOutput> completed, KeyValuePair<TInput, Int64> messageWithId)
-		{
-			Contract.Requires(completed != null, "Completed task is required.");
-			Contract.Requires(completed.IsCompleted, "Task must be completed to be here.");
+    /// <summary>Completes the processing of an asynchronous message.</summary>
+    /// <param name="completed">The completed task storing the output data generated for an input message.</param>
+    /// <param name="messageWithId">The originating message</param>
+    private void AsyncCompleteProcessMessageWithTask(Task<TOutput> completed, KeyValuePair<TInput, Int64> messageWithId)
+    {
+      Contract.Requires(completed != null, "Completed task is required.");
+      Contract.Requires(completed.IsCompleted, "Task must be completed to be here.");
 
-			var isBounded = _target.IsBounded;
-			var gotOutputItem = false;
-			var outputItem = default(TOutput);
+      var isBounded = _target.IsBounded;
+      var gotOutputItem = false;
+      var outputItem = default(TOutput);
 
-			switch (completed.Status)
-			{
-				case TaskStatus.RanToCompletion:
-					outputItem = completed.Result;
-					gotOutputItem = true;
-					break;
+      switch (completed.Status)
+      {
+        case TaskStatus.RanToCompletion:
+          outputItem = completed.Result;
+          gotOutputItem = true;
+          break;
 
-				case TaskStatus.Faulted:
-					// We must add the exception before declining and signaling completion, as the exception
-					// is part of the operation, and the completion conditions depend on this.
-					var aggregate = completed.Exception;
-					Common.StoreDataflowMessageValueIntoExceptionData(aggregate, messageWithId.Key, targetInnerExceptions: true);
-					_target.Complete(aggregate, dropPendingMessages: true, storeExceptionEvenIfAlreadyCompleting: true, unwrapInnerExceptions: true);
-					break;
-				// Nothing special to do for cancellation
-			}
+        case TaskStatus.Faulted:
+          // We must add the exception before declining and signaling completion, as the exception
+          // is part of the operation, and the completion conditions depend on this.
+          var aggregate = completed.Exception;
+          Common.StoreDataflowMessageValueIntoExceptionData(aggregate, messageWithId.Key, targetInnerExceptions: true);
+          _target.Complete(aggregate, dropPendingMessages: true, storeExceptionEvenIfAlreadyCompleting: true, unwrapInnerExceptions: true);
+          break;
+          // Nothing special to do for cancellation
+      }
 
-			// Adjust the bounding count if necessary (we only need to decrement it for faulting
-			// and cancellation, since in the case of success we still have an item that's now in the output buffer).
-			// Even though this is more costly (again, only in the non-success case, we do this before we store the
-			// message, so that if there's a race to remove the element from the source buffer, the count is
-			// appropriately incremented before it's decremented.
-			if (!gotOutputItem && isBounded) { _target.ChangeBoundingCount(-1); }
+      // Adjust the bounding count if necessary (we only need to decrement it for faulting
+      // and cancellation, since in the case of success we still have an item that's now in the output buffer).
+      // Even though this is more costly (again, only in the non-success case, we do this before we store the
+      // message, so that if there's a race to remove the element from the source buffer, the count is
+      // appropriately incremented before it's decremented.
+      if (!gotOutputItem && isBounded) { _target.ChangeBoundingCount(-1); }
 
-			// If there's no reordering buffer (because we're running sequentially),
-			// and we got a message, simply pass the output message through.
-			if (_reorderingBuffer == null)
-			{
-				if (gotOutputItem) { _source.AddMessage(outputItem); }
-			}
-			// Otherwise, there's a reordering buffer, so add to it instead.
-			// Even if something goes wrong, we need to update the
-			// reordering buffer, so it knows that an item isn't missing.
-			else
-			{
-				_reorderingBuffer.AddItem(messageWithId.Value, outputItem, itemIsValid: gotOutputItem);
-			}
+      // If there's no reordering buffer (because we're running sequentially or ordering is disabled),
+      // and we got a message, simply pass the output message through.
+      if (_reorderingBuffer == null)
+      {
+        if (gotOutputItem)
+        {
+          if (_target.DataflowBlockOptions.MaxDegreeOfParallelism == 1)
+          {
+            _source.AddMessage(outputItem);
+          }
+          else
+          {
+            lock (ParallelSourceLock)
+            {
+              _source.AddMessage(outputItem);
+            }
+          }
+        }
+      }
+      // Otherwise, there's a reordering buffer, so add to it instead.
+      // Even if something goes wrong, we need to update the
+      // reordering buffer, so it knows that an item isn't missing.
+      else
+      {
+        _reorderingBuffer.AddItem(messageWithId.Value, outputItem, itemIsValid: gotOutputItem);
+      }
 
-			// Let the target know that one of the asynchronous operations it launched has completed.
-			_target.SignalOneAsyncMessageCompleted();
-		}
+      // Let the target know that one of the asynchronous operations it launched has completed.
+      _target.SignalOneAsyncMessageCompleted();
+    }
 
-		#endregion
+    #endregion
 
-		#region -- IDataflowBlock Members --
+    #region -- IDataflowBlock Members --
 
-		/// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Blocks/Member[@name="Completion"]/*' />
-		public Task Completion { get { return _source.Completion; } }
+    /// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Blocks/Member[@name="Completion"]/*' />
+    public Task Completion { get { return _source.Completion; } }
 
-		/// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Blocks/Member[@name="Complete"]/*' />
-		public void Complete()
-		{
-			_target.Complete(exception: null, dropPendingMessages: false);
-		}
+    /// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Blocks/Member[@name="Complete"]/*' />
+    public void Complete()
+    {
+      _target.Complete(exception: null, dropPendingMessages: false);
+    }
 
-		/// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Blocks/Member[@name="Fault"]/*' />
-		void IDataflowBlock.Fault(Exception exception)
-		{
-			if (exception == null) throw new ArgumentNullException("exception");
-			Contract.EndContractBlock();
+    /// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Blocks/Member[@name="Fault"]/*' />
+    void IDataflowBlock.Fault(Exception exception)
+    {
+      if (exception == null) throw new ArgumentNullException(nameof(exception));
+      Contract.EndContractBlock();
 
-			_target.Complete(exception, dropPendingMessages: true);
-		}
+      _target.Complete(exception, dropPendingMessages: true);
+    }
 
-		#endregion
+    #endregion
 
-		#region -- IReceivableSourceBlock Members --
+    #region -- IReceivableSourceBlock Members --
 
-		/// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Sources/Member[@name="TryReceive"]/*' />
-		public Boolean TryReceive(Predicate<TOutput> filter, out TOutput item)
-		{
-			return _source.TryReceive(filter, out item);
-		}
+    /// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Sources/Member[@name="TryReceive"]/*' />
+    public Boolean TryReceive(Predicate<TOutput> filter, out TOutput item)
+    {
+      return _source.TryReceive(filter, out item);
+    }
 
-		/// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Sources/Member[@name="TryReceiveAll"]/*' />
-		public Boolean TryReceiveAll(out IList<TOutput> items)
-		{
-			return _source.TryReceiveAll(out items);
-		}
+    /// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Sources/Member[@name="TryReceiveAll"]/*' />
+    public Boolean TryReceiveAll(out IList<TOutput> items)
+    {
+      return _source.TryReceiveAll(out items);
+    }
 
-		#endregion
+    #endregion
 
-		#region -- ITargetBlock Members --
+    #region -- ITargetBlock Members --
 
-		/// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Targets/Member[@name="OfferMessage"]/*' />
-		DataflowMessageStatus ITargetBlock<TInput>.OfferMessage(DataflowMessageHeader messageHeader, TInput messageValue, ISourceBlock<TInput> source, Boolean consumeToAccept)
-		{
-			return _target.OfferMessage(messageHeader, messageValue, source, consumeToAccept);
-		}
+    /// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Targets/Member[@name="OfferMessage"]/*' />
+    DataflowMessageStatus ITargetBlock<TInput>.OfferMessage(DataflowMessageHeader messageHeader, TInput messageValue, ISourceBlock<TInput> source, Boolean consumeToAccept)
+    {
+      return _target.OfferMessage(messageHeader, messageValue, source, consumeToAccept);
+    }
 
-		#endregion
+    #endregion
 
-		#region -- ISourceBlock Members --
+    #region -- ISourceBlock Members --
 
-		/// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Sources/Member[@name="LinkTo"]/*' />
-		public IDisposable LinkTo(ITargetBlock<TOutput> target, DataflowLinkOptions linkOptions)
-		{
-			return _source.LinkTo(target, linkOptions);
-		}
+    /// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Sources/Member[@name="LinkTo"]/*' />
+    public IDisposable LinkTo(ITargetBlock<TOutput> target, DataflowLinkOptions linkOptions)
+    {
+      return _source.LinkTo(target, linkOptions);
+    }
 
-		/// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Sources/Member[@name="ConsumeMessage"]/*' />
-		TOutput ISourceBlock<TOutput>.ConsumeMessage(DataflowMessageHeader messageHeader, ITargetBlock<TOutput> target, out Boolean messageConsumed)
-		{
-			return _source.ConsumeMessage(messageHeader, target, out messageConsumed);
-		}
+    /// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Sources/Member[@name="ConsumeMessage"]/*' />
+    TOutput ISourceBlock<TOutput>.ConsumeMessage(DataflowMessageHeader messageHeader, ITargetBlock<TOutput> target, out Boolean messageConsumed)
+    {
+      return _source.ConsumeMessage(messageHeader, target, out messageConsumed);
+    }
 
-		/// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Sources/Member[@name="ReserveMessage"]/*' />
-		Boolean ISourceBlock<TOutput>.ReserveMessage(DataflowMessageHeader messageHeader, ITargetBlock<TOutput> target)
-		{
-			return _source.ReserveMessage(messageHeader, target);
-		}
+    /// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Sources/Member[@name="ReserveMessage"]/*' />
+    Boolean ISourceBlock<TOutput>.ReserveMessage(DataflowMessageHeader messageHeader, ITargetBlock<TOutput> target)
+    {
+      return _source.ReserveMessage(messageHeader, target);
+    }
 
-		/// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Sources/Member[@name="ReleaseReservation"]/*' />
-		void ISourceBlock<TOutput>.ReleaseReservation(DataflowMessageHeader messageHeader, ITargetBlock<TOutput> target)
-		{
-			_source.ReleaseReservation(messageHeader, target);
-		}
+    /// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Sources/Member[@name="ReleaseReservation"]/*' />
+    void ISourceBlock<TOutput>.ReleaseReservation(DataflowMessageHeader messageHeader, ITargetBlock<TOutput> target)
+    {
+      _source.ReleaseReservation(messageHeader, target);
+    }
 
-		#endregion
+    #endregion
 
-		#region -- ToString --
+    #region -- ToString --
 
-		/// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Blocks/Member[@name="ToString"]/*' />
-		public override String ToString()
-		{
-			return Common.GetNameForDebugger(this, _source.DataflowBlockOptions);
-		}
+    /// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Blocks/Member[@name="ToString"]/*' />
+    public override String ToString()
+    {
+      return Common.GetNameForDebugger(this, _source.DataflowBlockOptions);
+    }
 
-		#endregion
+    #endregion
 
-		#region -- IDebuggerDisplay Members --
+    #region -- IDebuggerDisplay Members --
 
-		/// <summary>Gets the number of messages waiting to be processed.  This must only be used from the debugger as it avoids taking necessary locks.</summary>
-		private Int32 InputCountForDebugger { get { return _target.GetDebuggingInformation().InputCount; } }
+    /// <summary>Gets the number of messages waiting to be processed.  This must only be used from the debugger as it avoids taking necessary locks.</summary>
+    private Int32 InputCountForDebugger { get { return _target.GetDebuggingInformation().InputCount; } }
 
-		/// <summary>Gets the number of messages waiting to be processed.  This must only be used from the debugger as it avoids taking necessary locks.</summary>
-		private Int32 OutputCountForDebugger { get { return _source.GetDebuggingInformation().OutputCount; } }
+    /// <summary>Gets the number of messages waiting to be processed.  This must only be used from the debugger as it avoids taking necessary locks.</summary>
+    private Int32 OutputCountForDebugger { get { return _source.GetDebuggingInformation().OutputCount; } }
 
-		/// <summary>The data to display in the debugger display attribute.</summary>
-		[SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider")]
-		private Object DebuggerDisplayContent
-		{
-			get
-			{
-				return "{0}, InputCount={1}, OutputCount={2}".FormatWith(
-						Common.GetNameForDebugger(this, _source.DataflowBlockOptions),
-						InputCountForDebugger,
-						OutputCountForDebugger);
-			}
-		}
+    /// <summary>The data to display in the debugger display attribute.</summary>
+    [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider")]
+    private Object DebuggerDisplayContent
+    {
+      get
+      {
+        return "{0}, InputCount={1}, OutputCount={2}".FormatWith(
+            Common.GetNameForDebugger(this, _source.DataflowBlockOptions),
+            InputCountForDebugger,
+            OutputCountForDebugger);
+      }
+    }
 
-		/// <summary>Gets the data to display in the debugger display attribute for this instance.</summary>
-		Object IDebuggerDisplay.Content { get { return DebuggerDisplayContent; } }
+    /// <summary>Gets the data to display in the debugger display attribute for this instance.</summary>
+    Object IDebuggerDisplay.Content { get { return DebuggerDisplayContent; } }
 
-		#endregion
+    #endregion
 
-		#region ** class DebugView **
+    #region ** class DebugView **
 
-		/// <summary>Provides a debugger type proxy for the TransformBlock.</summary>
-		private sealed class DebugView
-		{
-			/// <summary>The transform being viewed.</summary>
-			private readonly TransformBlock<TInput, TOutput> _transformBlock;
+    /// <summary>Provides a debugger type proxy for the TransformBlock.</summary>
+    private sealed class DebugView
+    {
+      /// <summary>The transform being viewed.</summary>
+      private readonly TransformBlock<TInput, TOutput> _transformBlock;
 
-			/// <summary>The target half of the block being viewed.</summary>
-			private readonly TargetCore<TInput>.DebuggingInformation _targetDebuggingInformation;
+      /// <summary>The target half of the block being viewed.</summary>
+      private readonly TargetCore<TInput>.DebuggingInformation _targetDebuggingInformation;
 
-			/// <summary>The source half of the block being viewed.</summary>
-			private readonly SourceCore<TOutput>.DebuggingInformation _sourceDebuggingInformation;
+      /// <summary>The source half of the block being viewed.</summary>
+      private readonly SourceCore<TOutput>.DebuggingInformation _sourceDebuggingInformation;
 
-			/// <summary>Initializes the debug view.</summary>
-			/// <param name="transformBlock">The transform being viewed.</param>
-			public DebugView(TransformBlock<TInput, TOutput> transformBlock)
-			{
-				Contract.Requires(transformBlock != null, "Need a block with which to construct the debug view.");
-				_transformBlock = transformBlock;
-				_targetDebuggingInformation = transformBlock._target.GetDebuggingInformation();
-				_sourceDebuggingInformation = transformBlock._source.GetDebuggingInformation();
-			}
+      /// <summary>Initializes the debug view.</summary>
+      /// <param name="transformBlock">The transform being viewed.</param>
+      public DebugView(TransformBlock<TInput, TOutput> transformBlock)
+      {
+        Contract.Requires(transformBlock != null, "Need a block with which to construct the debug view.");
+        _transformBlock = transformBlock;
+        _targetDebuggingInformation = transformBlock._target.GetDebuggingInformation();
+        _sourceDebuggingInformation = transformBlock._source.GetDebuggingInformation();
+      }
 
-			/// <summary>Gets the messages waiting to be processed.</summary>
-			public IEnumerable<TInput> InputQueue { get { return _targetDebuggingInformation.InputQueue; } }
+      /// <summary>Gets the messages waiting to be processed.</summary>
+      public IEnumerable<TInput> InputQueue { get { return _targetDebuggingInformation.InputQueue; } }
 
-			/// <summary>Gets any postponed messages.</summary>
-			public QueuedMap<ISourceBlock<TInput>, DataflowMessageHeader> PostponedMessages { get { return _targetDebuggingInformation.PostponedMessages; } }
+      /// <summary>Gets any postponed messages.</summary>
+      public QueuedMap<ISourceBlock<TInput>, DataflowMessageHeader> PostponedMessages { get { return _targetDebuggingInformation.PostponedMessages; } }
 
-			/// <summary>Gets the messages waiting to be received.</summary>
-			public IEnumerable<TOutput> OutputQueue { get { return _sourceDebuggingInformation.OutputQueue; } }
+      /// <summary>Gets the messages waiting to be received.</summary>
+      public IEnumerable<TOutput> OutputQueue { get { return _sourceDebuggingInformation.OutputQueue; } }
 
-			/// <summary>Gets the number of outstanding input operations.</summary>
-			public Int32 CurrentDegreeOfParallelism { get { return _targetDebuggingInformation.CurrentDegreeOfParallelism; } }
+      /// <summary>Gets the number of outstanding input operations.</summary>
+      public Int32 CurrentDegreeOfParallelism { get { return _targetDebuggingInformation.CurrentDegreeOfParallelism; } }
 
-			/// <summary>Gets the task being used for output processing.</summary>
-			public Task TaskForOutputProcessing { get { return _sourceDebuggingInformation.TaskForOutputProcessing; } }
+      /// <summary>Gets the task being used for output processing.</summary>
+      public Task TaskForOutputProcessing { get { return _sourceDebuggingInformation.TaskForOutputProcessing; } }
 
-			/// <summary>Gets the DataflowBlockOptions used to configure this block.</summary>
-			public ExecutionDataflowBlockOptions DataflowBlockOptions { get { return _targetDebuggingInformation.DataflowBlockOptions; } }
+      /// <summary>Gets the DataflowBlockOptions used to configure this block.</summary>
+      public ExecutionDataflowBlockOptions DataflowBlockOptions { get { return _targetDebuggingInformation.DataflowBlockOptions; } }
 
-			/// <summary>Gets whether the block is declining further messages.</summary>
-			public Boolean IsDecliningPermanently { get { return _targetDebuggingInformation.IsDecliningPermanently; } }
+      /// <summary>Gets whether the block is declining further messages.</summary>
+      public Boolean IsDecliningPermanently { get { return _targetDebuggingInformation.IsDecliningPermanently; } }
 
-			/// <summary>Gets whether the block is completed.</summary>
-			public Boolean IsCompleted { get { return _sourceDebuggingInformation.IsCompleted; } }
+      /// <summary>Gets whether the block is completed.</summary>
+      public Boolean IsCompleted { get { return _sourceDebuggingInformation.IsCompleted; } }
 
-			/// <summary>Gets the block's Id.</summary>
-			public Int32 Id { get { return Common.GetBlockId(_transformBlock); } }
+      /// <summary>Gets the block's Id.</summary>
+      public Int32 Id { get { return Common.GetBlockId(_transformBlock); } }
 
-			/// <summary>Gets the set of all targets linked from this block.</summary>
-			public TargetRegistry<TOutput> LinkedTargets { get { return _sourceDebuggingInformation.LinkedTargets; } }
+      /// <summary>Gets the set of all targets linked from this block.</summary>
+      public TargetRegistry<TOutput> LinkedTargets { get { return _sourceDebuggingInformation.LinkedTargets; } }
 
-			/// <summary>Gets the target that holds a reservation on the next message, if any.</summary>
-			public ITargetBlock<TOutput> NextMessageReservedFor { get { return _sourceDebuggingInformation.NextMessageReservedFor; } }
-		}
+      /// <summary>Gets the target that holds a reservation on the next message, if any.</summary>
+      public ITargetBlock<TOutput> NextMessageReservedFor { get { return _sourceDebuggingInformation.NextMessageReservedFor; } }
+    }
 
-		#endregion
-	}
+    #endregion
+  }
 }

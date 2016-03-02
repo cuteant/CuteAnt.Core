@@ -33,8 +33,8 @@ namespace System.Threading.Tasks.Dataflow
 				ITargetBlock<TOutput> target)
 		{
 			// Validate arguments
-			if (source == null) { throw new ArgumentNullException("source"); }
-			if (target == null) { throw new ArgumentNullException("target"); }
+			if (source == null) { throw new ArgumentNullException(nameof(source)); }
+			if (target == null) { throw new ArgumentNullException(nameof(target)); }
 			Contract.EndContractBlock();
 
 			// This method exists purely to pass default DataflowLinkOptions
@@ -76,10 +76,10 @@ namespace System.Threading.Tasks.Dataflow
 				Predicate<TOutput> predicate)
 		{
 			// Validate arguments
-			if (source == null) { throw new ArgumentNullException("source"); }
-			if (target == null) { throw new ArgumentNullException("target"); }
-			if (linkOptions == null) { throw new ArgumentNullException("linkOptions"); }
-			if (predicate == null) { throw new ArgumentNullException("predicate"); }
+			if (source == null) { throw new ArgumentNullException(nameof(source)); }
+			if (target == null) { throw new ArgumentNullException(nameof(target)); }
+			if (linkOptions == null) { throw new ArgumentNullException(nameof(linkOptions)); }
+			if (predicate == null) { throw new ArgumentNullException(nameof(predicate)); }
 			Contract.EndContractBlock();
 
 			// Create the filter, which links to the real target, and then
@@ -205,8 +205,8 @@ namespace System.Threading.Tasks.Dataflow
 			{
 				// Validate arguments.  Some targets may have a null source, but FilteredLinkPropagator
 				// is an internal target that should only ever have source non-null.
-				if (!messageHeader.IsValid) { throw new ArgumentException(SR.Argument_InvalidMessageHeader, "messageHeader"); }
-				if (source == null) { throw new ArgumentNullException("source"); }
+				if (!messageHeader.IsValid) { throw new ArgumentException(SR.Argument_InvalidMessageHeader, nameof(messageHeader)); }
+				if (source == null) { throw new ArgumentNullException(nameof(source)); }
 				Contract.EndContractBlock();
 
 				// Run the filter.

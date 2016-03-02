@@ -26,7 +26,7 @@ namespace System.Threading.Tasks.Dataflow
 		/// <returns>An observer that wraps the target block.</returns>
 		public static IObserver<TInput> AsObserver<TInput>(this ITargetBlock<TInput> target)
 		{
-			if (target == null) { throw new ArgumentNullException("target"); }
+			if (target == null) { throw new ArgumentNullException(nameof(target)); }
 			Contract.EndContractBlock();
 			return new TargetObserver<TInput>(target);
 		}

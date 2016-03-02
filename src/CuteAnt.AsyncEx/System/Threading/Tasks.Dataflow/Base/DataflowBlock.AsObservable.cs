@@ -31,7 +31,7 @@ namespace System.Threading.Tasks.Dataflow
 		/// <exception cref="System.ArgumentNullException">The <paramref name="source"/> is null (Nothing in Visual Basic).</exception>
 		public static IObservable<TOutput> AsObservable<TOutput>(this ISourceBlock<TOutput> source)
 		{
-			if (source == null) { throw new ArgumentNullException("source"); }
+			if (source == null) { throw new ArgumentNullException(nameof(source)); }
 			Contract.EndContractBlock();
 			return SourceObservable<TOutput>.From(source);
 		}
@@ -118,7 +118,7 @@ namespace System.Threading.Tasks.Dataflow
 			IDisposable IObservable<TOutput>.Subscribe(IObserver<TOutput> observer)
 			{
 				// Validate arguments
-				if (observer == null) { throw new ArgumentNullException("observer"); }
+				if (observer == null) { throw new ArgumentNullException(nameof(observer)); }
 				Contract.EndContractBlock();
 				Common.ContractAssertMonitorStatus(_SubscriptionLock, held: false);
 

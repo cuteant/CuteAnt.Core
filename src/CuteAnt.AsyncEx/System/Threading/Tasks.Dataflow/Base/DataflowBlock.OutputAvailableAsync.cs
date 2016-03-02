@@ -56,7 +56,7 @@ namespace System.Threading.Tasks.Dataflow
 		public static Task<Boolean> OutputAvailableAsync<TOutput>(this ISourceBlock<TOutput> source, CancellationToken cancellationToken)
 		{
 			// Validate arguments
-			if (source == null) { throw new ArgumentNullException("source"); }
+			if (source == null) { throw new ArgumentNullException(nameof(source)); }
 			Contract.EndContractBlock();
 
 			// Fast path for cancellation
@@ -201,7 +201,7 @@ namespace System.Threading.Tasks.Dataflow
 			DataflowMessageStatus ITargetBlock<T>.OfferMessage(DataflowMessageHeader messageHeader, T messageValue, ISourceBlock<T> source, Boolean consumeToAccept)
 			{
 				if (!messageHeader.IsValid) { throw new ArgumentException(SR.Argument_InvalidMessageHeader, "messageHeader"); }
-				if (source == null) { throw new ArgumentNullException("source"); }
+				if (source == null) { throw new ArgumentNullException(nameof(source)); }
 				Contract.EndContractBlock();
 
 				TrySetResult(true);

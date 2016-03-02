@@ -44,13 +44,13 @@ namespace System.Threading.Tasks.Dataflow
 			/// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Targets/Member[@name="OfferMessage"]/*' />
 			DataflowMessageStatus ITargetBlock<TInput>.OfferMessage(DataflowMessageHeader messageHeader, TInput messageValue, ISourceBlock<TInput> source, Boolean consumeToAccept)
 			{
-				if (!messageHeader.IsValid) { throw new ArgumentException(SR.Argument_InvalidMessageHeader, "messageHeader"); }
+				if (!messageHeader.IsValid) { throw new ArgumentException(SR.Argument_InvalidMessageHeader, nameof(messageHeader)); }
 				Contract.EndContractBlock();
 
 				// If the source requires an explicit synchronous consumption, do it
 				if (consumeToAccept)
 				{
-					if (source == null) { throw new ArgumentException(SR.Argument_CantConsumeFromANullSource, "consumeToAccept"); }
+					if (source == null) { throw new ArgumentException(SR.Argument_CantConsumeFromANullSource, nameof(consumeToAccept)); }
 					Boolean messageConsumed;
 
 					// If the source throws during this call, let the exception propagate back to the source

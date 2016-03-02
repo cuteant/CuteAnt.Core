@@ -47,7 +47,7 @@ namespace System.Threading.Tasks.Dataflow
 		/// </remarks>
 		public static Boolean Post<TInput>(this ITargetBlock<TInput> target, TInput item)
 		{
-			if (target == null) { throw new ArgumentNullException("target"); }
+			if (target == null) { throw new ArgumentNullException(nameof(target)); }
 			return target.OfferMessage(Common.SingleMessageHeader, item, source: null, consumeToAccept: false) == DataflowMessageStatus.Accepted;
 		}
 
@@ -101,7 +101,7 @@ namespace System.Threading.Tasks.Dataflow
 		public static Task<Boolean> SendAsync<TInput>(this ITargetBlock<TInput> target, TInput item, CancellationToken cancellationToken)
 		{
 			// Validate arguments.  No validation necessary for item.
-			if (target == null) { throw new ArgumentNullException("target"); }
+			if (target == null) { throw new ArgumentNullException(nameof(target)); }
 			Contract.EndContractBlock();
 
 			// Fast path check for cancellation
@@ -490,8 +490,8 @@ namespace System.Threading.Tasks.Dataflow
 			TOutput ISourceBlock<TOutput>.ConsumeMessage(DataflowMessageHeader messageHeader, ITargetBlock<TOutput> target, out Boolean messageConsumed)
 			{
 				// Validate arguments
-				if (!messageHeader.IsValid) { throw new ArgumentException(SR.Argument_InvalidMessageHeader, "messageHeader"); }
-				if (target == null) { throw new ArgumentNullException("target"); }
+				if (!messageHeader.IsValid) { throw new ArgumentException(SR.Argument_InvalidMessageHeader, nameof(messageHeader)); }
+				if (target == null) { throw new ArgumentNullException(nameof(target)); }
 				Contract.EndContractBlock();
 
 				// If the task has already completed, there's nothing to consume.  This could happen if
@@ -536,8 +536,8 @@ namespace System.Threading.Tasks.Dataflow
 			Boolean ISourceBlock<TOutput>.ReserveMessage(DataflowMessageHeader messageHeader, ITargetBlock<TOutput> target)
 			{
 				// Validate arguments
-				if (!messageHeader.IsValid) { throw new ArgumentException(SR.Argument_InvalidMessageHeader, "messageHeader"); }
-				if (target == null) { throw new ArgumentNullException("target"); }
+				if (!messageHeader.IsValid) { throw new ArgumentException(SR.Argument_InvalidMessageHeader, nameof(messageHeader)); }
+				if (target == null) { throw new ArgumentNullException(nameof(target)); }
 				Contract.EndContractBlock();
 
 				// If the task has already completed, such as due to cancellation, there's nothing to reserve.
@@ -554,8 +554,8 @@ namespace System.Threading.Tasks.Dataflow
 			void ISourceBlock<TOutput>.ReleaseReservation(DataflowMessageHeader messageHeader, ITargetBlock<TOutput> target)
 			{
 				// Validate arguments
-				if (!messageHeader.IsValid) { throw new ArgumentException(SR.Argument_InvalidMessageHeader, "messageHeader"); }
-				if (target == null) { throw new ArgumentNullException("target"); }
+				if (!messageHeader.IsValid) { throw new ArgumentException(SR.Argument_InvalidMessageHeader, nameof(messageHeader)); }
+				if (target == null) { throw new ArgumentNullException(nameof(target)); }
 				Contract.EndContractBlock();
 
 				// If this is not the message we posted, bail

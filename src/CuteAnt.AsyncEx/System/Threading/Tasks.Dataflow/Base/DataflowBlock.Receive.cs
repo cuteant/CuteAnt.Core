@@ -39,7 +39,7 @@ namespace System.Threading.Tasks.Dataflow
 		/// </remarks>
 		public static Boolean TryReceive<TOutput>(this IReceivableSourceBlock<TOutput> source, out TOutput item)
 		{
-			if (source == null) { throw new ArgumentNullException("source"); }
+			if (source == null) { throw new ArgumentNullException(nameof(source)); }
 			Contract.EndContractBlock();
 
 			return source.TryReceive(null, out item);
@@ -121,8 +121,8 @@ namespace System.Threading.Tasks.Dataflow
 		{
 			// Validate arguments
 
-			if (source == null) { throw new ArgumentNullException("source"); }
-			if (!Common.IsValidTimeout(timeout)) { throw new ArgumentOutOfRangeException("timeout", SR.ArgumentOutOfRange_NeedNonNegOrNegative1); }
+			if (source == null) { throw new ArgumentNullException(nameof(source)); }
+			if (!Common.IsValidTimeout(timeout)) { throw new ArgumentOutOfRangeException(nameof(timeout), SR.ArgumentOutOfRange_NeedNonNegOrNegative1); }
 
 			// Return the task representing the core receive operation
 			return ReceiveCore(source, true, timeout, cancellationToken);
@@ -205,8 +205,8 @@ namespace System.Threading.Tasks.Dataflow
 				this ISourceBlock<TOutput> source, TimeSpan timeout, CancellationToken cancellationToken)
 		{
 			// Validate arguments
-			if (source == null) { throw new ArgumentNullException("source"); }
-			if (!Common.IsValidTimeout(timeout)) { throw new ArgumentOutOfRangeException("timeout", SR.ArgumentOutOfRange_NeedNonNegOrNegative1); }
+			if (source == null) { throw new ArgumentNullException(nameof(source)); }
+			if (!Common.IsValidTimeout(timeout)) { throw new ArgumentOutOfRangeException(nameof(timeout), SR.ArgumentOutOfRange_NeedNonNegOrNegative1); }
 
 			// Do fast path checks for both cancellation and data already existing.
 			cancellationToken.ThrowIfCancellationRequested();
@@ -653,8 +653,8 @@ namespace System.Threading.Tasks.Dataflow
 			DataflowMessageStatus ITargetBlock<T>.OfferMessage(DataflowMessageHeader messageHeader, T messageValue, ISourceBlock<T> source, Boolean consumeToAccept)
 			{
 				// Validate arguments
-				if (!messageHeader.IsValid) { throw new ArgumentException(SR.Argument_InvalidMessageHeader, "messageHeader"); }
-				if (source == null && consumeToAccept) { throw new ArgumentException(SR.Argument_CantConsumeFromANullSource, "consumeToAccept"); }
+				if (!messageHeader.IsValid) { throw new ArgumentException(SR.Argument_InvalidMessageHeader, nameof(messageHeader)); }
+				if (source == null && consumeToAccept) { throw new ArgumentException(SR.Argument_CantConsumeFromANullSource, nameof(consumeToAccept)); }
 				Contract.EndContractBlock();
 
 				DataflowMessageStatus status = DataflowMessageStatus.NotAvailable;

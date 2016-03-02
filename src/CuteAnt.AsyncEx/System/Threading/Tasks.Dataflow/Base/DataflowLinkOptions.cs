@@ -91,7 +91,7 @@ namespace System.Threading.Tasks.Dataflow
 			set
 			{
 				Debug.Assert(this != Default && this != UnlinkAfterOneAndPropagateCompletion, "Default and UnlinkAfterOneAndPropagateCompletion instances are supposed to be immutable.");
-				if (value < 1 && value != Unbounded) throw new ArgumentOutOfRangeException("value");
+				if (value < 1 && value != Unbounded) throw new ArgumentOutOfRangeException(nameof(value));
 				_maxNumberOfMessages = value;
 			}
 		}

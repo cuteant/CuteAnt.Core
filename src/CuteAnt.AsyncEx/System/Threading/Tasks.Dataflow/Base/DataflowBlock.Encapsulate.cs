@@ -37,8 +37,8 @@ namespace System.Threading.Tasks.Dataflow
 		public static IPropagatorBlock<TInput, TOutput> Encapsulate<TInput, TOutput>(
 			ITargetBlock<TInput> target, ISourceBlock<TOutput> source)
 		{
-			if (target == null) { throw new ArgumentNullException("target"); }
-			if (source == null) { throw new ArgumentNullException("source"); }
+			if (target == null) { throw new ArgumentNullException(nameof(target)); }
+			if (source == null) { throw new ArgumentNullException(nameof(source)); }
 			Contract.EndContractBlock();
 			return new EncapsulatingPropagator<TInput, TOutput>(target, source);
 		}
@@ -78,7 +78,7 @@ namespace System.Threading.Tasks.Dataflow
 			/// <include file='XmlDocs/CommonXmlDocComments.xml' path='CommonXmlDocComments/Blocks/Member[@name="Fault"]/*' />
 			void IDataflowBlock.Fault(Exception exception)
 			{
-				if (exception == null) { throw new ArgumentNullException("exception"); }
+				if (exception == null) { throw new ArgumentNullException(nameof(exception)); }
 				Contract.EndContractBlock();
 
 				_target.Fault(exception);
