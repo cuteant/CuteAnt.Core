@@ -164,6 +164,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CuteAnt.Extensions.Options"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CuteAnt.Extensions.FileProviders.Composite", "src\CuteAnt.Extensions.FileProviders.Composite\CuteAnt.Extensions.FileProviders.Composite.xproj", "{39609EB1-1BF5-4795-B1C6-81A73CC44541}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CuteAnt.Extensions.Logging.Sources", "src\CuteAnt.Extensions.Logging.Sources\CuteAnt.Extensions.Logging.Sources.xproj", "{11406AC5-8738-4AF8-9486-59C68801DDE9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -418,6 +420,10 @@ Global
 		{39609EB1-1BF5-4795-B1C6-81A73CC44541}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39609EB1-1BF5-4795-B1C6-81A73CC44541}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39609EB1-1BF5-4795-B1C6-81A73CC44541}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11406AC5-8738-4AF8-9486-59C68801DDE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11406AC5-8738-4AF8-9486-59C68801DDE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11406AC5-8738-4AF8-9486-59C68801DDE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11406AC5-8738-4AF8-9486-59C68801DDE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -496,5 +502,6 @@ Global
 		{AB9A1888-CE8A-418E-9549-BD6CCCC2896A} = {4E91C2DE-DD3A-472C-B04C-AFDC22777025}
 		{94508369-1A7A-41F3-A8C1-4717973AD30B} = {4E91C2DE-DD3A-472C-B04C-AFDC22777025}
 		{39609EB1-1BF5-4795-B1C6-81A73CC44541} = {3EF4DAB4-FE91-4510-A379-13C3E442275A}
+		{11406AC5-8738-4AF8-9486-59C68801DDE9} = {314D5AFE-2A7B-4CFF-8476-4929AC47EDEA}
 	EndGlobalSection
 EndGlobal

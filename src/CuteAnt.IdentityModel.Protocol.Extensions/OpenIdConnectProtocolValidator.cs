@@ -177,10 +177,10 @@ namespace Microsoft.IdentityModel.Protocols
         public virtual void Validate(JwtSecurityToken jwt, OpenIdConnectProtocolValidationContext validationContext)
         {
             if (jwt == null)
-                throw new ArgumentNullException("jwt");
+                throw new ArgumentNullException(nameof(jwt));
 
             if (validationContext == null)
-                throw new ArgumentNullException("validationContext");
+                throw new ArgumentNullException(nameof(validationContext));
 
             // required claims
             if (jwt.Payload.Aud.Count == 0)
@@ -231,12 +231,12 @@ namespace Microsoft.IdentityModel.Protocols
         {
             if (jwt == null)
             {
-                throw new ArgumentNullException("jwt");
+                throw new ArgumentNullException(nameof(jwt));
             }
 
             if (validationContext == null)
             {
-                throw new ArgumentNullException("validationContext");
+                throw new ArgumentNullException(nameof(validationContext));
             }
 
             // this handles the case the code is not expected
@@ -312,12 +312,12 @@ namespace Microsoft.IdentityModel.Protocols
         {
             if (jwt == null)
             {
-                throw new ArgumentNullException("jwt");
+                throw new ArgumentNullException(nameof(jwt));
             }
 
             if (validationContext == null)
             {
-                throw new ArgumentNullException("validationContext");
+                throw new ArgumentNullException(nameof(validationContext));
             }
 
             string nonceFoundInJwt = jwt.Payload.Nonce;

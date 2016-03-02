@@ -98,7 +98,7 @@ namespace System.IdentityModel.Tokens
         {
             if (other == null)
             {
-                throw new ArgumentNullException("other");
+                throw new ArgumentNullException(nameof(other));
             }
 
             AudienceValidator = other.AudienceValidator;

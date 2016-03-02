@@ -203,12 +203,12 @@ namespace System.IdentityModel.Tokens
         {
             if (key == null)
             {
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             }
 
             if (algorithm == null)
             {
-                throw new ArgumentNullException("algorithm");
+                throw new ArgumentNullException(nameof(algorithm));
             }
 
             if (string.IsNullOrWhiteSpace(algorithm))

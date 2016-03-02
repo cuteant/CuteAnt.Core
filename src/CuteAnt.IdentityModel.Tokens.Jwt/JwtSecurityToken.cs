@@ -55,7 +55,7 @@ namespace System.IdentityModel.Tokens
         {
             if (null == jwtEncodedString)
             {
-                throw new ArgumentNullException("jwtEncodedString");
+                throw new ArgumentNullException(nameof(jwtEncodedString));
             }
 
             if (string.IsNullOrWhiteSpace(jwtEncodedString))
@@ -87,17 +87,17 @@ namespace System.IdentityModel.Tokens
         {
             if (header == null)
             {
-                throw new ArgumentNullException("header");
+                throw new ArgumentNullException(nameof(header));
             }
 
             if (payload == null)
             {
-                throw new ArgumentNullException("payload");
+                throw new ArgumentNullException(nameof(payload));
             }
 
             if (rawSignature == null)
             {
-                throw new ArgumentNullException("rawSignature");
+                throw new ArgumentNullException(nameof(rawSignature));
             }
 
             if (string.IsNullOrWhiteSpace(rawHeader))
@@ -129,12 +129,12 @@ namespace System.IdentityModel.Tokens
         {
             if (header == null)
             {
-                throw new ArgumentNullException("header");
+                throw new ArgumentNullException(nameof(header));
             }
 
             if (payload == null)
             {
-                throw new ArgumentNullException("payload");
+                throw new ArgumentNullException(nameof(payload));
             }
 
             this.header = header;

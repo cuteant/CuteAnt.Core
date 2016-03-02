@@ -40,10 +40,10 @@ namespace System.IdentityModel.Tokens
             : base(NameKeySecurityKeyIdentifierClauseType)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
 
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentNullException("id");
+                throw new ArgumentNullException(nameof(id));
 
             this.name = name;
             this.Id = id;
@@ -72,7 +72,7 @@ namespace System.IdentityModel.Tokens
         {
             if (keyIdentifierClause == null)
             {
-                throw new ArgumentNullException("keyIdentifierClause");
+                throw new ArgumentNullException(nameof(keyIdentifierClause));
             }
 
             NamedKeySecurityKeyIdentifierClause namedKeyIdentifierClause = keyIdentifierClause as NamedKeySecurityKeyIdentifierClause;

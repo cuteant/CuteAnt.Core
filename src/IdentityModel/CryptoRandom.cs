@@ -98,7 +98,7 @@ namespace IdentityModel
         /// </exception>
         public override Int32 Next(Int32 maxValue)
         {
-            if (maxValue < 0) throw new ArgumentOutOfRangeException("maxValue");
+            if (maxValue < 0) throw new ArgumentOutOfRangeException(nameof(maxValue));
             return Next(0, maxValue);
         }
 
@@ -115,7 +115,7 @@ namespace IdentityModel
         /// </exception>
         public override Int32 Next(Int32 minValue, Int32 maxValue)
         {
-            if (minValue > maxValue) throw new ArgumentOutOfRangeException("minValue");
+            if (minValue > maxValue) throw new ArgumentOutOfRangeException(nameof(minValue));
             if (minValue == maxValue) return minValue;
             Int64 diff = maxValue - minValue;
 
@@ -155,7 +155,7 @@ namespace IdentityModel
         /// </exception>
         public override void NextBytes(byte[] buffer)
         {
-            if (buffer == null) throw new ArgumentNullException("buffer");
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
             _rng.GetBytes(buffer);
         }
     }

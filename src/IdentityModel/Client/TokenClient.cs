@@ -26,8 +26,8 @@ namespace IdentityModel.Client
 
         public TokenClient(string address, HttpMessageHandler innerHttpMessageHandler)
         {
-            if (address == null) throw new ArgumentNullException("address");
-            if (innerHttpMessageHandler == null) throw new ArgumentNullException("innerHttpMessageHandler");
+            if (address == null) throw new ArgumentNullException(nameof(address));
+            if (innerHttpMessageHandler == null) throw new ArgumentNullException(nameof(innerHttpMessageHandler));
             
             _client = new HttpClient(innerHttpMessageHandler)
             {

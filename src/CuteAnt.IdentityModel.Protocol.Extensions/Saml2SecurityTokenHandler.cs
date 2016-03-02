@@ -134,7 +134,7 @@ namespace Microsoft.IdentityModel.Tokens
         {
             if (null == token)
             {
-                throw new ArgumentNullException("token");
+                throw new ArgumentNullException(nameof(token));
             }
 
             return token.CreateKeyIdentifierClause<Saml2AssertionKeyIdentifierClause>();
@@ -151,12 +151,12 @@ namespace Microsoft.IdentityModel.Tokens
         {
             if (samlToken == null)
             {
-                throw new ArgumentNullException("samlToken");
+                throw new ArgumentNullException(nameof(samlToken));
             }
 
             if (validationParameters == null)
             {
-                throw new ArgumentNullException("validationParameters");
+                throw new ArgumentNullException(nameof(validationParameters));
             }
 
             if (string.IsNullOrWhiteSpace(issuer))
@@ -186,7 +186,7 @@ namespace Microsoft.IdentityModel.Tokens
         {
             if (null == tokenDescriptor)
             {
-                throw new ArgumentNullException("tokenDescriptor");
+                throw new ArgumentNullException(nameof(tokenDescriptor));
             }
 
             return _smSaml2HandlerPrivateNeverSetAnyProperties.CreateToken(tokenDescriptor);
@@ -255,12 +255,12 @@ namespace Microsoft.IdentityModel.Tokens
         {
             if (reader == null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }
 
             if (validationParameters == null)
             {
-                throw new ArgumentNullException("validationParameters");
+                throw new ArgumentNullException(nameof(validationParameters));
             }
 
             return (new Saml2Handler()
@@ -297,12 +297,12 @@ namespace Microsoft.IdentityModel.Tokens
             validatedToken = null;
             if (string.IsNullOrWhiteSpace(securityToken))
             {
-                throw new ArgumentNullException("securityToken");
+                throw new ArgumentNullException(nameof(securityToken));
             }
 
             if (validationParameters == null)
             {
-                throw new ArgumentNullException("validationParameters");
+                throw new ArgumentNullException(nameof(validationParameters));
             }
 
             if (securityToken.Length > MaximumTokenSizeInBytes)
@@ -488,7 +488,7 @@ namespace Microsoft.IdentityModel.Tokens
         {
             if (token == null)
             {
-                throw new ArgumentNullException("token");
+                throw new ArgumentNullException(nameof(token));
             }
 
             Saml2SecurityToken samlSecurityToken = token as Saml2SecurityToken;
@@ -515,12 +515,12 @@ namespace Microsoft.IdentityModel.Tokens
         {
             if (writer == null)
             {
-                throw new ArgumentNullException("writer");
+                throw new ArgumentNullException(nameof(writer));
             }
 
             if (token == null)
             {
-                throw new ArgumentNullException("token");
+                throw new ArgumentNullException(nameof(token));
             }
 
             Saml2SecurityToken samlSecurityToken = token as Saml2SecurityToken;

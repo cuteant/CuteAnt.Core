@@ -41,7 +41,7 @@ namespace CuteAnt.Extensions.Configuration.Xml
         {
             if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentException(Resources.Error_InvalidFilePath, "path");
+                throw new ArgumentException(Resources.Error_InvalidFilePath, nameof(path));
             }
 
             Optional = optional;

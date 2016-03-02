@@ -113,7 +113,7 @@ namespace Microsoft.IdentityModel.Tokens
         {
             if (samlToken == null)
             {
-                throw new ArgumentNullException("samlToken");
+                throw new ArgumentNullException(nameof(samlToken));
             }
 
             if (string.IsNullOrWhiteSpace(issuer))
@@ -141,7 +141,7 @@ namespace Microsoft.IdentityModel.Tokens
         {
             if (null == tokenDescriptor)
             {
-                throw new ArgumentNullException("tokenDescriptor");
+                throw new ArgumentNullException(nameof(tokenDescriptor));
             }
 
             return _smSamlHandlerPrivateNeverSetAnyProperties.CreateToken(tokenDescriptor);
@@ -158,7 +158,7 @@ namespace Microsoft.IdentityModel.Tokens
         {
             if (null == token)
             {
-                throw new ArgumentNullException("token");
+                throw new ArgumentNullException(nameof(token));
             }
 
             return token.CreateKeyIdentifierClause<SamlAssertionKeyIdentifierClause>();
@@ -274,12 +274,12 @@ namespace Microsoft.IdentityModel.Tokens
         {
             if (string.IsNullOrWhiteSpace(securityToken))
             {
-                throw new ArgumentNullException("securityToken");
+                throw new ArgumentNullException(nameof(securityToken));
             }
 
             if (validationParameters == null)
             {
-                throw new ArgumentNullException("validationParameters");
+                throw new ArgumentNullException(nameof(validationParameters));
             }
 
             if (securityToken.Length > MaximumTokenSizeInBytes)
@@ -458,7 +458,7 @@ namespace Microsoft.IdentityModel.Tokens
         {
             if (token == null)
             {
-                throw new ArgumentNullException("token");
+                throw new ArgumentNullException(nameof(token));
             }
 
             SamlSecurityToken samlSecurityToken = token as SamlSecurityToken;
@@ -485,12 +485,12 @@ namespace Microsoft.IdentityModel.Tokens
         {
             if (writer == null)
             {
-                throw new ArgumentNullException("writer");
+                throw new ArgumentNullException(nameof(writer));
             }
 
             if (token == null)
             {
-                throw new ArgumentNullException("token");
+                throw new ArgumentNullException(nameof(token));
             }
 
             SamlSecurityToken samlSecurityToken = token as SamlSecurityToken;

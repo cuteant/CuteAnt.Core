@@ -14,7 +14,7 @@
       "compilationOptions": {
         "define": [ "DEBUG", "TRACE", "FEAT_COMPILER", "FEAT_SERVICEMODEL", "PLAT_BINARYFORMATTER", "PLAT_XMLSERIALIZER" ],
         "keyFile": "../../tools/StrongKey.snk",
-        "warningsAsErrors": true,
+        "warningsAsErrors": false,
         "allowUnsafe": true
       }
     },
@@ -23,7 +23,7 @@
         "define": [ "TRACE", "FEAT_COMPILER", "FEAT_SERVICEMODEL", "PLAT_BINARYFORMATTER", "PLAT_XMLSERIALIZER" ],
         "optimize": true,
         "keyFile": "../../tools/StrongKey.snk",
-        "warningsAsErrors": true,
+        "warningsAsErrors": false,
         "allowUnsafe": true
       }
     }

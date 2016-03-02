@@ -57,7 +57,7 @@ namespace Microsoft.IdentityModel.Protocols
         {
             if (string.IsNullOrWhiteSpace(json))
             {
-                throw new ArgumentNullException("json");
+                throw new ArgumentNullException(nameof(json));
             }
 
             SetFromDictionary(_javaScriptSerializer.Deserialize<Dictionary<string, object>>(json));
@@ -72,7 +72,7 @@ namespace Microsoft.IdentityModel.Protocols
         {
             if (dictionary == null)
             {
-                throw new ArgumentNullException("dictionary");
+                throw new ArgumentNullException(nameof(dictionary));
             }
 
             SetFromDictionary(dictionary);

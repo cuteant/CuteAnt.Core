@@ -111,7 +111,7 @@ namespace Microsoft.IdentityModel.Protocols
         {
             if (String.IsNullOrEmpty(parameter))
             {
-                throw new ArgumentNullException("parameter");
+                throw new ArgumentNullException(nameof(parameter));
             }
 
             string value = null;
@@ -182,7 +182,7 @@ namespace Microsoft.IdentityModel.Protocols
         {
             if (String.IsNullOrEmpty(parameter))
             {
-                throw new ArgumentNullException("parameter");
+                throw new ArgumentNullException(nameof(parameter));
             }
 
             if (_parameters.ContainsKey(parameter))
@@ -202,7 +202,7 @@ namespace Microsoft.IdentityModel.Protocols
         {
             if (String.IsNullOrEmpty(parameter))
             {
-                throw new ArgumentNullException("parameter");
+                throw new ArgumentNullException(nameof(parameter));
             }
 
             if (value == null)

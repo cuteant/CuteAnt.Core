@@ -414,7 +414,7 @@ namespace System.IdentityModel.Tokens
         {
             if (claim == null)
             {
-                throw new ArgumentNullException("claim");
+                throw new ArgumentNullException(nameof(claim));
             }
 
             this.AddClaims(new Claim[] { claim });
@@ -432,7 +432,7 @@ namespace System.IdentityModel.Tokens
         {
             if (claims == null)
             {
-                throw new ArgumentNullException("claims");
+                throw new ArgumentNullException(nameof(claims));
             }
 
             foreach (Claim claim in claims)

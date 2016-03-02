@@ -48,17 +48,17 @@ namespace Microsoft.IdentityModel.Extensions
         {
             if (tokenHandlers == null)
             {
-                throw new ArgumentNullException("tokenHandlers");
+                throw new ArgumentNullException(nameof(tokenHandlers));
             }
 
             if (securityToken == null)
             {
-                throw new ArgumentNullException("securityToken");
+                throw new ArgumentNullException(nameof(securityToken));
             }
 
             if (validationParameters == null)
             {
-                throw new ArgumentNullException("validationParameters");
+                throw new ArgumentNullException(nameof(validationParameters));
             }
 
             bool iSecurityTokenValidatorFound = false;

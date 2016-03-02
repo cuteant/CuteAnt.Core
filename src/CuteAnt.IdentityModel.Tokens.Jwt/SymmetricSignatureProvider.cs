@@ -51,7 +51,7 @@ namespace System.IdentityModel.Tokens
         {
             if (key == null)
             {
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             }
 
             if (null == algorithm)
@@ -116,7 +116,7 @@ namespace System.IdentityModel.Tokens
         {
             if (input == null)
             {
-                throw new ArgumentNullException("input");
+                throw new ArgumentNullException(nameof(input));
             }
 
             if (input.Length == 0)
@@ -153,12 +153,12 @@ namespace System.IdentityModel.Tokens
         {
             if (input == null)
             {
-                throw new ArgumentNullException("input");
+                throw new ArgumentNullException(nameof(input));
             }
 
             if (signature == null)
             {
-                throw new ArgumentNullException("signature");
+                throw new ArgumentNullException(nameof(signature));
             }
 
             if (input.Length == 0)

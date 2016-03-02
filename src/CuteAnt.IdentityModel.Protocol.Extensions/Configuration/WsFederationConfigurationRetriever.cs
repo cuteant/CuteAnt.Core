@@ -76,12 +76,12 @@ namespace Microsoft.IdentityModel.Protocols
         {
             if (string.IsNullOrWhiteSpace(address))
             {
-                throw new ArgumentNullException("address");
+                throw new ArgumentNullException(nameof(address));
             }
 
             if (retriever == null)
             {
-                throw new ArgumentNullException("retriever");
+                throw new ArgumentNullException(nameof(retriever));
             }
 
             WsFederationConfiguration configuration = new WsFederationConfiguration();

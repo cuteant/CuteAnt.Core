@@ -97,7 +97,7 @@ namespace Microsoft.IdentityModel.Protocols
 
             if (string.IsNullOrWhiteSpace(metadataAddress))
             {
-                throw new ArgumentNullException("metadataAddress");
+                throw new ArgumentNullException(nameof(metadataAddress));
             }
 
             if (docRetriever == null)

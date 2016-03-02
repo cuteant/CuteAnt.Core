@@ -22,13 +22,13 @@ namespace IdentityModel.Client
         public UserInfoClient(Uri endpoint, string token, HttpMessageHandler innerHttpMessageHandler)
         {
             if (endpoint == null)
-                throw new ArgumentNullException("endpoint");
+                throw new ArgumentNullException(nameof(endpoint));
 
             if (string.IsNullOrEmpty(token))
-                throw new ArgumentNullException("token");
+                throw new ArgumentNullException(nameof(token));
 
             if (innerHttpMessageHandler == null)
-                throw new ArgumentNullException("innerHttpMessageHandler");
+                throw new ArgumentNullException(nameof(innerHttpMessageHandler));
 
             _client = new HttpClient(innerHttpMessageHandler)
             {

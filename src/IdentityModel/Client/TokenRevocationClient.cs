@@ -26,8 +26,8 @@ namespace IdentityModel.Client
 
         public TokenRevocationClient(string address, HttpMessageHandler innerHttpMessageHandler)
         {
-            if (address == null) throw new ArgumentNullException("address");
-            if (innerHttpMessageHandler == null) throw new ArgumentNullException("innerHttpMessageHandler");
+            if (address == null) throw new ArgumentNullException(nameof(address));
+            if (innerHttpMessageHandler == null) throw new ArgumentNullException(nameof(innerHttpMessageHandler));
             
             _client = new HttpClient(innerHttpMessageHandler)
             {
@@ -48,8 +48,8 @@ namespace IdentityModel.Client
         public TokenRevocationClient(string address, string clientId, string clientSecret, HttpMessageHandler innerHttpMessageHandler, AuthenticationStyle style = AuthenticationStyle.BasicAuthentication)
             : this(address, innerHttpMessageHandler)
         {
-            if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException("clientId");
-            if (string.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException("clientSecret");
+            if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException(nameof(clientId));
+            if (string.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException(nameof(clientSecret));
 
             AuthenticationStyle = style;
             ClientId = clientId;

@@ -376,7 +376,7 @@ namespace System.IdentityModel.Tokens
         {
             if (reader == null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }
 
             try
@@ -423,7 +423,7 @@ namespace System.IdentityModel.Tokens
         {
             if (tokenString == null)
             {
-                throw new ArgumentNullException("tokenString");
+                throw new ArgumentNullException(nameof(tokenString));
             }
 
             if (tokenString.Length * 2 > this.MaximumTokenSizeInBytes)
@@ -461,7 +461,7 @@ namespace System.IdentityModel.Tokens
         {
             if (tokenDescriptor == null)
             {
-                throw new ArgumentNullException("tokenDescriptor");
+                throw new ArgumentNullException(nameof(tokenDescriptor));
             }
 
             DateTime? notbefore = tokenDescriptor.Lifetime == null ? null : tokenDescriptor.Lifetime.Created;
@@ -564,7 +564,7 @@ namespace System.IdentityModel.Tokens
         {
             if (reader == null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }
 
             if (!this.CanReadToken(reader))
@@ -655,12 +655,12 @@ namespace System.IdentityModel.Tokens
         {
             if (string.IsNullOrWhiteSpace(securityToken))
             {
-                throw new ArgumentNullException("securityToken");
+                throw new ArgumentNullException(nameof(securityToken));
             }
 
             if (validationParameters == null)
             {
-                throw new ArgumentNullException("validationParameters");
+                throw new ArgumentNullException(nameof(validationParameters));
             }
 
             if (securityToken.Length > MaximumTokenSizeInBytes)
@@ -760,12 +760,12 @@ namespace System.IdentityModel.Tokens
         {
             if (writer == null)
             {
-                throw new ArgumentNullException("writer");
+                throw new ArgumentNullException(nameof(writer));
             }
 
             if (token == null)
             {
-                throw new ArgumentNullException("token");
+                throw new ArgumentNullException(nameof(token));
             }
 
             if (!(token is JwtSecurityToken))
@@ -800,7 +800,7 @@ namespace System.IdentityModel.Tokens
         {
             if (token == null)
             {
-                throw new ArgumentNullException("token");
+                throw new ArgumentNullException(nameof(token));
             }
 
             JwtSecurityToken jwt = token as JwtSecurityToken;
@@ -835,7 +835,7 @@ namespace System.IdentityModel.Tokens
         {
             if (null == inputString)
             {
-                throw new ArgumentNullException("inputString");
+                throw new ArgumentNullException(nameof(inputString));
             }
 
             SignatureProvider provider;
@@ -888,12 +888,12 @@ namespace System.IdentityModel.Tokens
         {
             if (string.IsNullOrWhiteSpace(token))
             {
-                throw new ArgumentNullException("token");
+                throw new ArgumentNullException(nameof(token));
             }
 
             if (validationParameters == null)
             {
-                throw new ArgumentNullException("validationParameters");
+                throw new ArgumentNullException(nameof(validationParameters));
             }
 
             JwtSecurityToken jwt = this.ReadToken(token) as JwtSecurityToken;
@@ -1054,7 +1054,7 @@ namespace System.IdentityModel.Tokens
         {
             if (jwt == null)
             {
-                throw new ArgumentNullException("jwt");
+                throw new ArgumentNullException(nameof(jwt));
             }
 
             if (string.IsNullOrWhiteSpace(issuer))
@@ -1130,7 +1130,7 @@ namespace System.IdentityModel.Tokens
         {
             if (actor == null)
             {
-                throw new ArgumentNullException("actor");
+                throw new ArgumentNullException(nameof(actor));
             }
 
             if (actor.BootstrapContext != null)
@@ -1220,12 +1220,12 @@ namespace System.IdentityModel.Tokens
         {
             if (keyIdentifier == null)
             {
-                throw new ArgumentNullException("keyIdentifier");
+                throw new ArgumentNullException(nameof(keyIdentifier));
             }
 
             if (validationParameters == null)
             {
-                throw new ArgumentNullException("validationParameters");
+                throw new ArgumentNullException(nameof(validationParameters));
             }
 
             foreach (SecurityKeyIdentifierClause keyIdentifierClause in keyIdentifier)

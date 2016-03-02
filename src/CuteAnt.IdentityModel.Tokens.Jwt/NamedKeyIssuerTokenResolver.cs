@@ -128,7 +128,7 @@ namespace System.IdentityModel.Tokens
         {
             if (nodeList == null)
             {
-                throw new ArgumentNullException("nodeList");
+                throw new ArgumentNullException(nameof(nodeList));
             }
 
             for (int i = 0; i < nodeList.Count; i++)
@@ -182,7 +182,7 @@ namespace System.IdentityModel.Tokens
         {
             if (element == null)
             {
-                throw new ArgumentNullException("element");
+                throw new ArgumentNullException(nameof(element));
             }
 
             string key = null;
@@ -258,7 +258,7 @@ namespace System.IdentityModel.Tokens
         {
             if (keyIdentifierClause == null)
             {
-                throw new ArgumentNullException("keyIdentifierClause");
+                throw new ArgumentNullException(nameof(keyIdentifierClause));
             }
 
             key = null;
@@ -301,7 +301,7 @@ namespace System.IdentityModel.Tokens
         {
             if (keyIdentifier == null)
             {
-                throw new ArgumentNullException("keyIdentifier");
+                throw new ArgumentNullException(nameof(keyIdentifier));
             }
 
             token = null;
@@ -343,7 +343,7 @@ namespace System.IdentityModel.Tokens
         protected override bool TryResolveTokenCore(SecurityKeyIdentifierClause keyIdentifierClause, out SecurityToken token)
         {
             if (keyIdentifierClause == null)
-                throw new ArgumentNullException("keyIdentifierClause");
+                throw new ArgumentNullException(nameof(keyIdentifierClause));
 
             token = null;
             NamedKeySecurityKeyIdentifierClause namedKeyIdentifierClause = keyIdentifierClause as NamedKeySecurityKeyIdentifierClause;

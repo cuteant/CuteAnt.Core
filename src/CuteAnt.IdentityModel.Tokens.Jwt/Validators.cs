@@ -44,7 +44,7 @@ namespace System.IdentityModel.Tokens
         {
             if(validationParameters == null)
             {
-                throw new ArgumentNullException("validationParameters");
+                throw new ArgumentNullException(nameof(validationParameters));
             }
 
             if (!validationParameters.ValidateAudience)
@@ -108,7 +108,7 @@ namespace System.IdentityModel.Tokens
         {
             if (validationParameters == null)
             {
-                throw new ArgumentNullException("validationParameters");
+                throw new ArgumentNullException(nameof(validationParameters));
             }
 
             if (!validationParameters.ValidateIssuer)
@@ -158,7 +158,7 @@ namespace System.IdentityModel.Tokens
         {
             if (validationParameters == null)
             {
-                throw new ArgumentNullException("validationParameters");
+                throw new ArgumentNullException(nameof(validationParameters));
             }
 
             if (!validationParameters.ValidateIssuerSigningKey)
@@ -190,7 +190,7 @@ namespace System.IdentityModel.Tokens
         {
             if (validationParameters == null)
             {
-                throw new ArgumentNullException("validationParameters");
+                throw new ArgumentNullException(nameof(validationParameters));
             }
 
             if (!validationParameters.ValidateLifetime)
@@ -234,10 +234,10 @@ namespace System.IdentityModel.Tokens
         public static void ValidateTokenReplay(string securityToken, DateTime? expirationTime, TokenValidationParameters validationParameters)
         {
             if (string.IsNullOrWhiteSpace(securityToken))
-                throw new ArgumentNullException("securityToken");
+                throw new ArgumentNullException(nameof(securityToken));
 
             if (validationParameters == null)
-                throw new ArgumentNullException("validationParameters");
+                throw new ArgumentNullException(nameof(validationParameters));
 
             // check if token if replay cache is set, then there must be an expiration time.
             if (validationParameters.TokenReplayCache != null)

@@ -54,7 +54,7 @@ namespace Microsoft.IdentityModel.Tokens
 
             if (validationParameters == null)
             {
-                throw new ArgumentNullException("validationParameters");
+                throw new ArgumentNullException(nameof(validationParameters));
             }
 
             _validationParameters = validationParameters;

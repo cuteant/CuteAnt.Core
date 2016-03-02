@@ -83,7 +83,7 @@ namespace System.IdentityModel.Tokens
         {
             if (inArray==null)
             {
-                throw new ArgumentNullException("inArray");
+                throw new ArgumentNullException(nameof(inArray));
             }
 
             string s = Convert.ToBase64String(inArray, 0, inArray.Length);
@@ -102,7 +102,7 @@ namespace System.IdentityModel.Tokens
         {
             if (null == str)
             {
-                throw new ArgumentNullException("str");
+                throw new ArgumentNullException(nameof(str));
             }
 
             // 62nd char of encoding

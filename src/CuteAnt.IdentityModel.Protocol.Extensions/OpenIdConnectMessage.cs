@@ -49,7 +49,7 @@ namespace Microsoft.IdentityModel.Protocols
         {
             if (other == null)
             {
-                throw new ArgumentNullException("other");
+                throw new ArgumentNullException(nameof(other));
             }
 
             foreach (KeyValuePair<string, string> keyValue in other.Parameters)

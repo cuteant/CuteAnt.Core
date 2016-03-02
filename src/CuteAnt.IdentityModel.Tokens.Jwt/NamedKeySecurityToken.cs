@@ -47,13 +47,13 @@ namespace System.IdentityModel.Tokens
         public NamedKeySecurityToken(string name, string id, SecurityKey key)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
 
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentNullException("id");
+                throw new ArgumentNullException(nameof(id));
 
             if (key == null)
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
 
             this.id = id;
             this.name = name;
@@ -74,13 +74,13 @@ namespace System.IdentityModel.Tokens
         public NamedKeySecurityToken(string name, string id, IEnumerable<SecurityKey> keys)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
 
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentNullException("id");
+                throw new ArgumentNullException(nameof(id));
 
             if (keys == null)
-                throw new ArgumentNullException("keys");
+                throw new ArgumentNullException(nameof(keys));
 
             this.id = id;
             this.name = name;
@@ -142,7 +142,7 @@ namespace System.IdentityModel.Tokens
         public override SecurityKey ResolveKeyIdentifierClause(SecurityKeyIdentifierClause keyIdentifierClause)
         {
             if (keyIdentifierClause == null)
-                throw new ArgumentNullException("keyIdentifierClause");
+                throw new ArgumentNullException(nameof(keyIdentifierClause));
 
             // if name matches, return first non null
             NamedKeySecurityKeyIdentifierClause namedKeyIdentifierClause = keyIdentifierClause as NamedKeySecurityKeyIdentifierClause;
@@ -177,7 +177,7 @@ namespace System.IdentityModel.Tokens
         {
             if (keyIdentifierClause == null)
             {
-                throw new ArgumentNullException("keyIdentifierClause");
+                throw new ArgumentNullException(nameof(keyIdentifierClause));
             }
 
             NamedKeySecurityKeyIdentifierClause namedKeyIdentifierClause = keyIdentifierClause as NamedKeySecurityKeyIdentifierClause;
