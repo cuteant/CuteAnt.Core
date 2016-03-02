@@ -1,5 +1,6 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 #if NET40
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +8,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Validation;
 
 namespace System.Collections.Immutable
 {
@@ -52,8 +52,8 @@ namespace System.Collections.Immutable
         /// <param name="backward">The backward stack.</param>
         private ImmutableQueue(ImmutableStack<T> forward, ImmutableStack<T> backward)
         {
-            Requires.NotNull(forward, "forward");
-            Requires.NotNull(backward, "backward");
+            Requires.NotNull(forward, nameof(forward));
+            Requires.NotNull(backward, nameof(backward));
 
             _forwards = forward;
             _backwards = backward;
@@ -127,7 +127,7 @@ namespace System.Collections.Immutable
         /// <summary>
         /// Gets the element at the front of the queue.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown when the stack is empty.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when the queue is empty.</exception>
         [Pure]
         public T Peek()
         {
@@ -178,7 +178,7 @@ namespace System.Collections.Immutable
         /// Returns a queue that is missing the front element.
         /// </summary>
         /// <returns>A queue; never <c>null</c>.</returns>
-        /// <exception cref="InvalidOperationException">Thrown when the stack is empty.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when the queue is empty.</exception>
         [Pure]
         public ImmutableQueue<T> Dequeue()
         {
@@ -207,7 +207,7 @@ namespace System.Collections.Immutable
         /// </summary>
         /// <param name="value">Receives the value from the head of the queue.</param>
         /// <returns>The new queue with the head element removed.</returns>
-        /// <exception cref="InvalidOperationException">Thrown when the stack is empty.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when the queue is empty.</exception>
         [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "0#")]
         [Pure]
         public ImmutableQueue<T> Dequeue(out T value)
@@ -220,7 +220,7 @@ namespace System.Collections.Immutable
         /// Returns a queue that is missing the front element.
         /// </summary>
         /// <returns>A queue; never <c>null</c>.</returns>
-        /// <exception cref="InvalidOperationException">Thrown when the stack is empty.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when the queue is empty.</exception>
         [Pure]
         IImmutableQueue<T> IImmutableQueue<T>.Dequeue()
         {
@@ -478,7 +478,7 @@ namespace System.Collections.Immutable
             {
                 if (_disposed)
                 {
-                    Validation.Requires.FailObjectDisposed(this);
+                    Requires.FailObjectDisposed(this);
                 }
             }
         }

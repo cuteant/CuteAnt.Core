@@ -1,11 +1,11 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 #if NET40
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using Validation;
 
 namespace System.Collections.Immutable
 {
@@ -72,7 +72,7 @@ namespace System.Collections.Immutable
             /// <param name="map">The map that serves as the basis for this Builder.</param>
             internal Builder(ImmutableDictionary<TKey, TValue> map)
             {
-                Requires.NotNull(map, "map");
+                Requires.NotNull(map, nameof(map));
                 _root = map._root;
                 _count = map._count;
                 _comparers = map._comparers;
@@ -94,7 +94,7 @@ namespace System.Collections.Immutable
 
                 set
                 {
-                    Requires.NotNull(value, "value");
+                    Requires.NotNull(value, nameof(value));
                     if (value != this.KeyComparer)
                     {
                         var comparers = Comparers.Get(value, this.ValueComparer);
@@ -124,7 +124,7 @@ namespace System.Collections.Immutable
 
                 set
                 {
-                    Requires.NotNull(value, "value");
+                    Requires.NotNull(value, nameof(value));
                     if (value != this.ValueComparer)
                     {
                         // When the key comparer is the same but the value comparer is different, we don't need a whole new tree
@@ -136,7 +136,7 @@ namespace System.Collections.Immutable
                 }
             }
 
-#region IDictionary<TKey, TValue> Properties
+            #region IDictionary<TKey, TValue> Properties
 
             /// <summary>
             /// Gets the number of elements contained in the <see cref="ICollection{T}"/>.
@@ -202,9 +202,9 @@ namespace System.Collections.Immutable
                 get { return this.Values.ToArray(this.Count); }
             }
 
-#endregion
+            #endregion
 
-#region IDictionary Properties
+            #region IDictionary Properties
 
             /// <summary>
             /// Gets a value indicating whether the <see cref="IDictionary"/> object has a fixed size.
@@ -247,9 +247,9 @@ namespace System.Collections.Immutable
                 get { return this.Values.ToArray(this.Count); }
             }
 
-#endregion
+            #endregion
 
-#region ICollection Properties
+            #region ICollection Properties
 
             /// <summary>
             /// Gets an object that can be used to synchronize access to the <see cref="ICollection"/>.
@@ -279,9 +279,9 @@ namespace System.Collections.Immutable
                 get { return false; }
             }
 
-#endregion
+            #endregion
 
-#region IDictionary Methods
+            #region IDictionary Methods
 
             /// <summary>
             /// Adds an element with the provided key and value to the <see cref="IDictionary"/> object.
@@ -311,7 +311,6 @@ namespace System.Collections.Immutable
             /// <returns>
             /// An <see cref="IDictionaryEnumerator"/> object for the <see cref="IDictionary"/> object.
             /// </returns>
-            /// <exception cref="System.NotImplementedException"></exception>
             IDictionaryEnumerator IDictionary.GetEnumerator()
             {
                 return new DictionaryEnumerator<TKey, TValue>(this.GetEnumerator());
@@ -337,9 +336,9 @@ namespace System.Collections.Immutable
                 set { this[(TKey)key] = (TValue)value; }
             }
 
-#endregion
+            #endregion
 
-#region ICollection methods
+            #region ICollection methods
 
             /// <summary>
             /// Copies the elements of the <see cref="ICollection"/> to an <see cref="Array"/>, starting at a particular <see cref="Array"/> index.
@@ -348,9 +347,9 @@ namespace System.Collections.Immutable
             /// <param name="arrayIndex">The zero-based index in <paramref name="array"/> at which copying begins.</param>
             void ICollection.CopyTo(Array array, int arrayIndex)
             {
-                Requires.NotNull(array, "array");
-                Requires.Range(arrayIndex >= 0, "arrayIndex");
-                Requires.Range(array.Length >= arrayIndex + this.Count, "arrayIndex");
+                Requires.NotNull(array, nameof(array));
+                Requires.Range(arrayIndex >= 0, nameof(arrayIndex));
+                Requires.Range(array.Length >= arrayIndex + this.Count, nameof(arrayIndex));
 
                 foreach (var item in this)
                 {
@@ -358,7 +357,7 @@ namespace System.Collections.Immutable
                 }
             }
 
-#endregion
+            #endregion
 
             /// <summary>
             /// Gets the current version of the contents of this builder.
@@ -430,7 +429,7 @@ namespace System.Collections.Immutable
                 }
             }
 
-#region Public Methods
+            #region Public Methods
 
             /// <summary>
             /// Adds a sequence of values to this collection.
@@ -449,7 +448,7 @@ namespace System.Collections.Immutable
             /// <param name="keys">The keys for entries to remove from the dictionary.</param>
             public void RemoveRange(IEnumerable<TKey> keys)
             {
-                Requires.NotNull(keys, "keys");
+                Requires.NotNull(keys, nameof(keys));
 
                 foreach (var key in keys)
                 {
@@ -490,7 +489,7 @@ namespace System.Collections.Immutable
             [Pure]
             public TValue GetValueOrDefault(TKey key, TValue defaultValue)
             {
-                Requires.NotNullAllowStructs(key, "key");
+                Requires.NotNullAllowStructs(key, nameof(key));
 
                 TValue value;
                 if (this.TryGetValue(key, out value))
@@ -522,9 +521,9 @@ namespace System.Collections.Immutable
                 return _immutable;
             }
 
-#endregion
+            #endregion
 
-#region IDictionary<TKey, TValue> Members
+            #region IDictionary<TKey, TValue> Members
 
             /// <summary>
             /// Adds an element with the provided key and value to the <see cref="IDictionary{TKey, TValue}"/>.
@@ -653,7 +652,7 @@ namespace System.Collections.Immutable
             /// </summary>
             void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
             {
-                Requires.NotNull(array, "array");
+                Requires.NotNull(array, nameof(array));
 
                 foreach (var item in this)
                 {
@@ -661,9 +660,9 @@ namespace System.Collections.Immutable
                 }
             }
 
-#endregion
+            #endregion
 
-#region ICollection<KeyValuePair<TKey, TValue>> Members
+            #region ICollection<KeyValuePair<TKey, TValue>> Members
 
             /// <summary>
             /// Removes the first occurrence of a specific object from the <see cref="ICollection{T}"/>.
@@ -684,9 +683,9 @@ namespace System.Collections.Immutable
                 return false;
             }
 
-#endregion
+            #endregion
 
-#region IEnumerator<T> methods
+            #region IEnumerator<T> methods
 
             /// <summary>
             /// Returns an enumerator that iterates through the collection.
@@ -710,7 +709,7 @@ namespace System.Collections.Immutable
                 return this.GetEnumerator();
             }
 
-#endregion
+            #endregion
 
             /// <summary>
             /// Applies the result of some mutation operation to this instance.
@@ -746,7 +745,7 @@ namespace System.Collections.Immutable
         /// <param name="map">The collection to display in the debugger</param>
         public ImmutableDictionaryBuilderDebuggerProxy(ImmutableDictionary<TKey, TValue>.Builder map)
         {
-            Requires.NotNull(map, "map");
+            Requires.NotNull(map, nameof(map));
             _map = map;
         }
 

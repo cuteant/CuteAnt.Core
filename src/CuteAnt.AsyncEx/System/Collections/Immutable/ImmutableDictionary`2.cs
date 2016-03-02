@@ -1,12 +1,11 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 #if NET40
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using Validation;
-using BCL = System.Collections.Generic;
 
 namespace System.Collections.Immutable
 {
@@ -52,9 +51,9 @@ namespace System.Collections.Immutable
         /// <param name="comparers">The comparers.</param>
         /// <param name="count">The number of elements in the map.</param>
         private ImmutableDictionary(SortedInt32KeyNode<HashBucket> root, Comparers comparers, int count)
-            : this(Requires.NotNullPassthrough(comparers, "comparers"))
+            : this(Requires.NotNullPassthrough(comparers, nameof(comparers)))
         {
-            Requires.NotNull(root, "root");
+            Requires.NotNull(root, nameof(root));
 
             root.Freeze(s_FreezeBucketAction);
             _root = root;
@@ -118,7 +117,7 @@ namespace System.Collections.Immutable
             NoChangeRequired,
         }
 
-#region Public Properties
+        #region Public Properties
 
         /// <summary>
         /// See the <see cref="IImmutableDictionary{TKey, TValue}"/> interface.
@@ -197,9 +196,9 @@ namespace System.Collections.Immutable
             }
         }
 
-#endregion
+        #endregion
 
-#region IImmutableDictionary<TKey,TValue> Properties
+        #region IImmutableDictionary<TKey,TValue> Properties
 
         /// <summary>
         /// Gets the empty instance.
@@ -210,9 +209,9 @@ namespace System.Collections.Immutable
             return this.Clear();
         }
 
-#endregion
+        #endregion
 
-#region IDictionary<TKey, TValue> Properties
+        #region IDictionary<TKey, TValue> Properties
 
         /// <summary>
         /// Gets the keys.
@@ -230,7 +229,7 @@ namespace System.Collections.Immutable
             get { return new ValuesCollectionAccessor<TKey, TValue>(this); }
         }
 
-#endregion
+        #endregion
 
         /// <summary>
         /// Gets a data structure that captures the current state of this map, as an input into a query or mutating function.
@@ -247,7 +246,7 @@ namespace System.Collections.Immutable
         {
             get
             {
-                Requires.NotNullAllowStructs(key, "key");
+                Requires.NotNullAllowStructs(key, nameof(key));
 
                 TValue value;
                 if (this.TryGetValue(key, out value))
@@ -268,16 +267,16 @@ namespace System.Collections.Immutable
             set { throw new NotSupportedException(); }
         }
 
-#region ICollection<KeyValuePair<TKey, TValue>> Properties
+        #region ICollection<KeyValuePair<TKey, TValue>> Properties
 
         bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly
         {
             get { return true; }
         }
 
-#endregion
+        #endregion
 
-#region Public methods
+        #region Public methods
 
         /// <summary>
         /// Creates a collection with the same contents as this collection that
@@ -303,10 +302,10 @@ namespace System.Collections.Immutable
         [Pure]
         public ImmutableDictionary<TKey, TValue> Add(TKey key, TValue value)
         {
-            Requires.NotNullAllowStructs(key, "key");
+            Requires.NotNullAllowStructs(key, nameof(key));
             Contract.Ensures(Contract.Result<ImmutableDictionary<TKey, TValue>>() != null);
 
-            var result = Add(key, value, KeyCollisionBehavior.ThrowIfValueDifferent, new MutationInput(this));
+            var result = Add(key, value, KeyCollisionBehavior.ThrowIfValueDifferent, this.Origin);
             return result.Finalize(this);
         }
 
@@ -317,7 +316,7 @@ namespace System.Collections.Immutable
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public ImmutableDictionary<TKey, TValue> AddRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
         {
-            Requires.NotNull(pairs, "pairs");
+            Requires.NotNull(pairs, nameof(pairs));
             Contract.Ensures(Contract.Result<ImmutableDictionary<TKey, TValue>>() != null);
 
             return this.AddRange(pairs, false);
@@ -329,11 +328,11 @@ namespace System.Collections.Immutable
         [Pure]
         public ImmutableDictionary<TKey, TValue> SetItem(TKey key, TValue value)
         {
-            Requires.NotNullAllowStructs(key, "key");
+            Requires.NotNullAllowStructs(key, nameof(key));
             Contract.Ensures(Contract.Result<ImmutableDictionary<TKey, TValue>>() != null);
             Contract.Ensures(!Contract.Result<ImmutableDictionary<TKey, TValue>>().IsEmpty);
 
-            var result = Add(key, value, KeyCollisionBehavior.SetValue, new MutationInput(this));
+            var result = Add(key, value, KeyCollisionBehavior.SetValue, this.Origin);
             return result.Finalize(this);
         }
 
@@ -346,7 +345,7 @@ namespace System.Collections.Immutable
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public ImmutableDictionary<TKey, TValue> SetItems(IEnumerable<KeyValuePair<TKey, TValue>> items)
         {
-            Requires.NotNull(items, "items");
+            Requires.NotNull(items, nameof(items));
             Contract.Ensures(Contract.Result<ImmutableDictionary<TKey, TValue>>() != null);
 
             var result = AddRange(items, this.Origin, KeyCollisionBehavior.SetValue);
@@ -359,10 +358,10 @@ namespace System.Collections.Immutable
         [Pure]
         public ImmutableDictionary<TKey, TValue> Remove(TKey key)
         {
-            Requires.NotNullAllowStructs(key, "key");
+            Requires.NotNullAllowStructs(key, nameof(key));
             Contract.Ensures(Contract.Result<ImmutableDictionary<TKey, TValue>>() != null);
 
-            var result = Remove(key, new MutationInput(this));
+            var result = Remove(key, this.Origin);
             return result.Finalize(this);
         }
 
@@ -372,7 +371,7 @@ namespace System.Collections.Immutable
         [Pure]
         public ImmutableDictionary<TKey, TValue> RemoveRange(IEnumerable<TKey> keys)
         {
-            Requires.NotNull(keys, "keys");
+            Requires.NotNull(keys, nameof(keys));
             Contract.Ensures(Contract.Result<ImmutableDictionary<TKey, TValue>>() != null);
 
             int count = _count;
@@ -405,8 +404,8 @@ namespace System.Collections.Immutable
         /// </returns>
         public bool ContainsKey(TKey key)
         {
-            Requires.NotNullAllowStructs(key, "key");
-            return ContainsKey(key, new MutationInput(this));
+            Requires.NotNullAllowStructs(key, nameof(key));
+            return ContainsKey(key, this.Origin);
         }
 
         /// <summary>
@@ -426,7 +425,7 @@ namespace System.Collections.Immutable
         /// </summary>
         public bool TryGetValue(TKey key, out TValue value)
         {
-            Requires.NotNullAllowStructs(key, "key");
+            Requires.NotNullAllowStructs(key, nameof(key));
             return TryGetValue(key, this.Origin, out value);
         }
 
@@ -435,7 +434,7 @@ namespace System.Collections.Immutable
         /// </summary>
         public bool TryGetKey(TKey equalKey, out TKey actualKey)
         {
-            Requires.NotNullAllowStructs(equalKey, "equalKey");
+            Requires.NotNullAllowStructs(equalKey, nameof(equalKey));
             return TryGetKey(equalKey, this.Origin, out actualKey);
         }
 
@@ -524,9 +523,9 @@ namespace System.Collections.Immutable
             return new Enumerator(_root);
         }
 
-#endregion
+        #endregion
 
-#region IImmutableDictionary<TKey,TValue> Methods
+        #region IImmutableDictionary<TKey,TValue> Methods
 
         /// <summary>
         /// See the <see cref="IImmutableDictionary{TKey, TValue}"/> interface
@@ -583,9 +582,9 @@ namespace System.Collections.Immutable
             return this.Remove(key);
         }
 
-#endregion
+        #endregion
 
-#region IDictionary<TKey, TValue> Methods
+        #region IDictionary<TKey, TValue> Methods
 
         /// <summary>
         /// Adds an element with the provided key and value to the <see cref="IDictionary{TKey, TValue}"/>.
@@ -622,9 +621,9 @@ namespace System.Collections.Immutable
             throw new NotSupportedException();
         }
 
-#endregion
+        #endregion
 
-#region ICollection<KeyValuePair<TKey, TValue>> Methods
+        #region ICollection<KeyValuePair<TKey, TValue>> Methods
 
         void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> item)
         {
@@ -643,9 +642,9 @@ namespace System.Collections.Immutable
 
         void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
-            Requires.NotNull(array, "array");
-            Requires.Range(arrayIndex >= 0, "arrayIndex");
-            Requires.Range(array.Length >= arrayIndex + this.Count, "arrayIndex");
+            Requires.NotNull(array, nameof(array));
+            Requires.Range(arrayIndex >= 0, nameof(arrayIndex));
+            Requires.Range(array.Length >= arrayIndex + this.Count, nameof(arrayIndex));
 
             foreach (var item in this)
             {
@@ -653,9 +652,9 @@ namespace System.Collections.Immutable
             }
         }
 
-#endregion
+        #endregion
 
-#region IDictionary Properties
+        #region IDictionary Properties
 
         /// <summary>
         /// Gets a value indicating whether the <see cref="IDictionary"/> object has a fixed size.
@@ -698,7 +697,7 @@ namespace System.Collections.Immutable
             get { return new ValuesCollectionAccessor<TKey, TValue>(this); }
         }
 
-#endregion
+        #endregion
 
         /// <summary>
         /// Gets the root node (for testing purposes).
@@ -708,7 +707,7 @@ namespace System.Collections.Immutable
             get { return _root; }
         }
 
-#region IDictionary Methods
+        #region IDictionary Methods
 
         /// <summary>
         /// Adds an element with the provided key and value to the <see cref="IDictionary"/> object.
@@ -738,7 +737,6 @@ namespace System.Collections.Immutable
         /// <returns>
         /// An <see cref="IDictionaryEnumerator"/> object for the <see cref="IDictionary"/> object.
         /// </returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         IDictionaryEnumerator IDictionary.GetEnumerator()
         {
             return new DictionaryEnumerator<TKey, TValue>(this.GetEnumerator());
@@ -773,9 +771,9 @@ namespace System.Collections.Immutable
             throw new NotSupportedException();
         }
 
-#endregion
+        #endregion
 
-#region ICollection Methods
+        #region ICollection Methods
 
         /// <summary>
         /// Copies the elements of the <see cref="ICollection"/> to an <see cref="Array"/>, starting at a particular <see cref="Array"/> index.
@@ -784,9 +782,9 @@ namespace System.Collections.Immutable
         /// <param name="arrayIndex">The zero-based index in <paramref name="array"/> at which copying begins.</param>
         void ICollection.CopyTo(Array array, int arrayIndex)
         {
-            Requires.NotNull(array, "array");
-            Requires.Range(arrayIndex >= 0, "arrayIndex");
-            Requires.Range(array.Length >= arrayIndex + this.Count, "arrayIndex");
+            Requires.NotNull(array, nameof(array));
+            Requires.Range(arrayIndex >= 0, nameof(arrayIndex));
+            Requires.Range(array.Length >= arrayIndex + this.Count, nameof(arrayIndex));
 
             foreach (var item in this)
             {
@@ -794,9 +792,9 @@ namespace System.Collections.Immutable
             }
         }
 
-#endregion
+        #endregion
 
-#region ICollection Properties
+        #region ICollection Properties
 
         /// <summary>
         /// Gets an object that can be used to synchronize access to the <see cref="ICollection"/>.
@@ -822,9 +820,9 @@ namespace System.Collections.Immutable
             }
         }
 
-#endregion
+        #endregion
 
-#region IEnumerable<KeyValuePair<TKey, TValue>> Members
+        #region IEnumerable<KeyValuePair<TKey, TValue>> Members
 
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
@@ -837,9 +835,9 @@ namespace System.Collections.Immutable
             return this.GetEnumerator();
         }
 
-#endregion
+        #endregion
 
-#region IEnumerable Members
+        #region IEnumerable Members
 
         /// <summary>
         /// Returns an enumerator that iterates through a collection.
@@ -853,7 +851,7 @@ namespace System.Collections.Immutable
             return this.GetEnumerator();
         }
 
-#endregion
+        #endregion
 
         /// <summary>
         /// Gets an empty collection with the specified comparers.
@@ -863,7 +861,7 @@ namespace System.Collections.Immutable
         [Pure]
         private static ImmutableDictionary<TKey, TValue> EmptyWithComparers(Comparers comparers)
         {
-            Requires.NotNull(comparers, "comparers");
+            Requires.NotNull(comparers, nameof(comparers));
 
             return Empty._comparers == comparers
                 ? Empty
@@ -895,7 +893,7 @@ namespace System.Collections.Immutable
             return false;
         }
 
-#region Static query and manipulator methods
+        #region Static query and manipulator methods
 
         /// <summary>
         /// Performs the operation on a given data structure.
@@ -967,7 +965,7 @@ namespace System.Collections.Immutable
         /// </summary>
         private static MutationResult Add(TKey key, TValue value, KeyCollisionBehavior behavior, MutationInput origin)
         {
-            Requires.NotNullAllowStructs(key, "key");
+            Requires.NotNullAllowStructs(key, nameof(key));
 
             OperationResult result;
             int hashCode = origin.KeyComparer.GetHashCode(key);
@@ -987,7 +985,7 @@ namespace System.Collections.Immutable
         /// </summary>
         private static MutationResult AddRange(IEnumerable<KeyValuePair<TKey, TValue>> items, MutationInput origin, KeyCollisionBehavior collisionBehavior = KeyCollisionBehavior.ThrowIfValueDifferent)
         {
-            Requires.NotNull(items, "items");
+            Requires.NotNull(items, nameof(items));
 
             int countAdjustment = 0;
             var newRoot = origin.Root;
@@ -1041,7 +1039,7 @@ namespace System.Collections.Immutable
             }
         }
 
-#endregion
+        #endregion
 
         /// <summary>
         /// Wraps the specified data structure with an immutable collection wrapper.
@@ -1054,9 +1052,9 @@ namespace System.Collections.Immutable
         /// </returns>
         private static ImmutableDictionary<TKey, TValue> Wrap(SortedInt32KeyNode<HashBucket> root, Comparers comparers, int count)
         {
-            Requires.NotNull(root, "root");
-            Requires.NotNull(comparers, "comparers");
-            Requires.Range(count >= 0, "count");
+            Requires.NotNull(root, nameof(root));
+            Requires.NotNull(comparers, nameof(comparers));
+            Requires.Range(count >= 0, nameof(count));
             return new ImmutableDictionary<TKey, TValue>(root, comparers, count);
         }
 
@@ -1089,7 +1087,7 @@ namespace System.Collections.Immutable
         [Pure]
         private ImmutableDictionary<TKey, TValue> AddRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs, bool avoidToHashMap)
         {
-            Requires.NotNull(pairs, "pairs");
+            Requires.NotNull(pairs, nameof(pairs));
             Contract.Ensures(Contract.Result<ImmutableDictionary<TKey, TValue>>() != null);
 
             // Some optimizations may apply if we're an empty list.

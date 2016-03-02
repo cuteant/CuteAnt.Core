@@ -1,18 +1,22 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 #if NET40
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using Validation;
 
 namespace System.Collections.Immutable
 {
-    /// <summary>A set of initialization methods for instances of <see cref="ImmutableQueue{T}"/>.</summary>
+    /// <summary>
+    /// A set of initialization methods for instances of <see cref="ImmutableQueue{T}"/>.
+    /// </summary>
     [SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
     public static class ImmutableQueue
     {
-        /// <summary>Returns an empty collection.</summary>
+        /// <summary>
+        /// Returns an empty collection.
+        /// </summary>
         /// <typeparam name="T">The type of items stored by the collection.</typeparam>
         /// <returns>The immutable collection.</returns>
         [Pure]
@@ -21,7 +25,9 @@ namespace System.Collections.Immutable
             return ImmutableQueue<T>.Empty;
         }
 
-        /// <summary>Creates a new immutable collection prefilled with the specified item.</summary>
+        /// <summary>
+        /// Creates a new immutable collection prefilled with the specified item.
+        /// </summary>
         /// <typeparam name="T">The type of items stored by the collection.</typeparam>
         /// <param name="item">The item to prepopulate.</param>
         /// <returns>The new immutable collection.</returns>
@@ -31,14 +37,16 @@ namespace System.Collections.Immutable
             return ImmutableQueue<T>.Empty.Enqueue(item);
         }
 
-        /// <summary>Creates a new immutable collection prefilled with the specified items.</summary>
+        /// <summary>
+        /// Creates a new immutable collection prefilled with the specified items.
+        /// </summary>
         /// <typeparam name="T">The type of items stored by the collection.</typeparam>
         /// <param name="items">The items to prepopulate.</param>
         /// <returns>The new immutable collection.</returns>
         [Pure]
         public static ImmutableQueue<T> CreateRange<T>(IEnumerable<T> items)
         {
-            Requires.NotNull(items, "items");
+            Requires.NotNull(items, nameof(items));
 
             var queue = ImmutableQueue<T>.Empty;
             foreach (var item in items)
@@ -49,14 +57,16 @@ namespace System.Collections.Immutable
             return queue;
         }
 
-        /// <summary>Creates a new immutable collection prefilled with the specified items.</summary>
+        /// <summary>
+        /// Creates a new immutable collection prefilled with the specified items.
+        /// </summary>
         /// <typeparam name="T">The type of items stored by the collection.</typeparam>
         /// <param name="items">The items to prepopulate.</param>
         /// <returns>The new immutable collection.</returns>
         [Pure]
         public static ImmutableQueue<T> Create<T>(params T[] items)
         {
-            Requires.NotNull(items, "items");
+            Requires.NotNull(items, nameof(items));
 
             var queue = ImmutableQueue<T>.Empty;
             foreach (var item in items)
@@ -67,7 +77,9 @@ namespace System.Collections.Immutable
             return queue;
         }
 
-        /// <summary>Retrieves the item at the head of the queue, and returns a queue with the head element removed.</summary>
+        /// <summary>
+        /// Retrieves the item at the head of the queue, and returns a queue with the head element removed.
+        /// </summary>
         /// <typeparam name="T">The type of elements stored in the queue.</typeparam>
         /// <param name="queue">The queue to dequeue from.</param>
         /// <param name="value">Receives the value from the head of the queue.</param>
@@ -77,7 +89,7 @@ namespace System.Collections.Immutable
         [Pure]
         public static IImmutableQueue<T> Dequeue<T>(this IImmutableQueue<T> queue, out T value)
         {
-            Requires.NotNull(queue, "queue");
+            Requires.NotNull(queue, nameof(queue));
 
             value = queue.Peek();
             return queue.Dequeue();

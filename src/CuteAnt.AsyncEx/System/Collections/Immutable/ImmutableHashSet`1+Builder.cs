@@ -1,10 +1,10 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 #if NET40
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using Validation;
 
 namespace System.Collections.Immutable
 {
@@ -65,14 +65,14 @@ namespace System.Collections.Immutable
             /// <param name="set">The set.</param>
             internal Builder(ImmutableHashSet<T> set)
             {
-                Requires.NotNull(set, "set");
+                Requires.NotNull(set, nameof(set));
                 _root = set._root;
                 _count = set._count;
                 _equalityComparer = set._equalityComparer;
                 _immutable = set;
             }
 
-#region ISet<T> Properties
+            #region ISet<T> Properties
 
             /// <summary>
             /// Gets the number of elements contained in the <see cref="ICollection{T}"/>.
@@ -92,7 +92,7 @@ namespace System.Collections.Immutable
                 get { return false; }
             }
 
-#endregion
+            #endregion
 
             /// <summary>
             /// Gets or sets the key comparer.
@@ -109,7 +109,7 @@ namespace System.Collections.Immutable
 
                 set
                 {
-                    Requires.NotNull(value, "value");
+                    Requires.NotNull(value, nameof(value));
 
                     if (value != _equalityComparer)
                     {
@@ -166,7 +166,7 @@ namespace System.Collections.Immutable
                 }
             }
 
-#region Public methods
+            #region Public methods
 
             /// <summary>
             /// Returns an enumerator that iterates through the collection.
@@ -200,9 +200,9 @@ namespace System.Collections.Immutable
                 return _immutable;
             }
 
-#endregion
+            #endregion
 
-#region ISet<T> Methods
+            #region ISet<T> Methods
 
             /// <summary>
             /// Adds the specified item.
@@ -358,9 +358,9 @@ namespace System.Collections.Immutable
                 this.Apply(result);
             }
 
-#endregion
+            #endregion
 
-#region ICollection<T> Members
+            #region ICollection<T> Members
 
             /// <summary>
             /// Adds an item to the <see cref="ICollection{T}"/>.
@@ -377,9 +377,9 @@ namespace System.Collections.Immutable
             /// </summary>
             void ICollection<T>.CopyTo(T[] array, int arrayIndex)
             {
-                Requires.NotNull(array, "array");
-                Requires.Range(arrayIndex >= 0, "arrayIndex");
-                Requires.Range(array.Length >= arrayIndex + this.Count, "arrayIndex");
+                Requires.NotNull(array, nameof(array));
+                Requires.Range(arrayIndex >= 0, nameof(arrayIndex));
+                Requires.Range(array.Length >= arrayIndex + this.Count, nameof(arrayIndex));
 
                 foreach (T item in this)
                 {
@@ -387,9 +387,9 @@ namespace System.Collections.Immutable
                 }
             }
 
-#endregion
+            #endregion
 
-#region IEnumerable<T> Members
+            #region IEnumerable<T> Members
 
             /// <summary>
             /// Returns an enumerator that iterates through the collection.
@@ -413,7 +413,7 @@ namespace System.Collections.Immutable
                 return this.GetEnumerator();
             }
 
-#endregion
+            #endregion
 
             /// <summary>
             /// Applies the result of some mutation operation to this instance.

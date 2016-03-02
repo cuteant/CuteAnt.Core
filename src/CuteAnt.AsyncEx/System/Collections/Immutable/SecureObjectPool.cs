@@ -1,22 +1,30 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 #if NET40
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Validation;
 
 namespace System.Collections.Immutable
 {
-    /// <summary>Object pooling utilities.</summary>
+    /// <summary>
+    /// Object pooling utilities.
+    /// </summary>
     internal class SecureObjectPool
     {
-        /// <summary>The ever-incrementing (and wrap-on-overflow) integer for owner id's.</summary>
+        /// <summary>
+        /// The ever-incrementing (and wrap-on-overflow) integer for owner id's.
+        /// </summary>
         private static int s_poolUserIdCounter;
 
-        /// <summary>The ID reserved for unassigned objects.</summary>
+        /// <summary>
+        /// The ID reserved for unassigned objects.
+        /// </summary>
         internal const int UnassignedId = -1;
 
-        /// <summary>Returns a new ID.</summary>
+        /// <summary>
+        /// Returns a new ID.
+        /// </summary>
         internal static int NewId()
         {
             int result;
@@ -59,7 +67,7 @@ namespace System.Collections.Immutable
 
         public SecurePooledObject<T> PrepNew(TCaller caller, T newValue)
         {
-            Requires.NotNullAllowStructs(newValue, "newValue");
+            Requires.NotNullAllowStructs(newValue, nameof(newValue));
             var pooledObject = new SecurePooledObject<T>(newValue);
             pooledObject.Owner = caller.PoolUserId;
             return pooledObject;
@@ -78,18 +86,22 @@ namespace System.Collections.Immutable
 
         internal SecurePooledObject(T newValue)
         {
-            Requires.NotNullAllowStructs(newValue, "newValue");
+            Requires.NotNullAllowStructs(newValue, nameof(newValue));
             _value = newValue;
         }
 
-        /// <summary>Gets or sets the current owner of this recyclable object.</summary>
+        /// <summary>
+        /// Gets or sets the current owner of this recyclable object.
+        /// </summary>
         internal int Owner
         {
             get { return _owner; }
             set { _owner = value; }
         }
 
-        /// <summary>Returns the recyclable value if it hasn't been reclaimed already.</summary>
+        /// <summary>
+        /// Returns the recyclable value if it hasn't been reclaimed already.
+        /// </summary>
         /// <typeparam name="TCaller">The type of renter of the object.</typeparam>
         /// <param name="caller">The renter of the object.</param>
         /// <returns>The rented object.</returns>
@@ -117,9 +129,7 @@ namespace System.Collections.Immutable
             }
         }
 
-#if NET_4_0_ABOVE
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)] // ## 苦竹 屏蔽 ##
         internal bool IsOwned<TCaller>(ref TCaller caller)
             where TCaller : struct, ISecurePooledObjectUser
         {

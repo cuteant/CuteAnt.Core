@@ -1,15 +1,20 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 #if NET40
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
 namespace System.Collections.Immutable
 {
-    /// <summary>A set of initialization methods for instances of <see cref="ImmutableSortedSet{T}"/>.</summary>
+    /// <summary>
+    /// A set of initialization methods for instances of <see cref="ImmutableSortedSet{T}"/>.
+    /// </summary>
     public static class ImmutableSortedSet
     {
-        /// <summary>Returns an empty collection.</summary>
+        /// <summary>
+        /// Returns an empty collection.
+        /// </summary>
         /// <typeparam name="T">The type of items stored by the collection.</typeparam>
         /// <returns>The immutable collection.</returns>
         [Pure]
@@ -18,7 +23,9 @@ namespace System.Collections.Immutable
             return ImmutableSortedSet<T>.Empty;
         }
 
-        /// <summary>Returns an empty collection.</summary>
+        /// <summary>
+        /// Returns an empty collection.
+        /// </summary>
         /// <typeparam name="T">The type of items stored by the collection.</typeparam>
         /// <param name="comparer">The comparer.</param>
         /// <returns>
@@ -30,7 +37,9 @@ namespace System.Collections.Immutable
             return ImmutableSortedSet<T>.Empty.WithComparer(comparer);
         }
 
-        /// <summary>Creates a new immutable collection prefilled with the specified item.</summary>
+        /// <summary>
+        /// Creates a new immutable collection prefilled with the specified item.
+        /// </summary>
         /// <typeparam name="T">The type of items stored by the collection.</typeparam>
         /// <param name="item">The item to prepopulate.</param>
         /// <returns>The new immutable collection.</returns>
@@ -40,7 +49,9 @@ namespace System.Collections.Immutable
             return ImmutableSortedSet<T>.Empty.Add(item);
         }
 
-        /// <summary>Creates a new immutable collection prefilled with the specified item.</summary>
+        /// <summary>
+        /// Creates a new immutable collection prefilled with the specified item.
+        /// </summary>
         /// <typeparam name="T">The type of items stored by the collection.</typeparam>
         /// <param name="comparer">The comparer.</param>
         /// <param name="item">The item to prepopulate.</param>
@@ -51,7 +62,9 @@ namespace System.Collections.Immutable
             return ImmutableSortedSet<T>.Empty.WithComparer(comparer).Add(item);
         }
 
-        /// <summary>Creates a new immutable collection prefilled with the specified items.</summary>
+        /// <summary>
+        /// Creates a new immutable collection prefilled with the specified items.
+        /// </summary>
         /// <typeparam name="T">The type of items stored by the collection.</typeparam>
         /// <param name="items">The items to prepopulate.</param>
         /// <returns>The new immutable collection.</returns>
@@ -61,7 +74,9 @@ namespace System.Collections.Immutable
             return ImmutableSortedSet<T>.Empty.Union(items);
         }
 
-        /// <summary>Creates a new immutable collection prefilled with the specified items.</summary>
+        /// <summary>
+        /// Creates a new immutable collection prefilled with the specified items.
+        /// </summary>
         /// <typeparam name="T">The type of items stored by the collection.</typeparam>
         /// <param name="comparer">The comparer.</param>
         /// <param name="items">The items to prepopulate.</param>
@@ -72,7 +87,9 @@ namespace System.Collections.Immutable
             return ImmutableSortedSet<T>.Empty.WithComparer(comparer).Union(items);
         }
 
-        /// <summary>Creates a new immutable collection prefilled with the specified items.</summary>
+        /// <summary>
+        /// Creates a new immutable collection prefilled with the specified items.
+        /// </summary>
         /// <typeparam name="T">The type of items stored by the collection.</typeparam>
         /// <param name="items">The items to prepopulate.</param>
         /// <returns>The new immutable collection.</returns>
@@ -82,7 +99,9 @@ namespace System.Collections.Immutable
             return ImmutableSortedSet<T>.Empty.Union(items);
         }
 
-        /// <summary>Creates a new immutable collection prefilled with the specified items.</summary>
+        /// <summary>
+        /// Creates a new immutable collection prefilled with the specified items.
+        /// </summary>
         /// <typeparam name="T">The type of items stored by the collection.</typeparam>
         /// <param name="comparer">The comparer.</param>
         /// <param name="items">The items to prepopulate.</param>
@@ -93,7 +112,9 @@ namespace System.Collections.Immutable
             return ImmutableSortedSet<T>.Empty.WithComparer(comparer).Union(items);
         }
 
-        /// <summary>Returns an empty collection.</summary>
+        /// <summary>
+        /// Returns an empty collection.
+        /// </summary>
         /// <typeparam name="T">The type of items stored by the collection.</typeparam>
         /// <returns>The immutable collection.</returns>
         [Pure]
@@ -102,7 +123,9 @@ namespace System.Collections.Immutable
             return Create<T>().ToBuilder();
         }
 
-        /// <summary>Returns an empty collection.</summary>
+        /// <summary>
+        /// Returns an empty collection.
+        /// </summary>
         /// <typeparam name="T">The type of items stored by the collection.</typeparam>
         /// <param name="comparer">The comparer.</param>
         /// <returns>
@@ -114,7 +137,9 @@ namespace System.Collections.Immutable
             return Create<T>(comparer).ToBuilder();
         }
 
-        /// <summary>Enumerates a sequence exactly once and produces an immutable set of its contents.</summary>
+        /// <summary>
+        /// Enumerates a sequence exactly once and produces an immutable set of its contents.
+        /// </summary>
         /// <typeparam name="TSource">The type of element in the sequence.</typeparam>
         /// <param name="source">The sequence to enumerate.</param>
         /// <param name="comparer">The comparer to use for initializing and adding members to the sorted set.</param>
@@ -131,7 +156,9 @@ namespace System.Collections.Immutable
             return ImmutableSortedSet<TSource>.Empty.WithComparer(comparer).Union(source);
         }
 
-        /// <summary>Enumerates a sequence exactly once and produces an immutable set of its contents.</summary>
+        /// <summary>
+        /// Enumerates a sequence exactly once and produces an immutable set of its contents.
+        /// </summary>
         /// <typeparam name="TSource">The type of element in the sequence.</typeparam>
         /// <param name="source">The sequence to enumerate.</param>
         /// <returns>An immutable set.</returns>

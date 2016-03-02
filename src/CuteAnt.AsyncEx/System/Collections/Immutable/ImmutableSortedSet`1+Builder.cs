@@ -1,11 +1,11 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 #if NET40
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using Validation;
 
 namespace System.Collections.Immutable
 {
@@ -67,7 +67,7 @@ namespace System.Collections.Immutable
             /// <param name="set">A set to act as the basis for a new set.</param>
             internal Builder(ImmutableSortedSet<T> set)
             {
-                Requires.NotNull(set, "set");
+                Requires.NotNull(set, nameof(set));
                 _root = set._root;
                 _comparer = set.KeyComparer;
                 _immutable = set;
@@ -143,7 +143,7 @@ namespace System.Collections.Immutable
 
                 set
                 {
-                    Requires.NotNull(value, "value");
+                    Requires.NotNull(value, nameof(value));
 
                     if (value != _comparer)
                     {
@@ -217,7 +217,7 @@ namespace System.Collections.Immutable
             /// <param name="other">The collection of items to remove from the set.</param>
             public void ExceptWith(IEnumerable<T> other)
             {
-                Requires.NotNull(other, "other");
+                Requires.NotNull(other, nameof(other));
 
                 foreach (T item in other)
                 {
@@ -232,7 +232,7 @@ namespace System.Collections.Immutable
             /// <param name="other">The collection to compare to the current set.</param>
             public void IntersectWith(IEnumerable<T> other)
             {
-                Requires.NotNull(other, "other");
+                Requires.NotNull(other, nameof(other));
 
                 var result = ImmutableSortedSet<T>.Node.EmptyNode;
                 foreach (T item in other)
@@ -322,7 +322,7 @@ namespace System.Collections.Immutable
             /// <param name="other">The collection to compare to the current set.</param>
             public void UnionWith(IEnumerable<T> other)
             {
-                Requires.NotNull(other, "other");
+                Requires.NotNull(other, nameof(other));
 
                 foreach (T item in other)
                 {
@@ -450,7 +450,6 @@ namespace System.Collections.Immutable
             /// </summary>
             /// <param name="array">The one-dimensional <see cref="Array"/> that is the destination of the elements copied from <see cref="ICollection"/>. The <see cref="Array"/> must have zero-based indexing.</param>
             /// <param name="arrayIndex">The zero-based index in <paramref name="array"/> at which copying begins.</param>
-            /// <exception cref="System.NotImplementedException"></exception>
             void ICollection.CopyTo(Array array, int arrayIndex)
             {
                 this.Root.CopyTo(array, arrayIndex);
@@ -460,7 +459,6 @@ namespace System.Collections.Immutable
             /// Gets a value indicating whether access to the <see cref="ICollection"/> is synchronized (thread safe).
             /// </summary>
             /// <returns>true if access to the <see cref="ICollection"/> is synchronized (thread safe); otherwise, false.</returns>
-            /// <exception cref="System.NotImplementedException"></exception>
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             bool ICollection.IsSynchronized
             {
@@ -471,7 +469,6 @@ namespace System.Collections.Immutable
             /// Gets an object that can be used to synchronize access to the <see cref="ICollection"/>.
             /// </summary>
             /// <returns>An object that can be used to synchronize access to the <see cref="ICollection"/>.</returns>
-            /// <exception cref="System.NotImplementedException"></exception>
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             object ICollection.SyncRoot
             {
@@ -510,7 +507,7 @@ namespace System.Collections.Immutable
         /// <param name="builder">The collection to display in the debugger</param>
         public ImmutableSortedSetBuilderDebuggerProxy(ImmutableSortedSet<T>.Builder builder)
         {
-            Requires.NotNull(builder, "builder");
+            Requires.NotNull(builder, nameof(builder));
             _set = builder;
         }
 

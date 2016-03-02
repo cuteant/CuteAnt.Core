@@ -1,11 +1,11 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 #if NET40
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using Validation;
 
 namespace System.Collections.Immutable
 {
@@ -35,7 +35,7 @@ namespace System.Collections.Immutable
             /// <param name="capacity">The initial capacity of the internal array.</param>
             internal Builder(int capacity)
             {
-                Requires.Range(capacity >= 0, "capacity");
+                Requires.Range(capacity >= 0, nameof(capacity));
                 _elements = new T[capacity];
                 _count = 0;
             }
@@ -59,7 +59,7 @@ namespace System.Collections.Immutable
                 {
                     if (value < _count)
                     {
-                        throw new ArgumentException(SR.CapacityMustBeGreaterThanOrEqualToCount, paramName: "value");
+                        throw new ArgumentException(SR.CapacityMustBeGreaterThanOrEqualToCount, paramName: nameof(value));
                     }
 
                     if (value != _elements.Length)
@@ -98,7 +98,7 @@ namespace System.Collections.Immutable
 
                 set
                 {
-                    Requires.Range(value >= 0, "value");
+                    Requires.Range(value >= 0, nameof(value));
                     if (value < _count)
                     {
                         // truncation mode
@@ -216,7 +216,7 @@ namespace System.Collections.Immutable
             /// <param name="item">The object to insert into the <see cref="IList{T}"/>.</param>
             public void Insert(int index, T item)
             {
-                Requires.Range(index >= 0 && index <= this.Count, "index");
+                Requires.Range(index >= 0 && index <= this.Count, nameof(index));
                 this.EnsureCapacity(this.Count + 1);
 
                 if (index < this.Count)
@@ -244,7 +244,7 @@ namespace System.Collections.Immutable
             /// <param name="items">The items.</param>
             public void AddRange(IEnumerable<T> items)
             {
-                Requires.NotNull(items, "items");
+                Requires.NotNull(items, nameof(items));
 
                 int count;
                 if (items.TryGetCount(out count))
@@ -264,7 +264,7 @@ namespace System.Collections.Immutable
             /// <param name="items">The items.</param>
             public void AddRange(params T[] items)
             {
-                Requires.NotNull(items, "items");
+                Requires.NotNull(items, nameof(items));
 
                 var offset = this.Count;
                 this.Count += items.Length;
@@ -278,7 +278,7 @@ namespace System.Collections.Immutable
             /// <param name="items">The items.</param>
             public void AddRange<TDerived>(TDerived[] items) where TDerived : T
             {
-                Requires.NotNull(items, "items");
+                Requires.NotNull(items, nameof(items));
 
                 var offset = this.Count;
                 this.Count += items.Length;
@@ -293,8 +293,8 @@ namespace System.Collections.Immutable
             /// <param name="length">The number of elements from the source array to add.</param>
             public void AddRange(T[] items, int length)
             {
-                Requires.NotNull(items, "items");
-                Requires.Range(length >= 0 && length <= items.Length, "length");
+                Requires.NotNull(items, nameof(items));
+                Requires.Range(length >= 0 && length <= items.Length, nameof(length));
 
                 var offset = this.Count;
                 this.Count += length;
@@ -318,7 +318,7 @@ namespace System.Collections.Immutable
             /// <param name="length">The number of elements from the source array to add.</param>
             public void AddRange(ImmutableArray<T> items, int length)
             {
-                Requires.Range(length >= 0, "length");
+                Requires.Range(length >= 0, nameof(length));
 
                 if (items.array != null)
                 {
@@ -344,7 +344,7 @@ namespace System.Collections.Immutable
             /// <param name="items">The items.</param>
             public void AddRange(Builder items)
             {
-                Requires.NotNull(items, "items");
+                Requires.NotNull(items, nameof(items));
                 this.AddRange(items._elements, items.Count);
             }
 
@@ -354,7 +354,7 @@ namespace System.Collections.Immutable
             /// <param name="items">The items.</param>
             public void AddRange<TDerived>(ImmutableArray<TDerived>.Builder items) where TDerived : T
             {
-                Requires.NotNull(items, "items");
+                Requires.NotNull(items, nameof(items));
                 this.AddRange(items._elements, items.Count);
             }
 
@@ -381,7 +381,7 @@ namespace System.Collections.Immutable
             /// <param name="index">The zero-based index of the item to remove.</param>
             public void RemoveAt(int index)
             {
-                Requires.Range(index >= 0 && index < this.Count, "index");
+                Requires.Range(index >= 0 && index < this.Count, nameof(index));
 
                 if (index < this.Count - 1)
                 {
@@ -420,8 +420,8 @@ namespace System.Collections.Immutable
             /// <param name="index">The starting index of the target array.</param>
             public void CopyTo(T[] array, int index)
             {
-                Requires.NotNull(array, "array");
-                Requires.Range(index >= 0 && index + this.Count <= array.Length, "start");
+                Requires.NotNull(array, nameof(array));
+                Requires.Range(index >= 0 && index + this.Count <= array.Length, nameof(index));
                 Array.Copy(_elements, 0, array, index, this.Count);
             }
 
@@ -482,21 +482,23 @@ namespace System.Collections.Immutable
             /// <param name="item">The item to search for.</param>
             /// <param name="startIndex">The index at which to begin the search.</param>
             /// <param name="count">The number of elements to search.</param>
-            /// <param name="equalityComparer">The equality comparer to use in the search.</param>
+            /// <param name="equalityComparer">
+            /// The equality comparer to use in the search.
+            /// If <c>null</c>, <see cref="EqualityComparer{T}.Default"/> is used.
+            /// </param>
             /// <returns>The 0-based index into the array where the item was found; or -1 if it could not be found.</returns>
             [Pure]
             public int IndexOf(T item, int startIndex, int count, IEqualityComparer<T> equalityComparer)
             {
-                Requires.NotNull(equalityComparer, "equalityComparer");
-
                 if (count == 0 && startIndex == 0)
                 {
                     return -1;
                 }
 
-                Requires.Range(startIndex >= 0 && startIndex < this.Count, "startIndex");
-                Requires.Range(count >= 0 && startIndex + count <= this.Count, "count");
+                Requires.Range(startIndex >= 0 && startIndex < this.Count, nameof(startIndex));
+                Requires.Range(count >= 0 && startIndex + count <= this.Count, nameof(count));
 
+                equalityComparer = equalityComparer ?? EqualityComparer<T>.Default;
                 if (equalityComparer == EqualityComparer<T>.Default)
                 {
                     return Array.IndexOf(_elements, item, startIndex, count);
@@ -545,7 +547,7 @@ namespace System.Collections.Immutable
                     return -1;
                 }
 
-                Requires.Range(startIndex >= 0 && startIndex < this.Count, "startIndex");
+                Requires.Range(startIndex >= 0 && startIndex < this.Count, nameof(startIndex));
 
                 return this.LastIndexOf(item, startIndex, startIndex + 1, EqualityComparer<T>.Default);
             }
@@ -574,16 +576,15 @@ namespace System.Collections.Immutable
             [Pure]
             public int LastIndexOf(T item, int startIndex, int count, IEqualityComparer<T> equalityComparer)
             {
-                Requires.NotNull(equalityComparer, "equalityComparer");
-
                 if (count == 0 && startIndex == 0)
                 {
                     return -1;
                 }
 
-                Requires.Range(startIndex >= 0 && startIndex < this.Count, "startIndex");
-                Requires.Range(count >= 0 && startIndex - count + 1 >= 0, "count");
+                Requires.Range(startIndex >= 0 && startIndex < this.Count, nameof(startIndex));
+                Requires.Range(count >= 0 && startIndex - count + 1 >= 0, nameof(count));
 
+                equalityComparer = equalityComparer ?? EqualityComparer<T>.Default;
                 if (equalityComparer == EqualityComparer<T>.Default)
                 {
                     return Array.LastIndexOf(_elements, item, startIndex, count);
@@ -636,6 +637,25 @@ namespace System.Collections.Immutable
             }
 
             /// <summary>
+            /// Sorts the elements in the entire array using
+            /// the specified <see cref="Comparison{T}"/>.
+            /// </summary>
+            /// <param name="comparison">
+            /// The <see cref="Comparison{T}"/> to use when comparing elements.
+            /// </param>
+            /// <exception cref="ArgumentNullException"><paramref name="comparison"/> is null.</exception>
+            [Pure]
+            public void Sort(Comparison<T> comparison)
+            {
+                Requires.NotNull(comparison, nameof(comparison));
+
+                if (Count > 1)
+                {
+                    Array.Sort(_elements, comparison);
+                }
+            }
+
+            /// <summary>
             /// Sorts the array.
             /// </summary>
             /// <param name="comparer">The comparer to use in sorting. If <c>null</c>, the default comparer is used.</param>
@@ -657,8 +677,8 @@ namespace System.Collections.Immutable
             {
                 // Don't rely on Array.Sort's argument validation since our internal array may exceed
                 // the bounds of the publicly addressable region.
-                Requires.Range(index >= 0, "index");
-                Requires.Range(count >= 0 && index + count <= this.Count, "count");
+                Requires.Range(index >= 0, nameof(index));
+                Requires.Range(count >= 0 && index + count <= this.Count, nameof(count));
 
                 if (count > 1)
                 {

@@ -1,13 +1,15 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 #if NET40
 using System.Collections.Generic;
 using System.Threading;
-using Validation;
 
 namespace System.Collections.Immutable
 {
-    /// <summary>Contains interlocked exchange mechanisms for immutable collections.</summary>
+    /// <summary>
+    /// Contains interlocked exchange mechanisms for immutable collections.
+    /// </summary>
     public static class ImmutableInterlocked
     {
         /// <summary>
@@ -30,7 +32,7 @@ namespace System.Collections.Immutable
         /// </returns>
         public static bool Update<T>(ref T location, Func<T, T> transformer) where T : class
         {
-            Requires.NotNull(transformer, "transformer");
+            Requires.NotNull(transformer, nameof(transformer));
 
             bool successful;
             T oldValue = Volatile.Read(ref location);
@@ -74,7 +76,7 @@ namespace System.Collections.Immutable
         /// </returns>
         public static bool Update<T, TArg>(ref T location, Func<T, TArg, T> transformer, TArg transformerArgument) where T : class
         {
-            Requires.NotNull(transformer, "transformer");
+            Requires.NotNull(transformer, nameof(transformer));
 
             bool successful;
             T oldValue = Volatile.Read(ref location);
@@ -96,9 +98,11 @@ namespace System.Collections.Immutable
             return true;
         }
 
-#region ImmutableArray<T> members
+        #region ImmutableArray<T> members
 
-        /// <summary>Assigns a field or variable containing an immutable array to the specified value and returns the previous value.</summary>
+        /// <summary>
+        /// Assigns a field or variable containing an immutable array to the specified value and returns the previous value.
+        /// </summary>
         /// <typeparam name="T">The type of element stored by the array.</typeparam>
         /// <param name="location">The field or local variable to change.</param>
         /// <param name="value">The new value to assign.</param>
@@ -135,11 +139,13 @@ namespace System.Collections.Immutable
             return InterlockedCompareExchange(ref location, value, default(ImmutableArray<T>)).IsDefault;
         }
 
-#endregion
+        #endregion
 
-#region ImmutableDictionary<TKey, TValue> members
+        #region ImmutableDictionary<TKey, TValue> members
 
-        /// <summary>Obtains the value for the specified key from a dictionary, or adds a new value to the dictionary where the key did not previously exist.</summary>
+        /// <summary>
+        /// Obtains the value for the specified key from a dictionary, or adds a new value to the dictionary where the key did not previously exist.
+        /// </summary>
         /// <typeparam name="TKey">The type of key stored by the dictionary.</typeparam>
         /// <typeparam name="TValue">The type of value stored by the dictionary.</typeparam>
         /// <typeparam name="TArg">The type of argument supplied to the value factory.</typeparam>
@@ -150,10 +156,10 @@ namespace System.Collections.Immutable
         /// <returns>The value obtained from the dictionary or <paramref name="valueFactory"/> if it was not present.</returns>
         public static TValue GetOrAdd<TKey, TValue, TArg>(ref ImmutableDictionary<TKey, TValue> location, TKey key, Func<TKey, TArg, TValue> valueFactory, TArg factoryArgument)
         {
-            Requires.NotNull(valueFactory, "valueFactory");
+            Requires.NotNull(valueFactory, nameof(valueFactory));
 
             var map = Volatile.Read(ref location);
-            Requires.NotNull(map, "location");
+            Requires.NotNull(map, nameof(location));
 
             TValue value;
             if (map.TryGetValue(key, out value))
@@ -165,7 +171,9 @@ namespace System.Collections.Immutable
             return GetOrAdd(ref location, key, value);
         }
 
-        /// <summary>Obtains the value for the specified key from a dictionary, or adds a new value to the dictionary where the key did not previously exist.</summary>
+        /// <summary>
+        /// Obtains the value for the specified key from a dictionary, or adds a new value to the dictionary where the key did not previously exist.
+        /// </summary>
         /// <typeparam name="TKey">The type of key stored by the dictionary.</typeparam>
         /// <typeparam name="TValue">The type of value stored by the dictionary.</typeparam>
         /// <param name="location">The variable or field to atomically update if the specified <paramref name="key"/> is not in the dictionary.</param>
@@ -177,10 +185,10 @@ namespace System.Collections.Immutable
         /// <returns>The value obtained from the dictionary or <paramref name="valueFactory"/> if it was not present.</returns>
         public static TValue GetOrAdd<TKey, TValue>(ref ImmutableDictionary<TKey, TValue> location, TKey key, Func<TKey, TValue> valueFactory)
         {
-            Requires.NotNull(valueFactory, "valueFactory");
+            Requires.NotNull(valueFactory, nameof(valueFactory));
 
             var map = Volatile.Read(ref location);
-            Requires.NotNull(map, "location");
+            Requires.NotNull(map, nameof(location));
 
             TValue value;
             if (map.TryGetValue(key, out value))
@@ -192,7 +200,9 @@ namespace System.Collections.Immutable
             return GetOrAdd(ref location, key, value);
         }
 
-        /// <summary>Obtains the value for the specified key from a dictionary, or adds a new value to the dictionary where the key did not previously exist.</summary>
+        /// <summary>
+        /// Obtains the value for the specified key from a dictionary, or adds a new value to the dictionary where the key did not previously exist.
+        /// </summary>
         /// <typeparam name="TKey">The type of key stored by the dictionary.</typeparam>
         /// <typeparam name="TValue">The type of value stored by the dictionary.</typeparam>
         /// <param name="location">The variable or field to atomically update if the specified <paramref name="key"/> is not in the dictionary.</param>
@@ -205,7 +215,7 @@ namespace System.Collections.Immutable
             bool successful;
             do
             {
-                Requires.NotNull(priorCollection, "location");
+                Requires.NotNull(priorCollection, nameof(location));
                 TValue oldValue;
                 if (priorCollection.TryGetValue(key, out oldValue))
                 {
@@ -224,7 +234,9 @@ namespace System.Collections.Immutable
             return value;
         }
 
-        /// <summary>Obtains the value from a dictionary after having added it or updated an existing entry.</summary>
+        /// <summary>
+        /// Obtains the value from a dictionary after having added it or updated an existing entry.
+        /// </summary>
         /// <typeparam name="TKey">The type of key stored by the dictionary.</typeparam>
         /// <typeparam name="TValue">The type of value stored by the dictionary.</typeparam>
         /// <param name="location">The variable or field to atomically update if the specified <paramref name="key"/> is not in the dictionary.</param>
@@ -234,15 +246,15 @@ namespace System.Collections.Immutable
         /// <returns>The added or updated value.</returns>
         public static TValue AddOrUpdate<TKey, TValue>(ref ImmutableDictionary<TKey, TValue> location, TKey key, Func<TKey, TValue> addValueFactory, Func<TKey, TValue, TValue> updateValueFactory)
         {
-            Requires.NotNull(addValueFactory, "addValueFactory");
-            Requires.NotNull(updateValueFactory, "updateValueFactory");
+            Requires.NotNull(addValueFactory, nameof(addValueFactory));
+            Requires.NotNull(updateValueFactory, nameof(updateValueFactory));
 
             TValue newValue;
             var priorCollection = Volatile.Read(ref location);
             bool successful;
             do
             {
-                Requires.NotNull(priorCollection, "location");
+                Requires.NotNull(priorCollection, nameof(location));
 
                 TValue oldValue;
                 if (priorCollection.TryGetValue(key, out oldValue))
@@ -266,7 +278,9 @@ namespace System.Collections.Immutable
             return newValue;
         }
 
-        /// <summary>Obtains the value from a dictionary after having added it or updated an existing entry.</summary>
+        /// <summary>
+        /// Obtains the value from a dictionary after having added it or updated an existing entry.
+        /// </summary>
         /// <typeparam name="TKey">The type of key stored by the dictionary.</typeparam>
         /// <typeparam name="TValue">The type of value stored by the dictionary.</typeparam>
         /// <param name="location">The variable or field to atomically update if the specified <paramref name="key"/> is not in the dictionary.</param>
@@ -276,14 +290,14 @@ namespace System.Collections.Immutable
         /// <returns>The added or updated value.</returns>
         public static TValue AddOrUpdate<TKey, TValue>(ref ImmutableDictionary<TKey, TValue> location, TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
         {
-            Requires.NotNull(updateValueFactory, "updateValueFactory");
+            Requires.NotNull(updateValueFactory, nameof(updateValueFactory));
 
             TValue newValue;
             var priorCollection = Volatile.Read(ref location);
             bool successful;
             do
             {
-                Requires.NotNull(priorCollection, "location");
+                Requires.NotNull(priorCollection, nameof(location));
 
                 TValue oldValue;
                 if (priorCollection.TryGetValue(key, out oldValue))
@@ -307,7 +321,9 @@ namespace System.Collections.Immutable
             return newValue;
         }
 
-        /// <summary>Adds the specified key and value to the dictionary if no colliding key already exists in the dictionary.</summary>
+        /// <summary>
+        /// Adds the specified key and value to the dictionary if no colliding key already exists in the dictionary.
+        /// </summary>
         /// <typeparam name="TKey">The type of key stored by the dictionary.</typeparam>
         /// <typeparam name="TValue">The type of value stored by the dictionary.</typeparam>
         /// <param name="location">The variable or field to atomically update if the specified <paramref name="key"/> is not in the dictionary.</param>
@@ -320,7 +336,7 @@ namespace System.Collections.Immutable
             bool successful;
             do
             {
-                Requires.NotNull(priorCollection, "location");
+                Requires.NotNull(priorCollection, nameof(location));
 
                 if (priorCollection.ContainsKey(key))
                 {
@@ -336,7 +352,9 @@ namespace System.Collections.Immutable
             return true;
         }
 
-        /// <summary>Sets the specified key to the given value if the key already is set to a specific value.</summary>
+        /// <summary>
+        /// Sets the specified key to the given value if the key already is set to a specific value.
+        /// </summary>
         /// <typeparam name="TKey">The type of key stored by the dictionary.</typeparam>
         /// <typeparam name="TValue">The type of value stored by the dictionary.</typeparam>
         /// <param name="location">The variable or field to atomically update if the specified <paramref name="key"/> is not in the dictionary.</param>
@@ -351,7 +369,7 @@ namespace System.Collections.Immutable
             bool successful;
             do
             {
-                Requires.NotNull(priorCollection, "location");
+                Requires.NotNull(priorCollection, nameof(location));
 
                 TValue priorValue;
                 if (!priorCollection.TryGetValue(key, out priorValue) || !valueComparer.Equals(priorValue, comparisonValue))
@@ -369,7 +387,9 @@ namespace System.Collections.Immutable
             return true;
         }
 
-        /// <summary>Removes an entry from the dictionary with the specified key if it is defined and returns its value.</summary>
+        /// <summary>
+        /// Removes an entry from the dictionary with the specified key if it is defined and returns its value.
+        /// </summary>
         /// <typeparam name="TKey">The type of key stored by the dictionary.</typeparam>
         /// <typeparam name="TValue">The type of value stored by the dictionary.</typeparam>
         /// <param name="location">The variable or field to atomically update if the specified <paramref name="key"/> is not in the dictionary.</param>
@@ -382,7 +402,7 @@ namespace System.Collections.Immutable
             bool successful;
             do
             {
-                Requires.NotNull(priorCollection, "location");
+                Requires.NotNull(priorCollection, nameof(location));
 
                 if (!priorCollection.TryGetValue(key, out value))
                 {
@@ -398,11 +418,13 @@ namespace System.Collections.Immutable
             return true;
         }
 
-#endregion
+        #endregion
 
-#region ImmutableStack<T> members
+        #region ImmutableStack<T> members
 
-        /// <summary>Pushes a new element onto a stack.</summary>
+        /// <summary>
+        /// Pushes a new element onto a stack.
+        /// </summary>
         /// <typeparam name="T">The type of elements stored in the stack.</typeparam>
         /// <param name="location">The variable or field to atomically update.</param>
         /// <param name="value">The value popped from the stack, if it was non-empty.</param>
@@ -413,7 +435,7 @@ namespace System.Collections.Immutable
             bool successful;
             do
             {
-                Requires.NotNull(priorCollection, "location");
+                Requires.NotNull(priorCollection, nameof(location));
 
                 if (priorCollection.IsEmpty)
                 {
@@ -430,7 +452,9 @@ namespace System.Collections.Immutable
             return true;
         }
 
-        /// <summary>Pushes a new element onto a stack.</summary>
+        /// <summary>
+        /// Pushes a new element onto a stack.
+        /// </summary>
         /// <typeparam name="T">The type of elements stored in the stack.</typeparam>
         /// <param name="location">The variable or field to atomically update.</param>
         /// <param name="value">The value to push.</param>
@@ -440,7 +464,7 @@ namespace System.Collections.Immutable
             bool successful;
             do
             {
-                Requires.NotNull(priorCollection, "location");
+                Requires.NotNull(priorCollection, nameof(location));
 
                 var updatedCollection = priorCollection.Push(value);
                 var interlockedResult = Interlocked.CompareExchange(ref location, updatedCollection, priorCollection);
@@ -449,11 +473,13 @@ namespace System.Collections.Immutable
             } while (!successful);
         }
 
-#endregion
+        #endregion
 
-#region ImmutableQueue<T> members
+        #region ImmutableQueue<T> members
 
-        /// <summary>Atomically removes the element at the head of a queue and returns it to the caller, if the queue is not empty.</summary>
+        /// <summary>
+        /// Atomically removes the element at the head of a queue and returns it to the caller, if the queue is not empty.
+        /// </summary>
         /// <typeparam name="T">The type of element stored in the queue.</typeparam>
         /// <param name="location">The variable or field to atomically update.</param>
         /// <param name="value">Receives the value from the head of the queue, if the queue is non-empty.</param>
@@ -464,7 +490,7 @@ namespace System.Collections.Immutable
             bool successful;
             do
             {
-                Requires.NotNull(priorCollection, "location");
+                Requires.NotNull(priorCollection, nameof(location));
 
                 if (priorCollection.IsEmpty)
                 {
@@ -481,7 +507,9 @@ namespace System.Collections.Immutable
             return true;
         }
 
-        /// <summary>Atomically enqueues an element to the tail of a queue.</summary>
+        /// <summary>
+        /// Atomically enqueues an element to the tail of a queue.
+        /// </summary>
         /// <typeparam name="T">The type of element stored in the queue.</typeparam>
         /// <param name="location">The variable or field to atomically update.</param>
         /// <param name="value">The value to enqueue.</param>
@@ -491,7 +519,7 @@ namespace System.Collections.Immutable
             bool successful;
             do
             {
-                Requires.NotNull(priorCollection, "location");
+                Requires.NotNull(priorCollection, nameof(location));
 
                 var updatedCollection = priorCollection.Enqueue(value);
                 var interlockedResult = Interlocked.CompareExchange(ref location, updatedCollection, priorCollection);
@@ -499,7 +527,7 @@ namespace System.Collections.Immutable
                 priorCollection = interlockedResult; // we already have a volatile read that we can reuse for the next loop
             } while (!successful);
         }
-#endregion
+        #endregion
     }
 }
 #endif

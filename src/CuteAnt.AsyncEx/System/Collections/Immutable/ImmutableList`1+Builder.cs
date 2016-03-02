@@ -1,11 +1,11 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 #if NET40
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using Validation;
 
 namespace System.Collections.Immutable
 {
@@ -62,7 +62,7 @@ namespace System.Collections.Immutable
             /// <param name="list">A list to act as the basis for a new list.</param>
             internal Builder(ImmutableList<T> list)
             {
-                Requires.NotNull(list, "list");
+                Requires.NotNull(list, nameof(list));
                 _root = list._root;
                 _immutable = list;
             }
@@ -265,7 +265,7 @@ namespace System.Collections.Immutable
             /// <param name="action">The System.Action&lt;T&gt; delegate to perform on each element of the list.</param>
             public void ForEach(Action<T> action)
             {
-                Requires.NotNull(action, "action");
+                Requires.NotNull(action, nameof(action));
 
                 foreach (T item in this)
                 {
@@ -284,8 +284,8 @@ namespace System.Collections.Immutable
             /// </param>
             public void CopyTo(T[] array)
             {
-                Requires.NotNull(array, "array");
-                Requires.Range(array.Length >= this.Count, "array");
+                Requires.NotNull(array, nameof(array));
+                Requires.Range(array.Length >= this.Count, nameof(array));
                 _root.CopyTo(array);
             }
 
@@ -303,8 +303,8 @@ namespace System.Collections.Immutable
             /// </param>
             public void CopyTo(T[] array, int arrayIndex)
             {
-                Requires.NotNull(array, "array");
-                Requires.Range(array.Length >= arrayIndex + this.Count, "arrayIndex");
+                Requires.NotNull(array, nameof(array));
+                Requires.Range(array.Length >= arrayIndex + this.Count, nameof(arrayIndex));
                 _root.CopyTo(array, arrayIndex);
             }
 
@@ -344,9 +344,9 @@ namespace System.Collections.Immutable
             /// </returns>
             public ImmutableList<T> GetRange(int index, int count)
             {
-                Requires.Range(index >= 0, "index");
-                Requires.Range(count >= 0, "count");
-                Requires.Range(index + count <= this.Count, "count");
+                Requires.Range(index >= 0, nameof(index));
+                Requires.Range(count >= 0, nameof(count));
+                Requires.Range(index + count <= this.Count, nameof(count));
                 return ImmutableList<T>.WrapNode(Node.NodeTreeFromList(this, index, count));
             }
 
@@ -367,7 +367,7 @@ namespace System.Collections.Immutable
             /// </returns>
             public ImmutableList<TOutput> ConvertAll<TOutput>(Func<T, TOutput> converter)
             {
-                Requires.NotNull(converter, "converter");
+                Requires.NotNull(converter, nameof(converter));
                 return ImmutableList<TOutput>.WrapNode(_root.ConvertAll(converter));
             }
 
@@ -386,7 +386,7 @@ namespace System.Collections.Immutable
             /// </returns>
             public bool Exists(Predicate<T> match)
             {
-                Requires.NotNull(match, "match");
+                Requires.NotNull(match, nameof(match));
                 return _root.Exists(match);
             }
 
@@ -404,7 +404,7 @@ namespace System.Collections.Immutable
             /// </returns>
             public T Find(Predicate<T> match)
             {
-                Requires.NotNull(match, "match");
+                Requires.NotNull(match, nameof(match));
                 return _root.Find(match);
             }
 
@@ -423,7 +423,7 @@ namespace System.Collections.Immutable
             /// </returns>
             public ImmutableList<T> FindAll(Predicate<T> match)
             {
-                Requires.NotNull(match, "match");
+                Requires.NotNull(match, nameof(match));
                 return _root.FindAll(match);
             }
 
@@ -442,7 +442,7 @@ namespace System.Collections.Immutable
             /// </returns>
             public int FindIndex(Predicate<T> match)
             {
-                Requires.NotNull(match, "match");
+                Requires.NotNull(match, nameof(match));
                 return _root.FindIndex(match);
             }
 
@@ -460,9 +460,9 @@ namespace System.Collections.Immutable
             /// </returns>
             public int FindIndex(int startIndex, Predicate<T> match)
             {
-                Requires.NotNull(match, "match");
-                Requires.Range(startIndex >= 0, "startIndex");
-                Requires.Range(startIndex <= this.Count, "startIndex");
+                Requires.NotNull(match, nameof(match));
+                Requires.Range(startIndex >= 0, nameof(startIndex));
+                Requires.Range(startIndex <= this.Count, nameof(startIndex));
                 return _root.FindIndex(startIndex, match);
             }
 
@@ -481,10 +481,10 @@ namespace System.Collections.Immutable
             /// </returns>
             public int FindIndex(int startIndex, int count, Predicate<T> match)
             {
-                Requires.NotNull(match, "match");
-                Requires.Range(startIndex >= 0, "startIndex");
-                Requires.Range(count >= 0, "count");
-                Requires.Range(startIndex + count <= this.Count, "count");
+                Requires.NotNull(match, nameof(match));
+                Requires.Range(startIndex >= 0, nameof(startIndex));
+                Requires.Range(count >= 0, nameof(count));
+                Requires.Range(startIndex + count <= this.Count, nameof(count));
 
                 return _root.FindIndex(startIndex, count, match);
             }
@@ -503,7 +503,7 @@ namespace System.Collections.Immutable
             /// </returns>
             public T FindLast(Predicate<T> match)
             {
-                Requires.NotNull(match, "match");
+                Requires.NotNull(match, nameof(match));
                 return _root.FindLast(match);
             }
 
@@ -522,7 +522,7 @@ namespace System.Collections.Immutable
             /// </returns>
             public int FindLastIndex(Predicate<T> match)
             {
-                Requires.NotNull(match, "match");
+                Requires.NotNull(match, nameof(match));
                 return _root.FindLastIndex(match);
             }
 
@@ -541,9 +541,9 @@ namespace System.Collections.Immutable
             /// </returns>
             public int FindLastIndex(int startIndex, Predicate<T> match)
             {
-                Requires.NotNull(match, "match");
-                Requires.Range(startIndex >= 0, "startIndex");
-                Requires.Range(startIndex == 0 || startIndex < this.Count, "startIndex");
+                Requires.NotNull(match, nameof(match));
+                Requires.Range(startIndex >= 0, nameof(startIndex));
+                Requires.Range(startIndex == 0 || startIndex < this.Count, nameof(startIndex));
                 return _root.FindLastIndex(startIndex, match);
             }
 
@@ -565,10 +565,10 @@ namespace System.Collections.Immutable
             /// </returns>
             public int FindLastIndex(int startIndex, int count, Predicate<T> match)
             {
-                Requires.NotNull(match, "match");
-                Requires.Range(startIndex >= 0, "startIndex");
-                Requires.Range(count <= this.Count, "count");
-                Requires.Range(startIndex - count + 1 >= 0, "startIndex");
+                Requires.NotNull(match, nameof(match));
+                Requires.Range(startIndex >= 0, nameof(startIndex));
+                Requires.Range(count <= this.Count, nameof(count));
+                Requires.Range(startIndex - count + 1 >= 0, nameof(startIndex));
 
                 return _root.FindLastIndex(startIndex, count, match);
             }
@@ -640,7 +640,10 @@ namespace System.Collections.Immutable
             /// <param name="count">
             /// The number of elements in the section to search.
             /// </param>
-            /// <param name="equalityComparer">The equality comparer to use in the search.</param>
+            /// <param name="equalityComparer">
+            /// The equality comparer to use in the search.
+            /// If <c>null</c>, <see cref="EqualityComparer{T}.Default"/> is used.
+            /// </param>
             /// <returns>
             /// The zero-based index of the first occurrence of item within the range of
             /// elements in the ImmutableList&lt;T&gt; that starts at index and
@@ -649,8 +652,6 @@ namespace System.Collections.Immutable
             [Pure]
             public int IndexOf(T item, int index, int count, IEqualityComparer<T> equalityComparer)
             {
-                Requires.NotNull(equalityComparer, "equalityComparer");
-
                 return _root.IndexOf(item, index, count, equalityComparer);
             }
 
@@ -769,7 +770,7 @@ namespace System.Collections.Immutable
             /// </returns>
             public bool TrueForAll(Predicate<T> match)
             {
-                Requires.NotNull(match, "match");
+                Requires.NotNull(match, nameof(match));
                 return _root.TrueForAll(match);
             }
 
@@ -787,7 +788,7 @@ namespace System.Collections.Immutable
             /// </param>
             public void AddRange(IEnumerable<T> items)
             {
-                Requires.NotNull(items, "items");
+                Requires.NotNull(items, nameof(items));
 
                 this.Root = this.Root.AddRange(items);
             }
@@ -806,8 +807,8 @@ namespace System.Collections.Immutable
             /// </param>
             public void InsertRange(int index, IEnumerable<T> items)
             {
-                Requires.Range(index >= 0 && index <= this.Count, "index");
-                Requires.NotNull(items, "items");
+                Requires.Range(index >= 0 && index <= this.Count, nameof(index));
+                Requires.NotNull(items, nameof(items));
 
                 this.Root = this.Root.InsertRange(index, items);
             }
@@ -825,7 +826,7 @@ namespace System.Collections.Immutable
             /// </returns>
             public int RemoveAll(Predicate<T> match)
             {
-                Requires.NotNull(match, "match");
+                Requires.NotNull(match, nameof(match));
 
                 int count = this.Count;
                 this.Root = this.Root.RemoveAll(match);
@@ -847,9 +848,9 @@ namespace System.Collections.Immutable
             /// <param name="count">The number of elements in the range to reverse.</param> 
             public void Reverse(int index, int count)
             {
-                Requires.Range(index >= 0, "index");
-                Requires.Range(count >= 0, "count");
-                Requires.Range(index + count <= this.Count, "count");
+                Requires.Range(index >= 0, nameof(index));
+                Requires.Range(count >= 0, nameof(count));
+                Requires.Range(index + count <= this.Count, nameof(count));
 
                 this.Root = this.Root.Reverse(index, count);
             }
@@ -868,11 +869,12 @@ namespace System.Collections.Immutable
             /// the specified System.Comparison&lt;T&gt;.
             /// </summary>
             /// <param name="comparison">
-            /// The System.Comparison&lt;T&gt; to use when comparing elements.
+            /// The <see cref="Comparison{T}"/> to use when comparing elements.
             /// </param>
+            /// <exception cref="ArgumentNullException"><paramref name="comparison"/> is null.</exception>
             public void Sort(Comparison<T> comparison)
             {
-                Requires.NotNull(comparison, "comparison");
+                Requires.NotNull(comparison, nameof(comparison));
                 this.Root = this.Root.Sort(comparison);
             }
 
@@ -881,12 +883,11 @@ namespace System.Collections.Immutable
             /// the specified comparer.
             /// </summary>
             /// <param name="comparer">
-            /// The System.Collections.Generic.IComparer&lt;T&gt; implementation to use when comparing
-            /// elements, or null to use the default comparer System.Collections.Generic.Comparer&lt;T&gt;.Default.
+            /// The <see cref="IComparer{T}"/> implementation to use when comparing
+            /// elements, or null to use <see cref="Comparer{T}.Default"/>.
             /// </param>
             public void Sort(IComparer<T> comparer)
             {
-                Requires.NotNull(comparer, "comparer");
                 this.Root = this.Root.Sort(comparer);
             }
 
@@ -901,15 +902,14 @@ namespace System.Collections.Immutable
             /// The length of the range to sort.
             /// </param>
             /// <param name="comparer">
-            /// The System.Collections.Generic.IComparer&lt;T&gt; implementation to use when comparing
-            /// elements, or null to use the default comparer System.Collections.Generic.Comparer&lt;T&gt;.Default.
+            /// The <see cref="IComparer{T}"/> implementation to use when comparing
+            /// elements, or null to use <see cref="Comparer{T}.Default"/>.
             /// </param>
             public void Sort(int index, int count, IComparer<T> comparer)
             {
-                Requires.Range(index >= 0, "index");
-                Requires.Range(count >= 0, "count");
-                Requires.Range(index + count <= this.Count, "count");
-                Requires.NotNull(comparer, "comparer");
+                Requires.Range(index >= 0, nameof(index));
+                Requires.Range(count >= 0, nameof(count));
+                Requires.Range(index + count <= this.Count, nameof(count));
                 this.Root = this.Root.Sort(index, count, comparer);
             }
 
@@ -1025,7 +1025,6 @@ namespace System.Collections.Immutable
             /// <returns>
             /// The position into which the new element was inserted, or -1 to indicate that the item was not inserted into the collection,
             /// </returns>
-            /// <exception cref="System.NotImplementedException"></exception>
             int IList.Add(object value)
             {
                 this.Add((T)value);
@@ -1035,7 +1034,6 @@ namespace System.Collections.Immutable
             /// <summary>
             /// Clears this instance.
             /// </summary>
-            /// <exception cref="System.NotImplementedException"></exception>
             void IList.Clear()
             {
                 this.Clear();
@@ -1048,10 +1046,14 @@ namespace System.Collections.Immutable
             /// <returns>
             /// true if the <see cref="object"/> is found in the <see cref="IList"/>; otherwise, false.
             /// </returns>
-            /// <exception cref="System.NotImplementedException"></exception>
             bool IList.Contains(object value)
             {
-                return this.Contains((T)value);
+                if (IsCompatibleObject(value))
+                {
+                    return this.Contains((T)value);
+                }
+
+                return false;
             }
 
             /// <summary>
@@ -1061,10 +1063,14 @@ namespace System.Collections.Immutable
             /// <returns>
             /// The index of <paramref name="value"/> if found in the list; otherwise, -1.
             /// </returns>
-            /// <exception cref="System.NotImplementedException"></exception>
             int IList.IndexOf(object value)
             {
-                return this.IndexOf((T)value);
+                if (IsCompatibleObject(value))
+                {
+                    return this.IndexOf((T)value);
+                }
+
+                return -1;
             }
 
             /// <summary>
@@ -1072,7 +1078,6 @@ namespace System.Collections.Immutable
             /// </summary>
             /// <param name="index">The zero-based index at which <paramref name="value"/> should be inserted.</param>
             /// <param name="value">The object to insert into the <see cref="IList"/>.</param>
-            /// <exception cref="System.NotImplementedException"></exception>
             void IList.Insert(int index, object value)
             {
                 this.Insert(index, (T)value);
@@ -1082,7 +1087,6 @@ namespace System.Collections.Immutable
             /// Gets a value indicating whether the <see cref="IList"/> has a fixed size.
             /// </summary>
             /// <returns>true if the <see cref="IList"/> has a fixed size; otherwise, false.</returns>
-            /// <exception cref="System.NotImplementedException"></exception>
             bool IList.IsFixedSize
             {
                 get { return false; }
@@ -1093,7 +1097,6 @@ namespace System.Collections.Immutable
             /// </summary>
             /// <returns>true if the <see cref="ICollection{T}"/> is read-only; otherwise, false.
             ///   </returns>
-            /// <exception cref="System.NotImplementedException"></exception>
             bool IList.IsReadOnly
             {
                 get { return false; }
@@ -1103,10 +1106,12 @@ namespace System.Collections.Immutable
             /// Removes the first occurrence of a specific object from the <see cref="IList"/>.
             /// </summary>
             /// <param name="value">The object to remove from the <see cref="IList"/>.</param>
-            /// <exception cref="System.NotImplementedException"></exception>
             void IList.Remove(object value)
             {
-                this.Remove((T)value);
+                if (IsCompatibleObject(value))
+                {
+                    this.Remove((T)value);
+                }
             }
 
             /// <summary>
@@ -1117,7 +1122,6 @@ namespace System.Collections.Immutable
             /// </value>
             /// <param name="index">The index.</param>
             /// <returns></returns>
-            /// <exception cref="System.NotImplementedException"></exception>
             object IList.this[int index]
             {
                 get { return this[index]; }
@@ -1133,7 +1137,6 @@ namespace System.Collections.Immutable
             /// </summary>
             /// <param name="array">The one-dimensional <see cref="Array"/> that is the destination of the elements copied from <see cref="ICollection"/>. The <see cref="Array"/> must have zero-based indexing.</param>
             /// <param name="arrayIndex">The zero-based index in <paramref name="array"/> at which copying begins.</param>
-            /// <exception cref="System.NotImplementedException"></exception>
             void ICollection.CopyTo(Array array, int arrayIndex)
             {
                 this.Root.CopyTo(array, arrayIndex);
@@ -1143,7 +1146,6 @@ namespace System.Collections.Immutable
             /// Gets a value indicating whether access to the <see cref="ICollection"/> is synchronized (thread safe).
             /// </summary>
             /// <returns>true if access to the <see cref="ICollection"/> is synchronized (thread safe); otherwise, false.</returns>
-            /// <exception cref="System.NotImplementedException"></exception>
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             bool ICollection.IsSynchronized
             {
@@ -1154,7 +1156,6 @@ namespace System.Collections.Immutable
             /// Gets an object that can be used to synchronize access to the <see cref="ICollection"/>.
             /// </summary>
             /// <returns>An object that can be used to synchronize access to the <see cref="ICollection"/>.</returns>
-            /// <exception cref="System.NotImplementedException"></exception>
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             object ICollection.SyncRoot
             {
@@ -1193,7 +1194,7 @@ namespace System.Collections.Immutable
         /// <param name="builder">The list to display in the debugger</param>
         public ImmutableListBuilderDebuggerProxy(ImmutableList<T>.Builder builder)
         {
-            Requires.NotNull(builder, "builder");
+            Requires.NotNull(builder, nameof(builder));
             _list = builder;
         }
 
