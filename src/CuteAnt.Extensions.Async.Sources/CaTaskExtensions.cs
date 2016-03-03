@@ -13,7 +13,11 @@ namespace System.Threading.Tasks
   internal static class CaTaskExtensions
   {
     private static readonly Task<object> CanceledTask;
+#if NET40
+    private static readonly Task<object> CompletedTask = TaskEx.FromResult(default(object));
+#else
     private static readonly Task<object> CompletedTask = Task.FromResult(default(object));
+#endif
 
     static CaTaskExtensions()
     {
@@ -103,7 +107,11 @@ namespace System.Threading.Tasks
       switch (task.Status)
       {
         case TaskStatus.RanToCompletion:
+#if NET40
+          return TaskEx.FromResult((object)task.GetResult());
+#else
           return Task.FromResult((object)task.GetResult());
+#endif
 
         case TaskStatus.Faulted:
           {
@@ -271,7 +279,9 @@ namespace System.Threading.Tasks
       catch (Exception exc)
       {
         var ignored = task.Exception; // Observe exception
+#if DESKTOPCLR
         logger.LogError(errorCode, exc, message);
+#endif
         throw;
       }
     }
@@ -307,7 +317,11 @@ namespace System.Threading.Tasks
       }
 
       var timeoutCancellationTokenSource = new CancellationTokenSource();
+#if NET40
+      var completedTask = await TaskEx.WhenAny(taskToComplete, TaskEx.Delay(timeout, timeoutCancellationTokenSource.Token));
+#else
       var completedTask = await Task.WhenAny(taskToComplete, Task.Delay(timeout, timeoutCancellationTokenSource.Token));
+#endif
 
       // We got done before the timeout, or were able to complete before this code ran, return the result
       if (taskToComplete == completedTask)
@@ -336,7 +350,11 @@ namespace System.Threading.Tasks
       }
 
       var timeoutCancellationTokenSource = new CancellationTokenSource();
+#if NET40
+      var completedTask = await TaskEx.WhenAny(taskToComplete, TaskEx.Delay(timeSpan, timeoutCancellationTokenSource.Token));
+#else
       var completedTask = await Task.WhenAny(taskToComplete, Task.Delay(timeSpan, timeoutCancellationTokenSource.Token));
+#endif
 
       // We got done before the timeout, or were able to complete before this code ran, return the result
       if (taskToComplete == completedTask)

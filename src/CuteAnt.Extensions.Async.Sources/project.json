@@ -1,5 +1,5 @@
 ﻿{
-  "version": "2.0.0-rc3-160201",
+  "version": "2.0.0-rc3-160202",
   "compilationOptions": {
     "warningsAsErrors": false,
     "keyFile": "../../tools/StrongKey.snk"
