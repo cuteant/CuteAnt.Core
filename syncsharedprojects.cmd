@@ -55,4 +55,7 @@ copy src\Nito.AsyncEx.ExceptionEnlightenment.Sources\*.cs ..\..\CuteAnt\SharedPr
 del ..\..\CuteAnt\SharedProjects\Nito.AsyncEx.Tasks.Sources\*.cs /s /q
 copy src\Nito.AsyncEx.Tasks.Sources\*.cs ..\..\CuteAnt\SharedProjects\Nito.AsyncEx.Tasks.Sources\ /y
 
+del ..\..\CuteAnt\SharedProjects\CuteAnt.Extensions.Logging.Sources\*.cs /s /q
+copy src\CuteAnt.Extensions.Logging.Sources\*.cs ..\..\CuteAnt\SharedProjects\CuteAnt.Extensions.Logging.Sources\ /y
+
 pause

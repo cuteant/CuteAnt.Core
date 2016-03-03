@@ -7,8 +7,29 @@
   "shared": "**/*.cs",
   "dependencies": { },
   "frameworks": {
-    "net40": { },
-    "net451": { },
-    "dnx451": { }
+    "net40": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      },
+      "dependencies": {
+        "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc3-*"
+      }
+    },
+    "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
+      },
+      "dependencies": {
+        "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc3-*"
+      }
+    },
+    "dnx451": {
+      "compilationOptions": {
+        "define": [ "DNXCLR", "NET_4_0_GREATER" ]
+      },
+      "dependencies": {
+        "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final"
+      }
+    }
   }
 }
