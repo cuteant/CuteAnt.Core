@@ -746,7 +746,7 @@ namespace System.Threading.Tasks
 #if DEBUG
             // PRENET45 
 
-            if (ShouldCheckMonitorStatus)
+            //if (ShouldCheckMonitorStatus)
             {
                 bool exceptionThrown;
                 try
