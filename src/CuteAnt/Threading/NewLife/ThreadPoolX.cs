@@ -10,10 +10,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using CuteAnt.Collections;
-using CuteAnt.Log;
 using CuteAnt.Reflection;
 using CuteAnt.Configuration;
 using ThreadState = System.Threading.ThreadState;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 
 namespace CuteAnt.Threading
 {
@@ -432,12 +436,12 @@ namespace CuteAnt.Threading
               if (ths[i] == null)
               {
                 ths.RemoveAt(i);
-                HmTrace.WriteInfo(Name + "线程池的线程对象为空，设计错误！");
+                if(s_logger.IsInformationLevelEnabled()) s_logger.LogInformation(Name + "线程池的线程对象为空，设计错误！");
               }
               else if (!ths[i].IsAlive)
               {
                 ths[i].Dispose();
-                HmTrace.WriteInfo(ths[i].Name + "处于非活动状态，设计错误！");
+                if (s_logger.IsInformationLevelEnabled()) s_logger.LogInformation(ths[i].Name + "处于非活动状态，设计错误！");
                 ths.RemoveAt(i);
               }
               else if (!ths[i].Running)
@@ -513,7 +517,7 @@ namespace CuteAnt.Threading
         catch (Exception ex)
         {
           LastError = ex;
-          HmTrace.WriteException(ex);
+          s_logger.LogError(ex.ToString());
         }
       }
 
@@ -603,7 +607,7 @@ namespace CuteAnt.Threading
             if (ths.Contains(thread))
             {
               ths.Remove(thread);
-              HmTrace.WriteInfo("归还" + thread.Name + "时发现，线程被关闭了，设计错误！");
+              if(s_logger.IsInformationLevelEnabled()) s_logger.LogInformation("归还" + thread.Name + "时发现，线程被关闭了，设计错误！");
             }
           }
         }
@@ -620,7 +624,7 @@ namespace CuteAnt.Threading
     /// <summary>带异常处理的线程池任务调度</summary>
     /// <param name="callback"></param>
     /// <param name="state"></param>
-    public static void QueueUserWorkItem(WaitCallback callback, Object state) { QueueUserWorkItem(callback, state, ex => HmTrace.WriteDebug(ex)); }
+    public static void QueueUserWorkItem(WaitCallback callback, Object state) { QueueUserWorkItem(callback, state, ex => s_logger.LogError(ex.ToString())); }
 
     /// <summary>带异常处理的线程池任务调度，即使不指定异常处理方法，也不允许异常抛出，以免造成应用程序退出</summary>
     /// <param name="callback"></param>
@@ -660,7 +664,7 @@ namespace CuteAnt.Threading
     {
       QueueUserWorkItem(callback, ex =>
       {
-        if (HmTrace.Debug) HmTrace.WriteException(ex);
+        if (s_logger.IsDebugLevelEnabled()) s_logger.LogDebug(ex.ToString());
       });
     }
 
@@ -740,9 +744,10 @@ namespace CuteAnt.Threading
     #endregion
 
     #region 辅助函数
+    private static ILogger s_logger = TraceLogger.GetLogger("CuteAnt.Threading");
     private static void WriteLog(String msg)
     {
-      if (Debug) HmTrace.WriteInfo("线程：" + Thread.CurrentThread.Name + " 信息：" + msg);
+      if (s_logger.IsDebugLevelEnabled()) s_logger.LogDebug("线程：" + Thread.CurrentThread.Name + " 信息：" + msg);
     }
 
     /// <summary>已重载。</summary>

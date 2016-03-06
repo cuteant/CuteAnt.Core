@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Threading;
-using CuteAnt.Log;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 
 namespace CuteAnt.Threading
 {
@@ -160,7 +164,7 @@ namespace CuteAnt.Threading
 
           var e = FindException<ThreadAbortException>(ex);
           if (e == null)
-            HmTrace.WriteException(ex);
+            s_logger.LogError(ex.ToString());
           else
           {
             //异常参数指明是否需要终止线程
@@ -255,9 +259,10 @@ namespace CuteAnt.Threading
     #endregion
 
     #region 辅助函数
+    private static ILogger s_logger = TraceLogger.GetLogger("CuteAnt.Threading");
     private static void WriteLog(String msg)
     {
-      if (Debug) HmTrace.WriteInfo("线程：" + Thread.CurrentThread.Name + " 信息：" + msg);
+      if (s_logger.IsDebugLevelEnabled()) s_logger.LogDebug("线程：" + Thread.CurrentThread.Name + " 信息：" + msg);
     }
 
     private static Boolean? _Debug;

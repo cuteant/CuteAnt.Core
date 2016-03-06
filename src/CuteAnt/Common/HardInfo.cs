@@ -426,8 +426,7 @@ namespace CuteAnt.Common
       }
       catch (Exception ex)
       {
-        HmTrace.WriteDebug(ex, "获取{0} {1}硬件信息失败\r\n{2}", path, property);
-        return null;
+        throw new HmExceptionBase(ex, "获取{0} {1}硬件信息失败\r\n{2}", path, property);
       }
       bbs.Sort();
       var sb = new StringBuilder(bbs.Count * 15);
@@ -443,67 +442,67 @@ namespace CuteAnt.Common
 
     #region 导入导出
 
-    /// <summary></summary>
-    /// <returns></returns>
-    public ExtendData ToExtend()
-    {
-      var data = new ExtendData();
-      data["MachineName"] = MachineName;
-      data["BaseBoard"] = BaseBoard;
-      data["Processors"] = Processors;
-      data["Disk"] = Disk;
-      data["DiskSerial"] = DiskSerial;
-      data["Volume"] = Volume;
-      data["Macs"] = Macs;
-      data["IPs"] = IPs;
-      data["OSVersion"] = OSVersion;
-      data["Memory"] = Memory.ToString();
-      data["ScreenWidth"] = ScreenWidth.ToString();
-      data["ScreenHeight"] = ScreenHeight.ToString();
-      data["DiskSize"] = DiskSize.ToString();
+    ///// <summary></summary>
+    ///// <returns></returns>
+    //public ExtendData ToExtend()
+    //{
+    //  var data = new ExtendData();
+    //  data["MachineName"] = MachineName;
+    //  data["BaseBoard"] = BaseBoard;
+    //  data["Processors"] = Processors;
+    //  data["Disk"] = Disk;
+    //  data["DiskSerial"] = DiskSerial;
+    //  data["Volume"] = Volume;
+    //  data["Macs"] = Macs;
+    //  data["IPs"] = IPs;
+    //  data["OSVersion"] = OSVersion;
+    //  data["Memory"] = Memory.ToString();
+    //  data["ScreenWidth"] = ScreenWidth.ToString();
+    //  data["ScreenHeight"] = ScreenHeight.ToString();
+    //  data["DiskSize"] = DiskSize.ToString();
 
-      return data;
-    }
+    //  return data;
+    //}
 
-    /// <summary></summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    public static HardInfo FromExtend(ExtendData data)
-    {
-      var entity = new HardInfo();
-      entity.MachineName = data["MachineName"];
-      entity.BaseBoard = data["BaseBoard"];
-      entity.Processors = data["Processors"];
-      entity.Disk = data["Disk"];
-      entity.DiskSerial = data["DiskSerial"];
-      entity.Volume = data["Volume"];
-      entity.Macs = data["Macs"];
-      entity.IPs = data["IPs"];
-      entity.OSVersion = data["OSVersion"];
-      entity.Memory = data.GetItem<Int64>("Memory");
-      entity.ScreenWidth = data.GetItem<Int32>("ScreenWidth");
-      entity.ScreenHeight = data.GetItem<Int32>("ScreenHeight");
-      entity.DiskSize = data.GetItem<Int64>("DiskSize");
+    ///// <summary></summary>
+    ///// <param name="data"></param>
+    ///// <returns></returns>
+    //public static HardInfo FromExtend(ExtendData data)
+    //{
+    //  var entity = new HardInfo();
+    //  entity.MachineName = data["MachineName"];
+    //  entity.BaseBoard = data["BaseBoard"];
+    //  entity.Processors = data["Processors"];
+    //  entity.Disk = data["Disk"];
+    //  entity.DiskSerial = data["DiskSerial"];
+    //  entity.Volume = data["Volume"];
+    //  entity.Macs = data["Macs"];
+    //  entity.IPs = data["IPs"];
+    //  entity.OSVersion = data["OSVersion"];
+    //  entity.Memory = data.GetItem<Int64>("Memory");
+    //  entity.ScreenWidth = data.GetItem<Int32>("ScreenWidth");
+    //  entity.ScreenHeight = data.GetItem<Int32>("ScreenHeight");
+    //  entity.DiskSize = data.GetItem<Int64>("DiskSize");
 
-      return entity;
-    }
+    //  return entity;
+    //}
 
-    /// <summary>导出XML</summary>
-    /// <returns></returns>
-    public virtual String ToXml()
-    {
-      return ToExtend().ToXml();
-    }
+    ///// <summary>导出XML</summary>
+    ///// <returns></returns>
+    //public virtual String ToXml()
+    //{
+    //  return ToExtend().ToXml();
+    //}
 
-    /// <summary>导入</summary>
-    /// <param name="xml"></param>
-    /// <returns></returns>
-    public static HardInfo FromXml(String xml)
-    {
-      if (!String.IsNullOrEmpty(xml)) xml = xml.Trim();
+    ///// <summary>导入</summary>
+    ///// <param name="xml"></param>
+    ///// <returns></returns>
+    //public static HardInfo FromXml(String xml)
+    //{
+    //  if (!String.IsNullOrEmpty(xml)) xml = xml.Trim();
 
-      return FromExtend(ExtendData.FromXml(xml));
-    }
+    //  return FromExtend(ExtendData.FromXml(xml));
+    //}
 
     #endregion
   }

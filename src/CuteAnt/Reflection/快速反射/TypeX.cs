@@ -18,8 +18,10 @@ using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using System.Text;
 using CuteAnt.Collections;
-using CuteAnt.Log;
-#if DNXCLR
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 #endif
 
@@ -29,6 +31,8 @@ namespace CuteAnt.Reflection
   public class TypeX : MemberInfoX
   {
     #region 属性
+
+    private static readonly ILogger s_logger = TraceLogger.GetLogger("CuteAnt.Reflection");
 
     private Type _Type;
 
@@ -494,11 +498,11 @@ namespace CuteAnt.Reflection
               var type2 = AssemblyX.Create(asm2).GetType(typeName);
               if (type2 == null) continue;
               type = type2;
-              if (HmTrace.Debug) HmTrace.WriteInfo("TypeX.GetType(\"{0}\")导致加载{1}", typeName, file);
+              if (s_logger.IsEnabled(LogLevel.Information)) s_logger.LogInformation("TypeX.GetType(\"{0}\")导致加载{1}", typeName, file);
             }
             catch (Exception ex)
             {
-              if (HmTrace.Debug) HmTrace.WriteException(ex);
+              if (s_logger.IsEnabled(LogLevel.Debug)) s_logger.LogDebug(ex.ToString());
             }
 
             return type;
@@ -542,11 +546,11 @@ namespace CuteAnt.Reflection
                 var type2 = AssemblyX.Create(asm2).GetType(typeName);
                 if (type2 == null) continue;
                 type = type2;
-                if (HmTrace.Debug) HmTrace.WriteInfo("TypeX.GetType(\"{0}\")导致加载{1}", typeName, file);
+                if (s_logger.IsEnabled(LogLevel.Information)) s_logger.LogInformation("TypeX.GetType(\"{0}\")导致加载{1}", typeName, file);
               }
               catch (Exception ex)
               {
-                if (HmTrace.Debug) HmTrace.WriteException(ex);
+                if (s_logger.IsEnabled(LogLevel.Debug)) s_logger.LogDebug(ex.ToString());
               }
 
               return type;

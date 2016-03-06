@@ -1,18 +1,30 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using CuteAnt.Extensions.Logging;
 using CuteAnt.Extensions.DependencyInjection.Extensions;
 
 namespace CuteAnt.Extensions.DependencyInjection
 {
-    public static class LoggingServiceCollectionExtensions
+  /// <summary>
+  /// Extension methods for setting up logging services in an <see cref="IServiceCollection" />.
+  /// </summary>
+  public static class LoggingServiceCollectionExtensions
+  {
+    /// <summary>
+    /// Adds logging services to the specified <see cref="IServiceCollection" />.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
+    public static void AddLogging(this IServiceCollection services)
     {
-        public static IServiceCollection AddLogging(this IServiceCollection services)
-        {
-            services.TryAdd(ServiceDescriptor.Singleton<ILoggerFactory, LoggerFactory>());
-            services.TryAdd(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(Logger<>)));
-            return services;
-        }
+      if (services == null)
+      {
+        throw new ArgumentNullException(nameof(services));
+      }
+
+      services.TryAdd(ServiceDescriptor.Singleton<ILoggerFactory, LoggerFactory>());
+      services.TryAdd(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(Logger<>)));
     }
+  }
 }

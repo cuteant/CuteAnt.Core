@@ -9,7 +9,11 @@
 using System;
 using System.IO;
 using System.Xml.Serialization;
-using CuteAnt.Log;
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 
 namespace CuteAnt.Xml
 {
@@ -29,6 +33,8 @@ namespace CuteAnt.Xml
   {
     #region 静态
 
+    private static readonly ILogger s_logger = TraceLogger.GetLogger("CuteAnt.Configuration");
+
     private static TConfig _Current;
 
     /// <summary>当前实例。通过置空可以使其重新加载。</summary>
@@ -42,7 +48,7 @@ namespace CuteAnt.Xml
         {
           // 现存有对象，尝试再次加载，可能因为未修改而返回null，这样只需要返回现存对象即可
           if (!config.IsUpdated) return config;
-          HmTrace.WriteInfo("{0}的配置文件{1}有更新，重新加载配置！", typeof(TConfig), config.ConfigFile);
+          if (s_logger.IsInformationLevelEnabled()) s_logger.LogInformation("{0}的配置文件{1}有更新，重新加载配置！", typeof(TConfig), config.ConfigFile);
 
           var cfg = Load(_.ConfigFile);
           if (cfg == null) return config;
@@ -77,7 +83,7 @@ namespace CuteAnt.Xml
           //_.CheckFormat = b;
           // 创建或覆盖
           var act = File.Exists(_.ConfigFile.GetFullPath()) ? "加载出错" : "不存在";
-          HmTrace.WriteInfo("{0}的配置文件{1} {2}，准备用默认配置覆盖！", typeof(TConfig).Name, _.ConfigFile, act);
+          if (s_logger.IsInformationLevelEnabled()) s_logger.LogInformation("{0}的配置文件{1} {2}，准备用默认配置覆盖！", typeof(TConfig).Name, _.ConfigFile, act);
           try
           {
             // 根据配置，有可能不保存，直接返回默认
@@ -85,7 +91,7 @@ namespace CuteAnt.Xml
           }
           catch (Exception ex)
           {
-            HmTrace.WriteException(ex);
+            s_logger.LogError(ex.ToString());
           }
         }
 
@@ -236,7 +242,7 @@ namespace CuteAnt.Xml
 
         return config;
       }
-      catch (Exception ex) { HmTrace.WriteException(ex); return null; }
+      catch (Exception ex) { s_logger.LogError(ex.ToString()); return null; }
     }
 
     #endregion
@@ -269,13 +275,13 @@ namespace CuteAnt.Xml
         if (!flag)
         {
           // 异步处理，避免加载日志路径配置时死循环
-          HmTrace.WriteInfo("配置文件{0}格式不一致，保存为最新格式！", ConfigFile);
+          if (s_logger.IsInformationLevelEnabled()) s_logger.LogInformation("配置文件{0}格式不一致，保存为最新格式！", ConfigFile);
           config.Save();
         }
       }
       catch (Exception ex)
       {
-        HmTrace.WriteException(ex);
+        s_logger.LogInformation(ex.ToString());
       }
     }
 

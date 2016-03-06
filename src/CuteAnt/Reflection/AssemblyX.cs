@@ -15,8 +15,10 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using CuteAnt.Collections;
 using CuteAnt.IO;
-using CuteAnt.Log;
-#if DNXCLR
+#if DESKTOPCLR
+using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 #endif
 
@@ -26,6 +28,7 @@ namespace CuteAnt.Reflection
   public class AssemblyX //: FastIndexAccessor
   {
     #region 属性
+    private static ILogger s_logger = TraceLogger.GetLogger("CuteAnt.Reflection");
 
     private Assembly _Asm;
 
@@ -164,10 +167,10 @@ namespace CuteAnt.Reflection
         {
           if (ex.LoaderExceptions != null)
           {
-            HmTrace.WriteInfo("加载[{0}]{1}的类型时发生个{2}错误！", this, Location, ex.LoaderExceptions.Length);
+            if(s_logger.IsInformationLevelEnabled()) s_logger.LogInformation("加载[{0}]{1}的类型时发生个{2}错误！", this, Location, ex.LoaderExceptions.Length);
             foreach (var le in ex.LoaderExceptions)
             {
-              HmTrace.WriteException(le);
+              s_logger.LogError(le.ToString());
             }
           }
           ts = ex.Types;
@@ -454,13 +457,13 @@ namespace CuteAnt.Reflection
           if (ts != null && ts.Count > 0)
           {
             // 真实加载
-            if (HmTrace.Debug)
+            if (s_logger.IsDebugLevelEnabled())
             {
               // 如果是本目录的程序集，去掉目录前缀
               var p = item.Asm.Location;
               var cur = PathHelper.ApplicationBasePath;
               if (p.StartsWithIgnoreCase(cur)) p = p.Substring(cur.Length).TrimStart("\\");
-              HmTrace.WriteInfo("AssemblyX.FindAllPlugins(\"{0}\")导致加载{1}", baseType.FullName, p);
+              s_logger.LogDebug("AssemblyX.FindAllPlugins(\"{0}\")导致加载{1}", baseType.FullName, p);
             }
 #if DNXCLR
             foreach (var elm in ts)
