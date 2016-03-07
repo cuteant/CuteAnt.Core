@@ -9,76 +9,43 @@ namespace CuteAnt.Extensions.DependencyInjection
   [DebuggerDisplay("Lifetime = {Lifetime}, ServiceType = {ServiceType}, ImplementationType = {ImplementationType}")]
   public class ServiceDescriptor
   {
-    /// <summary>
-    /// Initializes a new instance of <see cref="ServiceDescriptor"/> with the specified <paramref name="implementationType"/>.
-    /// </summary>
+    #region -- Constructors --
+
+    /// <summary>Initializes a new instance of <see cref="ServiceDescriptor"/> with the specified <paramref name="implementationType"/>.</summary>
     /// <param name="serviceType">The <see cref="Type"/> of the service.</param>
     /// <param name="implementationType">The <see cref="Type"/> implementing the service.</param>
     /// <param name="lifetime">The <see cref="ServiceLifetime"/> of the service.</param>
-    public ServiceDescriptor(
-        Type serviceType,
-        Type implementationType,
-        ServiceLifetime lifetime)
-        : this(serviceType, lifetime)
+    public ServiceDescriptor(Type serviceType, Type implementationType, ServiceLifetime lifetime)
+      : this(serviceType, lifetime)
     {
-      if (serviceType == null)
-      {
-        throw new ArgumentNullException(nameof(serviceType));
-      }
-
-      if (implementationType == null)
-      {
-        throw new ArgumentNullException(nameof(implementationType));
-      }
+      if (serviceType == null) { throw new ArgumentNullException(nameof(serviceType)); }
+      if (implementationType == null) { throw new ArgumentNullException(nameof(implementationType)); }
 
       ImplementationType = implementationType;
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="ServiceDescriptor"/> with the specified <paramref name="instance"/>
-    /// as a <see cref="ServiceLifetime.Singleton"/>.
-    /// </summary>
+    /// <summary>Initializes a new instance of <see cref="ServiceDescriptor"/> with the specified <paramref name="instance"/>
+    /// as a <see cref="ServiceLifetime.Singleton"/>.</summary>
     /// <param name="serviceType">The <see cref="Type"/> of the service.</param>
     /// <param name="instance">The instance implementing the service.</param>
-    public ServiceDescriptor(
-        Type serviceType,
-        object instance)
-        : this(serviceType, ServiceLifetime.Singleton)
+    public ServiceDescriptor(Type serviceType, object instance)
+      : this(serviceType, ServiceLifetime.Singleton)
     {
-      if (serviceType == null)
-      {
-        throw new ArgumentNullException(nameof(serviceType));
-      }
-
-      if (instance == null)
-      {
-        throw new ArgumentNullException(nameof(instance));
-      }
+      if (serviceType == null) { throw new ArgumentNullException(nameof(serviceType)); }
+      if (instance == null) { throw new ArgumentNullException(nameof(instance)); }
 
       ImplementationInstance = instance;
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="ServiceDescriptor"/> with the specified <paramref name="factory"/>.
-    /// </summary>
+    /// <summary>Initializes a new instance of <see cref="ServiceDescriptor"/> with the specified <paramref name="factory"/>.</summary>
     /// <param name="serviceType">The <see cref="Type"/> of the service.</param>
     /// <param name="factory">A factory used for creating service instances.</param>
     /// <param name="lifetime">The <see cref="ServiceLifetime"/> of the service.</param>
-    public ServiceDescriptor(
-        Type serviceType,
-        Func<IServiceProvider, object> factory,
-        ServiceLifetime lifetime)
-        : this(serviceType, lifetime)
+    public ServiceDescriptor(Type serviceType, Func<IServiceProvider, object> factory, ServiceLifetime lifetime)
+      : this(serviceType, lifetime)
     {
-      if (serviceType == null)
-      {
-        throw new ArgumentNullException(nameof(serviceType));
-      }
-
-      if (factory == null)
-      {
-        throw new ArgumentNullException(nameof(factory));
-      }
+      if (serviceType == null) { throw new ArgumentNullException(nameof(serviceType)); }
+      if (factory == null) { throw new ArgumentNullException(nameof(factory)); }
 
       ImplementationFactory = factory;
     }
@@ -88,6 +55,10 @@ namespace CuteAnt.Extensions.DependencyInjection
       Lifetime = lifetime;
       ServiceType = serviceType;
     }
+
+    #endregion
+
+    #region -- Properties --
 
     /// <inheritdoc />
     public ServiceLifetime Lifetime { get; }
@@ -103,6 +74,10 @@ namespace CuteAnt.Extensions.DependencyInjection
 
     /// <inheritdoc />
     public Func<IServiceProvider, object> ImplementationFactory { get; }
+
+    #endregion
+
+    #region == GetImplementationType ==
 
     internal Type GetImplementationType()
     {
@@ -127,71 +102,58 @@ namespace CuteAnt.Extensions.DependencyInjection
       return null;
     }
 
+    #endregion
+
+    #region --& Transient &--
+
     public static ServiceDescriptor Transient<TService, TImplementation>()
-        where TService : class
-        where TImplementation : class, TService
+      where TService : class
+      where TImplementation : class, TService
     {
       return Describe<TService, TImplementation>(ServiceLifetime.Transient);
     }
 
     public static ServiceDescriptor Transient(Type service, Type implementationType)
     {
-      if (service == null)
-      {
-        throw new ArgumentNullException(nameof(service));
-      }
+      if (service == null) { throw new ArgumentNullException(nameof(service)); }
 
-      if (implementationType == null)
-      {
-        throw new ArgumentNullException(nameof(implementationType));
-      }
+      if (implementationType == null) { throw new ArgumentNullException(nameof(implementationType)); }
 
       return Describe(service, implementationType, ServiceLifetime.Transient);
     }
 
-    public static ServiceDescriptor Transient<TService, TImplementation>(
-        Func<IServiceProvider, TImplementation> implementationFactory)
-        where TService : class
-        where TImplementation : class, TService
+    public static ServiceDescriptor Transient<TService, TImplementation>(Func<IServiceProvider, TImplementation> implementationFactory)
+      where TService : class
+      where TImplementation : class, TService
     {
-      if (implementationFactory == null)
-      {
-        throw new ArgumentNullException(nameof(implementationFactory));
-      }
+      if (implementationFactory == null) { throw new ArgumentNullException(nameof(implementationFactory)); }
 
       return Describe(typeof(TService), implementationFactory, ServiceLifetime.Transient);
     }
 
     public static ServiceDescriptor Transient<TService>(Func<IServiceProvider, TService> implementationFactory)
-        where TService : class
+      where TService : class
     {
-      if (implementationFactory == null)
-      {
-        throw new ArgumentNullException(nameof(implementationFactory));
-      }
+      if (implementationFactory == null) { throw new ArgumentNullException(nameof(implementationFactory)); }
 
       return Describe(typeof(TService), implementationFactory, ServiceLifetime.Transient);
     }
 
-    public static ServiceDescriptor Transient(Type service,
-                                              Func<IServiceProvider, object> implementationFactory)
+    public static ServiceDescriptor Transient(Type service, Func<IServiceProvider, object> implementationFactory)
     {
-      if (service == null)
-      {
-        throw new ArgumentNullException(nameof(service));
-      }
-
-      if (implementationFactory == null)
-      {
-        throw new ArgumentNullException(nameof(implementationFactory));
-      }
+      if (service == null) { throw new ArgumentNullException(nameof(service)); }
+      if (implementationFactory == null) { throw new ArgumentNullException(nameof(implementationFactory)); }
 
       return Describe(service, implementationFactory, ServiceLifetime.Transient);
     }
 
+    #endregion
+
+    #region --& Scoped &--
+
     public static ServiceDescriptor Scoped<TService, TImplementation>()
-        where TService : class
-        where TImplementation : class, TService
+      where TService : class
+      where TImplementation : class, TService
     {
       return Describe<TService, TImplementation>(ServiceLifetime.Scoped);
     }
@@ -201,146 +163,100 @@ namespace CuteAnt.Extensions.DependencyInjection
       return Describe(service, implementationType, ServiceLifetime.Scoped);
     }
 
-    public static ServiceDescriptor Scoped<TService, TImplementation>(
-        Func<IServiceProvider, TImplementation> implementationFactory)
-        where TService : class
-        where TImplementation : class, TService
+    public static ServiceDescriptor Scoped<TService, TImplementation>(Func<IServiceProvider, TImplementation> implementationFactory)
+      where TService : class
+      where TImplementation : class, TService
     {
-      if (implementationFactory == null)
-      {
-        throw new ArgumentNullException(nameof(implementationFactory));
-      }
+      if (implementationFactory == null) { throw new ArgumentNullException(nameof(implementationFactory)); }
 
       return Describe(typeof(TService), implementationFactory, ServiceLifetime.Scoped);
     }
 
     public static ServiceDescriptor Scoped<TService>(Func<IServiceProvider, TService> implementationFactory)
-        where TService : class
+      where TService : class
     {
-      if (implementationFactory == null)
-      {
-        throw new ArgumentNullException(nameof(implementationFactory));
-      }
+      if (implementationFactory == null) { throw new ArgumentNullException(nameof(implementationFactory)); }
 
       return Describe(typeof(TService), implementationFactory, ServiceLifetime.Scoped);
     }
 
-    public static ServiceDescriptor Scoped
-        (Type service,
-        Func<IServiceProvider, object> implementationFactory)
+    public static ServiceDescriptor Scoped(Type service, Func<IServiceProvider, object> implementationFactory)
     {
-      if (service == null)
-      {
-        throw new ArgumentNullException(nameof(service));
-      }
-
-      if (implementationFactory == null)
-      {
-        throw new ArgumentNullException(nameof(implementationFactory));
-      }
+      if (service == null) { throw new ArgumentNullException(nameof(service)); }
+      if (implementationFactory == null) { throw new ArgumentNullException(nameof(implementationFactory)); }
 
       return Describe(service, implementationFactory, ServiceLifetime.Scoped);
     }
 
+    #endregion
+
+    #region --& Singleton &--
+
     public static ServiceDescriptor Singleton<TService, TImplementation>()
-        where TService : class
-        where TImplementation : class, TService
+      where TService : class
+      where TImplementation : class, TService
     {
       return Describe<TService, TImplementation>(ServiceLifetime.Singleton);
     }
 
     public static ServiceDescriptor Singleton(Type service, Type implementationType)
     {
-      if (service == null)
-      {
-        throw new ArgumentNullException(nameof(service));
-      }
-
-      if (implementationType == null)
-      {
-        throw new ArgumentNullException(nameof(implementationType));
-      }
+      if (service == null) { throw new ArgumentNullException(nameof(service)); }
+      if (implementationType == null) { throw new ArgumentNullException(nameof(implementationType)); }
 
       return Describe(service, implementationType, ServiceLifetime.Singleton);
     }
 
-    public static ServiceDescriptor Singleton<TService, TImplementation>(
-        Func<IServiceProvider, TImplementation> implementationFactory)
-        where TService : class
-        where TImplementation : class, TService
+    public static ServiceDescriptor Singleton<TService, TImplementation>(Func<IServiceProvider, TImplementation> implementationFactory)
+      where TService : class
+      where TImplementation : class, TService
     {
-      if (implementationFactory == null)
-      {
-        throw new ArgumentNullException(nameof(implementationFactory));
-      }
+      if (implementationFactory == null) { throw new ArgumentNullException(nameof(implementationFactory)); }
 
       return Describe(typeof(TService), implementationFactory, ServiceLifetime.Singleton);
     }
 
     public static ServiceDescriptor Singleton<TService>(Func<IServiceProvider, TService> implementationFactory)
-        where TService : class
+      where TService : class
     {
-      if (implementationFactory == null)
-      {
-        throw new ArgumentNullException(nameof(implementationFactory));
-      }
+      if (implementationFactory == null) { throw new ArgumentNullException(nameof(implementationFactory)); }
 
       return Describe(typeof(TService), implementationFactory, ServiceLifetime.Singleton);
     }
 
-    public static ServiceDescriptor Singleton(
-        Type serviceType,
-        Func<IServiceProvider, object> implementationFactory)
+    public static ServiceDescriptor Singleton(Type serviceType, Func<IServiceProvider, object> implementationFactory)
     {
-      if (serviceType == null)
-      {
-        throw new ArgumentNullException(nameof(serviceType));
-      }
-
-      if (implementationFactory == null)
-      {
-        throw new ArgumentNullException(nameof(implementationFactory));
-      }
+      if (serviceType == null) { throw new ArgumentNullException(nameof(serviceType)); }
+      if (implementationFactory == null) { throw new ArgumentNullException(nameof(implementationFactory)); }
 
       return Describe(serviceType, implementationFactory, ServiceLifetime.Singleton);
     }
 
     public static ServiceDescriptor Singleton<TService>(TService implementationInstance)
-        where TService : class
+      where TService : class
     {
-      if (implementationInstance == null)
-      {
-        throw new ArgumentNullException(nameof(implementationInstance));
-      }
+      if (implementationInstance == null) { throw new ArgumentNullException(nameof(implementationInstance)); }
 
       return Singleton(typeof(TService), implementationInstance);
     }
 
-    public static ServiceDescriptor Singleton(
-        Type serviceType,
-        object implementationInstance)
+    public static ServiceDescriptor Singleton(Type serviceType, object implementationInstance)
     {
-      if (serviceType == null)
-      {
-        throw new ArgumentNullException(nameof(serviceType));
-      }
-
-      if (implementationInstance == null)
-      {
-        throw new ArgumentNullException(nameof(implementationInstance));
-      }
+      if (serviceType == null) { throw new ArgumentNullException(nameof(serviceType)); }
+      if (implementationInstance == null) { throw new ArgumentNullException(nameof(implementationInstance)); }
 
       return new ServiceDescriptor(serviceType, implementationInstance);
     }
 
+    #endregion
+
+    #region --& Describe &--
+
     private static ServiceDescriptor Describe<TService, TImplementation>(ServiceLifetime lifetime)
-        where TService : class
-        where TImplementation : class, TService
+      where TService : class
+      where TImplementation : class, TService
     {
-      return Describe(
-          typeof(TService),
-          typeof(TImplementation),
-          lifetime: lifetime);
+      return Describe(typeof(TService), typeof(TImplementation), lifetime: lifetime);
     }
 
     public static ServiceDescriptor Describe(Type serviceType, Type implementationType, ServiceLifetime lifetime)
@@ -352,5 +268,7 @@ namespace CuteAnt.Extensions.DependencyInjection
     {
       return new ServiceDescriptor(serviceType, implementationFactory, lifetime);
     }
+
+    #endregion
   }
 }

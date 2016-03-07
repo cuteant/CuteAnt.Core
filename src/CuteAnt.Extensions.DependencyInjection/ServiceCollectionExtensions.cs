@@ -5,11 +5,11 @@ using System;
 
 namespace CuteAnt.Extensions.DependencyInjection
 {
-    public static class ServiceCollectionExtensions
+  public static class ServiceCollectionExtensions
+  {
+    public static IServiceProvider BuildServiceProvider(this IServiceCollection services)
     {
-        public static IServiceProvider BuildServiceProvider(this IServiceCollection services)
-        {
-            return new ServiceProvider(services);
-        }
+      return new ServiceProvider(services);
     }
+  }
 }
