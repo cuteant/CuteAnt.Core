@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -7,7 +7,7 @@ using CuteAnt.Extensions.Caching.Memory;
 
 namespace CuteAnt.Extensions.Caching.Distributed
 {
-  public class LocalCache : IDistributedCache
+  public class MemoryDistributedCache : IDistributedCache
   {
 #if NET40
     private static readonly Task CompletedTask = TaskEx.FromResult<object>(null);
@@ -17,7 +17,7 @@ namespace CuteAnt.Extensions.Caching.Distributed
 
     private readonly IMemoryCache _memCache;
 
-    public LocalCache(IMemoryCache memoryCache)
+    public MemoryDistributedCache(IMemoryCache memoryCache)
     {
       if (memoryCache == null)
       {

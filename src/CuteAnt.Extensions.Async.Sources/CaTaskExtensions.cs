@@ -171,7 +171,7 @@ namespace System.Threading.Tasks
     private static Task<object> TaskFromFaulted(Task task)
     {
       var completion = new TaskCompletionSource<object>();
-      completion.SetException(task.Exception.InnerException);
+      completion.SetException(task.Exception.InnerExceptions);
       return completion.Task;
     }
 

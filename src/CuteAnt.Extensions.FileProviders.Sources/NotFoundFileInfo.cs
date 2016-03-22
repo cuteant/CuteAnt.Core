@@ -6,51 +6,31 @@ using System.IO;
 
 namespace CuteAnt.Extensions.FileProviders
 {
-    /// <summary>
-    /// Represents a non-existing file.
-    /// </summary>
-    internal class NotFoundFileInfo : IFileInfo
+  /// <summary>
+  /// Represents a non-existing file.
+  /// </summary>
+  internal class NotFoundFileInfo : IFileInfo
+  {
+    public NotFoundFileInfo(string name)
     {
-        private readonly string _name;
-
-        public NotFoundFileInfo(string name)
-        {
-            _name = name;
-        }
-
-        public bool Exists
-        {
-            get { return false; }
-        }
-
-        public bool IsDirectory
-        {
-            get { return false; }
-        }
-
-        public DateTimeOffset LastModified
-        {
-            get { return DateTimeOffset.MinValue; }
-        }
-
-        public long Length
-        {
-            get { return -1; }
-        }
-
-        public string Name
-        {
-            get { return _name; }
-        }
-
-        public string PhysicalPath
-        {
-            get { return null; }
-        }
-
-        public Stream CreateReadStream()
-        {
-            throw new FileNotFoundException(string.Format("The file {0} does not exist.", Name));
-        }
+      Name = name;
     }
+
+    public bool Exists => false;
+
+    public bool IsDirectory => false;
+
+    public DateTimeOffset LastModified => DateTimeOffset.MinValue;
+
+    public long Length => -1;
+
+    public string Name { get; }
+
+    public string PhysicalPath => null;
+
+    public Stream CreateReadStream()
+    {
+      throw new FileNotFoundException($"The file {Name} does not exist.");
+    }
+  }
 }

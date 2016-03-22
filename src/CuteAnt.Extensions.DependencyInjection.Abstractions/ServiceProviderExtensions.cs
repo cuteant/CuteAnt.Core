@@ -31,8 +31,13 @@ namespace CuteAnt.Extensions.DependencyInjection
       if (provider == null) { throw new ArgumentNullException(nameof(provider)); }
       if (serviceType == null) { throw new ArgumentNullException(nameof(serviceType)); }
 
-      var service = provider.GetService(serviceType);
+      var requiredServiceSupportingProvider = provider as ISupportRequiredService;
+      if (requiredServiceSupportingProvider != null)
+      {
+        return requiredServiceSupportingProvider.GetRequiredService(serviceType);
+      }
 
+      var service = provider.GetService(serviceType);
       if (service == null)
       {
         throw new InvalidOperationException(Resources.FormatNoServiceRegistered(serviceType));

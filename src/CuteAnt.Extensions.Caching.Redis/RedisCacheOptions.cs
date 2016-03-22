@@ -5,15 +5,24 @@ using CuteAnt.Extensions.Options;
 
 namespace CuteAnt.Extensions.Caching.Redis
 {
-    public class RedisCacheOptions : IOptions<RedisCacheOptions>
+  /// <summary>
+  /// Configuration options for <see cref="RedisCache"/>.
+  /// </summary>
+  public class RedisCacheOptions : IOptions<RedisCacheOptions>
+  {
+    /// <summary>
+    /// The configuration used to connect to Redis.
+    /// </summary>
+    public string Configuration { get; set; }
+
+    /// <summary>
+    /// The Redis instance name.
+    /// </summary>
+    public string InstanceName { get; set; }
+
+    RedisCacheOptions IOptions<RedisCacheOptions>.Value
     {
-        public string Configuration { get; set; }
-
-        public string InstanceName { get; set; }
-
-        RedisCacheOptions IOptions<RedisCacheOptions>.Value
-        {
-            get { return this; }
-        }
+      get { return this; }
     }
+  }
 }

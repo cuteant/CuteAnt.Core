@@ -98,7 +98,7 @@ namespace CuteAnt.Extensions.DependencyInjection
         return typeArguments[1];
       }
 
-      Debug.Fail("ImplementationType, ImplementationInstance or ImplementationFactory must be non null");
+      Debug.Assert(false, "ImplementationType, ImplementationInstance or ImplementationFactory must be non null");
       return null;
     }
 

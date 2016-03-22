@@ -13,6 +13,8 @@ namespace Microsoft.Extensions.Logging
   {
     public static readonly NullLogger Instance = new NullLogger();
 
+    public string Name { get { return string.Empty; } }
+
     public IDisposable BeginScopeImpl(object state)
     {
       return NullDisposable.Instance;

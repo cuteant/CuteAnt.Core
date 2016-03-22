@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc3-160201",
+  "version": "2.0.0-rc3-160202",
   "description": "CuteAnt.Extensions.FileProviders.Abstractions Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.FileProviders.Abstractions" ],
@@ -45,7 +45,11 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "CuteAnt.Extensions.Primitives": "2.0.0-rc3-*"
+    "CuteAnt.Extensions.Primitives": "2.0.0-rc3-*",
+    "CuteAnt.Extensions.FileProviders.Sources": {
+      "version": "2.0.0-rc3-*",
+      "type": "build"
+    }
   },
 
   "frameworks": {

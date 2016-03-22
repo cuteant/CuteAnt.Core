@@ -1,0 +1,28 @@
+.NET Parallel Programming - Site Home - MSDN Blogs
+http://blogs.msdn.com/b/pfxteam/
+
+RX.NET
+https://github.com/Reactive-Extensions
+http://rx.codeplex.com/
+
+AsyncEx:
+https://github.com/StephenCleary/AsyncEx
+
+System.Collections.Immutable for .NET 3.5+
+https://github.com/rackerlabs/dotnet-collections
+
+Dataflow
+http://channel9.msdn.com/posts/TPL-Dataflow-Tour
+http://channel9.msdn.com/Shows/Going+Deep/Stephen-Toub-Inside-TPL-Dataflow
+https://github.com/gridsum/DataflowEx
+
+TPL DataFlow初探
+http://www.cnblogs.com/haoxinyue/archive/2013/03/01/2938959.html
+http://www.cnblogs.com/haoxinyue/archive/2013/03/01/2938953.html
+
+TPL Dataflow and Rx Combined example
+http://stackoverflow.com/questions/11383971/tpl-dataflow-and-rx-combined-example
+http://stackoverflow.com/questions/14096614/creating-a-message-bus-with-tpl-dataflow
+
+Immutable Dictionary Vs Dictionary Vs C5 Vs F# - performance
+http://stackoverflow.com/questions/16612936/immutable-dictionary-vs-dictionary-vs-c5-vs-f-performance

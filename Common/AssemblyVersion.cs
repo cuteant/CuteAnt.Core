@@ -4,8 +4,8 @@ namespace CuteAnt
 {
   internal class AssemblyInfo
   {
-    /// <summary>Copyright (c) 2000-2015 CuteAnt Development Team</summary>
-    public const String AssemblyCopyright = "Copyright (c) 2000-2015 CuteAnt Development Team";
+    /// <summary>Copyright (c) 2000-2016 CuteAnt Development Team</summary>
+    public const String AssemblyCopyright = "Copyright (c) 2000-2016 CuteAnt Development Team";
 
     /// <summary>CuteAnt Development Team</summary>
     public const String AssemblyCompany = "CuteAnt Development Team(cuteant@outlook.com)";
@@ -31,10 +31,10 @@ namespace CuteAnt
 #if NET40
     /// <summary>4</summary>
     public const String NETVersion = "4";
-#elif NET451 || DNX451 || DNX451
+#elif NET451 || DNX451
     /// <summary>5</summary>
     public const String NETVersion = "5";
-#elif NET46 || DNX46
+#elif NET46
     /// <summary>6</summary>
     public const String NETVersion = "6";
 #endif

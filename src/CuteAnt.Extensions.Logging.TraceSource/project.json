@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc3-160202",
+  "version": "2.0.0-rc3-160203",
   "description": "CuteAnt.Extensions.Logging.TraceSource Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Logging.TraceSource" ],

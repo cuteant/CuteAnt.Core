@@ -20,6 +20,8 @@ namespace CuteAnt.Extensions.Logging.NLog
   {
     private readonly NLog_ILogger _logger;
 
+    public string Name { get { return _logger.Name; } }
+
     public NLogLogger(NLog_ILogger logger)
     {
       _logger = logger;
