@@ -20,8 +20,8 @@ namespace CuteAnt.Extensions.Configuration
             {
                 throw new ArgumentNullException(nameof(filename));
             }
-#if DESKTOPCLR // ## 苦竹 修改 ##
-            var basePath = AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string ??
+#if DESKTOPCLR // NET451 ## 苦竹 修改 ##
+      var basePath = AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string ??
                 AppDomain.CurrentDomain.BaseDirectory ?? 
                 string.Empty;
 #else

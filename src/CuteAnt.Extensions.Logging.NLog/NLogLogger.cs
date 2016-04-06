@@ -133,8 +133,11 @@ namespace CuteAnt.Extensions.Logging.NLog
       }
     }
 
-
+#if DESKTOPCLR
+    public IDisposable BeginScope<TState>(TState state)
+#else
     public IDisposable BeginScopeImpl(object state)
+#endif
     {
       if (state == null)
       {

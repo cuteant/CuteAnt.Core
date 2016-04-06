@@ -619,7 +619,7 @@ namespace CuteAnt.Extensions.Logging
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
       if (messageFormat == null) { throw new ArgumentNullException(nameof(messageFormat)); }
 
-      return logger.BeginScopeImpl(new FormattedLogValues(messageFormat, args));
+      return logger.BeginScope(new FormattedLogValues(messageFormat, args));
     }
 
     #endregion

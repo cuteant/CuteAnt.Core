@@ -1,4 +1,4 @@
-// Copyright (c) .NET Foundation. All rights reserved.
+﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -18,7 +18,8 @@ namespace CuteAnt.Extensions.DependencyInjection
         /// <see cref="IServiceCollection" />.
         /// </summary>
         /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
-        public static void AddMemoryCache(this IServiceCollection services)
+        /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
+        public static IServiceCollection AddMemoryCache(this IServiceCollection services)
         {
             if (services == null)
             {
@@ -27,6 +28,8 @@ namespace CuteAnt.Extensions.DependencyInjection
 
             services.AddOptions();
             services.TryAdd(ServiceDescriptor.Singleton<IMemoryCache, MemoryCache>());
+
+            return services;
         }
 
         /// <summary>
@@ -37,7 +40,8 @@ namespace CuteAnt.Extensions.DependencyInjection
         /// <param name="setupAction">
         /// The <see cref="Action{MemoryCacheOptions}"/> to configure the provided <see cref="MemoryCacheOptions"/>.
         /// </param>
-        public static void AddMemoryCache(this IServiceCollection services, Action<MemoryCacheOptions> setupAction)
+        /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
+        public static IServiceCollection AddMemoryCache(this IServiceCollection services, Action<MemoryCacheOptions> setupAction)
         {
             if (services == null)
             {
@@ -51,6 +55,8 @@ namespace CuteAnt.Extensions.DependencyInjection
 
             services.AddMemoryCache();
             services.Configure(setupAction);
+
+            return services;
         }
 
         /// <summary>
@@ -66,7 +72,8 @@ namespace CuteAnt.Extensions.DependencyInjection
         /// multiple machines.
         /// </remarks>
         /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
-        public static void AddDistributedMemoryCache(this IServiceCollection services)
+        /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
+        public static IServiceCollection AddDistributedMemoryCache(this IServiceCollection services)
         {
             if (services == null)
             {
@@ -75,6 +82,8 @@ namespace CuteAnt.Extensions.DependencyInjection
 
             services.AddMemoryCache();
             services.TryAdd(ServiceDescriptor.Transient<IDistributedCache, MemoryDistributedCache>());
+
+            return services;
         }
     }
 }

@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc3-160202",
+  "version": "2.0.0-rc3-160301",
   "description": "CuteAnt.Extensions.Caching.Abstractions Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Caching.Abstractions" ],
@@ -52,6 +52,11 @@
     "net40": {
       "compilationOptions": {
         "define": [ "DESKTOPCLR" ]
+      },
+      "dependencies": {
+        "Microsoft.Bcl.Build": "1.0.21",
+        "Microsoft.Bcl": "1.1.10",
+        "Microsoft.Bcl.Async": "1.0.168"
       }
     },
     "net451": {

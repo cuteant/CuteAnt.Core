@@ -15,7 +15,11 @@ namespace Microsoft.Extensions.Logging
 
     public string Name { get { return string.Empty; } }
 
+#if DESKTOPCLR
+    public IDisposable BeginScope<TState>(TState state)
+#else
     public IDisposable BeginScopeImpl(object state)
+#endif
     {
       return NullDisposable.Instance;
     }

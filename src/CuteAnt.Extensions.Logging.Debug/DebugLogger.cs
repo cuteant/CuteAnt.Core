@@ -21,7 +21,7 @@ namespace CuteAnt.Extensions.Logging.Debug
     /// </summary>
     /// <param name="name">The name of the logger.</param>
     public DebugLogger(string name)
-            : this(name, filter: null)
+      : this(name, filter: null)
     {
     }
 
@@ -38,9 +38,9 @@ namespace CuteAnt.Extensions.Logging.Debug
 
 
     /// <inheritdoc />
-    public IDisposable BeginScopeImpl(object state)
+    public IDisposable BeginScope<TState>(TState state)
     {
-      return new NoopDisposable();
+      return NoopDisposable.Instance;
     }
 
     /// <inheritdoc />
@@ -73,11 +73,19 @@ namespace CuteAnt.Extensions.Logging.Debug
       }
 
       message = $"{ logLevel }: {message}";
+
+      if (exception != null)
+      {
+        message += Environment.NewLine + Environment.NewLine + exception.ToString();
+      }
+
       DebugWriteLine(message, _name);
     }
 
     private class NoopDisposable : IDisposable
     {
+      public static NoopDisposable Instance = new NoopDisposable();
+
       public void Dispose()
       {
       }

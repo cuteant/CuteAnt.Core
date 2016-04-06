@@ -8,11 +8,11 @@
 
 namespace CuteAnt.Extensions.Logging.Debug
 {
-    public partial class DebugLogger
+  public partial class DebugLogger
+  {
+    private void DebugWriteLine(string message, string name)
     {
-        private void DebugWriteLine(string message, string name)
-        {
-            System.Diagnostics.Debug.WriteLine(message, name);
-        }
+      System.Diagnostics.Debug.WriteLine(message, category: name);
     }
+  }
 }

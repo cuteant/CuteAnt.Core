@@ -8,37 +8,40 @@ using CuteAnt.Extensions.DependencyInjection.Extensions;
 
 namespace CuteAnt.Extensions.DependencyInjection
 {
+  /// <summary>
+  /// Extension methods for setting up Microsoft SQL Server distributed cache services in an <see cref="IServiceCollection" />.
+  /// </summary>
+  public static class SqlServerCachingServicesExtensions
+  {
     /// <summary>
-    /// Extension methods for setting up Microsoft SQL Server distributed cache services in an <see cref="IServiceCollection" />.
+    /// Adds Microsoft SQL Server distributed caching services to the specified <see cref="IServiceCollection" />.
     /// </summary>
-    public static class SqlServerCachingServicesExtensions
+    /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
+    /// <param name="setupAction">An <see cref="Action{SqlServerCacheOptions}"/> to configure the provided <see cref="SqlServerCacheOptions"/>.</param>
+    /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
+    public static IServiceCollection AddDistributedSqlServerCache(this IServiceCollection services, Action<SqlServerCacheOptions> setupAction)
     {
-        /// <summary>
-        /// Adds Microsoft SQL Server distributed caching services to the specified <see cref="IServiceCollection" />.
-        /// </summary>
-        /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
-        /// <param name="setupAction">An <see cref="Action{SqlServerCacheOptions}"/> to configure the provided <see cref="SqlServerCacheOptions"/>.</param>
-        public static void AddDistributedSqlServerCache(this IServiceCollection services, Action<SqlServerCacheOptions> setupAction)
-        {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
+      if (services == null)
+      {
+        throw new ArgumentNullException(nameof(services));
+      }
 
-            if (setupAction == null)
-            {
-                throw new ArgumentNullException(nameof(setupAction));
-            }
+      if (setupAction == null)
+      {
+        throw new ArgumentNullException(nameof(setupAction));
+      }
 
-            services.AddOptions();
-            AddSqlServerCacheServices(services);
-            services.Configure(setupAction);
-        }
+      services.AddOptions();
+      AddSqlServerCacheServices(services);
+      services.Configure(setupAction);
 
-        // to enable unit testing
-        internal static void AddSqlServerCacheServices(IServiceCollection services)
-        {
-            services.Add(ServiceDescriptor.Singleton<IDistributedCache, SqlServerCache>());
-        }
+      return services;
     }
+
+    // to enable unit testing
+    internal static void AddSqlServerCacheServices(IServiceCollection services)
+    {
+      services.Add(ServiceDescriptor.Singleton<IDistributedCache, SqlServerCache>());
+    }
+  }
 }

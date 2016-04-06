@@ -31,9 +31,9 @@ namespace CuteAnt.Extensions.Logging
       _logger = factory.CreateLogger(TypeNameHelper.GetTypeDisplayName(typeof(T)));
     }
 
-    IDisposable ILogger.BeginScopeImpl(object state)
+    IDisposable ILogger.BeginScope<TState>(TState state)
     {
-      return _logger.BeginScopeImpl(state);
+      return _logger.BeginScope(state);
     }
 
     bool ILogger.IsEnabled(LogLevel logLevel)

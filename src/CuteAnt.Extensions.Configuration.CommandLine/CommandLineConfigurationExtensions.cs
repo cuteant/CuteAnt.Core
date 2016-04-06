@@ -6,21 +6,17 @@ using CuteAnt.Extensions.Configuration.CommandLine;
 
 namespace CuteAnt.Extensions.Configuration
 {
-    public static class CommandLineConfigurationExtensions
+  public static class CommandLineConfigurationExtensions
+  {
+    public static IConfigurationBuilder AddCommandLine(this IConfigurationBuilder configurationBuilder, string[] args)
     {
-        public static IConfigurationBuilder AddCommandLine(this IConfigurationBuilder configurationBuilder, string[] args)
-        {
-            configurationBuilder.Add(new CommandLineConfigurationProvider(args));
-            return configurationBuilder;
-        }
-
-        public static IConfigurationBuilder AddCommandLine(
-            this IConfigurationBuilder configurationBuilder,
-            string[] args,
-            IDictionary<string, string> switchMappings)
-        {
-            configurationBuilder.Add(new CommandLineConfigurationProvider(args, switchMappings));
-            return configurationBuilder;
-        }
+      return configurationBuilder.AddCommandLine(args, switchMappings: null);
     }
+
+    public static IConfigurationBuilder AddCommandLine(this IConfigurationBuilder configurationBuilder, string[] args, IDictionary<string, string> switchMappings)
+    {
+      configurationBuilder.Add(new CommandLineConfigurationSource { Args = args, SwitchMappings = switchMappings });
+      return configurationBuilder;
+    }
+  }
 }

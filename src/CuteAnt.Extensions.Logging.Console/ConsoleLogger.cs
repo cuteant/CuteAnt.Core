@@ -2,8 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text;
 using CuteAnt.Extensions.Logging.Console.Internal;
 //using CuteAnt.Extensions.PlatformAbstractions;
@@ -200,7 +198,7 @@ namespace CuteAnt.Extensions.Logging.Console
       return Filter(Name, logLevel);
     }
 
-    public IDisposable BeginScopeImpl(object state)
+    public IDisposable BeginScope<TState>(TState state)
     {
       if (state == null)
       {

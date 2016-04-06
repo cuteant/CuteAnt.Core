@@ -1,40 +1,47 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace CuteAnt.Extensions.Configuration.Memory
 {
-    public class MemoryConfigurationProvider : 
-        ConfigurationProvider, 
-        IEnumerable<KeyValuePair<string,string>>
+  public class MemoryConfigurationProvider : ConfigurationProvider, IEnumerable<KeyValuePair<string, string>>
+  {
+    private readonly MemoryConfigurationSource _source;
+
+    public MemoryConfigurationProvider(MemoryConfigurationSource source)
     {
-        public MemoryConfigurationProvider()
-        {
-        }
+      if (source == null)
+      {
+        throw new ArgumentNullException(nameof(source));
+      }
 
-        public MemoryConfigurationProvider(IEnumerable<KeyValuePair<string, string>> initialData)
-        {
-            foreach (var pair in initialData)
-            {
-                Data.Add(pair.Key, pair.Value);
-            }
-        }
+      _source = source;
 
-        public void Add(string key, string value)
+      if (_source.InitialData != null)
+      {
+        foreach (var pair in _source.InitialData)
         {
-            Data.Add(key, value);
+          Data.Add(pair.Key, pair.Value);
         }
-
-        public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
-        {
-            return Data.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+      }
     }
+
+    public void Add(string key, string value)
+    {
+      Data.Add(key, value);
+    }
+
+    public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
+    {
+      return Data.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      return GetEnumerator();
+    }
+  }
 }
