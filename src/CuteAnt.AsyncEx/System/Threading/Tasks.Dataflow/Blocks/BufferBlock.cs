@@ -410,6 +410,7 @@ namespace System.Threading.Tasks.Dataflow
         KeyValuePair<ISourceBlock<T>, DataflowMessageHeader> sourceAndMessage;
         lock (IncomingLock)
         {
+          if (_targetDecliningPermanently) { return false; }
           if (!_boundingState.CountIsLessThanBound) { return false; }
           if (!_boundingState.PostponedMessages.TryPop(out sourceAndMessage)) { return false; }
 

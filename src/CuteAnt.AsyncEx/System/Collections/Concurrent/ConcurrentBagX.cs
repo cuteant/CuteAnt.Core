@@ -243,7 +243,7 @@ namespace System.Collections.Concurrent
 
 
     /// <summary>Local helper function to retrieve a thread local list by a thread object</summary>
-    /// <param name="forceCreate">Create a new list if the thread does ot exist</param>
+    /// <param name="forceCreate">Create a new list if the thread does not exist</param>
     /// <returns>The local list object</returns>
     private ThreadLocalList GetThreadList(bool forceCreate)
     {
@@ -667,7 +667,7 @@ namespace System.Collections.Concurrent
     #region Freeze bag helper methods
     /// <summary>
     /// Local helper method to freeze all bag operations, it
-    /// 1- Acquire the global lock to prevent any other thread to freeze the bag, and also new new thread can be added
+    /// 1- Acquire the global lock to prevent any other thread to freeze the bag, and also new thread can be added
     /// to the dictionary
     /// 2- Then Acquire all local lists locks to prevent steal and synchronized operations
     /// 3- Wait for all un-synchronized operations to be done
@@ -827,7 +827,7 @@ namespace System.Collections.Concurrent
     /// <summary>A class that represents the lock thread list</summary>
     internal class ThreadLocalList
     {
-      // Tead node in the list, null means the list is empty
+      // Head node in the list, null means the list is empty
       internal volatile Node _head;
 
       // Tail node for the list
