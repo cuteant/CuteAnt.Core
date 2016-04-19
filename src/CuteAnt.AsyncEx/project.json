@@ -69,7 +69,7 @@
         "Microsoft.Bcl.Async": "1.0.168"
       },
       "frameworkAssemblies": {
-        "System.Runtime.Serialization": "4.0.0.0"
+        "System.Runtime.Serialization": ""
       }
     },
     "net451": {
@@ -80,9 +80,13 @@
         "System.Collections.Immutable": "1.1.38-rc1-final"
       },
       "frameworkAssemblies": {
-        "System.Runtime.Serialization": "4.0.0.0",
-        "System.Collections": "4.0.0.0",
-        "System.Runtime": "4.0.0.0"
+        "System.Runtime.Serialization": "",
+        "System.Collections": {
+          "type": "build"
+        },
+        "System.Runtime": {
+          "type": "build"
+        }
       }
     },
     "dnx451": {
@@ -93,9 +97,13 @@
         "System.Collections.Immutable": "1.1.38-rc1-final"
       },
       "frameworkAssemblies": {
-        "System.Runtime.Serialization": "4.0.0.0",
-        "System.Collections": "4.0.0.0",
-        "System.Runtime": "4.0.0.0"
+        "System.Runtime.Serialization": "",
+        "System.Collections": {
+          "type": "build"
+        },
+        "System.Runtime": {
+          "type": "build"
+        }
       }
     }
   },
