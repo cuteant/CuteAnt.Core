@@ -47,25 +47,25 @@
     "net40": {
       "compilationOptions": { "define": [ "NET_40" ] },
       "frameworkAssemblies": {
-        "System.Data": "4.0.0.0",
-        "System.Transactions": "4.0.0.0",
-        "System.XML": "4.0.0.0"
+        "System.Data": "",
+        "System.Transactions": "",
+        "System.XML": ""
       }
     },
     "net451": {
       "compilationOptions": { "define": [ "NET_451" ] },
       "frameworkAssemblies": {
-        "System.Data": "4.0.0.0",
-        "System.Transactions": "4.0.0.0",
-        "System.XML": "4.0.0.0"
+        "System.Data": "",
+        "System.Transactions": "",
+        "System.XML": ""
       }
     },
     "dnx451": {
       "compilationOptions": { "define": [ "NET_451" ] },
       "frameworkAssemblies": {
-        "System.Data": "4.0.0.0",
-        "System.Transactions": "4.0.0.0",
-        "System.XML": "4.0.0.0"
+        "System.Data": "",
+        "System.Transactions": "",
+        "System.XML": ""
       }
     }
   }

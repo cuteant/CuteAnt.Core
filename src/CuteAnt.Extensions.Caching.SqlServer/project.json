@@ -55,7 +55,7 @@
         "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
       },
       "frameworkAssemblies": {
-        "System.Data": "4.0.0.0"
+        "System.Data": ""
       }
     }
   }

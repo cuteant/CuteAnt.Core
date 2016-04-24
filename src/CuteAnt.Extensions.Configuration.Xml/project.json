@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc3-160301",
+  "version": "2.0.0-rc3-160302",
   "description": "CuteAnt.Extensions.Configuration.Xml Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Configuration.Xml" ],
@@ -55,8 +55,8 @@
         "define": [ "DESKTOPCLR" ]
       },
       "frameworkAssemblies": {
-        "System.Security": "4.0.0.0",
-        "System.XML": "4.0.0.0"
+        "System.Security": "",
+        "System.XML": ""
       }
     },
     "net451": {
@@ -64,8 +64,8 @@
         "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
       },
       "frameworkAssemblies": {
-        "System.Security": "4.0.0.0",
-        "System.XML": "4.0.0.0"
+        "System.Security": "",
+        "System.XML": ""
       }
     }
   }

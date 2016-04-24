@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc3-160301",
+  "version": "2.0.0-rc3-160302",
   "description": "CuteAnt.Extensions.Logging.NLog Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Logging.NLog" ],
@@ -45,7 +45,7 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "NLog": "4.2.3"
+    "NLog": "4.3.0"
   },
 
   "frameworks": {
@@ -57,7 +57,7 @@
         "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc3-*"
       },
       "frameworkAssemblies": {
-        "System.XML": "4.0.0.0"
+        "System.XML": ""
       }
     },
     "net451": {
@@ -68,7 +68,7 @@
         "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc3-*"
       },
       "frameworkAssemblies": {
-        "System.XML": "4.0.0.0"
+        "System.XML": ""
       }
     },
     "dnx451": {
@@ -80,7 +80,7 @@
         "Microsoft.AspNet.Hosting": "1.0.0-rc1-final"
       },
       "frameworkAssemblies": {
-        "System.XML": "4.0.0.0"
+        "System.XML": ""
       }
     }
   }

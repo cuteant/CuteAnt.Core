@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -6,12 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using CuteAnt.Extensions.Primitives;
 
-namespace CuteAnt.Extensions.FileProviders.Composite
+namespace CuteAnt.Extensions.FileProviders
 {
     /// <summary>
     /// Represents a composition of <see cref="IChangeToken"/>.
     /// </summary>
-    public class CompositeFileChangeToken : IChangeToken
+    internal class CompositeFileChangeToken : IChangeToken
     {
         private readonly IList<IChangeToken> _changeTokens;
 

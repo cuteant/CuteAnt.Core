@@ -41,12 +41,12 @@
   "frameworks": {
     "net451": {
       "frameworkAssemblies": {
-        "System.configuration": "4.0.0.0",
-        "System.IdentityModel": "4.0.0.0",
-        "System.Runtime.Serialization": "4.0.0.0",
-        "System.Web.Extensions": "4.0.0.0",
-        "System.XML": "4.0.0.0",
-        "System.Xml.Linq": "4.0.0.0"
+        "System.configuration": "",
+        "System.IdentityModel": "",
+        "System.Runtime.Serialization": "",
+        "System.Web.Extensions": "",
+        "System.XML": "",
+        "System.Xml.Linq": ""
       }
     }
   },

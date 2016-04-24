@@ -1,15 +1,15 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 
-namespace CuteAnt.Extensions.FileProviders.Composite
+namespace CuteAnt.Extensions.FileProviders
 {
     /// <summary>
     /// Represents a composition of <see cref="IDisposable"/>.
     /// </summary>
-    public class CompositeDisposable : IDisposable
+    internal class CompositeDisposable : IDisposable
     {
         private readonly IList<IDisposable> _disposables;
         /// <summary>
