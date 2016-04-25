@@ -21,12 +21,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("IdentityModel.Net45")]
+[assembly: AssemblyTitle("IdentityModel.OidcClient")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("IdentityModel.Net45")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyProduct("IdentityModel.OidcClient")]
+[assembly: AssemblyCopyright("Dominick Baier, Brock Allen 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -41,7 +41,7 @@ using System.Runtime.InteropServices;
 [assembly: NeutralResourcesLanguage("en-US")]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("9fa9fef9-d227-4382-9d59-5ac650f0fe48")]
+[assembly: Guid("d63f3e49-fecc-459b-baff-147085a3c582")]
 
 // Version information for an assembly consists of the following four values:
 //

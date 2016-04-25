@@ -72,17 +72,17 @@
         "CuteAnt.Extensions.Logging": "2.0.0-rc3-*"
       },
       "frameworkAssemblies": {
-        "Microsoft.VisualBasic": "10.0.0.0",
-        "System.configuration": "4.0.0.0",
-        "System.Data": "4.0.0.0",
-        "System.Drawing": "4.0.0.0",
-        "System.Management": "4.0.0.0",
-        "System.Runtime.Serialization": "4.0.0.0",
-        "System.Security": "4.0.0.0",
-        "System.Web": "4.0.0.0",
-        "System.Windows.Forms": "4.0.0.0",
-        "System.XML": "4.0.0.0",
-        "System.Xml.Linq": "4.0.0.0"
+        "Microsoft.VisualBasic": "",
+        "System.configuration": "",
+        "System.Data": "",
+        "System.Drawing": "",
+        "System.Management": "",
+        "System.Runtime.Serialization": "",
+        "System.Security": "",
+        "System.Web": "",
+        "System.Windows.Forms": "",
+        "System.XML": "",
+        "System.Xml.Linq": ""
       }
     },
     "net451": {
@@ -93,17 +93,17 @@
         "CuteAnt.Extensions.Logging": "2.0.0-rc3-*"
       },
       "frameworkAssemblies": {
-        "Microsoft.VisualBasic": "10.0.0.0",
-        "System.configuration": "4.0.0.0",
-        "System.Data": "4.0.0.0",
-        "System.Drawing": "4.0.0.0",
-        "System.Management": "4.0.0.0",
-        "System.Runtime.Serialization": "4.0.0.0",
-        "System.Security": "4.0.0.0",
-        "System.Web": "4.0.0.0",
-        "System.Windows.Forms": "4.0.0.0",
-        "System.XML": "4.0.0.0",
-        "System.Xml.Linq": "4.0.0.0"
+        "Microsoft.VisualBasic": "",
+        "System.configuration": "",
+        "System.Data": "",
+        "System.Drawing": "",
+        "System.Management": "",
+        "System.Runtime.Serialization": "",
+        "System.Security": "",
+        "System.Web": "",
+        "System.Windows.Forms": "",
+        "System.XML": "",
+        "System.Xml.Linq": ""
       }
     },
     "dnx451": {
@@ -115,15 +115,15 @@
         "Microsoft.Extensions.Logging": "1.0.0-rc1-final"
       },
       "frameworkAssemblies": {
-        "Microsoft.VisualBasic": "10.0.0.0",
-        "System.configuration": "4.0.0.0",
-        "System.Data": "4.0.0.0",
-        "System.Drawing": "4.0.0.0",
-        "System.Management": "4.0.0.0",
-        "System.Runtime.Serialization": "4.0.0.0",
-        "System.Security": "4.0.0.0",
-        "System.XML": "4.0.0.0",
-        "System.Xml.Linq": "4.0.0.0"
+        "Microsoft.VisualBasic": "",
+        "System.configuration": "",
+        "System.Data": "",
+        "System.Drawing": "",
+        "System.Management": "",
+        "System.Runtime.Serialization": "",
+        "System.Security": "",
+        "System.XML": "",
+        "System.Xml.Linq": ""
       }
     }
   }

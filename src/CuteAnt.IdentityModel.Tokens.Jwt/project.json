@@ -1,5 +1,5 @@
 {
-  "version": "4.0.0-rc3-160201",
+  "version": "4.0.0-rc3-160301",
   "description": "CuteAnt.IdentityModel.Tokens.Jwt Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.IdentityModel.Tokens.Jwt" ],
@@ -10,19 +10,22 @@
   "configurations": {
     "Debug": {
       "compilationOptions": {
-        "define": [ "DEBUG", "TRACE", "NET_3_5_GREATER", "NET_4_0_GREATER" ],
+        "define": [ "DEBUG", "TRACE", "NET_3_5_GREATER" ],
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": true,
-        "allowUnsafe": false
+        "allowUnsafe": false,
+        "nowarn": [ "CS1591" ]
       }
     },
     "Release": {
       "compilationOptions": {
-        "define": [ "TRACE", "NET_3_5_GREATER", "NET_4_0_GREATER" ],
+        "define": [ "TRACE", "NET_3_5_GREATER" ],
         "optimize": true,
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": true,
-        "allowUnsafe": false
+        "allowUnsafe": false,
+        "nowarn": [ "CS1591" ],
+        "xmlDoc": true
       }
     }
   },
@@ -40,6 +43,9 @@
 
   "frameworks": {
     "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
+      },
       "frameworkAssemblies": {
         "System.configuration": "",
         "System.IdentityModel": "",

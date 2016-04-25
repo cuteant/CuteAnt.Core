@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FD46156B-EDAA-4F1D-A9DE-4F023DA86EB8}"
 EndProject
@@ -165,6 +165,8 @@ EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CuteAnt.Extensions.Caching.SqlServer", "src\CuteAnt.Extensions.Caching.SqlServer\CuteAnt.Extensions.Caching.SqlServer.xproj", "{1790A700-58BA-40F0-9894-20CD6E5608BC}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CuteAnt.Extensions.Logging.Filter", "src\CuteAnt.Extensions.Logging.Filter\CuteAnt.Extensions.Logging.Filter.xproj", "{8FBD17EB-5746-49AD-8EDE-AB22722C74CC}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityModel.OidcClient", "src\IdentityModel.OidcClient\IdentityModel.OidcClient.xproj", "{D63F3E49-FECC-459B-BAFF-147085A3C582}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -424,6 +426,10 @@ Global
 		{8FBD17EB-5746-49AD-8EDE-AB22722C74CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FBD17EB-5746-49AD-8EDE-AB22722C74CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FBD17EB-5746-49AD-8EDE-AB22722C74CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D63F3E49-FECC-459B-BAFF-147085A3C582}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D63F3E49-FECC-459B-BAFF-147085A3C582}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D63F3E49-FECC-459B-BAFF-147085A3C582}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D63F3E49-FECC-459B-BAFF-147085A3C582}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -503,5 +509,6 @@ Global
 		{11406AC5-8738-4AF8-9486-59C68801DDE9} = {314D5AFE-2A7B-4CFF-8476-4929AC47EDEA}
 		{1790A700-58BA-40F0-9894-20CD6E5608BC} = {7F60A11E-EB0A-4715-96C6-FD09D653DBF7}
 		{8FBD17EB-5746-49AD-8EDE-AB22722C74CC} = {314D5AFE-2A7B-4CFF-8476-4929AC47EDEA}
+		{D63F3E49-FECC-459B-BAFF-147085A3C582} = {71490DA1-C6CA-417E-BC9F-A3AD0669A092}
 	EndGlobalSection
 EndGlobal

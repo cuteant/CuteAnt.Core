@@ -1,12 +1,12 @@
 ﻿{
   "version": "2.0.0-rc3-160302",
-  "description": "Helper library for claims-based identity, System.IdentityModel, JSON Web Tokens, OAuth 2.0 and OpenID Connect client libraries",
-  "authors": [ "Brock Allen & Dominick Baier" ],
-  "owners": [ "Brock Allen & Dominick Baier" ],
-  "tags": [ "OAuth2 OIDC OpenID Connect JWT Tokens Federation API Authorization Security" ],
+  "description": "OpenID Connect Client Library for Native Applications",
+  "authors": [ "Dominick Baier,  Brock Allen" ],
+  "owners": [ "Dominick Baier,  Brock Allen" ],
+  "tags": [ "OAuth2 OIDC OpenID Connect JWT Tokens Federation API Authorization" ],
   "iconUrl": "https://identityserver.github.io/Documentation/assets/images/icons/IDmodel_icon128.png",
-  "projectUrl": "https://github.com/IdentityModel/IdentityModel",
-  "licenseUrl": "https://github.com/IdentityModel/IdentityModel/blob/master/LICENSE",
+  "projectUrl": "https://github.com/IdentityModel/IdentityModel.OidcClient",
+  "licenseUrl": "https://github.com/IdentityModel/IdentityModel.OidcClient/blob/dev/LICENSE",
   "requireLicenseAcceptance": true,
 
   "configurations": {
@@ -39,7 +39,9 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "Newtonsoft.Json": "8.0.3"
+    "IdentityModel": "2.0.0-rc3-*",
+    "Newtonsoft.Json": "8.0.3",
+    "jose-pcl": "0.0.4"
   },
 
   "frameworks": {
@@ -48,10 +50,9 @@
         "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
       },
       "frameworkAssemblies": {
-        "System.IdentityModel": "",
-        "System.Net.Http": "",
-        "System.XML": "",
-        "System.Xml.Linq": ""
+        "System.Runtime": {
+          "type": "build"
+        }
       }
     },
     "dnx451": {
@@ -59,16 +60,15 @@
         "define": [ "DNXCLR", "NET_4_0_GREATER" ]
       },
       "frameworkAssemblies": {
-        "System.IdentityModel": "",
-        "System.Net.Http": "",
-        "System.XML": "",
-        "System.Xml.Linq": ""
+        "System.Runtime": {
+          "type": "build"
+        }
       }
     }
   },
 
   "repository": {
     "type": "git",
-    "url": "https://github.com/IdentityModel/IdentityModel"
+    "url": "https://github.com/IdentityModel/IdentityModel.OidcClient"
   }
 }

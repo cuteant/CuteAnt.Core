@@ -1,5 +1,5 @@
 {
-  "version": "4.0.0-rc3-160201",
+  "version": "4.0.0-rc3-160301",
   "description": "CuteAnt.IdentityModel.Protocol.Extensions Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.IdentityModel.Protocol.Extensions" ],
@@ -10,19 +10,22 @@
   "configurations": {
     "Debug": {
       "compilationOptions": {
-        "define": [ "DEBUG", "TRACE", "NET_3_5_GREATER", "NET_4_0_GREATER" ],
+        "define": [ "DEBUG", "TRACE", "NET_3_5_GREATER" ],
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": true,
-        "allowUnsafe": false
+        "allowUnsafe": false,
+        "nowarn": [ "CS1591" ]
       }
     },
     "Release": {
       "compilationOptions": {
-        "define": [ "TRACE", "NET_3_5_GREATER", "NET_4_0_GREATER" ],
+        "define": [ "TRACE", "NET_3_5_GREATER" ],
         "optimize": true,
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": true,
-        "allowUnsafe": false
+        "allowUnsafe": false,
+        "nowarn": [ "CS1591" ],
+        "xmlDoc": true
       }
     }
   },
@@ -43,12 +46,15 @@
 
   "frameworks": {
     "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
+      },
       "frameworkAssemblies": {
-        "System.IdentityModel": "4.0.0.0",
-        "System.identitymodel.services": "4.0.0.0",
-        "System.Net.Http": "4.0.0.0",
-        "System.Web": "4.0.0.0",
-        "System.Web.Extensions": "4.0.0.0"
+        "System.IdentityModel": "",
+        "System.identitymodel.services": "",
+        "System.Net.Http": "",
+        "System.Web": "",
+        "System.Web.Extensions": ""
       }
     }
   },
