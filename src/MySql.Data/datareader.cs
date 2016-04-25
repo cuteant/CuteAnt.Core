@@ -375,7 +375,7 @@ namespace MySql.Data.MySqlClient
 
     private object ChangeType(IMySqlValue value, int fieldIndex, Type newType)
     {
-#if !CF && !RT
+#if !RT
       resultSet.Fields[fieldIndex].AddTypeConversion(newType);
 #endif
       return Convert.ChangeType(value.Value, newType, CultureInfo.InvariantCulture);
@@ -598,31 +598,31 @@ namespace MySql.Data.MySqlClient
       return Guid.Empty; // just to silence compiler
     }
 
-		/// <include file='docs/MySqlDataReader.xml' path='docs/GetGuidS/*'/>
-		public CombGuid GetCombGuid(string column)
-		{
-			return GetCombGuid(GetOrdinal(column));
-		}
+    /// <include file='docs/MySqlDataReader.xml' path='docs/GetGuidS/*'/>
+    public CombGuid GetCombGuid(string column)
+    {
+      return GetCombGuid(GetOrdinal(column));
+    }
 
-		/// <include file='docs/MySqlDataReader.xml' path='docs/GetGuid/*'/>
-		public CombGuid GetCombGuid(int i)
-		{
-			object v = GetValue(i);
-			if (v is CombGuid)
-				return (CombGuid)v;
-			if (v is Guid)
-				return (Guid)v;
-			if (v is string)
-				return new CombGuid(v as string, CombGuidSequentialSegmentType.Comb);
-			if (v is byte[])
-			{
-				byte[] bytes = (byte[])v;
-				if (bytes.Length == 16)
-					return new CombGuid(bytes, CombGuidSequentialSegmentType.Comb);
-			}
-			Throw(new MySqlException(Resources.ValueNotSupportedForGuid));
-			return CombGuid.Empty; // just to silence compiler
-		}
+    /// <include file='docs/MySqlDataReader.xml' path='docs/GetGuid/*'/>
+    public CombGuid GetCombGuid(int i)
+    {
+      object v = GetValue(i);
+      if (v is CombGuid)
+        return (CombGuid)v;
+      if (v is Guid)
+        return (Guid)v;
+      if (v is string)
+        return new CombGuid(v as string, CombGuidSequentialSegmentType.Comb);
+      if (v is byte[])
+      {
+        byte[] bytes = (byte[])v;
+        if (bytes.Length == 16)
+          return new CombGuid(bytes, CombGuidSequentialSegmentType.Comb);
+      }
+      Throw(new MySqlException(Resources.ValueNotSupportedForGuid));
+      return CombGuid.Empty; // just to silence compiler
+    }
 
     /// <include file='docs/MySqlDataReader.xml' path='docs/GetInt16S/*'/>
     public Int16 GetInt16(string column)
@@ -1057,25 +1057,25 @@ namespace MySql.Data.MySqlClient
       throw ex;
     }
 
-		public new void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
+    public new void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
 
-		internal new void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				Close();
-			}
-		}
+    internal new void Dispose(bool disposing)
+    {
+      if (disposing)
+      {
+        Close();
+      }
+    }
 
-		#region Destructor
-		~MySqlDataReader()
-		{
-			Dispose(false);
-		}
-		#endregion
-	}
+    #region Destructor
+    ~MySqlDataReader()
+    {
+      Dispose(false);
+    }
+    #endregion
+  }
 }

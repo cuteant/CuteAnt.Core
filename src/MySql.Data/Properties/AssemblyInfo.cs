@@ -40,14 +40,7 @@ using System.Security;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(false)]
-#if !CF
 [assembly: AssemblyTitle("MySql.Data.dll")]
-#if !RT
-//[assembly: AllowPartiallyTrustedCallers()]
-#endif
-#else
-[assembly: AssemblyTitle("MySql.Data.CF.dll")]
-#endif
 
 #if !NET40
 [assembly: SecurityRules(SecurityRuleSet.Level1)]

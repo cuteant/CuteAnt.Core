@@ -167,7 +167,7 @@ namespace MySql.Data.MySqlClient
     /// <summary>
     /// Gets or sets the value of the parameter.
     /// </summary>
-#if !CF && !RT
+#if !RT
     [TypeConverter(typeof(StringConverter))]
     [Category("Data")]
 #endif
@@ -250,20 +250,19 @@ namespace MySql.Data.MySqlClient
         packet.WriteStringNoNull("NULL");
       else
       {
-				if (ValueObject.MySqlDbType == MySqlDbType.CombGuid)
-				{
-					MySqlCombGuid g = (MySqlCombGuid)ValueObject;
-					g.OldGuids = settings.OldGuids;
-					ValueObject = g;
-				}
-				if (ValueObject.MySqlDbType == MySqlDbType.Guid)
+        if (ValueObject.MySqlDbType == MySqlDbType.CombGuid)
         {
-          MySqlGuid g = (MySqlGuid)ValueObject;
-					// ## 苦竹 屏蔽 ##
-					//g.OldGuids = settings.OldGuids;
+          MySqlCombGuid g = (MySqlCombGuid)ValueObject;
+          g.OldGuids = settings.OldGuids;
           ValueObject = g;
         }
-#if !CF
+        if (ValueObject.MySqlDbType == MySqlDbType.Guid)
+        {
+          MySqlGuid g = (MySqlGuid)ValueObject;
+          // ## 苦竹 屏蔽 ##
+          //g.OldGuids = settings.OldGuids;
+          ValueObject = g;
+        }
         if (ValueObject.MySqlDbType == MySqlDbType.Geometry)
         {
           MySqlGeometry v = (MySqlGeometry)ValueObject;
@@ -273,7 +272,6 @@ namespace MySql.Data.MySqlClient
           }
           ValueObject = v;
         }
-#endif
         ValueObject.WriteValue(packet, binary, paramValue, Size);
       }
     }
@@ -291,9 +289,9 @@ namespace MySql.Data.MySqlClient
     {
       if (paramValue == null || paramValue == DBNull.Value) return;
 
-			if (paramValue is CombGuid)
-				MySqlDbType = MySqlDbType.CombGuid;
-			if (paramValue is Guid)
+      if (paramValue is CombGuid)
+        MySqlDbType = MySqlDbType.CombGuid;
+      if (paramValue is Guid)
         MySqlDbType = MySqlDbType.Guid;
       else if (paramValue is TimeSpan)
         MySqlDbType = MySqlDbType.Time;

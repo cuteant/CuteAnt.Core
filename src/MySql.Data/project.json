@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc3-160201",
+  "version": "7.0.0-rc3-160301",
   "description": "ADO.Net driver for MySQL.",
   "authors": [ "Oracle" ],
   "owners": [ "MySQL" ],
@@ -15,7 +15,8 @@
         "define": [ "DEBUG", "TRACE", "ASYNC" ],
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": false,
-        "allowUnsafe": true
+        "allowUnsafe": true,
+        "nowarn": [ "CS1591" ]
       }
     },
     "Release": {
@@ -24,7 +25,9 @@
         "optimize": true,
         "keyFile": "../../tools/StrongKey.snk",
         "warningsAsErrors": false,
-        "allowUnsafe": true
+        "allowUnsafe": true,
+        "nowarn": [ "CS1591" ],
+        "xmlDoc": true
       }
     }
   },
@@ -41,11 +44,19 @@
   ],
 
   "dependencies": {
-    "CuteAnt": "2.0.0-rc3-*"
+    "CuteAnt": "2.0.0-rc3-*",
+    "Google.ProtocolBuffers": "2.4.1.555",
+    "CuteAnt.Extensions.Reflection.Sources": {
+      "version": "2.0.0-rc3-*",
+      "type": "build"
+    }
   },
 
   "frameworks": {
     "net40": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR" ]
+      },
       "frameworkAssemblies": {
         "System.configuration": "",
         "System.Configuration.Install": "",
@@ -59,6 +70,9 @@
       }
     },
     "net451": {
+      "compilationOptions": {
+        "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
+      },
       "frameworkAssemblies": {
         "System.configuration": "",
         "System.Configuration.Install": "",
@@ -72,6 +86,9 @@
       }
     },
     "dnx451": {
+      "compilationOptions": {
+        "define": [ "DNXCLR", "NET_4_0_GREATER" ]
+      },
       "frameworkAssemblies": {
         "System.configuration": "",
         "System.Configuration.Install": "",

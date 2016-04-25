@@ -33,6 +33,7 @@ namespace MySql.Data.MySqlClient
     private IsolationLevel level;
     private MySqlConnection conn;
     private bool open;
+    private bool disposed = false;
 
     internal MySqlTransaction(MySqlConnection c, IsolationLevel il)
     {
@@ -88,13 +89,16 @@ namespace MySql.Data.MySqlClient
       GC.SuppressFinalize(this);
     }
 
-    internal void Dispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
+      if (disposed) return;
+      base.Dispose(disposing);
       if (disposing)
       {
         if ((conn != null && conn.State == ConnectionState.Open || conn.SoftClosed) && open)
           Rollback();
       }
+      disposed = true;
     }
 
     /// <include file='docs/MySqlTransaction.xml' path='docs/Commit/*'/>
