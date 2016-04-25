@@ -596,7 +596,7 @@ namespace System.Data.SQLite
         {
             case SQLiteDateFormats.Ticks:
                 {
-                    return ToDateTime(Convert.ToInt64(
+                    return TicksToDateTime(Convert.ToInt64(
                         dateText, CultureInfo.InvariantCulture), kind);
                 }
             case SQLiteDateFormats.JulianDay:
@@ -606,7 +606,7 @@ namespace System.Data.SQLite
                 }
             case SQLiteDateFormats.UnixEpoch:
                 {
-                    return ToDateTime(Convert.ToInt32(
+                    return UnixEpochToDateTime(Convert.ToInt64(
                         dateText, CultureInfo.InvariantCulture), kind);
                 }
             case SQLiteDateFormats.InvariantCulture:
@@ -711,7 +711,7 @@ namespace System.Data.SQLite
     /// <returns>
     /// The new <see cref="DateTime" /> value.
     /// </returns>
-    internal static DateTime ToDateTime(int seconds, DateTimeKind kind)
+    internal static DateTime UnixEpochToDateTime(long seconds, DateTimeKind kind)
     {
         return DateTime.SpecifyKind(UnixEpoch.AddSeconds(seconds), kind);
     }
@@ -729,7 +729,7 @@ namespace System.Data.SQLite
     /// <returns>
     /// The new <see cref="DateTime" /> value.
     /// </returns>
-    internal static DateTime ToDateTime(long ticks, DateTimeKind kind)
+    internal static DateTime TicksToDateTime(long ticks, DateTimeKind kind)
     {
         return new DateTime(ticks, kind);
     }
@@ -1153,7 +1153,7 @@ namespace System.Data.SQLite
                     Convert.ToBoolean(obj, provider) :
                     ToBoolean(ToStringWithProvider(obj, provider));
             default:
-                throw new SQLiteException(UnsafeNativeMethods.StringFormat(
+                throw new SQLiteException(HelperMethods.StringFormat(
                     CultureInfo.CurrentCulture,
                     "Cannot convert type {0} to boolean",
                     typeCode));
@@ -1174,34 +1174,41 @@ namespace System.Data.SQLite
     }
 
     /// <summary>
-    /// Convert a string to true or false.
+    /// Attempts to convert a <see cref="String" /> into a <see cref="Boolean" />.
     /// </summary>
-    /// <param name="source">A string representing true or false</param>
-    /// <returns></returns>
+    /// <param name="source">
+    /// The <see cref="String" /> to convert, cannot be null.
+    /// </param>
+    /// <returns>
+    /// The converted <see cref="Boolean" /> value.
+    /// </returns>
     /// <remarks>
-    /// "yes", "no", "y", "n", "0", "1", "on", "off" as well as Boolean.FalseString and Boolean.TrueString will all be
-    /// converted to a proper boolean value.
+    /// The supported strings are "yes", "no", "y", "n", "on", "off", "0", "1",
+    /// as well as any prefix of the strings <see cref="Boolean.FalseString" />
+    /// and <see cref="Boolean.TrueString" />.  All strings are treated in a
+    /// case-insensitive manner.
     /// </remarks>
     public static bool ToBoolean(string source)
     {
-      if (String.Compare(source, bool.TrueString, StringComparison.OrdinalIgnoreCase) == 0) return true;
-      else if (String.Compare(source, bool.FalseString, StringComparison.OrdinalIgnoreCase) == 0) return false;
+      if (source == null) throw new ArgumentNullException("source");
+      if (String.Compare(source, 0, bool.TrueString, 0, source.Length, StringComparison.OrdinalIgnoreCase) == 0) return true;
+      else if (String.Compare(source, 0, bool.FalseString, 0, source.Length, StringComparison.OrdinalIgnoreCase) == 0) return false;
 
-      switch(source.ToLower(CultureInfo.InvariantCulture))
+      switch (source.ToLower(CultureInfo.InvariantCulture))
       {
-        case "yes":
         case "y":
-        case "1":
+        case "yes":
         case "on":
+        case "1":
           return true;
-        case "no":
         case "n":
-        case "0":
+        case "no":
         case "off":
+        case "0":
           return false;
-        default:
-          throw new ArgumentException("source");
       }
+
+      throw new ArgumentException("source");
     }
 
     #region Type Conversions
@@ -1448,7 +1455,7 @@ namespace System.Data.SQLite
     {
         if ((flags & SQLiteConnectionFlags.TraceWarning) == SQLiteConnectionFlags.TraceWarning)
         {
-            Trace.WriteLine(UnsafeNativeMethods.StringFormat(
+            Trace.WriteLine(HelperMethods.StringFormat(
                 CultureInfo.CurrentCulture,
                 "WARNING: Type mapping failed, returning default name \"{0}\" for type {1}.",
                 typeName, dbType));
@@ -1477,7 +1484,7 @@ namespace System.Data.SQLite
         if (!String.IsNullOrEmpty(typeName) &&
             ((flags & SQLiteConnectionFlags.TraceWarning) == SQLiteConnectionFlags.TraceWarning))
         {
-            Trace.WriteLine(UnsafeNativeMethods.StringFormat(
+            Trace.WriteLine(HelperMethods.StringFormat(
                 CultureInfo.CurrentCulture,
                 "WARNING: Type mapping failed, returning default type {0} for name \"{1}\".",
                 dbType, typeName));
@@ -1834,6 +1841,36 @@ namespace System.Data.SQLite
             if (!found && (connection != null))
                 connection.SetCachedSetting(name, value);
         }
+    }
+
+    /// <summary>
+    /// Converts the object value, which is assumed to have originated
+    /// from a <see cref="DataRow" />, to a string value.
+    /// </summary>
+    /// <param name="value">
+    /// The value to be converted to a string.
+    /// </param>
+    /// <returns>
+    /// A null value will be returned if the original value is null -OR-
+    /// the original value is <see cref="DBNull.Value" />.  Otherwise,
+    /// the original value will be converted to a string, using its
+    /// (possibly overridden) <see cref="Object.ToString" /> method and
+    /// then returned.
+    /// </returns>
+    public static string GetStringOrNull(
+        object value
+        )
+    {
+      if (value == null)
+        return null;
+
+      if (value is string)
+        return (string)value;
+
+      if (value == DBNull.Value)
+        return null;
+
+      return value.ToString();
     }
 
     /// <summary>
@@ -2854,7 +2891,7 @@ namespace System.Data.SQLite
     internal bool primary;
   }
 
-  internal sealed class TypeNameStringComparer : IEqualityComparer<string>
+  internal sealed class TypeNameStringComparer : IEqualityComparer<string>, IComparer<string>
   {
     #region IEqualityComparer<string> Members
     public bool Equals(
@@ -2885,6 +2922,25 @@ namespace System.Data.SQLite
 #endif
       else
         throw new ArgumentNullException("value");
+    }
+    #endregion
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    #region IComparer<string> Members
+    public int Compare(
+      string x,
+      string y
+      )
+    {
+      if ((x == null) && (y == null))
+        return 0;
+      else if (x == null)
+        return -1;
+      else if (y == null)
+        return 1;
+      else
+        return x.CompareTo(y);
     }
     #endregion
   }

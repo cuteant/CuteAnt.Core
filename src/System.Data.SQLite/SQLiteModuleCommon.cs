@@ -24,7 +24,7 @@ namespace System.Data.SQLite
         /// virtual table.
         /// </summary>
         private static readonly string declareSql =
-            UnsafeNativeMethods.StringFormat(
+            HelperMethods.StringFormat(
                 CultureInfo.InvariantCulture, "CREATE TABLE {0}(x);",
                 typeof(SQLiteModuleCommon).Name);
         #endregion
@@ -119,7 +119,7 @@ namespace System.Data.SQLite
         {
             if (type != null)
             {
-                SetCursorError(cursor, UnsafeNativeMethods.StringFormat(
+                SetCursorError(cursor, HelperMethods.StringFormat(
                     CultureInfo.CurrentCulture, "not a \"{0}\" cursor",
                     type));
             }

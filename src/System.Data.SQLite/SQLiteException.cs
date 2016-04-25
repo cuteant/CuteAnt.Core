@@ -183,7 +183,7 @@ namespace System.Data.SQLite
         string message
         )
     {
-        return UnsafeNativeMethods.StringFormat(
+        return HelperMethods.StringFormat(
             CultureInfo.CurrentCulture,
             "{0}{1}{2}",
             GetErrorString(errorCode),

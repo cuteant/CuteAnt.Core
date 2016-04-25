@@ -18,7 +18,7 @@ namespace System.Data.SQLite
   using System.IO;
   using System.Reflection;
 
-#if !PLATFORM_COMPACTFRAMEWORK && !DEBUG
+#if !PLATFORM_COMPACTFRAMEWORK
   using System.Security;
 #endif
 
@@ -34,12 +34,16 @@ namespace System.Data.SQLite
 
   using System.Xml;
 
-#if !PLATFORM_COMPACTFRAMEWORK && !DEBUG
-  [SuppressUnmanagedCodeSecurity]
-#endif
-  internal static class UnsafeNativeMethods
+  #region Debug Data Static Class
+#if COUNT_HANDLE || DEBUG
+  /// <summary>
+  /// This class encapsulates some tracking data that is used for debugging
+  /// and testing purposes.
+  /// </summary>
+  internal static class DebugData
   {
-    #region Critical Handle Counts (Debug Build Only)
+  #region Private Data
+  #region Critical Handle Counts (Debug Build Only)
 #if COUNT_HANDLE
       //
       // NOTE: These counts represent the total number of outstanding
@@ -54,10 +58,474 @@ namespace System.Data.SQLite
       internal static int statementCount;
       internal static int backupCount;
 #endif
+  #endregion
+
+      /////////////////////////////////////////////////////////////////////////
+
+  #region Settings Read Counts (Debug Build Only)
+#if DEBUG
+      /// <summary>
+      /// This lock is used to protect the static
+      /// <see cref="settingReadCounts" /> field.
+      /// </summary>
+      private static readonly object staticSyncRoot = new object();
+
+      /////////////////////////////////////////////////////////////////////////
+      /// <summary>
+      /// This dictionary stores the read counts for the runtime configuration
+      /// settings.  This information is only recorded when compiled in the
+      /// "Debug" build configuration.
+      /// </summary>
+      private static Dictionary<string, int> settingReadCounts;
+#endif
+  #endregion
+  #endregion
+
+      /////////////////////////////////////////////////////////////////////////
+
+  #region Public Methods
+#if DEBUG
+      /// <summary>
+      /// Creates the dictionary used to store the read counts for each of the
+      /// runtime configuration settings.  These numbers are used for debugging
+      /// and testing purposes only.
+      /// </summary>
+      public static void InitializeSettingReadCounts()
+      {
+          lock (staticSyncRoot)
+          {
+              //
+              // NOTE: Create the list of statistics that will contain the
+              //       number of times each setting value has been read.
+              //
+              if (settingReadCounts == null)
+                  settingReadCounts = new Dictionary<string, int>();
+          }
+      }
+
+      /////////////////////////////////////////////////////////////////////////
+
+      /// <summary>
+      /// Increments the read count for the specified runtime configuration
+      /// setting.  These numbers are used for debugging and testing purposes
+      /// only.
+      /// </summary>
+      /// <param name="name">
+      /// The name of the setting being read.
+      /// </param>
+      public static void IncrementSettingReadCount(
+          string name
+          )
+      {
+          lock (staticSyncRoot)
+          {
+              //
+              // NOTE: Update statistics for this setting value.
+              //
+              if (settingReadCounts != null)
+              {
+                  int count;
+
+                  if (settingReadCounts.TryGetValue(name, out count))
+                        settingReadCounts[name] = count + 1;
+                  else
+                        settingReadCounts.Add(name, 1);
+              }
+          }
+      }
+#endif
+  #endregion
+  }
+#endif
+  #endregion
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  #region Helper Methods Static Class
+  /// <summary>
+  /// This static class provides some methods that are shared between the
+  /// native library pre-loader and other classes.
+  /// </summary>
+  internal static class HelperMethods
+  {
+    #region Private Data
+    /// <summary>
+    /// This lock is used to protect the static <see cref="isMono" /> field.
+    /// </summary>
+    private static readonly object staticSyncRoot = new object();
+
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// This type is only present when running on Mono.
+    /// </summary>
+    private static readonly string MonoRuntimeType = "Mono.Runtime";
+
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Keeps track of whether we are running on Mono.  Initially null, it is
+    /// set by the <see cref="IsMono" /> method on its first call.  Later, it
+    /// is returned verbatim by the <see cref="IsMono" /> method.
+    /// </summary>
+    private static bool? isMono = null;
     #endregion
 
     /////////////////////////////////////////////////////////////////////////
 
+    #region Private Methods
+    /// <summary>
+    /// Determines whether or not this assembly is running on Mono.
+    /// </summary>
+    /// <returns>
+    /// Non-zero if this assembly is running on Mono.
+    /// </returns>
+    private static bool IsMono()
+    {
+      try
+      {
+        lock (staticSyncRoot)
+        {
+          if (isMono == null)
+            isMono = (Type.GetType(MonoRuntimeType) != null);
+
+          return (bool)isMono;
+        }
+      }
+      catch
+      {
+        // do nothing.
+      }
+
+      return false;
+    }
+    #endregion
+
+    /////////////////////////////////////////////////////////////////////////
+
+    #region Internal Methods
+    /// <summary>
+    /// Determines if the current process is running on one of the Windows
+    /// [sub-]platforms.
+    /// </summary>
+    /// <returns>
+    /// Non-zero when running on Windows; otherwise, zero.
+    /// </returns>
+    internal static bool IsWindows()
+    {
+      PlatformID platformId = Environment.OSVersion.Platform;
+
+      if ((platformId == PlatformID.Win32S) ||
+          (platformId == PlatformID.Win32Windows) ||
+          (platformId == PlatformID.Win32NT) ||
+          (platformId == PlatformID.WinCE))
+      {
+        return true;
+      }
+
+      return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// This is a wrapper around the
+    /// <see cref="String.Format(IFormatProvider,String,Object[])" /> method.
+    /// On Mono, it has to call the method overload without the
+    /// <see cref="IFormatProvider" /> parameter, due to a bug in Mono.
+    /// </summary>
+    /// <param name="provider">
+    /// This is used for culture-specific formatting.
+    /// </param>
+    /// <param name="format">
+    /// The format string.
+    /// </param>
+    /// <param name="args">
+    /// An array the objects to format.
+    /// </param>
+    /// <returns>
+    /// The resulting string.
+    /// </returns>
+    internal static string StringFormat(
+        IFormatProvider provider,
+        string format,
+        params object[] args
+        )
+    {
+      if (IsMono())
+        return String.Format(format, args);
+      else
+        return String.Format(provider, format, args);
+    }
+    #endregion
+  }
+  #endregion
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  #region Native Library Helper Class
+  /// <summary>
+  /// This static class provides a thin wrapper around the native library
+  /// loading features of the underlying platform.
+  /// </summary>
+  internal static class NativeLibraryHelper
+  {
+    #region Private Delegates
+    /// <summary>
+    /// This delegate is used to wrap the concept of loading a native
+    /// library, based on a file name, and returning the loaded module
+    /// handle.
+    /// </summary>
+    /// <param name="fileName">
+    /// The file name of the native library to load.
+    /// </param>
+    /// <returns>
+    /// The native module handle upon success -OR- IntPtr.Zero on failure.
+    /// </returns>
+    private delegate IntPtr LoadLibraryCallback(
+        string fileName
+    );
+    #endregion
+
+    /////////////////////////////////////////////////////////////////////////
+
+    #region Private Methods
+    /// <summary>
+    /// Attempts to load the specified native library file using the Win32
+    /// API.
+    /// </summary>
+    /// <param name="fileName">
+    /// The file name of the native library to load.
+    /// </param>
+    /// <returns>
+    /// The native module handle upon success -OR- IntPtr.Zero on failure.
+    /// </returns>
+    private static IntPtr LoadLibraryWin32(
+        string fileName
+        )
+    {
+      return UnsafeNativeMethodsWin32.LoadLibrary(fileName);
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+
+#if !PLATFORM_COMPACTFRAMEWORK
+    /// <summary>
+    /// Attempts to load the specified native library file using the POSIX
+    /// API.
+    /// </summary>
+    /// <param name="fileName">
+    /// The file name of the native library to load.
+    /// </param>
+    /// <returns>
+    /// The native module handle upon success -OR- IntPtr.Zero on failure.
+    /// </returns>
+    private static IntPtr LoadLibraryPosix(
+        string fileName
+        )
+    {
+      return UnsafeNativeMethodsPosix.dlopen(
+          fileName, UnsafeNativeMethodsPosix.RTLD_DEFAULT);
+    }
+#endif
+    #endregion
+
+    /////////////////////////////////////////////////////////////////////////
+
+    #region Public Methods
+    /// <summary>
+    /// Attempts to load the specified native library file.
+    /// </summary>
+    /// <param name="fileName">
+    /// The file name of the native library to load.
+    /// </param>
+    /// <returns>
+    /// The native module handle upon success -OR- IntPtr.Zero on failure.
+    /// </returns>
+    public static IntPtr LoadLibrary(
+        string fileName
+        )
+    {
+      LoadLibraryCallback callback = LoadLibraryWin32;
+
+#if !PLATFORM_COMPACTFRAMEWORK
+      if (!HelperMethods.IsWindows())
+        callback = LoadLibraryPosix;
+#endif
+
+      return callback(fileName);
+    }
+    #endregion
+  }
+  #endregion
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  #region Unmanaged Interop Methods Static Class (POSIX)
+#if !PLATFORM_COMPACTFRAMEWORK
+  /// <summary>
+  /// This class declares P/Invoke methods to call native POSIX APIs.
+  /// </summary>
+  [SuppressUnmanagedCodeSecurity]
+  internal static class UnsafeNativeMethodsPosix
+  {
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// This is the P/Invoke method that wraps the native Unix dlopen
+    /// function.  See the POSIX documentation for full details on what it
+    /// does.
+    /// </summary>
+    /// <param name="fileName">
+    /// The name of the executable library.
+    /// </param>
+    /// <param name="mode">
+    /// This must be a combination of the individual bit flags RTLD_LAZY,
+    /// RTLD_NOW, RTLD_GLOBAL, and/or RTLD_LOCAL.
+    /// </param>
+    /// <returns>
+    /// The native module handle upon success -OR- IntPtr.Zero on failure.
+    /// </returns>
+    [DllImport("__Internal", EntryPoint = "dlopen",
+        CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi,
+        BestFitMapping = false, ThrowOnUnmappableChar = true,
+        SetLastError = true)]
+    internal static extern IntPtr dlopen(string fileName, int mode);
+
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// For use with dlopen(), bind function calls lazily.
+    /// </summary>
+    internal const int RTLD_LAZY = 0x1;
+
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// For use with dlopen(), bind function calls immediately.
+    /// </summary>
+    internal const int RTLD_NOW = 0x2;
+
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// For use with dlopen(), make symbols globally available.
+    /// </summary>
+    internal const int RTLD_GLOBAL = 0x100;
+
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// For use with dlopen(), opposite of RTLD_GLOBAL, and the default.
+    /// </summary>
+    internal const int RTLD_LOCAL = 0x000;
+
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// For use with dlopen(), the defaults used by this class.
+    /// </summary>
+    internal const int RTLD_DEFAULT = RTLD_NOW | RTLD_GLOBAL;
+  }
+#endif
+  #endregion
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  #region Unmanaged Interop Methods Static Class (Win32)
+  /// <summary>
+  /// This class declares P/Invoke methods to call native Win32 APIs.
+  /// </summary>
+#if !PLATFORM_COMPACTFRAMEWORK
+  [SuppressUnmanagedCodeSecurity]
+#endif
+  internal static class UnsafeNativeMethodsWin32
+  {
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// This is the P/Invoke method that wraps the native Win32 LoadLibrary
+    /// function.  See the MSDN documentation for full details on what it
+    /// does.
+    /// </summary>
+    /// <param name="fileName">
+    /// The name of the executable library.
+    /// </param>
+    /// <returns>
+    /// The native module handle upon success -OR- IntPtr.Zero on failure.
+    /// </returns>
+#if !PLATFORM_COMPACTFRAMEWORK
+    [DllImport("kernel32",
+#else
+      [DllImport("coredll",
+#endif
+ CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto,
+#if !PLATFORM_COMPACTFRAMEWORK
+          BestFitMapping = false, ThrowOnUnmappableChar = true,
+#endif
+          SetLastError = true)]
+    internal static extern IntPtr LoadLibrary(string fileName);
+
+    /////////////////////////////////////////////////////////////////////////
+
+#if PLATFORM_COMPACTFRAMEWORK
+      /// <summary>
+      /// This is the P/Invoke method that wraps the native Win32 GetSystemInfo
+      /// function.  See the MSDN documentation for full details on what it
+      /// does.
+      /// </summary>
+      /// <param name="systemInfo">
+      /// The system information structure to be filled in by the function.
+      /// </param>
+      [DllImport("coredll", CallingConvention = CallingConvention.Winapi)]
+      internal static extern void GetSystemInfo(out SYSTEM_INFO systemInfo);
+
+      /////////////////////////////////////////////////////////////////////////
+      /// <summary>
+      /// This enumeration contains the possible values for the processor
+      /// architecture field of the system information structure.
+      /// </summary>
+      internal enum ProcessorArchitecture : ushort /* COMPAT: Win32. */
+      {
+          Intel = 0,
+          MIPS = 1,
+          Alpha = 2,
+          PowerPC = 3,
+          SHx = 4,
+          ARM = 5,
+          IA64 = 6,
+          Alpha64 = 7,
+          MSIL = 8,
+          AMD64 = 9,
+          IA32_on_Win64 = 10,
+          Unknown = 0xFFFF
+      }
+
+      /////////////////////////////////////////////////////////////////////////
+      /// <summary>
+      /// This structure contains information about the current computer. This
+      /// includes the processor type, page size, memory addresses, etc.
+      /// </summary>
+      [StructLayout(LayoutKind.Sequential)]
+      internal struct SYSTEM_INFO
+      {
+          public ProcessorArchitecture wProcessorArchitecture;
+          public ushort wReserved; /* NOT USED */
+          public uint dwPageSize; /* NOT USED */
+          public IntPtr lpMinimumApplicationAddress; /* NOT USED */
+          public IntPtr lpMaximumApplicationAddress; /* NOT USED */
+          public uint dwActiveProcessorMask; /* NOT USED */
+          public uint dwNumberOfProcessors; /* NOT USED */
+          public uint dwProcessorType; /* NOT USED */
+          public uint dwAllocationGranularity; /* NOT USED */
+          public ushort wProcessorLevel; /* NOT USED */
+          public ushort wProcessorRevision; /* NOT USED */
+      }
+#endif
+  }
+  #endregion
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  #region Unmanaged Interop Methods Static Class (SQLite)
+  /// <summary>
+  /// This class declares P/Invoke methods to call native SQLite APIs.
+  /// </summary>
+#if !PLATFORM_COMPACTFRAMEWORK
+  [SuppressUnmanagedCodeSecurity]
+#endif
+  internal static class UnsafeNativeMethods
+  {
     #region Shared Native SQLite Library Pre-Loading Code
     #region Private Constants
     /// <summary>
@@ -90,16 +558,6 @@ namespace System.Data.SQLite
     /// </summary>
     private static readonly object staticSyncRoot = new object();
 
-#if DEBUG
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// This dictionary stores the read counts for the runtime configuration
-      /// settings.  This information is only recorded when compiled in the
-      /// "Debug" build configuration.
-      /// </summary>
-      private static Dictionary<string, int> settingReadCounts;
-#endif
-
     /////////////////////////////////////////////////////////////////////////
     /// <summary>
     /// This dictionary stores the mappings between processor architecture
@@ -123,78 +581,6 @@ namespace System.Data.SQLite
     }
 
     /////////////////////////////////////////////////////////////////////////
-
-    /// <summary>
-    /// This type is only present when running on Mono.
-    /// </summary>
-    private static readonly string MonoRuntimeType = "Mono.Runtime";
-
-    /// <summary>
-    /// Keeps track of whether we are running on Mono.  Initially null, it is
-    /// set by the <see cref="IsMono" /> method on its first call.  Later, it
-    /// is returned verbatim by the <see cref="IsMono" /> method.
-    /// </summary>
-    private static bool? isMono = null;
-
-    /// <summary>
-    /// Determines whether or not this assembly is running on Mono.
-    /// </summary>
-    /// <returns>
-    /// Non-zero if this assembly is running on Mono.
-    /// </returns>
-    private static bool IsMono()
-    {
-      try
-      {
-        lock (staticSyncRoot)
-        {
-          if (isMono == null)
-            isMono = (Type.GetType(MonoRuntimeType) != null);
-
-          return (bool)isMono;
-        }
-      }
-      catch
-      {
-        // do nothing.
-      }
-
-      return false;
-    }
-
-    /////////////////////////////////////////////////////////////////////////
-
-    /// <summary>
-    /// This is a wrapper around the
-    /// <see cref="String.Format(IFormatProvider,String,Object[])" /> method.
-    /// On Mono, it has to call the method overload without the
-    /// <see cref="IFormatProvider" /> parameter, due to a bug in Mono.
-    /// </summary>
-    /// <param name="provider">
-    /// This is used for culture-specific formatting.
-    /// </param>
-    /// <param name="format">
-    /// The format string.
-    /// </param>
-    /// <param name="args">
-    /// An array the objects to format.
-    /// </param>
-    /// <returns>
-    /// The resulting string.
-    /// </returns>
-    internal static string StringFormat(
-        IFormatProvider provider,
-        string format,
-        params object[] args
-        )
-    {
-      if (IsMono())
-        return String.Format(format, args);
-      else
-        return String.Format(provider, format, args);
-    }
-
-    /////////////////////////////////////////////////////////////////////////
     /// <summary>
     /// Attempts to initialize this class by pre-loading the native SQLite
     /// library for the processor architecture of the current process.
@@ -212,17 +598,18 @@ namespace System.Data.SQLite
 #endif
 #endif
 
+      #region Debug Build Only
+#if DEBUG
+          //
+          // NOTE: Create the list of statistics that will contain the
+          //       number of times each setting value has been read.
+          //
+          DebugData.InitializeSettingReadCounts();
+#endif
+      #endregion
+
       lock (staticSyncRoot)
       {
-#if DEBUG
-              //
-              // NOTE: Create the list of statistics that will contain the
-              //       number of times each setting value has been read.
-              //
-              if (settingReadCounts == null)
-                  settingReadCounts = new Dictionary<string, int>();
-#endif
-
         //
         // TODO: Make sure this list is updated if the supported
         //       processor architecture names and/or platform names
@@ -281,6 +668,41 @@ namespace System.Data.SQLite
 
     /////////////////////////////////////////////////////////////////////////
     /// <summary>
+    /// Combines two path strings.
+    /// </summary>
+    /// <param name="path1">
+    /// The first path -OR- null.
+    /// </param>
+    /// <param name="path2">
+    /// The second path -OR- null.
+    /// </param>
+    /// <returns>
+    /// The combined path string -OR- null if both of the original path
+    /// strings are null.
+    /// </returns>
+    private static string MaybeCombinePath(
+        string path1,
+        string path2
+        )
+    {
+      if (path1 != null)
+      {
+        if (path2 != null)
+          return Path.Combine(path1, path2);
+        else
+          return path1;
+      }
+      else
+      {
+        if (path2 != null)
+          return path2;
+        else
+          return null;
+      }
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
     /// Queries and returns the XML configuration file name for the assembly
     /// containing the managed System.Data.SQLite components.
     /// </summary>
@@ -296,14 +718,14 @@ namespace System.Data.SQLite
 #if !PLATFORM_COMPACTFRAMEWORK
       //directory = AppDomain.CurrentDomain.BaseDirectory;
       directory = CuteAnt.IO.PathHelper.ApplicationBasePath; // ## 苦竹 修改 ##
-      fileName = Path.Combine(directory, XmlConfigFileName);
+      fileName = MaybeCombinePath(directory, XmlConfigFileName);
 
       if (File.Exists(fileName))
         return fileName;
 #endif
 
       directory = GetAssemblyDirectory();
-      fileName = Path.Combine(directory, XmlConfigFileName);
+      fileName = MaybeCombinePath(directory, XmlConfigFileName);
 
       if (File.Exists(fileName))
         return fileName;
@@ -345,21 +767,7 @@ namespace System.Data.SQLite
 
       #region Debug Build Only
 #if DEBUG
-          lock (staticSyncRoot)
-          {
-              //
-              // NOTE: Update statistics for this setting value.
-              //
-              if (settingReadCounts != null)
-              {
-                  int count;
-
-                  if (settingReadCounts.TryGetValue(name, out count))
-                      settingReadCounts[name] = count + 1;
-                  else
-                      settingReadCounts.Add(name, 1);
-              }
-          }
+          DebugData.IncrementSettingReadCount(name);
 #endif
       #endregion
 
@@ -374,9 +782,9 @@ namespace System.Data.SQLite
       {
         expand = false;
       }
-      else if (Environment.GetEnvironmentVariable(StringFormat(
-              CultureInfo.InvariantCulture, "No_Expand_{0}",
-              name)) != null)
+      else if (Environment.GetEnvironmentVariable(
+              HelperMethods.StringFormat(CultureInfo.InvariantCulture,
+              "No_Expand_{0}", name)) != null)
       {
         expand = false;
       }
@@ -401,8 +809,8 @@ namespace System.Data.SQLite
 
         document.Load(fileName);
 
-        XmlElement element = document.SelectSingleNode(StringFormat(
-            CultureInfo.InvariantCulture,
+        XmlElement element = document.SelectSingleNode(
+            HelperMethods.StringFormat(CultureInfo.InvariantCulture,
             "/configuration/appSettings/add[@key='{0}']", name)) as
             XmlElement;
 
@@ -429,7 +837,7 @@ namespace System.Data.SQLite
 #if !NET_COMPACT_20 && TRACE_SHARED
         try
         {
-          Trace.WriteLine(StringFormat(
+          Trace.WriteLine(HelperMethods.StringFormat(
               CultureInfo.CurrentCulture,
               "Native library pre-loader failed to get setting " +
               "\"{0}\" value: {1}", name, e)); /* throw */
@@ -488,7 +896,7 @@ namespace System.Data.SQLite
           foreach (KeyValuePair<string, string> pair
                     in processorArchitecturePlatforms)
           {
-            if (Directory.Exists(Path.Combine(directory, pair.Key)))
+            if (Directory.Exists(MaybeCombinePath(directory, pair.Key)))
             {
               matches.Add(pair.Key);
               result++;
@@ -499,7 +907,7 @@ namespace System.Data.SQLite
             if (value == null)
               continue;
 
-            if (Directory.Exists(Path.Combine(directory, value)))
+            if (Directory.Exists(MaybeCombinePath(directory, value)))
             {
               matches.Add(value);
               result++;
@@ -537,7 +945,7 @@ namespace System.Data.SQLite
         string directory = Path.GetDirectoryName(
             localFileName); /* throw */
 
-        string xmlConfigFileName = Path.Combine(
+        string xmlConfigFileName = MaybeCombinePath(
             directory, XmlConfigFileName);
 
         if (File.Exists(xmlConfigFileName))
@@ -545,7 +953,7 @@ namespace System.Data.SQLite
 #if !NET_COMPACT_20 && TRACE_DETECTION
                   try
                   {
-                      Trace.WriteLine(StringFormat(
+                      Trace.WriteLine(HelperMethods.StringFormat(
                           CultureInfo.CurrentCulture,
                           "Native library pre-loader found XML configuration file " +
                           "via code base for currently executing assembly: \"{0}\"",
@@ -568,7 +976,7 @@ namespace System.Data.SQLite
 #if !NET_COMPACT_20 && TRACE_DETECTION
                   try
                   {
-                      Trace.WriteLine(StringFormat(
+                      Trace.WriteLine(HelperMethods.StringFormat(
                           CultureInfo.CurrentCulture,
                           "Native library pre-loader found native sub-directories " +
                           "via code base for currently executing assembly: \"{0}\"",
@@ -595,7 +1003,7 @@ namespace System.Data.SQLite
 #if !NET_COMPACT_20 && TRACE_SHARED
         try
         {
-          Trace.WriteLine(StringFormat(
+          Trace.WriteLine(HelperMethods.StringFormat(
               CultureInfo.CurrentCulture,
               "Native library pre-loader failed to check code base " +
               "for currently executing assembly: {0}", e)); /* throw */
@@ -662,7 +1070,7 @@ namespace System.Data.SQLite
 #if !NET_COMPACT_20 && TRACE_SHARED
         try
         {
-          Trace.WriteLine(StringFormat(
+          Trace.WriteLine(HelperMethods.StringFormat(
               CultureInfo.CurrentCulture,
               "Native library pre-loader failed to get directory " +
               "for currently executing assembly: {0}", e)); /* throw */
@@ -704,93 +1112,12 @@ namespace System.Data.SQLite
         "PROCESSOR_ARCHITECTURE";
 
     /////////////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// This is the P/Invoke method that wraps the native Win32 LoadLibrary
-    /// function.  See the MSDN documentation for full details on what it
-    /// does.
-    /// </summary>
-    /// <param name="fileName">
-    /// The name of the executable library.
-    /// </param>
-    /// <returns>
-    /// The native module handle upon success -OR- IntPtr.Zero on failure.
-    /// </returns>
-#if !PLATFORM_COMPACTFRAMEWORK
-    [DllImport("kernel32",
-#else
-      [DllImport("coredll",
-#endif
-          CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto,
-#if !PLATFORM_COMPACTFRAMEWORK
-          BestFitMapping = false, ThrowOnUnmappableChar = true,
-#endif
-          SetLastError = true)]
-    private static extern IntPtr LoadLibrary(string fileName);
-
-    /////////////////////////////////////////////////////////////////////////
-
-#if PLATFORM_COMPACTFRAMEWORK
-      /// <summary>
-      /// This is the P/Invoke method that wraps the native Win32 GetSystemInfo
-      /// function.  See the MSDN documentation for full details on what it
-      /// does.
-      /// </summary>
-      /// <param name="systemInfo">
-      /// The system information structure to be filled in by the function.
-      /// </param>
-      [DllImport("coredll", CallingConvention = CallingConvention.Winapi)]
-      private static extern void GetSystemInfo(out SYSTEM_INFO systemInfo);
-
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// This enumeration contains the possible values for the processor
-      /// architecture field of the system information structure.
-      /// </summary>
-      private enum ProcessorArchitecture : ushort /* COMPAT: Win32. */
-      {
-          Intel = 0,
-          MIPS = 1,
-          Alpha = 2,
-          PowerPC = 3,
-          SHx = 4,
-          ARM = 5,
-          IA64 = 6,
-          Alpha64 = 7,
-          MSIL = 8,
-          AMD64 = 9,
-          IA32_on_Win64 = 10,
-          Unknown = 0xFFFF
-      }
-
-      /////////////////////////////////////////////////////////////////////////
-      /// <summary>
-      /// This structure contains information about the current computer. This
-      /// includes the processor type, page size, memory addresses, etc.
-      /// </summary>
-      [StructLayout(LayoutKind.Sequential)]
-      private struct SYSTEM_INFO
-      {
-          public ProcessorArchitecture wProcessorArchitecture;
-          public ushort wReserved; /* NOT USED */
-          public uint dwPageSize; /* NOT USED */
-          public IntPtr lpMinimumApplicationAddress; /* NOT USED */
-          public IntPtr lpMaximumApplicationAddress; /* NOT USED */
-          public uint dwActiveProcessorMask; /* NOT USED */
-          public uint dwNumberOfProcessors; /* NOT USED */
-          public uint dwProcessorType; /* NOT USED */
-          public uint dwAllocationGranularity; /* NOT USED */
-          public ushort wProcessorLevel; /* NOT USED */
-          public ushort wProcessorRevision; /* NOT USED */
-      }
-#endif
-
-    /////////////////////////////////////////////////////////////////////////
 
     #region Private Data
     /// <summary>
     /// The native module file name for the native SQLite library or null.
     /// </summary>
-    private static string _SQLiteNativeModuleFileName = null;
+    internal static string _SQLiteNativeModuleFileName = null;
 
     /////////////////////////////////////////////////////////////////////////
     /// <summary>
@@ -799,6 +1126,26 @@ namespace System.Data.SQLite
     /// </summary>
     private static IntPtr _SQLiteNativeModuleHandle = IntPtr.Zero;
     #endregion
+
+    /////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Determines the base file name (without any directory information)
+    /// for the native SQLite library to be pre-loaded by this class.
+    /// </summary>
+    /// <returns>
+    /// The base file name for the native SQLite library to be pre-loaded by
+    /// this class -OR- null if its value cannot be determined.
+    /// </returns>
+    internal static string GetNativeLibraryFileNameOnly()
+    {
+      string fileNameOnly = GetSettingValue(
+          "PreLoadSQLite_LibraryFileNameOnly", null);
+
+      if (fileNameOnly != null)
+        return fileNameOnly;
+
+      return SQLITE_DLL; /* COMPAT */
+    }
 
     /////////////////////////////////////////////////////////////////////////
     /// <summary>
@@ -831,6 +1178,15 @@ namespace System.Data.SQLite
       }
 
       //
+      // NOTE: Determine the base file name for the native SQLite library.
+      //       If this is not known by this class, we cannot continue.
+      //
+      string fileNameOnly = GetNativeLibraryFileNameOnly();
+
+      if (fileNameOnly == null)
+        return false;
+
+      //
       // NOTE: Build the list of base directories and processor/platform
       //       names.  These lists will be used to help locate the native
       //       SQLite core library (or interop assembly) to pre-load into
@@ -842,7 +1198,7 @@ namespace System.Data.SQLite
               //AppDomain.CurrentDomain.BaseDirectory,
               CuteAnt.IO.PathHelper.ApplicationBasePath, // ## 苦竹 修改 ##
 #endif
-    };
+          };
 
       string[] subDirectories = {
               GetProcessorArchitecture(), GetPlatformName(null)
@@ -858,8 +1214,9 @@ namespace System.Data.SQLite
           if (subDirectory == null)
             continue;
 
-          string fileName = FixUpDllFileName(Path.Combine(
-              Path.Combine(directory, subDirectory), SQLITE_DLL));
+          string fileName = FixUpDllFileName(MaybeCombinePath(
+              MaybeCombinePath(directory, subDirectory),
+              fileNameOnly));
 
           //
           // NOTE: If the SQLite DLL file exists, return success.
@@ -923,7 +1280,6 @@ namespace System.Data.SQLite
       //
       //return AppDomain.CurrentDomain.BaseDirectory;
       return CuteAnt.IO.PathHelper.ApplicationBasePath; // ## 苦竹 修改 ##
-
 #else
           //
           // NOTE: Otherwise, fallback on using the directory containing
@@ -946,17 +1302,12 @@ namespace System.Data.SQLite
     /// extension.
     /// </returns>
     private static string FixUpDllFileName(
-    string fileName /* in */
-    )
+        string fileName /* in */
+        )
     {
       if (!String.IsNullOrEmpty(fileName))
       {
-        PlatformID platformId = Environment.OSVersion.Platform;
-
-        if ((platformId == PlatformID.Win32S) ||
-            (platformId == PlatformID.Win32Windows) ||
-            (platformId == PlatformID.Win32NT) ||
-            (platformId == PlatformID.WinCE))
+        if (HelperMethods.IsWindows())
         {
           if (!fileName.EndsWith(DllFileExtension,
                   StringComparison.OrdinalIgnoreCase))
@@ -1035,7 +1386,7 @@ namespace System.Data.SQLite
                   // NOTE: Show that we hit a fairly unusual situation (i.e.
                   //       the "wrong" processor architecture was detected).
                   //
-                  Trace.WriteLine(StringFormat(
+                  Trace.WriteLine(HelperMethods.StringFormat(
                       CultureInfo.CurrentCulture,
                       "Native library pre-loader detected {0}-bit pointer " +
                       "size with processor architecture \"{1}\", using " +
@@ -1064,13 +1415,13 @@ namespace System.Data.SQLite
                   //       placed here.  Only the processor architecture field
                   //       is used by this method.
                   //
-                  SYSTEM_INFO systemInfo;
+                  UnsafeNativeMethodsWin32.SYSTEM_INFO systemInfo;
 
                   //
                   // NOTE: Query the system information via P/Invoke, thus
                   //       filling the structure.
                   //
-                  GetSystemInfo(out systemInfo);
+                  UnsafeNativeMethodsWin32.GetSystemInfo(out systemInfo);
 
                   //
                   // NOTE: Return the processor architecture value as a string.
@@ -1184,11 +1535,20 @@ namespace System.Data.SQLite
         return false;
 
       //
+      // NOTE: Determine the base file name for the native SQLite library.
+      //       If this is not known by this class, we cannot continue.
+      //
+      string fileNameOnly = GetNativeLibraryFileNameOnly();
+
+      if (fileNameOnly == null)
+        return false;
+
+      //
       // NOTE: If the native SQLite library exists in the base directory
       //       itself, stop now.
       //
-      string fileName = FixUpDllFileName(Path.Combine(baseDirectory,
-          SQLITE_DLL));
+      string fileName = FixUpDllFileName(MaybeCombinePath(baseDirectory,
+          fileNameOnly));
 
       if (File.Exists(fileName))
         return false;
@@ -1210,8 +1570,8 @@ namespace System.Data.SQLite
       // NOTE: Build the full path and file name for the native SQLite
       //       library using the processor architecture name.
       //
-      fileName = FixUpDllFileName(Path.Combine(Path.Combine(baseDirectory,
-          processorArchitecture), SQLITE_DLL));
+      fileName = FixUpDllFileName(MaybeCombinePath(MaybeCombinePath(
+          baseDirectory, processorArchitecture), fileNameOnly));
 
       //
       // NOTE: If the file name based on the processor architecture name
@@ -1235,8 +1595,8 @@ namespace System.Data.SQLite
         // NOTE: Build the full path and file name for the native SQLite
         //       library using the platform name.
         //
-        fileName = FixUpDllFileName(Path.Combine(Path.Combine(
-            baseDirectory, platformName), SQLITE_DLL));
+        fileName = FixUpDllFileName(MaybeCombinePath(MaybeCombinePath(
+            baseDirectory, platformName), fileNameOnly));
 
         //
         // NOTE: If the file does not exist, skip trying to load it.
@@ -1254,7 +1614,7 @@ namespace System.Data.SQLite
           // NOTE: Show exactly where we are trying to load the native
           //       SQLite library from.
           //
-          Trace.WriteLine(StringFormat(
+          Trace.WriteLine(HelperMethods.StringFormat(
               CultureInfo.CurrentCulture,
               "Native library pre-loader is trying to load native " +
               "SQLite library \"{0}\"...", fileName)); /* throw */
@@ -1268,10 +1628,11 @@ namespace System.Data.SQLite
         //
         // NOTE: Attempt to load the native library.  This will either
         //       return a valid native module handle, return IntPtr.Zero,
-        //       or throw an exception.
+        //       or throw an exception.  This must use the appropriate
+        //       P/Invoke method for the current operating system.
         //
         nativeModuleFileName = fileName;
-        nativeModuleHandle = LoadLibrary(fileName);
+        nativeModuleHandle = NativeLibraryHelper.LoadLibrary(fileName);
 
         return (nativeModuleHandle != IntPtr.Zero);
       }
@@ -1294,7 +1655,7 @@ namespace System.Data.SQLite
           //       library from along with the Win32 error code and
           //       exception information.
           //
-          Trace.WriteLine(StringFormat(
+          Trace.WriteLine(HelperMethods.StringFormat(
               CultureInfo.CurrentCulture,
               "Native library pre-loader failed to load native " +
               "SQLite library \"{0}\" (getLastError = {1}): {2}",
@@ -1323,7 +1684,7 @@ namespace System.Data.SQLite
     //       System.Data.SQLite functionality (e.g. being able to bind
     //       parameters and handle column values of types Int64 and Double).
     //
-    internal const string SQLITE_DLL = "SQLite.Interop.099.dll";
+    internal const string SQLITE_DLL = "SQLite.Interop.101.dll";
 #elif SQLITE_STANDARD
     //
     // NOTE: Otherwise, if the standard SQLite library is enabled, use it.
@@ -2298,6 +2659,13 @@ namespace System.Data.SQLite
     internal static extern IntPtr sqlite3_db_filename(IntPtr db, IntPtr dbName);
 
 #if !PLATFORM_COMPACTFRAMEWORK
+    [DllImport(SQLITE_DLL, EntryPoint = "sqlite3_db_filename", CallingConvention = CallingConvention.Cdecl)]
+#else
+    [DllImport(SQLITE_DLL, EntryPoint = "sqlite3_db_filename")]
+#endif
+    internal static extern IntPtr sqlite3_db_filename_bytes(IntPtr db, byte[] dbName);
+
+#if !PLATFORM_COMPACTFRAMEWORK
     [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
 #else
     [DllImport(SQLITE_DLL)]
@@ -2875,9 +3243,11 @@ namespace System.Data.SQLite
 #endif
     #endregion
   }
+  #endregion
 
   /////////////////////////////////////////////////////////////////////////////
 
+  #region .NET Compact Framework (only) CriticalHandle Class
 #if PLATFORM_COMPACTFRAMEWORK
   internal abstract class CriticalHandle : IDisposable
   {
@@ -2947,8 +3317,8 @@ namespace System.Data.SQLite
     }
 
   }
-
 #endif
+  #endregion
 
   ///////////////////////////////////////////////////////////////////////////
 
@@ -3012,7 +3382,7 @@ namespace System.Data.SQLite
     {
 #if COUNT_HANDLE
             if (ownHandle)
-                Interlocked.Increment(ref UnsafeNativeMethods.connectionCount);
+                Interlocked.Increment(ref DebugData.connectionCount);
 #endif
     }
 
@@ -3044,7 +3414,7 @@ namespace System.Data.SQLite
 #if !NET_COMPACT_20 && TRACE_HANDLE
                 try
                 {
-                    Trace.WriteLine(UnsafeNativeMethods.StringFormat(
+                    Trace.WriteLine(HelperMethods.StringFormat(
                         CultureInfo.CurrentCulture,
                         "CloseConnection: {0}", localHandle)); /* throw */
                 }
@@ -3063,8 +3433,7 @@ namespace System.Data.SQLite
                 }
 #endif
 #if COUNT_HANDLE
-                Interlocked.Decrement(
-                    ref UnsafeNativeMethods.connectionCount);
+                Interlocked.Decrement(ref DebugData.connectionCount);
 #endif
 #if DEBUG
                 return true;
@@ -3079,7 +3448,7 @@ namespace System.Data.SQLite
 #if !NET_COMPACT_20 && TRACE_HANDLE
                 try
                 {
-                    Trace.WriteLine(UnsafeNativeMethods.StringFormat(
+                    Trace.WriteLine(HelperMethods.StringFormat(
                         CultureInfo.CurrentCulture,
                         "CloseConnection: {0}, exception: {1}",
                         handle, e)); /* throw */
@@ -3110,8 +3479,7 @@ namespace System.Data.SQLite
 #if COUNT_HANDLE
         public int WasReleasedOk()
         {
-            return Interlocked.Decrement(
-                ref UnsafeNativeMethods.connectionCount);
+            return Interlocked.Decrement(ref DebugData.connectionCount);
         }
 #endif
 
@@ -3211,8 +3579,7 @@ namespace System.Data.SQLite
         : base(IntPtr.Zero)
     {
 #if COUNT_HANDLE
-            Interlocked.Increment(
-                ref UnsafeNativeMethods.statementCount);
+            Interlocked.Increment(ref DebugData.statementCount);
 #endif
     }
 
@@ -3232,7 +3599,7 @@ namespace System.Data.SQLite
 #if !NET_COMPACT_20 && TRACE_HANDLE
                 try
                 {
-                    Trace.WriteLine(UnsafeNativeMethods.StringFormat(
+                    Trace.WriteLine(HelperMethods.StringFormat(
                         CultureInfo.CurrentCulture,
                         "FinalizeStatement: {0}", localHandle)); /* throw */
                 }
@@ -3251,8 +3618,7 @@ namespace System.Data.SQLite
                 }
 #endif
 #if COUNT_HANDLE
-                Interlocked.Decrement(
-                    ref UnsafeNativeMethods.statementCount);
+                Interlocked.Decrement(ref DebugData.statementCount);
 #endif
 #if DEBUG
                 return true;
@@ -3267,7 +3633,7 @@ namespace System.Data.SQLite
 #if !NET_COMPACT_20 && TRACE_HANDLE
                 try
                 {
-                    Trace.WriteLine(UnsafeNativeMethods.StringFormat(
+                    Trace.WriteLine(HelperMethods.StringFormat(
                         CultureInfo.CurrentCulture,
                         "FinalizeStatement: {0}, exception: {1}",
                         handle, e)); /* throw */
@@ -3298,8 +3664,7 @@ namespace System.Data.SQLite
 #if COUNT_HANDLE
         public int WasReleasedOk()
         {
-            return Interlocked.Decrement(
-                ref UnsafeNativeMethods.statementCount);
+            return Interlocked.Decrement(ref DebugData.statementCount);
         }
 #endif
 
@@ -3384,8 +3749,7 @@ namespace System.Data.SQLite
         : base(IntPtr.Zero)
     {
 #if COUNT_HANDLE
-            Interlocked.Increment(
-                ref UnsafeNativeMethods.backupCount);
+            Interlocked.Increment(ref DebugData.backupCount);
 #endif
     }
 
@@ -3405,7 +3769,7 @@ namespace System.Data.SQLite
 #if !NET_COMPACT_20 && TRACE_HANDLE
                 try
                 {
-                    Trace.WriteLine(UnsafeNativeMethods.StringFormat(
+                    Trace.WriteLine(HelperMethods.StringFormat(
                         CultureInfo.CurrentCulture,
                         "FinishBackup: {0}", localHandle)); /* throw */
                 }
@@ -3424,8 +3788,7 @@ namespace System.Data.SQLite
                 }
 #endif
 #if COUNT_HANDLE
-                Interlocked.Decrement(
-                    ref UnsafeNativeMethods.backupCount);
+                Interlocked.Decrement(ref DebugData.backupCount);
 #endif
 #if DEBUG
                 return true;
@@ -3440,7 +3803,7 @@ namespace System.Data.SQLite
 #if !NET_COMPACT_20 && TRACE_HANDLE
                 try
                 {
-                    Trace.WriteLine(UnsafeNativeMethods.StringFormat(
+                    Trace.WriteLine(HelperMethods.StringFormat(
                         CultureInfo.CurrentCulture,
                         "FinishBackup: {0}, exception: {1}",
                         handle, e)); /* throw */
@@ -3471,8 +3834,7 @@ namespace System.Data.SQLite
 #if COUNT_HANDLE
         public int WasReleasedOk()
         {
-            return Interlocked.Decrement(
-                ref UnsafeNativeMethods.backupCount);
+            return Interlocked.Decrement(ref DebugData.backupCount);
         }
 #endif
 

@@ -60,7 +60,7 @@ namespace System.Data.SQLite
             "3.5.0.0";
 #endif
 
-        _dbProviderServicesType = Type.GetType(UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, "System.Data.Common.DbProviderServices, System.Data.Entity, Version={0}, Culture=neutral, PublicKeyToken=b77a5c561934e089", version), false);
+        _dbProviderServicesType = Type.GetType(HelperMethods.StringFormat(CultureInfo.InvariantCulture, "System.Data.Common.DbProviderServices, System.Data.Entity, Version={0}, Culture=neutral, PublicKeyToken=b77a5c561934e089", version), false);
     }
 
     /// <summary>
@@ -90,12 +90,12 @@ namespace System.Data.SQLite
 
             if (typeName != null)
             {
-                typeName = UnsafeNativeMethods.StringFormat(
+                typeName = HelperMethods.StringFormat(
                     CultureInfo.InvariantCulture, typeName, version);
             }
             else
             {
-                typeName = UnsafeNativeMethods.StringFormat(
+                typeName = HelperMethods.StringFormat(
                     CultureInfo.InvariantCulture, DefaultTypeName, version);
             }
 

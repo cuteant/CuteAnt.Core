@@ -86,7 +86,7 @@ namespace System.Data.SQLite
           s = _sql.Bind_ParamName(this, _flags, x + 1);
           if (String.IsNullOrEmpty(s))
           {
-            s = UnsafeNativeMethods.StringFormat(CultureInfo.InvariantCulture, ";{0}", nCmdStart);
+            s = HelperMethods.StringFormat(CultureInfo.InvariantCulture, ";{0}", nCmdStart);
             nCmdStart++;
             _unnamedParameters++;
           }
@@ -259,7 +259,7 @@ namespace System.Data.SQLite
       {
           IntPtr handle = _sqlite_stmt;
 
-          SQLiteLog.LogMessage(UnsafeNativeMethods.StringFormat(
+          SQLiteLog.LogMessage(HelperMethods.StringFormat(
               CultureInfo.CurrentCulture,
               "Binding statement {0} paramter #{1} with database type {2} and raw value {{{3}}}...",
               handle, index, objType, obj));
@@ -381,7 +381,7 @@ namespace System.Data.SQLite
       int pos = typedefs.IndexOf("TYPES", 0, StringComparison.OrdinalIgnoreCase);
       if (pos == -1) throw new ArgumentOutOfRangeException();
 
-      string[] types = typedefs.Substring(pos + 6).Replace(" ", "").Replace(";", "").Replace("\"", "").Replace("[", "").Replace("]", "").Replace("`","").Split(',', '\r', '\n', '\t');
+      string[] types = typedefs.Substring(pos + 6).Replace(" ", String.Empty).Replace(";", String.Empty).Replace("\"", String.Empty).Replace("[", String.Empty).Replace("]", String.Empty).Replace("`", String.Empty).Split(',', '\r', '\n', '\t');
 
       int n;
       for (n = 0; n < types.Length; n++)

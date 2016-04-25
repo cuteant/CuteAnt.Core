@@ -335,7 +335,7 @@ namespace System.Data.SQLite
         ///     /* Inputs */
         ///     const int nConstraint;     /* Number of entries in aConstraint */
         ///     const struct sqlite3_index_constraint {
-        ///        int iColumn;              /* Column on left-hand side of constraint */
+        ///        int iColumn;              /* Column constrained.  -1 for ROWID */
         ///        unsigned char op;         /* Constraint operator */
         ///        unsigned char usable;     /* True if this constraint is usable */
         ///        int iTermOffset;          /* Used internally - xBestIndex should ignore */
@@ -359,14 +359,17 @@ namespace System.Data.SQLite
         ///     sqlite3_int64 estimatedRows;    /* Estimated number of rows returned */
         ///     <![CDATA[<b>]]>/* Fields below are only available in SQLite 3.9.0 and later */<![CDATA[</b>]]>
         ///     int idxFlags;              /* Mask of SQLITE_INDEX_SCAN_* flags */
+        ///     <![CDATA[<b>]]>/* Fields below are only available in SQLite 3.10.0 and later */<![CDATA[</b>]]>
+        ///     sqlite3_uint64 colUsed;    /* Input: Mask of columns used by statement */
         ///   };
         /// </code></para>
         /// <para>
-        /// Please note the warnings on the "estimatedRows" and "idxFlags" field.
-        /// These fields were added with SQLite versions 3.8.2 and 3.9.0, respectively. 
+        /// Note the warnings on the "estimatedRows", "idxFlags", and colUsed fields.
+        /// These fields were added with SQLite versions 3.8.2, 3.9.0, and 3.10.0, respectively. 
         /// Any extension that reads or writes these fields must first check that the 
-        /// version of the SQLite library in use is greater than or equal to 3.8.2 or
-        /// 3.9.0 - perhaps using a call to sqlite3_version(). The result of attempting 
+        /// version of the SQLite library in use is greater than or equal to appropriate
+        /// version - perhaps comparing the value returned from sqlite3_libversion_number()
+        /// against constants 3008002, 3009000, and/or 3010000. The result of attempting 
         /// to access these fields in an sqlite3_index_info structure created by an 
         /// older version of SQLite are undefined.
         /// </para>
@@ -374,13 +377,16 @@ namespace System.Data.SQLite
         /// In addition, there are some defined constants:
         /// </para>
         /// <para><code>
-        ///   #define SQLITE_INDEX_CONSTRAINT_EQ    2
-        ///   #define SQLITE_INDEX_CONSTRAINT_GT    4
-        ///   #define SQLITE_INDEX_CONSTRAINT_LE    8
-        ///   #define SQLITE_INDEX_CONSTRAINT_LT    16
-        ///   #define SQLITE_INDEX_CONSTRAINT_GE    32
-        ///   #define SQLITE_INDEX_CONSTRAINT_MATCH 64
-        ///   #define SQLITE_INDEX_SCAN_UNIQUE      1     /* Scan visits at most 1 row */
+        ///   #define SQLITE_INDEX_CONSTRAINT_EQ      2
+        ///   #define SQLITE_INDEX_CONSTRAINT_GT      4
+        ///   #define SQLITE_INDEX_CONSTRAINT_LE      8
+        ///   #define SQLITE_INDEX_CONSTRAINT_LT     16
+        ///   #define SQLITE_INDEX_CONSTRAINT_GE     32
+        ///   #define SQLITE_INDEX_CONSTRAINT_MATCH  64
+        ///   #define SQLITE_INDEX_CONSTRAINT_LIKE   65     /* 3.10.0 and later only */
+        ///   #define SQLITE_INDEX_CONSTRAINT_GLOB   66     /* 3.10.0 and later only */
+        ///   #define SQLITE_INDEX_CONSTRAINT_REGEXP 67     /* 3.10.0 and later only */
+        ///   #define SQLITE_INDEX_SCAN_UNIQUE        1     /* Scan visits at most 1 row */
         /// </code></para>
         /// <para>
         /// The SQLite core calls the xBestIndex method when it is compiling a query
@@ -497,6 +503,17 @@ namespace System.Data.SQLite
         /// then nOrderBy will be the number of terms in the ORDER BY clause 
         /// and the aOrderBy[] array will identify the column for each term 
         /// in the order by clause and whether or not that column is ASC or DESC.
+        /// </para>
+        /// <para>
+        /// In SQLite version 3.10.0 and later, the colUsed field is available
+        /// to indicate which fields of the virtual table are actually used by the
+        /// statement being prepared.  If the lowest bit of colUsed is set, that
+        /// means that the first column is used.  The second lowest bit corresponds
+        /// to the second column.  And so forth.  If the most significant bit of
+        /// colUsed is set, that means that one or more columns other than the 
+        /// first 63 columns are used.  If column usage information is needed by the
+        /// xFilter method, then the required bits must be encoded into either
+        /// the idxNum or idxStr output fields.
         /// </para>
         /// <para>
         /// Given all of the information above, the job of the xBestIndex 

@@ -59,7 +59,7 @@ using System.Runtime.ConstrainedExecution;
 //
 // NOTE: This attribute is only available in .NET Framework 4.0 or higher.
 //
-[assembly: SecurityRules(System.Security.SecurityRuleSet.Level1)]
+[assembly: SecurityRules(SecurityRuleSet.Level1)]
 #endif
 #endif
 
@@ -72,7 +72,7 @@ using System.Runtime.ConstrainedExecution;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("1.0.99.0")]
+[assembly: AssemblyVersion("1.0.101.0")]
 #if !PLATFORM_COMPACTFRAMEWORK
-[assembly: AssemblyFileVersion("1.0.99.0")]
+[assembly: AssemblyFileVersion("1.0.101.0")]
 #endif

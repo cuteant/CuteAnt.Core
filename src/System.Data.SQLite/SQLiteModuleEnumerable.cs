@@ -503,7 +503,7 @@ namespace System.Data.SQLite
 
             if (!table.BestIndex(index))
             {
-                SetTableError(table, UnsafeNativeMethods.StringFormat(
+                SetTableError(table, HelperMethods.StringFormat(
                     CultureInfo.CurrentCulture,
                     "failed to select best index for virtual table \"{0}\"",
                     table.TableName));
@@ -831,7 +831,7 @@ namespace System.Data.SQLite
         {
             CheckDisposed();
 
-            SetTableError(table, UnsafeNativeMethods.StringFormat(
+            SetTableError(table, HelperMethods.StringFormat(
                 CultureInfo.CurrentCulture,
                 "virtual table \"{0}\" is read-only", table.TableName));
 
@@ -861,7 +861,7 @@ namespace System.Data.SQLite
 
             if (!table.Rename(newName))
             {
-                SetTableError(table, UnsafeNativeMethods.StringFormat(
+                SetTableError(table, HelperMethods.StringFormat(
                     CultureInfo.CurrentCulture,
                     "failed to rename virtual table from \"{0}\" to \"{1}\"",
                     table.TableName, newName));

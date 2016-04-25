@@ -122,7 +122,7 @@ namespace System.Data.SQLite
 
     public static string UTF16ToString(IntPtr b, int nbytelen)
     {
-      if (nbytelen == 0 || b == IntPtr.Zero) return "";
+      if (nbytelen == 0 || b == IntPtr.Zero) return String.Empty;
 
       if (nbytelen == -1)
         return Marshal.PtrToStringUni(b);
@@ -163,7 +163,7 @@ namespace System.Data.SQLite
             _poolVersion }));
 
 #if !NET_COMPACT_20 && TRACE_CONNECTION
-        Trace.WriteLine(UnsafeNativeMethods.StringFormat(
+        Trace.WriteLine(HelperMethods.StringFormat(
             CultureInfo.CurrentCulture,
             "Open16 (Pool): {0}",
             HandleToString()));
@@ -202,7 +202,7 @@ namespace System.Data.SQLite
 
             if (vfsName != null)
             {
-              throw new SQLiteException(SQLiteErrorCode.CantOpen, UnsafeNativeMethods.StringFormat(
+              throw new SQLiteException(SQLiteErrorCode.CantOpen, HelperMethods.StringFormat(
                 CultureInfo.CurrentCulture,
                 "cannot open using UTF-16 and VFS \"{0}\": need interop assembly", vfsName));
             }
@@ -211,7 +211,7 @@ namespace System.Data.SQLite
           }
 
 #if !NET_COMPACT_20 && TRACE_CONNECTION
-          Trace.WriteLine(UnsafeNativeMethods.StringFormat(
+          Trace.WriteLine(HelperMethods.StringFormat(
               CultureInfo.CurrentCulture,
               "Open16: {0}", db));
 #endif
@@ -293,11 +293,11 @@ namespace System.Data.SQLite
     internal override DateTime GetDateTime(SQLiteStatement stmt, int index)
     {
       if (_datetimeFormat == SQLiteDateFormats.Ticks)
-        return ToDateTime(GetInt64(stmt, index), _datetimeKind);
+        return TicksToDateTime(GetInt64(stmt, index), _datetimeKind);
       else if (_datetimeFormat == SQLiteDateFormats.JulianDay)
         return ToDateTime(GetDouble(stmt, index), _datetimeKind);
       else if (_datetimeFormat == SQLiteDateFormats.UnixEpoch)
-        return ToDateTime(GetInt32(stmt, index), _datetimeKind);
+        return UnixEpochToDateTime(GetInt64(stmt, index), _datetimeKind);
 
       return ToDateTime(GetText(stmt, index));
     }

@@ -453,7 +453,7 @@ namespace System.Data.SQLite
     /// </summary>
     [DisplayName("Page Size")]
     [Browsable(true)]
-    [DefaultValue(1024)]
+    [DefaultValue(4096)]
     public int PageSize
     {
       get
@@ -493,7 +493,7 @@ namespace System.Data.SQLite
     /// </summary>
     [DisplayName("Cache Size")]
     [Browsable(true)]
-    [DefaultValue(2000)]
+    [DefaultValue(-2000)]
     public int CacheSize
     {
       get

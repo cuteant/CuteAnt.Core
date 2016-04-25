@@ -513,8 +513,8 @@ namespace System.Data.SQLite
     #region IDisposable Members
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
+      Dispose(true);
+      GC.SuppressFinalize(this);
     }
     #endregion
 
@@ -525,8 +525,8 @@ namespace System.Data.SQLite
     private void CheckDisposed() /* throw */
     {
 #if THROW_ON_DISPOSED
-        if (disposed)
-            throw new ObjectDisposedException(typeof(SQLiteBase).Name);
+      if (disposed)
+        throw new ObjectDisposedException(typeof(SQLiteBase).Name);
 #endif
     }
 
@@ -534,21 +534,21 @@ namespace System.Data.SQLite
 
     protected virtual void Dispose(bool disposing)
     {
-        if (!disposed)
-        {
-            //if (disposing)
-            //{
-            //    ////////////////////////////////////
-            //    // dispose managed resources here...
-            //    ////////////////////////////////////
-            //}
+      if (!disposed)
+      {
+        //if (disposing)
+        //{
+        //    ////////////////////////////////////
+        //    // dispose managed resources here...
+        //    ////////////////////////////////////
+        //}
 
-            //////////////////////////////////////
-            // release unmanaged resources here...
-            //////////////////////////////////////
+        //////////////////////////////////////
+        // release unmanaged resources here...
+        //////////////////////////////////////
 
-            disposed = true;
-        }
+        disposed = true;
+      }
     }
     #endregion
 
@@ -557,7 +557,7 @@ namespace System.Data.SQLite
     #region Destructor
     ~SQLiteBase()
     {
-        Dispose(false);
+      Dispose(false);
     }
     #endregion
 
@@ -612,260 +612,260 @@ namespace System.Data.SQLite
     /// <returns>The error message or null if it cannot be found.</returns>
     protected static string FallbackGetErrorString(SQLiteErrorCode rc)
     {
-        if (_errorMessages == null)
-            return null;
+      if (_errorMessages == null)
+        return null;
 
-        int index = (int)rc;
+      int index = (int)rc;
 
-        if ((index < 0) || (index >= _errorMessages.Length))
-            index = (int)SQLiteErrorCode.Error; /* Make into generic error. */
+      if ((index < 0) || (index >= _errorMessages.Length))
+        index = (int)SQLiteErrorCode.Error; /* Make into generic error. */
 
-        return _errorMessages[index];
+      return _errorMessages[index];
     }
 
     internal static string GetLastError(SQLiteConnectionHandle hdl, IntPtr db)
     {
-        if ((hdl == null) || (db == IntPtr.Zero))
-            return "null connection or database handle";
+      if ((hdl == null) || (db == IntPtr.Zero))
+        return "null connection or database handle";
 
-        string result = null;
+      string result = null;
 
-        try
-        {
-            // do nothing.
-        }
-        finally /* NOTE: Thread.Abort() protection. */
-        {
+      try
+      {
+        // do nothing.
+      }
+      finally /* NOTE: Thread.Abort() protection. */
+      {
 #if PLATFORM_COMPACTFRAMEWORK
             lock (hdl.syncRoot)
 #else
-            lock (hdl)
+        lock (hdl)
 #endif
-            {
-                if (!hdl.IsInvalid && !hdl.IsClosed)
-                {
+        {
+          if (!hdl.IsInvalid && !hdl.IsClosed)
+          {
 #if !SQLITE_STANDARD
-                    int len = 0;
-                    result = UTF8ToString(UnsafeNativeMethods.sqlite3_errmsg_interop(db, ref len), len);
+            int len = 0;
+            result = UTF8ToString(UnsafeNativeMethods.sqlite3_errmsg_interop(db, ref len), len);
 #else
                     result = UTF8ToString(UnsafeNativeMethods.sqlite3_errmsg(db), -1);
 #endif
-                }
-                else
-                {
-                    result = "closed or invalid connection handle";
-                }
-            }
+          }
+          else
+          {
+            result = "closed or invalid connection handle";
+          }
         }
-        GC.KeepAlive(hdl);
-        return result;
+      }
+      GC.KeepAlive(hdl);
+      return result;
     }
 
     internal static void FinishBackup(SQLiteConnectionHandle hdl, IntPtr backup)
     {
-        if ((hdl == null) || (backup == IntPtr.Zero)) return;
+      if ((hdl == null) || (backup == IntPtr.Zero)) return;
 
-        try
-        {
-            // do nothing.
-        }
-        finally /* NOTE: Thread.Abort() protection. */
-        {
+      try
+      {
+        // do nothing.
+      }
+      finally /* NOTE: Thread.Abort() protection. */
+      {
 #if PLATFORM_COMPACTFRAMEWORK
             lock (hdl.syncRoot)
 #else
-            lock (hdl)
+        lock (hdl)
 #endif
-            {
+        {
 #if !SQLITE_STANDARD
-                SQLiteErrorCode n = UnsafeNativeMethods.sqlite3_backup_finish_interop(backup);
+          SQLiteErrorCode n = UnsafeNativeMethods.sqlite3_backup_finish_interop(backup);
 #else
                 SQLiteErrorCode n = UnsafeNativeMethods.sqlite3_backup_finish(backup);
 #endif
-                if (n != SQLiteErrorCode.Ok) throw new SQLiteException(n, null);
-            }
+          if (n != SQLiteErrorCode.Ok) throw new SQLiteException(n, null);
         }
+      }
     }
 
     internal static void FinalizeStatement(SQLiteConnectionHandle hdl, IntPtr stmt)
     {
-        if ((hdl == null) || (stmt == IntPtr.Zero)) return;
+      if ((hdl == null) || (stmt == IntPtr.Zero)) return;
 
-        try
-        {
-            // do nothing.
-        }
-        finally /* NOTE: Thread.Abort() protection. */
-        {
+      try
+      {
+        // do nothing.
+      }
+      finally /* NOTE: Thread.Abort() protection. */
+      {
 #if PLATFORM_COMPACTFRAMEWORK
             lock (hdl.syncRoot)
 #else
-            lock (hdl)
+        lock (hdl)
 #endif
-            {
+        {
 #if !SQLITE_STANDARD
-                SQLiteErrorCode n = UnsafeNativeMethods.sqlite3_finalize_interop(stmt);
+          SQLiteErrorCode n = UnsafeNativeMethods.sqlite3_finalize_interop(stmt);
 #else
                 SQLiteErrorCode n = UnsafeNativeMethods.sqlite3_finalize(stmt);
 #endif
-                if (n != SQLiteErrorCode.Ok) throw new SQLiteException(n, null);
-            }
+          if (n != SQLiteErrorCode.Ok) throw new SQLiteException(n, null);
         }
+      }
     }
 
     internal static void CloseConnection(SQLiteConnectionHandle hdl, IntPtr db)
     {
-        if ((hdl == null) || (db == IntPtr.Zero)) return;
+      if ((hdl == null) || (db == IntPtr.Zero)) return;
 
-        try
-        {
-            // do nothing.
-        }
-        finally /* NOTE: Thread.Abort() protection. */
-        {
+      try
+      {
+        // do nothing.
+      }
+      finally /* NOTE: Thread.Abort() protection. */
+      {
 #if PLATFORM_COMPACTFRAMEWORK
             lock (hdl.syncRoot)
 #else
-            lock (hdl)
+        lock (hdl)
 #endif
-            {
+        {
 #if !SQLITE_STANDARD
-                SQLiteErrorCode n = UnsafeNativeMethods.sqlite3_close_interop(db);
+          SQLiteErrorCode n = UnsafeNativeMethods.sqlite3_close_interop(db);
 #else
                 ResetConnection(hdl, db, false);
 
                 SQLiteErrorCode n = UnsafeNativeMethods.sqlite3_close(db);
 #endif
-                if (n != SQLiteErrorCode.Ok) throw new SQLiteException(n, GetLastError(hdl, db));
-            }
+          if (n != SQLiteErrorCode.Ok) throw new SQLiteException(n, GetLastError(hdl, db));
         }
+      }
     }
 
 #if !INTEROP_LEGACY_CLOSE
     internal static void CloseConnectionV2(SQLiteConnectionHandle hdl, IntPtr db)
     {
-        if ((hdl == null) || (db == IntPtr.Zero)) return;
+      if ((hdl == null) || (db == IntPtr.Zero)) return;
 
-        try
-        {
-            // do nothing.
-        }
-        finally /* NOTE: Thread.Abort() protection. */
-        {
+      try
+      {
+        // do nothing.
+      }
+      finally /* NOTE: Thread.Abort() protection. */
+      {
 #if PLATFORM_COMPACTFRAMEWORK
             lock (hdl.syncRoot)
 #else
-            lock (hdl)
+        lock (hdl)
 #endif
-            {
+        {
 #if !SQLITE_STANDARD
-                SQLiteErrorCode n = UnsafeNativeMethods.sqlite3_close_interop(db);
+          SQLiteErrorCode n = UnsafeNativeMethods.sqlite3_close_interop(db);
 #else
                 ResetConnection(hdl, db, false);
 
                 SQLiteErrorCode n = UnsafeNativeMethods.sqlite3_close_v2(db);
 #endif
-                if (n != SQLiteErrorCode.Ok) throw new SQLiteException(n, GetLastError(hdl, db));
-            }
+          if (n != SQLiteErrorCode.Ok) throw new SQLiteException(n, GetLastError(hdl, db));
         }
+      }
     }
 #endif
 
     internal static bool ResetConnection(SQLiteConnectionHandle hdl, IntPtr db, bool canThrow)
     {
-        if ((hdl == null) || (db == IntPtr.Zero)) return false;
+      if ((hdl == null) || (db == IntPtr.Zero)) return false;
 
-        bool result = false;
+      bool result = false;
 
-        try
-        {
-            // do nothing.
-        }
-        finally /* NOTE: Thread.Abort() protection. */
-        {
+      try
+      {
+        // do nothing.
+      }
+      finally /* NOTE: Thread.Abort() protection. */
+      {
 #if PLATFORM_COMPACTFRAMEWORK
             lock (hdl.syncRoot)
 #else
-            lock (hdl)
+        lock (hdl)
 #endif
+        {
+          if (canThrow && hdl.IsInvalid)
+            throw new InvalidOperationException("The connection handle is invalid.");
+
+          if (canThrow && hdl.IsClosed)
+            throw new InvalidOperationException("The connection handle is closed.");
+
+          if (!hdl.IsInvalid && !hdl.IsClosed)
+          {
+            IntPtr stmt = IntPtr.Zero;
+            SQLiteErrorCode n;
+
+            do
             {
-                if (canThrow && hdl.IsInvalid)
-                    throw new InvalidOperationException("The connection handle is invalid.");
-
-                if (canThrow && hdl.IsClosed)
-                    throw new InvalidOperationException("The connection handle is closed.");
-
-                if (!hdl.IsInvalid && !hdl.IsClosed)
-                {
-                    IntPtr stmt = IntPtr.Zero;
-                    SQLiteErrorCode n;
-
-                    do
-                    {
-                        stmt = UnsafeNativeMethods.sqlite3_next_stmt(db, stmt);
-                        if (stmt != IntPtr.Zero)
-                        {
+              stmt = UnsafeNativeMethods.sqlite3_next_stmt(db, stmt);
+              if (stmt != IntPtr.Zero)
+              {
 #if !SQLITE_STANDARD
-                            n = UnsafeNativeMethods.sqlite3_reset_interop(stmt);
+                n = UnsafeNativeMethods.sqlite3_reset_interop(stmt);
 #else
                             n = UnsafeNativeMethods.sqlite3_reset(stmt);
 #endif
-                        }
-                    } while (stmt != IntPtr.Zero);
+              }
+            } while (stmt != IntPtr.Zero);
 
-                    //
-                    // NOTE: Is a transaction NOT pending on the connection?
-                    //
-                    if (IsAutocommit(hdl, db))
-                    {
-                        result = true;
-                    }
-                    else
-                    {
-                        n = UnsafeNativeMethods.sqlite3_exec(
-                            db, ToUTF8("ROLLBACK"), IntPtr.Zero, IntPtr.Zero,
-                            ref stmt);
-
-                        if (n == SQLiteErrorCode.Ok)
-                        {
-                            result = true;
-                        }
-                        else if (canThrow)
-                        {
-                            throw new SQLiteException(n, GetLastError(hdl, db));
-                        }
-                    }
-                }
+            //
+            // NOTE: Is a transaction NOT pending on the connection?
+            //
+            if (IsAutocommit(hdl, db))
+            {
+              result = true;
             }
+            else
+            {
+              n = UnsafeNativeMethods.sqlite3_exec(
+                  db, ToUTF8("ROLLBACK"), IntPtr.Zero, IntPtr.Zero,
+                  ref stmt);
+
+              if (n == SQLiteErrorCode.Ok)
+              {
+                result = true;
+              }
+              else if (canThrow)
+              {
+                throw new SQLiteException(n, GetLastError(hdl, db));
+              }
+            }
+          }
         }
-        GC.KeepAlive(hdl);
-        return result;
+      }
+      GC.KeepAlive(hdl);
+      return result;
     }
 
     internal static bool IsAutocommit(SQLiteConnectionHandle hdl, IntPtr db)
     {
-        if ((hdl == null) || (db == IntPtr.Zero)) return false;
+      if ((hdl == null) || (db == IntPtr.Zero)) return false;
 
-        bool result = false;
+      bool result = false;
 
-        try
-        {
-            // do nothing.
-        }
-        finally /* NOTE: Thread.Abort() protection. */
-        {
+      try
+      {
+        // do nothing.
+      }
+      finally /* NOTE: Thread.Abort() protection. */
+      {
 #if PLATFORM_COMPACTFRAMEWORK
             lock (hdl.syncRoot)
 #else
-            lock (hdl)
+        lock (hdl)
 #endif
-            {
-                if (!hdl.IsInvalid && !hdl.IsClosed)
-                    result = (UnsafeNativeMethods.sqlite3_get_autocommit(db) == 1);
-            }
+        {
+          if (!hdl.IsInvalid && !hdl.IsClosed)
+            result = (UnsafeNativeMethods.sqlite3_get_autocommit(db) == 1);
         }
-        GC.KeepAlive(hdl); /* NOTE: Unreachable code. */
-        return result;
+      }
+      GC.KeepAlive(hdl); /* NOTE: Unreachable code. */
+      return result;
     }
   }
 
@@ -874,13 +874,13 @@ namespace System.Data.SQLite
   /// </summary>
   public interface ISQLiteSchemaExtensions
   {
-      /// <summary>
-      /// Creates temporary tables on the connection so schema information can be queried.
-      /// </summary>
-      /// <param name="connection">
-      /// The connection upon which to build the schema tables.
-      /// </param>
-      void BuildTempSchema(SQLiteConnection connection);
+    /// <summary>
+    /// Creates temporary tables on the connection so schema information can be queried.
+    /// </summary>
+    /// <param name="connection">
+    /// The connection upon which to build the schema tables.
+    /// </param>
+    void BuildTempSchema(SQLiteConnection connection);
   }
 
   [Flags]
@@ -901,310 +901,316 @@ namespace System.Data.SQLite
   [Flags()]
   public enum SQLiteConnectionFlags : long
   {
-      /// <summary>
-      /// No extra flags.
-      /// </summary>
-      None = 0x0,
+    /// <summary>
+    /// No extra flags.
+    /// </summary>
+    None = 0x0,
 
-      /// <summary>
-      /// Enable logging of all SQL statements to be prepared.
-      /// </summary>
-      LogPrepare = 0x1,
+    /// <summary>
+    /// Enable logging of all SQL statements to be prepared.
+    /// </summary>
+    LogPrepare = 0x1,
 
-      /// <summary>
-      /// Enable logging of all bound parameter types and raw values.
-      /// </summary>
-      LogPreBind = 0x2,
+    /// <summary>
+    /// Enable logging of all bound parameter types and raw values.
+    /// </summary>
+    LogPreBind = 0x2,
 
-      /// <summary>
-      /// Enable logging of all bound parameter strongly typed values.
-      /// </summary>
-      LogBind = 0x4,
+    /// <summary>
+    /// Enable logging of all bound parameter strongly typed values.
+    /// </summary>
+    LogBind = 0x4,
 
-      /// <summary>
-      /// Enable logging of all exceptions caught from user-provided
-      /// managed code called from native code via delegates.
-      /// </summary>
-      LogCallbackException = 0x8,
+    /// <summary>
+    /// Enable logging of all exceptions caught from user-provided
+    /// managed code called from native code via delegates.
+    /// </summary>
+    LogCallbackException = 0x8,
 
-      /// <summary>
-      /// Enable logging of backup API errors.
-      /// </summary>
-      LogBackup = 0x10,
+    /// <summary>
+    /// Enable logging of backup API errors.
+    /// </summary>
+    LogBackup = 0x10,
 
-      /// <summary>
-      /// Skip adding the extension functions provided by the native
-      /// interop assembly.
-      /// </summary>
-      NoExtensionFunctions = 0x20,
+    /// <summary>
+    /// Skip adding the extension functions provided by the native
+    /// interop assembly.
+    /// </summary>
+    NoExtensionFunctions = 0x20,
 
-      /// <summary>
-      /// When binding parameter values with the <see cref="UInt32" />
-      /// type, use the interop method that accepts an <see cref="Int64" />
-      /// value.
-      /// </summary>
-      BindUInt32AsInt64 = 0x40,
+    /// <summary>
+    /// When binding parameter values with the <see cref="UInt32" />
+    /// type, use the interop method that accepts an <see cref="Int64" />
+    /// value.
+    /// </summary>
+    BindUInt32AsInt64 = 0x40,
 
-      /// <summary>
-      /// When binding parameter values, always bind them as though they were
-      /// plain text (i.e. no numeric, date/time, or other conversions should
-      /// be attempted).
-      /// </summary>
-      BindAllAsText = 0x80,
+    /// <summary>
+    /// When binding parameter values, always bind them as though they were
+    /// plain text (i.e. no numeric, date/time, or other conversions should
+    /// be attempted).
+    /// </summary>
+    BindAllAsText = 0x80,
 
-      /// <summary>
-      /// When returning column values, always return them as though they were
-      /// plain text (i.e. no numeric, date/time, or other conversions should
-      /// be attempted).
-      /// </summary>
-      GetAllAsText = 0x100,
+    /// <summary>
+    /// When returning column values, always return them as though they were
+    /// plain text (i.e. no numeric, date/time, or other conversions should
+    /// be attempted).
+    /// </summary>
+    GetAllAsText = 0x100,
 
-      /// <summary>
-      /// Prevent this <see cref="SQLiteConnection" /> object instance from
-      /// loading extensions.
-      /// </summary>
-      NoLoadExtension = 0x200,
+    /// <summary>
+    /// Prevent this <see cref="SQLiteConnection" /> object instance from
+    /// loading extensions.
+    /// </summary>
+    NoLoadExtension = 0x200,
 
 #if INTEROP_VIRTUAL_TABLE
-      /// <summary>
-      /// Prevent this <see cref="SQLiteConnection" /> object instance from
-      /// creating virtual table modules.
-      /// </summary>
-      NoCreateModule = 0x400,
+    /// <summary>
+    /// Prevent this <see cref="SQLiteConnection" /> object instance from
+    /// creating virtual table modules.
+    /// </summary>
+    NoCreateModule = 0x400,
 #endif
 
-      /// <summary>
-      /// Skip binding any functions provided by other managed assemblies when
-      /// opening the connection.
-      /// </summary>
-      NoBindFunctions = 0x800,
+    /// <summary>
+    /// Skip binding any functions provided by other managed assemblies when
+    /// opening the connection.
+    /// </summary>
+    NoBindFunctions = 0x800,
 
 #if INTEROP_VIRTUAL_TABLE
-      /// <summary>
-      /// Skip setting the logging related properties of the
-      /// <see cref="SQLiteModule" /> object instance that was passed to
-      /// the <see cref="SQLiteConnection.CreateModule" /> method.
-      /// </summary>
-      NoLogModule = 0x1000,
+    /// <summary>
+    /// Skip setting the logging related properties of the
+    /// <see cref="SQLiteModule" /> object instance that was passed to
+    /// the <see cref="SQLiteConnection.CreateModule" /> method.
+    /// </summary>
+    NoLogModule = 0x1000,
 
-      /// <summary>
-      /// Enable logging of all virtual table module errors seen by the
-      /// <see cref="SQLiteModule.SetTableError(IntPtr,String)" /> method.
-      /// </summary>
-      LogModuleError = 0x2000,
+    /// <summary>
+    /// Enable logging of all virtual table module errors seen by the
+    /// <see cref="SQLiteModule.SetTableError(IntPtr,String)" /> method.
+    /// </summary>
+    LogModuleError = 0x2000,
 
-      /// <summary>
-      /// Enable logging of certain virtual table module exceptions that cannot
-      /// be easily discovered via other means.
-      /// </summary>
-      LogModuleException = 0x4000,
+    /// <summary>
+    /// Enable logging of certain virtual table module exceptions that cannot
+    /// be easily discovered via other means.
+    /// </summary>
+    LogModuleException = 0x4000,
 #endif
 
-      /// <summary>
-      /// Enable tracing of potentially important [non-fatal] error conditions
-      /// that cannot be easily reported through other means.
-      /// </summary>
-      TraceWarning = 0x8000,
+    /// <summary>
+    /// Enable tracing of potentially important [non-fatal] error conditions
+    /// that cannot be easily reported through other means.
+    /// </summary>
+    TraceWarning = 0x8000,
 
-      /// <summary>
-      /// When binding parameter values, always use the invariant culture when
-      /// converting their values from strings.
-      /// </summary>
-      ConvertInvariantText = 0x10000,
+    /// <summary>
+    /// When binding parameter values, always use the invariant culture when
+    /// converting their values from strings.
+    /// </summary>
+    ConvertInvariantText = 0x10000,
 
-      /// <summary>
-      /// When binding parameter values, always use the invariant culture when
-      /// converting their values to strings.
-      /// </summary>
-      BindInvariantText = 0x20000,
+    /// <summary>
+    /// When binding parameter values, always use the invariant culture when
+    /// converting their values to strings.
+    /// </summary>
+    BindInvariantText = 0x20000,
 
-      /// <summary>
-      /// Disable using the connection pool by default.  If the "Pooling"
-      /// connection string property is specified, its value will override
-      /// this flag.  The precise outcome of combining this flag with the
-      /// <see cref="UseConnectionPool" /> flag is unspecified; however,
-      /// one of the flags will be in effect.
-      /// </summary>
-      NoConnectionPool = 0x40000,
+    /// <summary>
+    /// Disable using the connection pool by default.  If the "Pooling"
+    /// connection string property is specified, its value will override
+    /// this flag.  The precise outcome of combining this flag with the
+    /// <see cref="UseConnectionPool" /> flag is unspecified; however,
+    /// one of the flags will be in effect.
+    /// </summary>
+    NoConnectionPool = 0x40000,
 
-      /// <summary>
-      /// Enable using the connection pool by default.  If the "Pooling"
-      /// connection string property is specified, its value will override
-      /// this flag.  The precise outcome of combining this flag with the
-      /// <see cref="NoConnectionPool" /> flag is unspecified; however,
-      /// one of the flags will be in effect.
-      /// </summary>
-      UseConnectionPool = 0x80000,
+    /// <summary>
+    /// Enable using the connection pool by default.  If the "Pooling"
+    /// connection string property is specified, its value will override
+    /// this flag.  The precise outcome of combining this flag with the
+    /// <see cref="NoConnectionPool" /> flag is unspecified; however,
+    /// one of the flags will be in effect.
+    /// </summary>
+    UseConnectionPool = 0x80000,
 
-      /// <summary>
-      /// Enable using per-connection mappings between type names and
-      /// <see cref="DbType" /> values.  Also see the
-      /// <see cref="SQLiteConnection.ClearTypeMappings" />,
-      /// <see cref="SQLiteConnection.GetTypeMappings" />, and
-      /// <see cref="SQLiteConnection.AddTypeMapping" /> methods.  These
-      /// per-connection mappings, when present, override the corresponding
-      /// global mappings.
-      /// </summary>
-      UseConnectionTypes = 0x100000,
+    /// <summary>
+    /// Enable using per-connection mappings between type names and
+    /// <see cref="DbType" /> values.  Also see the
+    /// <see cref="SQLiteConnection.ClearTypeMappings" />,
+    /// <see cref="SQLiteConnection.GetTypeMappings" />, and
+    /// <see cref="SQLiteConnection.AddTypeMapping" /> methods.  These
+    /// per-connection mappings, when present, override the corresponding
+    /// global mappings.
+    /// </summary>
+    UseConnectionTypes = 0x100000,
 
-      /// <summary>
-      /// Disable using global mappings between type names and
-      /// <see cref="DbType" /> values.  This may be useful in some very narrow
-      /// cases; however, if there are no per-connection type mappings, the
-      /// fallback defaults will be used for both type names and their
-      /// associated <see cref="DbType" /> values.  Therefore, use of this flag
-      /// is not recommended.
-      /// </summary>
-      NoGlobalTypes = 0x200000,
+    /// <summary>
+    /// Disable using global mappings between type names and
+    /// <see cref="DbType" /> values.  This may be useful in some very narrow
+    /// cases; however, if there are no per-connection type mappings, the
+    /// fallback defaults will be used for both type names and their
+    /// associated <see cref="DbType" /> values.  Therefore, use of this flag
+    /// is not recommended.
+    /// </summary>
+    NoGlobalTypes = 0x200000,
 
-      /// <summary>
-      /// When the <see cref="SQLiteDataReader.HasRows" /> property is used, it
-      /// should return non-zero if there were ever any rows in the associated
-      /// result sets.
-      /// </summary>
-      StickyHasRows = 0x400000,
+    /// <summary>
+    /// When the <see cref="SQLiteDataReader.HasRows" /> property is used, it
+    /// should return non-zero if there were ever any rows in the associated
+    /// result sets.
+    /// </summary>
+    StickyHasRows = 0x400000,
 
-      /// <summary>
-      /// Enable "strict" transaction enlistment semantics.  Setting this flag
-      /// will cause an exception to be thrown if an attempt is made to enlist
-      /// in a transaction with an unavailable or unsupported isolation level.
-      /// In the future, more extensive checks may be enabled by this flag as
-      /// well.
-      /// </summary>
-      StrictEnlistment = 0x800000,
+    /// <summary>
+    /// Enable "strict" transaction enlistment semantics.  Setting this flag
+    /// will cause an exception to be thrown if an attempt is made to enlist
+    /// in a transaction with an unavailable or unsupported isolation level.
+    /// In the future, more extensive checks may be enabled by this flag as
+    /// well.
+    /// </summary>
+    StrictEnlistment = 0x800000,
 
-      /// <summary>
-      /// Enable mapping of unsupported transaction isolation levels to the
-      /// closest supported transaction isolation level.
-      /// </summary>
-      MapIsolationLevels = 0x1000000,
+    /// <summary>
+    /// Enable mapping of unsupported transaction isolation levels to the
+    /// closest supported transaction isolation level.
+    /// </summary>
+    MapIsolationLevels = 0x1000000,
 
-      /// <summary>
-      /// When returning column values, attempt to detect the affinity of
-      /// textual values by checking if they fully conform to those of the
-      /// <see cref="TypeAffinity.Null" />,
-      /// <see cref="TypeAffinity.Int64" />,
-      /// <see cref="TypeAffinity.Double" />,
-      /// or <see cref="TypeAffinity.DateTime" /> types.
-      /// </summary>
-      DetectTextAffinity = 0x2000000,
+    /// <summary>
+    /// When returning column values, attempt to detect the affinity of
+    /// textual values by checking if they fully conform to those of the
+    /// <see cref="TypeAffinity.Null" />,
+    /// <see cref="TypeAffinity.Int64" />,
+    /// <see cref="TypeAffinity.Double" />,
+    /// or <see cref="TypeAffinity.DateTime" /> types.
+    /// </summary>
+    DetectTextAffinity = 0x2000000,
 
-      /// <summary>
-      /// When returning column values, attempt to detect the type of
-      /// string values by checking if they fully conform to those of
-      /// the <see cref="TypeAffinity.Null" />,
-      /// <see cref="TypeAffinity.Int64" />,
-      /// <see cref="TypeAffinity.Double" />,
-      /// or <see cref="TypeAffinity.DateTime" /> types.
-      /// </summary>
-      DetectStringType = 0x4000000,
+    /// <summary>
+    /// When returning column values, attempt to detect the type of
+    /// string values by checking if they fully conform to those of
+    /// the <see cref="TypeAffinity.Null" />,
+    /// <see cref="TypeAffinity.Int64" />,
+    /// <see cref="TypeAffinity.Double" />,
+    /// or <see cref="TypeAffinity.DateTime" /> types.
+    /// </summary>
+    DetectStringType = 0x4000000,
 
-      /// <summary>
-      /// Skip querying runtime configuration settings for use by the
-      /// <see cref="SQLiteConvert" /> class, including the default
-      /// <see cref="DbType" /> value and default database type name.
-      /// <b>NOTE: If the <see cref="SQLiteConnection.DefaultDbType" />
-      /// and/or <see cref="SQLiteConnection.DefaultTypeName" />
-      /// properties are not set explicitly nor set via their connection
-      /// string properties and repeated calls to determine these runtime
-      /// configuration settings are seen to be a problem, this flag
-      /// should be set.</b>
-      /// </summary>
-      NoConvertSettings = 0x8000000,
+    /// <summary>
+    /// Skip querying runtime configuration settings for use by the
+    /// <see cref="SQLiteConvert" /> class, including the default
+    /// <see cref="DbType" /> value and default database type name.
+    /// <b>NOTE: If the <see cref="SQLiteConnection.DefaultDbType" />
+    /// and/or <see cref="SQLiteConnection.DefaultTypeName" />
+    /// properties are not set explicitly nor set via their connection
+    /// string properties and repeated calls to determine these runtime
+    /// configuration settings are seen to be a problem, this flag
+    /// should be set.</b>
+    /// </summary>
+    NoConvertSettings = 0x8000000,
 
-      /// <summary>
-      /// When binding parameter values with the <see cref="DateTime" />
-      /// type, take their <see cref="DateTimeKind" /> into account as
-      /// well as that of the associated <see cref="SQLiteConnection" />.
-      /// </summary>
-      BindDateTimeWithKind = 0x10000000,
+    /// <summary>
+    /// When binding parameter values with the <see cref="DateTime" />
+    /// type, take their <see cref="DateTimeKind" /> into account as
+    /// well as that of the associated <see cref="SQLiteConnection" />.
+    /// </summary>
+    BindDateTimeWithKind = 0x10000000,
 
-      /// <summary>
-      /// If an exception is caught when raising the
-      /// <see cref="SQLiteConnection.Commit" /> event, the transaction
-      /// should be rolled back.  If this is not specified, the transaction
-      /// will continue the commit process instead.
-      /// </summary>
-      RollbackOnException = 0x20000000,
+    /// <summary>
+    /// If an exception is caught when raising the
+    /// <see cref="SQLiteConnection.Commit" /> event, the transaction
+    /// should be rolled back.  If this is not specified, the transaction
+    /// will continue the commit process instead.
+    /// </summary>
+    RollbackOnException = 0x20000000,
 
-      /// <summary>
-      /// If an exception is caught when raising the
-      /// <see cref="SQLiteConnection.Authorize" /> event, the action should
-      /// should be denied.  If this is not specified, the action will be
-      /// allowed instead.
-      /// </summary>
-      DenyOnException = 0x40000000,
+    /// <summary>
+    /// If an exception is caught when raising the
+    /// <see cref="SQLiteConnection.Authorize" /> event, the action should
+    /// should be denied.  If this is not specified, the action will be
+    /// allowed instead.
+    /// </summary>
+    DenyOnException = 0x40000000,
 
-      /// <summary>
-      /// If an exception is caught when raising the
-      /// <see cref="SQLiteConnection.Progress" /> event, the operation
-      /// should be interrupted.  If this is not specified, the operation
-      /// will simply continue.
-      /// </summary>
-      InterruptOnException = 0x80000000,
+    /// <summary>
+    /// If an exception is caught when raising the
+    /// <see cref="SQLiteConnection.Progress" /> event, the operation
+    /// should be interrupted.  If this is not specified, the operation
+    /// will simply continue.
+    /// </summary>
+    InterruptOnException = 0x80000000,
 
-      /// <summary>
-      /// Attempt to unbind all functions provided by other managed assemblies
-      /// when closing the connection.
-      /// </summary>
-      UnbindFunctionsOnClose = 0x100000000,
+    /// <summary>
+    /// Attempt to unbind all functions provided by other managed assemblies
+    /// when closing the connection.
+    /// </summary>
+    UnbindFunctionsOnClose = 0x100000000,
 
-      /// <summary>
-      /// When binding parameter values or returning column values, always
-      /// treat them as though they were plain text (i.e. no numeric,
-      /// date/time, or other conversions should be attempted).
-      /// </summary>
-      BindAndGetAllAsText = BindAllAsText | GetAllAsText,
+    /// <summary>
+    /// When returning column values as a <see cref="String" />, skip
+    /// verifying their affinity.
+    /// </summary>
+    NoVerifyTextAffinity = 0x200000000,
 
-      /// <summary>
-      /// When binding parameter values, always use the invariant culture when
-      /// converting their values to strings or from strings.
-      /// </summary>
-      ConvertAndBindInvariantText = ConvertInvariantText | BindInvariantText,
+    /// <summary>
+    /// When binding parameter values or returning column values, always
+    /// treat them as though they were plain text (i.e. no numeric,
+    /// date/time, or other conversions should be attempted).
+    /// </summary>
+    BindAndGetAllAsText = BindAllAsText | GetAllAsText,
 
-      /// <summary>
-      /// When binding parameter values or returning column values, always
-      /// treat them as though they were plain text (i.e. no numeric,
-      /// date/time, or other conversions should be attempted) and always
-      /// use the invariant culture when converting their values to strings.
-      /// </summary>
-      BindAndGetAllAsInvariantText = BindAndGetAllAsText | BindInvariantText,
+    /// <summary>
+    /// When binding parameter values, always use the invariant culture when
+    /// converting their values to strings or from strings.
+    /// </summary>
+    ConvertAndBindInvariantText = ConvertInvariantText | BindInvariantText,
 
-      /// <summary>
-      /// When binding parameter values or returning column values, always
-      /// treat them as though they were plain text (i.e. no numeric,
-      /// date/time, or other conversions should be attempted) and always
-      /// use the invariant culture when converting their values to strings
-      /// or from strings.
-      /// </summary>
-      ConvertAndBindAndGetAllAsInvariantText = BindAndGetAllAsText |
-                                               ConvertAndBindInvariantText,
+    /// <summary>
+    /// When binding parameter values or returning column values, always
+    /// treat them as though they were plain text (i.e. no numeric,
+    /// date/time, or other conversions should be attempted) and always
+    /// use the invariant culture when converting their values to strings.
+    /// </summary>
+    BindAndGetAllAsInvariantText = BindAndGetAllAsText | BindInvariantText,
 
-      /// <summary>
-      /// Enable all logging.
-      /// </summary>
+    /// <summary>
+    /// When binding parameter values or returning column values, always
+    /// treat them as though they were plain text (i.e. no numeric,
+    /// date/time, or other conversions should be attempted) and always
+    /// use the invariant culture when converting their values to strings
+    /// or from strings.
+    /// </summary>
+    ConvertAndBindAndGetAllAsInvariantText = BindAndGetAllAsText |
+                                             ConvertAndBindInvariantText,
+
+    /// <summary>
+    /// Enable all logging.
+    /// </summary>
 #if INTEROP_VIRTUAL_TABLE
-      LogAll = LogPrepare | LogPreBind | LogBind |
-               LogCallbackException | LogBackup | LogModuleError |
-               LogModuleException,
+    LogAll = LogPrepare | LogPreBind | LogBind |
+             LogCallbackException | LogBackup | LogModuleError |
+             LogModuleException,
 #else
       LogAll = LogPrepare | LogPreBind | LogBind |
                LogCallbackException | LogBackup,
 #endif
 
-      /// <summary>
-      /// The default extra flags for new connections.
-      /// </summary>
+    /// <summary>
+    /// The default extra flags for new connections.
+    /// </summary>
 #if INTEROP_VIRTUAL_TABLE
-      Default = LogCallbackException | LogModuleException,
+    Default = LogCallbackException | LogModuleException,
 #else
       Default = LogCallbackException,
 #endif
 
-      /// <summary>
-      /// The default extra flags for new connections with all logging enabled.
-      /// </summary>
-      DefaultAndLogAll = Default | LogAll
+    /// <summary>
+    /// The default extra flags for new connections with all logging enabled.
+    /// </summary>
+    DefaultAndLogAll = Default | LogAll
   }
 
   // These are the options to the internal sqlite3_config call.

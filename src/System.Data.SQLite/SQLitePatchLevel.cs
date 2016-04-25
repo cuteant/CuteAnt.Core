@@ -9,8 +9,8 @@ using System.Data.SQLite;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-[assembly: AssemblySourceId(null)]
+[assembly: AssemblySourceId("a833d7e099af2a997fa4480667137c783816621e")]
 
 ///////////////////////////////////////////////////////////////////////////////
 
-[assembly: AssemblySourceTimeStamp(null)]
+[assembly: AssemblySourceTimeStamp("2016-04-19 14:53:38 UTC")]

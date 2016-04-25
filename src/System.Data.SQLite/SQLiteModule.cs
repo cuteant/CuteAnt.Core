@@ -5557,7 +5557,7 @@ namespace System.Data.SQLite
                     {
                         /* throw */
                         SQLiteLog.LogMessage(SQLiteBase.COR_E_EXCEPTION,
-                            UnsafeNativeMethods.StringFormat(
+                            HelperMethods.StringFormat(
                             CultureInfo.CurrentCulture,
                             "Caught exception in \"{0}\" method: {1}",
                             destroy ? "xDestroy" : "xDisconnect", e));
@@ -5617,7 +5617,7 @@ namespace System.Data.SQLite
                 if (logErrors)
                 {
                     SQLiteLog.LogMessage(SQLiteErrorCode.Error,
-                        UnsafeNativeMethods.StringFormat(
+                        HelperMethods.StringFormat(
                         CultureInfo.CurrentCulture,
                         "Virtual table error: {0}", error)); /* throw */
                 }
@@ -5665,7 +5665,7 @@ namespace System.Data.SQLite
                     if (logExceptions)
                     {
                         SQLiteLog.LogMessage(SQLiteBase.COR_E_EXCEPTION,
-                            UnsafeNativeMethods.StringFormat(
+                            HelperMethods.StringFormat(
                             CultureInfo.CurrentCulture,
                             "Caught exception in \"SetTableError\" method: {0}",
                             e)); /* throw */
@@ -6067,7 +6067,7 @@ namespace System.Data.SQLite
                 return table;
             }
 
-            SetTableError(pVtab, UnsafeNativeMethods.StringFormat(
+            SetTableError(pVtab, HelperMethods.StringFormat(
                 CultureInfo.CurrentCulture,
                 "managed table for {0} not found", pVtab));
 
@@ -6161,7 +6161,7 @@ namespace System.Data.SQLite
                 return cursor;
             }
 
-            SetTableError(pVtab, UnsafeNativeMethods.StringFormat(
+            SetTableError(pVtab, HelperMethods.StringFormat(
                 CultureInfo.CurrentCulture,
                 "managed cursor for {0} not found", pCursor));
 
@@ -6247,7 +6247,7 @@ namespace System.Data.SQLite
             SQLiteFunction function
             )
         {
-            return UnsafeNativeMethods.StringFormat(
+            return HelperMethods.StringFormat(
                 CultureInfo.InvariantCulture,
                 "{0}:{1}", argumentCount, name);
         }
@@ -8121,7 +8121,7 @@ namespace System.Data.SQLite
                         if (LogExceptionsNoThrow)
                         {
                             SQLiteLog.LogMessage(SQLiteBase.COR_E_EXCEPTION,
-                                UnsafeNativeMethods.StringFormat(
+                                HelperMethods.StringFormat(
                                 CultureInfo.CurrentCulture,
                                 "Caught exception in \"Dispose\" method: {0}",
                                 e)); /* throw */
