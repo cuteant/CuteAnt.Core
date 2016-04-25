@@ -71,5 +71,14 @@
         "System.XML": ""
       }
     }
+  },
+
+  "packInclude": {
+    "build\\net40\\System.Data.SQLite.Core.targets": "build\\System.Data.SQLite.Core.targets",
+    "build\\net40\\x64\\SQLite.Interop.dll": "build\\net40\\x64\\SQLite.Interop.dll",
+    "build\\net40\\x86\\SQLite.Interop.dll": "build\\net40\\x86\\SQLite.Interop.dll",
+    "build\\net451\\System.Data.SQLite.Core.targets": "build\\System.Data.SQLite.Core.targets",
+    "build\\net451\\x64\\SQLite.Interop.dll": "build\\net451\\x64\\SQLite.Interop.dll",
+    "build\\net451\\x86\\SQLite.Interop.dll": "build\\net451\\x86\\SQLite.Interop.dll"
   }
 }
