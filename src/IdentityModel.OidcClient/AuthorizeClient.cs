@@ -36,17 +36,13 @@ namespace IdentityModel.OidcClient
             InvokeResult wviResult;
             AuthorizeResult result = new AuthorizeResult
             {
-                IsError = true,
+                Success = false,
                 State = await CreateAuthorizeStateAsync(extraParameters)
             };
 
             var invokeOptions = new InvokeOptions(result.State.StartUrl, _options.RedirectUri);
-            invokeOptions.Timeout = _options.WebViewTimeout;
+            invokeOptions.InvisibleModeTimeout = _options.WebViewTimeout;
 
-            if (_options.UseFormPost)
-            {
-                invokeOptions.ResponseMode = ResponseMode.Redirect;
-            }
             if (trySilent)
             {
                 invokeOptions.InitialDisplayMode = DisplayMode.Hidden;
@@ -60,7 +56,7 @@ namespace IdentityModel.OidcClient
 
             if (wviResult.ResultType == InvokeResultType.Success)
             {
-                result.IsError = false;
+                result.Success = true;
                 result.Data = wviResult.Response;
 
                 return result;
@@ -83,7 +79,7 @@ namespace IdentityModel.OidcClient
             var webViewOptions = new InvokeOptions(url, _options.RedirectUri)
             {
                 ResponseMode = ResponseMode.Redirect,
-                Timeout = _options.WebViewTimeout
+                InvisibleModeTimeout = _options.WebViewTimeout
             };
 
             if (trySilent)
@@ -98,7 +94,7 @@ namespace IdentityModel.OidcClient
         {
             var state = new AuthorizeState();
 
-            state.Nonce = Guid.NewGuid().ToString("N");
+            state.Nonce = RNG.CreateUniqueId();
             state.RedirectUri = _options.RedirectUri;
 
             string codeChallenge = CreateCodeChallenge(state);
@@ -109,23 +105,16 @@ namespace IdentityModel.OidcClient
 
         private string CreateCodeChallenge(AuthorizeState state)
         {
-            if (_options.UseProofKeys)
-            {
-                state.CodeVerifier = Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
-                var sha256 = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithm.Sha256);
+            state.CodeVerifier = RNG.CreateUniqueId();
+            var sha256 = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithm.Sha256);
 
-                var challengeBuffer = sha256.HashData(
-                    CryptographicBuffer.CreateFromByteArray(
-                        Encoding.UTF8.GetBytes(state.CodeVerifier)));
-                byte[] challengeBytes;
+            var challengeBuffer = sha256.HashData(
+                CryptographicBuffer.CreateFromByteArray(
+                    Encoding.UTF8.GetBytes(state.CodeVerifier)));
+            byte[] challengeBytes;
 
-                CryptographicBuffer.CopyToByteArray(challengeBuffer, out challengeBytes);
-                return Base64Url.Encode(challengeBytes);
-            }
-            else
-            {
-                return null;
-            }
+            CryptographicBuffer.CopyToByteArray(challengeBuffer, out challengeBytes);
+            return Base64Url.Encode(challengeBytes);
         }
 
         private async Task<string> CreateUrlAsync(AuthorizeState state, string codeChallenge, object extraParameters)
@@ -139,7 +128,7 @@ namespace IdentityModel.OidcClient
                 responseMode: _options.UseFormPost ? OidcConstants.ResponseModes.FormPost : null,
                 nonce: state.Nonce,
                 codeChallenge: codeChallenge,
-                codeChallengeMethod: _options.UseProofKeys ? OidcConstants.CodeChallengeMethods.Sha256 : null,
+                codeChallengeMethod: OidcConstants.CodeChallengeMethods.Sha256,
                 extra: extraParameters);
 
             return url;
