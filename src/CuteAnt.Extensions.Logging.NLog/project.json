@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc3-160302",
+  "version": "2.0.0-rc3-160303",
   "description": "CuteAnt.Extensions.Logging.NLog Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Logging.NLog" ],
@@ -45,7 +45,7 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "NLog": "4.3.0"
+    "NLog": "4.3.3"
   },
 
   "frameworks": {
