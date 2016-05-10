@@ -153,24 +153,26 @@ namespace CuteAnt
               sys = vs.ToString();
               break;
           }
+          sys = "Windows " + sys;
         }
 
         #endregion
 
         else if (os.Platform == PlatformID.Win32NT)
-          sys = GetNTName(vs);
-        else
-          return _OSName = os.ToString();
-
-        if (sys != "")
         {
-          sys = "Windows " + sys;
-
-          // 补丁
-          if (os.ServicePack != "") sys += " " + os.ServicePack;
-
-          if (is64) sys += " x64";
+          sys = GetNTName(vs);
+          if (sys.IsNullOrEmpty())
+            sys = os.ToString();
+          else
+            sys = "Windows " + sys;
         }
+
+        if (sys.IsNullOrEmpty()) sys = os.ToString();
+
+        // 补丁
+        if (os.ServicePack != "") sys += " " + os.ServicePack;
+
+        if (is64) sys += " x64";
 
         return _OSName = sys;
       }
@@ -178,6 +180,8 @@ namespace CuteAnt
 
     private static String GetNTName(Version vs)
     {
+      if (IsMono) { return null; }
+
       var ver = new Win32Native.OSVersionInfoEx();
       if (!Win32Native.GetVersionEx(ver)) ver = null;
       var isStation = ver == null || ver.ProductType == OSProductType.WorkStation;
@@ -269,9 +273,21 @@ namespace CuteAnt
           else if (vs.Minor == 1)
             sys = isStation ? "7" : "Server 2008 R2";
           else if (vs.Minor == 2)
-            sys = isStation ? "8" : "Server 2012";
+          {
+            if (vs.Build == 9200)
+              sys = "10.0";
+            else
+              sys = isStation ? "8" : "Server 2012";
+          }
+          else if (vs.Minor == 3)
+            sys = isStation ? "8.1" : "Server 2012 R2";
           else
             sys = String.Format("{0}.{1}", vs.Major, vs.Minor);
+          break;
+
+        case 10:
+          //sys = "10.0";
+          sys = vs.ToString();
           break;
 
         default:
@@ -344,6 +360,8 @@ namespace CuteAnt
 
     private static void Refresh()
     {
+      if (IsMono) { return; }
+
       //var ci = new ComputerInfo();
       //_PhysicalMemory = (Int32)(ci.TotalPhysicalMemory / 1024 / 1024);
       //_VirtualMemory = (Int32)(ci.TotalVirtualMemory / 1024 / 1024);

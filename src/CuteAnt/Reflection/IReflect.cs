@@ -12,6 +12,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
+using CuteAnt.Collections;
 #if !NET40
 using System.Runtime.CompilerServices;
 #endif
@@ -66,6 +69,18 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     MemberInfo GetMember(Type type, String name, Boolean ignoreCase);
 
+    /// <summary>获取字段</summary>
+    /// <param name="type"></param>
+    /// <param name="baseFirst"></param>
+    /// <returns></returns>
+    IList<FieldInfo> GetFields(Type type, Boolean baseFirst = true);
+
+    /// <summary>获取属性</summary>
+    /// <param name="type"></param>
+    /// <param name="baseFirst"></param>
+    /// <returns></returns>
+    IList<PropertyInfo> GetProperties(Type type, Boolean baseFirst = true);
+
     #endregion
 
     #region 反射调用
@@ -75,13 +90,6 @@ namespace CuteAnt.Reflection
     /// <param name="parameters">参数数组</param>
     /// <returns></returns>
     Object CreateInstance(Type type, params Object[] parameters);
-
-    ///// <summary>反射调用指定对象的方法</summary>
-    ///// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
-    ///// <param name="name">方法名</param>
-    ///// <param name="parameters">方法参数</param>
-    ///// <returns></returns>
-    //Object Invoke(Object target, String name, params Object[] parameters);
 
     /// <summary>反射调用指定对象的方法</summary>
     /// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
@@ -97,12 +105,6 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     Object InvokeWithParams(Object target, MethodBase method, IDictionary parameters);
 
-    ///// <summary>获取目标对象指定名称的属性/字段值</summary>
-    ///// <param name="target">目标对象</param>
-    ///// <param name="name">名称</param>
-    ///// <returns></returns>
-    //Object GetValue(Object target, String name);
-
     /// <summary>获取目标对象的属性值</summary>
     /// <param name="target">目标对象</param>
     /// <param name="property">属性</param>
@@ -114,12 +116,6 @@ namespace CuteAnt.Reflection
     /// <param name="field">字段</param>
     /// <returns></returns>
     Object GetValue(Object target, FieldInfo field);
-
-    ///// <summary>设置目标对象指定名称的属性/字段值</summary>
-    ///// <param name="target">目标对象</param>
-    ///// <param name="name">名称</param>
-    ///// <param name="value">数值</param>
-    //void SetValue(Object target, String name, Object value);
 
     /// <summary>设置目标对象的属性值</summary>
     /// <param name="target">目标对象</param>
@@ -157,12 +153,6 @@ namespace CuteAnt.Reflection
     #endregion
 
     #region 插件
-
-    ///// <summary>是否插件</summary>
-    ///// <param name="type">目标类型</param>
-    ///// <param name="baseType">基类或接口</param>
-    ///// <returns></returns>
-    //Boolean IsSubclassOf(Type type, Type baseType);
 
     /// <summary>在指定程序集中查找指定基类或接口的所有子类实现</summary>
     /// <param name="asm">指定程序集</param>
@@ -359,6 +349,93 @@ namespace CuteAnt.Reflection
       {
         return type.GetEvents(flags).First(ei => ei.Name == eventName);
       }
+    }
+
+    #endregion
+
+    #region 反射获取 字段/属性
+
+    private DictionaryCache<Type, IList<FieldInfo>> _cache1 = new DictionaryCache<Type, IList<FieldInfo>>();
+    private DictionaryCache<Type, IList<FieldInfo>> _cache2 = new DictionaryCache<Type, IList<FieldInfo>>();
+    /// <summary>获取字段</summary>
+    /// <param name="type"></param>
+    /// <param name="baseFirst"></param>
+    /// <returns></returns>
+    public virtual IList<FieldInfo> GetFields(Type type, Boolean baseFirst = true)
+    {
+      if (baseFirst)
+        return _cache1.GetItem(type, key => GetFields2(key, true));
+      else
+        return _cache2.GetItem(type, key => GetFields2(key, false));
+    }
+
+    IList<FieldInfo> GetFields2(Type type, Boolean baseFirst)
+    {
+      var list = new List<FieldInfo>();
+
+      // Void*的基类就是null
+      if (type == typeof(Object) || type.BaseType == null) return list;
+
+      if (baseFirst) list.AddRange(GetFields(type.BaseType));
+
+      var fis = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+      foreach (var fi in fis)
+      {
+        if (fi.GetCustomAttribute<NonSerializedAttribute>() != null) continue;
+
+        list.Add(fi);
+      }
+
+      if (!baseFirst) list.AddRange(GetFields(type.BaseType));
+
+      return list;
+    }
+
+    private DictionaryCache<Type, IList<PropertyInfo>> _cache3 = new DictionaryCache<Type, IList<PropertyInfo>>();
+    private DictionaryCache<Type, IList<PropertyInfo>> _cache4 = new DictionaryCache<Type, IList<PropertyInfo>>();
+    /// <summary>获取属性</summary>
+    /// <param name="type"></param>
+    /// <param name="baseFirst"></param>
+    /// <returns></returns>
+    public virtual IList<PropertyInfo> GetProperties(Type type, Boolean baseFirst = true)
+    {
+      if (baseFirst)
+        return _cache3.GetItem(type, key => GetProperties2(key, true));
+      else
+        return _cache4.GetItem(type, key => GetProperties2(key, false));
+    }
+
+    IList<PropertyInfo> GetProperties2(Type type, Boolean baseFirst)
+    {
+      var list = new List<PropertyInfo>();
+
+      // Void*的基类就是null
+      if (type == typeof(Object) || type.BaseType == null) return list;
+
+      // 本身type.GetProperties就可以得到父类属性，只是不能保证父类属性在子类属性之前
+      if (baseFirst) list.AddRange(GetProperties(type.BaseType));
+
+      // 父类子类可能因为继承而有重名的属性，此时以子类优先，否则反射父类属性会出错
+      var set = new HashSet<String>(list.Select(e => e.Name));
+
+      //var pis = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+      var pis = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+      foreach (var pi in pis)
+      {
+        if (pi.GetIndexParameters().Length > 0) continue;
+        if (pi.GetCustomAttributeX<XmlIgnoreAttribute>() != null) continue;
+        if (pi.GetCustomAttributeX<IgnoreDataMemberAttribute>() != null) continue;
+
+        if (!set.Contains(pi.Name))
+        {
+          list.Add(pi);
+          set.Add(pi.Name);
+        }
+      }
+
+      if (!baseFirst) list.AddRange(GetProperties(type.BaseType).Where(e => !set.Contains(e.Name)));
+
+      return list;
     }
 
     #endregion

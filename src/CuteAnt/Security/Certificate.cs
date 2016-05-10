@@ -6,349 +6,362 @@ using SecureString = System.Security.SecureString;
 
 namespace CuteAnt.Security
 {
-	/// <summary>证书</summary>
-	/// <remarks>http://blogs.msdn.com/b/dcook/archive/2008/11/25/creating-a-self-signed-certificate-in-c.aspx</remarks>
-	public class Certificate
-	{
-		/// <summary>建立自签名证书</summary>
-		/// <param name="x500"></param>
-		/// <returns></returns>
-		public static Byte[] CreateSelfSignCertificatePfx(String x500)
-		{
-			DateTime dt = DateTime.UtcNow;
-			return CreateSelfSignCertificatePfx(x500, dt, dt.AddYears(2), (SecureString)null);
-		}
+  /// <summary>证书</summary>
+  /// <remarks>http://blogs.msdn.com/b/dcook/archive/2008/11/25/creating-a-self-signed-certificate-in-c.aspx</remarks>
+  public class Certificate
+  {
+    /// <summary>建立自签名证书</summary>
+    /// <param name="x500"></param>
+    /// <returns></returns>
+    public static Byte[] CreateSelfSignCertificatePfx(String x500)
+    {
+      var dt = DateTime.UtcNow;
+      return CreateSelfSignCertificatePfx(x500, dt, dt.AddYears(2), (SecureString)null);
+    }
 
-		/// <summary>建立自签名证书</summary>
-		/// <param name="x500"></param>
-		/// <param name="startTime"></param>
-		/// <param name="endTime"></param>
-		/// <returns></returns>
-		public static Byte[] CreateSelfSignCertificatePfx(String x500, DateTime startTime, DateTime endTime)
-		{
-			return CreateSelfSignCertificatePfx(x500, startTime, endTime, (SecureString)null);
-		}
+    /// <summary>建立自签名证书</summary>
+    /// <param name="x500"></param>
+    /// <param name="startTime"></param>
+    /// <param name="endTime"></param>
+    /// <returns></returns>
+    public static Byte[] CreateSelfSignCertificatePfx(String x500, DateTime startTime, DateTime endTime)
+    {
+      return CreateSelfSignCertificatePfx(x500, startTime, endTime, (SecureString)null);
+    }
 
-		/// <summary>建立自签名证书</summary>
-		/// <param name="x500"></param>
-		/// <param name="startTime"></param>
-		/// <param name="endTime"></param>
-		/// <param name="insecurePassword"></param>
-		/// <returns></returns>
-		public static Byte[] CreateSelfSignCertificatePfx(String x500, DateTime startTime, DateTime endTime, String insecurePassword)
-		{
-			SecureString password = null;
+    /// <summary>建立自签名证书</summary>
+    /// <param name="x500"></param>
+    /// <param name="startTime"></param>
+    /// <param name="endTime"></param>
+    /// <param name="insecurePassword"></param>
+    /// <returns></returns>
+    public static Byte[] CreateSelfSignCertificatePfx(String x500, DateTime startTime, DateTime endTime, String insecurePassword)
+    {
+      SecureString password = null;
 
-			try
-			{
-				if (!insecurePassword.IsNullOrWhiteSpace())
-				{
-					password = new SecureString();
+      try
+      {
+        if (!String.IsNullOrEmpty(insecurePassword))
+        {
+          password = new SecureString();
+          foreach (char ch in insecurePassword)
+          {
+            password.AppendChar(ch);
+          }
 
-					foreach (Char ch in insecurePassword)
-					{
-						password.AppendChar(ch);
-					}
-					password.MakeReadOnly();
-				}
-				return CreateSelfSignCertificatePfx(x500, startTime, endTime, password);
-			}
-			finally
-			{
-				if (password != null) password.Dispose();
-			}
-		}
+          password.MakeReadOnly();
+        }
 
-		/// <summary>建立自签名证书</summary>
-		/// <param name="x500">例如CN=SelfSignCertificate;C=China;OU=CuteAnt;O=Development Team;E=nnhy@vip.qq.com，其中CN是显示名</param>
-		/// <param name="startTime"></param>
-		/// <param name="endTime"></param>
-		/// <param name="password"></param>
-		/// <returns></returns>
-		public static Byte[] CreateSelfSignCertificatePfx(String x500, DateTime startTime, DateTime endTime, SecureString password)
-		{
-			if (x500.IsNullOrWhiteSpace()) x500 = "CN=" + Environment.MachineName;
+        return CreateSelfSignCertificatePfx(x500, startTime, endTime, password);
+      }
+      finally
+      {
+        if (password != null) password.Dispose();
+      }
+    }
 
-			//X500DistinguishedNameFlags flag = X500DistinguishedNameFlags.UseUTF8Encoding;
-			return CreateSelfSignCertificatePfx(new X500DistinguishedName(x500), startTime, endTime, password);
-		}
+    /// <summary>建立自签名证书</summary>
+    /// <param name="x500">例如CN=SelfSignCertificate;C=China;OU=NewLife;O=Development Team;E=nnhy@vip.qq.com，其中CN是显示名</param>
+    /// <param name="startTime"></param>
+    /// <param name="endTime"></param>
+    /// <param name="password"></param>
+    /// <returns></returns>
+    public static Byte[] CreateSelfSignCertificatePfx(String x500, DateTime startTime, DateTime endTime, SecureString password)
+    {
+      if (String.IsNullOrEmpty(x500)) x500 = "CN=" + Environment.MachineName;
 
-		/// <summary>建立自签名证书</summary>
-		/// <param name="distName"></param>
-		/// <param name="startTime"></param>
-		/// <param name="endTime"></param>
-		/// <param name="password"></param>
-		/// <returns></returns>
-		public static Byte[] CreateSelfSignCertificatePfx(X500DistinguishedName distName, DateTime startTime, DateTime endTime, SecureString password)
-		{
-			Byte[] pfxData;
-			SystemTime startSystemTime = ToSystemTime(startTime);
-			SystemTime endSystemTime = ToSystemTime(endTime);
-			String containerName = Guid.NewGuid().ToString();
-			GCHandle dataHandle = new GCHandle();
-			IntPtr providerContext = IntPtr.Zero;
-			IntPtr cryptKey = IntPtr.Zero;
-			IntPtr certContext = IntPtr.Zero;
-			IntPtr certStore = IntPtr.Zero;
-			IntPtr storeCertContext = IntPtr.Zero;
-			IntPtr passwordPtr = IntPtr.Zero;
-			RuntimeHelpers.PrepareConstrainedRegions();
+      //X500DistinguishedNameFlags flag = X500DistinguishedNameFlags.UseUTF8Encoding;
+      return CreateSelfSignCertificatePfx(new X500DistinguishedName(x500), startTime, endTime, password);
+    }
 
-			try
-			{
-				Check(NativeMethods.CryptAcquireContextW(
-						out providerContext,
-						containerName,
-						null,
-						1, // PROV_RSA_FULL
-						8)); // CRYPT_NEWKEYSET
-				Check(NativeMethods.CryptGenKey(
-						providerContext,
-						1, // AT_KEYEXCHANGE
-						1, // CRYPT_EXPORTABLE
-						out cryptKey));
-				Byte[] nameData = distName.RawData;
-				dataHandle = GCHandle.Alloc(nameData, GCHandleType.Pinned);
-				CryptoApiBlob nameBlob = new CryptoApiBlob(
-						nameData.Length,
-						dataHandle.AddrOfPinnedObject());
-				CryptKeyProviderInformation kpi = new CryptKeyProviderInformation();
-				kpi.ContainerName = containerName;
-				kpi.ProviderType = 1; // PROV_RSA_FULL
-				kpi.KeySpec = 1; // AT_KEYEXCHANGE
-				certContext = NativeMethods.CertCreateSelfSignCertificate(
-						providerContext,
-						ref nameBlob,
-						0,
-						ref kpi,
-						IntPtr.Zero, // default = SHA1RSA
-						ref startSystemTime,
-						ref endSystemTime,
-						IntPtr.Zero);
-				Check(certContext != IntPtr.Zero);
-				dataHandle.Free();
-				certStore = NativeMethods.CertOpenStore(
-						"Memory", // sz_CERT_STORE_PROV_MEMORY
-						0,
-						IntPtr.Zero,
-						0x2000, // CERT_STORE_CREATE_NEW_FLAG
-						IntPtr.Zero);
-				Check(certStore != IntPtr.Zero);
-				Check(NativeMethods.CertAddCertificateContextToStore(
-						certStore,
-						certContext,
-						1, // CERT_STORE_ADD_NEW
-						out storeCertContext));
-				NativeMethods.CertSetCertificateContextProperty(
-						storeCertContext,
-						2, // CERT_KEY_PROV_INFO_PROP_ID
-						0,
-						ref kpi);
-				if (password != null)
-				{
-					passwordPtr = Marshal.SecureStringToCoTaskMemUnicode(password);
-				}
-				CryptoApiBlob pfxBlob = new CryptoApiBlob();
-				Check(NativeMethods.PFXExportCertStoreEx(
-						certStore,
-						ref pfxBlob,
-						passwordPtr,
-						IntPtr.Zero,
-						7)); // EXPORT_PRIVATE_KEYS | REPORT_NO_PRIVATE_KEY | REPORT_NOT_ABLE_TO_EXPORT_PRIVATE_KEY
-				pfxData = new Byte[pfxBlob.DataLength];
-				dataHandle = GCHandle.Alloc(pfxData, GCHandleType.Pinned);
-				pfxBlob.Data = dataHandle.AddrOfPinnedObject();
-				Check(NativeMethods.PFXExportCertStoreEx(
-						certStore,
-						ref pfxBlob,
-						passwordPtr,
-						IntPtr.Zero,
-						7)); // EXPORT_PRIVATE_KEYS | REPORT_NO_PRIVATE_KEY | REPORT_NOT_ABLE_TO_EXPORT_PRIVATE_KEY
-				dataHandle.Free();
-			}
-			finally
-			{
-				if (passwordPtr != IntPtr.Zero) Marshal.ZeroFreeCoTaskMemUnicode(passwordPtr);
-				if (dataHandle.IsAllocated) dataHandle.Free();
-				if (certContext != IntPtr.Zero) NativeMethods.CertFreeCertificateContext(certContext);
-				if (storeCertContext != IntPtr.Zero) NativeMethods.CertFreeCertificateContext(storeCertContext);
-				if (certStore != IntPtr.Zero) NativeMethods.CertCloseStore(certStore, 0);
-				if (cryptKey != IntPtr.Zero) NativeMethods.CryptDestroyKey(cryptKey);
-				if (providerContext != IntPtr.Zero)
-				{
-					NativeMethods.CryptReleaseContext(providerContext, 0);
-					NativeMethods.CryptAcquireContextW(
-							out providerContext,
-							containerName,
-							null,
-							1, // PROV_RSA_FULL
-							0x10); // CRYPT_DELETEKEYSET
-				}
-			}
-			return pfxData;
-		}
+    /// <summary>建立自签名证书</summary>
+    /// <param name="distName"></param>
+    /// <param name="startTime"></param>
+    /// <param name="endTime"></param>
+    /// <param name="password"></param>
+    /// <returns></returns>
+    public static Byte[] CreateSelfSignCertificatePfx(X500DistinguishedName distName, DateTime startTime, DateTime endTime, SecureString password)
+    {
+      var containerName = Guid.NewGuid().ToString();
 
-		private static SystemTime ToSystemTime(DateTime dateTime)
-		{
-			Int64 fileTime = dateTime.ToFileTime();
-			SystemTime systemTime;
-			Check(NativeMethods.FileTimeToSystemTime(ref fileTime, out systemTime));
-			return systemTime;
-		}
+      var dataHandle = new GCHandle();
+      var providerContext = IntPtr.Zero;
+      var cryptKey = IntPtr.Zero;
+      var certContext = IntPtr.Zero;
+      var certStore = IntPtr.Zero;
+      var storeCertContext = IntPtr.Zero;
+      var passwordPtr = IntPtr.Zero;
+      RuntimeHelpers.PrepareConstrainedRegions();
+      try
+      {
+        Check(NativeMethods.CryptAcquireContextW(
+            out providerContext,
+            containerName,
+            null,
+            1, // PROV_RSA_FULL
+            8)); // CRYPT_NEWKEYSET
 
-		private static void Check(Boolean nativeCallSucceeded)
-		{
-			if (!nativeCallSucceeded)
-			{
-				Int32 error = Marshal.GetHRForLastWin32Error();
-				Marshal.ThrowExceptionForHR(error);
-			}
-		}
+        Check(NativeMethods.CryptGenKey(
+            providerContext,
+            1, // AT_KEYEXCHANGE
+            1, // CRYPT_EXPORTABLE
+            out cryptKey));
 
-		[StructLayout(LayoutKind.Sequential)]
-		private struct SystemTime
-		{
-			public Int16 Year;
-			public Int16 Month;
-			public Int16 DayOfWeek;
-			public Int16 Day;
-			public Int16 Hour;
-			public Int16 Minute;
-			public Int16 Second;
-			public Int16 Milliseconds;
-		}
+        var nameData = distName.RawData;
 
-		[StructLayout(LayoutKind.Sequential)]
-		private struct CryptoApiBlob
-		{
-			public Int32 DataLength;
-			public IntPtr Data;
+        dataHandle = GCHandle.Alloc(nameData, GCHandleType.Pinned);
+        var nameBlob = new CryptoApiBlob(nameData.Length, dataHandle.AddrOfPinnedObject());
 
-			public CryptoApiBlob(Int32 dataLength, IntPtr data)
-			{
-				this.DataLength = dataLength;
-				this.Data = data;
-			}
-		}
+        var kpi = new CryptKeyProviderInformation();
+        kpi.ContainerName = containerName;
+        kpi.ProviderType = 1; // PROV_RSA_FULL
+        kpi.KeySpec = 1; // AT_KEYEXCHANGE
 
-		[StructLayout(LayoutKind.Sequential)]
-		private struct CryptKeyProviderInformation
-		{
-			[MarshalAs(UnmanagedType.LPWStr)]
-			public String ContainerName;
+        var startSystemTime = ToSystemTime(startTime);
+        var endSystemTime = ToSystemTime(endTime);
+        certContext = NativeMethods.CertCreateSelfSignCertificate(
+            providerContext,
+            ref nameBlob,
+            0,
+            ref kpi,
+            IntPtr.Zero, // default = SHA1RSA
+            ref startSystemTime,
+            ref endSystemTime,
+            IntPtr.Zero);
+        Check(certContext != IntPtr.Zero);
+        dataHandle.Free();
 
-			[MarshalAs(UnmanagedType.LPWStr)]
-			public String ProviderName;
+        certStore = NativeMethods.CertOpenStore(
+            "Memory", // sz_CERT_STORE_PROV_MEMORY
+            0,
+            IntPtr.Zero,
+            0x2000, // CERT_STORE_CREATE_NEW_FLAG
+            IntPtr.Zero);
+        Check(certStore != IntPtr.Zero);
 
-			public Int32 ProviderType;
-			public Int32 Flags;
-			public Int32 ProviderParameterCount;
-			public IntPtr ProviderParameters; // PCRYPT_KEY_PROV_PARAM
-			public Int32 KeySpec;
-		}
+        Check(NativeMethods.CertAddCertificateContextToStore(
+            certStore,
+            certContext,
+            1, // CERT_STORE_ADD_NEW
+            out storeCertContext));
 
-		private static class NativeMethods
-		{
-			[DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
-			[return: MarshalAs(UnmanagedType.Bool)]
-			public static extern Boolean FileTimeToSystemTime(
-					[In] ref Int64 fileTime,
-					out SystemTime systemTime);
+        NativeMethods.CertSetCertificateContextProperty(
+            storeCertContext,
+            2, // CERT_KEY_PROV_INFO_PROP_ID
+            0,
+            ref kpi);
 
-			[DllImport("AdvApi32.dll", SetLastError = true, ExactSpelling = true)]
-			[return: MarshalAs(UnmanagedType.Bool)]
-			public static extern Boolean CryptAcquireContextW(
-					out IntPtr providerContext,
-					[MarshalAs(UnmanagedType.LPWStr)] String container,
-					[MarshalAs(UnmanagedType.LPWStr)] String provider,
-					Int32 providerType,
-					Int32 flags);
+        if (password != null)
+        {
+          passwordPtr = Marshal.SecureStringToCoTaskMemUnicode(password);
+        }
 
-			[DllImport("AdvApi32.dll", SetLastError = true, ExactSpelling = true)]
-			[return: MarshalAs(UnmanagedType.Bool)]
-			public static extern Boolean CryptReleaseContext(
-					IntPtr providerContext,
-					Int32 flags);
+        var pfxBlob = new CryptoApiBlob();
+        Check(NativeMethods.PFXExportCertStoreEx(
+            certStore,
+            ref pfxBlob,
+            passwordPtr,
+            IntPtr.Zero,
+            7)); // EXPORT_PRIVATE_KEYS | REPORT_NO_PRIVATE_KEY | REPORT_NOT_ABLE_TO_EXPORT_PRIVATE_KEY
 
-			[DllImport("AdvApi32.dll", SetLastError = true, ExactSpelling = true)]
-			[return: MarshalAs(UnmanagedType.Bool)]
-			public static extern Boolean CryptGenKey(
-					IntPtr providerContext,
-					Int32 algorithmId,
-					Int32 flags,
-					out IntPtr cryptKeyHandle);
+        var pfxData = new Byte[pfxBlob.DataLength];
+        dataHandle = GCHandle.Alloc(pfxData, GCHandleType.Pinned);
+        pfxBlob.Data = dataHandle.AddrOfPinnedObject();
+        Check(NativeMethods.PFXExportCertStoreEx(
+            certStore,
+            ref pfxBlob,
+            passwordPtr,
+            IntPtr.Zero,
+            7)); // EXPORT_PRIVATE_KEYS | REPORT_NO_PRIVATE_KEY | REPORT_NOT_ABLE_TO_EXPORT_PRIVATE_KEY
+        dataHandle.Free();
 
-			[DllImport("AdvApi32.dll", SetLastError = true, ExactSpelling = true)]
-			[return: MarshalAs(UnmanagedType.Bool)]
-			public static extern Boolean CryptDestroyKey(
-					IntPtr cryptKeyHandle);
+        return pfxData;
+      }
+      finally
+      {
+        if (passwordPtr != IntPtr.Zero) Marshal.ZeroFreeCoTaskMemUnicode(passwordPtr);
 
-			[DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
-			[return: MarshalAs(UnmanagedType.Bool)]
-			public static extern Boolean CertStrToNameW(
-					Int32 certificateEncodingType,
-					IntPtr x500,
-					Int32 strType,
-					IntPtr reserved,
-					[MarshalAs(UnmanagedType.LPArray)] [Out] Byte[] encoded,
-					ref Int32 encodedLength,
-					out IntPtr errorString);
+        if (dataHandle.IsAllocated) dataHandle.Free();
 
-			[DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
-			public static extern IntPtr CertCreateSelfSignCertificate(
-					IntPtr providerHandle,
-					[In] ref CryptoApiBlob subjectIssuerBlob,
-					Int32 flags,
-					[In] ref CryptKeyProviderInformation keyProviderInformation,
-					IntPtr signatureAlgorithm,
-					[In] ref SystemTime startTime,
-					[In] ref SystemTime endTime,
-					IntPtr extensions);
+        if (certContext != IntPtr.Zero) NativeMethods.CertFreeCertificateContext(certContext);
 
-			[DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
-			[return: MarshalAs(UnmanagedType.Bool)]
-			public static extern Boolean CertFreeCertificateContext(
-					IntPtr certificateContext);
+        if (storeCertContext != IntPtr.Zero) NativeMethods.CertFreeCertificateContext(storeCertContext);
 
-			[DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
-			public static extern IntPtr CertOpenStore(
-					[MarshalAs(UnmanagedType.LPStr)] String storeProvider,
-					Int32 messageAndCertificateEncodingType,
-					IntPtr cryptProvHandle,
-					Int32 flags,
-					IntPtr parameters);
+        if (certStore != IntPtr.Zero) NativeMethods.CertCloseStore(certStore, 0);
 
-			[DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
-			[return: MarshalAs(UnmanagedType.Bool)]
-			public static extern Boolean CertCloseStore(
-					IntPtr certificateStoreHandle,
-					Int32 flags);
+        if (cryptKey != IntPtr.Zero) NativeMethods.CryptDestroyKey(cryptKey);
 
-			[DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
-			[return: MarshalAs(UnmanagedType.Bool)]
-			public static extern Boolean CertAddCertificateContextToStore(
-					IntPtr certificateStoreHandle,
-					IntPtr certificateContext,
-					Int32 addDisposition,
-					out IntPtr storeContextPtr);
+        if (providerContext != IntPtr.Zero)
+        {
+          NativeMethods.CryptReleaseContext(providerContext, 0);
+          NativeMethods.CryptAcquireContextW(
+              out providerContext,
+              containerName,
+              null,
+              1, // PROV_RSA_FULL
+              0x10); // CRYPT_DELETEKEYSET
+        }
+      }
+    }
 
-			[DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
-			[return: MarshalAs(UnmanagedType.Bool)]
-			public static extern Boolean CertSetCertificateContextProperty(
-					IntPtr certificateContext,
-					Int32 propertyId,
-					Int32 flags,
+    private static SystemTime ToSystemTime(DateTime dateTime)
+    {
+      long fileTime = dateTime.ToFileTime();
+      SystemTime systemTime;
+      Check(NativeMethods.FileTimeToSystemTime(ref fileTime, out systemTime));
+      return systemTime;
+    }
 
-					[In] ref CryptKeyProviderInformation data);
+    private static void Check(bool nativeCallSucceeded)
+    {
+      if (!nativeCallSucceeded)
+      {
+        int error = Marshal.GetHRForLastWin32Error();
+        Marshal.ThrowExceptionForHR(error);
+      }
+    }
 
-			[DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
-			[return: MarshalAs(UnmanagedType.Bool)]
-			public static extern Boolean PFXExportCertStoreEx(
-					IntPtr certificateStoreHandle,
-					ref CryptoApiBlob pfxBlob,
-					IntPtr password,
-					IntPtr reserved,
-					Int32 flags);
-		}
-	}
+    [StructLayout(LayoutKind.Sequential)]
+    private struct SystemTime
+    {
+      public short Year;
+      public short Month;
+      public short DayOfWeek;
+      public short Day;
+      public short Hour;
+      public short Minute;
+      public short Second;
+      public short Milliseconds;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct CryptoApiBlob
+    {
+      public int DataLength;
+      public IntPtr Data;
+
+      public CryptoApiBlob(int dataLength, IntPtr data)
+      {
+        this.DataLength = dataLength;
+        this.Data = data;
+      }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct CryptKeyProviderInformation
+    {
+      [MarshalAs(UnmanagedType.LPWStr)]
+      public String ContainerName;
+      [MarshalAs(UnmanagedType.LPWStr)]
+      public String ProviderName;
+      public int ProviderType;
+      public int Flags;
+      public int ProviderParameterCount;
+      public IntPtr ProviderParameters; // PCRYPT_KEY_PROV_PARAM
+      public int KeySpec;
+    }
+
+    private static class NativeMethods
+    {
+      [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+      [return: MarshalAs(UnmanagedType.Bool)]
+      public static extern bool FileTimeToSystemTime(
+          [In] ref long fileTime,
+          out SystemTime systemTime);
+
+      [DllImport("AdvApi32.dll", SetLastError = true, ExactSpelling = true)]
+      [return: MarshalAs(UnmanagedType.Bool)]
+      public static extern bool CryptAcquireContextW(
+          out IntPtr providerContext,
+          [MarshalAs(UnmanagedType.LPWStr)] String container,
+          [MarshalAs(UnmanagedType.LPWStr)] String provider,
+          int providerType,
+          int flags);
+
+      [DllImport("AdvApi32.dll", SetLastError = true, ExactSpelling = true)]
+      [return: MarshalAs(UnmanagedType.Bool)]
+      public static extern bool CryptReleaseContext(
+          IntPtr providerContext,
+          int flags);
+
+      [DllImport("AdvApi32.dll", SetLastError = true, ExactSpelling = true)]
+      [return: MarshalAs(UnmanagedType.Bool)]
+      public static extern bool CryptGenKey(
+          IntPtr providerContext,
+          int algorithmId,
+          int flags,
+          out IntPtr cryptKeyHandle);
+
+      [DllImport("AdvApi32.dll", SetLastError = true, ExactSpelling = true)]
+      [return: MarshalAs(UnmanagedType.Bool)]
+      public static extern bool CryptDestroyKey(
+          IntPtr cryptKeyHandle);
+
+      [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+      [return: MarshalAs(UnmanagedType.Bool)]
+      public static extern bool CertStrToNameW(
+          int certificateEncodingType,
+          IntPtr x500,
+          int strType,
+          IntPtr reserved,
+          [MarshalAs(UnmanagedType.LPArray)] [Out] Byte[] encoded,
+          ref int encodedLength,
+          out IntPtr errorString);
+
+      [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+      public static extern IntPtr CertCreateSelfSignCertificate(
+          IntPtr providerHandle,
+          [In] ref CryptoApiBlob subjectIssuerBlob,
+          int flags,
+          [In] ref CryptKeyProviderInformation keyProviderInformation,
+          IntPtr signatureAlgorithm,
+          [In] ref SystemTime startTime,
+          [In] ref SystemTime endTime,
+          IntPtr extensions);
+
+      [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+      [return: MarshalAs(UnmanagedType.Bool)]
+      public static extern bool CertFreeCertificateContext(
+          IntPtr certificateContext);
+
+      [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+      public static extern IntPtr CertOpenStore(
+          [MarshalAs(UnmanagedType.LPStr)] String storeProvider,
+          int messageAndCertificateEncodingType,
+          IntPtr cryptProvHandle,
+          int flags,
+          IntPtr parameters);
+
+      [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+      [return: MarshalAs(UnmanagedType.Bool)]
+      public static extern bool CertCloseStore(
+          IntPtr certificateStoreHandle,
+          int flags);
+
+      [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+      [return: MarshalAs(UnmanagedType.Bool)]
+      public static extern bool CertAddCertificateContextToStore(
+          IntPtr certificateStoreHandle,
+          IntPtr certificateContext,
+          int addDisposition,
+          out IntPtr storeContextPtr);
+
+      [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+      [return: MarshalAs(UnmanagedType.Bool)]
+      public static extern bool CertSetCertificateContextProperty(
+          IntPtr certificateContext,
+          int propertyId,
+          int flags,
+          [In] ref CryptKeyProviderInformation data);
+
+      [DllImport("Crypt32.dll", SetLastError = true, ExactSpelling = true)]
+      [return: MarshalAs(UnmanagedType.Bool)]
+      public static extern bool PFXExportCertStoreEx(
+          IntPtr certificateStoreHandle,
+          ref CryptoApiBlob pfxBlob,
+          IntPtr password,
+          IntPtr reserved,
+          int flags);
+    }
+  }
 }

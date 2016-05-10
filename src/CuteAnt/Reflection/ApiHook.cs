@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 #if DESKTOPCLR
 using CuteAnt.Extensions.Logging;
 #else
@@ -30,23 +31,11 @@ namespace CuteAnt.Reflection
   {
     #region -- 属性 --
 
-    private MethodBase _OriMethod;
-
     /// <summary>原始方法</summary>
-    public MethodBase OriMethod
-    {
-      get { return _OriMethod; }
-      set { _OriMethod = value; }
-    }
-
-    private MethodBase _NewMethod;
+    public MethodBase OriMethod { get; set; }
 
     /// <summary>新方法</summary>
-    public MethodBase NewMethod
-    {
-      get { return _NewMethod; }
-      set { _NewMethod = value; }
-    }
+    public MethodBase NewMethod { get; set; }
 
     #endregion
 
@@ -67,9 +56,6 @@ namespace CuteAnt.Reflection
 
     private Boolean ishooked;
 
-    //private IntPtr[] addresses;
-    //private UInt32 ori;
-    //private UInt64 ori64;
     /// <summary>挂钩</summary>
     public void Hook()
     {
@@ -119,9 +105,9 @@ namespace CuteAnt.Reflection
 
     private static ILogger s_logger = TraceLogger.GetLogger("CuteAnt.Reflection");
     [Conditional("DEBUG")]
-    private void WriteLog(String format, params Object[] args)
+    private static void WriteLog(String format, params Object[] args)
     {
-      s_logger.LogDebug(format, args);
+      if(s_logger.IsDebugLevelEnabled()) s_logger.LogDebug(format, args);
     }
 
     #endregion
@@ -138,70 +124,26 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     unsafe public static IntPtr GetMethodAddress(MethodBase method)
     {
-      var isAboveNet2Sp2 = Environment.Version.Major >= 2 && Environment.Version.MinorRevision >= 3053;
-
       // 处理动态方法
       if (method is DynamicMethod)
       {
-        //Byte* ptr = (Byte*)GetDynamicMethodRuntimeHandle(method).ToPointer();
+        var ptr = (byte*)((RuntimeMethodHandle)method.GetValue("m_method")).Value.ToPointer();
 
-        //FieldInfo fieldInfo = typeof(DynamicMethod).GetField("m_method", BindingFlags.NonPublic | BindingFlags.Instance);
-        //Byte* ptr = (Byte*)((RuntimeMethodHandle)FieldInfoX.Create(fieldInfo).GetValue(method)).Value.ToPointer();
-        var ptr = (Byte*)((RuntimeMethodHandle)method.GetValue("m_method")).Value.ToPointer();
+        // 确保方法已经被编译
+        RuntimeHelpers.PrepareMethod(method.MethodHandle);
 
-        if (isAboveNet2Sp2)
-        {
-          // 确保方法已经被编译
-          RuntimeHelpers.PrepareMethod(method.MethodHandle);
-          if (IntPtr.Size == 8)
-          {
-            return new IntPtr((UInt64*)*(ptr + 5) + 12);
-          }
-          else
-          {
-            return new IntPtr((UInt32*)*(ptr + 5) + 12);
-          }
-        }
+        if (IntPtr.Size == 8)
+          return new IntPtr((ulong*)*(ptr + 5) + 12);
         else
-        {
-          if (IntPtr.Size == 8)
-          {
-            return new IntPtr((UInt64*)ptr + 6);
-          }
-          else
-          {
-            return new IntPtr((UInt32*)ptr + 6);
-          }
-        }
+          return new IntPtr((uint*)*(ptr + 5) + 12);
       }
 
+      ShowMethod(new IntPtr((int*)method.MethodHandle.Value.ToPointer() + 2));
       // 确保方法已经被编译
       RuntimeHelpers.PrepareMethod(method.MethodHandle);
-      if (isAboveNet2Sp2)
-      {
-        return new IntPtr((Int32*)method.MethodHandle.Value.ToPointer() + 2);
-      }
+      ShowMethod(new IntPtr((int*)method.MethodHandle.Value.ToPointer() + 2));
 
-      // 要跳过的
-      var skip = 10;
-
-      // 读取方法索引
-      var location = (UInt64*)(method.MethodHandle.Value.ToPointer());
-      var index = (Int32)(((*location) >> 32) & 0xFF);
-
-      // 区分处理x86和x64
-      if (IntPtr.Size == 8)
-      {
-        // 获取方法表
-        var methodTable = (UInt64*)method.DeclaringType.TypeHandle.Value.ToPointer();
-        return new IntPtr(methodTable + index + skip);
-      }
-      else
-      {
-        // 获取方法表
-        var methodTable = (UInt32*)method.DeclaringType.TypeHandle.Value.ToPointer();
-        return new IntPtr(methodTable + index + skip);
-      }
+      return new IntPtr((int*)method.MethodHandle.Value.ToPointer() + 2);
     }
 
     private static readonly Type mbroType = typeof(MarshalByRefObject);
@@ -247,6 +189,50 @@ namespace CuteAnt.Reflection
       {
         var d = (UInt32*)src.ToPointer();
         *d = *((UInt32*)dest.ToPointer());
+      }
+    }
+
+    private static void ShowMethod(IntPtr mt)
+    {
+      WriteLog("ShowMethod: {0}", mt.ToString("x"));
+      var buf = new Byte[8];
+      Marshal.Copy(mt, buf, 0, buf.Length);
+      //XTrace.WriteLine(buf.ToHex("-"));
+
+      var ip = new IntPtr((Int64)ToUInt64(buf));
+      WriteLog("{0}", ip.ToString("x"));
+
+      if (ip.ToInt64() <= 0x1000000 || ip.ToInt64() > 0x800000000000L) return;
+
+      buf = new Byte[32];
+      Marshal.Copy(ip, buf, 0, buf.Length);
+      WriteLog(buf.ToHex("-"));
+    }
+
+    /// <summary>从字节数据指定位置读取一个无符号64位整数</summary>
+    /// <param name="data"></param>
+    /// <param name="offset">偏移</param>
+    /// <param name="isLittleEndian">是否小端字节序</param>
+    /// <returns></returns>
+    private static unsafe UInt64 ToUInt64(Byte[] data, Int32 offset = 0, Boolean isLittleEndian = true)
+    {
+      if (isLittleEndian) return BitConverter.ToUInt64(data, offset);
+
+      fixed (byte* numRef = &(data[offset]))
+      {
+        //if (offset % 8 == 0) return *(((UInt64*)numRef));
+        if (isLittleEndian)
+        {
+          int num1 = numRef[0] | numRef[1] << 8 | numRef[2] << 0x10 | numRef[3] << 0x18;
+          int num2 = numRef[4] | numRef[5] << 8 | numRef[6] << 0x10 | numRef[7] << 0x18;
+          return (UInt32)num1 | (UInt64)num2 << 0x20;
+        }
+        else
+        {
+          int num3 = numRef[0] << 0x18 | numRef[1] << 0x10 | numRef[2] << 8 | numRef[3];
+          int num4 = numRef[4] << 0x18 | numRef[5] << 0x10 | numRef[6] << 8 | numRef[7];
+          return (UInt32)num4 | (UInt64)num3 << 0x20;
+        }
       }
     }
 

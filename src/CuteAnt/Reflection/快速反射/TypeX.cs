@@ -396,8 +396,6 @@ namespace CuteAnt.Reflection
 
     private static Type GetTypeInternal(String typeName, Boolean isLoadAssembly)
     {
-      //if (typeName.IsNullOrWhiteSpace()) throw new ArgumentNullException("typeName");
-
       // 基本获取
       var type = Type.GetType(typeName);
       if (type != null) { return type; }

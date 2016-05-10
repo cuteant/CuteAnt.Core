@@ -1049,11 +1049,11 @@ namespace System.Collections.Immutable
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+    /// Determines whether the specified <see cref="Object"/> is equal to this instance.
     /// </summary>
-    /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+    /// <param name="obj">The <see cref="Object"/> to compare with this instance.</param>
     /// <returns>
-    ///   <c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+    ///   <c>true</c> if the specified <see cref="Object"/> is equal to this instance; otherwise, <c>false</c>.
     /// </returns>
     [Pure]
     public override bool Equals(object obj)
@@ -1493,10 +1493,10 @@ namespace System.Collections.Immutable
     }
 
     /// <summary>
-    /// Gets or sets the <see cref="System.Object"/> at the specified index.
+    /// Gets or sets the <see cref="Object"/> at the specified index.
     /// </summary>
     /// <value>
-    /// The <see cref="System.Object"/>.
+    /// The <see cref="Object"/>.
     /// </value>
     /// <param name="index">The index.</param>
     /// <returns></returns>

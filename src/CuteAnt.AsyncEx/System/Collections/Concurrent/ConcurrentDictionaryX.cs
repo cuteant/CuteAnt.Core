@@ -178,7 +178,7 @@ namespace System.Collections.Concurrent
     /// </exception>
     public ConcurrentDictionaryX(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey> comparer)
             : this(comparer)
-        {
+    {
       if (collection == null) throw new ArgumentNullException(nameof(collection));
 
       InitializeFromCollection(collection);
@@ -208,7 +208,7 @@ namespace System.Collections.Concurrent
     public ConcurrentDictionaryX(
         int concurrencyLevel, IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey> comparer)
             : this(concurrencyLevel, DefaultCapacity, false, comparer)
-        {
+    {
       if (collection == null) throw new ArgumentNullException(nameof(collection));
       if (comparer == null) throw new ArgumentNullException(nameof(comparer));
 
@@ -254,7 +254,7 @@ namespace System.Collections.Concurrent
     /// (Nothing in Visual Basic).</exception>
     public ConcurrentDictionaryX(int concurrencyLevel, int capacity, IEqualityComparer<TKey> comparer)
             : this(concurrencyLevel, capacity, false, comparer)
-        {
+    {
     }
 
     internal ConcurrentDictionaryX(int concurrencyLevel, int capacity, bool growLockArray, IEqualityComparer<TKey> comparer)
@@ -1290,7 +1290,7 @@ namespace System.Collections.Concurrent
     /// name="keyValuePair"/> is a null reference (Nothing in Visual Basic).</exception>
     bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> keyValuePair)
     {
-      if (keyValuePair.Key == null) throw new ArgumentNullException(SR.ConcurrentDictionary_ItemKeyIsNull);
+      if (keyValuePair.Key == null) throw new ArgumentNullException(nameof(keyValuePair), SR.ConcurrentDictionary_ItemKeyIsNull);
 
       TValue throwAwayValue;
       return TryRemoveInternal(keyValuePair.Key, out throwAwayValue, true, keyValuePair.Value);

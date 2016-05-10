@@ -365,6 +365,8 @@ namespace CuteAnt.Common
         {
           foreach (var item in drives)
           {
+            // 不统计未准备好的磁盘，否则会异常
+            if (!item.IsReady) continue;
             if (item.DriveType == DriveType.CDRom ||
                 item.DriveType == DriveType.Network ||
                 item.DriveType == DriveType.NoRootDirectory) continue;
@@ -409,6 +411,9 @@ namespace CuteAnt.Common
     /// <returns></returns>
     public static String GetInfo(String path, String property)
     {
+      // Linux Mono不支持WMI
+      if (RuntimeHelper.IsMono) return null;
+
       var bbs = new List<String>();
       try
       {
@@ -424,9 +429,10 @@ namespace CuteAnt.Common
             bbs.Add(mo.Properties[property].Value.ToString());
         }
       }
-      catch (Exception ex)
+      catch //(Exception ex)
       {
-        throw new HmExceptionBase(ex, "获取{0} {1}硬件信息失败\r\n{2}", path, property);
+        //throw new HmExceptionBase(ex, "获取{0} {1}硬件信息失败\r\n{2}", path, property);
+        return null;
       }
       bbs.Sort();
       var sb = new StringBuilder(bbs.Count * 15);
@@ -437,72 +443,6 @@ namespace CuteAnt.Common
       }
       return sb.ToString().Trim();
     }
-
-    #endregion
-
-    #region 导入导出
-
-    ///// <summary></summary>
-    ///// <returns></returns>
-    //public ExtendData ToExtend()
-    //{
-    //  var data = new ExtendData();
-    //  data["MachineName"] = MachineName;
-    //  data["BaseBoard"] = BaseBoard;
-    //  data["Processors"] = Processors;
-    //  data["Disk"] = Disk;
-    //  data["DiskSerial"] = DiskSerial;
-    //  data["Volume"] = Volume;
-    //  data["Macs"] = Macs;
-    //  data["IPs"] = IPs;
-    //  data["OSVersion"] = OSVersion;
-    //  data["Memory"] = Memory.ToString();
-    //  data["ScreenWidth"] = ScreenWidth.ToString();
-    //  data["ScreenHeight"] = ScreenHeight.ToString();
-    //  data["DiskSize"] = DiskSize.ToString();
-
-    //  return data;
-    //}
-
-    ///// <summary></summary>
-    ///// <param name="data"></param>
-    ///// <returns></returns>
-    //public static HardInfo FromExtend(ExtendData data)
-    //{
-    //  var entity = new HardInfo();
-    //  entity.MachineName = data["MachineName"];
-    //  entity.BaseBoard = data["BaseBoard"];
-    //  entity.Processors = data["Processors"];
-    //  entity.Disk = data["Disk"];
-    //  entity.DiskSerial = data["DiskSerial"];
-    //  entity.Volume = data["Volume"];
-    //  entity.Macs = data["Macs"];
-    //  entity.IPs = data["IPs"];
-    //  entity.OSVersion = data["OSVersion"];
-    //  entity.Memory = data.GetItem<Int64>("Memory");
-    //  entity.ScreenWidth = data.GetItem<Int32>("ScreenWidth");
-    //  entity.ScreenHeight = data.GetItem<Int32>("ScreenHeight");
-    //  entity.DiskSize = data.GetItem<Int64>("DiskSize");
-
-    //  return entity;
-    //}
-
-    ///// <summary>导出XML</summary>
-    ///// <returns></returns>
-    //public virtual String ToXml()
-    //{
-    //  return ToExtend().ToXml();
-    //}
-
-    ///// <summary>导入</summary>
-    ///// <param name="xml"></param>
-    ///// <returns></returns>
-    //public static HardInfo FromXml(String xml)
-    //{
-    //  if (!String.IsNullOrEmpty(xml)) xml = xml.Trim();
-
-    //  return FromExtend(ExtendData.FromXml(xml));
-    //}
 
     #endregion
   }

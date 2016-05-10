@@ -26,14 +26,12 @@ namespace CuteAnt.Reflection
   {
     #region -- 属性 --
 
-    //private static IReflect _Current = new DefaultReflect();
-    private static IReflect _Provider = new EmitReflect();
-
     /// <summary>当前反射提供者</summary>
-    public static IReflect Provider
+    public static IReflect Provider { get; set; }
+
+    static Reflect()
     {
-      get { return _Provider; }
-      set { _Provider = value; }
+      Provider = new EmitReflect();
     }
 
     #endregion
@@ -51,7 +49,10 @@ namespace CuteAnt.Reflection
     {
       if (typeName.IsNullOrWhiteSpace()) { return null; }
 
-      return _Provider.GetType(typeName, isLoadAssembly);
+      var type = Type.GetType(typeName);
+      if (type != null) { return type; }
+
+      return Provider.GetType(typeName, isLoadAssembly);
     }
 
     private const BindingFlags DeclaredOnlyLookup = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
@@ -136,7 +137,7 @@ namespace CuteAnt.Reflection
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
-      return _Provider.GetField(type, name, ignoreCase);
+      return Provider.GetField(type, name, ignoreCase);
     }
 
     /// <summary>获取成员。搜索私有、静态、基类，优先返回大小写精确匹配成员</summary>
@@ -148,7 +149,7 @@ namespace CuteAnt.Reflection
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
-      return _Provider.GetMember(type, name, ignoreCase);
+      return Provider.GetMember(type, name, ignoreCase);
     }
 
     #endregion
@@ -198,7 +199,7 @@ namespace CuteAnt.Reflection
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
-      return _Provider.GetProperty(type, name, ignoreCase);
+      return Provider.GetProperty(type, name, ignoreCase);
     }
 
     #endregion
@@ -264,7 +265,7 @@ namespace CuteAnt.Reflection
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
-      return _Provider.GetMethod(type, name, paramTypes);
+      return Provider.GetMethod(type, name, paramTypes);
     }
 
     /// <summary>获取指定名称的方法集合，支持指定参数个数来匹配过滤</summary>
@@ -276,10 +277,30 @@ namespace CuteAnt.Reflection
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
-      return _Provider.GetMethods(type, name, paramCount);
+      return Provider.GetMethods(type, name, paramCount);
     }
 
     #endregion
+
+    /// <summary>获取用于序列化的字段</summary>
+    /// <remarks>过滤<seealso cref="T:NonSerializedAttribute"/>特性的字段</remarks>
+    /// <param name="type"></param>
+    /// <param name="baseFirst"></param>
+    /// <returns></returns>
+    public static IList<FieldInfo> GetFieldsEx(this Type type, Boolean baseFirst)
+    {
+      return Provider.GetFields(type, baseFirst);
+    }
+
+    /// <summary>获取用于序列化的属性</summary>
+    /// <remarks>过滤<seealso cref="T:XmlIgnoreAttribute"/>特性的属性和索引器</remarks>
+    /// <param name="type"></param>
+    /// <param name="baseFirst"></param>
+    /// <returns></returns>
+    public static IList<PropertyInfo> GetPropertiesEx(this Type type, Boolean baseFirst)
+    {
+      return Provider.GetProperties(type, baseFirst);
+    }
 
     #endregion
 
@@ -297,7 +318,7 @@ namespace CuteAnt.Reflection
     {
       ValidationHelper.ArgumentNull(type, "type");
 
-      return _Provider.CreateInstance(type, parameters);
+      return Provider.CreateInstance(type, parameters);
     }
 
     /// <summary>反射调用指定对象的方法。target为类型时调用其静态方法</summary>
@@ -373,7 +394,7 @@ namespace CuteAnt.Reflection
         ValidationHelper.ArgumentNull(target, "target");
       }
 
-      return _Provider.Invoke(target, method, parameters);
+      return Provider.Invoke(target, method, parameters);
     }
 
     /// <summary>反射调用指定对象的方法</summary>
@@ -388,7 +409,7 @@ namespace CuteAnt.Reflection
       if (method == null) throw new ArgumentNullException("method");
       if (!method.IsStatic && target == null) throw new ArgumentNullException("target");
 
-      return _Provider.InvokeWithParams(target, method, parameters);
+      return Provider.InvokeWithParams(target, method, parameters);
     }
 
     /// <summary>获取目标对象指定名称的属性/字段值</summary>
@@ -460,7 +481,7 @@ namespace CuteAnt.Reflection
 #endif
     public static Object GetValue(this Object target, PropertyInfo property)
     {
-      return _Provider.GetValue(target, property);
+      return Provider.GetValue(target, property);
     }
 
     /// <summary>获取目标对象的字段值</summary>
@@ -472,7 +493,7 @@ namespace CuteAnt.Reflection
 #endif
     public static Object GetValue(this Object target, FieldInfo field)
     {
-      return _Provider.GetValue(target, field);
+      return Provider.GetValue(target, field);
     }
 
     /// <summary>获取目标对象的成员值</summary>
@@ -542,7 +563,7 @@ namespace CuteAnt.Reflection
 #endif
     public static void SetValue(this Object target, PropertyInfo property, Object value)
     {
-      _Provider.SetValue(target, property, value);
+      Provider.SetValue(target, property, value);
     }
 
     /// <summary>设置目标对象的字段值</summary>
@@ -554,7 +575,7 @@ namespace CuteAnt.Reflection
 #endif
     public static void SetValue(this Object target, FieldInfo field, Object value)
     {
-      _Provider.SetValue(target, field, value);
+      Provider.SetValue(target, field, value);
     }
 
     /// <summary>设置目标对象的成员值</summary>
@@ -575,9 +596,9 @@ namespace CuteAnt.Reflection
       //else
       //	throw new ArgumentOutOfRangeException("member");
       var property = member as PropertyInfo;
-      if (property != null) { _Provider.SetValue(target, property, value); return; }
+      if (property != null) { Provider.SetValue(target, property, value); return; }
       var field = member as FieldInfo;
-      if (field != null) { _Provider.SetValue(target, field, value); return; }
+      if (field != null) { Provider.SetValue(target, field, value); return; }
       throw new ArgumentOutOfRangeException("member");
       #endregion
     }
@@ -624,7 +645,7 @@ namespace CuteAnt.Reflection
 #endif
     public static Type GetElementTypeEx(this Type type)
     {
-      return _Provider.GetElementType(type);
+      return Provider.GetElementType(type);
     }
 
     #endregion
@@ -638,7 +659,7 @@ namespace CuteAnt.Reflection
 #endif
     public static Object ChangeType(this Object value, Type conversionType)
     {
-      return _Provider.ChangeType(value, conversionType);
+      return Provider.ChangeType(value, conversionType);
     }
 
     /// <summary>类型转换</summary>
@@ -664,7 +685,7 @@ namespace CuteAnt.Reflection
 #endif
     public static String GetName(this Type type, Boolean isfull = false)
     {
-      return _Provider.GetName(type, isfull);
+      return Provider.GetName(type, isfull);
     }
 
     /// <summary>从参数数组中获取类型数组</summary>
@@ -715,15 +736,20 @@ namespace CuteAnt.Reflection
       }
     }
 
+    /// <summary>获取类型代码</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static TypeCode GetTypeCode(this Type type)
+    {
+      return Type.GetTypeCode(type);
+    }
+
     #endregion
 
     #region -- 插件 --
-
-    ///// <summary>是否插件</summary>
-    ///// <param name="type">目标类型</param>
-    ///// <param name="baseType">基类或接口</param>
-    ///// <returns></returns>
-    //public static Boolean IsSubclassOfEx(this Type type, Type baseType) { return _Provider.IsSubclassOf(type, baseType); }
 
     /// <summary>在指定程序集中查找指定基类的子类</summary>
     /// <param name="asm">指定程序集</param>
@@ -734,7 +760,7 @@ namespace CuteAnt.Reflection
 #endif
     public static IEnumerable<Type> GetSubclasses(this Assembly asm, Type baseType)
     {
-      return _Provider.GetSubclasses(asm, baseType);
+      return Provider.GetSubclasses(asm, baseType);
     }
 
     /// <summary>在所有程序集中查找指定基类或接口的子类实现</summary>
@@ -746,7 +772,7 @@ namespace CuteAnt.Reflection
 #endif
     public static IEnumerable<Type> GetAllSubclasses(this Type baseType, Boolean isLoadAssembly = false)
     {
-      return _Provider.GetAllSubclasses(baseType, isLoadAssembly);
+      return Provider.GetAllSubclasses(baseType, isLoadAssembly);
     }
 
     #endregion
