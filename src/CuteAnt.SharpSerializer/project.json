@@ -54,11 +54,6 @@
       "compilationOptions": {
         "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
       }
-    },
-    "dnx451": {
-      "compilationOptions": {
-        "define": [ "DNXCLR", "NET_4_0_GREATER" ]
-      }
     }
   },
 

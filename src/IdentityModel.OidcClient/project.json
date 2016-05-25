@@ -54,16 +54,6 @@
           "type": "build"
         }
       }
-    },
-    "dnx451": {
-      "compilationOptions": {
-        "define": [ "DNXCLR", "NET_4_0_GREATER" ]
-      },
-      "frameworkAssemblies": {
-        "System.Runtime": {
-          "type": "build"
-        }
-      }
     }
   },
 

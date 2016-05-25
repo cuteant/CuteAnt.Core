@@ -84,22 +84,6 @@
         "System.Transactions": "",
         "System.XML": ""
       }
-    },
-    "dnx451": {
-      "compilationOptions": {
-        "define": [ "DNXCLR", "NET_4_0_GREATER" ]
-      },
-      "frameworkAssemblies": {
-        "System.configuration": "",
-        "System.Configuration.Install": "",
-        "System.Data": "",
-        "System.Design": "",
-        "System.Drawing": "",
-        "System.Management": "",
-        "System.Security": "",
-        "System.Transactions": "",
-        "System.XML": ""
-      }
     }
   }
 }

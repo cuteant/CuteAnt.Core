@@ -22,14 +22,6 @@
       "dependencies": {
         "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc3-*"
       }
-    },
-    "dnx451": {
-      "compilationOptions": {
-        "define": [ "DNXCLR", "NET_4_0_GREATER" ]
-      },
-      "dependencies": {
-        "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final"
-      }
     }
   }
 }

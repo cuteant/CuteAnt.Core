@@ -62,14 +62,6 @@
         "System.Transactions": "",
         "System.XML": ""
       }
-    },
-    "dnx451": {
-      "compilationOptions": { "define": [ "NET_451" ] },
-      "frameworkAssemblies": {
-        "System.Data": "",
-        "System.Transactions": "",
-        "System.XML": ""
-      }
     }
   },
 

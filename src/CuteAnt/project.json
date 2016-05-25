@@ -79,8 +79,6 @@
         "System.Management": "",
         "System.Runtime.Serialization": "",
         "System.Security": "",
-        "System.Web": "",
-        "System.Windows.Forms": "",
         "System.XML": "",
         "System.Xml.Linq": ""
       }
@@ -91,28 +89,6 @@
       },
       "dependencies": {
         "CuteAnt.Extensions.Logging": "2.0.0-rc3-*"
-      },
-      "frameworkAssemblies": {
-        "Microsoft.VisualBasic": "",
-        "System.configuration": "",
-        "System.Data": "",
-        "System.Drawing": "",
-        "System.Management": "",
-        "System.Runtime.Serialization": "",
-        "System.Security": "",
-        "System.Web": "",
-        "System.Windows.Forms": "",
-        "System.XML": "",
-        "System.Xml.Linq": ""
-      }
-    },
-    "dnx451": {
-      "compilationOptions": {
-        "define": [ "DNXCLR", "NET_4_0_GREATER" ]
-      },
-      "dependencies": {
-        "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
-        "Microsoft.Extensions.Logging": "1.0.0-rc1-final"
       },
       "frameworkAssemblies": {
         "Microsoft.VisualBasic": "",

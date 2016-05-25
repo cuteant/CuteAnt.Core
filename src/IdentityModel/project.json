@@ -53,17 +53,6 @@
         "System.XML": "",
         "System.Xml.Linq": ""
       }
-    },
-    "dnx451": {
-      "compilationOptions": {
-        "define": [ "DNXCLR", "NET_4_0_GREATER" ]
-      },
-      "frameworkAssemblies": {
-        "System.IdentityModel": "",
-        "System.Net.Http": "",
-        "System.XML": "",
-        "System.Xml.Linq": ""
-      }
     }
   },
 

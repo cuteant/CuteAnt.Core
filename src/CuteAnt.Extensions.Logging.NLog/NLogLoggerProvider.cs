@@ -1,10 +1,5 @@
-﻿#if DESKTOPCLR
-using MS_ILogger = CuteAnt.Extensions.Logging.ILogger;
+﻿using MS_ILogger = CuteAnt.Extensions.Logging.ILogger;
 using MS_ILoggerProvider = CuteAnt.Extensions.Logging.ILoggerProvider;
-#else
-using MS_ILogger = Microsoft.Extensions.Logging.ILogger;
-using MS_ILoggerProvider = Microsoft.Extensions.Logging.ILoggerProvider;
-#endif
 using NLo_gLogManager = NLog.LogManager;
 
 namespace CuteAnt.Extensions.Logging.NLog

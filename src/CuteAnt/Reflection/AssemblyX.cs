@@ -436,40 +436,7 @@ namespace CuteAnt.Reflection
       }
       if (isLoadAssembly)
       {
-#if DNXCLR
-        var loadedAssemblies = new HashSet<AssemblyX>(GetAssemblies());
-        IEnumerable<Library> refLibs = null;
-        var lm = PlatformServices.Default?.LibraryManager;
-        var loadContext = PlatformServices.Default?.AssemblyLoadContextAccessor?.Default;
-        if (lm != null && loadContext != null) { refLibs = lm.GetLibraries(); }
-        if (!refLibs.IsNullOrEmpty())
-        {
-          var loadeds = GetAssemblies().ToList();
-          var aspnetAsms = refLibs.SelectMany(_ => _.Assemblies);
-          foreach (var item in aspnetAsms)
-          {
-            AssemblyX asmx = null;
-            try
-            {
-              asmx = Create(loadContext.Load(item));
-            }
-            catch { }
-            if (asmx == null) { continue; }
-            if (loadedAssemblies.Contains(asmx)) { continue; }
-
-            if (loadeds.Any(e => string.Equals(e.Location, asmx.Location, StringComparison.OrdinalIgnoreCase))) continue;
-            // 尽管目录不一样，但这两个可能是相同的程序集
-            // 这里导致加载了不同目录的同一个程序集，然后导致对象容器频繁报错
-            if (loadeds.Any(e => string.Equals(e.Asm.FullName, asmx.Asm.FullName, StringComparison.OrdinalIgnoreCase))) continue;
-
-            loadedAssemblies.Add(asmx);
-          }
-        }
-
-        foreach (var item in loadedAssemblies)
-#else
         foreach (var item in ReflectionOnlyGetAssemblies())
-#endif
         {
           // 如果excludeGlobalTypes为true，则指检查来自非GAC引用的程序集
           if (excludeGlobalTypes && item.Asm.GlobalAssemblyCache) continue;
@@ -489,16 +456,6 @@ namespace CuteAnt.Reflection
               if (p.StartsWithIgnoreCase(cur)) p = p.Substring(cur.Length).TrimStart("\\");
               s_logger.LogDebug("AssemblyX.FindAllPlugins(\"{0}\")导致加载{1}", baseType.FullName, p);
             }
-#if DNXCLR
-            foreach (var elm in ts)
-            {
-              if (!list.Contains(elm))
-              {
-                list.Add(elm);
-                yield return elm;
-              }
-            }
-#else
             var asm2 = Assembly.LoadFile(item.Asm.Location);
             ts = Create(asm2).FindPlugins(baseType);
 
@@ -513,7 +470,6 @@ namespace CuteAnt.Reflection
                 }
               }
             }
-#endif
           }
         }
       }

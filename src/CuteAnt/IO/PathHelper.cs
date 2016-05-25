@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using System.Web;
 #if !NET40
 using System.Runtime.CompilerServices;
-#endif
-#if DNXCLR
-using Microsoft.Extensions.PlatformAbstractions;
 #endif
 
 namespace CuteAnt.IO
@@ -33,12 +29,7 @@ namespace CuteAnt.IO
 
     static PathHelper()
     {
-#if DESKTOPCLR
       _ApplicationBasePath = AppDomain.CurrentDomain.BaseDirectory;
-#else
-      var path = PlatformServices.Default.Application.ApplicationBasePath;
-      _ApplicationBasePath = path.EnsureEnd("" + Path.DirectorySeparatorChar);
-#endif
     }
 
     #endregion

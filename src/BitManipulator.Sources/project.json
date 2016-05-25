@@ -8,7 +8,6 @@
   "dependencies": { },
   "frameworks": {
     "net40": { },
-    "net451": { },
-    "dnx451": { }
+    "net451": { }
   }
 }
