@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc3-160301",
+  "version": "2.0.0-rc3-160302",
   "description": "CuteAnt.Extensions.Caching.Redis Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Caching.Redis" ],
@@ -47,7 +47,7 @@
   "dependencies": {
     "CuteAnt.Extensions.Caching.Abstractions": "2.0.0-rc3-*",
     "CuteAnt.Extensions.Options": "2.0.0-rc3-*",
-    "StackExchange.Redis.StrongName": "1.0.488"
+    "StackExchange.Redis.StrongName": "1.1.603"
   },
 
   "frameworks": {

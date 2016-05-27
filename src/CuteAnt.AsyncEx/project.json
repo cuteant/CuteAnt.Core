@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc3-160303",
+  "version": "2.0.0-rc3-160304",
   "description": "CuteAnt.AsyncEx Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.AsyncEx" ],
@@ -54,8 +54,7 @@
     "Nito.AsyncEx.Tasks.Sources": {
       "type": "build",
       "version": "2.0.0-rc3-*"
-    },
-    "CuteAnt.Extensions.Primitives": "2.0.0-rc3-*"
+    }
   },
 
   "frameworks": {
@@ -64,6 +63,7 @@
         "define": [ "DESKTOPCLR", "NONATIVETASKS", "PRENET45" ]
       },
       "dependencies": {
+        "CuteAnt.Extensions.Primitives": "2.0.0-rc3-*",
         "Microsoft.Bcl.Build": "1.0.21",
         "Microsoft.Bcl": "1.1.10",
         "Microsoft.Bcl.Async": "1.0.168"
