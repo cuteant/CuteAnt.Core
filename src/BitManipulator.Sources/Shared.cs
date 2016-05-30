@@ -22,7 +22,7 @@ using System;
 using System.Runtime.CompilerServices;
 #endif
 
-namespace CuteAnt.Extension
+namespace CuteAnt.Extensions
 {
 	internal class Shared
 	{

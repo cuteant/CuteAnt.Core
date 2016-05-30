@@ -19,7 +19,7 @@
 
 using System;
 using System.Diagnostics;
-using CuteAnt.Extension;
+using CuteAnt.Extensions;
 #if !NET40
 using System.Runtime.CompilerServices;
 #endif

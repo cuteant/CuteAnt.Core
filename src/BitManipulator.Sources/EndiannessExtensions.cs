@@ -18,7 +18,7 @@
 #endregion
 
 using System;
-using CuteAnt.Extension;
+using CuteAnt.Extensions;
 #if !NET40
 using System.Runtime.CompilerServices;
 #endif
