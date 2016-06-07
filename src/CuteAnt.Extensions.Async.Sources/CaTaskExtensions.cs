@@ -112,7 +112,11 @@ namespace System.Threading.Tasks
       switch (task.Status)
       {
         case TaskStatus.RanToCompletion:
+#if NET40
+          return TaskEx.FromResult((T)task.GetResult());
+#else
           return Task.FromResult((T)task.GetResult());
+#endif
 
         case TaskStatus.Faulted:
           return TaskFromFaulted<T>(task);
