@@ -15,7 +15,7 @@ namespace CuteAnt.Extensions.FileProviders
     /// </summary>
     public class PhysicalFileProvider : IFileProvider, IDisposable
     {
-        private const string PollingEnvironmentKey = "ASPNETCORE_POLL_FOR_FILE_CHANGES";
+        private const string PollingEnvironmentKey = "DOTNET_USE_POLLING_FILE_WATCHER";
         private static readonly char[] _invalidFileNameChars = Path.GetInvalidFileNameChars()
             .Where(c => c != Path.DirectorySeparatorChar && c != Path.AltDirectorySeparatorChar).ToArray();
         private static readonly char[] _pathSeparators = new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
@@ -240,12 +240,12 @@ namespace CuteAnt.Extensions.FileProviders
         {
             if (filter == null)
             {
-                return NoopChangeToken.Singleton;
+                return NullChangeToken.Singleton;
             }
 
             if (PathNavigatesAboveRoot(filter))
             {
-                return NoopChangeToken.Singleton;
+                return NullChangeToken.Singleton;
             }
 
             // Relative paths starting with a leading slash okay
@@ -257,7 +257,7 @@ namespace CuteAnt.Extensions.FileProviders
             // Absolute paths not permitted.
             if (Path.IsPathRooted(filter))
             {
-                return NoopChangeToken.Singleton;
+                return NullChangeToken.Singleton;
             }
 
             return _filesWatcher.CreateFileChangeToken(filter);

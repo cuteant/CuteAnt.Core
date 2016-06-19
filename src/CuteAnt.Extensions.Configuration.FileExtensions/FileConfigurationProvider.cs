@@ -13,6 +13,10 @@ namespace CuteAnt.Extensions.Configuration
     /// </summary>
     public abstract class FileConfigurationProvider : ConfigurationProvider
     {
+        /// <summary>
+        /// Initializes a new instance with the specified source.
+        /// </summary>
+        /// <param name="source">The source settings.</param>
         public FileConfigurationProvider(FileConfigurationSource source)
         {
             if (source == null)
@@ -25,23 +29,21 @@ namespace CuteAnt.Extensions.Configuration
             {
                 ChangeToken.OnChange(
                     () => Source.FileProvider.Watch(Source.Path),
-                    () => Load());
+                    () => Load(reload: true));
             }
         }
 
+        /// <summary>
+        /// The source settings for this provider.
+        /// </summary>
         public FileConfigurationSource Source { get; }
 
-        /// <summary>
-        /// Loads the contents of the file at <see cref="Path"/>.
-        /// </summary>
-        /// <exception cref="FileNotFoundException">If Optional is <c>false</c> on the source and a
-        /// file does not exist at specified Path.</exception>
-        public override void Load()
+        private void Load(bool reload)
         {
             var file = Source.FileProvider?.GetFileInfo(Source.Path);
             if (file == null || !file.Exists)
             {
-                if (Source.Optional)
+                if (Source.Optional || reload) // Always optional on reload
                 {
                     Data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 }
@@ -61,6 +63,20 @@ namespace CuteAnt.Extensions.Configuration
             OnReload();
         }
 
+        /// <summary>
+        /// Loads the contents of the file at <see cref="Path"/>.
+        /// </summary>
+        /// <exception cref="FileNotFoundException">If Optional is <c>false</c> on the source and a
+        /// file does not exist at specified Path.</exception>
+        public override void Load()
+        {
+            Load(reload: false);
+        }
+
+        /// <summary>
+        /// Loads this provider's data from a stream.
+        /// </summary>
+        /// <param name="stream">The stream to read.</param>
         public abstract void Load(Stream stream);
     }
 }

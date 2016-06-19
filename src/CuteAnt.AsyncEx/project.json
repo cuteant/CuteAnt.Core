@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc3-160304",
+  "version": "2.0.0-rc3-160601",
   "description": "CuteAnt.AsyncEx Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.AsyncEx" ],
@@ -77,7 +77,7 @@
         "define": [ "DESKTOPCLR", "NET_4_0_GREATER", "FEATURE_TRACING" ]
       },
       "dependencies": {
-        "System.Collections.Immutable": "1.1.38-rc1-final"
+        "System.Collections.Immutable": "1.2.1-rc3-21424"
       },
       "frameworkAssemblies": {
         "System.Runtime.Serialization": "",

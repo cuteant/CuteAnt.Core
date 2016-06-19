@@ -5,7 +5,7 @@ using System;
 
 namespace CuteAnt.Extensions.DependencyInjection
 {
-  public static class ServiceCollectionExtensions
+  public static class ServiceCollectionContainerBuilderExtensions
   {
     public static IServiceProvider BuildServiceProvider(this IServiceCollection services)
     {

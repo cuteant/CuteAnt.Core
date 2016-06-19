@@ -1,5 +1,5 @@
 ﻿{
-  "version": "2.0.0-rc3-160302",
+  "version": "2.0.0-rc3-160601",
   "description": "OpenID Connect Client Library for Native Applications",
   "authors": [ "Dominick Baier,  Brock Allen" ],
   "owners": [ "Dominick Baier,  Brock Allen" ],
@@ -40,7 +40,7 @@
 
   "dependencies": {
     "IdentityModel": "2.0.0-rc3-*",
-    "Newtonsoft.Json": "8.0.3",
+    "Newtonsoft.Json": "9.0.1",
     "jose-pcl": "0.0.4"
   },
 

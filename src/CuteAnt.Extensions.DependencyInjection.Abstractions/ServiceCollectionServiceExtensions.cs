@@ -6,7 +6,7 @@ using System;
 namespace CuteAnt.Extensions.DependencyInjection
 {
   /// <summary>Extension methods for adding services to an <see cref="IServiceCollection" />.</summary>
-  public static class ServiceCollectionExtensions
+  public static class ServiceCollectionServiceExtensions
   {
     #region --& AddTransient &--
 

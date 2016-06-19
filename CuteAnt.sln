@@ -168,6 +168,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CuteAnt.Extensions.Logging.
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityModel.OidcClient", "src\IdentityModel.OidcClient\IdentityModel.OidcClient.xproj", "{D63F3E49-FECC-459B-BAFF-147085A3C582}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CuteAnt.Extensions.Logging.Serilog", "src\CuteAnt.Extensions.Logging.Serilog\CuteAnt.Extensions.Logging.Serilog.xproj", "{60C38815-6FB7-4C2D-BDC3-30DBC58206F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -430,6 +432,10 @@ Global
 		{D63F3E49-FECC-459B-BAFF-147085A3C582}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D63F3E49-FECC-459B-BAFF-147085A3C582}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D63F3E49-FECC-459B-BAFF-147085A3C582}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60C38815-6FB7-4C2D-BDC3-30DBC58206F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60C38815-6FB7-4C2D-BDC3-30DBC58206F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60C38815-6FB7-4C2D-BDC3-30DBC58206F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60C38815-6FB7-4C2D-BDC3-30DBC58206F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -510,5 +516,6 @@ Global
 		{1790A700-58BA-40F0-9894-20CD6E5608BC} = {7F60A11E-EB0A-4715-96C6-FD09D653DBF7}
 		{8FBD17EB-5746-49AD-8EDE-AB22722C74CC} = {314D5AFE-2A7B-4CFF-8476-4929AC47EDEA}
 		{D63F3E49-FECC-459B-BAFF-147085A3C582} = {71490DA1-C6CA-417E-BC9F-A3AD0669A092}
+		{60C38815-6FB7-4C2D-BDC3-30DBC58206F4} = {314D5AFE-2A7B-4CFF-8476-4929AC47EDEA}
 	EndGlobalSection
 EndGlobal

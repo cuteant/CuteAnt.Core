@@ -8,7 +8,7 @@ using CuteAnt.Extensions.DependencyInjection.Abstractions;
 namespace CuteAnt.Extensions.DependencyInjection
 {
   /// <summary>Extension methods for getting services from an <see cref="IServiceProvider" />.</summary>
-  public static class ServiceProviderExtensions
+  public static class ServiceProviderServiceExtensions
   {
     /// <summary>Get service of type <typeparamref name="T"/> from the <see cref="IServiceProvider"/>.</summary>
     /// <typeparam name="T">The type of service object to get.</typeparam>

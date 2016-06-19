@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-rc3-160305",
+  "version": "2.0.0-rc3-160601",
   "description": "CuteAnt.Extensions.Logging.NLog Class Library",
   "authors": [ "SeaBiscuit" ],
   "tags": [ "CuteAnt", "CuteAnt.Extensions.Logging.NLog" ],

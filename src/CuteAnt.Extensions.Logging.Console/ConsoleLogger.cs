@@ -4,316 +4,307 @@
 using System;
 using System.Text;
 using CuteAnt.Extensions.Logging.Console.Internal;
-//using CuteAnt.Extensions.PlatformAbstractions;
 
 namespace CuteAnt.Extensions.Logging.Console
 {
-  public class ConsoleLogger : ILogger
-  {
-    // Writing to console is not an atomic operation in the current implementation and since multiple logger
-    // instances are created with a different name. Also since Console is global, using a static lock is fine.
-    private static readonly object _lock = new object();
-    private static readonly string _loglevelPadding = ": ";
-    private static readonly string _messagePadding;
-
-    // ConsoleColor does not have a value to specify the 'Default' color
-    private readonly ConsoleColor? DefaultConsoleColor = null;
-
-    private const int _indentation = 2;
-
-    private IConsole _console;
-    private Func<string, LogLevel, bool> _filter;
-
-    static ConsoleLogger()
+    public class ConsoleLogger : ILogger
     {
-      var logLevelString = GetLogLevelString(LogLevel.Information);
-      _messagePadding = new string(' ', logLevelString.Length + _loglevelPadding.Length);
-    }
+        // Writing to console is not an atomic operation in the current implementation and since multiple logger
+        // instances are created with a different name. Also since Console is global, using a static lock is fine.
+        private static readonly object _lock = new object();
+        private static readonly string _loglevelPadding = ": ";
+        private static readonly string _messagePadding;
+        private static readonly string _newLineWithMessagePadding;
 
-    public ConsoleLogger(string name, Func<string, LogLevel, bool> filter, bool includeScopes)
-    {
-      if (name == null)
-      {
-        throw new ArgumentNullException(nameof(name));
-      }
+        // ConsoleColor does not have a value to specify the 'Default' color
+        private readonly ConsoleColor? DefaultConsoleColor = null;
 
-      Name = name;
-      Filter = filter ?? ((category, logLevel) => true);
-      IncludeScopes = includeScopes;
+        private IConsole _console;
+        private Func<string, LogLevel, bool> _filter;
 
-      // ## 苦竹 屏蔽 ##
-      //if (PlatformServices.Default.Runtime.OperatingSystem.Equals("Windows", StringComparison.OrdinalIgnoreCase))
-      //{
-        Console = new WindowsLogConsole();
-      //}
-      //else
-      //{
-      //  Console = new AnsiLogConsole(new AnsiSystemConsole());
-      //}
-    }
-
-    public IConsole Console
-    {
-      get { return _console; }
-      set
-      {
-        if (value == null)
+        static ConsoleLogger()
         {
-          throw new ArgumentNullException(nameof(value));
+            var logLevelString = GetLogLevelString(LogLevel.Information);
+            _messagePadding = new string(' ', logLevelString.Length + _loglevelPadding.Length);
+            _newLineWithMessagePadding = Environment.NewLine + _messagePadding;
         }
 
-        _console = value;
-      }
-    }
-
-    public Func<string, LogLevel, bool> Filter
-    {
-      get { return _filter; }
-      set
-      {
-        if (value == null)
+        public ConsoleLogger(string name, Func<string, LogLevel, bool> filter, bool includeScopes)
         {
-          throw new ArgumentNullException(nameof(value));
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            Name = name;
+            Filter = filter ?? ((category, logLevel) => true);
+            IncludeScopes = includeScopes;
+
+            //if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            //{
+                Console = new WindowsLogConsole();
+            //}
+            //else
+            //{
+            //    Console = new AnsiLogConsole(new AnsiSystemConsole());
+            //}
         }
 
-        _filter = value;
-      }
-    }
-
-    public bool IncludeScopes { get; set; }
-
-    public string Name { get; }
-
-    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
-    {
-      if (!IsEnabled(logLevel))
-      {
-        return;
-      }
-
-      if (formatter == null)
-      {
-        throw new ArgumentNullException(nameof(formatter));
-      }
-
-      var message = formatter(state, exception);
-
-      if (!string.IsNullOrEmpty(message))
-      {
-        WriteMessage(logLevel, Name, eventId.Id, message);
-      }
-
-      if (exception != null)
-      {
-        WriteException(logLevel, Name, eventId.Id, exception);
-      }
-    }
-
-    public virtual void WriteMessage(LogLevel logLevel, string logName, int eventId, string message)
-    {
-      // check if the message has any new line characters in it and provide the padding if necessary
-      message = ReplaceMessageNewLinesWithPadding(message);
-      var logLevelColors = GetLogLevelConsoleColors(logLevel);
-      var loglevelString = GetLogLevelString(logLevel);
-
-      // Example:
-      // INFO: ConsoleApp.Program[10]
-      //       Request received
-
-      lock (_lock)
-      {
-        // log level string
-        WriteWithColor(
-            logLevelColors.Foreground,
-            logLevelColors.Background,
-            loglevelString,
-            newLine: false);
-
-        // category and event id
-        // use default colors
-        WriteWithColor(
-            logLevelColors.Foreground,
-            logLevelColors.Background,
-            _loglevelPadding + logName + $"[{eventId}]",
-            newLine: true);
-
-        // scope information
-        if (IncludeScopes)
+        public IConsole Console
         {
-          var scopeInformation = GetScopeInformation();
-          if (!string.IsNullOrEmpty(scopeInformation))
-          {
-            WriteWithColor(
-                DefaultConsoleColor,
-                DefaultConsoleColor,
-                _messagePadding + scopeInformation,
-                newLine: true);
-          }
+            get { return _console; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
+                _console = value;
+            }
         }
 
-        // message
-        WriteWithColor(
-            DefaultConsoleColor,
-            DefaultConsoleColor,
-            _messagePadding + message,
-            newLine: true);
-
-        // In case of AnsiLogConsole, the messages are not yet written to the console,
-        // this would flush them instead.
-        Console.Flush();
-      }
-    }
-
-    private string ReplaceMessageNewLinesWithPadding(string message)
-    {
-      return message.Replace(Environment.NewLine, Environment.NewLine + _messagePadding);
-    }
-
-    private void WriteException(LogLevel logLevel, string logName, int eventId, Exception ex)
-    {
-      var logLevelColors = GetLogLevelConsoleColors(logLevel);
-      var loglevelString = GetLogLevelString(logLevel);
-
-      // Example:
-      // System.InvalidOperationException
-      //    at Namespace.Class.Function() in File:line X
-
-      lock (_lock)
-      {
-        // exception message
-        WriteWithColor(
-            DefaultConsoleColor,
-            DefaultConsoleColor,
-            ex.ToString(),
-            newLine: true);
-
-        // In case of AnsiLogConsole, the messages are not yet written to the console,
-        // this would flush them instead.
-        Console.Flush();
-      }
-    }
-
-    public bool IsEnabled(LogLevel logLevel)
-    {
-      return Filter(Name, logLevel);
-    }
-
-    public IDisposable BeginScope<TState>(TState state)
-    {
-      if (state == null)
-      {
-        throw new ArgumentNullException(nameof(state));
-      }
-
-      return ConsoleLogScope.Push(Name, state);
-    }
-
-    private static string GetLogLevelString(LogLevel logLevel)
-    {
-      switch (logLevel)
-      {
-        case LogLevel.Trace:
-          return "trce";
-        case LogLevel.Debug:
-          return "dbug";
-        case LogLevel.Information:
-          return "info";
-        case LogLevel.Warning:
-          return "warn";
-        case LogLevel.Error:
-          return "fail";
-        case LogLevel.Critical:
-          return "crit";
-        default:
-          throw new ArgumentOutOfRangeException(nameof(logLevel));
-      }
-    }
-
-    private ConsoleColors GetLogLevelConsoleColors(LogLevel logLevel)
-    {
-      // do not change user's background color except for Critical
-      switch (logLevel)
-      {
-        case LogLevel.Critical:
-          return new ConsoleColors(ConsoleColor.White, ConsoleColor.Red);
-        case LogLevel.Error:
-          return new ConsoleColors(ConsoleColor.Red, ConsoleColor.Black);
-        case LogLevel.Warning:
-          return new ConsoleColors(ConsoleColor.Yellow, ConsoleColor.Black);
-        case LogLevel.Information:
-          return new ConsoleColors(ConsoleColor.DarkGreen, ConsoleColor.Black);
-        case LogLevel.Debug:
-          return new ConsoleColors(ConsoleColor.Gray, ConsoleColor.Black);
-        case LogLevel.Trace:
-          return new ConsoleColors(ConsoleColor.Gray, ConsoleColor.Black);
-        default:
-          return new ConsoleColors(DefaultConsoleColor, DefaultConsoleColor);
-      }
-    }
-
-    private void WriteWithColor(
-        ConsoleColor? foreground,
-        ConsoleColor? background,
-        string message,
-        bool newLine = false)
-    {
-      if (newLine)
-      {
-        Console.WriteLine(message, background, foreground);
-      }
-      else
-      {
-        Console.Write(message, background, foreground);
-      }
-    }
-
-    private string GetScopeInformation()
-    {
-      var current = ConsoleLogScope.Current;
-      var output = new StringBuilder();
-      string scopeLog = string.Empty;
-      while (current != null)
-      {
-        if (output.Length == 0)
+        public Func<string, LogLevel, bool> Filter
         {
-          scopeLog = $"=> {current}";
-        }
-        else
-        {
-          scopeLog = $"=> {current} ";
+            get { return _filter; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
+                _filter = value;
+            }
         }
 
-        output.Insert(0, scopeLog);
-        current = current.Parent;
-      }
+        public bool IncludeScopes { get; set; }
 
-      return output.ToString();
+        public string Name { get; }
+
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        {
+            if (!IsEnabled(logLevel))
+            {
+                return;
+            }
+
+            if (formatter == null)
+            {
+                throw new ArgumentNullException(nameof(formatter));
+            }
+
+            var message = formatter(state, exception);
+
+            if (!string.IsNullOrEmpty(message) || exception != null)
+            {
+                WriteMessage(logLevel, Name, eventId.Id, message, exception);
+            }
+        }
+
+        public virtual void WriteMessage(LogLevel logLevel, string logName, int eventId, string message, Exception exception)
+        {
+            var logLevelColors = default(ConsoleColors);
+            var logLevelString = string.Empty;
+            var logIdentifier = string.Empty;
+            var scopeInformation = string.Empty;
+            var exceptionText = string.Empty;
+            var printLog = false;
+
+            // Example:
+            // INFO: ConsoleApp.Program[10]
+            //       Request received
+            if (!string.IsNullOrEmpty(message))
+            {
+                logLevelColors = GetLogLevelConsoleColors(logLevel);
+                logLevelString = GetLogLevelString(logLevel);
+                // category and event id
+                logIdentifier = _loglevelPadding + logName + "[" + eventId + "]";
+                // scope information
+                if (IncludeScopes)
+                {
+                    scopeInformation = GetScopeInformation();
+                }
+                // message
+                message = _messagePadding + ReplaceMessageNewLinesWithPadding(message);
+                printLog = true;
+            }
+
+            // Example:
+            // System.InvalidOperationException
+            //    at Namespace.Class.Function() in File:line X
+            if (exception != null)
+            {
+                // exception message
+                exceptionText = exception.ToString();
+                printLog = true;
+            }
+
+            if (printLog)
+            {
+                lock (_lock)
+                {
+                    if (!string.IsNullOrEmpty(logLevelString))
+                    {
+                        // log level string
+                        Console.Write(
+                            logLevelString,
+                            logLevelColors.Background,
+                            logLevelColors.Foreground);
+                    }
+
+                    // use default colors from here on
+                    if (!string.IsNullOrEmpty(logIdentifier))
+                    {
+                        Console.WriteLine(
+                            logIdentifier,
+                            DefaultConsoleColor,
+                            DefaultConsoleColor);
+                    }
+                    if (!string.IsNullOrEmpty(scopeInformation))
+                    {
+                        Console.WriteLine(
+                            scopeInformation,
+                            DefaultConsoleColor,
+                            DefaultConsoleColor);
+                    }
+                    if (!string.IsNullOrEmpty(message))
+                    {
+                        Console.WriteLine(
+                            message,
+                            DefaultConsoleColor,
+                            DefaultConsoleColor);
+                    }
+                    if (!string.IsNullOrEmpty(exceptionText))
+                    {
+                        Console.WriteLine(
+                            exceptionText,
+                            DefaultConsoleColor,
+                            DefaultConsoleColor);
+                    }
+
+                    // In case of AnsiLogConsole, the messages are not yet written to the console,
+                    // this would flush them instead.
+                    Console.Flush();
+                }
+            }
+        }
+
+        private string ReplaceMessageNewLinesWithPadding(string message)
+        {
+            return message.Replace(Environment.NewLine, _newLineWithMessagePadding);
+        }
+
+        public bool IsEnabled(LogLevel logLevel)
+        {
+            return Filter(Name, logLevel);
+        }
+
+        public IDisposable BeginScope<TState>(TState state)
+        {
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+
+            return ConsoleLogScope.Push(Name, state);
+        }
+
+        private static string GetLogLevelString(LogLevel logLevel)
+        {
+            switch (logLevel)
+            {
+                case LogLevel.Trace:
+                    return "trce";
+                case LogLevel.Debug:
+                    return "dbug";
+                case LogLevel.Information:
+                    return "info";
+                case LogLevel.Warning:
+                    return "warn";
+                case LogLevel.Error:
+                    return "fail";
+                case LogLevel.Critical:
+                    return "crit";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(logLevel));
+            }
+        }
+
+        private ConsoleColors GetLogLevelConsoleColors(LogLevel logLevel)
+        {
+            // We must explicitly set the background color if we are setting the foreground color,
+            // since just setting one can look bad on the users console.
+            switch (logLevel)
+            {
+                case LogLevel.Critical:
+                    return new ConsoleColors(ConsoleColor.White, ConsoleColor.Red);
+                case LogLevel.Error:
+                    return new ConsoleColors(ConsoleColor.Black, ConsoleColor.Red);
+                case LogLevel.Warning:
+                    return new ConsoleColors(ConsoleColor.Yellow, ConsoleColor.Black);
+                case LogLevel.Information:
+                    return new ConsoleColors(ConsoleColor.DarkGreen, ConsoleColor.Black);
+                case LogLevel.Debug:
+                    return new ConsoleColors(ConsoleColor.Gray, ConsoleColor.Black);
+                case LogLevel.Trace:
+                    return new ConsoleColors(ConsoleColor.Gray, ConsoleColor.Black);
+                default:
+                    return new ConsoleColors(DefaultConsoleColor, DefaultConsoleColor);
+            }
+        }
+
+        private string GetScopeInformation()
+        {
+            var current = ConsoleLogScope.Current;
+            var output = new StringBuilder();
+            string scopeLog = string.Empty;
+            while (current != null)
+            {
+                if (output.Length == 0)
+                {
+                    scopeLog = $"=> {current}";
+                }
+                else
+                {
+                    scopeLog = $"=> {current} ";
+                }
+
+                output.Insert(0, scopeLog);
+                current = current.Parent;
+            }
+            if (output.Length > 0)
+            {
+                output.Insert(0, _messagePadding);
+            }
+
+            return output.ToString();
+        }
+
+        private struct ConsoleColors
+        {
+            public ConsoleColors(ConsoleColor? foreground, ConsoleColor? background)
+            {
+                Foreground = foreground;
+                Background = background;
+            }
+
+            public ConsoleColor? Foreground { get; }
+
+            public ConsoleColor? Background { get; }
+        }
+
+        private class AnsiSystemConsole : IAnsiSystemConsole
+        {
+            public void Write(string message)
+            {
+                System.Console.Write(message);
+            }
+
+            public void WriteLine(string message)
+            {
+                System.Console.WriteLine(message);
+            }
+        }
     }
-
-    private struct ConsoleColors
-    {
-      public ConsoleColors(ConsoleColor? foreground, ConsoleColor? background)
-      {
-        Foreground = foreground;
-        Background = background;
-      }
-
-      public ConsoleColor? Foreground { get; }
-
-      public ConsoleColor? Background { get; }
-    }
-
-    private class AnsiSystemConsole : IAnsiSystemConsole
-    {
-      public void Write(string message)
-      {
-        System.Console.Write(message);
-      }
-
-      public void WriteLine(string message)
-      {
-        System.Console.WriteLine(message);
-      }
-    }
-  }
 }

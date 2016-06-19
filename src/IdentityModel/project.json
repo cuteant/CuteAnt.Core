@@ -1,5 +1,5 @@
 ﻿{
-  "version": "2.0.0-rc3-160302",
+  "version": "2.0.0-rc3-160601",
   "description": "Helper library for claims-based identity, System.IdentityModel, JSON Web Tokens, OAuth 2.0 and OpenID Connect client libraries",
   "authors": [ "Brock Allen & Dominick Baier" ],
   "owners": [ "Brock Allen & Dominick Baier" ],
@@ -39,7 +39,7 @@
   "resource": [ "**/*.resx" ],
 
   "dependencies": {
-    "Newtonsoft.Json": "8.0.3"
+    "Newtonsoft.Json": "9.0.1"
   },
 
   "frameworks": {

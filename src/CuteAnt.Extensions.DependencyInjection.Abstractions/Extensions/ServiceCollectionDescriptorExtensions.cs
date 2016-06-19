@@ -8,7 +8,7 @@ using CuteAnt.Extensions.DependencyInjection.Abstractions;
 
 namespace CuteAnt.Extensions.DependencyInjection.Extensions
 {
-  public static class ServiceCollectionExtensions
+  public static class ServiceCollectionDescriptorExtensions
   {
     #region --& Add &--
 

@@ -6,6 +6,9 @@ using CuteAnt.Extensions.FileProviders;
 
 namespace CuteAnt.Extensions.Configuration
 {
+    /// <summary>
+    /// Extension methods for <see cref="FileConfigurationProvider"/>.
+    /// </summary>
     public static class FileConfigurationExtensions
     {
         private static string FileProviderKey = "FileProvider";
@@ -50,7 +53,7 @@ namespace CuteAnt.Extensions.Configuration
                 return builder.Properties[FileProviderKey] as IFileProvider;
             }
 
-#if DESKTOPCLR // NET451 ## 苦竹 修改 ##
+#if DESKTOPCLR
             var stringBasePath = AppDomain.CurrentDomain.GetData("APP_CONTEXT_BASE_DIRECTORY") as string 
                 ?? AppDomain.CurrentDomain.BaseDirectory 
                 ?? string.Empty;

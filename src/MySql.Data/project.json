@@ -1,5 +1,5 @@
 {
-  "version": "7.0.0-rc3-160304",
+  "version": "7.0.0-rc3-160601",
   "description": "ADO.Net driver for MySQL.",
   "authors": [ "Oracle" ],
   "owners": [ "MySQL" ],

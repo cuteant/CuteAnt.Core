@@ -2,10 +2,15 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.IO;
 using CuteAnt.Extensions.Configuration.Ini;
+using CuteAnt.Extensions.FileProviders;
 
 namespace CuteAnt.Extensions.Configuration
 {
+    /// <summary>
+    /// Extension methods for adding <see cref="IniConfigurationProvider"/>.
+    /// </summary>
     public static class IniConfigurationExtensions
     {
         /// <summary>
@@ -17,17 +22,7 @@ namespace CuteAnt.Extensions.Configuration
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddIniFile(this IConfigurationBuilder builder, string path)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new ArgumentException(Resources.Error_InvalidFilePath, nameof(path));
-            }
-
-            return AddIniFile(builder, source => source.Path = path);
+            return AddIniFile(builder, provider: null, path: path, optional: false, reloadOnChange: false);
         }
 
         /// <summary>
@@ -40,21 +35,7 @@ namespace CuteAnt.Extensions.Configuration
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddIniFile(this IConfigurationBuilder builder, string path, bool optional)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new ArgumentException(Resources.Error_InvalidFilePath, nameof(path));
-            }
-
-            return AddIniFile(builder, source =>
-            {
-                source.Path = path;
-                source.Optional = optional;
-            });
+            return AddIniFile(builder, provider: null, path: path, optional: optional, reloadOnChange: false);
         }
 
         /// <summary>
@@ -68,46 +49,42 @@ namespace CuteAnt.Extensions.Configuration
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddIniFile(this IConfigurationBuilder builder, string path, bool optional, bool reloadOnChange)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new ArgumentException(Resources.Error_InvalidFilePath, nameof(path));
-            }
-
-            return AddIniFile(builder, source =>
-            {
-                source.Path = path;
-                source.Optional = optional;
-                source.ReloadOnChange = reloadOnChange;
-            });
+            return AddIniFile(builder, provider: null, path: path, optional: optional, reloadOnChange: reloadOnChange);
         }
 
         /// <summary>
         /// Adds a INI configuration source to <paramref name="builder"/>.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="configureSource">Configures the <see cref="IniConfigurationSource"/> to add.</param>
+        /// <param name="provider">The <see cref="IFileProvider"/> to use to access the file.</param>
+        /// <param name="path">Path relative to the base path stored in 
+        /// <see cref="IConfigurationBuilder.Properties"/> of <paramref name="builder"/>.</param>
+        /// <param name="optional">Whether the file is optional.</param>
+        /// <param name="reloadOnChange">Whether the configuration should be reloaded if the file changes.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddIniFile(
-            this IConfigurationBuilder builder,
-            Action<IniConfigurationSource> configureSource)
+        public static IConfigurationBuilder AddIniFile(this IConfigurationBuilder builder, IFileProvider provider, string path, bool optional, bool reloadOnChange)
         {
             if (builder == null)
             {
                 throw new ArgumentNullException(nameof(builder));
             }
-
-            if (configureSource == null)
+            if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentNullException(nameof(configureSource));
+                throw new ArgumentException(Resources.Error_InvalidFilePath, nameof(path));
             }
 
-            var source = new IniConfigurationSource();
-            configureSource(source);
+            if (provider == null && Path.IsPathRooted(path))
+            {
+                provider = new PhysicalFileProvider(Path.GetDirectoryName(path));
+                path = Path.GetFileName(path);
+            } 
+            var source = new IniConfigurationSource
+            {
+                FileProvider = provider,
+                Path = path,
+                Optional = optional,
+                ReloadOnChange = reloadOnChange
+            };
             builder.Add(source);
             return builder;
         }
