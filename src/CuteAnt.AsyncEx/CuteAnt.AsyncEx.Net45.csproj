@@ -1,0 +1,324 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7BDF7FEF-331B-48FC-BD9C-882C04211595}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CuteAnt.AsyncEx</RootNamespace>
+    <AssemblyName>CuteAnt.AsyncEx</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <IntermediateOutputPath>obj\Debug\Net45</IntermediateOutputPath>
+    <OutputPath>..\..\Deploy\Net45\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DESKTOPCLR;NET451;NET_3_5_GREATER;NET_4_0_GREATER;FEATURE_TRACING</DefineConstants>
+    <DocumentationFile>..\..\Deploy\Net45\CuteAnt.AsyncEx.xml</DocumentationFile>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <IntermediateOutputPath>obj\Release\Net45</IntermediateOutputPath>
+    <OutputPath>..\..\Deploy\Net45\</OutputPath>
+    <DefineConstants>TRACE;DESKTOPCLR;NET451;NET_3_5_GREATER;NET_4_0_GREATER;FEATURE_TRACING</DefineConstants>
+    <DocumentationFile>..\..\Deploy\Net45\CuteAnt.AsyncEx.xml</DocumentationFile>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\tools\StrongKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\AssemblyVersion.cs">
+      <Link>Properties\AssemblyVersion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\CommonVersionInfo.cs">
+      <Link>Properties\CommonVersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\CoreInformationalVersion.cs">
+      <Link>Properties\CoreInformationalVersion.cs</Link>
+    </Compile>
+    <Compile Include="AsyncUtils.cs" />
+    <Compile Include="Common\AsyncAutoResetEvent.cs" />
+    <Compile Include="Common\AsyncBarrier.cs" />
+    <Compile Include="Common\AsyncConditionVariable.cs" />
+    <Compile Include="Common\AsyncContext.cs" />
+    <Compile Include="Common\AsyncContext.SynchronizationContext.cs" />
+    <Compile Include="Common\AsyncContext.TaskQueue.cs" />
+    <Compile Include="Common\AsyncContext.TaskScheduler.cs" />
+    <Compile Include="Common\AsyncContextThread.cs" />
+    <Compile Include="Common\AsyncCountdownEvent.cs" />
+    <Compile Include="Common\AsyncFactory %28of TResult%29.cs" />
+    <Compile Include="Common\AsyncFactory %28of TResult%29.FromAsync.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AsyncFactory %28of TResult%29.FromAsync.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Common\AsyncFactory.cs" />
+    <Compile Include="Common\AsyncFactory.FromAsync.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AsyncFactory.FromAsync.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Common\AsyncLazy.cs" />
+    <Compile Include="Common\AsyncLock.cs" />
+    <Compile Include="Common\AsyncManualResetEvent.cs" />
+    <Compile Include="Common\AsyncMonitor.cs" />
+    <Compile Include="Common\AsyncProducerConsumerQueue.cs" />
+    <Compile Include="Common\AsyncReaderWriterLock.cs" />
+    <Compile Include="Common\AsyncSemaphore.cs" />
+    <Compile Include="Common\AsyncWaitQueue.cs" />
+    <Compile Include="Common\AwaitableDisposable.cs" />
+    <Compile Include="Common\CollectionHelpers.cs" />
+    <Compile Include="Common\DeferralManager.cs" />
+    <Compile Include="Common\Deque.cs" />
+    <Compile Include="Common\IDManager.cs" />
+    <Compile Include="Common\IntHolder.cs" />
+    <Compile Include="Common\NormalizedCancellationToken.cs" />
+    <Compile Include="Common\NotifyTaskCompletion.cs" />
+    <Compile Include="Common\PauseToken.cs" />
+    <Compile Include="Common\PropertyProgress.cs" />
+    <Compile Include="Comparers\Comparers\AnonymousComparer.cs" />
+    <Compile Include="Comparers\Comparers\ComparableBase.cs" />
+    <Compile Include="Comparers\Comparers\ComparableBaseWithOperators.cs" />
+    <Compile Include="Comparers\Comparers\Compare %28of T%29.cs" />
+    <Compile Include="Comparers\Comparers\ComparerExtensions.cs" />
+    <Compile Include="Comparers\Comparers\CompareSource.cs" />
+    <Compile Include="Comparers\Comparers\IFullComparer %28of T%29.cs" />
+    <Compile Include="Comparers\Comparers\IFullComparer.cs" />
+    <Compile Include="Comparers\Comparers\Linq\EnumerableExtensions.cs" />
+    <Compile Include="Comparers\Comparers\Util\ComparableImplementations.cs" />
+    <Compile Include="Comparers\Comparers\Util\ComparerBase.cs" />
+    <Compile Include="Comparers\Comparers\Util\ComparerHelpers.cs" />
+    <Compile Include="Comparers\Comparers\Util\CompoundComparer.cs" />
+    <Compile Include="Comparers\Comparers\Util\DefaultComparer.cs" />
+    <Compile Include="Comparers\Comparers\Util\NullComparer.cs" />
+    <Compile Include="Comparers\Comparers\Util\ReverseComparer.cs" />
+    <Compile Include="Comparers\Comparers\Util\SelectComparer.cs" />
+    <Compile Include="Comparers\Comparers\Util\SequenceComparer.cs" />
+    <Compile Include="Comparers\Comparers\Util\SourceComparerBase.cs" />
+    <Compile Include="Comparers\Comparers\Util\UtilityComparerExtensions.cs" />
+    <Compile Include="Comparers\ContractExtensions.cs" />
+    <Compile Include="Comparers\EqualityComparers\AnonymousEqualityComparer.cs" />
+    <Compile Include="Comparers\EqualityComparers\EqualityCompare %28of T%29.cs" />
+    <Compile Include="Comparers\EqualityComparers\EqualityComparerExtensions.cs" />
+    <Compile Include="Comparers\EqualityComparers\EqualityCompareSource.cs" />
+    <Compile Include="Comparers\EqualityComparers\EquatableBase.cs" />
+    <Compile Include="Comparers\EqualityComparers\EquatableBaseWithOperators.cs" />
+    <Compile Include="Comparers\EqualityComparers\IFullEqualityComparer.cs" />
+    <Compile Include="Comparers\EqualityComparers\Util\CompoundEqualityComparer.cs" />
+    <Compile Include="Comparers\EqualityComparers\Util\EqualityComparerBase.cs" />
+    <Compile Include="Comparers\EqualityComparers\Util\EqualityComparerHelpers.cs" />
+    <Compile Include="Comparers\EqualityComparers\Util\ReferenceEqualityComparer.cs" />
+    <Compile Include="Comparers\EqualityComparers\Util\SelectEqualityComparer.cs" />
+    <Compile Include="Comparers\EqualityComparers\Util\SequenceEqualityComparer.cs" />
+    <Compile Include="Comparers\EqualityComparers\Util\SourceEqualityComparerBase.cs" />
+    <Compile Include="Comparers\EqualityComparers\Util\UtilityEqualityComparerExtensions.cs" />
+    <Compile Include="Comparers\IxEnumerableExtensions.cs" />
+    <Compile Include="Concurrent\AsyncCollection.cs" />
+    <Compile Include="Concurrent\ProducerProgress.cs" />
+    <Compile Include="Dataflow\DataflowProgress.cs" />
+    <Compile Include="Dataflow\FuncBlock.cs" />
+    <Compile Include="Dataflow\ISelfTransformation.cs" />
+    <Compile Include="Dataflow\TransformBlockX.cs" />
+    <Compile Include="Enlightenment\EnlightenmentVerification.cs" />
+    <Compile Include="Enlightenment\ExceptionHelpers.cs" />
+    <Compile Include="Enlightenment\Internal\PlatformEnlightenment\BlockingQueue.cs" />
+    <Compile Include="Enlightenment\Internal\PlatformEnlightenment\ExceptionEnlightenment.cs" />
+    <Compile Include="Enlightenment\Internal\PlatformEnlightenment\Lazy.cs" />
+    <Compile Include="Enlightenment\Internal\PlatformEnlightenment\ReflectionHelper.Net40.cs" />
+    <Compile Include="Enlightenment\Internal\PlatformEnlightenment\SingleThreadedApartmentThread.cs" />
+    <Compile Include="Enlightenment\Internal\PlatformEnlightenment\SynchronizationContextEnlightenment.cs" />
+    <Compile Include="Enlightenment\Internal\PlatformEnlightenment\ThreadPoolEnlightenment.cs" />
+    <Compile Include="Extensions\SynchronizationContextHelpers.cs" />
+    <Compile Include="Extensions\TaskCompletionSource.cs" />
+    <Compile Include="Extensions\TaskConstants.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="ImmutableInterlockedX.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="System\Collections\Concurrent\BlockingCollectionX.cs" />
+    <Compile Include="System\Collections\Concurrent\CDSCollectionETWBCLProvider.cs" />
+    <Compile Include="System\Collections\Concurrent\ConcurrentBagX.cs" />
+    <Compile Include="System\Collections\Concurrent\ConcurrentDictionaryX.cs" />
+    <Compile Include="System\Collections\Concurrent\ConcurrentQueueX.cs" />
+    <Compile Include="System\Collections\Concurrent\ConcurrentStackX.cs" />
+    <Compile Include="System\Collections\Concurrent\IProducerConsumerCollection.cs" />
+    <Compile Include="System\Collections\Concurrent\PlatformHelper.cs" />
+    <Compile Include="System\Collections\Generic\IHashKeyCollection.cs" />
+    <Compile Include="System\Collections\Generic\IReadOnlyCollection`1.cs" />
+    <Compile Include="System\Collections\Generic\IReadOnlyDictionary`2.cs" />
+    <Compile Include="System\Collections\Generic\IReadOnlyList`1.cs" />
+    <Compile Include="System\Collections\Generic\ISortKeyCollection.cs" />
+    <Compile Include="System\Collections\Immutable\AllocFreeConcurrentStack.cs" />
+    <Compile Include="System\Collections\Immutable\DictionaryEnumerator.cs" />
+    <Compile Include="System\Collections\Immutable\DisposableEnumeratorAdapter_2.cs" />
+    <Compile Include="System\Collections\Immutable\IBinaryTree.cs" />
+    <Compile Include="System\Collections\Immutable\IImmutableArray.cs" />
+    <Compile Include="System\Collections\Immutable\IImmutableDictionary.cs" />
+    <Compile Include="System\Collections\Immutable\IImmutableDictionaryInternal.cs" />
+    <Compile Include="System\Collections\Immutable\IImmutableList.cs" />
+    <Compile Include="System\Collections\Immutable\IImmutableListQueries.cs" />
+    <Compile Include="System\Collections\Immutable\IImmutableQueue.cs" />
+    <Compile Include="System\Collections\Immutable\IImmutableSet.cs" />
+    <Compile Include="System\Collections\Immutable\IImmutableStack.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableArray.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableArray_1.Builder.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableArray_1.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableArray_1.Enumerator.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableDictionary.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableDictionary_2.Builder.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableDictionary_2.Comparers.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableDictionary_2.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableDictionary_2.DebuggerProxy.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableDictionary_2.Enumerator.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableDictionary_2.HashBucket.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableDictionary_2.MutationInput.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableDictionary_2.MutationResult.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableExtensions.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableHashSet.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableHashSet_1.Builder.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableHashSet_1.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableHashSet_1.DebuggerProxy.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableHashSet_1.Enumerator.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableHashSet_1.HashBucket.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableHashSet_1.MutationInput.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableHashSet_1.MutationResult.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableHashSet_1.NodeEnumerable.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableInterlocked.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableList.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableList_1.Builder.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableList_1.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableQueue.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableQueue_1.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableSortedDictionary.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableSortedDictionary_2.Builder.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableSortedDictionary_2.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableSortedSet.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableSortedSet_1.Builder.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableSortedSet_1.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableStack.cs" />
+    <Compile Include="System\Collections\Immutable\ImmutableStack_1.cs" />
+    <Compile Include="System\Collections\Immutable\IOrderedCollection.cs" />
+    <Compile Include="System\Collections\Immutable\IStrongEnumerable_2.cs" />
+    <Compile Include="System\Collections\Immutable\IStrongEnumerator_1.cs" />
+    <Compile Include="System\Collections\Immutable\KeysOrValuesCollectionAccessor.cs" />
+    <Compile Include="System\Collections\Immutable\RefAsValueType.cs" />
+    <Compile Include="System\Collections\Immutable\SecureObjectPool.cs" />
+    <Compile Include="System\Collections\Immutable\SortedInt32KeyNode.cs" />
+    <Compile Include="System\Collections\Immutable\Validation\Requires.cs" />
+    <Compile Include="System\Collections\Immutable\Validation\ValidatedNotNullAttribute.cs" />
+    <Compile Include="System\Linq\ImmutableArrayExtensions.cs" />
+    <Compile Include="System\SR.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\DataflowBlock.AsObservable.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\DataflowBlock.AsObserver.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\DataflowBlock.Choose.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\DataflowBlock.Encapsulate.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\DataflowBlock.LinkTo.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\DataflowBlock.NullTarget.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\DataflowBlock.OutputAvailableAsync.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\DataflowBlock.PostAndSend.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\DataflowBlock.Receive.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\DataflowBlockOptions.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\DataflowLinkOptions.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\DataflowMessageHeader.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\DataflowMessageStatus.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\IDataflowBlock.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\IPropagatorBlock.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\IReceivableSourceBlock.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\ISourceBlock.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Base\ITargetBlock.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Blocks\ActionBlock.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Blocks\BatchBlock.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Blocks\BatchedJoinBlock.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Blocks\BatchedJoinBlock.Internal.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Blocks\BroadcastBlock.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Blocks\BufferBlock.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Blocks\JoinBlock.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Blocks\JoinBlock.Internal.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Blocks\TransformBlock.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Blocks\TransformManyBlock.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Blocks\WriteOnceBlock.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Internal\ActionOnDispose.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Internal\Common.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Internal\DataflowEtwProvider.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Internal\EnumerableDebugView.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Internal\IDebuggerDisplay.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Internal\ImmutableArray.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Internal\Padding.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Internal\ProducerConsumerQueues.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Internal\QueuedMap.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Internal\ReorderingBuffer.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Internal\SourceCore.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Internal\SpscTargetCore.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Internal\TargetCore.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Internal\TargetRegistry.cs" />
+    <Compile Include="System\Threading\Tasks.Dataflow\Internal\Threading.cs" />
+    <Compile Include="System\Threading\Tasks\ConcurrentExclusiveSchedulerPair.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CuteAnt.AsyncEx.Net45.project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CuteAnt\CuteAnt.Net45.csproj">
+      <Project>{1ab422bc-0280-4e03-95f4-3bc1fad9b2bf}</Project>
+      <Name>CuteAnt.Net45</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Common\AsyncFactory %28of TResult%29.FromAsync.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AsyncFactory %28of TResult%29.FromAsync.cs</LastGenOutput>
+    </Content>
+    <Content Include="Common\AsyncFactory.FromAsync.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AsyncFactory.FromAsync.cs</LastGenOutput>
+    </Content>
+    <Content Include="TechnicalReference.txt" />
+    <Content Include="XmlDocs\CommonXmlDocComments.xml" />
+    <Content Include="XmlDocs\System.Threading.Tasks.Dataflow.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="..\..\..\SharedProjects\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems" Label="Shared" />
+  <Import Project="..\..\..\SharedProjects\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
+  <Import Project="..\..\..\SharedProjects\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

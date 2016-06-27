@@ -10,16 +10,16 @@
 
 namespace System.Data.SQLite.Resources {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
-    ///    强类型资源类，用于查找本地化字符串，等等。
+    ///   一个强类型的资源类，用于查找本地化的字符串等。
     /// </summary>
-    // 此类已由 StronglyTypedResourceBuilder 自动生成
-    // 通过 ResGen 或 Visual Studio 之类的工具提供的类。
-    // 若要添加或删除成员，请编辑 .ResX 文件，然后重新运行 ResGen
-    // (使用 /str 选项)，或重新生成 VS 项目。
+    // 此类是由 StronglyTypedResourceBuilder
+    // 类通过类似于 ResGen 或 Visual Studio 的工具自动生成的。
+    // 若要添加或移除成员，请编辑 .ResX 文件，然后重新运行 ResGen
+    // (以 /str 作为命令选项)，或重新生成 VS 项目。
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class SR {
@@ -28,11 +28,12 @@ namespace System.Data.SQLite.Resources {
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal SR() {
         }
         
         /// <summary>
-        ///    返回此类使用的缓存 ResourceManager 实例。
+        ///   返回此类使用的缓存的 ResourceManager 实例。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         internal static global::System.Resources.ResourceManager ResourceManager {
@@ -46,8 +47,8 @@ namespace System.Data.SQLite.Resources {
         }
         
         /// <summary>
-        ///    重写所有项的当前线程的 CurrentUICulture 属性
-        ///    使用此强类型资源类进行资源查找。
+        ///   使用此强类型资源类，为所有资源查找
+        ///   重写当前线程的 CurrentUICulture 属性。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         internal static global::System.Globalization.CultureInfo Culture {
@@ -60,7 +61,7 @@ namespace System.Data.SQLite.Resources {
         }
         
         /// <summary>
-        ///    查找与  &lt;?xml version=&quot;1.0&quot; standalone=&quot;yes&quot;?&gt;
+        ///   查找类似 &lt;?xml version=&quot;1.0&quot; standalone=&quot;yes&quot;?&gt;
         ///
         ///&lt;!--
         ////********************************************************
@@ -76,7 +77,7 @@ namespace System.Data.SQLite.Resources {
         ///    &lt;TypeName&gt;smallint&lt;/TypeName&gt;
         ///    &lt;ProviderDbType&gt;10&lt;/ProviderDbType&gt;
         ///    &lt;ColumnSize&gt;5&lt;/ColumnSize&gt;
-        ///    &lt;DataType&gt;System.In [字符串的其余部分被截断]”； 类似的本地化字符串。
+        ///    &lt;DataType&gt;System.In [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string DataTypes {
             get {
@@ -85,7 +86,7 @@ namespace System.Data.SQLite.Resources {
         }
         
         /// <summary>
-        ///    查找与  ABORT,ACTION,ADD,AFTER,ALL,ALTER,ANALYZE,AND,AS,ASC,ATTACH,AUTOINCREMENT,BEFORE,BEGIN,BETWEEN,BY,CASCADE,CASE,CAST,CHECK,COLLATE,COLUMN,COMMIT,CONFLICT,CONSTRAINT,CREATE,CROSS,CURRENT_DATE,CURRENT_TIME,CURRENT_TIMESTAMP,DATABASE,DEFAULT,DEFERRABLE,DEFERRED,DELETE,DESC,DETACH,DISTINCT,DROP,EACH,ELSE,END,ESCAPE,EXCEPT,EXCLUSIVE,EXISTS,EXPLAIN,FAIL,FOR,FOREIGN,FROM,FULL,GLOB,GROUP,HAVING,IF,IGNORE,IMMEDIATE,IN,INDEX,INDEXED,INITIALLY,INNER,INSERT,INSTEAD,INTERSECT,INTO,IS,ISNULL,JOIN,KEY,LEFT,LIKE,LIMIT,MATCH, [字符串的其余部分被截断]”； 类似的本地化字符串。
+        ///   查找类似 ABORT,ACTION,ADD,AFTER,ALL,ALTER,ANALYZE,AND,AS,ASC,ATTACH,AUTOINCREMENT,BEFORE,BEGIN,BETWEEN,BY,CASCADE,CASE,CAST,CHECK,COLLATE,COLUMN,COMMIT,CONFLICT,CONSTRAINT,CREATE,CROSS,CURRENT_DATE,CURRENT_TIME,CURRENT_TIMESTAMP,DATABASE,DEFAULT,DEFERRABLE,DEFERRED,DELETE,DESC,DETACH,DISTINCT,DROP,EACH,ELSE,END,ESCAPE,EXCEPT,EXCLUSIVE,EXISTS,EXPLAIN,FAIL,FOR,FOREIGN,FROM,FULL,GLOB,GROUP,HAVING,IF,IGNORE,IMMEDIATE,IN,INDEX,INDEXED,INITIALLY,INNER,INSERT,INSTEAD,INTERSECT,INTO,IS,ISNULL,JOIN,KEY,LEFT,LIKE,LIMIT,MATCH, [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string Keywords {
             get {
@@ -94,7 +95,7 @@ namespace System.Data.SQLite.Resources {
         }
         
         /// <summary>
-        ///    查找与  &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
         ///
         ///&lt;!--
         ////********************************************************
@@ -109,7 +110,7 @@ namespace System.Data.SQLite.Resources {
         ///  &lt;MetaDataCollections&gt;
         ///    &lt;CollectionName&gt;MetaDataCollections&lt;/CollectionName&gt;
         ///    &lt;NumberOfRestrictions&gt;0&lt;/NumberOfRestrictions&gt;
-        ///    &lt;Numb [字符串的其余部分被截断]”； 类似的本地化字符串。
+        ///    &lt;Numb [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string MetaDataCollections {
             get {

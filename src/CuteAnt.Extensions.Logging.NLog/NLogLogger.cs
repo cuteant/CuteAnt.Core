@@ -1,11 +1,22 @@
 ﻿using System;
+#if NET40
 using MS_ILogger = CuteAnt.Extensions.Logging.ILogger;
 using MS_LogLevel = CuteAnt.Extensions.Logging.LogLevel;
+using MS_EventID = CuteAnt.Extensions.Logging.EventId;
+#else
+using MS_ILogger = Microsoft.Extensions.Logging.ILogger;
+using MS_LogLevel = Microsoft.Extensions.Logging.LogLevel;
+using MS_EventID = Microsoft.Extensions.Logging.EventId;
+#endif
 using NLog_ILogger = NLog.ILogger;
 using NLog_LogLevel = NLog.LogLevel;
 using NLog;
 
+#if NET40
 namespace CuteAnt.Extensions.Logging.NLog
+#else
+namespace Microsoft.Extensions.Logging.NLog
+#endif
 {
   /// <summary>
   /// Wrap NLog's Logger in a Microsoft.Extensions.Logging's interface <see cref="Microsoft.Extensions.Logging.ILogger"/>.
@@ -22,7 +33,7 @@ namespace CuteAnt.Extensions.Logging.NLog
     }
 
     //todo  callsite showing the framework logging classes/methods
-    public void Log<TState>(MS_LogLevel logLevel, CuteAnt.Extensions.Logging.EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+    public void Log<TState>(MS_LogLevel logLevel, MS_EventID eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
     {
       var nLogLogLevel = ConvertLogLevel(logLevel);
       if (IsEnabled(nLogLogLevel))

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>CuteAnt</id>
+    <version>2.0.0-rc3-160602</version>
+    <title>CuteAnt.Core</title>
+    <tags>CuteAnt</tags>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <authors>Seabiscuit</authors>
+    <owners>Seabiscuit</owners>
+    <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>http://git.oschina.net/cuteant/</projectUrl>
+    <summary>CuteAnt.Core</summary>
+    <description>CuteAnt.Core</description>
+    <copyright>Copyright (c) 2016 CuteAnt Development Team</copyright>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework=".NETFramework4.0">
+        <dependency id="CuteAnt.Extensions.Logging" version="2.0.0-rc3-160602" />
+      </group>
+      <group targetFramework=".NETFramework4.5.1">
+        <dependency id="Microsoft.Extensions.Logging" version="1.0.0-rtm-21431" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="..\Deploy\Net45\CuteAnt.dll" target="lib\net451" />
+    <file src="..\Deploy\Net45\CuteAnt.xml" target="lib\net451" />
+    <file src="..\Deploy\Net40\CuteAnt.dll" target="lib\net40" />
+    <file src="..\Deploy\Net40\CuteAnt.xml" target="lib\net40" />
+  </files>
+</package>

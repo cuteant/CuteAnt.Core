@@ -15,11 +15,10 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using CuteAnt.Collections;
 using CuteAnt.IO;
-#if DESKTOPCLR
+#if NET40
 using CuteAnt.Extensions.Logging;
 #else
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
 #endif
 
 namespace CuteAnt.Reflection

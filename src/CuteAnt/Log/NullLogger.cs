@@ -3,7 +3,7 @@
 
 using System;
 
-#if DESKTOPCLR
+#if NET40
 namespace CuteAnt.Extensions.Logging
 #else
 namespace Microsoft.Extensions.Logging

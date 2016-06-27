@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B587C15B-325B-444F-8D91-9F23263C6D98}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CuteAnt.SharpSerializer</RootNamespace>
+    <AssemblyName>CuteAnt.SharpSerializer</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <IntermediateOutputPath>obj\Debug\Net45</IntermediateOutputPath>
+    <OutputPath>..\..\Deploy\Net45\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DESKTOPCLR;NET451;NET_3_5_GREATER;NET_4_0_GREATER</DefineConstants>
+    <DocumentationFile>..\..\Deploy\Net45\CuteAnt.SharpSerializer.xml</DocumentationFile>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <IntermediateOutputPath>obj\Release\Net45</IntermediateOutputPath>
+    <OutputPath>..\..\Deploy\Net45\</OutputPath>
+    <DefineConstants>TRACE;DESKTOPCLR;NET451;NET_3_5_GREATER;NET_4_0_GREATER</DefineConstants>
+    <DocumentationFile>..\..\Deploy\Net45\CuteAnt.SharpSerializer.xml</DocumentationFile>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\tools\StrongKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\AssemblyVersion.cs">
+      <Link>Properties\AssemblyVersion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\CommonVersionInfo.cs">
+      <Link>Properties\CommonVersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\CoreInformationalVersion.cs">
+      <Link>Properties\CoreInformationalVersion.cs</Link>
+    </Compile>
+    <Compile Include="Advanced\BinaryPropertyDeserializer.cs" />
+    <Compile Include="Advanced\BinaryPropertySerializer.cs" />
+    <Compile Include="Advanced\Binary\IBinaryReader.cs" />
+    <Compile Include="Advanced\Binary\IBinaryWriter.cs" />
+    <Compile Include="Advanced\BurstBinaryReader.cs" />
+    <Compile Include="Advanced\BurstBinaryWriter.cs" />
+    <Compile Include="Advanced\DefaultXmlReader.cs" />
+    <Compile Include="Advanced\DefaultXmlWriter.cs" />
+    <Compile Include="Advanced\Deserializing\IPropertyDeserializer.cs" />
+    <Compile Include="Advanced\PropertyCache.cs" />
+    <Compile Include="Advanced\PropertyProvider.cs" />
+    <Compile Include="Advanced\Serializing\IPropertySerializer.cs" />
+    <Compile Include="Advanced\Serializing\PropertySerializer.cs" />
+    <Compile Include="Advanced\SizeOptimizedBinaryReader.cs" />
+    <Compile Include="Advanced\SizeOptimizedBinaryWriter.cs" />
+    <Compile Include="Advanced\XmlPropertyDeserializer.cs" />
+    <Compile Include="Advanced\XmlPropertySerializer.cs" />
+    <Compile Include="Advanced\Xml\IXmlReader.cs" />
+    <Compile Include="Advanced\Xml\IXmlWriter.cs" />
+    <Compile Include="BinarySerializationMode.cs" />
+    <Compile Include="Core\ArrayAnalyzer.cs" />
+    <Compile Include="Core\Binary\BinaryReaderTools.cs" />
+    <Compile Include="Core\Binary\BinaryWriterTools.cs" />
+    <Compile Include="Core\Binary\Elements.cs" />
+    <Compile Include="Core\Binary\IndexGenerator.cs" />
+    <Compile Include="Core\CreatingInstanceException.cs" />
+    <Compile Include="Core\DeserializingException.cs" />
+    <Compile Include="Core\Property.cs" />
+    <Compile Include="Core\SharpSerializerSettings.cs" />
+    <Compile Include="Core\Tools.cs" />
+    <Compile Include="Core\Xml\Elements.cs" />
+    <Compile Include="Deserializing\ObjectFactory.cs" />
+    <Compile Include="ExcludeFromSerializationAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializing\PropertyFactory.cs" />
+    <Compile Include="Serializing\PropertyTypeInfo.cs" />
+    <Compile Include="Serializing\TypeInfo.cs" />
+    <Compile Include="Serializing\TypeInfoCollection.cs" />
+    <Compile Include="SharpSerializer.cs" />
+    <Compile Include="SharpSerializerBinarySettings.cs" />
+    <Compile Include="SharpSerializerXmlSettings.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CuteAnt.SharpSerializer.Net45.project.json" />
+    <None Include="ReadMe.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CuteAnt\CuteAnt.Net45.csproj">
+      <Project>{1ab422bc-0280-4e03-95f4-3bc1fad9b2bf}</Project>
+      <Name>CuteAnt.Net45</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="LICENSE.TXT" />
+    <Content Include="readme.txt" />
+  </ItemGroup>
+  <Import Project="..\..\..\SharedProjects\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,5 +1,5 @@
 ﻿{
-  "version": "2.0.0-rc3-160601",
+  "version": "2.0.0-rc3-160602",
   "compilationOptions": {
     "warningsAsErrors": false,
     "keyFile": "../../tools/StrongKey.snk"
@@ -20,7 +20,6 @@
         "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
       },
       "dependencies": {
-        "CuteAnt.Extensions.Logging.Abstractions": "2.0.0-rc3-*"
       }
     }
   }

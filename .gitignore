@@ -246,3 +246,5 @@ $RECYCLE.BIN/
 /Deploy
 TODO.txt
 *.GhostDoc.xml
+/nuspecs/nuget.exe
+*.project.lock.json

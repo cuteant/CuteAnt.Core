@@ -10,16 +10,16 @@
 
 namespace CuteAnt.AsyncEx.Resources {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
-    ///    强类型资源类，用于查找本地化字符串，等等。
+    ///   一个强类型的资源类，用于查找本地化的字符串等。
     /// </summary>
-    // 此类已由 StronglyTypedResourceBuilder 自动生成
-    // 通过 ResGen 或 Visual Studio 之类的工具提供的类。
-    // 若要添加或删除成员，请编辑 .ResX 文件，然后重新运行 ResGen
-    // (使用 /str 选项)，或重新生成 VS 项目。
+    // 此类是由 StronglyTypedResourceBuilder
+    // 类通过类似于 ResGen 或 Visual Studio 的工具自动生成的。
+    // 若要添加或移除成员，请编辑 .ResX 文件，然后重新运行 ResGen
+    // (以 /str 作为命令选项)，或重新生成 VS 项目。
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Strings {
@@ -28,17 +28,18 @@ namespace CuteAnt.AsyncEx.Resources {
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Strings() {
         }
         
         /// <summary>
-        ///    返回此类使用的缓存 ResourceManager 实例。
+        ///   返回此类使用的缓存的 ResourceManager 实例。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CuteAnt.AsyncEx.Resources.Strings", typeof(Strings).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CuteAnt.AsyncEx.Resources.Strings", typeof(Strings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -46,8 +47,8 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    重写所有项的当前线程的 CurrentUICulture 属性
-        ///    使用此强类型资源类进行资源查找。
+        ///   使用此强类型资源类，为所有资源查找
+        ///   重写当前线程的 CurrentUICulture 属性。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         internal static global::System.Globalization.CultureInfo Culture {
@@ -60,7 +61,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 BoundedCapacity must be Unbounded or -1 for this dataflow block. 类似的本地化字符串。
+        ///   查找类似 BoundedCapacity must be Unbounded or -1 for this dataflow block. 的本地化字符串。
         /// </summary>
         internal static string Argument_BoundedCapacityNotSupported {
             get {
@@ -69,7 +70,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The argument must be false if no source from which to consume is specified. 类似的本地化字符串。
+        ///   查找类似 The argument must be false if no source from which to consume is specified. 的本地化字符串。
         /// </summary>
         internal static string Argument_CantConsumeFromANullSource {
             get {
@@ -78,7 +79,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The DataflowMessageHeader instance does not represent a valid message header. 类似的本地化字符串。
+        ///   查找类似 The DataflowMessageHeader instance does not represent a valid message header. 的本地化字符串。
         /// </summary>
         internal static string Argument_InvalidMessageHeader {
             get {
@@ -87,7 +88,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 To construct a DataflowMessageHeader instance, either pass a non-zero value or use the parameterless constructor. 类似的本地化字符串。
+        ///   查找类似 To construct a DataflowMessageHeader instance, either pass a non-zero value or use the parameterless constructor. 的本地化字符串。
         /// </summary>
         internal static string Argument_InvalidMessageId {
             get {
@@ -96,7 +97,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 This block must only be used with the source from which it was created. 类似的本地化字符串。
+        ///   查找类似 This block must only be used with the source from which it was created. 的本地化字符串。
         /// </summary>
         internal static string Argument_InvalidSourceForFilteredLink {
             get {
@@ -105,7 +106,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Greedy must be true for this dataflow block. 类似的本地化字符串。
+        ///   查找类似 Greedy must be true for this dataflow block. 的本地化字符串。
         /// </summary>
         internal static string Argument_NonGreedyNotSupported {
             get {
@@ -114,7 +115,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Number must be no greater than the value specified in BoundedCapacity. 类似的本地化字符串。
+        ///   查找类似 Number must be no greater than the value specified in BoundedCapacity. 的本地化字符串。
         /// </summary>
         internal static string ArgumentOutOfRange_BatchSizeMustBeNoGreaterThanBoundedCapacity {
             get {
@@ -123,7 +124,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Number must be positive. 类似的本地化字符串。
+        ///   查找类似 Number must be positive. 的本地化字符串。
         /// </summary>
         internal static string ArgumentOutOfRange_GenericPositive {
             get {
@@ -132,7 +133,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Number must be either non-negative and less than or equal to Int32.MaxValue or -1 类似的本地化字符串。
+        ///   查找类似 Number must be either non-negative and less than or equal to Int32.MaxValue or -1 的本地化字符串。
         /// </summary>
         internal static string ArgumentOutOfRange_NeedNonNegOrNegative1 {
             get {
@@ -141,7 +142,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Object is not a array with the same initialization state as the array to compare it to. 类似的本地化字符串。
+        ///   查找类似 Object is not a array with the same initialization state as the array to compare it to. 的本地化字符串。
         /// </summary>
         internal static string ArrayInitializedStateNotEqual {
             get {
@@ -150,7 +151,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Object is not a array with the same number of elements as the array to compare it to. 类似的本地化字符串。
+        ///   查找类似 Object is not a array with the same number of elements as the array to compare it to. 的本地化字符串。
         /// </summary>
         internal static string ArrayLengthsNotEqual {
             get {
@@ -159,7 +160,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 CompleteAdding may not be used concurrently with additions to the collection. 类似的本地化字符串。
+        ///   查找类似 CompleteAdding may not be used concurrently with additions to the collection. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_Add_ConcurrentCompleteAdd {
             get {
@@ -168,7 +169,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The underlying collection didn&apos;t accept the item. 类似的本地化字符串。
+        ///   查找类似 The underlying collection didn&apos;t accept the item. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_Add_Failed {
             get {
@@ -177,7 +178,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 At least one of the specified collections is marked as complete with regards to additions. 类似的本地化字符串。
+        ///   查找类似 At least one of the specified collections is marked as complete with regards to additions. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_CantAddAnyWhenCompleted {
             get {
@@ -186,7 +187,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 All collections are marked as complete with regards to additions. 类似的本地化字符串。
+        ///   查找类似 All collections are marked as complete with regards to additions. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_CantTakeAnyWhenAllDone {
             get {
@@ -195,7 +196,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The collection argument is empty and has been marked as complete with regards to additions. 类似的本地化字符串。
+        ///   查找类似 The collection argument is empty and has been marked as complete with regards to additions. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_CantTakeWhenDone {
             get {
@@ -204,7 +205,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The collection has been marked as complete with regards to additions. 类似的本地化字符串。
+        ///   查找类似 The collection has been marked as complete with regards to additions. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_Completed {
             get {
@@ -213,7 +214,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The array argument is of the incorrect type. 类似的本地化字符串。
+        ///   查找类似 The array argument is of the incorrect type. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_CopyTo_IncorrectType {
             get {
@@ -222,7 +223,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The array argument is multidimensional. 类似的本地化字符串。
+        ///   查找类似 The array argument is multidimensional. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_CopyTo_MultiDim {
             get {
@@ -231,7 +232,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The index argument must be greater than or equal zero. 类似的本地化字符串。
+        ///   查找类似 The index argument must be greater than or equal zero. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_CopyTo_NonNegative {
             get {
@@ -240,7 +241,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The number of elements in the collection is greater than the available space from index to the end of the destination array. 类似的本地化字符串。
+        ///   查找类似 The number of elements in the collection is greater than the available space from index to the end of the destination array. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_CopyTo_TooManyElems {
             get {
@@ -249,7 +250,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The boundedCapacity argument must be positive. 类似的本地化字符串。
+        ///   查找类似 The boundedCapacity argument must be positive. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_ctor_BoundedCapacityRange {
             get {
@@ -258,7 +259,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The collection argument contains more items than are allowed by the boundedCapacity. 类似的本地化字符串。
+        ///   查找类似 The collection argument contains more items than are allowed by the boundedCapacity. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_ctor_CountMoreThanCapacity {
             get {
@@ -267,7 +268,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The collection has been disposed. 类似的本地化字符串。
+        ///   查找类似 The collection has been disposed. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_Disposed {
             get {
@@ -276,7 +277,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The underlying collection was modified from outside of the BlockingCollection&lt;T&gt;. 类似的本地化字符串。
+        ///   查找类似 The underlying collection was modified from outside of the BlockingCollection&lt;T&gt;. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_Take_CollectionModified {
             get {
@@ -285,7 +286,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The specified timeout must represent a value between -1 and {0}, inclusive. 类似的本地化字符串。
+        ///   查找类似 The specified timeout must represent a value between -1 and {0}, inclusive. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_TimeoutInvalid {
             get {
@@ -294,7 +295,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The collections argument contains at least one disposed element. 类似的本地化字符串。
+        ///   查找类似 The collections argument contains at least one disposed element. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_ValidateCollectionsArray_DispElems {
             get {
@@ -303,7 +304,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The collections length is greater than the supported range for 32 bit machine. 类似的本地化字符串。
+        ///   查找类似 The collections length is greater than the supported range for 32 bit machine. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_ValidateCollectionsArray_LargeSize {
             get {
@@ -312,7 +313,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The collections argument contains at least one null element. 类似的本地化字符串。
+        ///   查找类似 The collections argument contains at least one null element. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_ValidateCollectionsArray_NullElems {
             get {
@@ -321,7 +322,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The collections argument is a zero-length array. 类似的本地化字符串。
+        ///   查找类似 The collections argument is a zero-length array. 的本地化字符串。
         /// </summary>
         internal static string BlockingCollection_ValidateCollectionsArray_ZeroSize {
             get {
@@ -330,7 +331,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Cannot find the old value 类似的本地化字符串。
+        ///   查找类似 Cannot find the old value 的本地化字符串。
         /// </summary>
         internal static string CannotFindOldValue {
             get {
@@ -339,7 +340,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Capacity was less than the current Count of elements. 类似的本地化字符串。
+        ///   查找类似 Capacity was less than the current Count of elements. 的本地化字符串。
         /// </summary>
         internal static string CapacityMustBeGreaterThanOrEqualToCount {
             get {
@@ -348,7 +349,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 MoveToImmutable can only be performed when Count equals Capacity. 类似的本地化字符串。
+        ///   查找类似 MoveToImmutable can only be performed when Count equals Capacity. 的本地化字符串。
         /// </summary>
         internal static string CapacityMustEqualCountOnMove {
             get {
@@ -357,7 +358,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Collection was modified; enumeration operation may not execute. 类似的本地化字符串。
+        ///   查找类似 Collection was modified; enumeration operation may not execute. 的本地化字符串。
         /// </summary>
         internal static string CollectionModifiedDuringEnumeration {
             get {
@@ -366,7 +367,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The operation was canceled. 类似的本地化字符串。
+        ///   查找类似 The operation was canceled. 的本地化字符串。
         /// </summary>
         internal static string Common_OperationCanceled {
             get {
@@ -375,7 +376,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The array argument is null. 类似的本地化字符串。
+        ///   查找类似 The array argument is null. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentBag_CopyTo_ArgumentNullException {
             get {
@@ -384,7 +385,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The index argument must be greater than or equal zero. 类似的本地化字符串。
+        ///   查找类似 The index argument must be greater than or equal zero. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentBag_CopyTo_ArgumentOutOfRangeException {
             get {
@@ -393,7 +394,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The collection argument is null. 类似的本地化字符串。
+        ///   查找类似 The collection argument is null. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentBag_Ctor_ArgumentNullException {
             get {
@@ -402,7 +403,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The SyncRoot property may not be used for the synchronization of concurrent collections. 类似的本地化字符串。
+        ///   查找类似 The SyncRoot property may not be used for the synchronization of concurrent collections. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentCollection_SyncRoot_NotSupported {
             get {
@@ -411,7 +412,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The SyncRoot property may not be used for the synchronization of concurrent collections. 类似的本地化字符串。
+        ///   查找类似 The SyncRoot property may not be used for the synchronization of concurrent collections. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentCollection_SyncRoot_NotSupported1 {
             get {
@@ -420,7 +421,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The array is multidimensional, or the type parameter for the set cannot be cast automatically to the type of the destination array. 类似的本地化字符串。
+        ///   查找类似 The array is multidimensional, or the type parameter for the set cannot be cast automatically to the type of the destination array. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentDictionary_ArrayIncorrectType {
             get {
@@ -429,7 +430,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The index is equal to or greater than the length of the array, or the number of elements in the dictionary is greater than the available space from index to the end of the destination array. 类似的本地化字符串。
+        ///   查找类似 The index is equal to or greater than the length of the array, or the number of elements in the dictionary is greater than the available space from index to the end of the destination array. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentDictionary_ArrayNotLargeEnough {
             get {
@@ -438,7 +439,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The capacity argument must be greater than or equal to zero. 类似的本地化字符串。
+        ///   查找类似 The capacity argument must be greater than or equal to zero. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentDictionary_CapacityMustNotBeNegative {
             get {
@@ -447,7 +448,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The concurrencyLevel argument must be positive. 类似的本地化字符串。
+        ///   查找类似 The concurrencyLevel argument must be positive. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentDictionary_ConcurrencyLevelMustBePositive {
             get {
@@ -456,7 +457,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The index argument is less than zero. 类似的本地化字符串。
+        ///   查找类似 The index argument is less than zero. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentDictionary_IndexIsNegative {
             get {
@@ -465,7 +466,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 TKey is a reference type and item.Key is null. 类似的本地化字符串。
+        ///   查找类似 TKey is a reference type and item.Key is null. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentDictionary_ItemKeyIsNull {
             get {
@@ -474,7 +475,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The key already existed in the dictionary. 类似的本地化字符串。
+        ///   查找类似 The key already existed in the dictionary. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentDictionary_KeyAlreadyExisted {
             get {
@@ -483,7 +484,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The source argument contains duplicate keys. 类似的本地化字符串。
+        ///   查找类似 The source argument contains duplicate keys. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentDictionary_SourceContainsDuplicateKeys {
             get {
@@ -492,7 +493,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The key was of an incorrect type for this dictionary. 类似的本地化字符串。
+        ///   查找类似 The key was of an incorrect type for this dictionary. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentDictionary_TypeOfKeyIncorrect {
             get {
@@ -501,7 +502,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The value was of an incorrect type for this dictionary. 类似的本地化字符串。
+        ///   查找类似 The value was of an incorrect type for this dictionary. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentDictionary_TypeOfValueIncorrect {
             get {
@@ -510,7 +511,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The count argument must be greater than or equal to zero. 类似的本地化字符串。
+        ///   查找类似 The count argument must be greater than or equal to zero. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentStack_PushPopRange_CountOutOfRange {
             get {
@@ -519,7 +520,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The sum of the startIndex and count arguments must be less than or equal to the collection&apos;s Count. 类似的本地化字符串。
+        ///   查找类似 The sum of the startIndex and count arguments must be less than or equal to the collection&apos;s Count. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentStack_PushPopRange_InvalidCount {
             get {
@@ -528,7 +529,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The startIndex argument must be greater than or equal to zero. 类似的本地化字符串。
+        ///   查找类似 The startIndex argument must be greater than or equal to zero. 的本地化字符串。
         /// </summary>
         internal static string ConcurrentStack_PushPopRange_StartOutOfRange {
             get {
@@ -537,7 +538,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 An element with the same key but a different value already exists. Key: {0} 类似的本地化字符串。
+        ///   查找类似 An element with the same key but a different value already exists. Key: {0} 的本地化字符串。
         /// </summary>
         internal static string DuplicateKey {
             get {
@@ -546,7 +547,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Block {0} completed as {1}. {2} 类似的本地化字符串。
+        ///   查找类似 Block {0} completed as {1}. {2} 的本地化字符串。
         /// </summary>
         internal static string event_DataflowBlockCompleted {
             get {
@@ -555,7 +556,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Block of type {0} instantiated with Id {1}. 类似的本地化字符串。
+        ///   查找类似 Block of type {0} instantiated with Id {1}. 的本地化字符串。
         /// </summary>
         internal static string event_DataflowBlockCreated {
             get {
@@ -564,7 +565,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Source {0} linked to target {1}. 类似的本地化字符串。
+        ///   查找类似 Source {0} linked to target {1}. 的本地化字符串。
         /// </summary>
         internal static string event_DataflowBlockLinking {
             get {
@@ -573,7 +574,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Source {0} unlinked from target {1}. 类似的本地化字符串。
+        ///   查找类似 Source {0} unlinked from target {1}. 的本地化字符串。
         /// </summary>
         internal static string event_DataflowBlockUnlinking {
             get {
@@ -582,7 +583,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 {1} task launched from block {0} with {2} message(s) pending. 类似的本地化字符串。
+        ///   查找类似 {1} task launched from block {0} with {2} message(s) pending. 的本地化字符串。
         /// </summary>
         internal static string event_TaskLaunchedForMessageHandling {
             get {
@@ -591,7 +592,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 This operation does not apply to an empty instance. 类似的本地化字符串。
+        ///   查找类似 This operation does not apply to an empty instance. 的本地化字符串。
         /// </summary>
         internal static string InvalidEmptyOperation {
             get {
@@ -600,7 +601,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The source completed without providing data to receive. 类似的本地化字符串。
+        ///   查找类似 The source completed without providing data to receive. 的本地化字符串。
         /// </summary>
         internal static string InvalidOperation_DataNotAvailableForReceive {
             get {
@@ -609,7 +610,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The target block failed to consume a message it had successfully reserved. 类似的本地化字符串。
+        ///   查找类似 The target block failed to consume a message it had successfully reserved. 的本地化字符串。
         /// </summary>
         internal static string InvalidOperation_FailedToConsumeReservedMessage {
             get {
@@ -618,7 +619,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The target does not have the message reserved. 类似的本地化字符串。
+        ///   查找类似 The target does not have the message reserved. 的本地化字符串。
         /// </summary>
         internal static string InvalidOperation_MessageNotReservedByTarget {
             get {
@@ -627,7 +628,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 This operation cannot be performed on a default instance of ImmutableArray&lt;T&gt;.  Consider initializing the array, or checking the ImmutableArray&lt;T&gt;.IsDefault property. 类似的本地化字符串。
+        ///   查找类似 This operation cannot be performed on a default instance of ImmutableArray&lt;T&gt;.  Consider initializing the array, or checking the ImmutableArray&lt;T&gt;.IsDefault property. 的本地化字符串。
         /// </summary>
         internal static string InvalidOperationOnDefaultArray {
             get {
@@ -636,7 +637,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 This member is not supported on this dataflow block. The block is intended for a specific purpose that does not utilize this member. 类似的本地化字符串。
+        ///   查找类似 This member is not supported on this dataflow block. The block is intended for a specific purpose that does not utilize this member. 的本地化字符串。
         /// </summary>
         internal static string NotSupported_MemberNotNeeded {
             get {
@@ -645,7 +646,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The Partitioner source returned a null enumerator. 类似的本地化字符串。
+        ///   查找类似 The Partitioner source returned a null enumerator. 的本地化字符串。
         /// </summary>
         internal static string Parallel_ForEach_NullEnumerator {
             get {
@@ -654,7 +655,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 This method requires the use of an OrderedPartitioner with the KeysNormalized property set to true. 类似的本地化字符串。
+        ///   查找类似 This method requires the use of an OrderedPartitioner with the KeysNormalized property set to true. 的本地化字符串。
         /// </summary>
         internal static string Parallel_ForEach_OrderedPartitionerKeysNotNormalized {
             get {
@@ -663,7 +664,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The Partitioner used here must support dynamic partitioning. 类似的本地化字符串。
+        ///   查找类似 The Partitioner used here must support dynamic partitioning. 的本地化字符串。
         /// </summary>
         internal static string Parallel_ForEach_PartitionerNotDynamic {
             get {
@@ -672,7 +673,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 The Partitioner used here returned a null partitioner source. 类似的本地化字符串。
+        ///   查找类似 The Partitioner used here returned a null partitioner source. 的本地化字符串。
         /// </summary>
         internal static string Parallel_ForEach_PartitionerReturnedNull {
             get {
@@ -681,7 +682,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 One of the actions was null. 类似的本地化字符串。
+        ///   查找类似 One of the actions was null. 的本地化字符串。
         /// </summary>
         internal static string Parallel_Invoke_ActionNull {
             get {
@@ -690,7 +691,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Break was called after Stop was called. 类似的本地化字符串。
+        ///   查找类似 Break was called after Stop was called. 的本地化字符串。
         /// </summary>
         internal static string ParallelState_Break_InvalidOperationException_BreakAfterStop {
             get {
@@ -699,7 +700,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 This method is not supported. 类似的本地化字符串。
+        ///   查找类似 This method is not supported. 的本地化字符串。
         /// </summary>
         internal static string ParallelState_NotSupportedException_UnsupportedMethod {
             get {
@@ -708,7 +709,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Stop was called after Break was called. 类似的本地化字符串。
+        ///   查找类似 Stop was called after Break was called. 的本地化字符串。
         /// </summary>
         internal static string ParallelState_Stop_InvalidOperationException_StopAfterBreak {
             get {
@@ -717,7 +718,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Dynamic partitions are not supported by this partitioner. 类似的本地化字符串。
+        ///   查找类似 Dynamic partitions are not supported by this partitioner. 的本地化字符串。
         /// </summary>
         internal static string Partitioner_DynamicPartitionsNotSupported {
             get {
@@ -726,7 +727,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 Can not call GetEnumerator on partitions after the source enumerable is disposed 类似的本地化字符串。
+        ///   查找类似 Can not call GetEnumerator on partitions after the source enumerable is disposed 的本地化字符串。
         /// </summary>
         internal static string PartitionerStatic_CanNotCallGetEnumeratorAfterSourceHasBeenDisposed {
             get {
@@ -735,7 +736,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///    查找与 MoveNext must be called at least once before calling Current. 类似的本地化字符串。
+        ///   查找类似 MoveNext must be called at least once before calling Current. 的本地化字符串。
         /// </summary>
         internal static string PartitionerStatic_CurrentCalledBeforeMoveNext {
             get {

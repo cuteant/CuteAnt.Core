@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>CuteAnt.Extensions.Logging.Serilog</id>
+    <version>2.0.0-rc3-160602</version>
+    <title>CuteAnt.Extensions.Logging.Serilog</title>
+    <tags>serilog, Microsoft.Extensions.Logging</tags>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <authors>Microsoft, Serilog Contributors, Seabiscuit</authors>
+    <owners>Microsoft, Serilog Contributors, Seabiscuit</owners>
+    <iconUrl>http://serilog.net/images/serilog-extension-nuget.png</iconUrl>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>http://git.oschina.net/cuteant/</projectUrl>
+    <summary>Serilog provider for Microsoft.Extensions.Logging</summary>
+    <description>Serilog provider for Microsoft.Extensions.Logging</description>
+    <copyright>Copyright (c) 2016 CuteAnt Development Team</copyright>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework=".NETFramework4.0">
+      </group>
+      <group targetFramework=".NETFramework4.5.1">
+        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="1.0.0-rtm-21431" />
+        <dependency id="Serilog" version="2.0.0-rc-640" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="..\Deploy\Net45\CuteAnt.Extensions.Logging.Serilog.dll" target="lib\net451" />
+    <file src="..\Deploy\Net45\CuteAnt.Extensions.Logging.Serilog.xml" target="lib\net451" />
+  </files>
+</package>

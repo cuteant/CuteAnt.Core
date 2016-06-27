@@ -9,7 +9,11 @@
 using System;
 using System.IO;
 using System.Xml.Serialization;
+#if NET40
 using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 
 namespace CuteAnt.Xml
 {

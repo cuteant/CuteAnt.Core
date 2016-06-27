@@ -9,7 +9,7 @@ using System.Text;
 using CuteAnt.Configuration;
 using CuteAnt.IO;
 
-#if DESKTOPCLR
+#if NET40
 namespace CuteAnt.Extensions.Logging
 #else
 namespace Microsoft.Extensions.Logging

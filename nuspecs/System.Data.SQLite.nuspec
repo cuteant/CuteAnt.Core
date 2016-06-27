@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>System.Data.SQLite</id>
+    <version>2.0.0-rc3-160602</version>
+    <title>System.Data.SQLite Core (x86/x64)</title>
+    <tags>sqlite database ado.net provider interop</tags>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <authors>SQLite Development Team, Seabiscuit</authors>
+    <owners>SQLite Development Team, Seabiscuit</owners>
+    <iconUrl>https://system.data.sqlite.org/images/sqlite128.png</iconUrl>
+    <licenseUrl>https://www.sqlite.org/copyright.html</licenseUrl>
+    <projectUrl>https://system.data.sqlite.org/</projectUrl>
+    <summary>The official SQLite database engine for both x86 and x64 along with the ADO.NET provider.</summary>
+    <description>The official SQLite database engine for both x86 and x64 along with the ADO.NET provider.</description>
+    <copyright>Copyright (c) 2016 CuteAnt Development Team</copyright>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework=".NETFramework4.0">
+        <dependency id="CuteAnt" version="2.0.0-rc3-160602" />
+      </group>
+      <group targetFramework=".NETFramework4.5.1">
+        <dependency id="CuteAnt" version="2.0.0-rc3-160602" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="..\Deploy\Net45\System.Data.SQLite.dll" target="lib\net451" />
+    <file src="..\Deploy\Net45\System.Data.SQLite.xml" target="lib\net451" />
+    <file src="..\Deploy\Net40\System.Data.SQLite.dll" target="lib\net40" />
+    <file src="..\Deploy\Net40\System.Data.SQLite.xml" target="lib\net40" />
+    <file src="..\Deploy\Net45\System.Data.SQLite.dll.config" target="lib\net451" />
+    <file src="..\Deploy\Net45\System.Data.SQLite.dll.config" target="lib\net40" />
+    <file src="..\Deploy\Net45\build\net451\x64\SQLite.Interop.dll" target="bulid\net451\x64" />
+    <file src="..\Deploy\Net45\build\net451\x86\SQLite.Interop.dll" target="bulid\net451\x86" />
+    <file src="..\Deploy\Net45\build\System.Data.SQLite.Core.targets" target="bulid\net451" />
+    <file src="..\Deploy\Net45\build\net40\x64\SQLite.Interop.dll" target="bulid\net40\x64" />
+    <file src="..\Deploy\Net45\build\net40\x86\SQLite.Interop.dll" target="bulid\net40\x86" />
+    <file src="..\Deploy\Net45\build\System.Data.SQLite.Core.targets" target="bulid\net40" />
+  </files>
+</package>

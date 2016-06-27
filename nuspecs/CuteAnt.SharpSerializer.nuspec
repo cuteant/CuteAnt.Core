@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>CuteAnt.SharpSerializer</id>
+    <version>2.0.0-rc3-160602</version>
+    <title>CuteAnt.SharpSerializer</title>
+    <tags>CuteAnt SharpSerializer</tags>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <authors>Seabiscuit</authors>
+    <owners>Seabiscuit</owners>
+    <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>http://git.oschina.net/cuteant/</projectUrl>
+    <summary>CuteAnt.SharpSerializer</summary>
+    <description>CuteAnt.SharpSerializer</description>
+    <copyright>Copyright (c) 2016 CuteAnt Development Team</copyright>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework=".NETFramework4.0">
+        <dependency id="CuteAnt" version="2.0.0-rc3-160602" />
+      </group>
+      <group targetFramework=".NETFramework4.5.1">
+        <dependency id="CuteAnt" version="2.0.0-rc3-160602" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="..\Deploy\Net45\CuteAnt.SharpSerializer.dll" target="lib\net451" />
+    <file src="..\Deploy\Net45\CuteAnt.SharpSerializer.xml" target="lib\net451" />
+    <file src="..\Deploy\Net40\CuteAnt.SharpSerializer.dll" target="lib\net40" />
+    <file src="..\Deploy\Net40\CuteAnt.SharpSerializer.xml" target="lib\net40" />
+  </files>
+</package>

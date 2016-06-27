@@ -88,9 +88,9 @@ namespace System
 			catch (InvalidCastException ex)
 			{
 				var t = obj.GetType();
-				HmTrace.WriteInfo("ObjectType：{0} {1}", t.AssemblyQualifiedName, t.Assembly.Location);
+				//HmTrace.WriteInfo("ObjectType：{0} {1}", t.AssemblyQualifiedName, t.Assembly.Location);
 				t = typeof(TInterface);
-				HmTrace.WriteInfo("InterfaceType：{0} {1}", t.AssemblyQualifiedName, t.Assembly.Location);
+				//HmTrace.WriteInfo("InterfaceType：{0} {1}", t.AssemblyQualifiedName, t.Assembly.Location);
 				throw ex;
 			}
 		}

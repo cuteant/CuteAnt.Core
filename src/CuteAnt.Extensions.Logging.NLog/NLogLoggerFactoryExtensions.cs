@@ -1,10 +1,18 @@
 ﻿using System.IO;
 using System.Reflection;
+#if NET40
 using CuteAnt.Extensions.Logging.NLog;
+#else
+using Microsoft.Extensions.Logging.NLog;
+#endif
 using NLog_LogManager = NLog.LogManager;
 using NLog.Config;
 
+#if NET40
 namespace CuteAnt.Extensions.Logging
+#else
+namespace Microsoft.Extensions.Logging
+#endif
 {
   /// <summary>
   /// Helpers for ASP.NET

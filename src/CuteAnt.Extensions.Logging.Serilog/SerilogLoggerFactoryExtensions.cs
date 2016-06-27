@@ -4,7 +4,7 @@
 using System;
 using Serilog.Extensions.Logging;
 
-namespace CuteAnt.Extensions.Logging
+namespace Microsoft.Extensions.Logging
 {
   /// <summary>
   /// Extends <see cref="ILoggerFactory"/> with Serilog configuration methods.

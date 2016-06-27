@@ -12,7 +12,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using RVA = System.UInt32;
-#if DESKTOPCLR
+#if NET40
 using CuteAnt.Extensions.Logging;
 #else
 using Microsoft.Extensions.Logging;

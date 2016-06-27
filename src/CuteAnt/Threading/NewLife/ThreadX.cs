@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-#if DESKTOPCLR
+#if NET40
 using CuteAnt.Extensions.Logging;
 #else
 using Microsoft.Extensions.Logging;

@@ -15,7 +15,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using CuteAnt.Collections;
-#if DESKTOPCLR
+#if NET40
 using CuteAnt.Extensions.Logging;
 #else
 using Microsoft.Extensions.Logging;

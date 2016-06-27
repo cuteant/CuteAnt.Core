@@ -10,16 +10,16 @@
 
 namespace MySql.Data.Properties {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
-    ///    强类型资源类，用于查找本地化字符串，等等。
+    ///   一个强类型的资源类，用于查找本地化的字符串等。
     /// </summary>
-    // 此类已由 StronglyTypedResourceBuilder 自动生成
-    // 通过 ResGen 或 Visual Studio 之类的工具提供的类。
-    // 若要添加或删除成员，请编辑 .ResX 文件，然后重新运行 ResGen
-    // (使用 /str 选项)，或重新生成 VS 项目。
+    // 此类是由 StronglyTypedResourceBuilder
+    // 类通过类似于 ResGen 或 Visual Studio 的工具自动生成的。
+    // 若要添加或移除成员，请编辑 .ResX 文件，然后重新运行 ResGen
+    // (以 /str 作为命令选项)，或重新生成 VS 项目。
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class ResourcesX {
@@ -28,17 +28,18 @@ namespace MySql.Data.Properties {
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal ResourcesX() {
         }
         
         /// <summary>
-        ///    返回此类使用的缓存 ResourceManager 实例。
+        ///   返回此类使用的缓存的 ResourceManager 实例。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MySql.Data.Properties.ResourcesX", typeof(ResourcesX).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MySql.Data.Properties.ResourcesX", typeof(ResourcesX).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -46,8 +47,8 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    重写所有项的当前线程的 CurrentUICulture 属性
-        ///    使用此强类型资源类进行资源查找。
+        ///   使用此强类型资源类，为所有资源查找
+        ///   重写当前线程的 CurrentUICulture 属性。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         internal static global::System.Globalization.CultureInfo Culture {
@@ -60,7 +61,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 Collation with id &apos;{0}&apos; not found. 类似的本地化字符串。
+        ///   查找类似 Collation with id &apos;{0}&apos; not found. 的本地化字符串。
         /// </summary>
         internal static string InvalidCollationId {
             get {
@@ -69,7 +70,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 Connection Data is incorrect. 类似的本地化字符串。
+        ///   查找类似 Connection Data is incorrect. 的本地化字符串。
         /// </summary>
         internal static string InvalidConnectionData {
             get {
@@ -78,7 +79,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 The connection string is invalid. 类似的本地化字符串。
+        ///   查找类似 The connection string is invalid. 的本地化字符串。
         /// </summary>
         internal static string InvalidConnectionString {
             get {
@@ -87,7 +88,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 &apos;{0}&apos; is not a valid connection string attribute. 类似的本地化字符串。
+        ///   查找类似 &apos;{0}&apos; is not a valid connection string attribute. 的本地化字符串。
         /// </summary>
         internal static string InvalidConnectionStringAttribute {
             get {
@@ -96,7 +97,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 Decimal (BCD) format is invalid. 类似的本地化字符串。
+        ///   查找类似 Decimal (BCD) format is invalid. 的本地化字符串。
         /// </summary>
         internal static string InvalidDecimalFormat {
             get {
@@ -105,7 +106,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 {0} is not a valid column name in the row. 类似的本地化字符串。
+        ///   查找类似 {0} is not a valid column name in the row. 的本地化字符串。
         /// </summary>
         internal static string InvalidNameIndex {
             get {
@@ -114,7 +115,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 {0} is not a valid index for the row. 类似的本地化字符串。
+        ///   查找类似 {0} is not a valid index for the row. 的本地化字符串。
         /// </summary>
         internal static string InvalidRowIndex {
             get {
@@ -123,7 +124,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 Keyword not supported. 类似的本地化字符串。
+        ///   查找类似 Keyword not supported. 的本地化字符串。
         /// </summary>
         internal static string KeywordNotSupported {
             get {
@@ -132,7 +133,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 More than one document id was generated.  Please use the DocumentIds property instead. 类似的本地化字符串。
+        ///   查找类似 More than one document id was generated.  Please use the DocumentIds property instead. 的本地化字符串。
         /// </summary>
         internal static string MoreThanOneDocumentId {
             get {
@@ -141,7 +142,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 There is no data at index {0} 类似的本地化字符串。
+        ///   查找类似 There is no data at index {0} 的本地化字符串。
         /// </summary>
         internal static string NoDataAtIndex {
             get {
@@ -150,7 +151,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 No more data in resultset. 类似的本地化字符串。
+        ///   查找类似 No more data in resultset. 的本地化字符串。
         /// </summary>
         internal static string NoMoreData {
             get {
@@ -159,7 +160,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 No placeholders. 类似的本地化字符串。
+        ///   查找类似 No placeholders. 的本地化字符串。
         /// </summary>
         internal static string NoPlaceholders {
             get {
@@ -168,7 +169,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 Path not found &apos;{0}&apos;. 类似的本地化字符串。
+        ///   查找类似 Path not found &apos;{0}&apos;. 的本地化字符串。
         /// </summary>
         internal static string PathNotFound {
             get {
@@ -177,7 +178,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 Removing a document from a collection requires an _id property. 类似的本地化字符串。
+        ///   查找类似 Removing a document from a collection requires an _id property. 的本地化字符串。
         /// </summary>
         internal static string RemovingRequiresId {
             get {
@@ -186,7 +187,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 The process of closing the resultset and resulted in results being lost. 类似的本地化字符串。
+        ///   查找类似 The process of closing the resultset and resulted in results being lost. 的本地化字符串。
         /// </summary>
         internal static string ThrowingAwayResults {
             get {
@@ -195,7 +196,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 Unable to connect to any specified host. 类似的本地化字符串。
+        ///   查找类似 Unable to connect to any specified host. 的本地化字符串。
         /// </summary>
         internal static string UnableToConnect {
             get {
@@ -204,7 +205,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 Unable to read or decode data value. 类似的本地化字符串。
+        ///   查找类似 Unable to read or decode data value. 的本地化字符串。
         /// </summary>
         internal static string UnableToDecodeDataValue {
             get {
@@ -213,7 +214,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 Unexpected end of packet found while reading data values 类似的本地化字符串。
+        ///   查找类似 Unexpected end of packet found while reading data values 的本地化字符串。
         /// </summary>
         internal static string UnexpectedEndOfPacketFound {
             get {
@@ -222,7 +223,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 Unknown placeholder :{0} 类似的本地化字符串。
+        ///   查找类似 Unknown placeholder :{0} 的本地化字符串。
         /// </summary>
         internal static string UnknownPlaceholder {
             get {
@@ -231,7 +232,7 @@ namespace MySql.Data.Properties {
         }
         
         /// <summary>
-        ///    查找与 Value &apos;{0}&apos; is not of the correct type. 类似的本地化字符串。
+        ///   查找类似 Value &apos;{0}&apos; is not of the correct type. 的本地化字符串。
         /// </summary>
         internal static string ValueNotCorrectType {
             get {

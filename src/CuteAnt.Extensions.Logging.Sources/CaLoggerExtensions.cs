@@ -1,14 +1,29 @@
 ﻿using System;
-#if !NET40
-using System.Runtime.CompilerServices;
-#endif
+using System.Diagnostics;
+#if NET40
 using CuteAnt.Extensions.Logging.Internal;
 
 namespace CuteAnt.Extensions.Logging
+#else
+using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Logging.Internal;
+
+namespace Microsoft.Extensions.Logging
+#endif
 {
   /// <summary>ILogger extension methods for common scenarios.</summary>
   internal static class CaLoggerExtensions
   {
+    #region -- GetCurrentClassLogger --
+
+    public static ILogger GetCurrentClassLogger(this ILoggerFactory loggerFactory)
+    {
+      var stackFrame = new StackFrame(1, false);
+      return loggerFactory.CreateLogger(stackFrame.GetMethod().DeclaringType);
+    }
+
+    #endregion
+
     #region -- IsEnabled --
 
     /// <summary>Returns a value stating whether the 'trace' log level is enabled.
@@ -103,7 +118,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Trace, EventId.Zero, data, null, _messageFormatter);
+      logger.Log(LogLevel.Trace, s_zero, data, null, _messageFormatter);
     }
 
     /// <summary>Formats and writes a trace log message.</summary>
@@ -115,7 +130,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Trace, EventId.Zero, new FormattedLogValues(message, args), exception, _messageFormatter);
+      logger.Log(LogLevel.Trace, s_zero, new FormattedLogValues(message, args), exception, _messageFormatter);
     }
 
     /// <summary>Writes a trace log message.</summary>
@@ -126,7 +141,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Trace, EventId.Zero, data, exception, _messageFormatter);
+      logger.Log(LogLevel.Trace, s_zero, data, exception, _messageFormatter);
     }
 
     #endregion
@@ -163,7 +178,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Debug, EventId.Zero, data, null, _messageFormatter);
+      logger.Log(LogLevel.Debug, s_zero, data, null, _messageFormatter);
     }
 
     /// <summary>Formats and writes a debug log message.</summary>
@@ -176,7 +191,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Debug, EventId.Zero, new FormattedLogValues(message, args), exception, _messageFormatter);
+      logger.Log(LogLevel.Debug, s_zero, new FormattedLogValues(message, args), exception, _messageFormatter);
     }
 
     /// <summary>Formats and writes a debug log message.</summary>
@@ -187,7 +202,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Debug, EventId.Zero, data, exception, _messageFormatter);
+      logger.Log(LogLevel.Debug, s_zero, data, exception, _messageFormatter);
     }
 
     #endregion
@@ -224,7 +239,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Information, EventId.Zero, message, null, _messageFormatter);
+      logger.Log(LogLevel.Information, s_zero, message, null, _messageFormatter);
     }
 
     /// <summary>Formats and writes an informational log message.</summary>
@@ -236,7 +251,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Information, EventId.Zero, new FormattedLogValues(message, args), exception, _messageFormatter);
+      logger.Log(LogLevel.Information, s_zero, new FormattedLogValues(message, args), exception, _messageFormatter);
     }
 
     /// <summary>Writes an informational log message.</summary>
@@ -247,7 +262,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Information, EventId.Zero, message, exception, _messageFormatter);
+      logger.Log(LogLevel.Information, s_zero, message, exception, _messageFormatter);
     }
 
     #endregion
@@ -284,7 +299,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Warning, EventId.Zero, message, null, _messageFormatter);
+      logger.Log(LogLevel.Warning, s_zero, message, null, _messageFormatter);
     }
 
     /// <summary>Formats and writes a warning log message.</summary>
@@ -296,7 +311,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Warning, EventId.Zero, new FormattedLogValues(message, args), exception, _messageFormatter);
+      logger.Log(LogLevel.Warning, s_zero, new FormattedLogValues(message, args), exception, _messageFormatter);
     }
 
     /// <summary>Writes a warning log message.</summary>
@@ -307,7 +322,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Warning, EventId.Zero, message, exception, _messageFormatter);
+      logger.Log(LogLevel.Warning, s_zero, message, exception, _messageFormatter);
     }
 
     #endregion
@@ -344,7 +359,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Error, EventId.Zero, message, null, _messageFormatter);
+      logger.Log(LogLevel.Error, s_zero, message, null, _messageFormatter);
     }
 
     /// <summary>Formats and writes an error log message.</summary>
@@ -356,7 +371,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Error, EventId.Zero, new FormattedLogValues(message, args), exception, _messageFormatter);
+      logger.Log(LogLevel.Error, s_zero, new FormattedLogValues(message, args), exception, _messageFormatter);
     }
 
     /// <summary>Writes an error log message.</summary>
@@ -367,7 +382,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Error, EventId.Zero, message, exception, _messageFormatter);
+      logger.Log(LogLevel.Error, s_zero, message, exception, _messageFormatter);
     }
 
     #endregion
@@ -404,7 +419,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Critical, EventId.Zero, message, null, _messageFormatter);
+      logger.Log(LogLevel.Critical, s_zero, message, null, _messageFormatter);
     }
 
     /// <summary>Formats and writes a critical log message.</summary>
@@ -416,7 +431,7 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Critical, EventId.Zero, new FormattedLogValues(message, args), exception, _messageFormatter);
+      logger.Log(LogLevel.Critical, s_zero, new FormattedLogValues(message, args), exception, _messageFormatter);
     }
 
     /// <summary>Writes a critical log message.</summary>
@@ -427,12 +442,14 @@ namespace CuteAnt.Extensions.Logging
     {
       if (logger == null) { throw new ArgumentNullException(nameof(logger)); }
 
-      logger.Log(LogLevel.Critical, EventId.Zero, message, exception, _messageFormatter);
+      logger.Log(LogLevel.Critical, s_zero, message, exception, _messageFormatter);
     }
 
     #endregion
 
     #region -- Helpers --
+
+    private static readonly EventId s_zero = new EventId(0);
 
     private static readonly Func<object, Exception, string> _messageFormatter = MessageFormatter;
 

@@ -1,8 +1,17 @@
-﻿using MS_ILogger = CuteAnt.Extensions.Logging.ILogger;
+﻿#if NET40
+using MS_ILogger = CuteAnt.Extensions.Logging.ILogger;
 using MS_ILoggerProvider = CuteAnt.Extensions.Logging.ILoggerProvider;
+#else
+using MS_ILogger = Microsoft.Extensions.Logging.ILogger;
+using MS_ILoggerProvider = Microsoft.Extensions.Logging.ILoggerProvider;
+#endif
 using NLo_gLogManager = NLog.LogManager;
 
+#if NET40
 namespace CuteAnt.Extensions.Logging.NLog
+#else
+namespace Microsoft.Extensions.Logging.NLog
+#endif
 {
   /// <summary>
   /// Provider logger for NLog.

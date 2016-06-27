@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using CuteAnt.Configuration;
 using CuteAnt.Reflection;
-#if DESKTOPCLR
+#if NET40
 using CuteAnt.Extensions.Logging;
 #else
 using Microsoft.Extensions.Logging;

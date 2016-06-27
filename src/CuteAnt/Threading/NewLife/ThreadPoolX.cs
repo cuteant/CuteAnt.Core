@@ -13,7 +13,7 @@ using CuteAnt.Collections;
 using CuteAnt.Reflection;
 using CuteAnt.Configuration;
 using ThreadState = System.Threading.ThreadState;
-#if DESKTOPCLR
+#if NET40
 using CuteAnt.Extensions.Logging;
 #else
 using Microsoft.Extensions.Logging;

@@ -8,10 +8,10 @@ using System.Threading;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Messaging;
 #endif
-using CuteAnt.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Serilog.Core;
 using Serilog.Events;
-using FrameworkLogger = CuteAnt.Extensions.Logging.ILogger;
+using FrameworkLogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Serilog.Extensions.Logging
 {

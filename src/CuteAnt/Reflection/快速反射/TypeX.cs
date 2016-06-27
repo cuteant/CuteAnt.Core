@@ -18,7 +18,11 @@ using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using System.Text;
 using CuteAnt.Collections;
+#if NET40
 using CuteAnt.Extensions.Logging;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 
 namespace CuteAnt.Reflection
 {
