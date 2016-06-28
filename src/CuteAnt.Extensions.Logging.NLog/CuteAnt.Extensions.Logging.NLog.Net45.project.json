@@ -6,7 +6,7 @@
     "win": {}
   },
   "dependencies": {
-    "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rtm-21431",
+    "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
     "NLog": "4.3.5"
   }
 }

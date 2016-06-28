@@ -1684,7 +1684,7 @@ namespace System.Data.SQLite
     //       System.Data.SQLite functionality (e.g. being able to bind
     //       parameters and handle column values of types Int64 and Double).
     //
-    internal const string SQLITE_DLL = "SQLite.Interop.101.dll";
+    internal const string SQLITE_DLL = "SQLite.Interop.102.dll";
 #elif SQLITE_STANDARD
     //
     // NOTE: Otherwise, if the standard SQLite library is enabled, use it.
@@ -2631,6 +2631,13 @@ namespace System.Data.SQLite
     internal static extern SQLiteErrorCode sqlite3_config_log(SQLiteConfigOpsEnum op, SQLiteLogCallback func, IntPtr pvUser);
 
 #if !PLATFORM_COMPACTFRAMEWORK
+    [DllImport(SQLITE_DLL, EntryPoint = "sqlite3_db_config", CallingConvention = CallingConvention.Cdecl)]
+#else
+    [DllImport(SQLITE_DLL, EntryPoint = "sqlite3_db_config")]
+#endif
+    internal static extern SQLiteErrorCode sqlite3_db_config_int_refint(IntPtr db, SQLiteConfigDbOpsEnum op, int value, ref int result);
+
+#if !PLATFORM_COMPACTFRAMEWORK
     [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
 #else
     [DllImport(SQLITE_DLL)]
@@ -2657,6 +2664,13 @@ namespace System.Data.SQLite
     [DllImport(SQLITE_DLL)]
 #endif
     internal static extern IntPtr sqlite3_db_filename(IntPtr db, IntPtr dbName);
+
+#if !PLATFORM_COMPACTFRAMEWORK
+    [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+#else
+    [DllImport(SQLITE_DLL)]
+#endif
+    internal static extern int sqlite3_db_readonly(IntPtr db, IntPtr dbName);
 
 #if !PLATFORM_COMPACTFRAMEWORK
     [DllImport(SQLITE_DLL, EntryPoint = "sqlite3_db_filename", CallingConvention = CallingConvention.Cdecl)]

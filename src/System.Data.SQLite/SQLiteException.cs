@@ -560,6 +560,11 @@ namespace System.Data.SQLite
     /// <summary>
     /// User authentication failed.
     /// </summary>
-    Auth_User = (Auth | (1 << 8))
+    Auth_User = (Auth | (1 << 8)),
+    /// <summary>
+    /// Success.  Prevents the extension from unloading until the process
+    /// terminates.
+    /// </summary>
+    Ok_Load_Permanently = (Ok | (1 << 8))
   }
 }

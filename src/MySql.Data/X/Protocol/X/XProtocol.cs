@@ -41,6 +41,7 @@ using MySqlX.XDevAPI.Relational;
 using MySqlX.XDevAPI.CRUD;
 using MySql.Data.MySqlClient;
 using MySql.Data.Properties;
+using System.IO;
 
 namespace MySqlX.Protocol
 {
@@ -49,6 +50,8 @@ namespace MySqlX.Protocol
     private CommunicationPacket pendingPacket;
     private XPacketReaderWriter _reader;
     private XPacketReaderWriter _writer;
+
+    public Capabilities Capabilities { get; protected set; }
 
     public XProtocol(XPacketReaderWriter reader, XPacketReaderWriter writer)
     {
@@ -117,26 +120,24 @@ namespace MySqlX.Protocol
       CommunicationPacket packet = ReadPacket();
       if (packet.MessageType != (int)ServerMessageId.CONN_CAPABILITIES)
         ThrowUnexpectedMessage(packet.MessageType, (int)ServerMessageId.CONN_CAPABILITIES);
-      Capabilities caps = Capabilities.ParseFrom(packet.Buffer);
-      foreach (Capability cap in caps.Capabilities_List)
-      {
-        if (cap.Name == "authentication.mechanism")
-        {
-        }
-      }
+      Capabilities = Capabilities.ParseFrom(packet.Buffer);
     }
 
-    public void SetCapabilities()
+    public void SetCapabilities(Dictionary<string, object> clientCapabilities)
     {
-      //var builder = Capabilities.CreateBuilder();
-      //var cap = Capability.CreateBuilder().SetName("tls").SetValue(ExprUtil.BuildAny("1")).Build();
-      //builder.AddCapabilities_(cap);
-      //_writer.Write(ClientMessageId.CON_CAPABILITIES_SET, builder.Build());
-      //while (true)
-      //{
-      //  CommunicationPacket p = ReadPacket();
-      //  Error e = Error.ParseFrom(p.Buffer);
-      //}
+      if (clientCapabilities == null || clientCapabilities.Count == 0)
+        return;
+
+      var builder = CapabilitiesSet.CreateBuilder();
+      var capabilities = Capabilities.CreateBuilder();
+      foreach (var cap in clientCapabilities)
+      {
+        var capabilityMsg = Capability.CreateBuilder().SetName(cap.Key).SetValue(ExprUtil.BuildAny(cap.Value)).Build();
+        capabilities.AddCapabilities_(capabilityMsg);
+      }
+      builder.SetCapabilities(capabilities);
+      _writer.Write(ClientMessageId.CON_CAPABILITIES_SET, builder.Build());
+      ReadOk();
     }
 
     private void ThrowUnexpectedMessage(int received, int expected)
@@ -205,13 +206,13 @@ namespace MySqlX.Protocol
       switch (state.Param)
       {
         case SessionStateChanged.Types.Parameter.ROWS_AFFECTED:
-            rs._recordsAffected = state.Value.VUnsignedInt;
+          rs._recordsAffected = state.Value.VUnsignedInt;
           break;
         case SessionStateChanged.Types.Parameter.GENERATED_INSERT_ID:
-            rs._autoIncrementValue = state.Value.VUnsignedInt;
+          rs._autoIncrementValue = state.Value.VUnsignedInt;
           break;
           // handle the other ones
-//      default: SessionStateChanged(state);
+          //      default: SessionStateChanged(state);
       }
     }
 
@@ -307,7 +308,7 @@ namespace MySqlX.Protocol
           break;
         }
         else
-          throw new MySqlException(MySql.Data.Properties.ResourcesX.ThrowingAwayResults);
+          throw new MySqlException(ResourcesX.ThrowingAwayResults);
       }
     }
 
@@ -329,7 +330,7 @@ namespace MySqlX.Protocol
       XDevAPI.Relational.Column c = new XDevAPI.Relational.Column();
       c._decoder = XValueDecoderFactory.GetValueDecoder(c, colData.Type);
       c._decoder.Column = c;
-      
+
       if (!colData.Name.IsEmpty)
         c.ColumnLabel = colData.Name.ToStringUtf8();
       if (!colData.OriginalName.IsEmpty)
@@ -364,9 +365,9 @@ namespace MySqlX.Protocol
     {
       Insert.Builder builder = Mysqlx.Crud.Insert.CreateBuilder().SetCollection(ExprUtil.BuildCollection(schema, collection));
       builder.SetDataModel(isRelational ? DataModel.TABLE : DataModel.DOCUMENT);
-      if(columns != null && columns.Length > 0)
+      if (columns != null && columns.Length > 0)
       {
-        foreach(string column in columns)
+        foreach (string column in columns)
         {
           builder.AddProjection(new ExprParser(column).ParseTableInsertField());
         }
@@ -386,7 +387,7 @@ namespace MySqlX.Protocol
       _writer.Write(ClientMessageId.CRUD_INSERT, msg);
     }
 
-    private void ApplyFilter<T>(Func<Limit, T> setLimit, Func<Expr, T> setCriteria, Func<IEnumerable<Order>,T> setOrder, FilterParams filter, Func<IEnumerable<Scalar>,T> addParams)
+    private void ApplyFilter<T>(Func<Limit, T> setLimit, Func<Expr, T> setCriteria, Func<IEnumerable<Order>, T> setOrder, FilterParams filter, Func<IEnumerable<Scalar>, T> addParams)
     {
       if (filter.HasLimit)
       {
@@ -451,21 +452,45 @@ namespace MySqlX.Protocol
       _writer.Write(ClientMessageId.CRUD_FIND, builder.Build());
     }
 
-    internal void ReadOK()
+    internal void ReadOkClose()
+    {
+      try
+      {
+        string response = ReadOk();
+        if (response.IndexOf("bye", 0, StringComparison.InvariantCultureIgnoreCase) < 0)
+          throw new ArgumentException();
+      }
+      catch (IOException)
+      {
+        // TODO connection is closed 
+      }
+      catch (Exception ex)
+      {
+        throw new MySqlException("Unexpected message encountered during closing session", ex);
+      }
+    }
+
+    internal string ReadOk()
     {
       CommunicationPacket p = ReadPacket();
       if (p.MessageType == (int)ServerMessageId.ERROR)
       {
         var error = Error.ParseFrom(p.Buffer);
-        throw new MySqlException("Received error when closing session: " + error.Msg);
+        throw new MySqlException(error.Msg);
       }
       if (p.MessageType == (int)ServerMessageId.OK)
       {
         var response = Ok.ParseFrom(p.Buffer);
-        if (!(response.Msg.IndexOf("bye", 0 , StringComparison.InvariantCultureIgnoreCase) < 0))
-        return;
+        return response.Msg;
       }
-      throw new MySqlException("Unexpected message encountered during closing session");
+      else
+        throw new InvalidOperationException();
+    }
+
+    internal void SetXPackets(XPacketReaderWriter reader, XPacketReaderWriter writer)
+    {
+      _reader = reader;
+      _writer = writer;
     }
   }
 }

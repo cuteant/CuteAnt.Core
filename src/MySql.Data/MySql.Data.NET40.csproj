@@ -81,6 +81,7 @@
     <Compile Include="common\Platform.cs" />
     <Compile Include="common\QueryNormalizer.cs" />
     <Compile Include="common\SharedMemoryStream.cs" />
+    <Compile Include="common\Ssl.cs" />
     <Compile Include="common\StreamCreator.cs" />
     <Compile Include="common\StringUtility.cs" />
     <Compile Include="common\Version.cs" />

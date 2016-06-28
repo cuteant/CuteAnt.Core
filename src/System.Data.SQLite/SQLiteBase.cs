@@ -42,6 +42,10 @@ namespace System.Data.SQLite
     /// </summary>
     internal abstract int VersionNumber { get; }
     /// <summary>
+    /// Returns non-zero if this connection to the database is read-only.
+    /// </summary>
+    internal abstract bool IsReadOnly(string name);
+    /// <summary>
     /// Returns the rowid of the most recent successful INSERT into the database from this connection.
     /// </summary>
     internal abstract long LastInsertRowId { get; }
@@ -233,6 +237,7 @@ namespace System.Data.SQLite
     internal abstract void Bind_UInt32(SQLiteStatement stmt, SQLiteConnectionFlags flags, int index, UInt32 value);
     internal abstract void Bind_Int64(SQLiteStatement stmt, SQLiteConnectionFlags flags, int index, Int64 value);
     internal abstract void Bind_UInt64(SQLiteStatement stmt, SQLiteConnectionFlags flags, int index, UInt64 value);
+    internal abstract void Bind_Boolean(SQLiteStatement stmt, SQLiteConnectionFlags flags, int index, bool value);
     internal abstract void Bind_Text(SQLiteStatement stmt, SQLiteConnectionFlags flags, int index, string value);
     internal abstract void Bind_Blob(SQLiteStatement stmt, SQLiteConnectionFlags flags, int index, byte[] blobData);
     internal abstract void Bind_DateTime(SQLiteStatement stmt, SQLiteConnectionFlags flags, int index, DateTime dt);
@@ -1156,6 +1161,37 @@ namespace System.Data.SQLite
     NoVerifyTextAffinity = 0x200000000,
 
     /// <summary>
+    /// Enable using per-connection mappings between type names and
+    /// <see cref="SQLiteBindValueCallback" /> values.  Also see the
+    /// <see cref="SQLiteConnection.ClearTypeCallbacks" />,
+    /// <see cref="SQLiteConnection.TryGetTypeCallbacks" />, and
+    /// <see cref="SQLiteConnection.SetTypeCallbacks" /> methods.
+    /// </summary>
+    UseConnectionBindValueCallbacks = 0x400000000,
+
+    /// <summary>
+    /// Enable using per-connection mappings between type names and
+    /// <see cref="SQLiteReadValueCallback" /> values.  Also see the
+    /// <see cref="SQLiteConnection.ClearTypeCallbacks" />,
+    /// <see cref="SQLiteConnection.TryGetTypeCallbacks" />, and
+    /// <see cref="SQLiteConnection.SetTypeCallbacks" /> methods.
+    /// </summary>
+    UseConnectionReadValueCallbacks = 0x800000000,
+
+    /// <summary>
+    /// If the database type name has not been explicitly set for the
+    /// parameter specified, fallback to using the parameter name.
+    /// </summary>
+    UseParameterNameForTypeName = 0x1000000000,
+
+    /// <summary>
+    /// If the database type name has not been explicitly set for the
+    /// parameter specified, fallback to using the database type name
+    /// associated with the <see cref="DbType" /> value.
+    /// </summary>
+    UseParameterDbTypeForTypeName = 0x2000000000,
+
+    /// <summary>
     /// When binding parameter values or returning column values, always
     /// treat them as though they were plain text (i.e. no numeric,
     /// date/time, or other conversions should be attempted).
@@ -1187,6 +1223,19 @@ namespace System.Data.SQLite
                                              ConvertAndBindInvariantText,
 
     /// <summary>
+    /// Enables use of all per-connection value handling callbacks.
+    /// </summary>
+    UseConnectionAllValueCallbacks = UseConnectionBindValueCallbacks |
+                                     UseConnectionReadValueCallbacks,
+
+    /// <summary>
+    /// Enables use of all applicable <see cref="SQLiteParameter" />
+    /// properties as fallbacks for the database type name.
+    /// </summary>
+    UseParameterAnythingForTypeName = UseParameterNameForTypeName |
+                                      UseParameterDbTypeForTypeName,
+
+    /// <summary>
     /// Enable all logging.
     /// </summary>
 #if INTEROP_VIRTUAL_TABLE
@@ -1211,6 +1260,17 @@ namespace System.Data.SQLite
     /// The default extra flags for new connections with all logging enabled.
     /// </summary>
     DefaultAndLogAll = Default | LogAll
+  }
+
+  // These are the options to the internal sqlite3_db_config call.
+  internal enum SQLiteConfigDbOpsEnum
+  {
+    SQLITE_DBCONFIG_NONE = 0, // nil
+    SQLITE_DBCONFIG_LOOKASIDE = 1001, // void* int int
+    SQLITE_DBCONFIG_ENABLE_FKEY = 1002, // int int*
+    SQLITE_DBCONFIG_ENABLE_TRIGGER = 1003, // int int*
+    SQLITE_DBCONFIG_ENABLE_FTS3_TOKENIZER = 1004, // int int*
+    SQLITE_DBCONFIG_ENABLE_LOAD_EXTENSION = 1005 // int int*
   }
 
   // These are the options to the internal sqlite3_config call.

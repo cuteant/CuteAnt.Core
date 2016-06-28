@@ -6,7 +6,7 @@
     "win": {}
   },
   "dependencies": {
-    "Ix-Main": "1.2.5",
+    "System.Interactive": "3.0.0",
     "System.Collections.Immutable": "1.2.0"
   }
 }

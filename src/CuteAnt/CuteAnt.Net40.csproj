@@ -235,9 +235,6 @@
     <Compile Include="Xml\XmlWriterX.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="CuteAnt.Net40.project.json" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="LICENSE.TXT" />
     <Content Include="readme.txt" />
     <Content Include="Security\Cryptography\CustomDictionary.xml" />
@@ -247,6 +244,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CuteAnt.Net40.project.json" />
   </ItemGroup>
   <Import Project="..\..\..\SharedProjects\CuteAnt.Extensions.IO.Sources\CuteAnt.Extensions.IO.Sources.projitems" Label="Shared" />
   <Import Project="..\..\..\SharedProjects\CuteAnt.Extensions.Logging.Sources\CuteAnt.Extensions.Logging.Sources.projitems" Label="Shared" />

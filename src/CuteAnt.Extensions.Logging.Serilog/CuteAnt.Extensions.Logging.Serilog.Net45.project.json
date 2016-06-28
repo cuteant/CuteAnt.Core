@@ -6,7 +6,7 @@
     "win": {}
   },
   "dependencies": {
-    "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rtm-21431",
-    "Serilog": "2.0.0-rc-640"
+    "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
+    "Serilog": "2.0.0"
   }
 }

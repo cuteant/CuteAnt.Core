@@ -431,6 +431,69 @@ namespace System.Data.SQLite
     }
 
     /// <summary>
+    /// Invokes the data reader value callback configured for the database
+    /// type name associated with the specified column.  If no data reader
+    /// value callback is available for the database type name, do nothing.
+    /// </summary>
+    /// <param name="index">
+    /// The index of the column being read.
+    /// </param>
+    /// <param name="eventArgs">
+    /// The extra event data to pass into the callback.
+    /// </param>
+    /// <param name="complete">
+    /// Non-zero if the default handling for the data reader call should be
+    /// skipped.  If this is set to non-zero and the necessary return value
+    /// is unavailable or unsuitable, an exception will be thrown.
+    /// </param>
+    private void InvokeReadValueCallback(
+        int index,
+        SQLiteReadValueEventArgs eventArgs,
+        out bool complete
+        )
+    {
+      complete = false;
+      SQLiteConnectionFlags oldFlags = _flags;
+      _flags &= ~SQLiteConnectionFlags.UseConnectionReadValueCallbacks;
+
+      try
+      {
+        string typeName = GetDataTypeName(index);
+
+        if (typeName == null)
+          return;
+
+        SQLiteConnection connection = GetConnection(this);
+
+        if (connection == null)
+          return;
+
+        SQLiteTypeCallbacks callbacks;
+
+        if (!connection.TryGetTypeCallbacks(typeName, out callbacks) ||
+            (callbacks == null))
+        {
+          return;
+        }
+
+        SQLiteReadValueCallback callback = callbacks.ReadValueCallback;
+
+        if (callback == null)
+          return;
+
+        object userData = callbacks.ReadValueUserData;
+
+        callback(
+            _activeStatement._sql, this, oldFlags, eventArgs, typeName,
+            index, userData, out complete); /* throw */
+      }
+      finally
+      {
+        _flags |= SQLiteConnectionFlags.UseConnectionReadValueCallbacks;
+      }
+    }
+
+    /// <summary>
     /// Retrieves the column as a boolean value
     /// </summary>
     /// <param name="i">The index of the column.</param>
@@ -439,6 +502,23 @@ namespace System.Data.SQLite
     {
       CheckDisposed();
       VerifyForGet();
+
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetBoolean", null, value), out complete);
+
+        if (complete)
+        {
+          if (value.BooleanValue == null)
+            throw new SQLiteException("missing boolean return value");
+
+          return (bool)value.BooleanValue;
+        }
+      }
 
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetBoolean(i - PrivateVisibleFieldCount);
@@ -456,6 +536,23 @@ namespace System.Data.SQLite
     {
       CheckDisposed();
       VerifyForGet();
+
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetByte", null, value), out complete);
+
+        if (complete)
+        {
+          if (value.ByteValue == null)
+            throw new SQLiteException("missing byte return value");
+
+          return (byte)value.ByteValue;
+        }
+      }
 
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetByte(i - PrivateVisibleFieldCount);
@@ -481,6 +578,42 @@ namespace System.Data.SQLite
       CheckDisposed();
       VerifyForGet();
 
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteReadArrayEventArgs eventArgs = new SQLiteReadArrayEventArgs(
+            fieldOffset, buffer, bufferoffset, length);
+
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetBytes", eventArgs, value), out complete);
+
+        if (complete)
+        {
+          byte[] bytes = value.BytesValue;
+
+          if (bytes != null)
+          {
+#if !PLATFORM_COMPACTFRAMEWORK
+            Array.Copy(bytes, /* throw */
+                eventArgs.DataOffset, eventArgs.ByteBuffer,
+                eventArgs.BufferOffset, eventArgs.Length);
+#else
+            Array.Copy(bytes, /* throw */
+                (int)eventArgs.DataOffset, eventArgs.ByteBuffer,
+                eventArgs.BufferOffset, eventArgs.Length);
+#endif
+
+            return eventArgs.Length;
+          }
+          else
+          {
+            return -1;
+          }
+        }
+      }
+
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetBytes(i - PrivateVisibleFieldCount, fieldOffset, buffer, bufferoffset, length);
 
@@ -497,6 +630,23 @@ namespace System.Data.SQLite
     {
       CheckDisposed();
       VerifyForGet();
+
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetChar", null, value), out complete);
+
+        if (complete)
+        {
+          if (value.CharValue == null)
+            throw new SQLiteException("missing character return value");
+
+          return (char)value.CharValue;
+        }
+      }
 
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetChar(i - PrivateVisibleFieldCount);
@@ -521,6 +671,42 @@ namespace System.Data.SQLite
     {
       CheckDisposed();
       VerifyForGet();
+
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteReadArrayEventArgs eventArgs = new SQLiteReadArrayEventArgs(
+            fieldoffset, buffer, bufferoffset, length);
+
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetChars", eventArgs, value), out complete);
+
+        if (complete)
+        {
+          char[] chars = value.CharsValue;
+
+          if (chars != null)
+          {
+#if !PLATFORM_COMPACTFRAMEWORK
+            Array.Copy(chars, /* throw */
+                eventArgs.DataOffset, eventArgs.CharBuffer,
+                eventArgs.BufferOffset, eventArgs.Length);
+#else
+            Array.Copy(chars, /* throw */
+                (int)eventArgs.DataOffset, eventArgs.CharBuffer,
+                eventArgs.BufferOffset, eventArgs.Length);
+#endif
+
+            return eventArgs.Length;
+          }
+          else
+          {
+            return -1;
+          }
+        }
+      }
 
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetChars(i - PrivateVisibleFieldCount, fieldoffset, buffer, bufferoffset, length);
@@ -557,6 +743,23 @@ namespace System.Data.SQLite
       CheckDisposed();
       VerifyForGet();
 
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetDateTime", null, value), out complete);
+
+        if (complete)
+        {
+          if (value.DateTimeValue == null)
+            throw new SQLiteException("missing date/time return value");
+
+          return (DateTime)value.DateTimeValue;
+        }
+      }
+
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetDateTime(i - PrivateVisibleFieldCount);
 
@@ -574,6 +777,23 @@ namespace System.Data.SQLite
       CheckDisposed();
       VerifyForGet();
 
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetDecimal", null, value), out complete);
+
+        if (complete)
+        {
+          if (value.DecimalValue == null)
+            throw new SQLiteException("missing decimal return value");
+
+          return (decimal)value.DecimalValue;
+        }
+      }
+
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetDecimal(i - PrivateVisibleFieldCount);
 
@@ -590,6 +810,23 @@ namespace System.Data.SQLite
     {
       CheckDisposed();
       VerifyForGet();
+
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetDouble", null, value), out complete);
+
+        if (complete)
+        {
+          if (value.DoubleValue == null)
+            throw new SQLiteException("missing double return value");
+
+          return (double)value.DoubleValue;
+        }
+      }
 
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetDouble(i - PrivateVisibleFieldCount);
@@ -623,6 +860,23 @@ namespace System.Data.SQLite
       CheckDisposed();
       VerifyForGet();
 
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetFloat", null, value), out complete);
+
+        if (complete)
+        {
+          if (value.FloatValue == null)
+            throw new SQLiteException("missing float return value");
+
+          return (float)value.FloatValue;
+        }
+      }
+
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetFloat(i - PrivateVisibleFieldCount);
 
@@ -639,6 +893,23 @@ namespace System.Data.SQLite
     {
       CheckDisposed();
       VerifyForGet();
+
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetGuid", null, value), out complete);
+
+        if (complete)
+        {
+          if (value.GuidValue == null)
+            throw new SQLiteException("missing guid return value");
+
+          return (Guid)value.GuidValue;
+        }
+      }
 
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetGuid(i - PrivateVisibleFieldCount);
@@ -664,6 +935,23 @@ namespace System.Data.SQLite
       CheckDisposed();
       VerifyForGet();
 
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetCombGuid", null, value), out complete);
+
+        if (complete)
+        {
+          if (value.GuidValue == null)
+            throw new SQLiteException("missing combguid return value");
+
+          return (CombGuid)value.GuidValue;
+        }
+      }
+
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetCombGuid(i - PrivateVisibleFieldCount);
 
@@ -688,6 +976,23 @@ namespace System.Data.SQLite
       CheckDisposed();
       VerifyForGet();
 
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetInt16", null, value), out complete);
+
+        if (complete)
+        {
+          if (value.Int16Value == null)
+            throw new SQLiteException("missing int16 return value");
+
+          return (Int16)value.Int16Value;
+        }
+      }
+
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetInt16(i - PrivateVisibleFieldCount);
 
@@ -705,6 +1010,23 @@ namespace System.Data.SQLite
       CheckDisposed();
       VerifyForGet();
 
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetInt32", null, value), out complete);
+
+        if (complete)
+        {
+          if (value.Int32Value == null)
+            throw new SQLiteException("missing int32 return value");
+
+          return (Int32)value.Int32Value;
+        }
+      }
+
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetInt32(i - PrivateVisibleFieldCount);
 
@@ -721,6 +1043,23 @@ namespace System.Data.SQLite
     {
       CheckDisposed();
       VerifyForGet();
+
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetInt64", null, value), out complete);
+
+        if (complete)
+        {
+          if (value.Int64Value == null)
+            throw new SQLiteException("missing int64 return value");
+
+          return (Int64)value.Int64Value;
+        }
+      }
 
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetInt64(i - PrivateVisibleFieldCount);
@@ -1259,6 +1598,18 @@ namespace System.Data.SQLite
       CheckDisposed();
       VerifyForGet();
 
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetString", null, value), out complete);
+
+        if (complete)
+          return value.StringValue;
+      }
+
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetString(i - PrivateVisibleFieldCount);
 
@@ -1277,6 +1628,18 @@ namespace System.Data.SQLite
     {
       CheckDisposed();
       VerifyForGet();
+
+      if ((_flags & SQLiteConnectionFlags.UseConnectionReadValueCallbacks) == SQLiteConnectionFlags.UseConnectionReadValueCallbacks)
+      {
+        SQLiteDataReaderValue value = new SQLiteDataReaderValue();
+        bool complete;
+
+        InvokeReadValueCallback(i, new SQLiteReadValueEventArgs(
+            "GetValue", null, value), out complete);
+
+        if (complete)
+          return value.Value;
+      }
 
       if (i >= PrivateVisibleFieldCount && _keyInfo != null)
         return _keyInfo.GetValue(i - PrivateVisibleFieldCount);

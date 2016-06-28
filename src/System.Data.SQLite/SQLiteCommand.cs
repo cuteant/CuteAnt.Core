@@ -635,6 +635,76 @@ namespace System.Data.SQLite
     }
 
     /// <summary>
+    /// Verifies that all SQL queries associated with the current command text
+    /// can be successfully compiled.  A <see cref="SQLiteException" /> will be
+    /// raised if any errors occur.
+    /// </summary>
+    public void VerifyOnly()
+    {
+      CheckDisposed();
+
+      SQLiteConnection connection = _cnn;
+      SQLiteConnection.Check(connection); /* throw */
+      SQLiteBase sqlBase = connection._sql;
+
+      if ((connection == null) || (sqlBase == null))
+        throw new SQLiteException("invalid or unusable connection");
+
+      List<SQLiteStatement> statements = null;
+      SQLiteStatement currentStatement = null;
+
+      try
+      {
+        string text = _commandText;
+        uint timeout = (uint)(_commandTimeout * 1000);
+        SQLiteStatement previousStatement = null;
+
+        while ((text != null) && (text.Length > 0))
+        {
+          currentStatement = sqlBase.Prepare(
+              connection, text, previousStatement, timeout,
+              ref text); /* throw */
+
+          previousStatement = currentStatement;
+
+          if (currentStatement != null)
+          {
+            if (statements == null)
+              statements = new List<SQLiteStatement>();
+
+            statements.Add(currentStatement);
+            currentStatement = null;
+          }
+
+          if (text == null) continue;
+          text = text.Trim();
+        }
+      }
+      finally
+      {
+        if (currentStatement != null)
+        {
+          currentStatement.Dispose();
+          currentStatement = null;
+        }
+
+        if (statements != null)
+        {
+          foreach (SQLiteStatement statement in statements)
+          {
+            if (statement == null)
+              continue;
+
+            statement.Dispose();
+          }
+
+          statements.Clear();
+          statements = null;
+        }
+      }
+    }
+
+    /// <summary>
     /// This function ensures there are no active readers, that we have a valid connection,
     /// that the connection is open, that all statements are prepared and all parameters are assigned
     /// in preparation for allocating a data reader.
@@ -953,7 +1023,7 @@ namespace System.Data.SQLite
       using (SQLiteDataReader reader = ExecuteReader(behavior |
           CommandBehavior.SingleRow | CommandBehavior.SingleResult))
       {
-        if (reader.Read())
+        if (reader.Read() && (reader.FieldCount > 0))
           return reader[0];
       }
       return null;
