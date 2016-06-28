@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>CuteAnt.Extensions.Logging.NLog</id>
-    <version>2.0.0-rc3-160602</version>
+    <version>2.0.0-rc3-160605</version>
     <title>CuteAnt.Extensions.Logging.NLog</title>
     <tags>NLog, Microsoft.Extensions.Logging, log</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -21,7 +21,7 @@
         <dependency id="NLog" version="4.3.5" />
       </group>
       <group targetFramework=".NETFramework4.5.1">
-        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="1.0.0-rtm-21431" />
+        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="1.0.0" />
         <dependency id="NLog" version="4.3.5" />
       </group>
     </dependencies>
