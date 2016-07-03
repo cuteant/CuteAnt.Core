@@ -46,6 +46,8 @@ namespace Microsoft.Extensions.Logging.NLog
           //message arguments are not needed as it is already checked that the loglevel is enabled.
           var eventInfo = LogEventInfo.Create(nLogLogLevel, _logger.Name, message);
           eventInfo.Exception = exception;
+          eventInfo.Properties["EventId.Id"] = eventId.Id;
+          eventInfo.Properties["EventId.Name"] = eventId.Name;
           eventInfo.Properties["EventId"] = eventId;
           _logger.Log(eventInfo);
         }
