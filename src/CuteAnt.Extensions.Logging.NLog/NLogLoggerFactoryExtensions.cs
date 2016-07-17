@@ -28,8 +28,12 @@ namespace Microsoft.Extensions.Logging
     {
       //ignore this
 #if NET40
+      NLog_LogManager.AddHiddenAssembly(Assembly.Load(new AssemblyName("CuteAnt.Extensions.Logging")));
+      NLog_LogManager.AddHiddenAssembly(Assembly.Load(new AssemblyName("CuteAnt.Extensions.Logging.Abstractions")));
       NLog_LogManager.AddHiddenAssembly(typeof(NLogLoggerFactoryExtensions).Assembly);
 #else
+      NLog_LogManager.AddHiddenAssembly(Assembly.Load(new AssemblyName("Microsoft.Extensions.Logging")));
+      NLog_LogManager.AddHiddenAssembly(Assembly.Load(new AssemblyName("Microsoft.Extensions.Logging.Abstractions")));
       NLog_LogManager.AddHiddenAssembly(typeof(NLogLoggerFactoryExtensions).GetTypeInfo().Assembly);
 #endif
 

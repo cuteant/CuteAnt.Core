@@ -248,3 +248,4 @@ TODO.txt
 *.GhostDoc.xml
 /nuspecs/nuget.exe
 *.project.lock.json
+/src/CuteAnt.Features

@@ -15,36 +15,45 @@ using FrameworkLogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Serilog.Extensions.Logging
 {
-    class SerilogLoggerProvider : ILoggerProvider, ILogEventEnricher
+  class SerilogLoggerProvider : ILoggerProvider, ILogEventEnricher
+  {
+    public const string OriginalFormatPropertyName = "{OriginalFormat}";
+
+    // May be null; if it is, Log.Logger will be lazily used
+    readonly ILogger _logger;
+    readonly Action _dispose;
+
+    public SerilogLoggerProvider(ILogger logger = null, bool dispose = false)
     {
-        public const string OriginalFormatPropertyName = "{OriginalFormat}";
+      if (logger != null)
+        _logger = logger.ForContext(new[] { this });
 
-        // May be null; if it is, Log.Logger will be lazily used
-        readonly ILogger _logger;
+      if (dispose)
+      {
+        if (logger != null)
+          _dispose = () => (logger as IDisposable)?.Dispose();
+        else
+          _dispose = Log.CloseAndFlush;
+      }
+    }
 
-        public SerilogLoggerProvider(ILogger logger = null)
-        {
-            if (logger != null)
-                _logger = logger.ForContext(new[] { this });
-        }
+    public FrameworkLogger CreateLogger(string name)
+    {
+      return new SerilogLogger(this, _logger, name);
+    }
 
-        public FrameworkLogger CreateLogger(string name)
-        {
-            return new SerilogLogger(this, _logger, name);
-        }
+    public IDisposable BeginScope<T>(T state)
+    {
+      return new SerilogLoggerScope(this, state);
+    }
 
-        public IDisposable BeginScope<T>(T state)
-        {
-            return new SerilogLoggerScope(this, state);
-        }
-
-        public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
-        {
-            for (var scope = CurrentScope; scope != null; scope = scope.Parent)
-            {
-                scope.Enrich(logEvent, propertyFactory);
-            }
-        }
+    public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
+    {
+      for (var scope = CurrentScope; scope != null; scope = scope.Parent)
+      {
+        scope.Enrich(logEvent, propertyFactory);
+      }
+    }
 
 #if ASYNCLOCAL
         readonly AsyncLocal<SerilogLoggerScope> _value = new AsyncLocal<SerilogLoggerScope>();
@@ -61,22 +70,25 @@ namespace Serilog.Extensions.Logging
             }
         }
 #else
-        readonly string _currentScopeKey = nameof(SerilogLoggerScope) + "#" + Guid.NewGuid().ToString("n");
+    readonly string _currentScopeKey = nameof(SerilogLoggerScope) + "#" + Guid.NewGuid().ToString("n");
 
-        public SerilogLoggerScope CurrentScope
-        {
-            get
-            {
-                var objectHandle = CallContext.LogicalGetData(_currentScopeKey) as ObjectHandle;
-                return objectHandle?.Unwrap() as SerilogLoggerScope;
-            }
-            set
-            {
-                CallContext.LogicalSetData(_currentScopeKey, new ObjectHandle(value));
-            }
-        }
+    public SerilogLoggerScope CurrentScope
+    {
+      get
+      {
+        var objectHandle = CallContext.LogicalGetData(_currentScopeKey) as ObjectHandle;
+        return objectHandle?.Unwrap() as SerilogLoggerScope;
+      }
+      set
+      {
+        CallContext.LogicalSetData(_currentScopeKey, new ObjectHandle(value));
+      }
+    }
 #endif
 
-        public void Dispose() { }
+    public void Dispose()
+    {
+      _dispose?.Invoke();
     }
+  }
 }

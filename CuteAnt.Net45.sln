@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CuteAnt.Net45", "src\CuteAnt\CuteAnt.Net45.csproj", "{1AB422BC-0280-4E03-95F4-3BC1FAD9B2BF}"
 EndProject
@@ -58,25 +58,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuspecs", "nuspecs", "{6E5D
 		nuspecs\CuteAnt.SharpSerializer.nuspec = nuspecs\CuteAnt.SharpSerializer.nuspec
 		nuspecs\MySql.Data.nuspec = nuspecs\MySql.Data.nuspec
 		nuspecs\package.cmd = nuspecs\package.cmd
+		nuspecs\publishing.cmd = nuspecs\publishing.cmd
 		nuspecs\System.Data.SQLite.nuspec = nuspecs\System.Data.SQLite.nuspec
 	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\SharedProjects\CuteAnt.Extensions.IO.Sources\CuteAnt.Extensions.IO.Sources.projitems*{88b40b6f-fdbd-4384-9581-f53a140d4ffa}*SharedItemsImports = 13
-		..\SharedProjects\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.projitems*{90bcc560-aa2b-4146-858a-9e524b696f75}*SharedItemsImports = 13
-		..\SharedProjects\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{c7f8dbe6-77b7-494d-af00-018f7579548c}*SharedItemsImports = 13
-		..\SharedProjects\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.projitems*{7bdf7fef-331b-48fc-bd9c-882c04211595}*SharedItemsImports = 4
-		..\SharedProjects\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems*{7bdf7fef-331b-48fc-bd9c-882c04211595}*SharedItemsImports = 4
-		..\SharedProjects\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{7bdf7fef-331b-48fc-bd9c-882c04211595}*SharedItemsImports = 4
-		..\SharedProjects\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems*{4bee24d6-b657-4c44-8ae6-1697ad8c4a1b}*SharedItemsImports = 13
-		..\SharedProjects\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems*{b587c15b-325b-444f-8d91-9f23263c6d98}*SharedItemsImports = 4
 		..\SharedProjects\CuteAnt.Extensions.IO.Sources\CuteAnt.Extensions.IO.Sources.projitems*{1ab422bc-0280-4e03-95f4-3bc1fad9b2bf}*SharedItemsImports = 4
-		..\SharedProjects\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems*{1ab422bc-0280-4e03-95f4-3bc1fad9b2bf}*SharedItemsImports = 4
 		..\SharedProjects\CuteAnt.Extensions.Logging.Sources\CuteAnt.Extensions.Logging.Sources.projitems*{1ab422bc-0280-4e03-95f4-3bc1fad9b2bf}*SharedItemsImports = 4
 		..\SharedProjects\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{1ab422bc-0280-4e03-95f4-3bc1fad9b2bf}*SharedItemsImports = 4
-		..\SharedProjects\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{d7951cd7-b132-4ad0-a0d3-2745876a9435}*SharedItemsImports = 4
+		..\SharedProjects\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems*{1ab422bc-0280-4e03-95f4-3bc1fad9b2bf}*SharedItemsImports = 4
+		..\SharedProjects\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems*{4bee24d6-b657-4c44-8ae6-1697ad8c4a1b}*SharedItemsImports = 13
+		..\SharedProjects\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{7bdf7fef-331b-48fc-bd9c-882c04211595}*SharedItemsImports = 4
+		..\SharedProjects\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems*{7bdf7fef-331b-48fc-bd9c-882c04211595}*SharedItemsImports = 4
+		..\SharedProjects\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.projitems*{7bdf7fef-331b-48fc-bd9c-882c04211595}*SharedItemsImports = 4
+		..\SharedProjects\CuteAnt.Extensions.IO.Sources\CuteAnt.Extensions.IO.Sources.projitems*{88b40b6f-fdbd-4384-9581-f53a140d4ffa}*SharedItemsImports = 13
 		..\SharedProjects\CuteAnt.Extensions.Logging.Sources\CuteAnt.Extensions.Logging.Sources.projitems*{8dbb7dc8-2b90-4a8c-a60d-d41466174bde}*SharedItemsImports = 13
+		..\SharedProjects\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.projitems*{90bcc560-aa2b-4146-858a-9e524b696f75}*SharedItemsImports = 13
+		..\SharedProjects\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems*{b587c15b-325b-444f-8d91-9f23263c6d98}*SharedItemsImports = 4
+		..\SharedProjects\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{c7f8dbe6-77b7-494d-af00-018f7579548c}*SharedItemsImports = 13
+		..\SharedProjects\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{d7951cd7-b132-4ad0-a0d3-2745876a9435}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
