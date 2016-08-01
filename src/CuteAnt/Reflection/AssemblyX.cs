@@ -24,7 +24,7 @@ using Microsoft.Extensions.Logging;
 namespace CuteAnt.Reflection
 {
   /// <summary>程序集辅助类。使用Create创建，保证每个程序集只有一个辅助类</summary>
-  public class AssemblyX //: FastIndexAccessor
+  public class AssemblyX
   {
     #region 属性
     private static ILogger s_logger = TraceLogger.GetLogger("CuteAnt.Reflection");
@@ -237,51 +237,10 @@ namespace CuteAnt.Reflection
 
     #region 静态属性
 
-    ///// <summary>当前执行代码程序集</summary>
-    //public static AssemblyX Executing { get { return Create(Assembly.GetExecutingAssembly()); } }
-
     /// <summary>入口程序集</summary>
     public static AssemblyX Entry { get { return Create(Assembly.GetEntryAssembly()); } }
 
-    ///// <summary>调用者</summary>
-    //public static AssemblyX Calling { get { return Create(Assembly.GetCallingAssembly()); } }
-
     #endregion 静态属性
-
-    #region 获取特性
-
-    ///// <summary>获取自定义属性</summary>
-    ///// <typeparam name="TAttribute"></typeparam>
-    ///// <returns></returns>
-    //[Obsolete("=>Asm.GetCustomAttribute<TAttribute>")]
-    //public TAttribute GetCustomAttribute<TAttribute>()
-    //	where TAttribute : Attribute
-    //{
-    //	return Asm.GetCustomAttributeX<TAttribute>();
-    //}
-
-    ///// <summary>获取自定义属性的值。可用于ReflectionOnly加载的程序集</summary>
-    ///// <typeparam name="TAttribute"></typeparam>
-    ///// <typeparam name="TResult"></typeparam>
-    ///// <returns></returns>
-    //[Obsolete("=>Asm.GetCustomAttributeValue<TAttribute, TResult>")]
-    //public TResult GetCustomAttributeValue<TAttribute, TResult>()
-    //{
-    //	var list = CustomAttributeData.GetCustomAttributes(Asm);
-    //	if (list == null || list.Count < 1) return default(TResult);
-
-    //	foreach (var item in list)
-    //	{
-    //		if (typeof(TAttribute) != item.Constructor.DeclaringType) continue;
-
-    //		if (item.ConstructorArguments != null && item.ConstructorArguments.Count > 0)
-    //			return (TResult)item.ConstructorArguments[0].Value;
-    //	}
-
-    //	return default(TResult);
-    //}
-
-    #endregion 获取特性
 
     #region 方法
 
@@ -490,6 +449,72 @@ namespace CuteAnt.Reflection
       }
 
       return false;
+    }
+
+    /// <summary>根据名称获取类型</summary>
+    /// <param name="typeName">类型名</param>
+    /// <param name="isLoadAssembly">是否从未加载程序集中获取类型。使用仅反射的方法检查目标类型，如果存在，则进行常规加载</param>
+    /// <returns></returns>
+    internal static Type GetType(String typeName, Boolean isLoadAssembly)
+    {
+      var type = Type.GetType(typeName);
+      if (type != null) return type;
+
+      // 尝试本程序集
+      var asms = new[] {
+                AssemblyX.Create(Assembly.GetExecutingAssembly()),
+                AssemblyX.Create(Assembly.GetCallingAssembly()),
+                AssemblyX.Create(Assembly.GetEntryAssembly()) };
+      var loads = new List<AssemblyX>();
+
+      foreach (var asm in asms)
+      {
+        if (asm == null || loads.Contains(asm)) continue;
+        loads.Add(asm);
+
+        type = asm.GetType(typeName);
+        if (type != null) return type;
+      }
+
+      // 尝试所有程序集
+      foreach (var asm in AssemblyX.GetAssemblies())
+      {
+        if (loads.Contains(asm)) continue;
+        loads.Add(asm);
+
+        type = asm.GetType(typeName);
+        if (type != null) return type;
+      }
+
+      // 尝试加载只读程序集
+      if (!isLoadAssembly) return null;
+
+      foreach (var asm in ReflectionOnlyGetAssemblies())
+      {
+        type = asm.GetType(typeName);
+        if (type != null)
+        {
+          // 真实加载
+          var file = asm.Asm.Location;
+          try
+          {
+            type = null;
+            var asm2 = Assembly.LoadFile(file);
+            var type2 = AssemblyX.Create(asm2).GetType(typeName);
+            if (type2 == null) continue;
+            type = type2;
+            if (s_logger.IsDebugLevelEnabled()) s_logger.LogDebug("TypeX.GetType(\"{0}\")导致加载{1}", typeName, file);
+          }
+          catch (Exception ex)
+          {
+            if (s_logger.IsDebugLevelEnabled()) s_logger.LogDebug(ex.ToString());
+          }
+
+          return type;
+        }
+      }
+
+      return null;
     }
 
     #endregion 插件

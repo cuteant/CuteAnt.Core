@@ -1,0 +1,27 @@
+﻿{
+  "version": "2.0.0-rc3-160607",
+  "buildOptions": {
+    "warningsAsErrors": false,
+    "keyFile": "../../tools/StrongKey.snk"
+  },
+  "shared": "**/*.cs",
+  "dependencies": {
+    "CuteAnt.AsyncEx": "2.0.0-rc3-*"
+  },
+  "frameworks": {
+    "net40": {
+      "buildOptions": {
+        "define": [ "DESKTOPCLR" ]
+      },
+      "dependencies": {
+      }
+    },
+    "net451": {
+      "buildOptions": {
+        "define": [ "DESKTOPCLR", "NET_4_0_GREATER" ]
+      },
+      "dependencies": {
+      }
+    }
+  }
+}

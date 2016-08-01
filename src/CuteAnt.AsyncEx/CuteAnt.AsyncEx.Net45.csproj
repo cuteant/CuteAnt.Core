@@ -58,15 +58,15 @@
       <Link>Properties\CoreInformationalVersion.cs</Link>
     </Compile>
     <Compile Include="AsyncUtils.cs" />
-    <Compile Include="Common\AsyncAutoResetEvent.cs" />
+    <Compile Include="Coordination\AsyncAutoResetEvent.cs" />
     <Compile Include="Common\AsyncBarrier.cs" />
-    <Compile Include="Common\AsyncConditionVariable.cs" />
-    <Compile Include="Common\AsyncContext.cs" />
-    <Compile Include="Common\AsyncContext.SynchronizationContext.cs" />
-    <Compile Include="Common\AsyncContext.TaskQueue.cs" />
-    <Compile Include="Common\AsyncContext.TaskScheduler.cs" />
-    <Compile Include="Common\AsyncContextThread.cs" />
-    <Compile Include="Common\AsyncCountdownEvent.cs" />
+    <Compile Include="Coordination\AsyncConditionVariable.cs" />
+    <Compile Include="Context\AsyncContext.cs" />
+    <Compile Include="Context\AsyncContext.SynchronizationContext.cs" />
+    <Compile Include="Context\AsyncContext.TaskQueue.cs" />
+    <Compile Include="Context\AsyncContext.TaskScheduler.cs" />
+    <Compile Include="Context\AsyncContextThread.cs" />
+    <Compile Include="Coordination\AsyncCountdownEvent.cs" />
     <Compile Include="Common\AsyncFactory %28of TResult%29.cs" />
     <Compile Include="Common\AsyncFactory %28of TResult%29.FromAsync.cs">
       <AutoGen>True</AutoGen>
@@ -79,23 +79,23 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AsyncFactory.FromAsync.tt</DependentUpon>
     </Compile>
-    <Compile Include="Common\AsyncLazy.cs" />
-    <Compile Include="Common\AsyncLock.cs" />
-    <Compile Include="Common\AsyncManualResetEvent.cs" />
-    <Compile Include="Common\AsyncMonitor.cs" />
-    <Compile Include="Common\AsyncProducerConsumerQueue.cs" />
-    <Compile Include="Common\AsyncReaderWriterLock.cs" />
-    <Compile Include="Common\AsyncSemaphore.cs" />
-    <Compile Include="Common\AsyncWaitQueue.cs" />
-    <Compile Include="Common\AwaitableDisposable.cs" />
-    <Compile Include="Common\CollectionHelpers.cs" />
+    <Compile Include="Coordination\AsyncLazy.cs" />
+    <Compile Include="Coordination\AsyncLock.cs" />
+    <Compile Include="Coordination\AsyncManualResetEvent.cs" />
+    <Compile Include="Coordination\AsyncMonitor.cs" />
+    <Compile Include="Coordination\AsyncProducerConsumerQueue.cs" />
+    <Compile Include="Coordination\AsyncReaderWriterLock.cs" />
+    <Compile Include="Coordination\AsyncSemaphore.cs" />
+    <Compile Include="Coordination\AsyncWaitQueue.cs" />
+    <Compile Include="Coordination\AwaitableDisposable.cs" />
+    <Compile Include="Deque\CollectionHelpers.cs" />
     <Compile Include="Common\DeferralManager.cs" />
-    <Compile Include="Common\Deque.cs" />
-    <Compile Include="Common\IDManager.cs" />
+    <Compile Include="Deque\Deque.cs" />
+    <Compile Include="Coordination\IDManager.cs" />
     <Compile Include="Common\IntHolder.cs" />
     <Compile Include="Common\NormalizedCancellationToken.cs" />
     <Compile Include="Common\NotifyTaskCompletion.cs" />
-    <Compile Include="Common\PauseToken.cs" />
+    <Compile Include="Coordination\PauseToken.cs" />
     <Compile Include="Common\PropertyProgress.cs" />
     <Compile Include="Comparers\Comparers\AnonymousComparer.cs" />
     <Compile Include="Comparers\Comparers\ComparableBase.cs" />
@@ -149,9 +149,7 @@
     <Compile Include="Enlightenment\Internal\PlatformEnlightenment\SingleThreadedApartmentThread.cs" />
     <Compile Include="Enlightenment\Internal\PlatformEnlightenment\SynchronizationContextEnlightenment.cs" />
     <Compile Include="Enlightenment\Internal\PlatformEnlightenment\ThreadPoolEnlightenment.cs" />
-    <Compile Include="Extensions\SynchronizationContextHelpers.cs" />
-    <Compile Include="Extensions\TaskCompletionSource.cs" />
-    <Compile Include="Extensions\TaskConstants.cs" />
+    <Compile Include="Context\SynchronizationContextHelpers.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ImmutableInterlockedX.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -278,6 +276,9 @@
     <Compile Include="System\Threading\Tasks.Dataflow\Internal\TargetRegistry.cs" />
     <Compile Include="System\Threading\Tasks.Dataflow\Internal\Threading.cs" />
     <Compile Include="System\Threading\Tasks\ConcurrentExclusiveSchedulerPair.cs" />
+    <Compile Include="Task\CancellationTokenTaskSource.cs" />
+    <Compile Include="Task\TaskCompletionSource.cs" />
+    <Compile Include="Task\TaskConstants.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CuteAnt.AsyncEx.Net45.project.json" />

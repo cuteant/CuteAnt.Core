@@ -154,6 +154,12 @@ namespace CuteAnt.Reflection
 
     #region 插件
 
+    /// <summary>是否子类</summary>
+    /// <param name="type"></param>
+    /// <param name="baseType"></param>
+    /// <returns></returns>
+    Boolean IsSubOf(Type type, Type baseType);
+
     /// <summary>在指定程序集中查找指定基类或接口的所有子类实现</summary>
     /// <param name="asm">指定程序集</param>
     /// <param name="baseType">基类或接口，为空时返回所有类型</param>
@@ -446,7 +452,17 @@ namespace CuteAnt.Reflection
     /// <param name="type">类型</param>
     /// <param name="parameters">参数数组</param>
     /// <returns></returns>
-    public virtual Object CreateInstance(Type type, params Object[] parameters) { return Activator.CreateInstance(type, parameters); }
+    public virtual Object CreateInstance(Type type, params Object[] parameters)
+    {
+      if (parameters == null || parameters.Length == 0)
+      {
+        return Activator.CreateInstance(type, true);
+      }
+      else
+      {
+        return Activator.CreateInstance(type, parameters);
+      }
+    }
 
     /// <summary>反射调用指定对象的方法</summary>
     /// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
@@ -465,7 +481,19 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public virtual Object InvokeWithParams(Object target, MethodBase method, IDictionary parameters)
     {
-      throw new NotSupportedException();
+      // 该方法没有参数，无视外部传入参数
+      var pis = method.GetParameters();
+      if (pis == null || pis.Length < 1) return Invoke(target, method, null);
+
+      var ps = new Object[pis.Length];
+      for (int i = 0; i < pis.Length; i++)
+      {
+        Object v = null;
+        if (parameters != null && parameters.Contains(pis[i].Name)) v = parameters[pis[i].Name];
+        ps[i] = v.ChangeType(pis[i].ParameterType);
+      }
+
+      return method.Invoke(target, ps);
     }
 
     /// <summary>获取目标对象的属性值</summary>
@@ -538,25 +566,31 @@ namespace CuteAnt.Reflection
 
     #region 插件
 
-    ///// <summary>是否插件</summary>
-    ///// <param name="type">目标类型</param>
-    ///// <param name="baseType">基类或接口</param>
-    ///// <returns></returns>
-    //public virtual Boolean IsSubclassOf(Type type, Type baseType)
-    //{
-    //    if (type.IsInterface || type.IsAbstract || type.IsGenericType) return false;
+    /// <summary>是否子类</summary>
+    /// <param name="type"></param>
+    /// <param name="baseType"></param>
+    /// <returns></returns>
+    public Boolean IsSubOf(Type type, Type baseType)
+    {
+      if (type == null) return false;
+      if (type == baseType) return false;
 
-    //    if (baseType.IsInterface)
-    //    {
-    //        var ts = type.GetInterfaces();
-    //        if (ts == null || ts.Length < 1) return false;
+      if (baseType.IsAssignableFrom(type)) return true;
 
-    //        return Array.IndexOf(ts, baseType) >= 0;
-    //    }
+      // 判断是否子类时，支持只反射加载的程序集
+      if (type.Assembly.ReflectionOnly)
+      {
+        while (type != typeof(Object))
+        {
+          if (type.FullName == baseType.FullName &&
+              type.AssemblyQualifiedName == baseType.AssemblyQualifiedName)
+            return true;
+          type = type.BaseType;
+        }
+      }
 
-    //    //return baseType.IsAssignableFrom(type);
-    //    return type.IsSubclassOf(baseType);
-    //}
+      return false;
+    }
 
     /// <summary>在指定程序集中查找指定基类的子类</summary>
     /// <param name="asm">指定程序集</param>
@@ -566,10 +600,11 @@ namespace CuteAnt.Reflection
     {
       ValidationHelper.ArgumentNull(asm, "asm");
 
-      foreach (var item in asm.GetTypes())
-      {
-        if (baseType == null || baseType.IsAssignableFrom(item)) { yield return item; }
-      }
+      //foreach (var item in asm.GetTypes())
+      //{
+      //  if (baseType == null || baseType.IsAssignableFrom(item)) { yield return item; }
+      //}
+      return AssemblyX.Create(asm).FindPlugins(baseType);
     }
 
     /// <summary>在所有程序集中查找指定基类或接口的子类实现</summary>
@@ -579,13 +614,14 @@ namespace CuteAnt.Reflection
     public virtual IEnumerable<Type> GetAllSubclasses(Type baseType, Boolean isLoadAssembly)
     {
       // 不支持isLoadAssembly
-      foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
-      {
-        foreach (var type in GetSubclasses(asm, baseType))
-        {
-          yield return type;
-        }
-      }
+      //foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+      //{
+      //  foreach (var type in GetSubclasses(asm, baseType))
+      //  {
+      //    yield return type;
+      //  }
+      //}
+      return AssemblyX.FindAllPlugins(baseType, isLoadAssembly);
     }
 
     #endregion
