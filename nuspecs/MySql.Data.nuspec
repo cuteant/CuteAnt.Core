@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>MySql.Data</id>
-    <version>7.0.0-rc3-160605</version>
+    <version>7.0.0-rc3-160701</version>
     <title>MySql.Data</title>
     <tags>MySql MySql.Data Connector/NET</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -17,11 +17,11 @@
     <language>en-US</language>
     <dependencies>
       <group targetFramework=".NETFramework4.0">
-        <dependency id="CuteAnt" version="2.0.0-rc3-160605" />
+        <dependency id="CuteAnt" version="2.0.0-rc3-160701" />
         <dependency id="Google.ProtocolBuffers" version="2.4.1.555" />
       </group>
       <group targetFramework=".NETFramework4.5.1">
-        <dependency id="CuteAnt" version="2.0.0-rc3-160605" />
+        <dependency id="CuteAnt" version="2.0.0-rc3-160701" />
         <dependency id="Google.ProtocolBuffers" version="2.4.1.555" />
       </group>
     </dependencies>

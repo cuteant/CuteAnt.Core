@@ -183,7 +183,6 @@ namespace Microsoft.Extensions.Logging
 
     /// <summary>Formats and writes a debug log message.</summary>
     /// <param name="logger">The <see cref="ILogger"/> to write to.</param>
-    /// <param name="eventId">The event id associated with the log.</param>
     /// <param name="exception">The exception to log.</param>
     /// <param name="message">Format string of the log message.</param>
     /// <param name="args">An object array that contains zero or more objects to format.</param>
