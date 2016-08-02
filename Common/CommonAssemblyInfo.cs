@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
+// General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyCompany(CuteAnt.AssemblyInfo.AssemblyCompany)]
@@ -13,15 +13,12 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("CuteAnt ASP.NET Class Library")]
 [assembly: AssemblyTrademark(CuteAnt.AssemblyInfo.AssemblyEmail)]
 [assembly: AssemblyCulture("")]
-
 #if !PORTABLE
 [assembly: ComVisible(false)]
 #endif
 [assembly: CLSCompliant(false)]
-
 [assembly: AssemblyMetadata("Serviceable", "True")]
 [assembly: NeutralResourcesLanguage("en-US")]
-
 #if NET40 || PORTABLE
 namespace System.Reflection
 {

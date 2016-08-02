@@ -31,9 +31,11 @@ namespace CuteAnt
 #if NET40
     /// <summary>4</summary>
     public const String NETVersion = "4";
-#elif NET451 || DNX451
+#elif NET451
+
     /// <summary>5</summary>
     public const String NETVersion = "5";
+
 #elif NET46
     /// <summary>6</summary>
     public const String NETVersion = "6";
@@ -43,61 +45,24 @@ namespace CuteAnt
     public const String VersionMajor = "2";
 
     /// <summary>2</summary>
-    public const String VersionMinor = "2";
-
-    /// <summary>2</summary>
-    public const String FileVersionMinor = "2";
+    public const String VersionMinor = "8";
 
     /// <summary>
     /// 1.x
     /// - x代表NetFX版本
     /// </summary>
-    public const String VersionShort = VersionMajor + "." + NETVersion;
-
-    /// <summary>
-    /// 1.x.
-    /// - x代表NetFX版本
-    /// </summary>
-    public const String Version = VersionShort + "."; // + VersionMinor;
+    public const String VersionShort = VersionMajor + "." + VersionMinor;
 
     /// <summary>
     /// 1.x.2.168
     /// - x代表NetFX版本
     /// </summary>
-    public const String StaticVersion = VersionShort + "." + VersionMinor + ".168";
-
-    /// <summary></summary>
-    public static class _
-    {
-      public const string Beta1 = "-beta1";
-      public const string Beta2 = "-beta2";
-      public const string Beta3 = "-beta3";
-      public const string Beta4 = "-beta4";
-      public const string Beta5 = "-beta5";
-      public const string Beta6 = "-beta6";
-      public const string Beta7 = "-beta7";
-      public const string Beta8 = "-beta8";
-      public const string RC1 = "-rc1";
-      public const string RC2 = "-rc2";
-      public const string RC3 = "-rc3";
-      public const string RC4 = "-rc4";
-      public const string RC5 = "-rc5";
-      public const string RC6 = "-rc6";
-      public const string RC7 = "-rc7";
-      public const string RC8 = "-rc8";
-      public const string Final = "-final";
-    }
-
-    /// <summary>
-    /// 1.x.2.168
-    /// - x代表NetFX版本
-    /// </summary>
-    public const String InformationalVersion = VersionMajor + "." + VersionMinor + ".0" + _.RC2;
+    public const String StaticVersion = VersionShort + ".6.168";
 
     /// <summary>1.2
     /// - x代表NetFX版本
     /// </summary>
-    public const String FileVersion = VersionShort + "." + FileVersionMinor;
+    public const String FileVersion = VersionShort + ".8.168";
 
     ///// <summary>
     ///// v1.x
