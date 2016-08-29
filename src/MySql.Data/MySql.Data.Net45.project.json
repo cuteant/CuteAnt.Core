@@ -3,6 +3,7 @@
     "net451": {}
   },
   "runtimes": {
+    "win-anycpu": {},
     "win": {}
   },
   "dependencies": {
