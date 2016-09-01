@@ -94,6 +94,7 @@
       <Link>Properties\CoreInformationalVersion.cs</Link>
     </Compile>
     <Compile Include="AsyncUtils.cs" />
+    <Compile Include="Common\NormalizedCancellationToken.cs" />
     <Compile Include="Common\AsyncBarrier.cs" />
     <Compile Include="Common\AsyncFactory %28of TResult%29.cs" />
     <Compile Include="Common\AsyncFactory %28of TResult%29.FromAsync.cs">
@@ -109,7 +110,6 @@
     </Compile>
     <Compile Include="Common\DeferralManager.cs" />
     <Compile Include="Common\IntHolder.cs" />
-    <Compile Include="Common\NormalizedCancellationToken.cs" />
     <Compile Include="Common\NotifyTaskCompletion.cs" />
     <Compile Include="Common\PropertyProgress.cs" />
     <Compile Include="Comparers\Comparers\AnonymousComparer.cs" />
@@ -157,6 +157,7 @@
     <Compile Include="Context\AsyncContext.TaskScheduler.cs" />
     <Compile Include="Context\AsyncContextThread.cs" />
     <Compile Include="Context\SynchronizationContextHelpers.cs" />
+    <Compile Include="Context\SynchronizationContextSwitcher.cs" />
     <Compile Include="Coordination\AsyncAutoResetEvent.cs" />
     <Compile Include="Coordination\AsyncConditionVariable.cs" />
     <Compile Include="Coordination\AsyncCountdownEvent.cs" />
@@ -177,6 +178,7 @@
     <Compile Include="Dataflow\TransformBlockX.cs" />
     <Compile Include="Deque\CollectionHelpers.cs" />
     <Compile Include="Deque\Deque.cs" />
+    <Compile Include="Common\SingleDisposable.cs" />
     <Compile Include="Enlightenment\EnlightenmentVerification.cs" />
     <Compile Include="Enlightenment\ExceptionHelpers.cs" />
     <Compile Include="Enlightenment\Internal\PlatformEnlightenment\BlockingQueue.cs" />

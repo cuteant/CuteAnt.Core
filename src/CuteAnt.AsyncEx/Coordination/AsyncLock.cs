@@ -18,9 +18,6 @@ namespace CuteAnt.AsyncEx
     /// <summary>The queue of TCSs that other tasks are awaiting to acquire the lock.</summary>
     private readonly IAsyncWaitQueue<IDisposable> _queue;
 
-    /// <summary>A task that is completed with the key object for this lock.</summary>
-    private readonly Task<IDisposable> _cachedKeyTask;
-
     /// <summary>The semi-unique identifier for this instance. This is 0 if the id has not yet been created.</summary>
     private int _id;
 
@@ -29,7 +26,7 @@ namespace CuteAnt.AsyncEx
 
     /// <summary>Creates a new async-compatible mutual exclusion lock.</summary>
     public AsyncLock()
-      : this(new DefaultAsyncWaitQueue<IDisposable>())
+      : this(null)
     {
     }
 
@@ -38,7 +35,7 @@ namespace CuteAnt.AsyncEx
     public AsyncLock(IAsyncWaitQueue<IDisposable> queue)
     {
       _queue = queue;
-      _cachedKeyTask = TaskShim.FromResult<IDisposable>(new Key(this));
+      _queue = queue ?? new DefaultAsyncWaitQueue<IDisposable>();
       _mutex = new object();
     }
 
@@ -46,28 +43,35 @@ namespace CuteAnt.AsyncEx
     public int Id => IDManager<AsyncLock>.GetID(ref _id);
 
     /// <summary>Asynchronously acquires the lock. Returns a disposable that releases the lock when disposed.</summary>
-    /// <param name="cancellationToken">The cancellation token used to cancel the lock. If this is already set, then this method will attempt to take the lock immediately (succeeding if the lock is currently available).</param>
+    /// <param name="cancellationToken">The cancellation token used to cancel the lock. 
+    /// If this is already set, then this method will attempt to take the lock immediately 
+    /// (succeeding if the lock is currently available).</param>
     /// <returns>A disposable that releases the lock when disposed.</returns>
-    public AwaitableDisposable<IDisposable> LockAsync(CancellationToken cancellationToken)
+    private Task<IDisposable> RequestLockAsync(CancellationToken cancellationToken)
     {
-      Task<IDisposable> ret;
       lock (_mutex)
       {
         if (!_taken)
         {
           // If the lock is available, take it immediately.
           _taken = true;
-          ret = _cachedKeyTask;
+          return TaskShim.FromResult<IDisposable>(new Key(this));
         }
         else
         {
           // Wait for the lock to become available or cancellation.
-          ret = _queue.Enqueue(_mutex, cancellationToken);
+          return _queue.Enqueue(_mutex, cancellationToken);
         }
       }
-
-      return new AwaitableDisposable<IDisposable>(ret);
     }
+
+    /// <summary>Asynchronously acquires the lock. Returns a disposable that releases the lock when disposed.</summary>
+    /// <param name="cancellationToken">The cancellation token used to cancel the lock. 
+    /// If this is already set, then this method will attempt to take the lock immediately 
+    /// (succeeding if the lock is currently available).</param>
+    /// <returns>A disposable that releases the lock when disposed.</returns>
+    public AwaitableDisposable<IDisposable> LockAsync(CancellationToken cancellationToken) =>
+        new AwaitableDisposable<IDisposable>(RequestLockAsync(cancellationToken));
 
     /// <summary>Asynchronously acquires the lock. Returns a disposable that releases the lock when disposed.</summary>
     /// <returns>A disposable that releases the lock when disposed.</returns>
@@ -75,22 +79,8 @@ namespace CuteAnt.AsyncEx
 
     /// <summary>Synchronously acquires the lock. Returns a disposable that releases the lock when disposed. This method may block the calling thread.</summary>
     /// <param name="cancellationToken">The cancellation token used to cancel the lock. If this is already set, then this method will attempt to take the lock immediately (succeeding if the lock is currently available).</param>
-    public IDisposable Lock(CancellationToken cancellationToken)
-    {
-      Task<IDisposable> enqueuedTask;
-      lock (_mutex)
-      {
-        if (!_taken)
-        {
-          _taken = true;
-          return _cachedKeyTask.Result;
-        }
-
-        enqueuedTask = _queue.Enqueue(_mutex, cancellationToken);
-      }
-
-      return enqueuedTask.WaitAndUnwrapException();
-    }
+    public IDisposable Lock(CancellationToken cancellationToken) =>
+        RequestLockAsync(cancellationToken).WaitAndUnwrapException();
 
     /// <summary>Synchronously acquires the lock. Returns a disposable that releases the lock when disposed. This method may block the calling thread.</summary>
     public IDisposable Lock() => Lock(CancellationToken.None);
@@ -106,29 +96,22 @@ namespace CuteAnt.AsyncEx
         }
         else
         {
-          _queue.Dequeue(_cachedKeyTask.Result);
+          _queue.Dequeue(new Key(this));
         }
       }
     }
 
     /// <summary>The disposable which releases the lock.</summary>
-    private sealed class Key : IDisposable
+    private sealed class Key : SingleDisposable<AsyncLock>
     {
-      /// <summary>The lock to release.</summary>
-      private readonly AsyncLock _asyncLock;
-
       /// <summary>Creates the key for a lock.</summary>
       /// <param name="asyncLock">The lock to release. May not be <c>null</c>.</param>
       public Key(AsyncLock asyncLock)
+        : base(asyncLock)
       {
-        _asyncLock = asyncLock;
       }
 
-      /// <summary>Release the lock.</summary>
-      public void Dispose()
-      {
-        _asyncLock.ReleaseLock();
-      }
+      protected override void Dispose(AsyncLock context) => context.ReleaseLock();
     }
 
     // ReSharper disable UnusedMember.Local

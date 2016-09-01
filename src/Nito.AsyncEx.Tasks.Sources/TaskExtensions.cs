@@ -61,6 +61,8 @@ namespace CuteAnt.AsyncEx
 #endif
     internal static void WaitAndUnwrapException(this Task task)
     {
+      if (task == null) throw new ArgumentNullException(nameof(task));
+
       task.GetAwaiter().GetResult();
     }
 
@@ -73,6 +75,8 @@ namespace CuteAnt.AsyncEx
 #endif
     internal static void WaitAndUnwrapException(this Task task, CancellationToken cancellationToken)
     {
+      if (task == null) throw new ArgumentNullException(nameof(task));
+
       try
       {
         task.Wait(cancellationToken);
@@ -92,6 +96,8 @@ namespace CuteAnt.AsyncEx
 #endif
     internal static TResult WaitAndUnwrapException<TResult>(this Task<TResult> task)
     {
+      if (task == null) throw new ArgumentNullException(nameof(task));
+
       return task.GetAwaiter().GetResult();
     }
 
@@ -106,6 +112,8 @@ namespace CuteAnt.AsyncEx
 #endif
     internal static TResult WaitAndUnwrapException<TResult>(this Task<TResult> task, CancellationToken cancellationToken)
     {
+      if (task == null) throw new ArgumentNullException(nameof(task));
+
       try
       {
         task.Wait(cancellationToken);
@@ -133,6 +141,8 @@ namespace CuteAnt.AsyncEx
 
       //var asyncResult = (IAsyncResult)task;
       //asyncResult.AsyncWaitHandle.WaitOne();
+      if (task == null) throw new ArgumentNullException(nameof(task));
+
       try
       {
         task.Wait();
@@ -161,6 +171,8 @@ namespace CuteAnt.AsyncEx
       //{
       //  cancellationToken.ThrowIfCancellationRequested();
       //}
+      if (task == null) throw new ArgumentNullException(nameof(task));
+
       try
       {
         task.Wait(cancellationToken);
@@ -176,11 +188,13 @@ namespace CuteAnt.AsyncEx
     #region ==& WaitAsync &==
 
     /// <summary>Asynchronously waits for the task to complete, or for the cancellation token to be canceled.</summary>
-    /// <param name="task">The task to wait for.</param>
+    /// <param name="this">The task to wait for. May not be <c>null</c>.</param>
     /// <param name="cancellationToken">The cancellation token that cancels the wait.</param>
-    internal static Task WaitAsync(this Task task, CancellationToken cancellationToken)
+    internal static Task WaitAsync(this Task @this, CancellationToken cancellationToken)
     {
-      if (!cancellationToken.CanBeCanceled) { return task; }
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+
+      if (!cancellationToken.CanBeCanceled) { return @this; }
 
       if (cancellationToken.IsCancellationRequested)
       {
@@ -191,7 +205,7 @@ namespace CuteAnt.AsyncEx
 #endif
       }
 
-      return DoWaitAsync(task, cancellationToken);
+      return DoWaitAsync(@this, cancellationToken);
     }
 
     private static async Task DoWaitAsync(Task task, CancellationToken cancellationToken)
@@ -204,11 +218,11 @@ namespace CuteAnt.AsyncEx
 
     /// <summary>Asynchronously waits for the task to complete, or for the cancellation token to be canceled.</summary>
     /// <typeparam name="TResult">The type of the task result.</typeparam>
-    /// <param name="task">The task to wait for.</param>
+    /// <param name="this">The task to wait for. May not be <c>null</c>.</param>
     /// <param name="cancellationToken">The cancellation token that cancels the wait.</param>
-    internal static Task<TResult> WaitAsync<TResult>(this Task<TResult> task, CancellationToken cancellationToken)
+    internal static Task<TResult> WaitAsync<TResult>(this Task<TResult> @this, CancellationToken cancellationToken)
     {
-      if (!cancellationToken.CanBeCanceled) { return task; }
+      if (!cancellationToken.CanBeCanceled) { return @this; }
 
       if (cancellationToken.IsCancellationRequested)
       {
@@ -219,7 +233,7 @@ namespace CuteAnt.AsyncEx
 #endif
       }
 
-      return DoWaitAsync(task, cancellationToken);
+      return DoWaitAsync(@this, cancellationToken);
     }
 
     private static async Task<TResult> DoWaitAsync<TResult>(Task<TResult> task, CancellationToken cancellationToken)
@@ -230,6 +244,6 @@ namespace CuteAnt.AsyncEx
       }
     }
 
-#endregion
+    #endregion
   }
 }

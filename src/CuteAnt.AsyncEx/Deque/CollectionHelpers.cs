@@ -29,6 +29,7 @@ namespace CuteAnt.AsyncEx
 
       internal NongenericCollectionWrapper(ICollection collection)
       {
+        if (collection == null) throw new ArgumentNullException(nameof(collection));
         _collection = collection;
       }
 
@@ -57,6 +58,7 @@ namespace CuteAnt.AsyncEx
 
       internal CollectionWrapper(ICollection<T> collection)
       {
+        if (collection == null) throw new ArgumentNullException(nameof(collection));
         _collection = collection;
       }
 

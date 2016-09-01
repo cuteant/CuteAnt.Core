@@ -17,6 +17,9 @@ namespace CuteAnt.AsyncEx
     internal static bool TryCompleteFromCompletedTask<TResult, TSourceResult>(this TaskCompletionSource<TResult> @this, Task<TSourceResult> task)
       where TSourceResult : TResult
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+      if (task == null) throw new ArgumentNullException(nameof(task));
+
       if (task.IsFaulted) { return @this.TrySetException(task.Exception.InnerExceptions); }
 
       if (task.IsCanceled)
@@ -43,10 +46,14 @@ namespace CuteAnt.AsyncEx
     /// <typeparam name="TResult">The type of the result of the target asynchronous operation.</typeparam>
     /// <param name="this">The task completion source. May not be <c>null</c>.</param>
     /// <param name="task">The task. May not be <c>null</c>.</param>
-    /// <param name="resultFunc">A delegate that returns the result with which to complete the task completion source, if the task completed successfully.</param>
+    /// <param name="resultFunc">A delegate that returns the result with which to complete the task completion source, if the task completed successfully. May not be <c>null</c>.</param>
     /// <returns><c>true</c> if this method completed the task completion source; <c>false</c> if it was already completed.</returns>
     internal static bool TryCompleteFromCompletedTask<TResult>(this TaskCompletionSource<TResult> @this, Task task, Func<TResult> resultFunc)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+      if (task == null) throw new ArgumentNullException(nameof(task));
+      if (resultFunc == null) throw new ArgumentNullException(nameof(resultFunc));
+
       if (task.IsFaulted) { return @this.TrySetException(task.Exception.InnerExceptions); }
 
       if (task.IsCanceled)
@@ -89,6 +96,10 @@ namespace CuteAnt.AsyncEx
     /// <returns><c>true</c> if this method completed the task completion source; <c>false</c> if it was already completed.</returns>
     internal static Boolean TryCompleteFromEventArgs<TResult>(this TaskCompletionSource<TResult> @this, AsyncCompletedEventArgs eventArgs, Func<TResult> getResult)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+      if (eventArgs == null) throw new ArgumentNullException(nameof(eventArgs));
+      if (getResult == null) throw new ArgumentNullException(nameof(getResult));
+
       if (eventArgs.Cancelled) { return @this.TrySetCanceled(); }
 
       if (eventArgs.Error != null) { return @this.TrySetException(eventArgs.Error); }
@@ -102,6 +113,9 @@ namespace CuteAnt.AsyncEx
     /// <returns><c>true</c> if this method completed the task completion source; <c>false</c> if it was already completed.</returns>
     internal static Boolean TryCompleteFromCompletedTask(this TaskCompletionSource @this, Task task)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+      if (task == null) throw new ArgumentNullException(nameof(task));
+
       if (task.IsFaulted) { return @this.TrySetException(task.Exception.InnerExceptions); }
 
       if (task.IsCanceled)
@@ -130,6 +144,9 @@ namespace CuteAnt.AsyncEx
     /// <returns><c>true</c> if this method completed the task completion source; <c>false</c> if it was already completed.</returns>
     internal static Boolean TryCompleteFromEventArgs(this TaskCompletionSource @this, AsyncCompletedEventArgs eventArgs)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+      if (eventArgs == null) throw new ArgumentNullException(nameof(eventArgs));
+
       if (eventArgs.Cancelled) { return @this.TrySetCanceled(); }
 
       if (eventArgs.Error != null) { return @this.TrySetException(eventArgs.Error); }
@@ -144,6 +161,8 @@ namespace CuteAnt.AsyncEx
     /// <param name="result">The result of the asynchronous operation.</param>
     internal static void TrySetResultWithBackgroundContinuations<TResult>(this TaskCompletionSource<TResult> @this, TResult result)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+
       // Set the result on a threadpool thread, so any synchronous continuations will execute in the background.
       TaskShim.Run(() => @this.TrySetResult(result));
 
@@ -156,6 +175,8 @@ namespace CuteAnt.AsyncEx
     /// <param name="this">The task completion source. May not be <c>null</c>.</param>
     internal static void TrySetResultWithBackgroundContinuations(this TaskCompletionSource @this)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+
       // Set the result on a threadpool thread, so any synchronous continuations will execute in the background.
       TaskShim.Run(() => @this.TrySetResult());
 
@@ -169,6 +190,8 @@ namespace CuteAnt.AsyncEx
     /// <param name="this">The task completion source. May not be <c>null</c>.</param>
     internal static void TrySetCanceledWithBackgroundContinuations<TResult>(this TaskCompletionSource<TResult> @this)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+
       // Complete on a threadpool thread, so any synchronous continuations will execute in the background.
       TaskShim.Run(() => @this.TrySetCanceled());
 
@@ -185,6 +208,8 @@ namespace CuteAnt.AsyncEx
     /// <param name="this">The task completion source. May not be <c>null</c>.</param>
     internal static void TrySetCanceledWithBackgroundContinuations(this TaskCompletionSource @this)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+
       // Set the result on a threadpool thread, so any synchronous continuations will execute in the background.
       TaskShim.Run(() => @this.TrySetCanceled());
 
@@ -203,6 +228,8 @@ namespace CuteAnt.AsyncEx
     /// <param name="exception">The exception to bind to the task.</param>
     internal static void TrySetExceptionWithBackgroundContinuations<TResult>(this TaskCompletionSource<TResult> @this, Exception exception)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+
       // Complete on a threadpool thread, so any synchronous continuations will execute in the background.
       TaskShim.Run(() => @this.TrySetException(exception));
 
@@ -220,6 +247,8 @@ namespace CuteAnt.AsyncEx
     /// <param name="exception">The exception to bind to the task.</param>
     internal static void TrySetExceptionWithBackgroundContinuations(this TaskCompletionSource @this, Exception exception)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+
       // Set the result on a threadpool thread, so any synchronous continuations will execute in the background.
       TaskShim.Run(() => @this.TrySetException(exception));
 
@@ -238,6 +267,8 @@ namespace CuteAnt.AsyncEx
     /// <param name="exceptions">The exceptions to bind to the task.</param>
     internal static void TrySetExceptionWithBackgroundContinuations<TResult>(this TaskCompletionSource<TResult> @this, IEnumerable<Exception> exceptions)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+
       // Complete on a threadpool thread, so any synchronous continuations will execute in the background.
       TaskShim.Run(() => @this.TrySetException(exceptions));
 
@@ -255,6 +286,8 @@ namespace CuteAnt.AsyncEx
     /// <param name="exceptions">The exceptions to bind to the task.</param>
     internal static void TrySetExceptionWithBackgroundContinuations(this TaskCompletionSource @this, IEnumerable<Exception> exceptions)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+
       // Set the result on a threadpool thread, so any synchronous continuations will execute in the background.
       TaskShim.Run(() => @this.TrySetException(exceptions));
 

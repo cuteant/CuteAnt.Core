@@ -7,57 +7,67 @@ namespace CuteAnt.AsyncEx
 {
   /// <summary>A thread that executes actions within an <see cref="AsyncContext"/>.</summary>
   [DebuggerTypeProxy(typeof(DebugView))]
-  public sealed class AsyncContextThread : IDisposable
+  public sealed class AsyncContextThread : SingleDisposable<AsyncContext>
   {
     /// <summary>The child thread.</summary>
     private readonly Task _thread;
 
-    /// <summary>The asynchronous context executed by the child thread.</summary>
-    private readonly AsyncContext _context;
+    /// <summary>Creates a new <see cref="AsyncContext"/> and increments its operation count.</summary>
+    private static AsyncContext CreateAsyncContext()
+    {
+      var result = new AsyncContext();
+      result.SynchronizationContext.OperationStarted();
+      return result;
+    }
 
-    /// <summary>A flag used to ensure we only call <see cref="AsyncContext.OperationCompleted"/> once during complex join/dispose operations.</summary>
-    private int _stoppingFlag;
+    /// <summary>Initializes a new instance of the <see cref="AsyncContextThread"/> class, creating a child thread waiting for commands.</summary>
+    /// <param name="context">The context for this thread.</param>
+    private AsyncContextThread(AsyncContext context)
+      : base(context)
+    {
+      Context = context;
+#if NET40
+      _thread = Task.Factory.StartNew(Execute, CancellationToken.None, AsyncUtils.GetCreationOptions(TaskCreationOptions.LongRunning), TaskScheduler.Default);
+#else
+      _thread = Task.Factory.StartNew(Execute, CancellationToken.None, TaskCreationOptions.LongRunning | TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+#endif
+    }
 
     /// <summary>Initializes a new instance of the <see cref="AsyncContextThread"/> class, creating a child thread waiting for commands.</summary>
     public AsyncContextThread()
+      : this(CreateAsyncContext())
     {
-      _context = new AsyncContext();
-      _context.SynchronizationContext.OperationStarted();
-      _thread = Task.Factory.StartNew(Execute, CancellationToken.None, AsyncUtils.GetCreationOptions(TaskCreationOptions.LongRunning), TaskScheduler.Default); //  | TaskCreationOptions.DenyChildAttach
     }
 
     /// <summary>Gets the <see cref="AsyncContext"/> executed by this thread.</summary>
-    public AsyncContext Context => _context;
+    public AsyncContext Context { get; }
 
     private void Execute()
     {
-      using (_context)
+      using (Context)
       {
-        _context.Execute();
+        Context.Execute();
       }
     }
 
     /// <summary>Permits the thread to exit, if we have not already done so.</summary>
-    private void AllowThreadToExit()
-    {
-      if (Interlocked.CompareExchange(ref _stoppingFlag, 1, 0) == 0)
-      {
-        _context.SynchronizationContext.OperationCompleted();
-      }
-    }
+    private void AllowThreadToExit() => Context.SynchronizationContext.OperationCompleted();
 
     /// <summary>Requests the thread to exit and returns a task representing the exit of the thread. The thread will exit when all outstanding asynchronous operations complete.</summary>
     public Task JoinAsync()
     {
-      AllowThreadToExit();
+      Dispose();
       return _thread;
     }
 
+    /// <summary>Requests the thread to exit and blocks until the thread exits. The thread will exit when all outstanding asynchronous operations complete.</summary>
+    public void Join() => JoinAsync().WaitAndUnwrapException();
+
     /// <summary>Requests the thread to exit.</summary>
-    public void Dispose() => AllowThreadToExit();
+    protected override void Dispose(AsyncContext context) => AllowThreadToExit();
 
     /// <summary>Gets the <see cref="TaskFactory"/> for this thread, which can be used to schedule work to this thread.</summary>
-    public TaskFactory Factory => _context.Factory;
+    public TaskFactory Factory => Context.Factory;
 
     [DebuggerNonUserCode]
     internal sealed class DebugView

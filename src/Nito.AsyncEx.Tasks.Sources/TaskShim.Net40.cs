@@ -175,24 +175,26 @@ namespace CuteAnt.AsyncEx
 
     /// <summary>所有提供的任务已完成时，创建将完成的任务</summary>
     /// <typeparam name="TResult"></typeparam>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for. May not be <c>null</c>.</param>
     /// <returns></returns>
     internal static Task<TResult[]> WhenAll<TResult>(IEnumerable<Task<TResult>> tasks)
     {
+      if (tasks == null) throw new ArgumentNullException(nameof(tasks));
       return TaskEx.WhenAll(tasks);
     }
 
     /// <summary>所有提供的任务已完成时，创建将完成的任务</summary>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for. May not be <c>null</c>.</param>
     /// <returns></returns>
     internal static Task WhenAll(IEnumerable<Task> tasks)
     {
+      if (tasks == null) throw new ArgumentNullException(nameof(tasks));
       return TaskEx.WhenAll(tasks);
     }
 
     /// <summary>所有提供的任务已完成时，创建将完成的任务</summary>
     /// <typeparam name="TResult"></typeparam>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for.</param>
     /// <returns></returns>
     internal static Task<TResult[]> WhenAll<TResult>(params Task<TResult>[] tasks)
     {
@@ -200,7 +202,7 @@ namespace CuteAnt.AsyncEx
     }
 
     /// <summary>所有提供的任务已完成时，创建将完成的任务</summary>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for.</param>
     /// <returns></returns>
     internal static Task WhenAll(params Task[] tasks)
     {
@@ -213,24 +215,26 @@ namespace CuteAnt.AsyncEx
 
     /// <summary>任何提供的任务已完成时，创建将完成的任务</summary>
     /// <typeparam name="TResult"></typeparam>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for. May not be <c>null</c>.</param>
     /// <returns></returns>
     internal static Task<Task<TResult>> WhenAny<TResult>(IEnumerable<Task<TResult>> tasks)
     {
+      if (tasks == null) throw new ArgumentNullException(nameof(tasks));
       return TaskEx.WhenAny(tasks);
     }
 
     /// <summary>任何提供的任务已完成时，创建将完成的任务</summary>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for. May not be <c>null</c>.</param>
     /// <returns></returns>
     internal static Task<Task> WhenAny(IEnumerable<Task> tasks)
     {
+      if (tasks == null) throw new ArgumentNullException(nameof(tasks));
       return TaskEx.WhenAny(tasks);
     }
 
     /// <summary>任何提供的任务已完成时，创建将完成的任务</summary>
     /// <typeparam name="TResult"></typeparam>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for.</param>
     /// <returns></returns>
     internal static Task<Task<TResult>> WhenAny<TResult>(params Task<TResult>[] tasks)
     {
@@ -238,7 +242,7 @@ namespace CuteAnt.AsyncEx
     }
 
     /// <summary>任何提供的任务已完成时，创建将完成的任务</summary>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for.</param>
     /// <returns></returns>
     internal static Task<Task> WhenAny(params Task[] tasks)
     {

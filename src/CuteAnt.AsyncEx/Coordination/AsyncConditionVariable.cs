@@ -24,18 +24,18 @@ namespace CuteAnt.AsyncEx
 
     /// <summary>Creates an async-compatible condition variable associated with an async-compatible lock.</summary>
     /// <param name="asyncLock">The lock associated with this condition variable.</param>
-    /// <param name="queue">The wait queue used to manage waiters.</param>
+    /// <param name="queue">The wait queue used to manage waiters. This may be <c>null</c> to use a default (FIFO) queue.</param>
     public AsyncConditionVariable(AsyncLock asyncLock, IAsyncWaitQueue<object> queue)
     {
       _asyncLock = asyncLock;
-      _queue = queue;
+      _queue = queue ?? new DefaultAsyncWaitQueue<object>();
       _mutex = new object();
     }
 
     /// <summary>Creates an async-compatible condition variable associated with an async-compatible lock.</summary>
     /// <param name="asyncLock">The lock associated with this condition variable.</param>
     public AsyncConditionVariable(AsyncLock asyncLock)
-      : this(asyncLock, new DefaultAsyncWaitQueue<object>())
+      : this(asyncLock, null)
     {
     }
 
@@ -93,34 +93,22 @@ namespace CuteAnt.AsyncEx
       }
     }
 
-    /// <summary>Asynchronously waits for a signal on this condition variable. The associated lock MUST be held when calling this method, and it will still be held when this method returns.</summary>
+    /// <summary>Asynchronously waits for a signal on this condition variable. 
+    /// The associated lock MUST be held when calling this method, and it will still be held when the returned task completes.</summary>
     public Task WaitAsync() => WaitAsync(CancellationToken.None);
 
-    /// <summary>Synchronously waits for a signal on this condition variable. This method may block the calling thread. The associated lock MUST be held when calling this method, and it will still be held when this method returns, even if the method is cancelled.</summary>
+    /// <summary>Synchronously waits for a signal on this condition variable. 
+    /// This method may block the calling thread. The associated lock MUST be held when calling this method, 
+    /// and it will still be held when this method returns, even if the method is cancelled.</summary>
     /// <param name="cancellationToken">The cancellation signal used to cancel this wait.</param>
     public void Wait(CancellationToken cancellationToken)
     {
-      Task enqueuedTask;
-      lock (_mutex)
-      {
-        // Begin waiting for either a signal or cancellation.
-        enqueuedTask = _queue.Enqueue(_mutex, cancellationToken);
-      }
-
-      // Release the lock while we are waiting.
-      _asyncLock.ReleaseLock();
-
-      // Wait for the signal or cancellation.
-      enqueuedTask.WaitWithoutException();
-
-      // Re-take the lock.
-      _asyncLock.Lock();
-
-      // Propagate the cancellation exception if necessary.
-      enqueuedTask.WaitAndUnwrapException();
+      WaitAsync(cancellationToken).WaitAndUnwrapException();
     }
 
-    /// <summary>Synchronously waits for a signal on this condition variable. This method may block the calling thread. The associated lock MUST be held when calling this method, and it will still be held when this method returns.</summary>
+    /// <summary>Synchronously waits for a signal on this condition variable. 
+    /// This method may block the calling thread. The associated lock MUST be held when calling this method, 
+    /// and it will still be held when this method returns.</summary>
     public void Wait() => Wait(CancellationToken.None);
 
     // ReSharper disable UnusedMember.Local

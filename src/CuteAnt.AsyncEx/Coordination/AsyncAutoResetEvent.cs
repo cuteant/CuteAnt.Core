@@ -26,10 +26,10 @@ namespace CuteAnt.AsyncEx
 
     /// <summary>Creates an async-compatible auto-reset event.</summary>
     /// <param name="set">Whether the auto-reset event is initially set or unset.</param>
-    /// <param name="queue">The wait queue used to manage waiters.</param>
+    /// <param name="queue">The wait queue used to manage waiters. This may be <c>null</c> to use a default (FIFO) queue.</param>
     public AsyncAutoResetEvent(bool set, IAsyncWaitQueue<object> queue)
     {
-      _queue = queue;
+      _queue = queue ?? new DefaultAsyncWaitQueue<object>();
       _set = set;
       _mutex = new object();
     }
@@ -37,13 +37,13 @@ namespace CuteAnt.AsyncEx
     /// <summary>Creates an async-compatible auto-reset event.</summary>
     /// <param name="set">Whether the auto-reset event is initially set or unset.</param>
     public AsyncAutoResetEvent(bool set)
-      : this(set, new DefaultAsyncWaitQueue<object>())
+      : this(set, null)
     {
     }
 
     /// <summary>Creates an async-compatible auto-reset event that is initially unset.</summary>
     public AsyncAutoResetEvent()
-      : this(false, new DefaultAsyncWaitQueue<object>())
+      : this(false, null)
     {
     }
 

@@ -8,6 +8,6 @@
   },
   "dependencies": {
     "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
-    "Serilog": "2.1.0"
+    "Serilog": "2.2.1"
   }
 }

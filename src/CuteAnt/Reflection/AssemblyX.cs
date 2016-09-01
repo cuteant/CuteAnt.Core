@@ -409,10 +409,10 @@ namespace CuteAnt.Reflection
             if (s_logger.IsDebugLevelEnabled())
             {
               // 如果是本目录的程序集，去掉目录前缀
-              var p = item.Asm.Location;
-              var cur = PathHelper.ApplicationBasePath;
-              if (p.StartsWithIgnoreCase(cur)) p = p.Substring(cur.Length).TrimStart("\\");
-              s_logger.LogDebug("AssemblyX.FindAllPlugins(\"{0}\")导致加载{1}", baseType.FullName, p);
+              var file = item.Asm.Location;
+              var root = PathHelper.ApplicationBasePath;
+              if (file.StartsWithIgnoreCase(root)) file = file.Substring(root.Length).TrimStart("\\");
+              s_logger.LogDebug("AssemblyX.FindAllPlugins(\"{0}\")导致加载{1}", baseType.FullName, file);
             }
             var asm2 = Assembly.LoadFile(item.Asm.Location);
             ts = Create(asm2).FindPlugins(baseType);
@@ -503,7 +503,12 @@ namespace CuteAnt.Reflection
             var type2 = AssemblyX.Create(asm2).GetType(typeName);
             if (type2 == null) continue;
             type = type2;
-            if (s_logger.IsDebugLevelEnabled()) s_logger.LogDebug("TypeX.GetType(\"{0}\")导致加载{1}", typeName, file);
+            if (s_logger.IsDebugLevelEnabled())
+            {
+              var root = ".".GetFullPath();
+              if (file.StartsWithIgnoreCase(root)) file = file.Substring(root.Length).TrimStart("\\");
+              s_logger.LogDebug("TypeX.GetType(\"{0}\")导致加载{1}", typeName, file);
+            }
           }
           catch (Exception ex)
           {

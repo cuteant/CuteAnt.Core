@@ -10,7 +10,7 @@ namespace CuteAnt.AsyncEx
     /// <summary>The MRE that manages the "pause" logic. When the MRE is set, the token is not paused; when the MRE is not set, the token is paused.</summary>
     private readonly AsyncManualResetEvent _mre = new AsyncManualResetEvent(true);
 
-    /// <summary>Whether or not this source (and its tokens) are in the paused state. This member is seldom read; code reading this member has a high possibility of race conditions.</summary>
+    /// <summary>Whether or not this source (and its tokens) are in the paused state. This member is seldom used; code using this member has a high possibility of race conditions.</summary>
     public bool IsPaused
     {
       get { return !_mre.IsSet; }

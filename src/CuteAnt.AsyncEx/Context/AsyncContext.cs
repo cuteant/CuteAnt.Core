@@ -63,7 +63,7 @@ namespace CuteAnt.AsyncEx
     private void Enqueue(Task task, bool propagateExceptions)
     {
       OperationStarted();
-      task.ContinueWith(_ => OperationCompleted(), CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+      task.ContinueWith(_ => OperationCompleted(), CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, _taskScheduler);
       _queue.TryAdd(task, propagateExceptions);
 
       // If we fail to add to the queue, just drop the Task. This is the same behavior as the TaskScheduler.FromCurrentSynchronizationContext(WinFormsSynchronizationContext).
@@ -93,6 +93,8 @@ namespace CuteAnt.AsyncEx
     /// <param name="action">The action to execute. May not be <c>null</c>.</param>
     public static void Run(Action action)
     {
+      if (action == null) throw new ArgumentNullException(nameof(action));
+
       using (var context = new AsyncContext())
       {
         var task = context._taskFactory.Run(action);
@@ -106,6 +108,8 @@ namespace CuteAnt.AsyncEx
     /// <param name="action">The action to execute. May not be <c>null</c>.</param>
     public static TResult Run<TResult>(Func<TResult> action)
     {
+      if (action == null) throw new ArgumentNullException(nameof(action));
+
       using (var context = new AsyncContext())
       {
         var task = context._taskFactory.Run(action);
@@ -118,6 +122,8 @@ namespace CuteAnt.AsyncEx
     /// <param name="action">The action to execute. May not be <c>null</c>.</param>
     public static void Run(Func<Task> action)
     {
+      if (action == null) throw new ArgumentNullException(nameof(action));
+
       // ReSharper disable AccessToDisposedClosure
       using (var context = new AsyncContext())
       {
@@ -126,7 +132,7 @@ namespace CuteAnt.AsyncEx
         {
           context.OperationCompleted();
           t.WaitAndUnwrapException();
-        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, context._taskScheduler);
         context.Execute();
         task.WaitAndUnwrapException();
       }
@@ -138,6 +144,8 @@ namespace CuteAnt.AsyncEx
     /// <param name="action">The action to execute. May not be <c>null</c>.</param>
     public static TResult Run<TResult>(Func<Task<TResult>> action)
     {
+      if (action == null) throw new ArgumentNullException(nameof(action));
+
       // ReSharper disable AccessToDisposedClosure
       using (var context = new AsyncContext())
       {
@@ -146,7 +154,7 @@ namespace CuteAnt.AsyncEx
         {
           context.OperationCompleted();
           return t.WaitAndUnwrapException();
-        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, context._taskScheduler);
         context.Execute();
         return task.WaitAndUnwrapException();
       }

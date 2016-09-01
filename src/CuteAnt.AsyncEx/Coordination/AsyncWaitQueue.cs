@@ -17,7 +17,7 @@ namespace CuteAnt.AsyncEx
     /// <returns>The queued task.</returns>
     Task<T> Enqueue();
 
-    /// <summary>Removes a single entry in the wait queue and completes it. The task continuations for the completed task must be executed asynchronously.</summary>
+    /// <summary>Removes a single entry in the wait queue and completes it. This method may only be called if <see cref="IsEmpty"/> is <c>false</c>. The task continuations for the completed task must be executed asynchronously.</summary>
     /// <param name="result">The result used to complete the wait queue entry. If this isn't needed, use <c>default(T)</c>.</param>
     void Dequeue(T result = default(T));
 

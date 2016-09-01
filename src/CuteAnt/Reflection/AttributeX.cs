@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using CuteAnt;
 using CuteAnt.Collections;
 using CuteAnt.Reflection;
 #if !NET40
@@ -21,23 +22,19 @@ namespace System
   /// <summary>特性辅助类</summary>
   public static class AttributeX
   {
-    #region 静态方法
+    #region -- MemberInfo --
 
     private static DictionaryCache<MemberInfo, DictionaryCache<Type, Attribute[]>> _miCache = new DictionaryCache<MemberInfo, DictionaryCache<Type, Attribute[]>>();
     private static DictionaryCache<MemberInfo, DictionaryCache<Type, Attribute[]>> _miCache2 = new DictionaryCache<MemberInfo, DictionaryCache<Type, Attribute[]>>();
-    private static readonly Attribute[] _emptyAttributes = new Attribute[0];
 
     /// <summary>获取自定义特性，带有缓存功能，避免因.Net内部GetCustomAttributes没有缓存而带来的损耗</summary>
     /// <param name="member"></param>
     /// <param name="attributeType"></param>
     /// <param name="inherit"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
     public static IEnumerable<Attribute> GetCustomAttributesX(this MemberInfo member, Type attributeType = null, Boolean inherit = true)
     {
-      if (member == null) { return _emptyAttributes; }
+      if (member == null) { return EmptyArray<Attribute>.Instance; }
 
       var micache = _miCache;
       if (!inherit) { micache = _miCache2; }
@@ -46,12 +43,12 @@ namespace System
 
       // 二级字典缓存
       var cache = micache.GetItem(member, m => new DictionaryCache<Type, Attribute[]>());
-      var atts = cache.GetItem<MemberInfo, Boolean>(attributeType, member, inherit, (t, m, inh) =>
+      var atts = cache.GetItem(attributeType, member, inherit, (t, m, inh) =>
       {
         return Attribute.GetCustomAttributes(m, t, inh);
       });
 
-      return atts != null ? atts : _emptyAttributes;
+      return atts != null ? atts : EmptyArray<Attribute>.Instance;
     }
 
     /// <summary>获取自定义特性，带有缓存功能，避免因.Net内部GetCustomAttributes没有缓存而带来的损耗</summary>
@@ -59,15 +56,12 @@ namespace System
     /// <param name="member"></param>
     /// <param name="inherit"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
     public static IEnumerable<TAttribute> GetCustomAttributesX<TAttribute>(this MemberInfo member, Boolean inherit = true)
       where TAttribute : Attribute
     {
       var atts = GetCustomAttributesX(member, typeof(TAttribute), inherit);
 
-      return atts.Any() ? (IEnumerable<TAttribute>)atts : new TAttribute[0];
+      return atts.Any() ? atts.Cast<TAttribute>() : EmptyArray<TAttribute>.Instance;
     }
 
     /// <summary>获取自定义属性</summary>
@@ -94,9 +88,6 @@ namespace System
     /// <param name="member"></param>
     /// <param name="inherit"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
     public static TAttribute GetCustomAttributeX<TAttribute>(this MemberInfo member, Boolean inherit = true)
       where TAttribute : Attribute
     {
@@ -104,25 +95,26 @@ namespace System
       return att as TAttribute;
     }
 
-    private static DictionaryCache<String, Attribute[]> _asmCache = new DictionaryCache<String, Attribute[]>();
+    #endregion
+
+    #region -- Assembly --
+
+    private static DictionaryCache<string, object> _asmCache = new DictionaryCache<string, object>();
 
     /// <summary>获取自定义属性，带有缓存功能，避免因.Net内部GetCustomAttributes没有缓存而带来的损耗</summary>
     /// <typeparam name="TAttribute"></typeparam>
     /// <param name="assembly"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static IEnumerable<TAttribute> GetCustomAttributesX<TAttribute>(this Assembly assembly)
+    public static TAttribute[] GetCustomAttributesX<TAttribute>(this Assembly assembly)
       where TAttribute : Attribute
     {
       if (assembly == null) { return new TAttribute[0]; }
 
-      var key = String.Format("{0}_{1}", assembly.FullName, typeof(TAttribute).FullName);
+      var key = $"{assembly.FullName}_{typeof(TAttribute).FullName}";
 
-      return (IEnumerable<TAttribute>)_asmCache.GetItem<Assembly>(key, assembly, (k, m) =>
+      return (TAttribute[])_asmCache.GetItem(key, assembly, (k, m) =>
       {
-        var atts = Attribute.GetCustomAttributes(m, typeof(TAttribute));
+        var atts = Attribute.GetCustomAttributes(m, typeof(TAttribute), true).Cast<TAttribute>().ToArray();
         return atts == null ? new TAttribute[0] : atts;
       });
     }
@@ -131,9 +123,6 @@ namespace System
     /// <typeparam name="TAttribute"></typeparam>
     /// <param name="assembly"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
     public static TAttribute GetCustomAttributeX<TAttribute>(this Assembly assembly)
       where TAttribute : Attribute
     {
@@ -145,9 +134,6 @@ namespace System
     /// <typeparam name="TAttribute"></typeparam>
     /// <typeparam name="TResult"></typeparam>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
     public static TResult GetCustomAttributeValue<TAttribute, TResult>(this Assembly target)
       where TAttribute : Attribute
     {
@@ -173,9 +159,6 @@ namespace System
     /// <param name="target">目标对象</param>
     /// <param name="inherit">是否递归</param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
     public static TResult GetCustomAttributeValue<TAttribute, TResult>(this MemberInfo target, Boolean inherit = true)
       where TAttribute : Attribute
     {

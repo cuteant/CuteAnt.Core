@@ -19,6 +19,9 @@ namespace CuteAnt.AsyncEx
 #endif
     internal static Task Run(this TaskFactory @this, Action action)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+      if (action == null) throw new ArgumentNullException(nameof(action));
+
       return @this.StartNew(action, @this.CancellationToken,
           AsyncUtils.GetCreationOptions(@this.CreationOptions), @this.Scheduler ?? TaskScheduler.Default);
     }
@@ -33,6 +36,9 @@ namespace CuteAnt.AsyncEx
 #endif
     internal static Task<TResult> Run<TResult>(this TaskFactory @this, Func<TResult> action)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+      if (action == null) throw new ArgumentNullException(nameof(action));
+
       return @this.StartNew(action, @this.CancellationToken,
           AsyncUtils.GetCreationOptions(@this.CreationOptions), @this.Scheduler ?? TaskScheduler.Default);
     }
@@ -47,6 +53,9 @@ namespace CuteAnt.AsyncEx
 #endif
     internal static Task Run(this TaskFactory @this, Func<Task> action)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+      if (action == null) throw new ArgumentNullException(nameof(action));
+
       return @this.StartNew(action, @this.CancellationToken,
           AsyncUtils.GetCreationOptions(@this.CreationOptions), @this.Scheduler ?? TaskScheduler.Default).Unwrap();
     }
@@ -61,6 +70,9 @@ namespace CuteAnt.AsyncEx
 #endif
     internal static Task<TResult> Run<TResult>(this TaskFactory @this, Func<Task<TResult>> action)
     {
+      if (@this == null) throw new ArgumentNullException(nameof(@this));
+      if (action == null) throw new ArgumentNullException(nameof(action));
+
       return @this.StartNew(action, @this.CancellationToken,
           AsyncUtils.GetCreationOptions(@this.CreationOptions), @this.Scheduler ?? TaskScheduler.Default).Unwrap();
     }

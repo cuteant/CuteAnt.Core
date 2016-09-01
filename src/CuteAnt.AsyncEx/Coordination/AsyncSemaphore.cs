@@ -16,7 +16,7 @@ namespace CuteAnt.AsyncEx
     private readonly IAsyncWaitQueue<object> _queue;
 
     /// <summary>The number of waits that will be immediately granted.</summary>
-    private int _count;
+    private long _count;
 
     /// <summary>The semi-unique identifier for this instance. This is 0 if the id has not yet been created.</summary>
     private int _id;
@@ -26,26 +26,26 @@ namespace CuteAnt.AsyncEx
 
     /// <summary>Creates a new async-compatible semaphore with the specified initial count.</summary>
     /// <param name="initialCount">The initial count for this semaphore. This must be greater than or equal to zero.</param>
-    /// <param name="queue">The wait queue used to manage waiters.</param>
-    public AsyncSemaphore(int initialCount, IAsyncWaitQueue<object> queue)
+    /// <param name="queue">The wait queue used to manage waiters. This may be <c>null</c> to use a default (FIFO) queue.</param>
+    public AsyncSemaphore(long initialCount, IAsyncWaitQueue<object> queue)
     {
-      _queue = queue;
+      _queue = queue ?? new DefaultAsyncWaitQueue<object>();
       _count = initialCount;
       _mutex = new object();
     }
 
     /// <summary>Creates a new async-compatible semaphore with the specified initial count.</summary>
     /// <param name="initialCount">The initial count for this semaphore. This must be greater than or equal to zero.</param>
-    public AsyncSemaphore(int initialCount)
-        : this(initialCount, new DefaultAsyncWaitQueue<object>())
+    public AsyncSemaphore(long initialCount)
+      : this(initialCount, null)
     {
     }
 
     /// <summary>Gets a semi-unique identifier for this asynchronous semaphore.</summary>
     public int Id => IDManager<AsyncSemaphore>.GetID(ref _id);
 
-    /// <summary>Gets the number of slots currently available on this semaphore.</summary>
-    public int CurrentCount
+    /// <summary>Gets the number of slots currently available on this semaphore. This member is seldom used; code using this member has a high possibility of race conditions.</summary>
+    public long CurrentCount
     {
       get { lock (_mutex) { return _count; } }
     }
@@ -84,15 +84,15 @@ namespace CuteAnt.AsyncEx
     public void Wait() => Wait(CancellationToken.None);
 
     /// <summary>Releases the semaphore.</summary>
-    public void Release(int releaseCount)
+    public void Release(long releaseCount)
     {
       if (releaseCount == 0) { return; }
 
       lock (_mutex)
       {
-        if (_count > int.MaxValue - releaseCount)
+        checked
         {
-          throw new InvalidOperationException("Could not release semaphore.");
+          var test = _count + releaseCount;
         }
 
         while (releaseCount != 0 && !_queue.IsEmpty)
@@ -120,7 +120,7 @@ namespace CuteAnt.AsyncEx
 
       public int Id => _semaphore.Id;
 
-      public int CurrentCount => _semaphore._count;
+      public long CurrentCount => _semaphore._count;
 
       public IAsyncWaitQueue<object> WaitQueue => _semaphore._queue;
     }

@@ -21,12 +21,6 @@ namespace CuteAnt.AsyncEx
     /// <summary>The object used for mutual exclusion.</summary>
     private readonly object _mutex;
 
-    /// <summary>A task that is completed with the reader key object for this lock.</summary>
-    private readonly Task<IDisposable> _cachedReaderKeyTask;
-
-    /// <summary>A task that is completed with the writer key object for this lock.</summary>
-    private readonly Task<IDisposable> _cachedWriterKeyTask;
-
     /// <summary>The semi-unique identifier for this instance. This is 0 if the id has not yet been created.</summary>
     private int _id;
 
@@ -57,25 +51,23 @@ namespace CuteAnt.AsyncEx
     internal int GetReaderCountForDebugger { get { return (_locksHeld > 0 ? _locksHeld : 0); } }
 
     /// <summary>Creates a new async-compatible reader/writer lock.</summary>
+    /// <param name="writerQueue">The wait queue used to manage waiters for writer locks. This may be <c>null</c> to use a default (FIFO) queue.</param>
+    /// <param name="readerQueue">The wait queue used to manage waiters for reader locks. This may be <c>null</c> to use a default (FIFO) queue.</param>
     public AsyncReaderWriterLock(IAsyncWaitQueue<IDisposable> writerQueue, IAsyncWaitQueue<IDisposable> readerQueue)
     {
-      _writerQueue = writerQueue;
-      _readerQueue = readerQueue;
+      _writerQueue = writerQueue ?? new DefaultAsyncWaitQueue<IDisposable>();
+      _readerQueue = readerQueue ?? new DefaultAsyncWaitQueue<IDisposable>();
       _mutex = new object();
-      _cachedReaderKeyTask = TaskShim.FromResult<IDisposable>(new ReaderKey(this));
-      _cachedWriterKeyTask = TaskShim.FromResult<IDisposable>(new WriterKey(this));
     }
 
     /// <summary>Creates a new async-compatible reader/writer lock.</summary>
     public AsyncReaderWriterLock()
-        : this(new DefaultAsyncWaitQueue<IDisposable>(), new DefaultAsyncWaitQueue<IDisposable>())
+      : this(null, null)
     {
     }
 
     /// <summary>Gets a semi-unique identifier for this asynchronous lock.</summary>
     public int Id => IDManager<AsyncReaderWriterLock>.GetID(ref _id);
-
-    internal object SyncObject => _mutex;
 
     /// <summary>Applies a continuation to the task that will call <see cref="ReleaseWaiters"/> if the task is canceled. This method may not be called while holding the sync lock.</summary>
     /// <param name="task">The task to observe for cancellation.</param>
@@ -98,7 +90,7 @@ namespace CuteAnt.AsyncEx
         if (_locksHeld >= 0 && _writerQueue.IsEmpty)
         {
           ++_locksHeld;
-          return _cachedReaderKeyTask;
+          return TaskShim.FromResult<IDisposable>(new ReaderKey(this));
         }
         else
         {
@@ -130,7 +122,7 @@ namespace CuteAnt.AsyncEx
     /// <summary>Asynchronously acquires the lock as a writer. Returns a disposable that releases the lock when disposed.</summary>
     /// <param name="cancellationToken">The cancellation token used to cancel the lock. If this is already set, then this method will attempt to take the lock immediately (succeeding if the lock is currently available).</param>
     /// <returns>A disposable that releases the lock when disposed.</returns>
-    public AwaitableDisposable<IDisposable> WriterLockAsync(CancellationToken cancellationToken)
+    private Task<IDisposable> RequestWriterLockAsync(CancellationToken cancellationToken)
     {
       Task<IDisposable> ret;
       lock (_mutex)
@@ -139,45 +131,34 @@ namespace CuteAnt.AsyncEx
         if (_locksHeld == 0)
         {
           _locksHeld = -1;
-          ret = _cachedWriterKeyTask;
+          ret = TaskShim.FromResult<IDisposable>(new WriterKey(this));
         }
         else
         {
           // Wait for the lock to become available or cancellation.
-          ret = _writerQueue.Enqueue(SyncObject, cancellationToken);
+          ret = _writerQueue.Enqueue(_mutex, cancellationToken);
         }
       }
 
       ReleaseWaitersWhenCanceled(ret);
-      return new AwaitableDisposable<IDisposable>(ret);
+      return ret;
     }
 
-    /// <summary>Synchronously acquires the lock as a writer. Returns a disposable that releases the lock when disposed. This method may block the calling thread.</summary>
+    /// <summary>Asynchronously acquires the lock as a writer. Returns a disposable that releases the lock when disposed.</summary>
     /// <param name="cancellationToken">The cancellation token used to cancel the lock. If this is already set, then this method will attempt to take the lock immediately (succeeding if the lock is currently available).</param>
     /// <returns>A disposable that releases the lock when disposed.</returns>
-    public IDisposable WriterLock(CancellationToken cancellationToken)
-    {
-      Task<IDisposable> ret;
-      lock (SyncObject)
-      {
-        // If the lock is available, take it immediately.
-        if (_locksHeld == 0)
-        {
-          _locksHeld = -1;
-          return _cachedWriterKeyTask.Result;
-        }
-
-        // Wait for the lock to become available or cancellation.
-        ret = _writerQueue.Enqueue(SyncObject, cancellationToken);
-      }
-
-      ReleaseWaitersWhenCanceled(ret);
-      return ret.WaitAndUnwrapException();
-    }
+    public AwaitableDisposable<IDisposable> WriterLockAsync(CancellationToken cancellationToken) =>
+        new AwaitableDisposable<IDisposable>(RequestWriterLockAsync(cancellationToken));
 
     /// <summary>Asynchronously acquires the lock as a writer. Returns a disposable that releases the lock when disposed.</summary>
     /// <returns>A disposable that releases the lock when disposed.</returns>
     public AwaitableDisposable<IDisposable> WriterLockAsync() => WriterLockAsync(CancellationToken.None);
+
+    /// <summary>Synchronously acquires the lock as a writer. Returns a disposable that releases the lock when disposed. This method may block the calling thread.</summary>
+    /// <param name="cancellationToken">The cancellation token used to cancel the lock. If this is already set, then this method will attempt to take the lock immediately (succeeding if the lock is currently available).</param>
+    /// <returns>A disposable that releases the lock when disposed.</returns>
+    public IDisposable WriterLock(CancellationToken cancellationToken) =>
+        RequestWriterLockAsync(cancellationToken).WaitAndUnwrapException();
 
     /// <summary>Asynchronously acquires the lock as a writer. Returns a disposable that releases the lock when disposed. This method may block the calling thread.</summary>
     /// <returns>A disposable that releases the lock when disposed.</returns>
@@ -193,14 +174,14 @@ namespace CuteAnt.AsyncEx
       if (!_writerQueue.IsEmpty)
       {
         _locksHeld = -1;
-        _writerQueue.Dequeue(_cachedWriterKeyTask.Result);
+        _writerQueue.Dequeue(new WriterKey(this));
         return;
       }
 
       // Then to readers.
       while (!_readerQueue.IsEmpty)
       {
-        _readerQueue.Dequeue(_cachedReaderKeyTask.Result);
+        _readerQueue.Dequeue(new ReaderKey(this));
         ++_locksHeld;
       }
     }
@@ -218,7 +199,7 @@ namespace CuteAnt.AsyncEx
     /// <summary>Releases the lock as a writer.</summary>
     internal void ReleaseWriterLock()
     {
-      lock (SyncObject)
+      lock (_mutex)
       {
         _locksHeld = 0;
         ReleaseWaiters();
@@ -226,37 +207,29 @@ namespace CuteAnt.AsyncEx
     }
 
     /// <summary>The disposable which releases the reader lock.</summary>
-    private sealed class ReaderKey : IDisposable
+    private sealed class ReaderKey : SingleDisposable<AsyncReaderWriterLock>
     {
-      /// <summary>The lock to release.</summary>
-      private readonly AsyncReaderWriterLock _asyncReaderWriterLock;
-
       /// <summary>Creates the key for a lock.</summary>
       /// <param name="asyncReaderWriterLock">The lock to release. May not be <c>null</c>.</param>
       public ReaderKey(AsyncReaderWriterLock asyncReaderWriterLock)
+        : base(asyncReaderWriterLock)
       {
-        _asyncReaderWriterLock = asyncReaderWriterLock;
       }
 
-      /// <summary>Release the lock.</summary>
-      public void Dispose() => _asyncReaderWriterLock.ReleaseReaderLock();
+      protected override void Dispose(AsyncReaderWriterLock context) => context.ReleaseReaderLock();
     }
 
     /// <summary>The disposable which releases the writer lock.</summary>
-    private sealed class WriterKey : IDisposable
+    private sealed class WriterKey : SingleDisposable<AsyncReaderWriterLock>
     {
-      /// <summary>The lock to release.</summary>
-      private readonly AsyncReaderWriterLock _asyncReaderWriterLock;
-
       /// <summary>Creates the key for a lock.</summary>
       /// <param name="asyncReaderWriterLock">The lock to release. May not be <c>null</c>.</param>
       public WriterKey(AsyncReaderWriterLock asyncReaderWriterLock)
+        : base(asyncReaderWriterLock)
       {
-        _asyncReaderWriterLock = asyncReaderWriterLock;
       }
 
-      /// <summary>Release the lock.</summary>
-      public void Dispose() => _asyncReaderWriterLock.ReleaseWriterLock();
+      protected override void Dispose(AsyncReaderWriterLock context) => context.ReleaseWriterLock();
     }
 
     // ReSharper disable UnusedMember.Local

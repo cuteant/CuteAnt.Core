@@ -181,26 +181,28 @@ namespace CuteAnt.AsyncEx
 
     /// <summary>所有提供的任务已完成时，创建将完成的任务</summary>
     /// <typeparam name="TResult"></typeparam>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for. May not be <c>null</c>.</param>
     /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Task<TResult[]> WhenAll<TResult>(IEnumerable<Task<TResult>> tasks)
     {
+      if (tasks == null) throw new ArgumentNullException(nameof(tasks));
       return Task.WhenAll(tasks);
     }
 
     /// <summary>所有提供的任务已完成时，创建将完成的任务</summary>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for. May not be <c>null</c>.</param>
     /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Task WhenAll(IEnumerable<Task> tasks)
     {
+      if (tasks == null) throw new ArgumentNullException(nameof(tasks));
       return Task.WhenAll(tasks);
     }
 
     /// <summary>所有提供的任务已完成时，创建将完成的任务</summary>
     /// <typeparam name="TResult"></typeparam>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for.</param>
     /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Task<TResult[]> WhenAll<TResult>(params Task<TResult>[] tasks)
@@ -209,7 +211,7 @@ namespace CuteAnt.AsyncEx
     }
 
     /// <summary>所有提供的任务已完成时，创建将完成的任务</summary>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for.</param>
     /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Task WhenAll(params Task[] tasks)
@@ -223,26 +225,28 @@ namespace CuteAnt.AsyncEx
 
     /// <summary>任何提供的任务已完成时，创建将完成的任务</summary>
     /// <typeparam name="TResult"></typeparam>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for. May not be <c>null</c>.</param>
     /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Task<Task<TResult>> WhenAny<TResult>(IEnumerable<Task<TResult>> tasks)
     {
+      if (tasks == null) throw new ArgumentNullException(nameof(tasks));
       return Task.WhenAny(tasks);
     }
 
     /// <summary>任何提供的任务已完成时，创建将完成的任务</summary>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for. May not be <c>null</c>.</param>
     /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Task<Task> WhenAny(IEnumerable<Task> tasks)
     {
+      if (tasks == null) throw new ArgumentNullException(nameof(tasks));
       return Task.WhenAny(tasks);
     }
 
     /// <summary>任何提供的任务已完成时，创建将完成的任务</summary>
     /// <typeparam name="TResult"></typeparam>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for.</param>
     /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Task<Task<TResult>> WhenAny<TResult>(params Task<TResult>[] tasks)
@@ -251,7 +255,7 @@ namespace CuteAnt.AsyncEx
     }
 
     /// <summary>任何提供的任务已完成时，创建将完成的任务</summary>
-    /// <param name="tasks"></param>
+    /// <param name="tasks">The tasks to wait for.</param>
     /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Task<Task> WhenAny(params Task[] tasks)
@@ -260,19 +264,21 @@ namespace CuteAnt.AsyncEx
     }
 
     /// <summary>Asynchronously waits for any of the source tasks to complete, or for the cancellation token to be canceled.</summary>
-    /// <param name="tasks">The tasks to wait for.</param>
+    /// <param name="tasks">The tasks to wait for. May not be <c>null</c>.</param>
     /// <param name="cancellationToken">The cancellation token that cancels the wait.</param>
     public static Task<Task> WhenAny(IEnumerable<Task> tasks, CancellationToken cancellationToken)
     {
+      if (tasks == null) throw new ArgumentNullException(nameof(tasks));
       return Task.WhenAny(tasks).WaitAsync(cancellationToken);
     }
 
     /// <summary>Asynchronously waits for any of the source tasks to complete, or for the cancellation token to be canceled.</summary>
     /// <typeparam name="TResult">The type of the task results.</typeparam>
-    /// <param name="tasks">The tasks to wait for.</param>
+    /// <param name="tasks">The tasks to wait for. May not be <c>null</c>.</param>
     /// <param name="cancellationToken">The cancellation token that cancels the wait.</param>
     public static Task<Task<TResult>> WhenAny<TResult>(IEnumerable<Task<TResult>> tasks, CancellationToken cancellationToken)
     {
+      if (tasks == null) throw new ArgumentNullException(nameof(tasks));
       return Task.WhenAny(tasks).WaitAsync(cancellationToken);
     }
 
