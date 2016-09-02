@@ -247,10 +247,10 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Import Project="..\..\..\SharedProjects\CuteAnt.Extensions.IO.Sources\CuteAnt.Extensions.IO.Sources.projitems" Label="Shared" />
-  <Import Project="..\..\..\SharedProjects\CuteAnt.Extensions.Logging.Sources\CuteAnt.Extensions.Logging.Sources.projitems" Label="Shared" />
-  <Import Project="..\..\..\SharedProjects\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
-  <Import Project="..\..\..\SharedProjects\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems" Label="Shared" />
+  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.IO.Sources\CuteAnt.Extensions.IO.Sources.projitems" Label="Shared" />
+  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Logging.Sources\CuteAnt.Extensions.Logging.Sources.projitems" Label="Shared" />
+  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
+  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

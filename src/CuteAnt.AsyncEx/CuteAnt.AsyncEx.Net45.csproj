@@ -207,9 +207,9 @@
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Import Project="..\..\..\SharedProjects\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems" Label="Shared" />
-  <Import Project="..\..\..\SharedProjects\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
-  <Import Project="..\..\..\SharedProjects\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.projitems" Label="Shared" />
+  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems" Label="Shared" />
+  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
+  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
