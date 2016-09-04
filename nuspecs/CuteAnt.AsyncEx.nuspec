@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>CuteAnt.AsyncEx</id>
-    <version>2.0.0-rc3-160705</version>
+    <version>2.0.0-rc3-160707</version>
     <title>CuteAnt.AsyncEx</title>
     <tags>CuteAnt.AsyncEx</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -17,7 +17,7 @@
     <language>en-US</language>
     <dependencies>
       <group targetFramework=".NETFramework4.0">
-        <dependency id="CuteAnt" version="2.0.0-rc3-160705" />
+        <dependency id="CuteAnt" version="2.0.0-rc3-160707" />
         <dependency id="CuteAnt.Extensions.Primitives" version="2.0.0-rc3-160701" />
         <dependency id="Ix-Main" version="1.2.5" />
         <dependency id="Microsoft.Bcl" version="1.1.10" />
@@ -25,7 +25,7 @@
         <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
       </group>
       <group targetFramework=".NETFramework4.5.1">
-        <dependency id="CuteAnt" version="2.0.0-rc3-160705" />
+        <dependency id="CuteAnt" version="2.0.0-rc3-160707" />
         <dependency id="System.Interactive" version="3.0.0" />
         <dependency id="System.Collections.Immutable" version="1.2.0" />
       </group>

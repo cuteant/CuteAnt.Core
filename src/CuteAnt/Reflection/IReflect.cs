@@ -34,13 +34,6 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     Type GetType(String typeName, Boolean isLoadAssembly);
 
-    /// <summary>获取字段</summary>
-    /// <param name="type">类型</param>
-    /// <param name="name">名称</param>
-    /// <param name="ignoreCase">忽略大小写</param>
-    /// <returns></returns>
-    FieldInfo GetField(Type type, String name, Boolean ignoreCase);
-
     /// <summary>获取方法</summary>
     /// <param name="type">类型</param>
     /// <param name="name">名称</param>
@@ -54,32 +47,6 @@ namespace CuteAnt.Reflection
     /// <param name="paramCount">参数个数，-1表示不过滤参数个数</param>
     /// <returns></returns>
     MethodInfo[] GetMethods(Type type, String name, Int32 paramCount = -1);
-
-    /// <summary>获取属性</summary>
-    /// <param name="type">类型</param>
-    /// <param name="name">名称</param>
-    /// <param name="ignoreCase">忽略大小写</param>
-    /// <returns></returns>
-    PropertyInfo GetProperty(Type type, String name, Boolean ignoreCase);
-
-    /// <summary>获取成员</summary>
-    /// <param name="type">类型</param>
-    /// <param name="name">名称</param>
-    /// <param name="ignoreCase">忽略大小写</param>
-    /// <returns></returns>
-    MemberInfo GetMember(Type type, String name, Boolean ignoreCase);
-
-    /// <summary>获取字段</summary>
-    /// <param name="type"></param>
-    /// <param name="baseFirst"></param>
-    /// <returns></returns>
-    IList<FieldInfo> GetFields(Type type, Boolean baseFirst = true);
-
-    /// <summary>获取属性</summary>
-    /// <param name="type"></param>
-    /// <param name="baseFirst"></param>
-    /// <returns></returns>
-    IList<PropertyInfo> GetProperties(Type type, Boolean baseFirst = true);
 
     #endregion
 
@@ -191,9 +158,6 @@ namespace CuteAnt.Reflection
       return Type.GetType(typeName);
     }
 
-    private const BindingFlags DefaultLookup = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance;// | BindingFlags.FlattenHierarchy;
-    private const BindingFlags DefaultLookupIC = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.IgnoreCase;
-
     /// <summary>获取方法</summary>
     /// <param name="type">类型</param>
     /// <param name="name">名称</param>
@@ -204,12 +168,12 @@ namespace CuteAnt.Reflection
       if (paramTypes == null) { paramTypes = Type.EmptyTypes; }
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != typeof(Object))
+      while (type != null && type != TypeX._.Object)
       {
-        var mi = type.GetMethod(name, DefaultLookup, null, paramTypes, null);
+        var mi = type.GetMethod(name, BindingFlagsHelper.DefaultLookup, null, paramTypes, null);
         if (mi != null) { return mi; }
 
-        type = TypeX.Create(type).BaseType.Type;
+        type = type.BaseType();
       }
       return null;
     }
@@ -221,7 +185,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public virtual MethodInfo[] GetMethods(Type type, String name, Int32 paramCount = -1)
     {
-      var ms = type.GetMethods(DefaultLookup);
+      var ms = type.GetMethods(BindingFlagsHelper.DefaultLookup);
       if (ms == null || ms.Length == 0) { return ms; }
 
       var list = new List<MethodInfo>();
@@ -233,215 +197,6 @@ namespace CuteAnt.Reflection
         }
       }
       return list.ToArray();
-    }
-
-    /// <summary>获取属性</summary>
-    /// <param name="type">类型</param>
-    /// <param name="name">名称</param>
-    /// <param name="ignoreCase">忽略大小写</param>
-    /// <returns></returns>
-    public virtual PropertyInfo GetProperty(Type type, String name, Boolean ignoreCase)
-    {
-      // 父类私有属性的获取需要递归，可见范围则不需要，有些类型的父类为空，比如接口
-      while (type != null && type != typeof(Object))
-      {
-        var pi = GetSafeProperty(type, name, ignoreCase ? DefaultLookupIC : DefaultLookup);
-        if (pi != null) { return pi; }
-
-        type = TypeX.Create(type).BaseType.Type;
-      }
-      return null;
-    }
-
-    /// <summary>获取字段</summary>
-    /// <param name="type">类型</param>
-    /// <param name="name">名称</param>
-    /// <param name="ignoreCase">忽略大小写</param>
-    /// <returns></returns>
-    public virtual FieldInfo GetField(Type type, String name, Boolean ignoreCase)
-    {
-      // 父类私有字段的获取需要递归，可见范围则不需要，有些类型的父类为空，比如接口
-      while (type != null && type != typeof(Object))
-      {
-        var fi = GetSafeField(type, name, ignoreCase ? DefaultLookupIC : DefaultLookup);
-        if (fi != null) { return fi; }
-
-        type = TypeX.Create(type).BaseType.Type;
-      }
-      return null;
-    }
-
-    /// <summary>获取成员</summary>
-    /// <param name="type">类型</param>
-    /// <param name="name">名称</param>
-    /// <param name="ignoreCase">忽略大小写</param>
-    /// <returns></returns>
-    public virtual MemberInfo GetMember(Type type, String name, Boolean ignoreCase)
-    {
-      // 父类私有成员的获取需要递归，可见范围则不需要，有些类型的父类为空，比如接口
-      while (type != null && type != typeof(Object))
-      {
-        var fs = type.GetMember(name, ignoreCase ? DefaultLookupIC : DefaultLookup);
-        if (fs != null && fs.Length > 0)
-        {
-          // 得到多个的时候，优先返回精确匹配
-          if (ignoreCase && fs.Length > 1)
-          {
-            foreach (var fi in fs)
-            {
-              if (fi.Name == name) { return fi; }
-            }
-          }
-          return fs[0];
-        }
-
-        type = TypeX.Create(type).BaseType.Type;
-      }
-      return null;
-    }
-
-    //private static MethodInfo GetSafeMethod(Type type, string methodName, BindingFlags flags, params Type[] paramTypes)
-    //{
-    //	try
-    //	{
-    //		return type.GetMethod(methodName, flags);
-    //	}
-    //	catch (AmbiguousMatchException)
-    //	{
-    //		return type.GetMethods(flags).First(mi => mi.Name == methodName);
-    //	}
-    //}
-
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static FieldInfo GetSafeField(Type type, String propertyName, BindingFlags flags)
-    {
-      try
-      {
-        return type.GetField(propertyName, flags);
-      }
-      catch (AmbiguousMatchException)
-      {
-        return type.GetFields(flags).First(pi => pi.Name == propertyName);
-      }
-    }
-
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static PropertyInfo GetSafeProperty(Type type, String propertyName, BindingFlags flags)
-    {
-      try
-      {
-        return type.GetProperty(propertyName, flags);
-      }
-      catch (AmbiguousMatchException)
-      {
-        return type.GetProperties(flags).First(pi => pi.Name == propertyName);
-      }
-    }
-
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static EventInfo GetSafeEvent(Type type, String eventName, BindingFlags flags)
-    {
-      try
-      {
-        return type.GetEvent(eventName, flags);
-      }
-      catch (AmbiguousMatchException)
-      {
-        return type.GetEvents(flags).First(ei => ei.Name == eventName);
-      }
-    }
-
-    #endregion
-
-    #region 反射获取 字段/属性
-
-    private DictionaryCache<Type, IList<FieldInfo>> _cache1 = new DictionaryCache<Type, IList<FieldInfo>>();
-    private DictionaryCache<Type, IList<FieldInfo>> _cache2 = new DictionaryCache<Type, IList<FieldInfo>>();
-    /// <summary>获取字段</summary>
-    /// <param name="type"></param>
-    /// <param name="baseFirst"></param>
-    /// <returns></returns>
-    public virtual IList<FieldInfo> GetFields(Type type, Boolean baseFirst = true)
-    {
-      if (baseFirst)
-        return _cache1.GetItem(type, key => GetFields2(key, true));
-      else
-        return _cache2.GetItem(type, key => GetFields2(key, false));
-    }
-
-    IList<FieldInfo> GetFields2(Type type, Boolean baseFirst)
-    {
-      var list = new List<FieldInfo>();
-
-      // Void*的基类就是null
-      if (type == typeof(Object) || type.BaseType == null) return list;
-
-      if (baseFirst) list.AddRange(GetFields(type.BaseType));
-
-      var fis = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-      foreach (var fi in fis)
-      {
-        if (fi.GetCustomAttribute<NonSerializedAttribute>() != null) continue;
-
-        list.Add(fi);
-      }
-
-      if (!baseFirst) list.AddRange(GetFields(type.BaseType));
-
-      return list;
-    }
-
-    private DictionaryCache<Type, IList<PropertyInfo>> _cache3 = new DictionaryCache<Type, IList<PropertyInfo>>();
-    private DictionaryCache<Type, IList<PropertyInfo>> _cache4 = new DictionaryCache<Type, IList<PropertyInfo>>();
-    /// <summary>获取属性</summary>
-    /// <param name="type"></param>
-    /// <param name="baseFirst"></param>
-    /// <returns></returns>
-    public virtual IList<PropertyInfo> GetProperties(Type type, Boolean baseFirst = true)
-    {
-      if (baseFirst)
-        return _cache3.GetItem(type, key => GetProperties2(key, true));
-      else
-        return _cache4.GetItem(type, key => GetProperties2(key, false));
-    }
-
-    IList<PropertyInfo> GetProperties2(Type type, Boolean baseFirst)
-    {
-      var list = new List<PropertyInfo>();
-
-      // Void*的基类就是null
-      if (type == typeof(Object) || type.BaseType == null) return list;
-
-      // 本身type.GetProperties就可以得到父类属性，只是不能保证父类属性在子类属性之前
-      if (baseFirst) list.AddRange(GetProperties(type.BaseType));
-
-      // 父类子类可能因为继承而有重名的属性，此时以子类优先，否则反射父类属性会出错
-      var set = new HashSet<String>(list.Select(e => e.Name));
-
-      //var pis = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-      var pis = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-      foreach (var pi in pis)
-      {
-        if (pi.GetIndexParameters().Length > 0) continue;
-        if (pi.GetCustomAttributeX<XmlIgnoreAttribute>() != null) continue;
-        if (pi.GetCustomAttributeX<IgnoreDataMemberAttribute>() != null) continue;
-
-        if (!set.Contains(pi.Name))
-        {
-          list.Add(pi);
-          set.Add(pi.Name);
-        }
-      }
-
-      if (!baseFirst) list.AddRange(GetProperties(type.BaseType).Where(e => !set.Contains(e.Name)));
-
-      return list;
     }
 
     #endregion

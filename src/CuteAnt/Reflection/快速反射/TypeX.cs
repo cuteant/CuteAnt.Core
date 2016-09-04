@@ -51,7 +51,7 @@ namespace CuteAnt.Reflection
             _Handler = GetConstructorInvoker(Type, null);
           else
           {
-            var cs = Type.GetConstructors(DefaultBinding);
+            var cs = Type.GetConstructors(BindingFlagsHelper.DefaultLookup);
             if (cs != null && cs.Length > 0) _Handler = GetConstructorInvoker(Type, cs[0]);
           }
         }
@@ -1046,7 +1046,7 @@ namespace CuteAnt.Reflection
 
     #region 原生扩展
 
-    private Boolean initBaseType;
+    private volatile Boolean initBaseType;
     private TypeX _BaseType;
 
     /// <summary>基类。因计算类型基类极慢，故缓存</summary>

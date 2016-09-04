@@ -106,7 +106,7 @@ namespace CuteAnt.Reflection
 			ConstructorInfo constructor = type.GetConstructor(types);
 			if (constructor == null)
 			{
-				constructor = type.GetConstructor(DefaultBinding, null, types, null);
+				constructor = type.GetConstructor(BindingFlagsHelper.DefaultLookup, null, types, null);
 			}
 			if (constructor != null)
 			{

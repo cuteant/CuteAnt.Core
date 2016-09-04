@@ -129,8 +129,8 @@ namespace CuteAnt.Reflection
       if (type == null || name == null) return null;
 
       var property = type.GetProperty(name);
-      if (property == null) property = type.GetProperty(name, DefaultBinding);
-      if (property == null) property = type.GetProperty(name, DefaultBinding | BindingFlags.IgnoreCase);
+      if (property == null) property = type.GetProperty(name, BindingFlagsHelper.DefaultLookup);
+      if (property == null) property = type.GetProperty(name, BindingFlagsHelper.DefaultLookupIC);
       if (property == null)
       {
         var ps = type.GetProperties();

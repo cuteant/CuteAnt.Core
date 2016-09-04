@@ -89,8 +89,8 @@ namespace CuteAnt.Reflection
     public new static FieldInfoX Create(Type type, String name)
     {
       FieldInfo field = type.GetField(name);
-      if (field == null) { field = type.GetField(name, DefaultBinding); }
-      if (field == null) { field = type.GetField(name, DefaultBinding | BindingFlags.IgnoreCase); }
+      if (field == null) { field = type.GetField(name, BindingFlagsHelper.DefaultLookup); }
+      if (field == null) { field = type.GetField(name, BindingFlagsHelper.DefaultLookupIC); }
       if (field == null && type.BaseType != typeof(Object)) { return Create(type.BaseType, name); }
       if (field == null) { return null; }
       return Create(field);

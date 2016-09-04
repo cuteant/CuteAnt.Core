@@ -134,8 +134,6 @@ namespace System
     /// <returns></returns>
     public static IEnumerable<Attribute> GetCustomAttributesX(this MemberInfo memberInfo, Type attributeType = null, bool inherit = true)
     {
-      if (memberInfo == null) { return EmptyArray<Attribute>.Instance; }
-
       var typeInfo = memberInfo as Type;
       if (typeInfo != null) { return GetCustomAttributesX(typeInfo, attributeType, inherit); }
       var propertyInfo = memberInfo as PropertyInfo;
@@ -143,18 +141,7 @@ namespace System
       var fieldInfo = memberInfo as FieldInfo;
       if (fieldInfo != null) { return GetCustomAttributesX(fieldInfo, attributeType, inherit); }
 
-      var micache = _miCache;
-      if (!inherit) { micache = _miCache2; }
-
-      if (attributeType == null) { attributeType = typeof(Attribute); }
-
-      // 二级字典缓存
-      var cache = micache.GetItem(memberInfo, m => new DictionaryCache<Type, Attribute[]>());
-      return cache.GetItem(attributeType, memberInfo, inherit, (t, m, inh) =>
-      {
-        var attrs = Attribute.GetCustomAttributes(m, t, inh);
-        return attrs != null ? attrs : EmptyArray<Attribute>.Instance;
-      });
+      return GetCustomAttributesInternal(memberInfo, attributeType, inherit);
     }
 
     /// <summary>获取自定义特性，带有缓存功能，避免因.Net内部GetCustomAttributes没有缓存而带来的损耗</summary>
@@ -172,7 +159,66 @@ namespace System
       var fieldInfo = memberInfo as FieldInfo;
       if (fieldInfo != null) { return GetCustomAttributesX<TAttribute>(fieldInfo, inherit); }
 
-      var attrs = GetCustomAttributesX(memberInfo, typeof(TAttribute), inherit);
+      var attrs = GetCustomAttributesInternal(memberInfo, typeof(TAttribute), inherit);
+
+      return attrs.Any() ? attrs.Cast<TAttribute>() : EmptyArray<TAttribute>.Instance;
+    }
+
+    private static IEnumerable<Attribute> GetCustomAttributesInternal(MemberInfo memberInfo, Type attributeType, bool inherit)
+    {
+      if (memberInfo == null) { return EmptyArray<Attribute>.Instance; }
+
+      var micache = _miCache;
+      if (!inherit) { micache = _miCache2; }
+
+      if (attributeType == null) { attributeType = typeof(Attribute); }
+
+      // 二级字典缓存
+      var cache = micache.GetItem(memberInfo, m => new DictionaryCache<Type, Attribute[]>());
+      return cache.GetItem(attributeType, memberInfo, inherit, (t, m, inh) =>
+      {
+        var attrs = Attribute.GetCustomAttributes(m, t, inh);
+        return attrs != null ? attrs : EmptyArray<Attribute>.Instance;
+      });
+    }
+
+    #endregion
+
+    #region - GetAllAttributes -
+
+    /// <summary>GetAllAttributes</summary>
+    /// <param name="memberInfo"></param>
+    /// <param name="attributeType"></param>
+    /// <param name="inherit"></param>
+    /// <returns></returns>
+    public static IEnumerable<Attribute> GetAllAttributes(this MemberInfo memberInfo, Type attributeType = null, bool inherit = true)
+    {
+      var typeInfo = memberInfo as Type;
+      if (typeInfo != null) { return GetAllAttributes(typeInfo, attributeType, inherit); }
+      var propertyInfo = memberInfo as PropertyInfo;
+      if (propertyInfo != null) { return GetAllAttributes(propertyInfo, attributeType, inherit); }
+      var fieldInfo = memberInfo as FieldInfo;
+      if (fieldInfo != null) { return GetAllAttributes(fieldInfo, attributeType, inherit); }
+
+      return GetCustomAttributesInternal(memberInfo, attributeType, inherit);
+    }
+
+    /// <summary>GetAllAttributes</summary>
+    /// <typeparam name="TAttribute"></typeparam>
+    /// <param name="memberInfo"></param>
+    /// <param name="inherit"></param>
+    /// <returns></returns>
+    public static IEnumerable<TAttribute> GetAllAttributes<TAttribute>(this MemberInfo memberInfo, bool inherit = true)
+      where TAttribute : Attribute
+    {
+      var typeInfo = memberInfo as Type;
+      if (typeInfo != null) { return GetAllAttributes<TAttribute>(typeInfo, inherit); }
+      var propertyInfo = memberInfo as PropertyInfo;
+      if (propertyInfo != null) { return GetAllAttributes<TAttribute>(propertyInfo, inherit); }
+      var fieldInfo = memberInfo as FieldInfo;
+      if (fieldInfo != null) { return GetAllAttributes<TAttribute>(fieldInfo, inherit); }
+
+      var attrs = GetCustomAttributesInternal(memberInfo, typeof(TAttribute), inherit);
 
       return attrs.Any() ? attrs.Cast<TAttribute>() : EmptyArray<TAttribute>.Instance;
     }
@@ -1185,8 +1231,30 @@ namespace System
 
     #region -- Assembly --
 
-    private static DictionaryCache<string, object> _asmCache = new DictionaryCache<string, object>();
-    private static DictionaryCache<string, object> _asmCache2 = new DictionaryCache<string, object>();
+    private static DictionaryCache<string, Attribute[]> _asmCache = new DictionaryCache<string, Attribute[]>();
+    private static DictionaryCache<string, Attribute[]> _asmCache2 = new DictionaryCache<string, Attribute[]>();
+
+    /// <summary>获取自定义属性，带有缓存功能，避免因.Net内部GetCustomAttributes没有缓存而带来的损耗</summary>
+    /// <param name="assembly"></param>
+    /// <param name="attributeType"></param>
+    /// <param name="inherit"></param>
+    /// <returns></returns>
+    public static Attribute[] GetCustomAttributesX(this Assembly assembly, Type attributeType, bool inherit = true)
+    {
+      if (assembly == null) { return EmptyArray<Attribute>.Instance; }
+      if (attributeType == null) { return EmptyArray<Attribute>.Instance; }
+
+      var key = $"{assembly.FullName}_{attributeType.FullName}";
+
+      var asmCache = _asmCache;
+      if (!inherit) { asmCache = _asmCache2; }
+
+      return asmCache.GetItem(key, assembly, attributeType, inherit, (k, m, at, inh) =>
+      {
+        var atts = Attribute.GetCustomAttributes(m, at, inh);
+        return atts == null ? EmptyArray<Attribute>.Instance : atts;
+      });
+    }
 
     /// <summary>获取自定义属性，带有缓存功能，避免因.Net内部GetCustomAttributes没有缓存而带来的损耗</summary>
     /// <typeparam name="TAttribute"></typeparam>
@@ -1196,18 +1264,9 @@ namespace System
     public static TAttribute[] GetCustomAttributesX<TAttribute>(this Assembly assembly, bool inherit = true)
       where TAttribute : Attribute
     {
-      if (assembly == null) { return new TAttribute[0]; }
+      var attrs = GetCustomAttributesX(assembly, typeof(TAttribute), inherit);
 
-      var key = $"{assembly.FullName}_{typeof(TAttribute).FullName}";
-
-      var asmCache = _asmCache;
-      if (!inherit) { asmCache = _asmCache2; }
-
-      return (TAttribute[])asmCache.GetItem(key, assembly, inherit, (k, m, inh) =>
-      {
-        var atts = Attribute.GetCustomAttributes(m, typeof(TAttribute), inh).Cast<TAttribute>().ToArray();
-        return atts == null ? EmptyArray<TAttribute>.Instance : atts;
-      });
+      return attrs.Any() ? attrs.Cast<TAttribute>().ToArray() : EmptyArray<TAttribute>.Instance;
     }
 
     /// <summary>获取自定义属性</summary>

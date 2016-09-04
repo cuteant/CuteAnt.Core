@@ -26,9 +26,6 @@ namespace CuteAnt.Reflection
 		/// <summary>名称</summary>
 		public virtual String Name { get { return Member.Name; } }
 
-		/// <summary>默认查找标志</summary>
-		public const BindingFlags DefaultBinding = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-
 		#endregion 属性
 
 		#region 扩展属性
@@ -180,7 +177,7 @@ namespace CuteAnt.Reflection
 		{
 			if (type == null || name.IsNullOrWhiteSpace()) return null;
 
-			var mis = type.GetMember(name, DefaultBinding | BindingFlags.IgnoreCase);
+			var mis = type.GetMember(name, BindingFlagsHelper.DefaultLookupIC);
 			if (mis == null || mis.Length < 1)
 			{
 				//return null;
