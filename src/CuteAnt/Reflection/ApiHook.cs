@@ -127,7 +127,7 @@ namespace CuteAnt.Reflection
       // 处理动态方法
       if (method is DynamicMethod)
       {
-        var ptr = (byte*)((RuntimeMethodHandle)method.GetValue("m_method")).Value.ToPointer();
+        var ptr = (byte*)((RuntimeMethodHandle)method.GetMemberInfoValue("m_method")).Value.ToPointer();
 
         // 确保方法已经被编译
         RuntimeHelpers.PrepareMethod(method.MethodHandle);

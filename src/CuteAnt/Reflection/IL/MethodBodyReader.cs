@@ -295,7 +295,7 @@ namespace CuteAnt.Reflection
 				if (fi.FieldType == typeof(OpCode))
 				{
 					//OpCode code = (OpCode)FieldInfoX.Create(fi).GetValue(null);
-					var code = (OpCode)"".GetValue(fi);
+					var code = (OpCode)"".GetFieldInfoValue(fi);
 					UInt16 index = (UInt16)code.Value;
 					if (index < 0x100)
 					{

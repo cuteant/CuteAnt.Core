@@ -112,45 +112,45 @@ namespace CuteAnt.Reflection
 				return base.Invoke(target, method, parameters);
 		}
 
-		/// <summary></summary>
-		/// <param name="target">目标对象</param>
-		/// <param name="property">属性</param>
-		/// <returns></returns>
-		[DebuggerHidden]
-		public override Object GetValue(Object target, PropertyInfo property)
-		{
-			return PropertyInfoX.Create(property).GetValue(target);
-		}
+		///// <summary></summary>
+		///// <param name="target">目标对象</param>
+		///// <param name="property">属性</param>
+		///// <returns></returns>
+		//[DebuggerHidden]
+		//public override Object GetValue(Object target, PropertyInfo property)
+		//{
+		//	return PropertyInfoX.Create(property).GetValue(target);
+		//}
 
-		/// <summary></summary>
-		/// <param name="target">目标对象</param>
-		/// <param name="field">字段</param>
-		/// <returns></returns>
-		[DebuggerHidden]
-		public override Object GetValue(Object target, FieldInfo field)
-		{
-			return FieldInfoX.Create(field).GetValue(target);
-		}
+		///// <summary></summary>
+		///// <param name="target">目标对象</param>
+		///// <param name="field">字段</param>
+		///// <returns></returns>
+		//[DebuggerHidden]
+		//public override Object GetValue(Object target, FieldInfo field)
+		//{
+		//	return FieldInfoX.Create(field).GetValue(target);
+		//}
 
-		/// <summary></summary>
-		/// <param name="target">目标对象</param>
-		/// <param name="property">属性</param>
-		/// <param name="value">数值</param>
-		[DebuggerHidden]
-		public override void SetValue(Object target, PropertyInfo property, Object value)
-		{
-			PropertyInfoX.Create(property).SetValue(target, value);
-		}
+		///// <summary></summary>
+		///// <param name="target">目标对象</param>
+		///// <param name="property">属性</param>
+		///// <param name="value">数值</param>
+		//[DebuggerHidden]
+		//public override void SetValue(Object target, PropertyInfo property, Object value)
+		//{
+		//	PropertyInfoX.Create(property).SetValue(target, value);
+		//}
 
-		/// <summary></summary>
-		/// <param name="target">目标对象</param>
-		/// <param name="field">字段</param>
-		/// <param name="value">数值</param>
-		[DebuggerHidden]
-		public override void SetValue(Object target, FieldInfo field, Object value)
-		{
-			FieldInfoX.Create(field).SetValue(target, value);
-		}
+		///// <summary></summary>
+		///// <param name="target">目标对象</param>
+		///// <param name="field">字段</param>
+		///// <param name="value">数值</param>
+		//[DebuggerHidden]
+		//public override void SetValue(Object target, FieldInfo field, Object value)
+		//{
+		//	FieldInfoX.Create(field).SetValue(target, value);
+		//}
 
 		#endregion
 

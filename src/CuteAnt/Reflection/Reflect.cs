@@ -12,8 +12,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.Serialization;
+using System.Linq.Expressions;
 using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using CuteAnt.Collections;
 #if !NET40
@@ -162,7 +164,7 @@ namespace CuteAnt.Reflection
 
     private static readonly DictionaryCache<Type, DictionaryCache<ReflectMembersTokenType, FieldInfo[]>> s_fieldsCache =
         new DictionaryCache<Type, DictionaryCache<ReflectMembersTokenType, FieldInfo[]>>();
-    private static readonly DictionaryCache<Type, Dictionary<string, FieldInfo>> s_allFieldsCache =
+    private static readonly DictionaryCache<Type, Dictionary<string, FieldInfo>> s_declaredFieldsCache =
         new DictionaryCache<Type, Dictionary<string, FieldInfo>>();
 
     #endregion
@@ -284,7 +286,7 @@ namespace CuteAnt.Reflection
       {
         FieldInfo field;
 
-        var fields = s_allFieldsCache.GetItem(type, s_getAllFieldsWithFunc);
+        var fields = s_declaredFieldsCache.GetItem(type, s_getDeclaredFieldsFunc);
         if (fields.TryGetValue(name, out field)) { return field; };
 
         type = type.BaseType();
@@ -293,9 +295,9 @@ namespace CuteAnt.Reflection
       return null;
     }
 
-    private static readonly Func<Type, Dictionary<string, FieldInfo>> s_getAllFieldsWithFunc = GetAllFields;
-    private static Dictionary<string, FieldInfo> GetAllFields(Type type) =>
-      GetTypeFlattenHierarchyFields(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
+    private static readonly Func<Type, Dictionary<string, FieldInfo>> s_getDeclaredFieldsFunc = GetDeclaredFieldsInternal;
+    private static Dictionary<string, FieldInfo> GetDeclaredFieldsInternal(Type type) =>
+      GetTypeDeclaredFields(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
 
     #endregion
 
@@ -339,9 +341,11 @@ namespace CuteAnt.Reflection
     private static readonly DictionaryCache<Type, PropertyInfo[]> s_publicPropertiesCache =
         new DictionaryCache<Type, PropertyInfo[]>();
 
+    private static readonly DictionaryCache<Type, DictionaryCache<ReflectMembersTokenType, PropertyInfo[]>> s_ignorepropertiesCache =
+        new DictionaryCache<Type, DictionaryCache<ReflectMembersTokenType, PropertyInfo[]>>();
     private static readonly DictionaryCache<Type, DictionaryCache<ReflectMembersTokenType, PropertyInfo[]>> s_propertiesCache =
         new DictionaryCache<Type, DictionaryCache<ReflectMembersTokenType, PropertyInfo[]>>();
-    private static readonly DictionaryCache<Type, Dictionary<string, PropertyInfo>> s_allPropertiesCache =
+    private static readonly DictionaryCache<Type, Dictionary<string, PropertyInfo>> s_declaredPropertiesCache =
         new DictionaryCache<Type, Dictionary<string, PropertyInfo>>();
 
     #endregion
@@ -406,9 +410,9 @@ namespace CuteAnt.Reflection
 
     #region * GetPropertiesInternal *
 
-    private static readonly Func<ReflectMembersTokenType, Type, PropertyInfo[]> s_getTypePropertiesFunc = GetTypeProperties;
+    private static readonly Func<ReflectMembersTokenType, Type, bool, PropertyInfo[]> s_getTypePropertiesFunc = GetTypeProperties;
 
-    private static PropertyInfo[] GetTypeProperties(ReflectMembersTokenType reflectPropertiesToken, Type type)
+    private static PropertyInfo[] GetTypeProperties(ReflectMembersTokenType reflectPropertiesToken, Type type, bool ignoreIndexedProperties)
     {
       BindingFlags bindingFlags;
       switch (reflectPropertiesToken)
@@ -461,7 +465,6 @@ namespace CuteAnt.Reflection
           }
 
           var typeProperties = subType.GetProperties(bindingFlags);
-
           var newPropertyInfos = typeProperties
               .Where(x => !propertyInfos.Contains(x));
 
@@ -474,18 +477,23 @@ namespace CuteAnt.Reflection
       // Void*的基类就是null
       if (type == typeof(object) || type.BaseType == null) return EmptyArray<PropertyInfo>.Instance;
 
-      return type.GetProperties(bindingFlags)
-                 .Where(t => t.GetIndexParameters().Length == 0) // ignore indexed properties;
-                 .ToArray();
+      var pis = type.GetProperties(bindingFlags);
+      return ignoreIndexedProperties
+            ? pis.Where(t => t.GetIndexParameters().Length == 0) // ignore indexed properties;
+                 .ToArray()
+            : pis;
     }
 
-    private static PropertyInfo[] GetPropertiesInternal(Type type, ReflectMembersTokenType reflectPropertiesToken)
+    private static PropertyInfo[] GetPropertiesInternal(Type type, bool ignoreIndexedProperties, ReflectMembersTokenType reflectPropertiesToken)
     {
       if (type == null) { return EmptyArray<PropertyInfo>.Instance; }
 
+      if (type.IsInterface()) { ignoreIndexedProperties = false; }
+      var propertiesCache = !ignoreIndexedProperties ? s_propertiesCache : s_ignorepropertiesCache;
+
       // 二级字典缓存
-      var cache = s_propertiesCache.GetItem(type, k => new DictionaryCache<ReflectMembersTokenType, PropertyInfo[]>());
-      return cache.GetItem(reflectPropertiesToken, type, s_getTypePropertiesFunc);
+      var cache = propertiesCache.GetItem(type, k => new DictionaryCache<ReflectMembersTokenType, PropertyInfo[]>());
+      return cache.GetItem(reflectPropertiesToken, type, ignoreIndexedProperties, s_getTypePropertiesFunc);
     }
 
     #endregion
@@ -529,45 +537,52 @@ namespace CuteAnt.Reflection
 
     /// <summary>GetInstanceDeclaredProperties</summary>
     /// <param name="type"></param>
+    /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    public static PropertyInfo[] GetInstanceDeclaredProperties(this Type type) =>
-        GetPropertiesInternal(type, ReflectMembersTokenType.InstanceDeclaredMembers);
+    public static PropertyInfo[] GetInstanceDeclaredProperties(this Type type, bool ignoreIndexedProperties = false) =>
+        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.InstanceDeclaredMembers);
 
     /// <summary>GetInstanceProperties</summary>
     /// <param name="type"></param>
+    /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    public static PropertyInfo[] GetInstanceProperties(this Type type) =>
-        GetPropertiesInternal(type, ReflectMembersTokenType.InstanceMembers);
+    public static PropertyInfo[] GetInstanceProperties(this Type type, bool ignoreIndexedProperties = false) =>
+        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.InstanceMembers);
 
     /// <summary>GetTypeDeclaredProperties</summary>
     /// <param name="type"></param>
+    /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    public static PropertyInfo[] GetTypeDeclaredProperties(this Type type) =>
-        GetPropertiesInternal(type, ReflectMembersTokenType.TypeDeclaredMembers);
+    public static PropertyInfo[] GetTypeDeclaredProperties(this Type type, bool ignoreIndexedProperties = false) =>
+        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeDeclaredMembers);
 
     /// <summary>GetTypePublicProperties</summary>
     /// <param name="type"></param>
+    /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    public static PropertyInfo[] GetTypePublicProperties(this Type type) =>
-        GetPropertiesInternal(type, ReflectMembersTokenType.TypePublicMembers);
+    public static PropertyInfo[] GetTypePublicProperties(this Type type, bool ignoreIndexedProperties = false) =>
+        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypePublicMembers);
 
     /// <summary>GetTypeFlattenHierarchyPublicProperties</summary>
     /// <param name="type"></param>
+    /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    public static PropertyInfo[] GetTypeFlattenHierarchyPublicProperties(this Type type) =>
-        GetPropertiesInternal(type, ReflectMembersTokenType.TypeFlattenHierarchyPublicMembers);
+    public static PropertyInfo[] GetTypeFlattenHierarchyPublicProperties(this Type type, bool ignoreIndexedProperties = false) =>
+        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeFlattenHierarchyPublicMembers);
 
     /// <summary>GetTypeProperties</summary>
     /// <param name="type"></param>
+    /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    public static PropertyInfo[] GetTypeProperties(this Type type) =>
-        GetPropertiesInternal(type, ReflectMembersTokenType.TypeMembers);
+    public static PropertyInfo[] GetTypeProperties(this Type type, bool ignoreIndexedProperties = false) =>
+        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeMembers);
 
     /// <summary>GetTypeFlattenHierarchyProperties</summary>
     /// <param name="type"></param>
+    /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    public static PropertyInfo[] GetTypeFlattenHierarchyProperties(this Type type) =>
-        GetPropertiesInternal(type, ReflectMembersTokenType.TypeFlattenHierarchyMembers);
+    public static PropertyInfo[] GetTypeFlattenHierarchyProperties(this Type type, bool ignoreIndexedProperties = false) =>
+        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeFlattenHierarchyMembers);
 
     #region - GetPropertyEx -
 
@@ -584,7 +599,7 @@ namespace CuteAnt.Reflection
       {
         PropertyInfo property;
 
-        var properties = s_allPropertiesCache.GetItem(type, s_getAllPropertiesFunc);
+        var properties = s_declaredPropertiesCache.GetItem(type, s_getDeclaredPropertiesFunc);
         if (properties.TryGetValue(name, out property)) { return property; };
 
         type = type.BaseType();
@@ -593,9 +608,9 @@ namespace CuteAnt.Reflection
       return null;
     }
 
-    private static readonly Func<Type, Dictionary<string, PropertyInfo>> s_getAllPropertiesFunc = GetAllProperties;
-    private static Dictionary<string, PropertyInfo> GetAllProperties(Type type) =>
-      GetTypeFlattenHierarchyProperties(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
+    private static readonly Func<Type, Dictionary<string, PropertyInfo>> s_getDeclaredPropertiesFunc = GetDeclaredPropertiesInternal;
+    private static Dictionary<string, PropertyInfo> GetDeclaredPropertiesInternal(Type type) =>
+      GetTypeDeclaredProperties(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
 
     #endregion
 
@@ -713,6 +728,8 @@ namespace CuteAnt.Reflection
 
     #region -- 反射调用 --
 
+    #region - CreateInstance -
+
     /// <summary>反射创建指定类型的实例</summary>
     /// <param name="type">类型</param>
     /// <param name="parameters">参数数组</param>
@@ -727,6 +744,10 @@ namespace CuteAnt.Reflection
 
       return Provider.CreateInstance(type, parameters);
     }
+
+    #endregion
+
+    #region - Invoke -
 
     /// <summary>反射调用指定对象的方法。target为类型时调用其静态方法</summary>
     /// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
@@ -744,42 +765,8 @@ namespace CuteAnt.Reflection
       Object value = null;
       if (TryInvoke(target, name, out value, parameters)) { return value; }
 
-      var type = GetType(ref target);
+      var type = GetTypeInternal(ref target);
       throw new HmExceptionBase("类{0}中找不到名为{1}的方法！", type, name);
-    }
-
-    /// <summary>反射调用指定对象的方法</summary>
-    /// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
-    /// <param name="name">方法名</param>
-    /// <param name="value">数值</param>
-    /// <param name="parameters">方法参数</param>
-    /// <remarks>反射调用是否成功</remarks>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static Boolean TryInvoke(this Object target, String name, out Object value, params Object[] parameters)
-    {
-      value = null;
-
-      if (name.IsNullOrWhiteSpace()) { return false; }
-
-      var type = GetType(ref target);
-
-      // 参数类型数组
-      var list = new List<Type>();
-      foreach (var item in parameters)
-      {
-        Type t = null;
-        if (item != null) { t = item.GetType(); }
-        list.Add(t);
-      }
-
-      // 如果参数数组出现null，则无法精确匹配，可按参数个数进行匹配
-      var method = GetMethodEx(type, name, list.ToArray());
-      if (method == null) { return false; }
-
-      value = Invoke(target, method, parameters);
-      return true;
     }
 
     /// <summary>反射调用指定对象的方法</summary>
@@ -804,6 +791,48 @@ namespace CuteAnt.Reflection
       return Provider.Invoke(target, method, parameters);
     }
 
+    #endregion
+
+    #region - TryInvoke -
+
+    /// <summary>反射调用指定对象的方法</summary>
+    /// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
+    /// <param name="name">方法名</param>
+    /// <param name="value">数值</param>
+    /// <param name="parameters">方法参数</param>
+    /// <remarks>反射调用是否成功</remarks>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static Boolean TryInvoke(this Object target, String name, out Object value, params Object[] parameters)
+    {
+      value = null;
+
+      if (name.IsNullOrWhiteSpace()) { return false; }
+
+      var type = GetTypeInternal(ref target);
+
+      // 参数类型数组
+      var list = new List<Type>();
+      foreach (var item in parameters)
+      {
+        Type t = null;
+        if (item != null) { t = item.GetType(); }
+        list.Add(t);
+      }
+
+      // 如果参数数组出现null，则无法精确匹配，可按参数个数进行匹配
+      var method = GetMethodEx(type, name, list.ToArray());
+      if (method == null) { return false; }
+
+      value = Invoke(target, method, parameters);
+      return true;
+    }
+
+    #endregion
+
+    #region - InvokeWithParams -
+
     /// <summary>反射调用指定对象的方法</summary>
     /// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
     /// <param name="method">方法</param>
@@ -819,6 +848,8 @@ namespace CuteAnt.Reflection
       return Provider.InvokeWithParams(target, method, parameters);
     }
 
+    #endregion
+
     #region - GetValue -
 
     /// <summary>获取目标对象指定名称的属性/字段值</summary>
@@ -827,17 +858,17 @@ namespace CuteAnt.Reflection
     /// <param name="throwOnError">出错时是否抛出异常</param>
     /// <returns></returns>
     [DebuggerHidden]
-    public static Object GetValue(this Object target, String name, Boolean throwOnError = true)
+    public static object GetMemberInfoValue(this object target, string name, bool throwOnError = true)
     {
-      ValidationHelper.ArgumentNull(target, "target");
-      ValidationHelper.ArgumentNullOrEmpty(name, "name");
+      if (target == null) { throw new ArgumentNullException(nameof(target)); }
+      ValidationHelper.ArgumentNullOrEmpty(name, nameof(name));
 
-      Object value = null;
-      if (TryGetValue(target, name, out value)) { return value; }
+      object value = null;
+      if (TryGetMemberInfoValue(target, name, out value)) { return value; }
 
       if (!throwOnError) { return null; }
 
-      var type = GetType(ref target);
+      var type = GetTypeInternal(ref target);
       throw new ArgumentException("类[" + type.FullName + "]中不存在[" + name + "]属性或字段。");
     }
 
@@ -846,27 +877,65 @@ namespace CuteAnt.Reflection
     /// <param name="name">名称</param>
     /// <param name="value">数值</param>
     /// <returns>是否成功获取数值</returns>
-    public static Boolean TryGetValue(this Object target, String name, out Object value)
+    public static bool TryGetMemberInfoValue(this object target, string name, out object value)
     {
+      if (target == null) { throw new ArgumentNullException(nameof(target)); }
+
       value = null;
 
       if (name.IsNullOrWhiteSpace()) { return false; }
 
-      var type = GetType(ref target);
+      var type = GetTypeInternal(ref target);
       var pi = GetPropertyEx(type, name);
       if (pi != null)
       {
-        value = target.GetValue(pi);
-        return true;
+        return TryGetPropertyInfoValue(target, pi, out value);
       }
 
       var fi = GetFieldEx(type, name);
       if (fi != null)
       {
-        value = target.GetValue(fi);
+        value = GetFieldInfoValue(target, fi);
         return true;
       }
 
+      return false;
+    }
+
+    /// <summary>获取目标对象的成员值</summary>
+    /// <param name="target">目标对象</param>
+    /// <param name="member">成员</param>
+    /// <returns></returns>
+    public static object GetMemberInfoValue(this object target, MemberInfo member)
+    {
+      var property = member as PropertyInfo;
+      if (property != null) { return GetPropertyInfoValue(target, property); }
+      var field = member as FieldInfo;
+      if (field != null) { return GetFieldInfoValue(target, field); }
+
+      throw new ArgumentOutOfRangeException(nameof(member));
+    }
+
+    /// <summary>获取目标对象的成员值</summary>
+    /// <param name="target">目标对象</param>
+    /// <param name="member">成员</param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool TryGetMemberInfoValue(this object target, MemberInfo member, out object value)
+    {
+      var property = member as PropertyInfo;
+      if (property != null)
+      {
+        return TryGetPropertyInfoValue(target, property, out value);
+      }
+      var field = member as FieldInfo;
+      if (field != null)
+      {
+        value = GetFieldInfoValue(target, field);
+        return true;
+      }
+
+      value = null;
       return false;
     }
 
@@ -874,32 +943,41 @@ namespace CuteAnt.Reflection
     /// <param name="target">目标对象</param>
     /// <param name="property">属性</param>
     /// <returns></returns>
-    public static Object GetValue(this Object target, PropertyInfo property)
+    public static object GetPropertyInfoValue(this object target, PropertyInfo property)
     {
-      return Provider.GetValue(target, property);
+      var getter = GetValueGetter(property);
+      return (getter != null) ? getter(target) : null;
+    }
+
+    /// <summary>获取目标对象的属性值</summary>
+    /// <param name="target">目标对象</param>
+    /// <param name="property">属性</param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool TryGetPropertyInfoValue(this object target, PropertyInfo property, out object value)
+    {
+      var getter = GetValueGetter(property);
+
+      if (getter != null)
+      {
+        value = getter(target);
+        return true;
+      }
+      else
+      {
+        value = null;
+        return false;
+      }
     }
 
     /// <summary>获取目标对象的字段值</summary>
     /// <param name="target">目标对象</param>
     /// <param name="field">字段</param>
     /// <returns></returns>
-    public static Object GetValue(this Object target, FieldInfo field)
+    public static object GetFieldInfoValue(this object target, FieldInfo field)
     {
-      return Provider.GetValue(target, field);
-    }
-
-    /// <summary>获取目标对象的成员值</summary>
-    /// <param name="target">目标对象</param>
-    /// <param name="member">成员</param>
-    /// <returns></returns>
-    public static Object GetValue(this Object target, MemberInfo member)
-    {
-      var property = member as PropertyInfo;
-      if (property != null) { return target.GetValue(property); }
-      var field = member as FieldInfo;
-      if (field != null) { return target.GetValue(field); }
-
-      throw new ArgumentOutOfRangeException("member");
+      var getter = GetValueGetter(field);
+      return (getter != null) ? getter(target) : null;
     }
 
     #endregion
@@ -912,8 +990,14 @@ namespace CuteAnt.Reflection
     /// <param name="value">数值</param>
     /// <remarks>反射调用是否成功</remarks>
     [DebuggerHidden]
-    [Obsolete("=> TrySetValue")]
-    public static Boolean SetValue(this Object target, String name, Object value) => TrySetValue(target, name, value);
+    public static void SetMemberInfoValue(this object target, string name, object value)
+    {
+      if (!TrySetMemberInfoValue(target, name, value))
+      {
+        var type = GetTypeInternal(ref target);
+        throw new ArgumentException("类[" + type.FullName + "]中不存在[" + name + "]属性或字段。");
+      }
+    }
 
     /// <summary>设置目标对象指定名称的属性/字段值，若不存在返回false</summary>
     /// <param name="target">目标对象</param>
@@ -921,37 +1005,18 @@ namespace CuteAnt.Reflection
     /// <param name="value">数值</param>
     /// <remarks>反射调用是否成功</remarks>
     [DebuggerHidden]
-    public static Boolean TrySetValue(this Object target, String name, Object value)
+    public static bool TrySetMemberInfoValue(this object target, string name, object value)
     {
       if (name.IsNullOrWhiteSpace()) { return false; }
 
-      var type = GetType(ref target);
+      var type = GetTypeInternal(ref target);
       var pi = GetPropertyEx(type, name);
-      if (pi != null) { target.SetValue(pi, value); return true; }
+      if (pi != null) { SetPropertyInfoValue(target, pi, value); return true; }
 
       var fi = GetFieldEx(type, name);
-      if (fi != null) { target.SetValue(fi, value); return true; }
+      if (fi != null) { SetFieldInfoValue(target, fi, value); return true; }
 
-      //throw new ArgumentException("类[" + type.FullName + "]中不存在[" + name + "]属性或字段。");
       return false;
-    }
-
-    /// <summary>设置目标对象的属性值</summary>
-    /// <param name="target">目标对象</param>
-    /// <param name="property">属性</param>
-    /// <param name="value">数值</param>
-    public static void SetValue(this Object target, PropertyInfo property, Object value)
-    {
-      Provider.SetValue(target, property, value);
-    }
-
-    /// <summary>设置目标对象的字段值</summary>
-    /// <param name="target">目标对象</param>
-    /// <param name="field">字段</param>
-    /// <param name="value">数值</param>
-    public static void SetValue(this Object target, FieldInfo field, Object value)
-    {
-      Provider.SetValue(target, field, value);
     }
 
     /// <summary>设置目标对象的成员值</summary>
@@ -959,14 +1024,282 @@ namespace CuteAnt.Reflection
     /// <param name="member">成员</param>
     /// <param name="value">数值</param>
     [DebuggerHidden]
-    public static void SetValue(this Object target, MemberInfo member, Object value)
+    public static void SetMemberInfoValue(this object target, MemberInfo member, object value)
     {
       var property = member as PropertyInfo;
-      if (property != null) { Provider.SetValue(target, property, value); return; }
+      if (property != null) { SetPropertyInfoValue(target, property, value); return; }
       var field = member as FieldInfo;
-      if (field != null) { Provider.SetValue(target, field, value); return; }
+      if (field != null) { SetFieldInfoValue(target, field, value); return; }
 
-      throw new ArgumentOutOfRangeException("member");
+      throw new ArgumentOutOfRangeException(nameof(member));
+    }
+
+    /// <summary>设置目标对象的成员值</summary>
+    /// <param name="target">目标对象</param>
+    /// <param name="member">成员</param>
+    /// <param name="value">数值</param>
+    [DebuggerHidden]
+    public static bool TrySetMemberInfoValue(this object target, MemberInfo member, object value)
+    {
+      var property = member as PropertyInfo;
+      if (property != null) { SetPropertyInfoValue(target, property, value); return true; }
+      var field = member as FieldInfo;
+      if (field != null) { SetFieldInfoValue(target, field, value); return true; }
+
+      return false;
+    }
+
+    /// <summary>设置目标对象的属性值</summary>
+    /// <param name="target">目标对象</param>
+    /// <param name="property">属性</param>
+    /// <param name="value">数值</param>
+    public static void SetPropertyInfoValue(this object target, PropertyInfo property, object value)
+    {
+      GetValueSetter(property)?.Invoke(target, value);
+    }
+
+    /// <summary>设置目标对象的属性值</summary>
+    /// <param name="target">目标对象</param>
+    /// <param name="property">属性</param>
+    /// <param name="value">数值</param>
+    public static bool TrySetPropertyInfoValue(this object target, PropertyInfo property, object value)
+    {
+      var setter = GetValueSetter(property);
+      if (setter != null)
+      {
+        setter(target, value);
+        return true;
+      }
+      return false;
+    }
+
+    /// <summary>设置目标对象的字段值</summary>
+    /// <param name="target">目标对象</param>
+    /// <param name="field">字段</param>
+    /// <param name="value">数值</param>
+    public static void SetFieldInfoValue(this object target, FieldInfo field, object value)
+    {
+      GetValueSetter(field).Invoke(target, value);
+    }
+
+    #endregion
+
+    #region - GetValueGetter for PropertyInfo -
+
+    private static readonly DictionaryCache<PropertyInfo, Func<object, object>> s_propertiesValueGetterCache =
+        new DictionaryCache<PropertyInfo, Func<object, object>>();
+    private static readonly Func<PropertyInfo, Func<object, object>> s_propertyInfoGetValueGetterFunc = GetValueGetterInternal;
+
+    /// <summary>GetValueGetter</summary>
+    /// <param name="propertyInfo"></param>
+    /// <returns></returns>
+    public static Func<object, object> GetValueGetter(this PropertyInfo propertyInfo) =>
+        s_propertiesValueGetterCache.GetItem(propertyInfo, s_propertyInfoGetValueGetterFunc);
+
+    private static Func<object, object> GetValueGetterInternal(PropertyInfo propertyInfo)
+    {
+#if NETFX_CORE || NETSTANDARD1_1
+      var getMethodInfo = propertyInfo.GetMethod;
+      if (getMethodInfo == null) return null;
+      return x => getMethodInfo.Invoke(x, TypeConstants.EmptyObjectArray);
+#elif (SL5 && !WP) || __IOS__ || XBOX
+      var getMethodInfo = propertyInfo.GetGetMethod();
+      if (getMethodInfo == null) return null;
+      return x => getMethodInfo.Invoke(x, TypeConstants.EmptyObjectArray);
+#else
+      if (!propertyInfo.CanRead) { return null; }
+
+      var method = propertyInfo.GetMethodInfo();
+      if (method.IsStatic)
+      {
+        //定义一个没有名字的动态方法
+        var dynamicMethod = new DynamicMethod(string.Empty, typeof(object), new Type[] { typeof(object) }, method.DeclaringType.Module, true);
+        var il = dynamicMethod.GetILGenerator();
+
+        //if (!method.IsStatic) il.Ldarg(0).CastFromObject(method.DeclaringType);
+
+        // 目标方法没有参数
+        il.Call(method)
+            .BoxIfValueType(method.ReturnType)
+            .Ret();
+
+        return (Func<object, object>)dynamicMethod.CreateDelegate(typeof(Func<object, object>));
+      }
+      else
+      {
+        var instance = Expression.Parameter(typeof(object), "i");
+        var convertInstance = Expression.TypeAs(instance, propertyInfo.DeclaringType);
+        var property = Expression.Property(convertInstance, propertyInfo);
+        var convertProperty = Expression.TypeAs(property, typeof(object));
+        return Expression.Lambda<Func<object, object>>(convertProperty, instance).Compile();
+      }
+#endif
+    }
+
+    #endregion
+
+    #region - GetValueSetter for PropertyInfo -
+
+    private static readonly DictionaryCache<PropertyInfo, Action<object, object>> s_propertiesValueSetterCache =
+        new DictionaryCache<PropertyInfo, Action<object, object>>();
+    private static readonly Func<PropertyInfo, Action<object, object>> s_propertyInfoGetValueSetterFunc = GetValueSetterInternal;
+
+    /// <summary>GetValueGetter</summary>
+    /// <param name="propertyInfo"></param>
+    /// <returns></returns>
+    public static Action<object, object> GetValueSetter(this PropertyInfo propertyInfo) =>
+        s_propertiesValueSetterCache.GetItem(propertyInfo, s_propertyInfoGetValueSetterFunc);
+
+    /// <summary>GetValueSetter</summary>
+    /// <param name="propertyInfo"></param>
+    /// <returns></returns>
+    private static Action<object, object> GetValueSetterInternal(PropertyInfo propertyInfo)
+    {
+      if (!propertyInfo.CanWrite) { return null; }
+
+      var method = propertyInfo.SetMethodInfo();
+      if (method.IsStatic)
+      {
+        //定义一个没有名字的动态方法
+        var dynamicMethod = new DynamicMethod(string.Empty, null, new Type[] { typeof(object), typeof(object) }, method.DeclaringType.Module, true);
+        var il = dynamicMethod.GetILGenerator();
+
+        //if (!method.IsStatic) il.Ldarg(0).CastFromObject(method.DeclaringType);
+
+        // 目标方法只有一个参数
+        il.Ldarg(1)
+            .CastFromObject(method.GetParameters()[0].ParameterType)
+            .Call(method)
+            .Ret();
+
+        return (Action<object, object>)dynamicMethod.CreateDelegate(typeof(Action<object, object>));
+      }
+      else
+      {
+        var instance = Expression.Parameter(typeof(object), "i");
+        var argument = Expression.Parameter(typeof(object), "a");
+
+        var type = (Expression)Expression.TypeAs(instance, propertyInfo.DeclaringType);
+
+        var setterCall = Expression.Call(
+            type,
+            propertyInfo.SetMethodInfo(),
+            Expression.Convert(argument, propertyInfo.PropertyType));
+
+        return Expression.Lambda<Action<object, object>>
+        (
+            setterCall, instance, argument
+        ).Compile();
+      }
+    }
+
+    #endregion
+
+    #region - GetValueGetter for FieldInfo -
+
+    private static readonly DictionaryCache<FieldInfo, Func<object, object>> s_fieldsValueGetterCache =
+        new DictionaryCache<FieldInfo, Func<object, object>>();
+    private static readonly Func<FieldInfo, Func<object, object>> s_fieldInfoGetValueGetterFunc = GetValueGetterInternal;
+
+    /// <summary>GetValueGetter</summary>
+    /// <param name="fieldInfo"></param>
+    /// <returns></returns>
+    public static Func<object, object> GetValueGetter(this FieldInfo fieldInfo) =>
+        s_fieldsValueGetterCache.GetItem(fieldInfo, s_fieldInfoGetValueGetterFunc);
+
+    private static Func<object, object> GetValueGetterInternal(FieldInfo fieldInfo)
+    {
+#if (SL5 && !WP) || __IOS__ || XBOX || NETSTANDARD1_1
+      return x => fieldInfo.GetValue(x);
+#else
+      if (fieldInfo.IsStatic)
+      {
+        //定义一个没有名字的动态方法
+        var dynamicMethod = new DynamicMethod(string.Empty, typeof(object), new Type[] { typeof(object) }, fieldInfo.DeclaringType.Module, true);
+        var il = dynamicMethod.GetILGenerator();
+
+        // 必须考虑对象是值类型的情况，需要拆箱
+        // 其它地方看到的程序从来都没有人处理
+        il.Ldarg(0)
+            .CastFromObject(fieldInfo.DeclaringType)
+            .Ldfld(fieldInfo)
+            .BoxIfValueType(fieldInfo.FieldType)
+            .Ret();
+
+        return (Func<object, object>)dynamicMethod.CreateDelegate(typeof(Func<object, object>));
+      }
+      else
+      {
+        var instance = Expression.Parameter(typeof(object), "i");
+        var field = Expression.Field(Expression.TypeAs(instance, fieldInfo.DeclaringType), fieldInfo);
+        var convertField = Expression.TypeAs(field, typeof(object));
+        return Expression.Lambda<Func<object, object>>(convertField, instance).Compile();
+      }
+#endif
+    }
+
+    #endregion
+
+    #region - GetValueSetter for FieldInfo -
+
+    private static readonly DictionaryCache<FieldInfo, Action<object, object>> s_fieldsValueSetterCache =
+        new DictionaryCache<FieldInfo, Action<object, object>>();
+    private static readonly Func<FieldInfo, Action<object, object>> s_fieldInfoGetValueSetterFunc = GetValueSetterInternal;
+
+    /// <summary>GetValueSetter</summary>
+    /// <param name="fieldInfo"></param>
+    /// <returns></returns>
+    public static Action<object, object> GetValueSetter(this FieldInfo fieldInfo) =>
+        s_fieldsValueSetterCache.GetItem(fieldInfo, s_fieldInfoGetValueSetterFunc);
+
+    private static Action<object, object> GetValueSetterInternal(FieldInfo fieldInfo)
+    {
+      if (fieldInfo.IsStatic)
+      {
+        //定义一个没有名字的动态方法
+        var dynamicMethod = new DynamicMethod(string.Empty, null, new Type[] { typeof(object), typeof(object) }, fieldInfo.DeclaringType.Module, true);
+        var il = dynamicMethod.GetILGenerator();
+
+        // 必须考虑对象是值类型的情况，需要拆箱
+        // 其它地方看到的程序从来都没有人处理
+        // 值类型是不支持这样子赋值的，暂时没有找到更好的替代方法
+        il.Ldarg(0)
+            .CastFromObject(fieldInfo.DeclaringType)
+            .Ldarg(1);
+        var method = GetFieldMethod(fieldInfo.FieldType);
+        if (method != null)
+        {
+          il.Call(method);
+        }
+        else
+        {
+          il.CastFromObject(fieldInfo.FieldType);
+        }
+        il.Emit(OpCodes.Stfld, fieldInfo);
+        il.Emit(OpCodes.Ret);
+        return (Action<object, object>)dynamicMethod.CreateDelegate(typeof(Action<object, object>));
+      }
+      else
+      {
+        var instance = Expression.Parameter(typeof(object), "i");
+        var argument = Expression.Parameter(typeof(object), "a");
+
+        var field = Expression.Field(Expression.TypeAs(instance, fieldInfo.DeclaringType), fieldInfo);
+
+        var setterCall = Expression.Assign(
+            field,
+            Expression.Convert(argument, fieldInfo.FieldType));
+
+        return Expression.Lambda<Action<object, object>>
+        (
+            setterCall, instance, argument
+        ).Compile();
+      }
+    }
+    private static MethodInfo GetFieldMethod(Type type)
+    {
+      String name = "To" + type.Name;
+      return typeof(Convert).GetMethod(name, new Type[] { typeof(Object) });
     }
 
     #endregion
@@ -1174,7 +1507,7 @@ namespace CuteAnt.Reflection
     /// <summary>获取类型，如果target是Type类型，则表示要反射的是静态成员</summary>
     /// <param name="target">目标对象</param>
     /// <returns></returns>
-    static Type GetType(ref Object target)
+    static Type GetTypeInternal(ref Object target)
     {
       if (target == null) { throw new ArgumentNullException("target"); }
 
