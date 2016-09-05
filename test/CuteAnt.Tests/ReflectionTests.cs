@@ -1,15 +1,103 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
+﻿using Xunit;
 
 namespace CuteAnt.Reflection.Tests
 {
   public class ReflectionTests
   {
+    [Fact]
+    public void GenericGetOrSetDeclaredMemberValueTest()
+    {
+      var user = new User();
+      var myuser = new MyUser();
+
+      var userFields = typeof(User).GetTypeDeclaredFields();
+      var myuserFields = typeof(MyUser).GetTypeDeclaredFields();
+      var userProperties = typeof(User).GetTypeDeclaredProperties();
+      var myuserProperties = typeof(MyUser).GetTypeDeclaredProperties();
+
+      var idx = 0;
+      foreach (var item in userFields)
+      {
+        idx++;
+        var setter = item.GetValueSetter<User>();
+        setter(user, idx);
+        var getter = item.GetValueGetter<User>();
+        Assert.Equal(idx, (int)getter(user));
+      }
+      foreach (var item in myuserFields)
+      {
+        idx++;
+        var setter = item.GetValueSetter<MyUser>();
+        setter(myuser, idx);
+        var getter = item.GetValueGetter<MyUser>();
+        Assert.Equal(idx, (int)getter(myuser));
+      }
+      foreach (var item in userProperties)
+      {
+        idx++;
+        var setter = item.GetValueSetter<User>();
+        setter(user, idx);
+        var getter = item.GetValueGetter<User>();
+        Assert.Equal(idx, (int)getter(user));
+      }
+      foreach (var item in myuserProperties)
+      {
+        idx++;
+        var setter = item.GetValueSetter<MyUser>();
+        setter(myuser, idx);
+        var getter = item.GetValueGetter<MyUser>();
+        Assert.Equal(idx, (int)getter(myuser));
+      }
+    }
+
+    [Fact]
+    public void GenericGetOrSetValueTest()
+    {
+      var user = new User();
+      var myuser = new MyUser();
+
+      var userFields = typeof(User).GetTypeFields();
+      var myuserFields = typeof(MyUser).GetTypeFields();
+      var userProperties = typeof(User).GetTypeProperties();
+      var myuserProperties = typeof(MyUser).GetTypeProperties();
+
+      var idx = 0;
+      foreach (var item in userFields)
+      {
+        idx++;
+        var setter = item.GetValueSetter<User>();
+        setter(user, idx);
+        var getter = item.GetValueGetter<User>();
+        Assert.Equal(idx, (int)getter(user));
+      }
+      foreach (var item in myuserFields)
+      {
+        idx++;
+        var setter = item.GetValueSetter<MyUser>();
+        setter(myuser, idx);
+        var getter = item.GetValueGetter<MyUser>();
+        Assert.Equal(idx, (int)getter(myuser));
+      }
+      foreach (var item in userProperties)
+      {
+        idx++;
+        var setter = item.GetValueSetter<User>();
+        if (setter == null) { continue; }
+        setter(user, idx);
+        var getter = item.GetValueGetter<User>();
+        if (getter != null) Assert.Equal(idx, (int)getter(user));
+      }
+      foreach (var item in myuserProperties)
+      {
+        idx++;
+        var setter = item.GetValueSetter<MyUser>();
+        if (setter == null) { continue; }
+        setter(myuser, idx);
+        var getter = item.GetValueGetter<MyUser>();
+        if (getter != null) Assert.Equal(idx, (int)getter(myuser));
+      }
+    }
+
     [Fact]
     public void GetOrSetDeclaredMemberValueTest()
     {

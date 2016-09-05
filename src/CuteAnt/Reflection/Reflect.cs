@@ -1136,6 +1136,12 @@ namespace CuteAnt.Reflection
 #endif
     }
 
+    /// <summary>GetValueGetter</summary>
+    /// <param name="propertyInfo"></param>
+    /// <returns></returns>
+    public static Func<T, object> GetValueGetter<T>(this PropertyInfo propertyInfo) =>
+        StaticMemberAccessors<T>.GetValueGetter(propertyInfo);
+
     #endregion
 
     #region - GetValueSetter for PropertyInfo -
@@ -1186,12 +1192,15 @@ namespace CuteAnt.Reflection
             propertyInfo.SetMethodInfo(),
             Expression.Convert(argument, propertyInfo.PropertyType));
 
-        return Expression.Lambda<Action<object, object>>
-        (
-            setterCall, instance, argument
-        ).Compile();
+        return Expression.Lambda<Action<object, object>>(setterCall, instance, argument).Compile();
       }
     }
+
+    /// <summary>GetValueGetter</summary>
+    /// <param name="propertyInfo"></param>
+    /// <returns></returns>
+    public static Action<T, object> GetValueSetter<T>(this PropertyInfo propertyInfo) =>
+        StaticMemberAccessors<T>.GetValueSetter(propertyInfo);
 
     #endregion
 
@@ -1237,6 +1246,12 @@ namespace CuteAnt.Reflection
       }
 #endif
     }
+
+    /// <summary>GetValueGetter</summary>
+    /// <param name="fieldInfo"></param>
+    /// <returns></returns>
+    public static Func<T, object> GetValueGetter<T>(this FieldInfo fieldInfo) =>
+        StaticMemberAccessors<T>.GetValueGetter(fieldInfo);
 
     #endregion
 
@@ -1290,16 +1305,227 @@ namespace CuteAnt.Reflection
             field,
             Expression.Convert(argument, fieldInfo.FieldType));
 
-        return Expression.Lambda<Action<object, object>>
-        (
-            setterCall, instance, argument
-        ).Compile();
+        return Expression.Lambda<Action<object, object>>(setterCall, instance, argument).Compile();
       }
     }
     private static MethodInfo GetFieldMethod(Type type)
     {
       String name = "To" + type.Name;
       return typeof(Convert).GetMethod(name, new Type[] { typeof(Object) });
+    }
+
+    /// <summary>GetValueSetter</summary>
+    /// <param name="fieldInfo"></param>
+    /// <returns></returns>
+    public static Action<T, object> GetValueSetter<T>(this FieldInfo fieldInfo) =>
+        StaticMemberAccessors<T>.GetValueSetter(fieldInfo);
+
+    #endregion
+
+    #region * class StaticMemberAccessors<T> *
+
+    static class StaticMemberAccessors<T>
+    {
+      #region GetValueGetter for PropertyInfo
+
+      private static readonly DictionaryCache<PropertyInfo, Func<T, object>> s_propertiesValueGetterCache =
+          new DictionaryCache<PropertyInfo, Func<T, object>>();
+      private static readonly Func<PropertyInfo, Func<T, object>> s_propertyInfoGetValueGetterFunc = GetValueGetterInternal;
+
+      public static Func<T, object> GetValueGetter(PropertyInfo propertyInfo) =>
+          s_propertiesValueGetterCache.GetItem(propertyInfo, s_propertyInfoGetValueGetterFunc);
+
+      private static Func<T, object> GetValueGetterInternal(PropertyInfo propertyInfo)
+      {
+#if NETFX_CORE || NETSTANDARD1_1
+      var getMethodInfo = propertyInfo.GetMethod;
+      if (getMethodInfo == null) return null;
+      return x => getMethodInfo.Invoke(x, TypeConstants.EmptyObjectArray);
+#elif (SL5 && !WP) || __IOS__ || XBOX
+      var getMethodInfo = propertyInfo.GetGetMethod();
+      if (getMethodInfo == null) return null;
+      return x => getMethodInfo.Invoke(x, TypeConstants.EmptyObjectArray);
+#else
+        if (!propertyInfo.CanRead) { return null; }
+
+        var method = propertyInfo.GetMethodInfo();
+        if (method.IsStatic)
+        {
+          //定义一个没有名字的动态方法
+          var dynamicMethod = new DynamicMethod(string.Empty, typeof(T), new Type[] { typeof(object) }, method.DeclaringType.Module, true);
+          var il = dynamicMethod.GetILGenerator();
+
+          //if (!method.IsStatic) il.Ldarg(0).CastFromObject(method.DeclaringType);
+
+          // 目标方法没有参数
+          il.Call(method)
+              .BoxIfValueType(method.ReturnType)
+              .Ret();
+
+          return (Func<T, object>)dynamicMethod.CreateDelegate(typeof(Func<T, object>));
+        }
+        else
+        {
+          var instance = Expression.Parameter(typeof(T), "i");
+          var property = typeof(T) != propertyInfo.DeclaringType
+              ? Expression.Property(Expression.TypeAs(instance, propertyInfo.DeclaringType), propertyInfo)
+              : Expression.Property(instance, propertyInfo);
+          var convertProperty = Expression.TypeAs(property, typeof(object));
+          return Expression.Lambda<Func<T, object>>(convertProperty, instance).Compile();
+        }
+#endif
+      }
+
+      #endregion
+
+      #region GetValueGetter for FieldInfo
+
+      private static readonly DictionaryCache<FieldInfo, Func<T, object>> s_fieldsValueGetterCache =
+          new DictionaryCache<FieldInfo, Func<T, object>>();
+      private static readonly Func<FieldInfo, Func<T, object>> s_fieldInfoGetValueGetterFunc = GetValueGetterInternal;
+
+      public static Func<T, object> GetValueGetter(FieldInfo fieldInfo) =>
+          s_fieldsValueGetterCache.GetItem(fieldInfo, s_fieldInfoGetValueGetterFunc);
+
+      private static Func<T, object> GetValueGetterInternal(FieldInfo fieldInfo)
+      {
+#if (SL5 && !WP) || __IOS__ || XBOX || NETSTANDARD1_1
+        return x => fieldInfo.GetValue(x);
+#else
+        if (fieldInfo.IsStatic)
+        {
+          //定义一个没有名字的动态方法
+          var dynamicMethod = new DynamicMethod(string.Empty, typeof(T), new Type[] { typeof(object) }, fieldInfo.DeclaringType.Module, true);
+          var il = dynamicMethod.GetILGenerator();
+
+          // 必须考虑对象是值类型的情况，需要拆箱
+          // 其它地方看到的程序从来都没有人处理
+          il.Ldarg(0)
+              .CastFromObject(fieldInfo.DeclaringType)
+              .Ldfld(fieldInfo)
+              .BoxIfValueType(fieldInfo.FieldType)
+              .Ret();
+
+          return (Func<T, object>)dynamicMethod.CreateDelegate(typeof(Func<T, object>));
+        }
+        else
+        {
+          var instance = Expression.Parameter(typeof(T), "i");
+          var field = typeof(T) != fieldInfo.DeclaringType
+              ? Expression.Field(Expression.TypeAs(instance, fieldInfo.DeclaringType), fieldInfo)
+              : Expression.Field(instance, fieldInfo);
+          var convertField = Expression.TypeAs(field, typeof(object));
+          return Expression.Lambda<Func<T, object>>(convertField, instance).Compile();
+        }
+#endif
+      }
+
+      #endregion
+
+      #region GetValueSetter for PropertyInfo
+
+      private static readonly DictionaryCache<PropertyInfo, Action<T, object>> s_propertiesValueSetterCache =
+          new DictionaryCache<PropertyInfo, Action<T, object>>();
+      private static readonly Func<PropertyInfo, Action<T, object>> s_propertyInfoGetValueSetterFunc = GetValueSetterInternal;
+
+      public static Action<T, object> GetValueSetter(PropertyInfo propertyInfo) =>
+          s_propertiesValueSetterCache.GetItem(propertyInfo, s_propertyInfoGetValueSetterFunc);
+
+      private static Action<T, object> GetValueSetterInternal(PropertyInfo propertyInfo)
+      {
+        if (!propertyInfo.CanWrite) { return null; }
+
+        var method = propertyInfo.SetMethodInfo();
+        if (method.IsStatic)
+        {
+          //定义一个没有名字的动态方法
+          var dynamicMethod = new DynamicMethod(string.Empty, null, new Type[] { typeof(T), typeof(object) }, method.DeclaringType.Module, true);
+          var il = dynamicMethod.GetILGenerator();
+
+          //if (!method.IsStatic) il.Ldarg(0).CastFromObject(method.DeclaringType);
+
+          // 目标方法只有一个参数
+          il.Ldarg(1)
+              .CastFromObject(method.GetParameters()[0].ParameterType)
+              .Call(method)
+              .Ret();
+
+          return (Action<T, object>)dynamicMethod.CreateDelegate(typeof(Action<T, object>));
+        }
+        else
+        {
+          var instance = Expression.Parameter(typeof(T), "i");
+          var argument = Expression.Parameter(typeof(object), "a");
+
+          var instanceType = typeof(T) != propertyInfo.DeclaringType
+              ? (Expression)Expression.TypeAs(instance, propertyInfo.DeclaringType)
+              : instance;
+
+          var setterCall = Expression.Call(
+              instanceType,
+              propertyInfo.SetMethodInfo(),
+              Expression.Convert(argument, propertyInfo.PropertyType));
+
+          return Expression.Lambda<Action<T, object>>(setterCall, instance, argument).Compile();
+        }
+      }
+
+      #endregion
+
+      #region GetValueSetter for FieldInfo
+
+      private static readonly DictionaryCache<FieldInfo, Action<T, object>> s_fieldsValueSetterCache =
+          new DictionaryCache<FieldInfo, Action<T, object>>();
+      private static readonly Func<FieldInfo, Action<T, object>> s_fieldInfoGetValueSetterFunc = GetValueSetterInternal;
+
+      public static Action<T, object> GetValueSetter(FieldInfo fieldInfo) =>
+          s_fieldsValueSetterCache.GetItem(fieldInfo, s_fieldInfoGetValueSetterFunc);
+
+      private static Action<T, object> GetValueSetterInternal(FieldInfo fieldInfo)
+      {
+        if (fieldInfo.IsStatic)
+        {
+          //定义一个没有名字的动态方法
+          var dynamicMethod = new DynamicMethod(string.Empty, null, new Type[] { typeof(T), typeof(object) }, fieldInfo.DeclaringType.Module, true);
+          var il = dynamicMethod.GetILGenerator();
+
+          // 必须考虑对象是值类型的情况，需要拆箱
+          // 其它地方看到的程序从来都没有人处理
+          // 值类型是不支持这样子赋值的，暂时没有找到更好的替代方法
+          il.Ldarg(0)
+              .CastFromObject(fieldInfo.DeclaringType)
+              .Ldarg(1);
+          var method = GetFieldMethod(fieldInfo.FieldType);
+          if (method != null)
+          {
+            il.Call(method);
+          }
+          else
+          {
+            il.CastFromObject(fieldInfo.FieldType);
+          }
+          il.Emit(OpCodes.Stfld, fieldInfo);
+          il.Emit(OpCodes.Ret);
+          return (Action<T, object>)dynamicMethod.CreateDelegate(typeof(Action<T, object>));
+        }
+        else
+        {
+          var instance = Expression.Parameter(typeof(T), "i");
+          var argument = Expression.Parameter(typeof(object), "a");
+
+          var field = typeof(T) != fieldInfo.DeclaringType
+              ? Expression.Field(Expression.TypeAs(instance, fieldInfo.DeclaringType), fieldInfo)
+              : Expression.Field(instance, fieldInfo);
+
+          var setterCall = Expression.Assign(
+              field,
+              Expression.Convert(argument, fieldInfo.FieldType));
+
+          return Expression.Lambda<Action<T, object>>(setterCall, instance, argument).Compile();
+        }
+      }
+
+      #endregion
     }
 
     #endregion
