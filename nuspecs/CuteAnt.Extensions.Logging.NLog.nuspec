@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>CuteAnt.Extensions.Logging.NLog</id>
-    <version>2.0.0-rc3-160701</version>
+    <version>$version$</version>
     <title>CuteAnt.Extensions.Logging.NLog</title>
     <tags>NLog, Microsoft.Extensions.Logging, log</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

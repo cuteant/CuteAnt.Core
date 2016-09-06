@@ -47,22 +47,34 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Data.SQLite.Net45", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuspecs", "nuspecs", "{6E5D8926-C5BD-47E9-8B62-08EC3E578682}"
 	ProjectSection(SolutionItems) = preProject
-		nuspecs\CuteAnt.AsyncEx.nuspec = nuspecs\CuteAnt.AsyncEx.nuspec
-		nuspecs\CuteAnt.Extensions.Logging.NLog.nuspec = nuspecs\CuteAnt.Extensions.Logging.NLog.nuspec
-		nuspecs\CuteAnt.Extensions.Logging.Serilog.nuspec = nuspecs\CuteAnt.Extensions.Logging.Serilog.nuspec
-		nuspecs\CuteAnt.IdentityModel.Protocol.Extensions.nuspec = nuspecs\CuteAnt.IdentityModel.Protocol.Extensions.nuspec
-		nuspecs\CuteAnt.IdentityModel.Tokens.Jwt.nuspec = nuspecs\CuteAnt.IdentityModel.Tokens.Jwt.nuspec
-		nuspecs\CuteAnt.nuspec = nuspecs\CuteAnt.nuspec
-		nuspecs\CuteAnt.SharpSerializer.nuspec = nuspecs\CuteAnt.SharpSerializer.nuspec
-		nuspecs\MySql.Data.nuspec = nuspecs\MySql.Data.nuspec
-		nuspecs\package.cmd = nuspecs\package.cmd
 		nuspecs\publishing.cmd = nuspecs\publishing.cmd
-		nuspecs\System.Data.SQLite.nuspec = nuspecs\System.Data.SQLite.nuspec
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CuteAnt.AsyncEx.Tests.Net45", "test\CuteAnt.AsyncEx.Tests\CuteAnt.AsyncEx.Tests.Net45.csproj", "{0A4978C4-9EB2-477F-B76F-108BA733C070}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CuteAnt.Tests.Net45", "test\CuteAnt.Tests\CuteAnt.Tests.Net45.csproj", "{5CD0F954-EE22-44C2-9EFA-548F67F165A7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{F8C90529-8BB0-45F9-87C9-1101EE71F2D9}"
+	ProjectSection(SolutionItems) = preProject
+		nuspecs\CuteAnt.AsyncEx.nuspec = nuspecs\CuteAnt.AsyncEx.nuspec
+		nuspecs\CuteAnt.nuspec = nuspecs\CuteAnt.nuspec
+		nuspecs\CuteAnt.SharpSerializer.nuspec = nuspecs\CuteAnt.SharpSerializer.nuspec
+		nuspecs\pack_core.cmd = nuspecs\pack_core.cmd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logging", "Logging", "{9EED087F-B022-4596-9EEF-98317A647213}"
+	ProjectSection(SolutionItems) = preProject
+		nuspecs\CuteAnt.Extensions.Logging.NLog.nuspec = nuspecs\CuteAnt.Extensions.Logging.NLog.nuspec
+		nuspecs\CuteAnt.Extensions.Logging.Serilog.nuspec = nuspecs\CuteAnt.Extensions.Logging.Serilog.nuspec
+		nuspecs\pack_log.cmd = nuspecs\pack_log.cmd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IdentityModel", "IdentityModel", "{08CB4E34-26F3-4AC4-BDD0-B07B22388296}"
+	ProjectSection(SolutionItems) = preProject
+		nuspecs\CuteAnt.IdentityModel.Protocol.Extensions.nuspec = nuspecs\CuteAnt.IdentityModel.Protocol.Extensions.nuspec
+		nuspecs\CuteAnt.IdentityModel.Tokens.Jwt.nuspec = nuspecs\CuteAnt.IdentityModel.Tokens.Jwt.nuspec
+		nuspecs\pack_im.cmd = nuspecs\pack_im.cmd
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -155,5 +167,8 @@ Global
 		{B8A50618-0B42-403C-8D1C-C0F8A6D1852F} = {641D643C-CB26-406A-9686-FA5950F5F87F}
 		{0A4978C4-9EB2-477F-B76F-108BA733C070} = {2AE2468D-F08E-4DC1-9F5D-35A4013043C0}
 		{5CD0F954-EE22-44C2-9EFA-548F67F165A7} = {2AE2468D-F08E-4DC1-9F5D-35A4013043C0}
+		{F8C90529-8BB0-45F9-87C9-1101EE71F2D9} = {6E5D8926-C5BD-47E9-8B62-08EC3E578682}
+		{9EED087F-B022-4596-9EEF-98317A647213} = {6E5D8926-C5BD-47E9-8B62-08EC3E578682}
+		{08CB4E34-26F3-4AC4-BDD0-B07B22388296} = {6E5D8926-C5BD-47E9-8B62-08EC3E578682}
 	EndGlobalSection
 EndGlobal

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>CuteAnt.Extensions.Logging.Serilog</id>
-    <version>2.0.0-rc3-160702</version>
+    <version>$version$</version>
     <title>CuteAnt.Extensions.Logging.Serilog</title>
     <tags>serilog, Microsoft.Extensions.Logging</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

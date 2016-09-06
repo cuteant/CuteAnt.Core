@@ -185,7 +185,11 @@ namespace Microsoft.Extensions.Logging
     {
       const string dateFormat = "yyyy-MM-dd-HH-mm-ss-fffZ"; // Example: 2010-09-02-09-50-43-341Z
 
-      var thisAssembly = (Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly()) ?? typeof(TraceLogger)
+      var thisAssembly = Assembly.GetEntryAssembly()
+#if !NETSTANDARD
+          ?? Assembly.GetCallingAssembly()
+#endif
+          ?? typeof(TraceLogger)
 #if !NET40
           .GetTypeInfo()
 #endif
@@ -200,8 +204,9 @@ namespace Microsoft.Extensions.Logging
         var process = Process.GetCurrentProcess();
 
         // It is safe to call DangerousGetHandle() here because the process is already crashing.
+        var handle = GetProcessHandle(process);
         NativeMethods.MiniDumpWriteDump(
-            process.Handle,
+            handle,
             process.Id,
             stream.SafeFileHandle.DangerousGetHandle(),
             dumpType,
@@ -211,6 +216,15 @@ namespace Microsoft.Extensions.Logging
       }
 
       return new FileInfo(dumpFileName);
+    }
+
+    private static IntPtr GetProcessHandle(Process process)
+    {
+#if NETSTANDARD
+      return process.SafeHandle.DangerousGetHandle();
+#else
+      return process.Handle;
+#endif
     }
 
     private static class NativeMethods

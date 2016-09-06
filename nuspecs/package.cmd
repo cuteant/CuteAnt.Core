@@ -1,9 +1,0 @@
-%~dp0nuget.exe pack %~dp0CuteAnt.nuspec -OutputDirectory Publish
-%~dp0nuget.exe pack %~dp0CuteAnt.AsyncEx.nuspec -OutputDirectory Publish
-%~dp0nuget.exe pack %~dp0CuteAnt.SharpSerializer.nuspec -OutputDirectory Publish
-%~dp0nuget.exe pack %~dp0CuteAnt.Extensions.Logging.NLog.nuspec -OutputDirectory Publish
-%~dp0nuget.exe pack %~dp0CuteAnt.Extensions.Logging.Serilog.nuspec -OutputDirectory Publish
-%~dp0nuget.exe pack %~dp0CuteAnt.IdentityModel.Protocol.Extensions.nuspec -OutputDirectory Publish
-%~dp0nuget.exe pack %~dp0CuteAnt.IdentityModel.Tokens.Jwt.nuspec -OutputDirectory Publish
-%~dp0nuget.exe pack %~dp0MySql.Data.nuspec -OutputDirectory Publish
-%~dp0nuget.exe pack %~dp0System.Data.SQLite.nuspec -OutputDirectory Publish

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>CuteAnt.IdentityModel.Protocol.Extensions</id>
-    <version>4.0.0-rc3-160601</version>
+    <version>$version$</version>
     <title>Identity Protocol Extensions for the Microsoft .NET Framework 4.5</title>
     <tags>Identity Claims OpenIdConnect WS-Federation</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -17,7 +17,7 @@
     <language>en-US</language>
     <dependencies>
       <group targetFramework=".NETFramework4.5.1">
-        <dependency id="CuteAnt.IdentityModel.Tokens.Jwt" version="4.0.0-rc3-160601" />
+        <dependency id="CuteAnt.IdentityModel.Tokens.Jwt" version="$version$" />
       </group>
     </dependencies>
     <frameworkAssemblies>

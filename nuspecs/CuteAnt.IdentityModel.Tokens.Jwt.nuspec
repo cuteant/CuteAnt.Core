@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>CuteAnt.IdentityModel.Tokens.Jwt</id>
-    <version>4.0.0-rc3-160601</version>
+    <version>$version$</version>
     <title>JSON Web Token Handler For the Microsoft .Net Framework 4.5</title>
     <tags>JWT JSON Web Token WIF Windows Identity Foundation OAuth OAuth2 Bearer TokenHandler Azure Active Directory Claims Identity Authentication</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
