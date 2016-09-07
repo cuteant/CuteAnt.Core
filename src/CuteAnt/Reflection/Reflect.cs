@@ -16,8 +16,10 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Xml.Serialization;
 using CuteAnt.Collections;
+using CuteAnt.Text;
 #if !NET40
 using System.Runtime.CompilerServices;
 #endif
@@ -76,6 +78,69 @@ namespace CuteAnt.Reflection
       if (type != null) { return type; }
 
       return Provider.GetType(typeName, isLoadAssembly);
+    }
+
+    private static Dictionary<Type, object> s_defaultValueTypes = new Dictionary<Type, object>();
+    /// <summary>GetDefaultValue</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static object GetDefaultValue(this Type type)
+    {
+      if (!type.IsValueType()) return null;
+
+      object defaultValue;
+      if (s_defaultValueTypes.TryGetValue(type, out defaultValue)) return defaultValue;
+
+      defaultValue = Activator.CreateInstance(type);
+
+      Dictionary<Type, object> snapshot, newCache;
+      do
+      {
+        snapshot = s_defaultValueTypes;
+        newCache = new Dictionary<Type, object>(s_defaultValueTypes);
+        newCache[type] = defaultValue;
+      } while (!ReferenceEquals(Interlocked.CompareExchange(ref s_defaultValueTypes, newCache, snapshot), snapshot));
+
+      return defaultValue;
+    }
+
+    private static Dictionary<string, Type> s_genericTypeCache = new Dictionary<string, Type>();
+    /// <summary>GetCachedGenericType</summary>
+    /// <param name="type"></param>
+    /// <param name="argTypes"></param>
+    /// <returns></returns>
+    public static Type GetCachedGenericType(this Type type, params Type[] argTypes)
+    {
+      if (!type.IsGenericTypeDefinition())
+      {
+        throw new ArgumentException($"{type.FullName} is not a Generic Type Definition", nameof(type));
+      }
+
+      if (argTypes == null) { argTypes = EmptyArray<Type>.Instance; }
+
+      var sb = StringBuilderCache.Acquire().Append(type.FullName);
+
+      foreach (var argType in argTypes)
+      {
+        sb.Append('|').Append(argType.FullName);
+      }
+
+      var key = StringBuilderCache.GetStringAndRelease(sb);
+
+      Type genericType;
+      if (s_genericTypeCache.TryGetValue(key, out genericType)) { return genericType; }
+
+      genericType = type.MakeGenericType(argTypes);
+
+      Dictionary<string, Type> snapshot, newCache;
+      do
+      {
+        snapshot = s_genericTypeCache;
+        newCache = new Dictionary<string, Type>(s_genericTypeCache);
+        newCache[key] = genericType;
+      } while (!ReferenceEquals(Interlocked.CompareExchange(ref s_genericTypeCache, newCache, snapshot), snapshot));
+
+      return genericType;
     }
 
     #endregion
@@ -296,8 +361,17 @@ namespace CuteAnt.Reflection
     }
 
     private static readonly Func<Type, Dictionary<string, FieldInfo>> s_getDeclaredFieldsFunc = GetDeclaredFieldsInternal;
-    private static Dictionary<string, FieldInfo> GetDeclaredFieldsInternal(Type type) =>
-      GetTypeDeclaredFields(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
+    private static Dictionary<string, FieldInfo> GetDeclaredFieldsInternal(Type type)
+    {
+      //return GetTypeDeclaredFields(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
+      var dic = new Dictionary<string, FieldInfo>(StringComparer.Ordinal);
+      var fields = GetTypeDeclaredFields(type);
+      foreach (var fi in fields)
+      {
+        dic[fi.Name] = fi;
+      }
+      return dic;
+    }
 
     #endregion
 
@@ -609,8 +683,17 @@ namespace CuteAnt.Reflection
     }
 
     private static readonly Func<Type, Dictionary<string, PropertyInfo>> s_getDeclaredPropertiesFunc = GetDeclaredPropertiesInternal;
-    private static Dictionary<string, PropertyInfo> GetDeclaredPropertiesInternal(Type type) =>
-      GetTypeDeclaredProperties(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
+    private static Dictionary<string, PropertyInfo> GetDeclaredPropertiesInternal(Type type)
+    {
+      //return GetTypeDeclaredProperties(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
+      var dic = new Dictionary<string, PropertyInfo>(StringComparer.Ordinal);
+      var properties = GetTypeDeclaredProperties(type);
+      foreach(var pi in properties)
+      {
+        dic[pi.Name] = pi;
+      }
+      return dic;
+    }
 
     #endregion
 
