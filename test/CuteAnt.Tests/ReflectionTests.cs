@@ -1,9 +1,79 @@
-﻿using Xunit;
+﻿using System;
+using System.Reflection;
+using Xunit;
 
 namespace CuteAnt.Reflection.Tests
 {
   public class ReflectionTests
   {
+    [Fact]
+    public void InterfaceGetOrSetDeclaredMemberValueTest()
+    {
+      var user = new User();
+      var myuser = new MyUser();
+
+      var userProperties = typeof(IUser1).GetTypeDeclaredProperties();
+      var myuserProperties = typeof(IMyUser).GetTypeDeclaredProperties();
+      Assert.Equal(userProperties.Length, 1);
+      Assert.Equal(myuserProperties.Length, 3);
+
+      var idx = 0;
+      foreach (var item in userProperties)
+      {
+        idx++;
+        var setter = item.GetValueSetter<IUser1>();
+        setter(user, idx);
+        var getter = item.GetValueGetter<IUser1>();
+        Assert.Equal(idx, (int)getter(user));
+      }
+      foreach (var item in userProperties)
+      {
+        idx++;
+        var setter = item.GetValueSetter<IUser1>();
+        setter(myuser, idx);
+        var getter = item.GetValueGetter<IUser1>();
+        Assert.Equal(idx, (int)getter(myuser));
+      }
+      foreach (var item in userProperties)
+      {
+        idx++;
+        var setter = item.GetValueSetter<IMyUser>();
+        setter(myuser, idx);
+        var getter = item.GetValueGetter<IMyUser>();
+        Assert.Equal(idx, (int)getter(myuser));
+      }
+      foreach (var item in userProperties)
+      {
+        idx++;
+        var setter = item.GetValueSetter();
+        setter(user, idx);
+        var getter = item.GetValueGetter();
+        Assert.Equal(idx, (int)getter(user));
+      }
+      foreach (var item in userProperties)
+      {
+        idx++;
+        var setter = item.GetValueSetter();
+        setter(myuser, idx);
+        var getter = item.GetValueGetter();
+        Assert.Equal(idx, (int)getter(myuser));
+      }
+    }
+
+    [Fact]
+    public void InterfaceGetOrSetPropertyTest()
+    {
+      //var userType = typeof(IUser);
+      var myuserType = typeof(IMyUser);
+      //TypeInfo typeInfo= userType.GetTypeInfo()
+      var pi = myuserType.GetPropertyEx("PublicProperty");
+      Assert.NotNull(pi);
+      pi = myuserType.GetPropertyEx("PublicProperty6");
+      Assert.NotNull(pi);
+      pi = myuserType.GetPropertyEx("Good");
+      Assert.NotNull(pi);
+    }
+
     [Fact]
     public void GenericGetOrSetDeclaredMemberValueTest()
     {
@@ -192,7 +262,22 @@ namespace CuteAnt.Reflection.Tests
       }
     }
 
-    public class User
+    public interface IUser1
+    {
+      int PublicProperty6 { get; set; }
+    }
+
+    public interface IUser2
+    {
+      int PublicProperty { get; set; }
+    }
+
+    public interface IMyUser : IUser1, IUser2
+    {
+      int Good { get; set; }
+    }
+
+    public class User : IUser1, IUser2
     {
       private int PrivateField;
       protected int ProtectedField;
@@ -248,12 +333,14 @@ namespace CuteAnt.Reflection.Tests
       public static int PublicStaticProperty5 { internal get; set; }
     }
 
-    public class MyUser : User
+    public class MyUser : User, IMyUser
     {
       public static new int NewOverideInheritField;
       public override int PublicProperty6 { get; set; }
       public override int PublicProperty7 { get; internal set; }
       public override int PublicProperty8 { get; protected set; }
+
+      public int Good { get; set; }
     }
   }
 }

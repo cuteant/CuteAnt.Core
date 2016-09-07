@@ -945,8 +945,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static object GetPropertyInfoValue(this object target, PropertyInfo property)
     {
-      var getter = GetValueGetter(property);
-      return (getter != null) ? getter(target) : null;
+      return GetValueGetter(property)?.Invoke(target);
     }
 
     /// <summary>获取目标对象的属性值</summary>
@@ -976,8 +975,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static object GetFieldInfoValue(this object target, FieldInfo field)
     {
-      var getter = GetValueGetter(field);
-      return (getter != null) ? getter(target) : null;
+      return GetValueGetter(field).Invoke(target);
     }
 
     #endregion
