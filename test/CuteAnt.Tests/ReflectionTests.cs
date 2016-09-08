@@ -179,6 +179,15 @@ namespace CuteAnt.Reflection.Tests
       var userProperties = typeof(User).GetTypeDeclaredProperties();
       var myuserProperties = typeof(MyUser).GetTypeDeclaredProperties();
 
+      var pi = typeof(MyUser).GetPropertyEx("PublicProperty");
+      Assert.NotNull(pi);
+      pi = typeof(MyUser).GetPropertyEx("PublicProperty6");
+      Assert.NotNull(pi);
+      pi = typeof(MyUser).GetPropertyEx("Good");
+      Assert.NotNull(pi);
+      pi = typeof(MyUser).GetPropertyEx("PublicProperty", true);
+      Assert.Null(pi);
+
       var idx = 0;
       foreach (var item in userFields)
       {

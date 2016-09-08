@@ -86,6 +86,8 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static object GetDefaultValue(this Type type)
     {
+      if (type == null) { throw new ArgumentNullException(nameof(type)); }
+
       if (!type.IsValueType()) return null;
 
       object defaultValue;
@@ -111,6 +113,8 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static Type GetCachedGenericType(this Type type, params Type[] argTypes)
     {
+      if (type == null) { throw new ArgumentNullException(nameof(type)); }
+
       if (!type.IsGenericTypeDefinition())
       {
         throw new ArgumentException($"{type.FullName} is not a Generic Type Definition", nameof(type));
@@ -149,13 +153,19 @@ namespace CuteAnt.Reflection
 
     private enum ReflectMembersTokenType
     {
-      InstanceDeclaredMembers,
-      InstancePublicMembers,
+      InstanceDeclaredAndPublicOnlyMembers,
+      InstanceDeclaredOnlyMembers,
+
+      InstancePublicOnlyMembers,
       InstanceMembers,
-      TypeDeclaredMembers,
-      TypePublicMembers,
-      TypeFlattenHierarchyPublicMembers,
+
+      TypeDeclaredAndPublicOnlyMembers,
+      TypeDeclaredOnlyMembers,
+
+      TypePublicOnlyMembers,
       TypeMembers,
+
+      TypeFlattenHierarchyPublicOnlyMembers,
       TypeFlattenHierarchyMembers
     }
 
@@ -215,22 +225,41 @@ namespace CuteAnt.Reflection
     /// <summary>获取当前类型定义的字段的集合</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    [Obsolete("=> GetTypeDeclaredFields")]
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
     public static IEnumerable<FieldInfo> GetDeclaredFieldsEx(this Type type)
     {
-#if !NET40
-      return type.GetTypeInfo().DeclaredFields;
-#else
-      return type.GetFields(BindingFlagsHelper.MSDeclaredOnlyLookup);
-#endif
+      //#if !NET40
+      //      return type.GetTypeInfo().DeclaredFields;
+      //#else
+      //      return type.GetFields(BindingFlagsHelper.MSDeclaredOnlyLookup);
+      //#endif
+      return GetFieldsInternal(type, ReflectMembersTokenType.TypeDeclaredOnlyMembers);
     }
+
+    /// <summary>获取指定类型定义的属性的集合</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static FieldInfo[] GetFieldsEx(this Type type) =>
+        GetFieldsInternal(type, ReflectMembersTokenType.TypePublicOnlyMembers);
+
+    /// <summary>获取指定类型定义的属性的集合</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static IEnumerable<FieldInfo> GetRuntimeFieldsEx(this Type type) =>
+        GetFieldsInternal(type, ReflectMembersTokenType.TypeMembers);
 
     #region * Fields Cache *
 
     private static readonly DictionaryCache<Type, DictionaryCache<ReflectMembersTokenType, FieldInfo[]>> s_fieldsCache =
         new DictionaryCache<Type, DictionaryCache<ReflectMembersTokenType, FieldInfo[]>>();
-    private static readonly DictionaryCache<Type, Dictionary<string, FieldInfo>> s_declaredFieldsCache =
-        new DictionaryCache<Type, Dictionary<string, FieldInfo>>();
 
     #endregion
 
@@ -246,34 +275,49 @@ namespace CuteAnt.Reflection
       BindingFlags bindingFlags;
       switch (reflectFieldsToken)
       {
-        case ReflectMembersTokenType.InstanceDeclaredMembers:
+        case ReflectMembersTokenType.InstanceDeclaredAndPublicOnlyMembers:
+          bindingFlags = BindingFlagsHelper.InstanceDeclaredAndPublicOnlyLookup;
+          break;
+        case ReflectMembersTokenType.InstanceDeclaredOnlyMembers:
           bindingFlags = BindingFlagsHelper.InstanceDeclaredOnlyLookup;
           break;
-        case ReflectMembersTokenType.InstancePublicMembers:
+
+        case ReflectMembersTokenType.InstancePublicOnlyMembers:
           bindingFlags = BindingFlagsHelper.InstancePublicOnlyLookup;
           break;
         case ReflectMembersTokenType.InstanceMembers:
           bindingFlags = BindingFlagsHelper.InstanceLookup;
           break;
-        case ReflectMembersTokenType.TypeDeclaredMembers:
+
+        case ReflectMembersTokenType.TypeDeclaredAndPublicOnlyMembers:
+          bindingFlags = BindingFlagsHelper.DefaultDeclaredAndPublicOnlyLookup;
+          break;
+        case ReflectMembersTokenType.TypeDeclaredOnlyMembers:
           bindingFlags = BindingFlagsHelper.DefaultDeclaredOnlyLookup;
           break;
-        case ReflectMembersTokenType.TypePublicMembers:
+
+        case ReflectMembersTokenType.TypePublicOnlyMembers:
           bindingFlags = BindingFlagsHelper.DefaultPublicOnlyLookup;
           break;
-        case ReflectMembersTokenType.TypeFlattenHierarchyPublicMembers:
+
+        case ReflectMembersTokenType.TypeFlattenHierarchyPublicOnlyMembers:
           bindingFlags = BindingFlagsHelper.DefaultPublicOnlyLookupAll;
           break;
         case ReflectMembersTokenType.TypeFlattenHierarchyMembers:
           bindingFlags = BindingFlagsHelper.DefaultLookupAll;
           break;
+
         case ReflectMembersTokenType.TypeMembers:
         default:
           bindingFlags = BindingFlagsHelper.DefaultLookup;
           break;
       }
 
-      return type.GetFields(bindingFlags);
+      return type
+#if !NET40
+             .GetTypeInfo()
+#endif
+             .GetFields(bindingFlags);
     }
 
     private static FieldInfo[] GetFieldsInternal(Type type, ReflectMembersTokenType reflectFieldsToken)
@@ -287,62 +331,102 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-    /// <summary>GetInstanceDeclaredFields</summary>
+    /// <summary>GetInstanceDeclaredPublicFields</summary>
     /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetInstanceDeclaredFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.InstanceDeclaredMembers);
-
-    /// <summary>GetInstancePublicFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetInstancePublicFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.InstancePublicMembers);
-
-    /// <summary>GetInstanceFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetInstanceFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.InstanceMembers);
-
-    /// <summary>GetTypeDeclaredFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetTypeDeclaredFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.TypeDeclaredMembers);
-
-    /// <summary>GetTypePublicFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetTypePublicFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.TypePublicMembers);
-
-    /// <summary>GetTypeFlattenHierarchyPublicFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetTypeFlattenHierarchyPublicFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.TypeFlattenHierarchyPublicMembers);
-
-    /// <summary>GetTypeFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetTypeFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.TypeMembers);
-
-    /// <summary>GetTypeFlattenHierarchyFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetTypeFlattenHierarchyFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.TypeFlattenHierarchyMembers);
-
-    /// <summary>获取字段。搜索私有、静态、基类，优先返回大小写精确匹配成员</summary>
-    /// <param name="type">类型</param>
-    /// <param name="name">名称</param>
     /// <returns></returns>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static FieldInfo GetFieldEx(this Type type, String name)
+    public static FieldInfo[] GetInstanceDeclaredPublicFields(this Type type) =>
+      GetFieldsInternal(type, ReflectMembersTokenType.InstanceDeclaredAndPublicOnlyMembers);
+
+    /// <summary>GetInstanceDeclaredFields</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static FieldInfo[] GetInstanceDeclaredFields(this Type type) =>
+      GetFieldsInternal(type, ReflectMembersTokenType.InstanceDeclaredOnlyMembers);
+
+    /// <summary>GetInstancePublicFields</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static FieldInfo[] GetInstancePublicFields(this Type type) =>
+      GetFieldsInternal(type, ReflectMembersTokenType.InstancePublicOnlyMembers);
+
+    /// <summary>GetInstanceFields</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static FieldInfo[] GetInstanceFields(this Type type) =>
+      GetFieldsInternal(type, ReflectMembersTokenType.InstanceMembers);
+
+    /// <summary>GetTypeDeclaredPublicFields</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static FieldInfo[] GetTypeDeclaredPublicFields(this Type type) =>
+      GetFieldsInternal(type, ReflectMembersTokenType.TypeDeclaredAndPublicOnlyMembers);
+
+    /// <summary>GetTypeDeclaredFields</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static FieldInfo[] GetTypeDeclaredFields(this Type type) =>
+      GetFieldsInternal(type, ReflectMembersTokenType.TypeDeclaredOnlyMembers);
+
+    /// <summary>GetTypePublicFields</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static FieldInfo[] GetTypePublicFields(this Type type) =>
+      GetFieldsInternal(type, ReflectMembersTokenType.TypePublicOnlyMembers);
+
+    /// <summary>GetTypeFields</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static FieldInfo[] GetTypeFields(this Type type) =>
+      GetFieldsInternal(type, ReflectMembersTokenType.TypeMembers);
+
+    /// <summary>GetTypeFlattenHierarchyPublicFields</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static FieldInfo[] GetTypeFlattenHierarchyPublicFields(this Type type) =>
+      GetFieldsInternal(type, ReflectMembersTokenType.TypeFlattenHierarchyPublicOnlyMembers);
+
+    /// <summary>GetTypeFlattenHierarchyFields</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static FieldInfo[] GetTypeFlattenHierarchyFields(this Type type) =>
+      GetFieldsInternal(type, ReflectMembersTokenType.TypeFlattenHierarchyMembers);
+
+    /// <summary>获取字段。</summary>
+    /// <param name="type">类型</param>
+    /// <param name="name">名称</param>
+    /// <param name="declaredOnly"></param>
+    /// <returns></returns>
+    public static FieldInfo GetFieldEx(this Type type, string name, bool declaredOnly = false)
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
@@ -350,9 +434,10 @@ namespace CuteAnt.Reflection
       while (type != null && type != TypeX._.Object)
       {
         FieldInfo field;
-
         var fields = s_declaredFieldsCache.GetItem(type, s_getDeclaredFieldsFunc);
         if (fields.TryGetValue(name, out field)) { return field; };
+
+        if (declaredOnly) { break; }
 
         type = type.BaseType();
       }
@@ -360,6 +445,8 @@ namespace CuteAnt.Reflection
       return null;
     }
 
+    private static readonly DictionaryCache<Type, Dictionary<string, FieldInfo>> s_declaredFieldsCache =
+        new DictionaryCache<Type, Dictionary<string, FieldInfo>>();
     private static readonly Func<Type, Dictionary<string, FieldInfo>> s_getDeclaredFieldsFunc = GetDeclaredFieldsInternal;
     private static Dictionary<string, FieldInfo> GetDeclaredFieldsInternal(Type type)
     {
@@ -394,15 +481,36 @@ namespace CuteAnt.Reflection
     /// <summary>获取指定类型定义的属性的集合</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    [Obsolete("=> GetTypeDeclaredProperties")]
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
     public static IEnumerable<PropertyInfo> GetDeclaredPropertiesEx(this Type type)
     {
-#if !NET40
-      return type.GetTypeInfo().DeclaredProperties;
-#else
-      return type.GetProperties(BindingFlagsHelper.MSDeclaredOnlyLookup);
-#endif
+      //#if !NET40
+      //      return type.GetTypeInfo().DeclaredProperties;
+      //#else
+      //      return type.GetProperties(BindingFlagsHelper.MSDeclaredOnlyLookup);
+      //#endif
+      return GetPropertiesInternal(type, false, ReflectMembersTokenType.TypeDeclaredOnlyMembers);
     }
+
+    /// <summary>获取指定类型定义的属性的集合</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static PropertyInfo[] GetPropertiesEx(this Type type) =>
+        GetPropertiesInternal(type, false, ReflectMembersTokenType.TypePublicOnlyMembers);
+
+    /// <summary>获取指定类型定义的属性的集合</summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static IEnumerable<PropertyInfo> GetRuntimePropertiesEx(this Type type) =>
+        GetPropertiesInternal(type, false, ReflectMembersTokenType.TypeMembers);
 
     #region * PropertiesCache *
 
@@ -419,8 +527,6 @@ namespace CuteAnt.Reflection
         new DictionaryCache<Type, DictionaryCache<ReflectMembersTokenType, PropertyInfo[]>>();
     private static readonly DictionaryCache<Type, DictionaryCache<ReflectMembersTokenType, PropertyInfo[]>> s_propertiesCache =
         new DictionaryCache<Type, DictionaryCache<ReflectMembersTokenType, PropertyInfo[]>>();
-    private static readonly DictionaryCache<Type, Dictionary<string, PropertyInfo>> s_declaredPropertiesCache =
-        new DictionaryCache<Type, Dictionary<string, PropertyInfo>>();
 
     #endregion
 
@@ -450,7 +556,11 @@ namespace CuteAnt.Reflection
             queue.Enqueue(subInterface);
           }
 
-          var typeProperties = subType.GetProperties(BindingFlagsHelper.InstancePublicOnlyLookup);
+          var typeProperties = subType
+#if !NET40
+              .GetTypeInfo()
+#endif
+              .GetProperties(BindingFlagsHelper.InstancePublicOnlyLookup);
 
           var newPropertyInfos = typeProperties
               .Where(x => !propertyInfos.Contains(x));
@@ -465,7 +575,11 @@ namespace CuteAnt.Reflection
       if (type == typeof(object) || type.BaseType == null) return EmptyArray<PropertyInfo>.Instance;
 
       var list = new List<PropertyInfo>();
-      var pis = type.GetProperties(BindingFlagsHelper.InstancePublicOnlyLookup);
+      var pis = type
+#if !NET40
+          .GetTypeInfo()
+#endif
+          .GetProperties(BindingFlagsHelper.InstancePublicOnlyLookup);
       foreach (var pi in pis)
       {
         if (ignoreIndexedProperties && pi.GetIndexParameters().Length > 0) { continue; }
@@ -491,27 +605,38 @@ namespace CuteAnt.Reflection
       BindingFlags bindingFlags;
       switch (reflectPropertiesToken)
       {
-        case ReflectMembersTokenType.InstanceDeclaredMembers:
+        case ReflectMembersTokenType.InstanceDeclaredAndPublicOnlyMembers:
+          bindingFlags = BindingFlagsHelper.InstanceDeclaredAndPublicOnlyLookup;
+          break;
+        case ReflectMembersTokenType.InstanceDeclaredOnlyMembers:
           bindingFlags = BindingFlagsHelper.InstanceDeclaredOnlyLookup;
           break;
-        case ReflectMembersTokenType.InstancePublicMembers:
+
+        case ReflectMembersTokenType.InstancePublicOnlyMembers:
           bindingFlags = BindingFlagsHelper.InstancePublicOnlyLookup;
           break;
         case ReflectMembersTokenType.InstanceMembers:
           bindingFlags = BindingFlagsHelper.InstanceLookup;
           break;
-        case ReflectMembersTokenType.TypeDeclaredMembers:
+
+        case ReflectMembersTokenType.TypeDeclaredAndPublicOnlyMembers:
+          bindingFlags = BindingFlagsHelper.DefaultDeclaredAndPublicOnlyLookup;
+          break;
+        case ReflectMembersTokenType.TypeDeclaredOnlyMembers:
           bindingFlags = BindingFlagsHelper.DefaultDeclaredOnlyLookup;
           break;
-        case ReflectMembersTokenType.TypePublicMembers:
+
+        case ReflectMembersTokenType.TypePublicOnlyMembers:
           bindingFlags = BindingFlagsHelper.DefaultPublicOnlyLookup;
           break;
-        case ReflectMembersTokenType.TypeFlattenHierarchyPublicMembers:
+
+        case ReflectMembersTokenType.TypeFlattenHierarchyPublicOnlyMembers:
           bindingFlags = BindingFlagsHelper.DefaultPublicOnlyLookupAll;
           break;
         case ReflectMembersTokenType.TypeFlattenHierarchyMembers:
           bindingFlags = BindingFlagsHelper.DefaultLookupAll;
           break;
+
         case ReflectMembersTokenType.TypeMembers:
         default:
           bindingFlags = BindingFlagsHelper.DefaultLookup;
@@ -538,7 +663,11 @@ namespace CuteAnt.Reflection
             queue.Enqueue(subInterface);
           }
 
-          var typeProperties = subType.GetProperties(bindingFlags);
+          var typeProperties = subType
+#if !NET40
+              .GetTypeInfo()
+#endif
+              .GetProperties(bindingFlags);
           var newPropertyInfos = typeProperties
               .Where(x => !propertyInfos.Contains(x));
 
@@ -551,7 +680,11 @@ namespace CuteAnt.Reflection
       // Void*的基类就是null
       if (type == typeof(object) || type.BaseType == null) return EmptyArray<PropertyInfo>.Instance;
 
-      var pis = type.GetProperties(bindingFlags);
+      var pis = type
+#if !NET40
+                .GetTypeInfo()
+#endif
+                .GetProperties(bindingFlags);
       return ignoreIndexedProperties
             ? pis.Where(t => t.GetIndexParameters().Length == 0) // ignore indexed properties;
                  .ToArray()
@@ -609,62 +742,104 @@ namespace CuteAnt.Reflection
 
     #endregion
 
+    /// <summary>GetInstanceDeclaredPublicProperties</summary>
+    /// <param name="type"></param>
+    /// <param name="ignoreIndexedProperties"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static PropertyInfo[] GetInstanceDeclaredPublicProperties(this Type type, bool ignoreIndexedProperties = false) =>
+        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.InstanceDeclaredAndPublicOnlyMembers);
+
     /// <summary>GetInstanceDeclaredProperties</summary>
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
     public static PropertyInfo[] GetInstanceDeclaredProperties(this Type type, bool ignoreIndexedProperties = false) =>
-        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.InstanceDeclaredMembers);
+        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.InstanceDeclaredOnlyMembers);
 
     /// <summary>GetInstanceProperties</summary>
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
     public static PropertyInfo[] GetInstanceProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.InstanceMembers);
+
+    /// <summary>GetTypeDeclaredPublicProperties</summary>
+    /// <param name="type"></param>
+    /// <param name="ignoreIndexedProperties"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static PropertyInfo[] GetTypeDeclaredPublicProperties(this Type type, bool ignoreIndexedProperties = false) =>
+        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeDeclaredAndPublicOnlyMembers);
 
     /// <summary>GetTypeDeclaredProperties</summary>
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
     public static PropertyInfo[] GetTypeDeclaredProperties(this Type type, bool ignoreIndexedProperties = false) =>
-        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeDeclaredMembers);
+        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeDeclaredOnlyMembers);
 
     /// <summary>GetTypePublicProperties</summary>
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
     public static PropertyInfo[] GetTypePublicProperties(this Type type, bool ignoreIndexedProperties = false) =>
-        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypePublicMembers);
-
-    /// <summary>GetTypeFlattenHierarchyPublicProperties</summary>
-    /// <param name="type"></param>
-    /// <param name="ignoreIndexedProperties"></param>
-    /// <returns></returns>
-    public static PropertyInfo[] GetTypeFlattenHierarchyPublicProperties(this Type type, bool ignoreIndexedProperties = false) =>
-        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeFlattenHierarchyPublicMembers);
+        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypePublicOnlyMembers);
 
     /// <summary>GetTypeProperties</summary>
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
     public static PropertyInfo[] GetTypeProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeMembers);
+
+    /// <summary>GetTypeFlattenHierarchyPublicProperties</summary>
+    /// <param name="type"></param>
+    /// <param name="ignoreIndexedProperties"></param>
+    /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+    public static PropertyInfo[] GetTypeFlattenHierarchyPublicProperties(this Type type, bool ignoreIndexedProperties = false) =>
+        GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeFlattenHierarchyPublicOnlyMembers);
 
     /// <summary>GetTypeFlattenHierarchyProperties</summary>
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
+#if !NET40
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
     public static PropertyInfo[] GetTypeFlattenHierarchyProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeFlattenHierarchyMembers);
 
     #region - GetPropertyEx -
 
-    /// <summary>获取属性。搜索私有、静态、基类</summary>
+    /// <summary>获取属性。</summary>
     /// <param name="type">类型</param>
     /// <param name="name">名称</param>
+    /// <param name="declaredOnly"></param>
     /// <returns></returns>
-    public static PropertyInfo GetPropertyEx(this Type type, string name)
+    public static PropertyInfo GetPropertyEx(this Type type, string name, bool declaredOnly = false)
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
@@ -672,9 +847,10 @@ namespace CuteAnt.Reflection
       while (type != null && type != TypeX._.Object)
       {
         PropertyInfo property;
-
         var properties = s_declaredPropertiesCache.GetItem(type, s_getDeclaredPropertiesFunc);
         if (properties.TryGetValue(name, out property)) { return property; };
+
+        if (declaredOnly) { break; }
 
         type = type.BaseType();
       }
@@ -682,13 +858,15 @@ namespace CuteAnt.Reflection
       return null;
     }
 
+    private static readonly DictionaryCache<Type, Dictionary<string, PropertyInfo>> s_declaredPropertiesCache =
+        new DictionaryCache<Type, Dictionary<string, PropertyInfo>>();
     private static readonly Func<Type, Dictionary<string, PropertyInfo>> s_getDeclaredPropertiesFunc = GetDeclaredPropertiesInternal;
     private static Dictionary<string, PropertyInfo> GetDeclaredPropertiesInternal(Type type)
     {
       //return GetTypeDeclaredProperties(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
       var dic = new Dictionary<string, PropertyInfo>(StringComparer.Ordinal);
       var properties = GetTypeDeclaredProperties(type);
-      foreach(var pi in properties)
+      foreach (var pi in properties)
       {
         dic[pi.Name] = pi;
       }
@@ -718,7 +896,7 @@ namespace CuteAnt.Reflection
       // 通过反射获取
       while (type != null && type != TypeX._.Object)
       {
-        var fs = type.GetMember(name, BindingFlagsHelper.DefaultLookup);
+        var fs = type.GetMember(name, BindingFlagsHelper.DefaultDeclaredOnlyLookup);
         if (fs != null && fs.Length > 0) { return fs[0]; }
 
         type = type.BaseType();

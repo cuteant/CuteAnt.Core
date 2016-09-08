@@ -170,7 +170,7 @@ namespace CuteAnt.Reflection
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
       while (type != null && type != TypeX._.Object)
       {
-        var mi = type.GetMethod(name, BindingFlagsHelper.DefaultLookup, null, paramTypes, null);
+        var mi = type.GetMethod(name, BindingFlagsHelper.DefaultDeclaredOnlyLookup, null, paramTypes, null);
         if (mi != null) { return mi; }
 
         type = type.BaseType();
