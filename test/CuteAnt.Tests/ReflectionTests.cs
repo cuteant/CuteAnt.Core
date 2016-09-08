@@ -14,6 +14,11 @@ namespace CuteAnt.Reflection.Tests
 
       var userProperties = typeof(IUser1).GetTypeDeclaredProperties();
       var myuserProperties = typeof(IMyUser).GetTypeDeclaredProperties();
+
+      Assert.Equal(typeof(IUser1).GetProperties().Length, 1);
+      Assert.Equal(typeof(IUser2).GetProperties().Length, 1);
+      Assert.Equal(typeof(IMyUser).GetProperties().Length, 1);
+
       Assert.Equal(userProperties.Length, 1);
       Assert.Equal(myuserProperties.Length, 3);
 
@@ -34,7 +39,7 @@ namespace CuteAnt.Reflection.Tests
         var getter = item.GetValueGetter<IUser1>();
         Assert.Equal(idx, (int)getter(myuser));
       }
-      foreach (var item in userProperties)
+      foreach (var item in myuserProperties)
       {
         idx++;
         var setter = item.GetValueSetter<IMyUser>();
@@ -50,7 +55,7 @@ namespace CuteAnt.Reflection.Tests
         var getter = item.GetValueGetter();
         Assert.Equal(idx, (int)getter(user));
       }
-      foreach (var item in userProperties)
+      foreach (var item in myuserProperties)
       {
         idx++;
         var setter = item.GetValueSetter();
@@ -66,11 +71,11 @@ namespace CuteAnt.Reflection.Tests
       //var userType = typeof(IUser);
       var myuserType = typeof(IMyUser);
       //TypeInfo typeInfo= userType.GetTypeInfo()
-      var pi = myuserType.GetPropertyEx("PublicProperty");
+      var pi = myuserType.GetTypeProperty("PublicProperty");
       Assert.NotNull(pi);
-      pi = myuserType.GetPropertyEx("PublicProperty6");
+      pi = myuserType.GetTypeProperty("PublicProperty6");
       Assert.NotNull(pi);
-      pi = myuserType.GetPropertyEx("Good");
+      pi = myuserType.GetTypeProperty("Good");
       Assert.NotNull(pi);
     }
 
@@ -179,13 +184,13 @@ namespace CuteAnt.Reflection.Tests
       var userProperties = typeof(User).GetTypeDeclaredProperties();
       var myuserProperties = typeof(MyUser).GetTypeDeclaredProperties();
 
-      var pi = typeof(MyUser).GetPropertyEx("PublicProperty");
+      var pi = typeof(MyUser).GetTypeProperty("PublicProperty");
       Assert.NotNull(pi);
-      pi = typeof(MyUser).GetPropertyEx("PublicProperty6");
+      pi = typeof(MyUser).GetTypeProperty("PublicProperty6");
       Assert.NotNull(pi);
-      pi = typeof(MyUser).GetPropertyEx("Good");
+      pi = typeof(MyUser).GetTypeProperty("Good");
       Assert.NotNull(pi);
-      pi = typeof(MyUser).GetPropertyEx("PublicProperty", true);
+      pi = typeof(MyUser).GetTypeProperty("PublicProperty", true);
       Assert.Null(pi);
 
       var idx = 0;

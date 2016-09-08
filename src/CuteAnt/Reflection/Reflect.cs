@@ -421,12 +421,22 @@ namespace CuteAnt.Reflection
     public static FieldInfo[] GetTypeFlattenHierarchyFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.TypeFlattenHierarchyMembers);
 
+    #region - GetTypeField -
+
     /// <summary>获取字段。</summary>
     /// <param name="type">类型</param>
     /// <param name="name">名称</param>
     /// <param name="declaredOnly"></param>
     /// <returns></returns>
-    public static FieldInfo GetFieldEx(this Type type, string name, bool declaredOnly = false)
+    [Obsolete("=> GetTypeField")]
+    public static FieldInfo GetFieldEx(this Type type, string name, bool declaredOnly = false) => GetTypeField(type, name, declaredOnly);
+
+    /// <summary>获取字段。</summary>
+    /// <param name="type">类型</param>
+    /// <param name="name">名称</param>
+    /// <param name="declaredOnly"></param>
+    /// <returns></returns>
+    public static FieldInfo GetTypeField(this Type type, string name, bool declaredOnly = false)
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
@@ -434,7 +444,7 @@ namespace CuteAnt.Reflection
       while (type != null && type != TypeX._.Object)
       {
         FieldInfo field;
-        var fields = s_declaredFieldsCache.GetItem(type, s_getDeclaredFieldsFunc);
+        var fields = s_typeDeclaredFieldsCache.GetItem(type, s_getTypeDeclaredFieldsFunc);
         if (fields.TryGetValue(name, out field)) { return field; };
 
         if (declaredOnly) { break; }
@@ -445,10 +455,10 @@ namespace CuteAnt.Reflection
       return null;
     }
 
-    private static readonly DictionaryCache<Type, Dictionary<string, FieldInfo>> s_declaredFieldsCache =
+    private static readonly DictionaryCache<Type, Dictionary<string, FieldInfo>> s_typeDeclaredFieldsCache =
         new DictionaryCache<Type, Dictionary<string, FieldInfo>>();
-    private static readonly Func<Type, Dictionary<string, FieldInfo>> s_getDeclaredFieldsFunc = GetDeclaredFieldsInternal;
-    private static Dictionary<string, FieldInfo> GetDeclaredFieldsInternal(Type type)
+    private static readonly Func<Type, Dictionary<string, FieldInfo>> s_getTypeDeclaredFieldsFunc = GetTypeDeclaredFieldsInternal;
+    private static Dictionary<string, FieldInfo> GetTypeDeclaredFieldsInternal(Type type)
     {
       //return GetTypeDeclaredFields(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
       var dic = new Dictionary<string, FieldInfo>(StringComparer.Ordinal);
@@ -459,6 +469,51 @@ namespace CuteAnt.Reflection
       }
       return dic;
     }
+
+    #endregion
+
+    #region - GetInstanceField -
+
+    /// <summary>获取字段。</summary>
+    /// <param name="type">类型</param>
+    /// <param name="name">名称</param>
+    /// <param name="declaredOnly"></param>
+    /// <returns></returns>
+    public static FieldInfo GetInstanceField(this Type type, string name, bool declaredOnly = false)
+    {
+      if (name.IsNullOrWhiteSpace()) { return null; }
+
+      // 父类属性的获取需要递归，有些类型的父类为空，比如接口
+      while (type != null && type != TypeX._.Object)
+      {
+        FieldInfo field;
+        var fields = s_instanceDeclaredFieldsCache.GetItem(type, s_getInstanceDeclaredFieldsFunc);
+        if (fields.TryGetValue(name, out field)) { return field; };
+
+        if (declaredOnly) { break; }
+
+        type = type.BaseType();
+      }
+
+      return null;
+    }
+
+    private static readonly DictionaryCache<Type, Dictionary<string, FieldInfo>> s_instanceDeclaredFieldsCache =
+        new DictionaryCache<Type, Dictionary<string, FieldInfo>>();
+    private static readonly Func<Type, Dictionary<string, FieldInfo>> s_getInstanceDeclaredFieldsFunc = GetInstanceDeclaredFieldsInternal;
+    private static Dictionary<string, FieldInfo> GetInstanceDeclaredFieldsInternal(Type type)
+    {
+      //return GetTypeDeclaredFields(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
+      var dic = new Dictionary<string, FieldInfo>(StringComparer.Ordinal);
+      var fields = GetInstanceDeclaredFields(type);
+      foreach (var fi in fields)
+      {
+        dic[fi.Name] = fi;
+      }
+      return dic;
+    }
+
+    #endregion
 
     #endregion
 
@@ -832,14 +887,22 @@ namespace CuteAnt.Reflection
     public static PropertyInfo[] GetTypeFlattenHierarchyProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeFlattenHierarchyMembers);
 
-    #region - GetPropertyEx -
+    #region - GetTypeProperty -
 
     /// <summary>获取属性。</summary>
     /// <param name="type">类型</param>
     /// <param name="name">名称</param>
     /// <param name="declaredOnly"></param>
     /// <returns></returns>
-    public static PropertyInfo GetPropertyEx(this Type type, string name, bool declaredOnly = false)
+    [Obsolete("=> GetTypeProperty")]
+    public static PropertyInfo GetPropertyEx(this Type type, string name, bool declaredOnly = false) => GetTypeProperty(type, name, declaredOnly);
+
+    /// <summary>获取属性。</summary>
+    /// <param name="type">类型</param>
+    /// <param name="name">名称</param>
+    /// <param name="declaredOnly"></param>
+    /// <returns></returns>
+    public static PropertyInfo GetTypeProperty(this Type type, string name, bool declaredOnly = false)
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
@@ -847,7 +910,7 @@ namespace CuteAnt.Reflection
       while (type != null && type != TypeX._.Object)
       {
         PropertyInfo property;
-        var properties = s_declaredPropertiesCache.GetItem(type, s_getDeclaredPropertiesFunc);
+        var properties = s_typeDeclaredPropertiesCache.GetItem(type, s_getTypeDeclaredPropertiesFunc);
         if (properties.TryGetValue(name, out property)) { return property; };
 
         if (declaredOnly) { break; }
@@ -858,10 +921,10 @@ namespace CuteAnt.Reflection
       return null;
     }
 
-    private static readonly DictionaryCache<Type, Dictionary<string, PropertyInfo>> s_declaredPropertiesCache =
+    private static readonly DictionaryCache<Type, Dictionary<string, PropertyInfo>> s_typeDeclaredPropertiesCache =
         new DictionaryCache<Type, Dictionary<string, PropertyInfo>>();
-    private static readonly Func<Type, Dictionary<string, PropertyInfo>> s_getDeclaredPropertiesFunc = GetDeclaredPropertiesInternal;
-    private static Dictionary<string, PropertyInfo> GetDeclaredPropertiesInternal(Type type)
+    private static readonly Func<Type, Dictionary<string, PropertyInfo>> s_getTypeDeclaredPropertiesFunc = GetTypeDeclaredPropertiesInternal;
+    private static Dictionary<string, PropertyInfo> GetTypeDeclaredPropertiesInternal(Type type)
     {
       //return GetTypeDeclaredProperties(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
       var dic = new Dictionary<string, PropertyInfo>(StringComparer.Ordinal);
@@ -871,6 +934,264 @@ namespace CuteAnt.Reflection
         dic[pi.Name] = pi;
       }
       return dic;
+    }
+
+    /// <summary>获取属性。</summary>
+    /// <param name="type"></param>
+    /// <param name="name"></param>
+    /// <param name="returnType"></param>
+    /// <param name="declaredOnly"></param>
+    /// <returns></returns>
+    public static PropertyInfo GetTypeProperty(this Type type, string name, Type returnType, bool declaredOnly = false)
+    {
+      if (name == null) throw new ArgumentNullException(nameof(name));
+      if (returnType == null) throw new ArgumentNullException(nameof(returnType));
+
+      // 父类属性的获取需要递归，有些类型的父类为空，比如接口
+      while (type != null && type != TypeX._.Object)
+      {
+        var properties = GetTypeDeclaredProperties(type);
+        var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
+                                                      _.PropertyType == returnType);
+        if (property != null) { return property; }
+
+        if (declaredOnly) { break; }
+
+        type = type.BaseType();
+      }
+
+      return null;
+    }
+
+    /// <summary>获取属性。</summary>
+    /// <param name="type"></param>
+    /// <param name="name"></param>
+    /// <param name="parameterTypes"></param>
+    /// <param name="declaredOnly"></param>
+    /// <returns></returns>
+    public static PropertyInfo GetTypeProperty(this Type type, string name, Type[] parameterTypes, bool declaredOnly = false)
+    {
+      if (name == null) throw new ArgumentNullException(nameof(name));
+      if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
+
+      // 父类属性的获取需要递归，有些类型的父类为空，比如接口
+      while (type != null && type != TypeX._.Object)
+      {
+        var properties = GetTypeDeclaredProperties(type);
+        var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
+                                                      IsParameterMatch(_.GetIndexParameters(), parameterTypes));
+        if (property != null) { return property; }
+
+        if (declaredOnly) { break; }
+
+        type = type.BaseType();
+      }
+
+      return null;
+    }
+
+    /// <summary>获取属性。</summary>
+    /// <param name="type"></param>
+    /// <param name="name"></param>
+    /// <param name="returnType"></param>
+    /// <param name="parameterTypes"></param>
+    /// <param name="declaredOnly"></param>
+    /// <returns></returns>
+    public static PropertyInfo GetTypeProperty(this Type type, string name, Type returnType, Type[] parameterTypes, bool declaredOnly = false)
+    {
+      if (name == null) throw new ArgumentNullException(nameof(name));
+      if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
+
+      // 父类属性的获取需要递归，有些类型的父类为空，比如接口
+      while (type != null && type != TypeX._.Object)
+      {
+        var properties = GetTypeDeclaredProperties(type);
+        var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
+                                                      _.PropertyType == returnType &&
+                                                      IsParameterMatch(_.GetIndexParameters(), parameterTypes));
+        if (property != null) { return property; }
+
+        if (declaredOnly) { break; }
+
+        type = type.BaseType();
+      }
+
+      return null;
+    }
+
+    #endregion
+
+    #region - GetInstanceProperty -
+
+    /// <summary>获取属性。</summary>
+    /// <param name="type">类型</param>
+    /// <param name="name">名称</param>
+    /// <param name="declaredOnly"></param>
+    /// <returns></returns>
+    public static PropertyInfo GetInstanceProperty(this Type type, string name, bool declaredOnly = false)
+    {
+      if (name.IsNullOrWhiteSpace()) { return null; }
+
+      // 父类属性的获取需要递归，有些类型的父类为空，比如接口
+      while (type != null && type != TypeX._.Object)
+      {
+        PropertyInfo property;
+        var properties = s_instanceDeclaredPropertiesCache.GetItem(type, s_getInstanceDeclaredPropertiesFunc);
+        if (properties.TryGetValue(name, out property)) { return property; };
+
+        if (declaredOnly) { break; }
+
+        type = type.BaseType();
+      }
+
+      return null;
+    }
+
+    private static readonly DictionaryCache<Type, Dictionary<string, PropertyInfo>> s_instanceDeclaredPropertiesCache =
+        new DictionaryCache<Type, Dictionary<string, PropertyInfo>>();
+    private static readonly Func<Type, Dictionary<string, PropertyInfo>> s_getInstanceDeclaredPropertiesFunc = GetInstanceDeclaredPropertiesInternal;
+    private static Dictionary<string, PropertyInfo> GetInstanceDeclaredPropertiesInternal(Type type)
+    {
+      //return GetTypeDeclaredProperties(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
+      var dic = new Dictionary<string, PropertyInfo>(StringComparer.Ordinal);
+      var properties = GetInstanceDeclaredProperties(type);
+      foreach (var pi in properties)
+      {
+        dic[pi.Name] = pi;
+      }
+      return dic;
+    }
+
+    /// <summary>获取属性。</summary>
+    /// <param name="type"></param>
+    /// <param name="name"></param>
+    /// <param name="returnType"></param>
+    /// <param name="declaredOnly"></param>
+    /// <returns></returns>
+    public static PropertyInfo GetInstanceProperty(this Type type, string name, Type returnType, bool declaredOnly = false)
+    {
+      if (name == null) throw new ArgumentNullException(nameof(name));
+      if (returnType == null) throw new ArgumentNullException(nameof(returnType));
+
+      // 父类属性的获取需要递归，有些类型的父类为空，比如接口
+      while (type != null && type != TypeX._.Object)
+      {
+        var properties = GetInstanceDeclaredProperties(type);
+        var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
+                                                      _.PropertyType == returnType);
+        if (property != null) { return property; }
+
+        if (declaredOnly) { break; }
+
+        type = type.BaseType();
+      }
+
+      return null;
+    }
+
+    /// <summary>获取属性。</summary>
+    /// <param name="type"></param>
+    /// <param name="name"></param>
+    /// <param name="parameterTypes"></param>
+    /// <param name="declaredOnly"></param>
+    /// <returns></returns>
+    public static PropertyInfo GetInstanceProperty(this Type type, string name, Type[] parameterTypes, bool declaredOnly = false)
+    {
+      if (name == null) throw new ArgumentNullException(nameof(name));
+      if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
+
+      // 父类属性的获取需要递归，有些类型的父类为空，比如接口
+      while (type != null && type != TypeX._.Object)
+      {
+        var properties = GetInstanceDeclaredProperties(type);
+        var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
+                                                      IsParameterMatch(_.GetIndexParameters(), parameterTypes));
+        if (property != null) { return property; }
+
+        if (declaredOnly) { break; }
+
+        type = type.BaseType();
+      }
+
+      return null;
+    }
+
+    /// <summary>获取属性。</summary>
+    /// <param name="type"></param>
+    /// <param name="name"></param>
+    /// <param name="returnType"></param>
+    /// <param name="parameterTypes"></param>
+    /// <param name="declaredOnly"></param>
+    /// <returns></returns>
+    public static PropertyInfo GetInstanceProperty(this Type type, string name, Type returnType, Type[] parameterTypes, bool declaredOnly = false)
+    {
+      if (name == null) throw new ArgumentNullException(nameof(name));
+      if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
+
+      // 父类属性的获取需要递归，有些类型的父类为空，比如接口
+      while (type != null && type != TypeX._.Object)
+      {
+        var properties = GetInstanceDeclaredProperties(type);
+        var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
+                                                      _.PropertyType == returnType &&
+                                                      IsParameterMatch(_.GetIndexParameters(), parameterTypes));
+        if (property != null) { return property; }
+
+        if (declaredOnly) { break; }
+
+        type = type.BaseType();
+      }
+
+      return null;
+    }
+
+    #endregion
+
+    #region - AsDeclaredProperty -
+
+    /// <summary>AsDeclaredProperty</summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static PropertyInfo AsDeclaredProperty(this PropertyInfo propertyInfo, Type type)
+    {
+      if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
+      if (type == null) { throw new ArgumentNullException(nameof(type)); }
+
+      if (propertyInfo.DeclaringType == type) { return propertyInfo; }
+
+      return GetTypeDeclaredProperties(propertyInfo.DeclaringType)
+                .FirstOrDefault(_ => string.Equals(_.Name, propertyInfo.Name, StringComparison.Ordinal) &&
+                                     _.PropertyType == propertyInfo.PropertyType &&
+                                     IsParameterMatch(_.GetIndexParameters(), propertyInfo.GetIndexParameters())
+                );
+    }
+
+    #endregion
+
+    #region * IsParameterMatch *
+
+    private static bool IsParameterMatch(ParameterInfo[] x, ParameterInfo[] y)
+    {
+      if (ReferenceEquals(x, y)) { return true; }
+      if (x == null || y == null) { return false; }
+      if (x.Length != y.Length) { return false; }
+      for (int i = 0; i < x.Length; i++)
+      {
+        if (x[i].ParameterType != y[i].ParameterType) { return false; }
+      }
+      return true;
+    }
+
+    private static bool IsParameterMatch(ParameterInfo[] x, Type[] y)
+    {
+      if (x == null || y == null) { return false; }
+      if (x.Length != y.Length) { return false; }
+      for (int i = 0; i < x.Length; i++)
+      {
+        if (x[i].ParameterType != y[i]) { return false; }
+      }
+      return true;
     }
 
     #endregion
@@ -1147,13 +1468,13 @@ namespace CuteAnt.Reflection
       if (name.IsNullOrWhiteSpace()) { return false; }
 
       var type = GetTypeInternal(ref target);
-      var pi = GetPropertyEx(type, name);
+      var pi = GetTypeProperty(type, name);
       if (pi != null)
       {
         return TryGetPropertyInfoValue(target, pi, out value);
       }
 
-      var fi = GetFieldEx(type, name);
+      var fi = GetTypeField(type, name);
       if (fi != null)
       {
         value = GetFieldInfoValue(target, fi);
@@ -1269,10 +1590,10 @@ namespace CuteAnt.Reflection
       if (name.IsNullOrWhiteSpace()) { return false; }
 
       var type = GetTypeInternal(ref target);
-      var pi = GetPropertyEx(type, name);
+      var pi = GetTypeProperty(type, name);
       if (pi != null) { SetPropertyInfoValue(target, pi, value); return true; }
 
-      var fi = GetFieldEx(type, name);
+      var fi = GetTypeField(type, name);
       if (fi != null) { SetFieldInfoValue(target, fi, value); return true; }
 
       return false;
@@ -1352,8 +1673,12 @@ namespace CuteAnt.Reflection
     /// <summary>GetValueGetter</summary>
     /// <param name="propertyInfo"></param>
     /// <returns></returns>
-    public static Func<object, object> GetValueGetter(this PropertyInfo propertyInfo) =>
-        s_propertiesValueGetterCache.GetItem(propertyInfo, s_propertyInfoGetValueGetterFunc);
+    public static Func<object, object> GetValueGetter(this PropertyInfo propertyInfo)
+    {
+      if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
+
+      return s_propertiesValueGetterCache.GetItem(propertyInfo, s_propertyInfoGetValueGetterFunc);
+    }
 
     private static Func<object, object> GetValueGetterInternal(PropertyInfo propertyInfo)
     {
@@ -1398,8 +1723,12 @@ namespace CuteAnt.Reflection
     /// <summary>GetValueGetter</summary>
     /// <param name="propertyInfo"></param>
     /// <returns></returns>
-    public static Func<T, object> GetValueGetter<T>(this PropertyInfo propertyInfo) =>
-        StaticMemberAccessors<T>.GetValueGetter(propertyInfo);
+    public static Func<T, object> GetValueGetter<T>(this PropertyInfo propertyInfo)
+    {
+      if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
+
+      return StaticMemberAccessors<T>.GetValueGetter(propertyInfo);
+    }
 
     #endregion
 
@@ -1412,8 +1741,12 @@ namespace CuteAnt.Reflection
     /// <summary>GetValueGetter</summary>
     /// <param name="propertyInfo"></param>
     /// <returns></returns>
-    public static Action<object, object> GetValueSetter(this PropertyInfo propertyInfo) =>
-        s_propertiesValueSetterCache.GetItem(propertyInfo, s_propertyInfoGetValueSetterFunc);
+    public static Action<object, object> GetValueSetter(this PropertyInfo propertyInfo)
+    {
+      if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
+
+      return s_propertiesValueSetterCache.GetItem(propertyInfo, s_propertyInfoGetValueSetterFunc);
+    }
 
     /// <summary>GetValueSetter</summary>
     /// <param name="propertyInfo"></param>
@@ -1458,8 +1791,12 @@ namespace CuteAnt.Reflection
     /// <summary>GetValueGetter</summary>
     /// <param name="propertyInfo"></param>
     /// <returns></returns>
-    public static Action<T, object> GetValueSetter<T>(this PropertyInfo propertyInfo) =>
-        StaticMemberAccessors<T>.GetValueSetter(propertyInfo);
+    public static Action<T, object> GetValueSetter<T>(this PropertyInfo propertyInfo)
+    {
+      if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
+
+      return StaticMemberAccessors<T>.GetValueSetter(propertyInfo);
+    }
 
     #endregion
 
@@ -1472,8 +1809,12 @@ namespace CuteAnt.Reflection
     /// <summary>GetValueGetter</summary>
     /// <param name="fieldInfo"></param>
     /// <returns></returns>
-    public static Func<object, object> GetValueGetter(this FieldInfo fieldInfo) =>
-        s_fieldsValueGetterCache.GetItem(fieldInfo, s_fieldInfoGetValueGetterFunc);
+    public static Func<object, object> GetValueGetter(this FieldInfo fieldInfo)
+    {
+      if (fieldInfo == null) { throw new ArgumentNullException(nameof(fieldInfo)); }
+
+      return s_fieldsValueGetterCache.GetItem(fieldInfo, s_fieldInfoGetValueGetterFunc);
+    }
 
     private static Func<object, object> GetValueGetterInternal(FieldInfo fieldInfo)
     {
@@ -1509,8 +1850,12 @@ namespace CuteAnt.Reflection
     /// <summary>GetValueGetter</summary>
     /// <param name="fieldInfo"></param>
     /// <returns></returns>
-    public static Func<T, object> GetValueGetter<T>(this FieldInfo fieldInfo) =>
-        StaticMemberAccessors<T>.GetValueGetter(fieldInfo);
+    public static Func<T, object> GetValueGetter<T>(this FieldInfo fieldInfo)
+    {
+      if (fieldInfo == null) { throw new ArgumentNullException(nameof(fieldInfo)); }
+
+      return StaticMemberAccessors<T>.GetValueGetter(fieldInfo);
+    }
 
     #endregion
 
@@ -1523,8 +1868,12 @@ namespace CuteAnt.Reflection
     /// <summary>GetValueSetter</summary>
     /// <param name="fieldInfo"></param>
     /// <returns></returns>
-    public static Action<object, object> GetValueSetter(this FieldInfo fieldInfo) =>
-        s_fieldsValueSetterCache.GetItem(fieldInfo, s_fieldInfoGetValueSetterFunc);
+    public static Action<object, object> GetValueSetter(this FieldInfo fieldInfo)
+    {
+      if (fieldInfo == null) { throw new ArgumentNullException(nameof(fieldInfo)); }
+
+      return s_fieldsValueSetterCache.GetItem(fieldInfo, s_fieldInfoGetValueSetterFunc);
+    }
 
     private static Action<object, object> GetValueSetterInternal(FieldInfo fieldInfo)
     {
@@ -1576,8 +1925,12 @@ namespace CuteAnt.Reflection
     /// <summary>GetValueSetter</summary>
     /// <param name="fieldInfo"></param>
     /// <returns></returns>
-    public static Action<T, object> GetValueSetter<T>(this FieldInfo fieldInfo) =>
-        StaticMemberAccessors<T>.GetValueSetter(fieldInfo);
+    public static Action<T, object> GetValueSetter<T>(this FieldInfo fieldInfo)
+    {
+      if (fieldInfo == null) { throw new ArgumentNullException(nameof(fieldInfo)); }
+
+      return StaticMemberAccessors<T>.GetValueSetter(fieldInfo);
+    }
 
     #endregion
 
