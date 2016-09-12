@@ -83,6 +83,7 @@ Global
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{1ab422bc-0280-4e03-95f4-3bc1fad9b2bf}*SharedItemsImports = 4
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems*{1ab422bc-0280-4e03-95f4-3bc1fad9b2bf}*SharedItemsImports = 4
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems*{4bee24d6-b657-4c44-8ae6-1697ad8c4a1b}*SharedItemsImports = 13
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{5cd0f954-ee22-44c2-9efa-548f67f165a7}*SharedItemsImports = 4
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{7bdf7fef-331b-48fc-bd9c-882c04211595}*SharedItemsImports = 4
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems*{7bdf7fef-331b-48fc-bd9c-882c04211595}*SharedItemsImports = 4
 		..\CuteAnt.Extensions.Common\src\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.projitems*{7bdf7fef-331b-48fc-bd9c-882c04211595}*SharedItemsImports = 4

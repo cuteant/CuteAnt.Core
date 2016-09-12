@@ -134,6 +134,7 @@
     <Compile Include="Reflection\AsmX86.cs" />
     <Compile Include="Reflection\AssemblyX.cs" />
     <Compile Include="Reflection\AttributeX.cs" />
+    <Compile Include="Reflection\DelegateFactory.cs" />
     <Compile Include="Reflection\EmitHelper.cs" />
     <Compile Include="Reflection\EmitReflect.cs" />
     <Compile Include="Reflection\IIndexAccessor.cs" />

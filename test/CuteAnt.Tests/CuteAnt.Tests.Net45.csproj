@@ -59,8 +59,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AttributeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectionMethodTests.cs" />
+    <Compile Include="ReflectionPerformanceTests.cs" />
     <Compile Include="ReflectionTests.cs" />
+    <Compile Include="StaticAccessors.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\CuteAnt\CuteAnt.Net45.csproj">
@@ -74,6 +78,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

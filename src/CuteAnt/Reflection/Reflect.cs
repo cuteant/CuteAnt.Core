@@ -428,7 +428,6 @@ namespace CuteAnt.Reflection
     /// <param name="name">名称</param>
     /// <param name="declaredOnly"></param>
     /// <returns></returns>
-    [Obsolete("=> GetTypeField")]
     public static FieldInfo GetFieldEx(this Type type, string name, bool declaredOnly = false) => GetTypeField(type, name, declaredOnly);
 
     /// <summary>获取字段。</summary>
@@ -894,7 +893,6 @@ namespace CuteAnt.Reflection
     /// <param name="name">名称</param>
     /// <param name="declaredOnly"></param>
     /// <returns></returns>
-    [Obsolete("=> GetTypeProperty")]
     public static PropertyInfo GetPropertyEx(this Type type, string name, bool declaredOnly = false) => GetTypeProperty(type, name, declaredOnly);
 
     /// <summary>获取属性。</summary>
@@ -1697,17 +1695,17 @@ namespace CuteAnt.Reflection
       if (method.IsStatic)
       {
         //定义一个没有名字的动态方法
-        var dynamicMethod = new DynamicMethod(string.Empty, typeof(object), new Type[] { typeof(object) }, method.DeclaringType.Module, true);
-        var il = dynamicMethod.GetILGenerator();
+        var setter = CreateDynamicGetMethod<object>(propertyInfo);
+        var generator = setter.GetILGenerator();
 
         //if (!method.IsStatic) il.Ldarg(0).CastFromObject(method.DeclaringType);
 
         // 目标方法没有参数
-        il.Call(method)
+        generator.Call(method)
             .BoxIfValueType(method.ReturnType)
             .Ret();
 
-        return (Func<object, object>)dynamicMethod.CreateDelegate(typeof(Func<object, object>));
+        return (Func<object, object>)setter.CreateDelegate(typeof(Func<object, object>));
       }
       else
       {
@@ -1759,18 +1757,18 @@ namespace CuteAnt.Reflection
       if (method.IsStatic)
       {
         //定义一个没有名字的动态方法
-        var dynamicMethod = new DynamicMethod(string.Empty, null, new Type[] { typeof(object), typeof(object) }, method.DeclaringType.Module, true);
-        var il = dynamicMethod.GetILGenerator();
+        var setter = CreateDynamicSetMethod<object>(propertyInfo);
+        var il = setter.GetILGenerator();
 
         //if (!method.IsStatic) il.Ldarg(0).CastFromObject(method.DeclaringType);
 
         // 目标方法只有一个参数
         il.Ldarg(1)
-            .CastFromObject(method.GetParameters()[0].ParameterType)
+            .CastFromObject(propertyInfo.PropertyType)
             .Call(method)
             .Ret();
 
-        return (Action<object, object>)dynamicMethod.CreateDelegate(typeof(Action<object, object>));
+        return (Action<object, object>)setter.CreateDelegate(typeof(Action<object, object>));
       }
       else
       {
@@ -1824,8 +1822,8 @@ namespace CuteAnt.Reflection
       if (fieldInfo.IsStatic)
       {
         //定义一个没有名字的动态方法
-        var dynamicMethod = new DynamicMethod(string.Empty, typeof(object), new Type[] { typeof(object) }, fieldInfo.DeclaringType.Module, true);
-        var il = dynamicMethod.GetILGenerator();
+        var getter = CreateDynamicGetMethod<object>(fieldInfo);
+        var il = getter.GetILGenerator();
 
         // 必须考虑对象是值类型的情况，需要拆箱
         // 其它地方看到的程序从来都没有人处理
@@ -1835,7 +1833,7 @@ namespace CuteAnt.Reflection
             .BoxIfValueType(fieldInfo.FieldType)
             .Ret();
 
-        return (Func<object, object>)dynamicMethod.CreateDelegate(typeof(Func<object, object>));
+        return (Func<object, object>)getter.CreateDelegate(typeof(Func<object, object>));
       }
       else
       {
@@ -1880,8 +1878,8 @@ namespace CuteAnt.Reflection
       if (fieldInfo.IsStatic)
       {
         //定义一个没有名字的动态方法
-        var dynamicMethod = new DynamicMethod(string.Empty, null, new Type[] { typeof(object), typeof(object) }, fieldInfo.DeclaringType.Module, true);
-        var il = dynamicMethod.GetILGenerator();
+        var setter = CreateDynamicSetMethod<object>(fieldInfo);
+        var il = setter.GetILGenerator();
 
         // 必须考虑对象是值类型的情况，需要拆箱
         // 其它地方看到的程序从来都没有人处理
@@ -1900,7 +1898,7 @@ namespace CuteAnt.Reflection
         }
         il.Emit(OpCodes.Stfld, fieldInfo);
         il.Emit(OpCodes.Ret);
-        return (Action<object, object>)dynamicMethod.CreateDelegate(typeof(Action<object, object>));
+        return (Action<object, object>)setter.CreateDelegate(typeof(Action<object, object>));
       }
       else
       {
@@ -1964,8 +1962,8 @@ namespace CuteAnt.Reflection
         if (method.IsStatic)
         {
           //定义一个没有名字的动态方法
-          var dynamicMethod = new DynamicMethod(string.Empty, typeof(T), new Type[] { typeof(object) }, method.DeclaringType.Module, true);
-          var il = dynamicMethod.GetILGenerator();
+          var getter = CreateDynamicGetMethod<T>(propertyInfo);
+          var il = getter.GetILGenerator();
 
           //if (!method.IsStatic) il.Ldarg(0).CastFromObject(method.DeclaringType);
 
@@ -1974,7 +1972,7 @@ namespace CuteAnt.Reflection
               .BoxIfValueType(method.ReturnType)
               .Ret();
 
-          return (Func<T, object>)dynamicMethod.CreateDelegate(typeof(Func<T, object>));
+          return (Func<T, object>)getter.CreateDelegate(typeof(Func<T, object>));
         }
         else
         {
@@ -2007,8 +2005,8 @@ namespace CuteAnt.Reflection
         if (fieldInfo.IsStatic)
         {
           //定义一个没有名字的动态方法
-          var dynamicMethod = new DynamicMethod(string.Empty, typeof(T), new Type[] { typeof(object) }, fieldInfo.DeclaringType.Module, true);
-          var il = dynamicMethod.GetILGenerator();
+          var getter = CreateDynamicGetMethod<T>(fieldInfo);
+          var il = getter.GetILGenerator();
 
           // 必须考虑对象是值类型的情况，需要拆箱
           // 其它地方看到的程序从来都没有人处理
@@ -2018,7 +2016,7 @@ namespace CuteAnt.Reflection
               .BoxIfValueType(fieldInfo.FieldType)
               .Ret();
 
-          return (Func<T, object>)dynamicMethod.CreateDelegate(typeof(Func<T, object>));
+          return (Func<T, object>)getter.CreateDelegate(typeof(Func<T, object>));
         }
         else
         {
@@ -2051,18 +2049,18 @@ namespace CuteAnt.Reflection
         if (method.IsStatic)
         {
           //定义一个没有名字的动态方法
-          var dynamicMethod = new DynamicMethod(string.Empty, null, new Type[] { typeof(T), typeof(object) }, method.DeclaringType.Module, true);
-          var il = dynamicMethod.GetILGenerator();
+          var setter = CreateDynamicSetMethod<T>(propertyInfo);
+          var il = setter.GetILGenerator();
 
           //if (!method.IsStatic) il.Ldarg(0).CastFromObject(method.DeclaringType);
 
           // 目标方法只有一个参数
           il.Ldarg(1)
-              .CastFromObject(method.GetParameters()[0].ParameterType)
+              .CastFromObject(propertyInfo.PropertyType)
               .Call(method)
               .Ret();
 
-          return (Action<T, object>)dynamicMethod.CreateDelegate(typeof(Action<T, object>));
+          return (Action<T, object>)setter.CreateDelegate(typeof(Action<T, object>));
         }
         else
         {
@@ -2098,8 +2096,8 @@ namespace CuteAnt.Reflection
         if (fieldInfo.IsStatic)
         {
           //定义一个没有名字的动态方法
-          var dynamicMethod = new DynamicMethod(string.Empty, null, new Type[] { typeof(T), typeof(object) }, fieldInfo.DeclaringType.Module, true);
-          var il = dynamicMethod.GetILGenerator();
+          var setter = CreateDynamicSetMethod<T>(fieldInfo);
+          var il = setter.GetILGenerator();
 
           // 必须考虑对象是值类型的情况，需要拆箱
           // 其它地方看到的程序从来都没有人处理
@@ -2118,7 +2116,7 @@ namespace CuteAnt.Reflection
           }
           il.Emit(OpCodes.Stfld, fieldInfo);
           il.Emit(OpCodes.Ret);
-          return (Action<T, object>)dynamicMethod.CreateDelegate(typeof(Action<T, object>));
+          return (Action<T, object>)setter.CreateDelegate(typeof(Action<T, object>));
         }
         else
         {
@@ -2138,6 +2136,36 @@ namespace CuteAnt.Reflection
       }
 
       #endregion
+    }
+
+    #endregion
+
+    #region * CreateDynamicGetMethod *
+
+    private static DynamicMethod CreateDynamicGetMethod<T>(MemberInfo memberInfo)
+    {
+      var args = new[] { typeof(object) };
+      var name = $"_GET{memberInfo.Name}_";
+      var returnType = typeof(T);
+
+      return !memberInfo.DeclaringType.IsInterface
+                 ? new DynamicMethod(name, returnType, args, memberInfo.DeclaringType, true)
+                 : new DynamicMethod(name, returnType, args, memberInfo.Module, true);
+    }
+
+    #endregion
+
+    #region * CreateDynamicSetMethod *
+
+    private static DynamicMethod CreateDynamicSetMethod<T>(MemberInfo memberInfo)
+    {
+      var args = new[] { typeof(T), typeof(object) };
+      var name = $"_SET{memberInfo.Name}_";
+      var returnType = typeof(void);
+
+      return !memberInfo.DeclaringType.IsInterface
+                 ? new DynamicMethod(name, returnType, args, memberInfo.DeclaringType, true)
+                 : new DynamicMethod(name, returnType, args, memberInfo.Module, true);
     }
 
     #endregion

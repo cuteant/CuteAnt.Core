@@ -618,7 +618,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static MethodInfo GetMethod(Type type, String name, Type[] paramTypes)
     {
-      var bf = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance;
+      //var bf = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance;
       if (paramTypes == null) paramTypes = Type.EmptyTypes;
 
       MethodInfo mi = null;
@@ -629,7 +629,7 @@ namespace CuteAnt.Reflection
         var t = type;
         while (t != null && t != typeof(Object))
         {
-          var mis = t.GetMethods(bf).Where(m => m.Name == name);
+          var mis = t.GetMethods(BindingFlagsHelper.DefaultDeclaredOnlyLookup).Where(m => m.Name == name);
           if (mis != null)
           {
             foreach (var item in mis)
@@ -642,7 +642,7 @@ namespace CuteAnt.Reflection
             }
           }
 
-          t = t.BaseType;
+          t = t.BaseType();
         }
       }
 
@@ -650,10 +650,10 @@ namespace CuteAnt.Reflection
         var t = type;
         while (t != null && t != typeof(Object))
         {
-          var m = t.GetMethod(name, bf, Binder, paramTypes, null);
+          var m = t.GetMethod(name, BindingFlagsHelper.DefaultDeclaredOnlyLookup, Binder, paramTypes, null);
           if (m != null) return m;
 
-          t = t.BaseType;
+          t = t.BaseType();
         }
       }
 

@@ -275,86 +275,92 @@ namespace CuteAnt.Reflection.Tests
         if (item.CanRead) Assert.Equal(idx, myuser.GetMemberInfoValue(item));
       }
     }
+  }
 
-    public interface IUser1
-    {
-      int PublicProperty6 { get; set; }
-    }
+  public interface IUser1
+  {
+    int PublicProperty6 { get; set; }
+  }
 
-    public interface IUser2
-    {
-      int PublicProperty { get; set; }
-    }
+  public interface IUser2
+  {
+    int PublicProperty { get; set; }
+  }
 
-    public interface IMyUser : IUser1, IUser2
-    {
-      int Good { get; set; }
-    }
+  public interface IMyUser : IUser1, IUser2
+  {
+    int Good { get; set; }
+  }
+  public interface IHasId<T>
+  {
+    T Id { get; }
+  }
 
-    public class User : IUser1, IUser2
-    {
-      private int PrivateField;
-      protected int ProtectedField;
-      internal int InternalField;
-      public int PublicField;
+  public class User : IUser1, IUser2, IHasId<int>
+  {
+    public int Id { get; set; }
 
-      private static int PrivateStaticField;
-      protected static int ProtectedStaticField;
-      internal static int InternalStaticField;
-      public static int PublicStaticField;
+    private int PrivateField;
+    protected int ProtectedField;
+    internal int InternalField;
+    public int PublicField;
 
-      public static int NewOverideInheritField;
+    private static int PrivateStaticField;
+    protected static int ProtectedStaticField;
+    internal static int InternalStaticField;
+    public static int PublicStaticField;
 
-      private int PrivateProperty { get; set; }
-      protected int ProtectedProperty { get; set; }
-      protected int ProtectedProperty1 { get; private set; }
-      protected int ProtectedProperty2 { private get; set; }
+    public static int NewOverideInheritField;
 
-      internal int InternalProperty { get; set; }
-      internal int InternalProperty1 { get; private set; }
-      internal int InternalProperty2 { private get; set; }
-      internal protected int InternalProperty3 { get; protected set; }
+    private int PrivateProperty { get; set; }
+    protected int ProtectedProperty { get; set; }
+    protected int ProtectedProperty1 { get; private set; }
+    protected int ProtectedProperty2 { private get; set; }
 
-      public int PublicProperty { get; set; }
-      public int PublicProperty0 { get; private set; }
-      public int PublicProperty1 { get; internal set; }
-      public int PublicProperty2 { get; protected set; }
-      public int PublicProperty3 { private get; set; }
-      public int PublicProperty4 { protected get; set; }
-      public int PublicProperty5 { internal get; set; }
+    internal int InternalProperty { get; set; }
+    internal int InternalProperty1 { get; private set; }
+    internal int InternalProperty2 { private get; set; }
+    internal protected int InternalProperty3 { get; protected set; }
 
-      public virtual int PublicProperty6 { get; set; }
-      public virtual int PublicProperty7 { get; internal set; }
-      public virtual int PublicProperty8 { get; protected set; }
-      public virtual int PublicProperty9 { get; private set; }
+    public int PublicProperty { get; set; }
+    public int PublicProperty0 { get; private set; }
+    public int PublicProperty1 { get; internal set; }
+    public int PublicProperty2 { get; protected set; }
+    public int PublicProperty3 { private get; set; }
+    public int PublicProperty4 { protected get; set; }
+    public int PublicProperty5 { internal get; set; }
 
-      private static int PrivateStaticProperty { get; set; }
-      protected static int ProtectedStaticProperty { get; set; }
-      protected static int ProtectedStaticProperty1 { get; private set; }
-      protected static int ProtectedStaticProperty2 { private get; set; }
+    public virtual int PublicProperty6 { get; set; }
+    public virtual int PublicProperty7 { get; internal set; }
+    public virtual int PublicProperty8 { get; protected set; }
+    public virtual int PublicProperty9 { get; private set; }
 
-      internal static int InternalStaticProperty { get; set; }
-      internal static int InternalStaticProperty1 { get; private set; }
-      internal static int InternalStaticProperty2 { private get; set; }
-      internal static protected int InternalStaticProperty3 { get; protected set; }
+    private static int PrivateStaticProperty { get; set; }
+    protected static int ProtectedStaticProperty { get; set; }
+    protected static int ProtectedStaticProperty1 { get; private set; }
+    protected static int ProtectedStaticProperty2 { private get; set; }
 
-      public static int PublicStaticProperty { get; set; }
-      public static int PublicStaticProperty0 { get; private set; }
-      public static int PublicStaticProperty1 { get; internal set; }
-      public static int PublicStaticProperty2 { get; protected set; }
-      public static int PublicStaticProperty3 { private get; set; }
-      public static int PublicStaticProperty4 { protected get; set; }
-      public static int PublicStaticProperty5 { internal get; set; }
-    }
+    internal static int InternalStaticProperty { get; set; }
+    internal static int InternalStaticProperty1 { get; private set; }
+    internal static int InternalStaticProperty2 { private get; set; }
+    internal static protected int InternalStaticProperty3 { get; protected set; }
 
-    public class MyUser : User, IMyUser
-    {
-      public static new int NewOverideInheritField;
-      public override int PublicProperty6 { get; set; }
-      public override int PublicProperty7 { get; internal set; }
-      public override int PublicProperty8 { get; protected set; }
+    public static int PublicStaticProperty { get; set; }
+    public static int PublicStaticProperty0 { get; private set; }
+    public static int PublicStaticProperty1 { get; internal set; }
+    public static int PublicStaticProperty2 { get; protected set; }
+    public static int PublicStaticProperty3 { private get; set; }
+    public static int PublicStaticProperty4 { protected get; set; }
+    public static int PublicStaticProperty5 { internal get; set; }
+  }
 
-      public int Good { get; set; }
-    }
+  public class MyUser : User, IMyUser
+  {
+    public static new int NewOverideInheritField;
+    public override int PublicProperty6 { get; set; }
+    public override int PublicProperty7 { get; internal set; }
+    public override int PublicProperty8 { get; protected set; }
+
+    public int Good { get; set; }
   }
 }

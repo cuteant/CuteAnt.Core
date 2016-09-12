@@ -22,10 +22,10 @@ namespace CuteAnt.Reflection
     /// <summary>目标字段</summary>
     public FieldInfo Field { get; set; }
 
-    private FastGetValueHandler _GetHandler;
+    private Func<object, object> _GetHandler;
 
     /// <summary>快速调用委托，延迟到首次使用才创建</summary>
-    private FastGetValueHandler GetHandler
+    public Func<object, object> GetHandler
     {
       get
       {
@@ -34,10 +34,10 @@ namespace CuteAnt.Reflection
       }
     }
 
-    private FastSetValueHandler _SetHandler;
+    private Action<object, object> _SetHandler;
 
     /// <summary>快速调用委托，延迟到首次使用才创建</summary>
-    private FastSetValueHandler SetHandler
+    public Action<object, object> SetHandler
     {
       get
       {
@@ -100,7 +100,7 @@ namespace CuteAnt.Reflection
 
     #region -- 创建动态方法 --
 
-    private static FastGetValueHandler GetValueInvoker(FieldInfo field)
+    private static Func<object, object> GetValueInvoker(FieldInfo field)
     {
       //定义一个没有名字的动态方法
       var dynamicMethod = new DynamicMethod(String.Empty, typeof(Object), new Type[] { typeof(Object) }, field.DeclaringType.Module, true);
@@ -130,7 +130,7 @@ namespace CuteAnt.Reflection
       //        il2.Emit(OpCodes.Ret);
       //    });
       //}
-      return (FastGetValueHandler)dynamicMethod.CreateDelegate(typeof(FastGetValueHandler));
+      return (Func<object, object>)dynamicMethod.CreateDelegate(typeof(Func<object, object>));
     }
 
     //private static DynamicMethod GetValueInvoker2(FieldInfo field)
@@ -148,7 +148,7 @@ namespace CuteAnt.Reflection
     //        .Ret();
     //    return dynamicMethod;
     //}
-    private static FastSetValueHandler SetValueInvoker(FieldInfo field)
+    private static Action<object, object> SetValueInvoker(FieldInfo field)
     {
       //定义一个没有名字的动态方法
       var dynamicMethod = new DynamicMethod(String.Empty, null, new Type[] { typeof(Object), typeof(Object) }, field.DeclaringType.Module, true);
@@ -171,7 +171,7 @@ namespace CuteAnt.Reflection
       }
       il.Emit(OpCodes.Stfld, field);
       il.Emit(OpCodes.Ret);
-      return (FastSetValueHandler)dynamicMethod.CreateDelegate(typeof(FastSetValueHandler));
+      return (Action<object, object>)dynamicMethod.CreateDelegate(typeof(Action<object, object>));
     }
 
     private static MethodInfo GetMethod(Type type)
@@ -283,9 +283,9 @@ namespace CuteAnt.Reflection
       SetValue(typeof(TTarget), null, name, value);
     }
 
-    private delegate Object FastGetValueHandler(Object obj);
+    //private delegate Object FastGetValueHandler(Object obj);
 
-    private delegate void FastSetValueHandler(Object obj, Object value);
+    //private delegate void FastSetValueHandler(Object obj, Object value);
 
     #endregion
 

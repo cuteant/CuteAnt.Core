@@ -63,10 +63,10 @@ namespace CuteAnt.Reflection
       set { _SetMethod = value; }
     }
 
-    private FastGetValueHandler _GetHandler;
+    private Func<object, object> _GetHandler;
 
     /// <summary>快速调用委托，延迟到首次使用才创建</summary>
-    private FastGetValueHandler GetHandler
+    public Func<object, object> GetHandler
     {
       get
       {
@@ -80,10 +80,10 @@ namespace CuteAnt.Reflection
       }
     }
 
-    private FastSetValueHandler _SetHandler;
+    private Action<object, object> _SetHandler;
 
     /// <summary>快速调用委托，延迟到首次使用才创建</summary>
-    private FastSetValueHandler SetHandler
+    public Action<object, object> SetHandler
     {
       get
       {
@@ -153,11 +153,11 @@ namespace CuteAnt.Reflection
 
     #region 创建动态方法
 
-    private delegate Object FastGetValueHandler(Object obj);
+    //private delegate Object FastGetValueHandler(Object obj);
 
-    private delegate void FastSetValueHandler(Object obj, Object value);
+    //private delegate void FastSetValueHandler(Object obj, Object value);
 
-    private static FastGetValueHandler GetValueInvoker(MethodInfo method)
+    private static Func<object, object> GetValueInvoker(MethodInfo method)
     {
       //定义一个没有名字的动态方法
       var dynamicMethod = new DynamicMethod(String.Empty, typeof(Object), new Type[] { typeof(Object) }, method.DeclaringType.Module, true);
@@ -171,10 +171,10 @@ namespace CuteAnt.Reflection
           .BoxIfValueType(method.ReturnType)
           .Ret();
 
-      return (FastGetValueHandler)dynamicMethod.CreateDelegate(typeof(FastGetValueHandler));
+      return (Func<object, object>)dynamicMethod.CreateDelegate(typeof(Func<object, object>));
     }
 
-    private static FastSetValueHandler SetValueInvoker(MethodInfo method)
+    private static Action<object, object> SetValueInvoker(MethodInfo method)
     {
       //定义一个没有名字的动态方法
       var dynamicMethod = new DynamicMethod(String.Empty, null, new Type[] { typeof(Object), typeof(Object) }, method.DeclaringType.Module, true);
@@ -189,7 +189,7 @@ namespace CuteAnt.Reflection
           .Call(method)
           .Ret();
 
-      return (FastSetValueHandler)dynamicMethod.CreateDelegate(typeof(FastSetValueHandler));
+      return (Action<object, object>)dynamicMethod.CreateDelegate(typeof(Action<object, object>));
     }
 
     #endregion 创建动态方法
