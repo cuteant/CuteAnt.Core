@@ -7,6 +7,45 @@ namespace CuteAnt.Reflection.Tests
   public class ReflectionTests
   {
     [Fact]
+    public void ComplexTypeTest()
+    {
+      var user = new ComplexUser();
+      var type = typeof(ComplexUser);
+      var id_pi = type.GetTypeProperty("ID");
+      var longid_pi = type.GetTypeProperty("LongID");
+      var today_fi = type.GetTypeField("Today");
+      var today1_fi = type.GetTypeField("Today1");
+      var adddress_pi = type.GetTypeProperty("Address");
+      var fullname_pi = type.GetTypeProperty("FullName");
+
+      var id = 12;
+      Assert.Equal(0, id_pi.GetValueGetter().Invoke(user));
+      id_pi.GetValueSetter().Invoke(user, id);
+      Assert.Equal(id, id_pi.GetValueGetter().Invoke(user));
+
+      long? longid = 10;
+      Assert.Null(longid_pi.GetValueGetter().Invoke(user));
+      longid_pi.GetValueSetter().Invoke(user, longid);
+      Assert.Equal(longid, longid_pi.GetValueGetter().Invoke(user));
+
+      DateTime? today1 = DateTime.Now.Date;
+      Assert.Null(today1_fi.GetValueGetter().Invoke(user));
+      today1_fi.GetValueSetter().Invoke(user, today1);
+      Assert.Equal(today1, today1_fi.GetValueGetter().Invoke(user));
+
+      var address = "ShenZhen";
+      Assert.Null(adddress_pi.GetValueGetter().Invoke(user));
+      adddress_pi.GetValueSetter().Invoke(user, address);
+      Assert.Equal(address, adddress_pi.GetValueGetter().Invoke(user));
+
+      var fullName = new UserFullName() { FirstName = "hm", LastName = "khan" };
+      Assert.Null(fullname_pi.GetValueGetter().Invoke(user));
+      fullname_pi.GetValueSetter().Invoke(user, fullName);
+      Assert.Equal(fullName.FirstName, ((UserFullName)(fullname_pi.GetValueGetter().Invoke(user))).FirstName);
+      Assert.Equal(fullName.LastName, ((UserFullName)(fullname_pi.GetValueGetter().Invoke(user))).LastName);
+    }
+
+    [Fact]
     public void InterfaceGetOrSetDeclaredMemberValueTest()
     {
       var user = new User();
@@ -362,5 +401,23 @@ namespace CuteAnt.Reflection.Tests
     public override int PublicProperty8 { get; protected set; }
 
     public int Good { get; set; }
+  }
+
+  public class UserFullName
+  {
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+  }
+  public class ComplexUser
+  {
+    public int ID { get; set; }
+    public long? LongID { get; set; }
+
+    public DateTime Today;
+    private DateTime? Today1;
+
+    public UserFullName FullName { get; set; }
+
+    internal string Address { get; set; }
   }
 }

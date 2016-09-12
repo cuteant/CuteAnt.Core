@@ -1692,6 +1692,7 @@ namespace CuteAnt.Reflection
       if (!propertyInfo.CanRead) { return null; }
 
       var method = propertyInfo.GetMethodInfo();
+      if (method == null) { return null; }
       if (method.IsStatic)
       {
         //定义一个没有名字的动态方法
@@ -1710,7 +1711,7 @@ namespace CuteAnt.Reflection
       else
       {
         var instance = Expression.Parameter(typeof(object), "i");
-        var convertInstance = Expression.TypeAs(instance, propertyInfo.DeclaringType);
+        var convertInstance = Expression.TypeAs(instance, propertyInfo.GetDeclaringType());
         var property = Expression.Property(convertInstance, propertyInfo);
         var convertProperty = Expression.TypeAs(property, typeof(object));
         return Expression.Lambda<Func<object, object>>(convertProperty, instance).Compile();
@@ -1754,6 +1755,7 @@ namespace CuteAnt.Reflection
       if (!propertyInfo.CanWrite) { return null; }
 
       var method = propertyInfo.SetMethodInfo();
+      if (method == null) { return null; }
       if (method.IsStatic)
       {
         //定义一个没有名字的动态方法
@@ -1775,12 +1777,12 @@ namespace CuteAnt.Reflection
         var instance = Expression.Parameter(typeof(object), "i");
         var argument = Expression.Parameter(typeof(object), "a");
 
-        var type = (Expression)Expression.TypeAs(instance, propertyInfo.DeclaringType);
+        var type = (Expression)Expression.TypeAs(instance, propertyInfo.GetDeclaringType());
 
         var setterCall = Expression.Call(
             type,
             propertyInfo.SetMethodInfo(),
-            Expression.Convert(argument, propertyInfo.PropertyType));
+            GetCastOrConvertExpression(argument, propertyInfo.PropertyType));
 
         return Expression.Lambda<Action<object, object>>(setterCall, instance, argument).Compile();
       }
@@ -1838,7 +1840,7 @@ namespace CuteAnt.Reflection
       else
       {
         var instance = Expression.Parameter(typeof(object), "i");
-        var field = Expression.Field(Expression.TypeAs(instance, fieldInfo.DeclaringType), fieldInfo);
+        var field = Expression.Field(Expression.TypeAs(instance, fieldInfo.GetDeclaringType()), fieldInfo);
         var convertField = Expression.TypeAs(field, typeof(object));
         return Expression.Lambda<Func<object, object>>(convertField, instance).Compile();
       }
@@ -1905,13 +1907,29 @@ namespace CuteAnt.Reflection
         var instance = Expression.Parameter(typeof(object), "i");
         var argument = Expression.Parameter(typeof(object), "a");
 
-        var field = Expression.Field(Expression.TypeAs(instance, fieldInfo.DeclaringType), fieldInfo);
+        var field = Expression.Field(Expression.TypeAs(instance, fieldInfo.GetDeclaringType()), fieldInfo);
 
         var setterCall = Expression.Assign(
             field,
-            Expression.Convert(argument, fieldInfo.FieldType));
+            GetCastOrConvertExpression(argument, fieldInfo.FieldType));
 
         return Expression.Lambda<Action<object, object>>(setterCall, instance, argument).Compile();
+
+        //var fieldDeclaringType = fieldInfo.GetDeclaringType();
+
+        //var sourceParameter = Expression.Parameter(typeof(object), "source");
+        //var valueParameter = Expression.Parameter(typeof(object), "value");
+
+        //var fieldExpression = Expression.Field(GetCastOrConvertExpression(sourceParameter, fieldDeclaringType), fieldInfo);
+
+        //var valueExpression = GetCastOrConvertExpression(valueParameter, fieldExpression.Type);
+
+        //var genericSetFieldMethodInfo = s_setFieldMethod.MakeGenericMethod(fieldExpression.Type);
+
+        //var setFieldMethodCallExpression = Expression.Call(
+        //    null, genericSetFieldMethodInfo, fieldExpression, valueExpression);
+
+        //return Expression.Lambda<Action<object, object>>(setFieldMethodCallExpression, sourceParameter, valueParameter).Compile();
       }
     }
     private static MethodInfo GetFieldMethod(Type type)
@@ -1959,6 +1977,7 @@ namespace CuteAnt.Reflection
         if (!propertyInfo.CanRead) { return null; }
 
         var method = propertyInfo.GetMethodInfo();
+        if (method == null) { return null; }
         if (method.IsStatic)
         {
           //定义一个没有名字的动态方法
@@ -1977,8 +1996,9 @@ namespace CuteAnt.Reflection
         else
         {
           var instance = Expression.Parameter(typeof(T), "i");
-          var property = typeof(T) != propertyInfo.DeclaringType
-              ? Expression.Property(Expression.TypeAs(instance, propertyInfo.DeclaringType), propertyInfo)
+          var propertyDeclaringType = propertyInfo.GetDeclaringType();
+          var property = typeof(T) != propertyDeclaringType
+              ? Expression.Property(Expression.TypeAs(instance, propertyDeclaringType), propertyInfo)
               : Expression.Property(instance, propertyInfo);
           var convertProperty = Expression.TypeAs(property, typeof(object));
           return Expression.Lambda<Func<T, object>>(convertProperty, instance).Compile();
@@ -2021,8 +2041,9 @@ namespace CuteAnt.Reflection
         else
         {
           var instance = Expression.Parameter(typeof(T), "i");
-          var field = typeof(T) != fieldInfo.DeclaringType
-              ? Expression.Field(Expression.TypeAs(instance, fieldInfo.DeclaringType), fieldInfo)
+          var fieldDeclaringType = fieldInfo.GetDeclaringType();
+          var field = typeof(T) != fieldDeclaringType
+              ? Expression.Field(Expression.TypeAs(instance, fieldDeclaringType), fieldInfo)
               : Expression.Field(instance, fieldInfo);
           var convertField = Expression.TypeAs(field, typeof(object));
           return Expression.Lambda<Func<T, object>>(convertField, instance).Compile();
@@ -2046,6 +2067,7 @@ namespace CuteAnt.Reflection
         if (!propertyInfo.CanWrite) { return null; }
 
         var method = propertyInfo.SetMethodInfo();
+        if (method == null) { return null; }
         if (method.IsStatic)
         {
           //定义一个没有名字的动态方法
@@ -2067,14 +2089,15 @@ namespace CuteAnt.Reflection
           var instance = Expression.Parameter(typeof(T), "i");
           var argument = Expression.Parameter(typeof(object), "a");
 
-          var instanceType = typeof(T) != propertyInfo.DeclaringType
-              ? (Expression)Expression.TypeAs(instance, propertyInfo.DeclaringType)
+          var propertyDeclaringType = propertyInfo.GetDeclaringType();
+          var instanceType = typeof(T) != propertyDeclaringType
+              ? (Expression)Expression.TypeAs(instance, propertyDeclaringType)
               : instance;
 
           var setterCall = Expression.Call(
               instanceType,
               propertyInfo.SetMethodInfo(),
-              Expression.Convert(argument, propertyInfo.PropertyType));
+              GetCastOrConvertExpression(argument, propertyInfo.PropertyType));
 
           return Expression.Lambda<Action<T, object>>(setterCall, instance, argument).Compile();
         }
@@ -2123,13 +2146,14 @@ namespace CuteAnt.Reflection
           var instance = Expression.Parameter(typeof(T), "i");
           var argument = Expression.Parameter(typeof(object), "a");
 
-          var field = typeof(T) != fieldInfo.DeclaringType
-              ? Expression.Field(Expression.TypeAs(instance, fieldInfo.DeclaringType), fieldInfo)
+          var fieldDeclaringType = fieldInfo.GetDeclaringType();
+          var field = typeof(T) != fieldDeclaringType
+              ? Expression.Field(Expression.TypeAs(instance, fieldDeclaringType), fieldInfo)
               : Expression.Field(instance, fieldInfo);
 
           var setterCall = Expression.Assign(
               field,
-              Expression.Convert(argument, fieldInfo.FieldType));
+              GetCastOrConvertExpression(argument, fieldInfo.FieldType));
 
           return Expression.Lambda<Action<T, object>>(setterCall, instance, argument).Compile();
         }
@@ -2166,6 +2190,62 @@ namespace CuteAnt.Reflection
       return !memberInfo.DeclaringType.IsInterface
                  ? new DynamicMethod(name, returnType, args, memberInfo.DeclaringType, true)
                  : new DynamicMethod(name, returnType, args, memberInfo.Module, true);
+    }
+
+    #endregion
+
+    #region * GetCastOrConvertExpression *
+
+    private static Expression GetCastOrConvertExpression(Expression expression, Type targetType)
+    {
+      Expression result;
+      var expressionType = expression.Type;
+
+      if (targetType.IsAssignableFrom(expressionType))
+      {
+        result = expression;
+      }
+      else
+      {
+        // Check if we can use the as operator for casting or if we must use the convert method
+        if (targetType.IsValueType && !targetType.IsNullableType())
+        {
+          result = Expression.Convert(expression, targetType);
+        }
+        else
+        {
+          result = Expression.TypeAs(expression, targetType);
+        }
+      }
+
+      return result;
+    }
+
+    #endregion
+
+    #region = SetField =
+
+    private static readonly MethodInfo s_setFieldMethod = typeof(Reflect).GetStaticMethod("SetField");
+
+    internal static void SetField<TValue>(ref TValue field, TValue newValue)
+    {
+      field = newValue;
+    }
+
+    private static readonly MethodInfo s_getPropertyMethod = typeof(Reflect).GetStaticMethod("TypedGetPropertyFn");
+    /// <summary>Func to get the Strongly-typed field</summary>
+    internal static Func<TEntity, TValue> TypedGetPropertyFn<TEntity, TValue>(PropertyInfo pi)
+    {
+      var mi = pi.GetMethodInfo();
+      return (Func<TEntity, TValue>)mi.CreateDelegate(typeof(Func<TEntity, TValue>));
+    }
+
+    private static readonly MethodInfo s_setPropertyMethod = typeof(Reflect).GetStaticMethod("TypedSetPropertyFn");
+    /// <summary>Func to set the Strongly-typed field</summary>
+    internal static Action<TEntity, TValue> TypedSetPropertyFn<TEntity, TValue>(PropertyInfo pi)
+    {
+      var mi = pi.SetMethodInfo();
+      return (Action<TEntity, TValue>)mi.CreateDelegate(typeof(Action<TEntity, TValue>));
     }
 
     #endregion
