@@ -1680,7 +1680,7 @@ namespace CuteAnt.Reflection
 
     private static Func<object, object> GetValueGetterInternal(PropertyInfo propertyInfo)
     {
-#if NETFX_CORE || NETSTANDARD1_1
+#if NETFX_CORE
       var getMethodInfo = propertyInfo.GetMethod;
       if (getMethodInfo == null) return null;
       return x => getMethodInfo.Invoke(x, TypeConstants.EmptyObjectArray);
@@ -1818,7 +1818,7 @@ namespace CuteAnt.Reflection
 
     private static Func<object, object> GetValueGetterInternal(FieldInfo fieldInfo)
     {
-#if (SL5 && !WP) || __IOS__ || XBOX || NETSTANDARD1_1
+#if (SL5 && !WP) || __IOS__ || XBOX
       return x => fieldInfo.GetValue(x);
 #else
       if (fieldInfo.IsStatic)
@@ -1965,7 +1965,7 @@ namespace CuteAnt.Reflection
 
       private static Func<T, object> GetValueGetterInternal(PropertyInfo propertyInfo)
       {
-#if NETFX_CORE || NETSTANDARD1_1
+#if NETFX_CORE
       var getMethodInfo = propertyInfo.GetMethod;
       if (getMethodInfo == null) return null;
       return x => getMethodInfo.Invoke(x, TypeConstants.EmptyObjectArray);
@@ -2002,51 +2002,6 @@ namespace CuteAnt.Reflection
               : Expression.Property(instance, propertyInfo);
           var convertProperty = Expression.TypeAs(property, typeof(object));
           return Expression.Lambda<Func<T, object>>(convertProperty, instance).Compile();
-        }
-#endif
-      }
-
-      #endregion
-
-      #region GetValueGetter for FieldInfo
-
-      private static readonly DictionaryCache<FieldInfo, Func<T, object>> s_fieldsValueGetterCache =
-          new DictionaryCache<FieldInfo, Func<T, object>>();
-      private static readonly Func<FieldInfo, Func<T, object>> s_fieldInfoGetValueGetterFunc = GetValueGetterInternal;
-
-      public static Func<T, object> GetValueGetter(FieldInfo fieldInfo) =>
-          s_fieldsValueGetterCache.GetItem(fieldInfo, s_fieldInfoGetValueGetterFunc);
-
-      private static Func<T, object> GetValueGetterInternal(FieldInfo fieldInfo)
-      {
-#if (SL5 && !WP) || __IOS__ || XBOX || NETSTANDARD1_1
-        return x => fieldInfo.GetValue(x);
-#else
-        if (fieldInfo.IsStatic)
-        {
-          //定义一个没有名字的动态方法
-          var getter = CreateDynamicGetMethod<T>(fieldInfo);
-          var il = getter.GetILGenerator();
-
-          // 必须考虑对象是值类型的情况，需要拆箱
-          // 其它地方看到的程序从来都没有人处理
-          il.Ldarg(0)
-              .CastFromObject(fieldInfo.DeclaringType)
-              .Ldfld(fieldInfo)
-              .BoxIfValueType(fieldInfo.FieldType)
-              .Ret();
-
-          return (Func<T, object>)getter.CreateDelegate(typeof(Func<T, object>));
-        }
-        else
-        {
-          var instance = Expression.Parameter(typeof(T), "i");
-          var fieldDeclaringType = fieldInfo.GetDeclaringType();
-          var field = typeof(T) != fieldDeclaringType
-              ? Expression.Field(Expression.TypeAs(instance, fieldDeclaringType), fieldInfo)
-              : Expression.Field(instance, fieldInfo);
-          var convertField = Expression.TypeAs(field, typeof(object));
-          return Expression.Lambda<Func<T, object>>(convertField, instance).Compile();
         }
 #endif
       }
@@ -2101,6 +2056,51 @@ namespace CuteAnt.Reflection
 
           return Expression.Lambda<Action<T, object>>(setterCall, instance, argument).Compile();
         }
+      }
+
+      #endregion
+
+      #region GetValueGetter for FieldInfo
+
+      private static readonly DictionaryCache<FieldInfo, Func<T, object>> s_fieldsValueGetterCache =
+          new DictionaryCache<FieldInfo, Func<T, object>>();
+      private static readonly Func<FieldInfo, Func<T, object>> s_fieldInfoGetValueGetterFunc = GetValueGetterInternal;
+
+      public static Func<T, object> GetValueGetter(FieldInfo fieldInfo) =>
+          s_fieldsValueGetterCache.GetItem(fieldInfo, s_fieldInfoGetValueGetterFunc);
+
+      private static Func<T, object> GetValueGetterInternal(FieldInfo fieldInfo)
+      {
+#if (SL5 && !WP) || __IOS__ || XBOX
+        return x => fieldInfo.GetValue(x);
+#else
+        if (fieldInfo.IsStatic)
+        {
+          //定义一个没有名字的动态方法
+          var getter = CreateDynamicGetMethod<T>(fieldInfo);
+          var il = getter.GetILGenerator();
+
+          // 必须考虑对象是值类型的情况，需要拆箱
+          // 其它地方看到的程序从来都没有人处理
+          il.Ldarg(0)
+              .CastFromObject(fieldInfo.DeclaringType)
+              .Ldfld(fieldInfo)
+              .BoxIfValueType(fieldInfo.FieldType)
+              .Ret();
+
+          return (Func<T, object>)getter.CreateDelegate(typeof(Func<T, object>));
+        }
+        else
+        {
+          var instance = Expression.Parameter(typeof(T), "i");
+          var fieldDeclaringType = fieldInfo.GetDeclaringType();
+          var field = typeof(T) != fieldDeclaringType
+              ? Expression.Field(Expression.TypeAs(instance, fieldDeclaringType), fieldInfo)
+              : Expression.Field(instance, fieldInfo);
+          var convertField = Expression.TypeAs(field, typeof(object));
+          return Expression.Lambda<Func<T, object>>(convertField, instance).Compile();
+        }
+#endif
       }
 
       #endregion

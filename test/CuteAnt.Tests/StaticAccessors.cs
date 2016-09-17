@@ -26,7 +26,7 @@ namespace CuteAnt.Reflection.Tests
       var genericMi = mi.MakeGenericMethod(pi.PropertyType);
       var typedGetPropertyFn = (Delegate)genericMi.Invoke(null, new[] { pi });
 
-#if IOS || SL5 || NETFX_CORE || NETSTANDARD1_3
+#if IOS || SL5 || NETFX_CORE || NETSTANDARD
       return x => typedGetPropertyFn.InvokeMethod(x);
 #else
       var typedMi = typedGetPropertyFn.Method;
@@ -71,7 +71,7 @@ namespace CuteAnt.Reflection.Tests
       var genericMi = mi.MakeGenericMethod(pi.PropertyType);
       var typedSetPropertyFn = (Delegate)genericMi.Invoke(null, new[] { pi });
 
-#if IOS || SL5 || NETFX_CORE || NETSTANDARD1_3
+#if IOS || SL5 || NETFX_CORE || NETSTANDARD
       return (x, y) => typedSetPropertyFn.InvokeMethod(x, new[] { y });
 #else
       var typedMi = typedSetPropertyFn.Method;
