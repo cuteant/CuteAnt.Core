@@ -44,6 +44,15 @@ namespace CuteAnt.Reflection
 
   #endregion
 
+  #region -- EmptyCtorDelegate --
+
+  /// <summary>EmptyCtorDelegate</summary>
+  /// <remarks>Code taken from ServiceStack.Text Library &lt;a href="https://github.com/ServiceStack/ServiceStack.Text"&gt;</remarks>
+  /// <returns></returns>
+  public delegate object EmptyCtorDelegate();
+
+  #endregion
+
   /// <summary>反射工具类</summary>
   public static class Reflect
   {
@@ -110,6 +119,7 @@ namespace CuteAnt.Reflection
     /// <summary>GetCachedGenericType</summary>
     /// <param name="type"></param>
     /// <param name="argTypes"></param>
+    /// <remarks>Code taken from ServiceStack.Text Library &lt;a href="https://github.com/ServiceStack/ServiceStack.Text"&gt;</remarks>
     /// <returns></returns>
     public static Type GetCachedGenericType(this Type type, params Type[] argTypes)
     {
@@ -1310,19 +1320,189 @@ namespace CuteAnt.Reflection
 
     #region - CreateInstance -
 
-    /// <summary>反射创建指定类型的实例</summary>
-    /// <param name="type">类型</param>
-    /// <param name="parameters">参数数组</param>
-    /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    [DebuggerHidden]
-    public static Object CreateInstance(this Type type, params Object[] parameters)
+    /// <summary>Creates a new instance from the default constructor of type</summary>
+    public static object CreateInstance(this Type type)
     {
-      ValidationHelper.ArgumentNull(type, "type");
+      if (type == null) { return null; }
 
-      return Provider.CreateInstance(type, parameters);
+      var ctorFn = GetConstructorMethod(type);
+      return ctorFn();
+    }
+
+    /// <summary>Creates a new instance from the default constructor of type</summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static T CreateInstance<T>(this Type type)
+    {
+      if (type == null) { return default(T); }
+
+      var ctorFn = GetConstructorMethod(type);
+      return (T)ctorFn();
+    }
+
+    /// <summary>Creates a new instance from the default constructor of type</summary>
+    /// <param name="typeName"></param>
+    /// <returns></returns>
+    public static object CreateInstance(string typeName)
+    {
+      if (typeName == null) { return null; }
+
+      var ctorFn = GetConstructorMethod(typeName);
+      return ctorFn();
+    }
+
+    #endregion
+
+    #region - GetConstructorMethod -
+
+    private static Dictionary<Type, EmptyCtorDelegate> s_constructorMethods = new Dictionary<Type, EmptyCtorDelegate>();
+    /// <summary>GetConstructorMethod</summary>
+    /// <remarks>Code taken from ServiceStack.Text Library &lt;a href="https://github.com/ServiceStack/ServiceStack.Text"&gt;</remarks>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static EmptyCtorDelegate GetConstructorMethod(Type type)
+    {
+      EmptyCtorDelegate emptyCtorFn;
+      if (s_constructorMethods.TryGetValue(type, out emptyCtorFn)) return emptyCtorFn;
+
+      emptyCtorFn = GetConstructorMethodToCache(type);
+
+      Dictionary<Type, EmptyCtorDelegate> snapshot, newCache;
+      do
+      {
+        snapshot = s_constructorMethods;
+        newCache = new Dictionary<Type, EmptyCtorDelegate>(s_constructorMethods);
+        newCache[type] = emptyCtorFn;
+
+      } while (!ReferenceEquals(
+          Interlocked.CompareExchange(ref s_constructorMethods, newCache, snapshot), snapshot));
+
+      return emptyCtorFn;
+    }
+
+    private static Dictionary<string, EmptyCtorDelegate> s_typeNamesMap = new Dictionary<string, EmptyCtorDelegate>();
+    /// <summary>GetConstructorMethod</summary>
+    /// <remarks>Code taken from ServiceStack.Text Library &lt;a href="https://github.com/ServiceStack/ServiceStack.Text"&gt;</remarks>
+    /// <param name="typeName"></param>
+    /// <returns></returns>
+    public static EmptyCtorDelegate GetConstructorMethod(string typeName)
+    {
+      EmptyCtorDelegate emptyCtorFn;
+      if (s_typeNamesMap.TryGetValue(typeName, out emptyCtorFn)) return emptyCtorFn;
+
+      var type = typeName.GetTypeEx();
+      if (type == null) return null;
+      emptyCtorFn = GetConstructorMethodToCache(type);
+
+      Dictionary<string, EmptyCtorDelegate> snapshot, newCache;
+      do
+      {
+        snapshot = s_typeNamesMap;
+        newCache = new Dictionary<string, EmptyCtorDelegate>(s_typeNamesMap);
+        newCache[typeName] = emptyCtorFn;
+
+      } while (!ReferenceEquals(
+          Interlocked.CompareExchange(ref s_typeNamesMap, newCache, snapshot), snapshot));
+
+      return emptyCtorFn;
+    }
+
+    #endregion
+
+    #region - GetConstructorMethodToCache -
+
+    /// <summary>GetConstructorMethodToCache</summary>
+    /// <remarks>Code taken from ServiceStack.Text Library &lt;a href="https://github.com/ServiceStack/ServiceStack.Text"&gt;</remarks>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static EmptyCtorDelegate GetConstructorMethodToCache(Type type)
+    {
+      if (type.IsInterface())
+      {
+        if (type.HasGenericType())
+        {
+          var genericType = type.GetTypeWithGenericTypeDefinitionOfAny(typeof(IDictionary<,>));
+
+          if (genericType != null)
+          {
+            var keyType = genericType.GenericTypeArguments()[0];
+            var valueType = genericType.GenericTypeArguments()[1];
+            return GetConstructorMethodToCache(typeof(Dictionary<,>).MakeGenericType(keyType, valueType));
+          }
+
+          genericType = type.GetTypeWithGenericTypeDefinitionOfAny(
+              typeof(IEnumerable<>),
+              typeof(ICollection<>),
+              typeof(IList<>));
+
+          if (genericType != null)
+          {
+            var elementType = genericType.GenericTypeArguments()[0];
+            return GetConstructorMethodToCache(typeof(List<>).MakeGenericType(elementType));
+          }
+        }
+      }
+      else if (type.IsArray)
+      {
+        return () => Array.CreateInstance(type.GetElementType(), 0);
+      }
+      else if (type.IsGenericTypeDefinition())
+      {
+#if NETSTANDARD
+        var genericArgs = type.GetTypeInfo().GenericTypeParameters;
+#else
+        var genericArgs = type.GetGenericArguments();
+#endif
+        var typeArgs = new Type[genericArgs.Length];
+        for (var i = 0; i < genericArgs.Length; i++)
+          typeArgs[i] = typeof(object);
+
+        var realizedType = type.MakeGenericType(typeArgs);
+
+        return realizedType.CreateInstance;
+      }
+
+      var emptyCtor = type.GetEmptyConstructor();
+      if (emptyCtor != null)
+      {
+#if __IOS__ || XBOX || NETFX_CORE
+        return () => Activator.CreateInstance(type);
+#elif WP || PCL || NETSTANDARD
+        return System.Linq.Expressions.Expression.Lambda<EmptyCtorDelegate>(
+            System.Linq.Expressions.Expression.New(type)).Compile();
+#else
+
+#if SL5
+        var dm = new System.Reflection.Emit.DynamicMethod("MyCtor", type, Type.EmptyTypes);
+#else
+        var dm = new System.Reflection.Emit.DynamicMethod("MyCtor", type, Type.EmptyTypes, typeof(Reflect).Module, true);
+#endif
+        var ilgen = dm.GetILGenerator();
+        ilgen.Emit(System.Reflection.Emit.OpCodes.Nop);
+        ilgen.Emit(System.Reflection.Emit.OpCodes.Newobj, emptyCtor);
+        ilgen.Emit(System.Reflection.Emit.OpCodes.Ret);
+
+        return (EmptyCtorDelegate)dm.CreateDelegate(typeof(EmptyCtorDelegate));
+#endif
+      }
+
+#if (SL5 && !WP) || XBOX
+      return () => Activator.CreateInstance(type);
+#elif NETSTANDARD
+      if (GetUninitializedObjectDelegate != null)
+        return () => GetUninitializedObjectDelegate(type);
+
+      return () => Activator.CreateInstance(type);
+#elif WP || PCL
+      return System.Linq.Expressions.Expression.Lambda<EmptyCtorDelegate>(
+          System.Linq.Expressions.Expression.New(type)).Compile();
+#else
+      if (type == typeof(string)) { return () => string.Empty; }
+
+      //Anonymous types don't have empty constructors
+      return () => FormatterServices.GetUninitializedObject(type);
+#endif
     }
 
     #endregion

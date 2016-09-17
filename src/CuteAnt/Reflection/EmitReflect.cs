@@ -74,13 +74,6 @@ namespace CuteAnt.Reflection
 
 		#region 反射调用
 
-		/// <summary>反射创建指定类型的实例</summary>
-		/// <param name="type">类型</param>
-		/// <param name="parameters">参数数组</param>
-		/// <returns></returns>
-		[DebuggerHidden]
-		public override Object CreateInstance(Type type, params Object[] parameters) { return TypeX.CreateInstance(type, parameters); }
-
 		/// <summary>反射调用指定对象的方法</summary>
 		/// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
 		/// <param name="method">方法</param>
@@ -111,46 +104,6 @@ namespace CuteAnt.Reflection
 			else
 				return base.Invoke(target, method, parameters);
 		}
-
-		///// <summary></summary>
-		///// <param name="target">目标对象</param>
-		///// <param name="property">属性</param>
-		///// <returns></returns>
-		//[DebuggerHidden]
-		//public override Object GetValue(Object target, PropertyInfo property)
-		//{
-		//	return PropertyInfoX.Create(property).GetValue(target);
-		//}
-
-		///// <summary></summary>
-		///// <param name="target">目标对象</param>
-		///// <param name="field">字段</param>
-		///// <returns></returns>
-		//[DebuggerHidden]
-		//public override Object GetValue(Object target, FieldInfo field)
-		//{
-		//	return FieldInfoX.Create(field).GetValue(target);
-		//}
-
-		///// <summary></summary>
-		///// <param name="target">目标对象</param>
-		///// <param name="property">属性</param>
-		///// <param name="value">数值</param>
-		//[DebuggerHidden]
-		//public override void SetValue(Object target, PropertyInfo property, Object value)
-		//{
-		//	PropertyInfoX.Create(property).SetValue(target, value);
-		//}
-
-		///// <summary></summary>
-		///// <param name="target">目标对象</param>
-		///// <param name="field">字段</param>
-		///// <param name="value">数值</param>
-		//[DebuggerHidden]
-		//public override void SetValue(Object target, FieldInfo field, Object value)
-		//{
-		//	FieldInfoX.Create(field).SetValue(target, value);
-		//}
 
 		#endregion
 

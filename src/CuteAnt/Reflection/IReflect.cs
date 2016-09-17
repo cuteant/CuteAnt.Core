@@ -52,12 +52,6 @@ namespace CuteAnt.Reflection
 
     #region 反射调用
 
-    /// <summary>反射创建指定类型的实例</summary>
-    /// <param name="type">类型</param>
-    /// <param name="parameters">参数数组</param>
-    /// <returns></returns>
-    Object CreateInstance(Type type, params Object[] parameters);
-
     /// <summary>反射调用指定对象的方法</summary>
     /// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
     /// <param name="method">方法</param>
@@ -71,30 +65,6 @@ namespace CuteAnt.Reflection
     /// <param name="parameters">方法参数字典</param>
     /// <returns></returns>
     Object InvokeWithParams(Object target, MethodBase method, IDictionary parameters);
-
-    ///// <summary>获取目标对象的属性值</summary>
-    ///// <param name="target">目标对象</param>
-    ///// <param name="property">属性</param>
-    ///// <returns></returns>
-    //Object GetValue(Object target, PropertyInfo property);
-
-    ///// <summary>获取目标对象的字段值</summary>
-    ///// <param name="target">目标对象</param>
-    ///// <param name="field">字段</param>
-    ///// <returns></returns>
-    //Object GetValue(Object target, FieldInfo field);
-
-    ///// <summary>设置目标对象的属性值</summary>
-    ///// <param name="target">目标对象</param>
-    ///// <param name="property">属性</param>
-    ///// <param name="value">数值</param>
-    //void SetValue(Object target, PropertyInfo property, Object value);
-
-    ///// <summary>设置目标对象的字段值</summary>
-    ///// <param name="target">目标对象</param>
-    ///// <param name="field">字段</param>
-    ///// <param name="value">数值</param>
-    //void SetValue(Object target, FieldInfo field, Object value);
 
     #endregion
 
@@ -203,22 +173,6 @@ namespace CuteAnt.Reflection
 
     #region 反射调用
 
-    /// <summary>反射创建指定类型的实例</summary>
-    /// <param name="type">类型</param>
-    /// <param name="parameters">参数数组</param>
-    /// <returns></returns>
-    public virtual Object CreateInstance(Type type, params Object[] parameters)
-    {
-      if (parameters == null || parameters.Length == 0)
-      {
-        return Activator.CreateInstance(type, true);
-      }
-      else
-      {
-        return Activator.CreateInstance(type, parameters);
-      }
-    }
-
     /// <summary>反射调用指定对象的方法</summary>
     /// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
     /// <param name="method">方法</param>
@@ -250,42 +204,6 @@ namespace CuteAnt.Reflection
 
       return method.Invoke(target, ps);
     }
-
-    ///// <summary>获取目标对象的属性值</summary>
-    ///// <param name="target">目标对象</param>
-    ///// <param name="property">属性</param>
-    ///// <returns></returns>
-    //public virtual Object GetValue(Object target, PropertyInfo property)
-    //{
-    //  return property.GetValue(target, null);
-    //}
-
-    ///// <summary>获取目标对象的字段值</summary>
-    ///// <param name="target">目标对象</param>
-    ///// <param name="field">字段</param>
-    ///// <returns></returns>
-    //public virtual Object GetValue(Object target, FieldInfo field)
-    //{
-    //  return field.GetValue(target);
-    //}
-
-    ///// <summary>设置目标对象的属性值</summary>
-    ///// <param name="target">目标对象</param>
-    ///// <param name="property">属性</param>
-    ///// <param name="value">数值</param>
-    //public virtual void SetValue(Object target, PropertyInfo property, Object value)
-    //{
-    //  property.SetValue(target, value, null);
-    //}
-
-    ///// <summary>设置目标对象的字段值</summary>
-    ///// <param name="target">目标对象</param>
-    ///// <param name="field">字段</param>
-    ///// <param name="value">数值</param>
-    //public virtual void SetValue(Object target, FieldInfo field, Object value)
-    //{
-    //  field.SetValue(target, value);
-    //}
 
     #endregion
 
