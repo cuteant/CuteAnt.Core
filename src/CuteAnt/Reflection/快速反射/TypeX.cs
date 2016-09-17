@@ -239,6 +239,7 @@ namespace CuteAnt.Reflection
 
       // 如果没有找到构造函数，则创建一个未初始化的对象
       return FormatterServices.GetSafeUninitializedObject(Type);
+      //return FormatterServices.GetUninitializedObject(Type);
     }
 
     private DictionaryCache<ConstructorInfo, FastHandler> _cache = new DictionaryCache<ConstructorInfo, FastHandler>();

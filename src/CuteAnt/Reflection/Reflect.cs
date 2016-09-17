@@ -1501,7 +1501,8 @@ namespace CuteAnt.Reflection
       if (type == typeof(string)) { return () => string.Empty; }
 
       //Anonymous types don't have empty constructors
-      return () => FormatterServices.GetUninitializedObject(type);
+      //return () => FormatterServices.GetUninitializedObject(type);
+      return () => TypeX.Create(type).CreateInstance();
 #endif
     }
 
