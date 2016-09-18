@@ -76,8 +76,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IdentityModel", "IdentityMo
 		nuspecs\pack_im.cmd = nuspecs\pack_im.cmd
 	EndProjectSection
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CuteAnt.Extensions.DateTimeUtilities.Sources", "..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.DateTimeUtilities.Sources\CuteAnt.Extensions.DateTimeUtilities.Sources.shproj", "{F0DCBA0C-1EE9-403C-931C-555776F6C680}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.DateTimeUtilities.Sources\CuteAnt.Extensions.DateTimeUtilities.Sources.projitems*{1ab422bc-0280-4e03-95f4-3bc1fad9b2bf}*SharedItemsImports = 4
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.IO.Sources\CuteAnt.Extensions.IO.Sources.projitems*{1ab422bc-0280-4e03-95f4-3bc1fad9b2bf}*SharedItemsImports = 4
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Logging.Sources\CuteAnt.Extensions.Logging.Sources.projitems*{1ab422bc-0280-4e03-95f4-3bc1fad9b2bf}*SharedItemsImports = 4
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{1ab422bc-0280-4e03-95f4-3bc1fad9b2bf}*SharedItemsImports = 4
@@ -93,6 +96,7 @@ Global
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems*{b587c15b-325b-444f-8d91-9f23263c6d98}*SharedItemsImports = 4
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{c7f8dbe6-77b7-494d-af00-018f7579548c}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{d7951cd7-b132-4ad0-a0d3-2745876a9435}*SharedItemsImports = 4
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.DateTimeUtilities.Sources\CuteAnt.Extensions.DateTimeUtilities.Sources.projitems*{f0dcba0c-1ee9-403c-931c-555776f6c680}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -171,5 +175,6 @@ Global
 		{F8C90529-8BB0-45F9-87C9-1101EE71F2D9} = {6E5D8926-C5BD-47E9-8B62-08EC3E578682}
 		{9EED087F-B022-4596-9EEF-98317A647213} = {6E5D8926-C5BD-47E9-8B62-08EC3E578682}
 		{08CB4E34-26F3-4AC4-BDD0-B07B22388296} = {6E5D8926-C5BD-47E9-8B62-08EC3E578682}
+		{F0DCBA0C-1EE9-403C-931C-555776F6C680} = {CB15FB6C-A497-4C7D-A1B5-DC6F42CFECCC}
 	EndGlobalSection
 EndGlobal
