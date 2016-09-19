@@ -60,7 +60,7 @@ namespace CuteAnt
 #if !NET40
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-		public static Int32 ToInt16(this Object value, Int16 defaultValue = 0)
+		public static Int16 ToInt16(this Object value, Int16 defaultValue = 0)
 		{
 			return _Convert.ToInt16(value, defaultValue);
 		}
