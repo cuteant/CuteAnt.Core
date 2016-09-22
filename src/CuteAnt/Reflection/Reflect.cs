@@ -61,9 +61,24 @@ namespace CuteAnt.Reflection
     /// <summary>当前反射提供者</summary>
     public static IReflect Provider { get; set; }
 
+#if NETSTANDARD
+    private static readonly Func<Type, object> GetUninitializedObjectDelegate;
+#endif
+
     static Reflect()
     {
       Provider = new EmitReflect();
+
+#if NETSTANDARD
+      var formatterServices = typeof(string).GetTypeInfo().Assembly
+          .GetType("System.Runtime.Serialization.FormatterServices");
+      if (formatterServices != null)
+      {
+        var method = formatterServices.GetMethod("GetUninitializedObject");
+        if (method != null)
+            GetUninitializedObjectDelegate = (Func<Type, object>)method.CreateDelegate(typeof(Func<Type, object>));
+      }
+#endif
     }
 
     #endregion
@@ -1469,8 +1484,10 @@ namespace CuteAnt.Reflection
 #if __IOS__ || XBOX || NETFX_CORE
         return () => Activator.CreateInstance(type);
 #elif WP || PCL || NETSTANDARD
-        return System.Linq.Expressions.Expression.Lambda<EmptyCtorDelegate>(
-            System.Linq.Expressions.Expression.New(type)).Compile();
+        System.Linq.Expressions.Expression conversion = Expression.Convert(
+            System.Linq.Expressions.Expression.New(type), typeof(object));
+
+        return System.Linq.Expressions.Expression.Lambda<EmptyCtorDelegate>(conversion).Compile();
 #else
 
 #if SL5
@@ -2564,16 +2581,87 @@ namespace CuteAnt.Reflection
       }
     }
 
+    /// <summary>EmptyTypes</summary>
+#if NETSTANDARD
+    public static readonly Type[] EmptyTypes = new Type[0];
+#else
+    public static readonly Type[] EmptyTypes = Type.EmptyTypes;
+#endif
+
+#if (NETSTANDARD1_1 || NETSTANDARD1_3)
+    public static TypeCode GetTypeCode(this Type type)
+    {
+      if (type == null) return TypeCode.Empty;
+      TypeCode result;
+      if (s_typeCodeLookup.TryGetValue(type, out result)) return result;
+
+      if (type.IsEnum())
+      {
+        type = Enum.GetUnderlyingType(type);
+        if (s_typeCodeLookup.TryGetValue(type, out result)) return result;
+      }
+      return TypeCode.Object;
+    }
+
+    public static Type GetTypeFromTypeCode(this TypeCode typeCode)
+    {
+      Type result;
+
+      if (s_typeFromTypeCodeLookup.TryGetValue(typeCode, out result))
+        return result;
+
+      return typeof(Object);
+    }
+    private static readonly Dictionary<Type, TypeCode> s_typeCodeLookup = new Dictionary<Type, TypeCode>
+        {
+            {typeof(bool), TypeCode.Boolean },
+            {typeof(byte), TypeCode.Byte },
+            {typeof(char), TypeCode.Char},
+            {typeof(DateTime), TypeCode.DateTime},
+            {typeof(decimal), TypeCode.Decimal},
+            {typeof(double), TypeCode.Double },
+            {typeof(short), TypeCode.Int16 },
+            {typeof(int), TypeCode.Int32 },
+            {typeof(long), TypeCode.Int64 },
+            {typeof(object), TypeCode.Object},
+            {typeof(sbyte), TypeCode.SByte },
+            {typeof(float), TypeCode.Single },
+            {typeof(string), TypeCode.String },
+            {typeof(ushort), TypeCode.UInt16 },
+            {typeof(uint), TypeCode.UInt32 },
+            {typeof(ulong), TypeCode.UInt64 },
+        };
+
+    private static readonly Dictionary<TypeCode, Type> s_typeFromTypeCodeLookup = new Dictionary<TypeCode, Type>
+        {
+            {TypeCode.Boolean, typeof(bool) },
+            {TypeCode.Byte , typeof(byte) },
+            {TypeCode.Char, typeof(char) },
+            {TypeCode.DateTime, typeof(DateTime) },
+            {TypeCode.Decimal, typeof(decimal) },
+            {TypeCode.Double , typeof(double) },
+            {TypeCode.Int16, typeof(short) },
+            {TypeCode.Int32, typeof(int) },
+            {TypeCode.Int64, typeof(long) },
+            {TypeCode.Object, typeof(object) },
+            {TypeCode.SByte, typeof(sbyte) },
+            {TypeCode.Single, typeof(float) },
+            {TypeCode.String, typeof(string) },
+            {TypeCode.UInt16, typeof(ushort) },
+            {TypeCode.UInt32, typeof(uint) },
+            {TypeCode.UInt64, typeof(ulong) },
+        };
+
+#else
     /// <summary>获取类型代码</summary>
     /// <param name="type"></param>
     /// <returns></returns>
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static TypeCode GetTypeCode(this Type type)
-    {
-      return Type.GetTypeCode(type);
-    }
+    public static TypeCode GetTypeCode(this Type type) => Type.GetTypeCode(type);
+#endif
+
 
     #endregion
 
