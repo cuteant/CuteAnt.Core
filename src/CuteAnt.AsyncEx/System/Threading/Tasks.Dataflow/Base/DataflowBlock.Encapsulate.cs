@@ -58,8 +58,8 @@ namespace System.Threading.Tasks.Dataflow
 
 			public EncapsulatingPropagator(ITargetBlock<TInput> target, ISourceBlock<TOutput> source)
 			{
-				Contract.Requires(target != null, "The target should never be null; this should be checked by all internal usage.");
-				Contract.Requires(source != null, "The source should never be null; this should be checked by all internal usage.");
+				Debug.Assert(target != null, "The target should never be null; this should be checked by all internal usage.");
+				Debug.Assert(source != null, "The source should never be null; this should be checked by all internal usage.");
 				_target = target;
 				_source = source;
 			}
@@ -182,7 +182,7 @@ namespace System.Threading.Tasks.Dataflow
 				/// <param name="propagator">The propagator being debugged.</param>
 				public DebugView(EncapsulatingPropagator<TInput, TOutput> propagator)
 				{
-					Contract.Requires(propagator != null, "Need a block with which to construct the debug view.");
+					Debug.Assert(propagator != null, "Need a block with which to construct the debug view.");
 					_propagator = propagator;
 				}
 

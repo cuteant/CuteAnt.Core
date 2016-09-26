@@ -298,7 +298,7 @@ namespace System.Threading.Tasks.Dataflow
       /// <param name="batchedJoinBlock">The batched join being viewed.</param>
       public DebugView(BatchedJoinBlock<T1, T2> batchedJoinBlock)
       {
-        Contract.Requires(batchedJoinBlock != null, "Need a block with which to construct the debug view.");
+        Debug.Assert(batchedJoinBlock != null, "Need a block with which to construct the debug view.");
         _batchedJoinBlock = batchedJoinBlock;
         _sourceDebuggingInformation = batchedJoinBlock._source.GetDebuggingInformation();
       }
@@ -634,7 +634,7 @@ namespace System.Threading.Tasks.Dataflow
       /// <param name="batchedJoinBlock">The batched join being viewed.</param>
       public DebugView(BatchedJoinBlock<T1, T2, T3> batchedJoinBlock)
       {
-        Contract.Requires(batchedJoinBlock != null, "Need a block with which to construct the debug view.");
+        Debug.Assert(batchedJoinBlock != null, "Need a block with which to construct the debug view.");
         _sourceDebuggingInformation = batchedJoinBlock._source.GetDebuggingInformation();
         _batchedJoinBlock = batchedJoinBlock;
       }

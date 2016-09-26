@@ -272,7 +272,7 @@ namespace System.Threading.Tasks.Dataflow
       /// <param name="joinBlock">The JoinBlock being viewed.</param>
       public DebugView(JoinBlock<T1, T2> joinBlock)
       {
-        Contract.Requires(joinBlock != null, "Need a block with which to construct the debug view.");
+        Debug.Assert(joinBlock != null, "Need a block with which to construct the debug view.");
         _joinBlock = joinBlock;
         _sourceDebuggingInformation = joinBlock._source.GetDebuggingInformation();
       }
@@ -577,7 +577,7 @@ namespace System.Threading.Tasks.Dataflow
       /// <param name="joinBlock">The JoinBlock being viewed.</param>
       public DebugView(JoinBlock<T1, T2, T3> joinBlock)
       {
-        Contract.Requires(joinBlock != null, "Need a block with which to construct the debug view.");
+        Debug.Assert(joinBlock != null, "Need a block with which to construct the debug view.");
         _joinBlock = joinBlock;
         _sourceDebuggingInformation = joinBlock._source.GetDebuggingInformation();
       }

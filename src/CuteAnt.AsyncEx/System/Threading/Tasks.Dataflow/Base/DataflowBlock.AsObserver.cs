@@ -44,7 +44,7 @@ namespace System.Threading.Tasks.Dataflow
 			/// <param name="target">The target to wrap.</param>
 			internal TargetObserver(ITargetBlock<TInput> target)
 			{
-				Contract.Requires(target != null, "A target to observe is required.");
+				Debug.Assert(target != null, "A target to observe is required.");
 				_target = target;
 			}
 

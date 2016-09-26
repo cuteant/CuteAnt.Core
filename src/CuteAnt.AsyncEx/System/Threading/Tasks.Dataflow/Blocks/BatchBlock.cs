@@ -277,7 +277,7 @@ namespace System.Threading.Tasks.Dataflow
       /// <param name="batchBlock">The batch being viewed.</param>
       public DebugView(BatchBlock<T> batchBlock)
       {
-        Contract.Requires(batchBlock != null, "Need a block with which to construct the debug view");
+        Debug.Assert(batchBlock != null, "Need a block with which to construct the debug view");
         _batchBlock = batchBlock;
         _targetDebuggingInformation = batchBlock._target.GetDebuggingInformation();
         _sourceDebuggingInformation = batchBlock._source.GetDebuggingInformation();
@@ -360,7 +360,7 @@ namespace System.Threading.Tasks.Dataflow
           // A non-greedy batch requires at least batchSize sources to be successful.
           // Thus, we initialize our collections to be able to store at least that many elements
           // in order to avoid unnecessary allocations below that point.
-          Contract.Requires(batchSize > 0, "A positive batch size is required");
+          Debug.Assert(batchSize > 0, "A positive batch size is required");
           PostponedMessages = new QueuedMap<ISourceBlock<T>, DataflowMessageHeader>(batchSize);
           PostponedMessagesTemp = new KeyValuePair<ISourceBlock<T>, DataflowMessageHeader>[batchSize];
           ReservedSourcesTemp = new List<KeyValuePair<ISourceBlock<T>, KeyValuePair<DataflowMessageHeader, T>>>(batchSize);
@@ -420,10 +420,10 @@ namespace System.Threading.Tasks.Dataflow
       /// <exception cref="System.ArgumentNullException">The <paramref name="dataflowBlockOptions"/> is null (Nothing in Visual Basic).</exception>
       internal BatchBlockTargetCore(BatchBlock<T> owningBatch, Int32 batchSize, Action<T[]> batchCompletedAction, GroupingDataflowBlockOptions dataflowBlockOptions)
       {
-        Contract.Requires(owningBatch != null, "This batch target core must be associated with a batch block.");
-        Contract.Requires(batchSize >= 1, "Batch sizes must be positive.");
-        Contract.Requires(batchCompletedAction != null, "Completion action must be specified.");
-        Contract.Requires(dataflowBlockOptions != null, "Options required to configure the block.");
+        Debug.Assert(owningBatch != null, "This batch target core must be associated with a batch block.");
+        Debug.Assert(batchSize >= 1, "Batch sizes must be positive.");
+        Debug.Assert(batchCompletedAction != null, "Completion action must be specified.");
+        Debug.Assert(dataflowBlockOptions != null, "Options required to configure the block.");
 
         // Store arguments
         _owningBatch = owningBatch;
@@ -757,7 +757,7 @@ namespace System.Threading.Tasks.Dataflow
       /// <param name="isReplacementReplica">Whether this call is the continuation of a previous message loop.</param>
       private void ProcessAsyncIfNecessary(Boolean isReplacementReplica = false)
       {
-        Contract.Requires(_nonGreedyState != null, "Non-greedy state is required for non-greedy mode.");
+        Debug.Assert(_nonGreedyState != null, "Non-greedy state is required for non-greedy mode.");
         Common.ContractAssertMonitorStatus(IncomingLock, held: true);
 
         if (BatchesNeedProcessing)
@@ -774,7 +774,7 @@ namespace System.Threading.Tasks.Dataflow
       /// Separating out the slow path into its own method makes it more likely that the fast path method will get inlined.</summary>
       private void ProcessAsyncIfNecessary_Slow(Boolean isReplacementReplica)
       {
-        Contract.Requires(BatchesNeedProcessing, "There must be a batch that needs processing.");
+        Debug.Assert(BatchesNeedProcessing, "There must be a batch that needs processing.");
 
         // Create task and store into _taskForInputProcessing prior to scheduling the task
         // so that _taskForInputProcessing will be visibly set in the task loop.
@@ -809,7 +809,7 @@ namespace System.Threading.Tasks.Dataflow
       [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
       private void ProcessMessagesLoopCore()
       {
-        Contract.Requires(_nonGreedyState != null, "Non-greedy state is required for non-greedy mode.");
+        Debug.Assert(_nonGreedyState != null, "Non-greedy state is required for non-greedy mode.");
         Common.ContractAssertMonitorStatus(IncomingLock, held: false);
         try
         {
@@ -916,8 +916,8 @@ namespace System.Threading.Tasks.Dataflow
       /// <remarks>Whether we'll accept consuming fewer elements than the defined batch size.</remarks>
       private void RetrievePostponedItemsNonGreedy(Boolean allowFewerThanBatchSize)
       {
-        Contract.Requires(!_dataflowBlockOptions.Greedy, "This method may only be used in non-greedy mode.");
-        Contract.Requires(_nonGreedyState != null, "Non-greedy state is required for non-greedy mode.");
+        Debug.Assert(!_dataflowBlockOptions.Greedy, "This method may only be used in non-greedy mode.");
+        Debug.Assert(_nonGreedyState != null, "Non-greedy state is required for non-greedy mode.");
         Common.ContractAssertMonitorStatus(IncomingLock, held: false);
 
         // Shortcuts just to keep the code cleaner
@@ -1037,9 +1037,9 @@ namespace System.Threading.Tasks.Dataflow
       /// <remarks>Whether we'll accept consuming fewer elements than the defined batch size.</remarks>
       private void RetrievePostponedItemsGreedyBounded(Boolean allowFewerThanBatchSize)
       {
-        Contract.Requires(_dataflowBlockOptions.Greedy, "This method may only be used in greedy mode.");
-        Contract.Requires(_nonGreedyState != null, "Non-greedy state is required for non-greedy mode.");
-        Contract.Requires(_boundingState != null, "Bounding state is required when in bounded mode.");
+        Debug.Assert(_dataflowBlockOptions.Greedy, "This method may only be used in greedy mode.");
+        Debug.Assert(_nonGreedyState != null, "Non-greedy state is required for non-greedy mode.");
+        Debug.Assert(_boundingState != null, "Bounding state is required when in bounded mode.");
         Common.ContractAssertMonitorStatus(IncomingLock, held: false);
 
         // Shortcuts just to keep the code cleaner
@@ -1148,9 +1148,9 @@ namespace System.Threading.Tasks.Dataflow
       /// <summary>Consumes all of the reserved messages stored in the non-greedy state's temporary reserved source list.</summary>
       private void ConsumeReservedMessagesNonGreedy()
       {
-        Contract.Requires(!_dataflowBlockOptions.Greedy, "This method may only be used in non-greedy mode.");
-        Contract.Requires(_nonGreedyState != null, "Non-greedy state is required for non-greedy mode.");
-        Contract.Requires(_nonGreedyState.ReservedSourcesTemp != null, "ReservedSourcesTemp should have been initialized.");
+        Debug.Assert(!_dataflowBlockOptions.Greedy, "This method may only be used in non-greedy mode.");
+        Debug.Assert(_nonGreedyState != null, "Non-greedy state is required for non-greedy mode.");
+        Debug.Assert(_nonGreedyState.ReservedSourcesTemp != null, "ReservedSourcesTemp should have been initialized.");
         Common.ContractAssertMonitorStatus(IncomingLock, held: false);
 
         // Consume the reserved items and store the data.
@@ -1203,10 +1203,10 @@ namespace System.Threading.Tasks.Dataflow
       /// <summary>Consumes all of the reserved messages stored in the non-greedy state's temporary reserved source list.</summary>
       private void ConsumeReservedMessagesGreedyBounded()
       {
-        Contract.Requires(_dataflowBlockOptions.Greedy, "This method may only be used in greedy mode.");
-        Contract.Requires(_nonGreedyState != null, "Non-greedy state is required for non-greedy mode.");
-        Contract.Requires(_nonGreedyState.ReservedSourcesTemp != null, "ReservedSourcesTemp should have been initialized.");
-        Contract.Requires(_boundingState != null, "Bounded state is required for bounded mode.");
+        Debug.Assert(_dataflowBlockOptions.Greedy, "This method may only be used in greedy mode.");
+        Debug.Assert(_nonGreedyState != null, "Non-greedy state is required for non-greedy mode.");
+        Debug.Assert(_nonGreedyState.ReservedSourcesTemp != null, "ReservedSourcesTemp should have been initialized.");
+        Debug.Assert(_boundingState != null, "Bounded state is required for bounded mode.");
         Common.ContractAssertMonitorStatus(IncomingLock, held: false);
 
         // Consume the reserved items and store the data.
@@ -1296,7 +1296,7 @@ namespace System.Threading.Tasks.Dataflow
       /// <param name="numItemsRemoved">The number of items removed.</param>
       internal void OnItemsRemoved(Int32 numItemsRemoved)
       {
-        Contract.Requires(numItemsRemoved > 0, "Should only be called for a positive number of items removed.");
+        Debug.Assert(numItemsRemoved > 0, "Should only be called for a positive number of items removed.");
         Common.ContractAssertMonitorStatus(IncomingLock, held: false);
 
         // If we're bounding, we need to know when an item is removed so that we

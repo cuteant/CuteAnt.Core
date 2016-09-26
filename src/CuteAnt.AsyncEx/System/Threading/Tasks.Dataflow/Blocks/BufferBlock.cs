@@ -198,7 +198,7 @@ namespace System.Threading.Tasks.Dataflow
 
     private void CompleteCore(Exception exception, Boolean storeExceptionEvenIfAlreadyCompleting, Boolean revertProcessingState = false)
     {
-      Contract.Requires(storeExceptionEvenIfAlreadyCompleting || !revertProcessingState,
+      Debug.Assert(storeExceptionEvenIfAlreadyCompleting || !revertProcessingState,
                       "Indicating dirty processing state may only come with storeExceptionEvenIfAlreadyCompleting==true.");
       Contract.EndContractBlock();
 
@@ -277,7 +277,7 @@ namespace System.Threading.Tasks.Dataflow
     /// <param name="numItemsRemoved">The number of items removed.</param>
     private void OnItemsRemoved(Int32 numItemsRemoved)
     {
-      Contract.Requires(numItemsRemoved > 0, "A positive number of items to remove is required.");
+      Debug.Assert(numItemsRemoved > 0, "A positive number of items to remove is required.");
       Common.ContractAssertMonitorStatus(IncomingLock, held: false);
 
       // If we're bounding, we need to know when an item is removed so that we
@@ -349,7 +349,7 @@ namespace System.Threading.Tasks.Dataflow
     [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     private void ConsumeMessagesLoopCore()
     {
-      Contract.Requires(_boundingState != null && _boundingState.TaskForInputProcessing != null,
+      Debug.Assert(_boundingState != null && _boundingState.TaskForInputProcessing != null,
           "May only be called in bounded mode and when a task is in flight.");
       Debug.Assert(_boundingState.TaskForInputProcessing.Id == Task.CurrentId,
           "This must only be called from the in-flight processing task.");
@@ -397,7 +397,7 @@ namespace System.Threading.Tasks.Dataflow
     /// <remarks>This must only be called from the asynchronous processing loop.</remarks>
     private Boolean ConsumeAndStoreOneMessageIfAvailable()
     {
-      Contract.Requires(_boundingState != null && _boundingState.TaskForInputProcessing != null,
+      Debug.Assert(_boundingState != null && _boundingState.TaskForInputProcessing != null,
           "May only be called in bounded mode and when a task is in flight.");
       Debug.Assert(_boundingState.TaskForInputProcessing.Id == Task.CurrentId,
           "This must only be called from the in-flight processing task.");
@@ -540,7 +540,7 @@ namespace System.Threading.Tasks.Dataflow
       /// <param name="bufferBlock">The BufferBlock being viewed.</param>
       public DebugView(BufferBlock<T> bufferBlock)
       {
-        Contract.Requires(bufferBlock != null, "Need a block with which to construct the debug view.");
+        Debug.Assert(bufferBlock != null, "Need a block with which to construct the debug view.");
         _bufferBlock = bufferBlock;
         _sourceDebuggingInformation = bufferBlock._source.GetDebuggingInformation();
       }

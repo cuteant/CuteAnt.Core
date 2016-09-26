@@ -221,6 +221,7 @@
     <Compile Include="Text\HmStringReader.cs" />
     <Compile Include="Text\StringBuilderCache.cs" />
     <Compile Include="Text\StringHelper.cs" />
+    <Compile Include="Threading\AsyncLocalShim.cs" />
     <Compile Include="Timers\HighPerformanceTimer.cs" />
     <Compile Include="Timers\SafeTimer.cs" />
     <Compile Include="Timers\SafeTimerBase.cs" />

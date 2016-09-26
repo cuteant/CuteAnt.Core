@@ -225,10 +225,10 @@ namespace System.Threading.Tasks.Dataflow
         ISourceBlock<T3> source3, Action<T3> action3,
         DataflowBlockOptions dataflowBlockOptions)
     {
-      Contract.Requires(source1 != null && action1 != null, "The first source and action should not be null.");
-      Contract.Requires(source2 != null && action2 != null, "The second source and action should not be null.");
-      Contract.Requires((source3 == null) == (action3 == null), "The third action should be null iff the third source is null.");
-      Contract.Requires(dataflowBlockOptions != null, "Options are required.");
+      Debug.Assert(source1 != null && action1 != null, "The first source and action should not be null.");
+      Debug.Assert(source2 != null && action2 != null, "The second source and action should not be null.");
+      Debug.Assert((source3 == null) == (action3 == null), "The third action should be null iff the third source is null.");
+      Debug.Assert(dataflowBlockOptions != null, "Options are required.");
       Boolean hasThirdSource = source3 != null; // In the future, if we want higher arities on Choose, we can simply add more such checks on additional arguments
 
       // Early cancellation check and bail out
@@ -276,10 +276,10 @@ namespace System.Threading.Tasks.Dataflow
         out Task<Int32> task)
     {
       // Validate arguments
-      Contract.Requires(source != null, "Expected a non-null source");
-      Contract.Requires(action != null, "Expected a non-null action");
-      Contract.Requires(branchId >= 0, "Expected a valid branch ID (> 0)");
-      Contract.Requires(scheduler != null, "Expected a non-null scheduler");
+      Debug.Assert(source != null, "Expected a non-null source");
+      Debug.Assert(action != null, "Expected a non-null action");
+      Debug.Assert(branchId >= 0, "Expected a valid branch ID (> 0)");
+      Debug.Assert(scheduler != null, "Expected a non-null scheduler");
 
       // Try to receive from the source.  If we can't, bail.
       T result;
@@ -320,10 +320,10 @@ namespace System.Threading.Tasks.Dataflow
         ISourceBlock<T3> source3, Action<T3> action3,
         DataflowBlockOptions dataflowBlockOptions)
     {
-      Contract.Requires(source1 != null && action1 != null, "The first source and action should not be null.");
-      Contract.Requires(source2 != null && action2 != null, "The second source and action should not be null.");
-      Contract.Requires((source3 == null) == (action3 == null), "The third action should be null iff the third source is null.");
-      Contract.Requires(dataflowBlockOptions != null, "Options are required.");
+      Debug.Assert(source1 != null && action1 != null, "The first source and action should not be null.");
+      Debug.Assert(source2 != null && action2 != null, "The second source and action should not be null.");
+      Debug.Assert((source3 == null) == (action3 == null), "The third action should be null iff the third source is null.");
+      Debug.Assert(dataflowBlockOptions != null, "Options are required.");
 
       Boolean hasThirdSource = source3 != null; // In the future, if we want higher arities on Choose, we can simply add more such checks on additional arguments
 
@@ -502,7 +502,7 @@ namespace System.Threading.Tasks.Dataflow
       /// <param name="cancellationToken">The cancellation token used to cancel this target.</param>
       internal ChooseTarget(StrongBox<Task> completed, CancellationToken cancellationToken)
       {
-        Contract.Requires(completed != null, "Requires a shared target to complete.");
+        Debug.Assert(completed != null, "Requires a shared target to complete.");
         _completed = completed;
 
         // Handle async cancellation by canceling the target without storing it into _completed.

@@ -112,9 +112,9 @@ namespace System.Threading.Tasks.Dataflow.Internal
     /// <param name="dataflowBlockOptions">The options to use to configure this block. The target core assumes these options are immutable.</param>
     internal SpscTargetCore(ITargetBlock<TInput> owningTarget, Action<TInput> action, ExecutionDataflowBlockOptions dataflowBlockOptions)
     {
-      Contract.Requires(owningTarget != null, "Expected non-null owningTarget");
-      Contract.Requires(action != null, "Expected non-null action");
-      Contract.Requires(dataflowBlockOptions != null, "Expected non-null dataflowBlockOptions");
+      Debug.Assert(owningTarget != null, "Expected non-null owningTarget");
+      Debug.Assert(action != null, "Expected non-null action");
+      Debug.Assert(dataflowBlockOptions != null, "Expected non-null dataflowBlockOptions");
 
       _owningTarget = owningTarget;
       _action = action;

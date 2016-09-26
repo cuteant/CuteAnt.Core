@@ -179,7 +179,7 @@ namespace System.Threading.Tasks.Dataflow
     [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     private void ProcessMessageWithTask(Func<TInput, Task> action, KeyValuePair<TInput, Int64> messageWithId)
     {
-      Contract.Requires(action != null, "action needed for processing");
+      Debug.Assert(action != null, "action needed for processing");
 
       // Run the action to get the task that represents the operation's completion
       Task task = null;
@@ -232,8 +232,8 @@ namespace System.Threading.Tasks.Dataflow
     /// <param name="completed">The completed task.</param>
     private void AsyncCompleteProcessMessageWithTask(Task completed)
     {
-      Contract.Requires(completed != null, "Need completed task for processing");
-      Contract.Requires(completed.IsCompleted, "The task to be processed must be completed by now.");
+      Debug.Assert(completed != null, "Need completed task for processing");
+      Debug.Assert(completed.IsCompleted, "The task to be processed must be completed by now.");
 
       // If the task faulted, store its errors. We must add the exception before declining
       // and signaling completion, as the exception is part of the operation, and the completion conditions
@@ -389,7 +389,7 @@ namespace System.Threading.Tasks.Dataflow
       /// <param name="actionBlock">The target being debugged.</param>
       public DebugView(ActionBlock<TInput> actionBlock)
       {
-        Contract.Requires(actionBlock != null, "Need a block with which to construct the debug view.");
+        Debug.Assert(actionBlock != null, "Need a block with which to construct the debug view.");
         _actionBlock = actionBlock;
         if (_actionBlock._defaultTarget != null)
         {

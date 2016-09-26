@@ -11,6 +11,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Threading;
 using CuteAnt.AsyncEx;
 
@@ -35,17 +36,24 @@ namespace System.Collections.Concurrent
   /// </remarks>
   [DebuggerTypeProxy(typeof(IProducerConsumerCollectionDebugView<>))]
   [DebuggerDisplay("Count = {Count}")]
+  [Serializable]
   public class ConcurrentBagX<T> : IProducerConsumerCollection<T>, IReadOnlyCollection<T>
   {
     // ThreadLocalList object that contains the data per thread
+    [NonSerialized]
     private ThreadLocal<ThreadLocalList> _locals;
 
     // This head and tail pointers points to the first and last local lists, to allow enumeration on the thread locals objects
+    [NonSerialized]
     private volatile ThreadLocalList _headList, _tailList;
 
     // A flag used to tell the operations thread that it must synchronize the operation, this flag is set/unset within
     // GlobalListsLock lock
+    [NonSerialized]
     private bool _needSync;
+
+    // Used for custom serialization.
+    private T[] _serializationArray;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConcurrentBagX{T}"/>
@@ -89,6 +97,38 @@ namespace System.Collections.Concurrent
           list.Add(item, false);
         }
       }
+    }
+
+    /// <summary>Get the data array to be serialized.</summary>
+    [OnSerializing]
+    private void OnSerializing(StreamingContext context)
+    {
+      // save the data into the serialization array to be saved
+      _serializationArray = ToArray();
+    }
+
+    /// <summary>Clear the serialized array.</summary>
+    [OnSerialized]
+    private void OnSerialized(StreamingContext context)
+    {
+      _serializationArray = null;
+    }
+
+    /// <summary>Construct the stack from a previously seiralized one.</summary>
+    [OnDeserialized]
+    private void OnDeserialized(StreamingContext context)
+    {
+      _locals = new ThreadLocal<ThreadLocalList>();
+
+      ThreadLocalList list = GetThreadList(true);
+      foreach (T item in _serializationArray)
+      {
+        list.Add(item, false);
+      }
+      _headList = list;
+      _tailList = list;
+
+      _serializationArray = null;
     }
 
     /// <summary>Adds an object to the <see cref="ConcurrentBagX{T}"/>.</summary>

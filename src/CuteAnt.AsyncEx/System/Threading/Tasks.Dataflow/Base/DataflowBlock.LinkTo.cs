@@ -117,7 +117,7 @@ namespace System.Threading.Tasks.Dataflow
 				/// <param name="predicate">The predicate function.</param>
 				internal PredicateContextState(T input, Predicate<T> predicate)
 				{
-					Contract.Requires(predicate != null, "A predicate with which to filter is required.");
+					Debug.Assert(predicate != null, "A predicate with which to filter is required.");
 					this.Input = input;
 					this.Predicate = predicate;
 				}
@@ -125,7 +125,7 @@ namespace System.Threading.Tasks.Dataflow
 				/// <summary>Runs the predicate function over the input and stores the result into the output.</summary>
 				internal void Run()
 				{
-					Contract.Requires(Predicate != null, "Non-null predicate required");
+					Debug.Assert(Predicate != null, "Non-null predicate required");
 					Output = Predicate(Input);
 				}
 			}
@@ -153,9 +153,9 @@ namespace System.Threading.Tasks.Dataflow
 			/// <param name="predicate">The predicate to run for each message.</param>
 			internal FilteredLinkPropagator(ISourceBlock<T> source, ITargetBlock<T> target, Predicate<T> predicate)
 			{
-				Contract.Requires(source != null, "Filtered link requires a source to filter on.");
-				Contract.Requires(target != null, "Filtered link requires a target to filter to.");
-				Contract.Requires(predicate != null, "Filtered link requires a predicate to filter with.");
+				Debug.Assert(source != null, "Filtered link requires a source to filter on.");
+				Debug.Assert(target != null, "Filtered link requires a target to filter to.");
+				Debug.Assert(predicate != null, "Filtered link requires a predicate to filter with.");
 
 				// Store the arguments
 				_source = source;
@@ -172,7 +172,7 @@ namespace System.Threading.Tasks.Dataflow
 			/// <returns>true if the item passed the filter; otherwise, false.</returns>
 			private Boolean RunPredicate(T item)
 			{
-				Contract.Requires(_userProvidedPredicate != null, "User-provided predicate is required.");
+				Debug.Assert(_userProvidedPredicate != null, "User-provided predicate is required.");
 
 				return _userProvidedPredicate(item); // avoid state object allocation if execution context isn't needed
 			}
@@ -297,7 +297,7 @@ namespace System.Threading.Tasks.Dataflow
 				/// <param name="filter">The filter to view.</param>
 				public DebugView(FilteredLinkPropagator<T> filter)
 				{
-					Contract.Requires(filter != null, "Need a filter with which to construct the debug view.");
+					Debug.Assert(filter != null, "Need a filter with which to construct the debug view.");
 					_filter = filter;
 				}
 

@@ -231,10 +231,10 @@ namespace System.Threading.Tasks.Dataflow.Internal
 		{
 			// As this data structure is internal, only assert incorrect usage.
 			// If this were to ever be made public, these would need to be real argument checks.
-			Contract.Requires(items != null, "Requires non-null array to store into.");
-			Contract.Requires(count >= 0 && arrayOffset >= 0, "Count and offset must be non-negative");
-			Contract.Requires(arrayOffset + count >= 0, "Offset plus count overflowed");
-			Contract.Requires(arrayOffset + count <= items.Length, "Range must be within array size");
+			Debug.Assert(items != null, "Requires non-null array to store into.");
+			Debug.Assert(count >= 0 && arrayOffset >= 0, "Count and offset must be non-negative");
+			Debug.Assert(arrayOffset + count >= 0, "Offset plus count overflowed");
+			Debug.Assert(arrayOffset + count <= items.Length, "Range must be within array size");
 
 			Int32 actualCount = 0;
 			for (Int32 i = arrayOffset; actualCount < count; i++, actualCount++)

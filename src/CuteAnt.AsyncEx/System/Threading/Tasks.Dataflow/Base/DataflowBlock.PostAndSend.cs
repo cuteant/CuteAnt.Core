@@ -220,7 +220,7 @@ namespace System.Threading.Tasks.Dataflow
 			/// <param name="cancellationToken">The cancellation token with which to cancel the send.</param>
 			internal SendAsyncSource(ITargetBlock<TOutput> target, TOutput messageValue, CancellationToken cancellationToken)
 			{
-				Contract.Requires(target != null, "A valid target to send to is required.");
+				Debug.Assert(target != null, "A valid target to send to is required.");
 				_target = target;
 				_messageValue = messageValue;
 
@@ -346,7 +346,7 @@ namespace System.Threading.Tasks.Dataflow
 			[SuppressMessage("Microsoft.Usage", "CA1816:CallGCSuppressFinalizeCorrectly")]
 			private void RunCompletionAction(Action<Object> completionAction, Object completionActionState, Boolean runAsync)
 			{
-				Contract.Requires(completionAction != null, "Completion action to run is required.");
+				Debug.Assert(completionAction != null, "Completion action to run is required.");
 
 				// Suppress finalization.  Finalization is only required if the target drops a reference
 				// to the source before the source has completed, and here we're completing the source.
@@ -650,7 +650,7 @@ namespace System.Threading.Tasks.Dataflow
 				/// <param name="source">The source to view.</param>
 				public DebugView(SendAsyncSource<TOutput> source)
 				{
-					Contract.Requires(source != null, "Need a source with which to construct the debug view.");
+					Debug.Assert(source != null, "Need a source with which to construct the debug view.");
 					_source = source;
 				}
 

@@ -255,7 +255,7 @@ namespace System.Threading.Tasks.Dataflow
 		private static Task<TOutput> ReceiveCore<TOutput>(
 			this ISourceBlock<TOutput> source, Boolean attemptTryReceive, TimeSpan timeout, CancellationToken cancellationToken)
 		{
-			Contract.Requires(source != null, "Need a source from which to receive.");
+			Debug.Assert(source != null, "Need a source from which to receive.");
 
 			// If cancellation has been requested, we're done before we've even started, cancel this receive.
 			if (cancellationToken.IsCancellationRequested)

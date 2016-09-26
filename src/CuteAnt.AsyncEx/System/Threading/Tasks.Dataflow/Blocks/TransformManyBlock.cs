@@ -126,7 +126,7 @@ namespace System.Threading.Tasks.Dataflow
       if (transformSync == null && transformAsync == null) { throw new ArgumentNullException("transform"); }
       if (dataflowBlockOptions == null) { throw new ArgumentNullException(nameof(dataflowBlockOptions)); }
 
-      Contract.Requires(transformSync == null ^ transformAsync == null, "Exactly one of transformSync and transformAsync must be null.");
+      Debug.Assert(transformSync == null ^ transformAsync == null, "Exactly one of transformSync and transformAsync must be null.");
       Contract.EndContractBlock();
 
       // Ensure we have options that can't be changed by the caller
@@ -237,7 +237,7 @@ namespace System.Threading.Tasks.Dataflow
     /// <param name="messageWithId">The message to be processed.</param>
     private void ProcessMessage(Func<TInput, IEnumerable<TOutput>> transformFunction, KeyValuePair<TInput, Int64> messageWithId)
     {
-      Contract.Requires(transformFunction != null, "Function to invoke is required.");
+      Debug.Assert(transformFunction != null, "Function to invoke is required.");
 
       var userDelegateSucceeded = false;
       try
@@ -270,7 +270,7 @@ namespace System.Threading.Tasks.Dataflow
     [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     private void ProcessMessageWithTask(Func<TInput, Task<IEnumerable<TOutput>>> function, KeyValuePair<TInput, Int64> messageWithId)
     {
-      Contract.Requires(function != null, "Function to invoke is required.");
+      Debug.Assert(function != null, "Function to invoke is required.");
 
       // Run the transform function to get the resulting task
       Task<IEnumerable<TOutput>> task = null;
@@ -345,8 +345,8 @@ namespace System.Threading.Tasks.Dataflow
     [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     private void AsyncCompleteProcessMessageWithTask(Task<IEnumerable<TOutput>> completed, KeyValuePair<TInput, Int64> messageWithId)
     {
-      Contract.Requires(completed != null, "A task should have been provided.");
-      Contract.Requires(completed.IsCompleted, "The task should have been in a final state.");
+      Debug.Assert(completed != null, "A task should have been provided.");
+      Debug.Assert(completed.IsCompleted, "The task should have been in a final state.");
 
       switch (completed.Status)
       {
@@ -444,8 +444,8 @@ namespace System.Threading.Tasks.Dataflow
     /// <param name="item">The completed item.</param>
     private void StoreOutputItemsReordered(Int64 id, IEnumerable<TOutput> item)
     {
-      Contract.Requires(_reorderingBuffer != null, "Expected a reordering buffer");
-      Contract.Requires(id != Common.INVALID_REORDERING_ID, "This ID should never have been handed out.");
+      Debug.Assert(_reorderingBuffer != null, "Expected a reordering buffer");
+      Debug.Assert(id != Common.INVALID_REORDERING_ID, "This ID should never have been handed out.");
 
       // Grab info about the transform
       TargetCore<TInput> target = _target;
@@ -535,8 +535,8 @@ namespace System.Threading.Tasks.Dataflow
     /// <param name="outputItems"></param>
     private void StoreOutputItemsNonReorderedAtomic(IEnumerable<TOutput> outputItems)
     {
-      Contract.Requires(_reorderingBuffer == null, "Expected not to have a reordering buffer");
-      Contract.Requires(outputItems is TOutput[] || outputItems is List<TOutput>, "outputItems must be a list we've already vetted as trusted");
+      Debug.Assert(_reorderingBuffer == null, "Expected not to have a reordering buffer");
+      Debug.Assert(outputItems is TOutput[] || outputItems is List<TOutput>, "outputItems must be a list we've already vetted as trusted");
       if (_target.IsBounded) { UpdateBoundingCountWithOutputCount(count: ((ICollection<TOutput>)outputItems).Count); }
 
       if (_target.DataflowBlockOptions.MaxDegreeOfParallelism == 1)
@@ -640,7 +640,7 @@ namespace System.Threading.Tasks.Dataflow
       // into account when figuring out how much to increment or decrement
       // the bounding count.
 
-      Contract.Requires(_target.IsBounded, "Expected to be in bounding mode.");
+      Debug.Assert(_target.IsBounded, "Expected to be in bounding mode.");
       if (count > 1)
       {
         _target.ChangeBoundingCount(count - 1);
@@ -787,7 +787,7 @@ namespace System.Threading.Tasks.Dataflow
       /// <param name="transformManyBlock">The transform being viewed.</param>
       public DebugView(TransformManyBlock<TInput, TOutput> transformManyBlock)
       {
-        Contract.Requires(transformManyBlock != null, "Need a block with which to construct the debug view.");
+        Debug.Assert(transformManyBlock != null, "Need a block with which to construct the debug view.");
         _transformManyBlock = transformManyBlock;
         _targetDebuggingInformation = transformManyBlock._target.GetDebuggingInformation();
         _sourceDebuggingInformation = transformManyBlock._source.GetDebuggingInformation();

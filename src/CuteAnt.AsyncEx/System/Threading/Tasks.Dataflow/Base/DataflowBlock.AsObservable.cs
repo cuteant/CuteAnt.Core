@@ -76,7 +76,7 @@ namespace System.Threading.Tasks.Dataflow
       /// <param name="source">The source to wrap.</param>
       internal SourceObservable(ISourceBlock<TOutput> source)
       {
-        Contract.Requires(source != null, "The observable requires a source to wrap.");
+        Debug.Assert(source != null, "The observable requires a source to wrap.");
         _source = source;
         _observersState = new ObserversState(this);
       }
@@ -90,7 +90,7 @@ namespace System.Threading.Tasks.Dataflow
       /// <returns>The observable.</returns>
       internal static IObservable<TOutput> From(ISourceBlock<TOutput> source)
       {
-        Contract.Requires(source != null, "Requires a source for which to retrieve the observable.");
+        Debug.Assert(source != null, "Requires a source for which to retrieve the observable.");
         return _table.GetValue(source, s => new SourceObservable<TOutput>(s));
       }
 
@@ -179,7 +179,7 @@ namespace System.Threading.Tasks.Dataflow
       /// <param name="observer">The observer being unsubscribed.</param>
       private void Unsubscribe(IObserver<TOutput> observer)
       {
-        Contract.Requires(observer != null, "Expected an observer.");
+        Debug.Assert(observer != null, "Expected an observer.");
         Common.ContractAssertMonitorStatus(_SubscriptionLock, held: false);
 
         lock (_SubscriptionLock)
@@ -261,7 +261,7 @@ namespace System.Threading.Tasks.Dataflow
         /// <param name="observable">The target being debugged.</param>
         public DebugView(SourceObservable<TOutput> observable)
         {
-          Contract.Requires(observable != null, "Need a block with which to construct the debug view.");
+          Debug.Assert(observable != null, "Need a block with which to construct the debug view.");
           _observable = observable;
         }
 
@@ -302,7 +302,7 @@ namespace System.Threading.Tasks.Dataflow
         /// <param name="observable">The owning observable.</param>
         internal ObserversState(SourceObservable<TOutput> observable)
         {
-          Contract.Requires(observable != null, "Observe state must be mapped to a source observable.");
+          Debug.Assert(observable != null, "Observe state must be mapped to a source observable.");
 
           // Set up the target block
           Observable = observable;
@@ -420,7 +420,7 @@ namespace System.Threading.Tasks.Dataflow
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void NotifyObserversOfCompletion(Exception targetException = null)
         {
-          Contract.Requires(Target.Completion.IsCompleted, "The target must have already completed in order to notify of completion.");
+          Debug.Assert(Target.Completion.IsCompleted, "The target must have already completed in order to notify of completion.");
           Common.ContractAssertMonitorStatus(Observable._SubscriptionLock, held: false);
 
           // Send completion notification to all observers.
