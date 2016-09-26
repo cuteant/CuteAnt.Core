@@ -31,12 +31,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{11199523-E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logging", "Logging", "{B046F37D-33F7-442B-A96D-8301B3546082}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DbProvider", "DbProvider", "{E6C94D2B-4554-44A0-9CA6-E90D55DE364B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySql.Data.Net40", "src\MySql.Data\MySql.Data.Net40.csproj", "{E50E21C1-7EAA-4C70-AFD2-53B902AF2A1B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Data.SQLite.Net40", "src\System.Data.SQLite\System.Data.SQLite.Net40.csproj", "{C535067A-5C1A-45C2-96DE-577D62362E8E}"
-EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CuteAnt.Extensions.DateTimeUtilities.Sources", "..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.DateTimeUtilities.Sources\CuteAnt.Extensions.DateTimeUtilities.Sources.shproj", "{F0DCBA0C-1EE9-403C-931C-555776F6C680}"
 EndProject
 Global
@@ -55,7 +49,6 @@ Global
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Logging.Sources\CuteAnt.Extensions.Logging.Sources.projitems*{8dbb7dc8-2b90-4a8c-a60d-d41466174bde}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.projitems*{90bcc560-aa2b-4146-858a-9e524b696f75}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{c7f8dbe6-77b7-494d-af00-018f7579548c}*SharedItemsImports = 13
-		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{e50e21c1-7eaa-4c70-afd2-53b902af2a1b}*SharedItemsImports = 4
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.DateTimeUtilities.Sources\CuteAnt.Extensions.DateTimeUtilities.Sources.projitems*{f0dcba0c-1ee9-403c-931c-555776f6c680}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,14 +72,6 @@ Global
 		{730E30AC-6876-4FD3-9CC3-4FBFC96FD0C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{730E30AC-6876-4FD3-9CC3-4FBFC96FD0C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{730E30AC-6876-4FD3-9CC3-4FBFC96FD0C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E50E21C1-7EAA-4C70-AFD2-53B902AF2A1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E50E21C1-7EAA-4C70-AFD2-53B902AF2A1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E50E21C1-7EAA-4C70-AFD2-53B902AF2A1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E50E21C1-7EAA-4C70-AFD2-53B902AF2A1B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C535067A-5C1A-45C2-96DE-577D62362E8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C535067A-5C1A-45C2-96DE-577D62362E8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C535067A-5C1A-45C2-96DE-577D62362E8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C535067A-5C1A-45C2-96DE-577D62362E8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,9 +88,6 @@ Global
 		{730E30AC-6876-4FD3-9CC3-4FBFC96FD0C1} = {11199523-E9C6-48A1-934B-010AAE146B9E}
 		{11199523-E9C6-48A1-934B-010AAE146B9E} = {B3E9C0BE-9930-43D6-901A-91DBEB6BD35B}
 		{B046F37D-33F7-442B-A96D-8301B3546082} = {B3E9C0BE-9930-43D6-901A-91DBEB6BD35B}
-		{E6C94D2B-4554-44A0-9CA6-E90D55DE364B} = {B3E9C0BE-9930-43D6-901A-91DBEB6BD35B}
-		{E50E21C1-7EAA-4C70-AFD2-53B902AF2A1B} = {E6C94D2B-4554-44A0-9CA6-E90D55DE364B}
-		{C535067A-5C1A-45C2-96DE-577D62362E8E} = {E6C94D2B-4554-44A0-9CA6-E90D55DE364B}
 		{F0DCBA0C-1EE9-403C-931C-555776F6C680} = {4F9AB71B-A979-49EF-8C2E-099C503A5CDF}
 	EndGlobalSection
 EndGlobal
