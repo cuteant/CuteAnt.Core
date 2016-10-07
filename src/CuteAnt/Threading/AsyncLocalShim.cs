@@ -79,5 +79,15 @@ namespace CuteAnt
       }
     }
 #endif
+
+    /// <summary>clear</summary>
+    public void Clear()
+    {
+#if NETSTANDARD || NET_4_5_GREATER
+      _localValue.Value = default(T);
+#else
+      CallContext.FreeNamedDataSlot(_currentKey);
+#endif
+    }
   }
 }

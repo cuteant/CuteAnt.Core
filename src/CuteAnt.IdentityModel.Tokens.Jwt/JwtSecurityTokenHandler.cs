@@ -19,6 +19,7 @@
 namespace System.IdentityModel.Tokens
 {
     using Microsoft.IdentityModel;
+    using System.ComponentModel;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Diagnostics.CodeAnalysis;
@@ -84,6 +85,7 @@ namespace System.IdentityModel.Tokens
         /// </summary>
         public JwtSecurityTokenHandler()
         {
+            SetDefaultTimesOnTokenCreation = true;
         }
 
         /// <summary>Gets or sets the <see cref="IDictionary{TKey, TValue}"/> used to map Inbound Cryptographic Algorithms.</summary>
@@ -256,6 +258,13 @@ namespace System.IdentityModel.Tokens
         }
 
         /// <summary>
+        /// Gets or sets a bool that controls if token creation will set default 'exp', 'nbf' and 'iat' if not specified.
+        /// </summary>
+        /// <remarks>See: <see cref="DefaultTokenLifetimeInMinutes"/>, <see cref="TokenLifetimeInMinutes"/> for defaults and configuration.</remarks>
+        [DefaultValue(true)]
+        public bool SetDefaultTimesOnTokenCreation { get; set; }
+
+        /// <summary>
         /// Returns 'true' which indicates this instance can validate a <see cref="JwtSecurityToken"/>.
         /// </summary>
         public override bool CanValidateToken
@@ -376,7 +385,7 @@ namespace System.IdentityModel.Tokens
         {
             if (reader == null)
             {
-                throw new ArgumentNullException(nameof(reader));
+                throw new ArgumentNullException("reader");
             }
 
             try
@@ -423,7 +432,7 @@ namespace System.IdentityModel.Tokens
         {
             if (tokenString == null)
             {
-                throw new ArgumentNullException(nameof(tokenString));
+                throw new ArgumentNullException("tokenString");
             }
 
             if (tokenString.Length * 2 > this.MaximumTokenSizeInBytes)
@@ -461,7 +470,7 @@ namespace System.IdentityModel.Tokens
         {
             if (tokenDescriptor == null)
             {
-                throw new ArgumentNullException(nameof(tokenDescriptor));
+                throw new ArgumentNullException("tokenDescriptor");
             }
 
             DateTime? notbefore = tokenDescriptor.Lifetime == null ? null : tokenDescriptor.Lifetime.Created;
@@ -489,20 +498,22 @@ namespace System.IdentityModel.Tokens
         /// <exception cref="ArgumentException">if 'expires' &lt;= 'notBefore'.</exception>
         public virtual JwtSecurityToken CreateToken(string issuer = null, string audience = null, ClaimsIdentity subject = null, DateTime? notBefore = null, DateTime? expires = null, SigningCredentials signingCredentials = null, SignatureProvider signatureProvider = null)
         {
+            if (SetDefaultTimesOnTokenCreation)
+            {
+                DateTime now = DateTime.UtcNow;
+                if (!expires.HasValue)
+                    expires = now + TimeSpan.FromMinutes(TokenLifetimeInMinutes);
+
+                if (!notBefore.HasValue)
+                    notBefore = now;
+            }
+
             if (expires.HasValue && notBefore.HasValue)
             {
                 if (notBefore >= expires)
                 {
                     throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, ErrorMessages.IDX10401, expires.Value,  notBefore.Value));
                 }
-            }
-
-            // if not set, use defaults
-            if (!expires.HasValue && !notBefore.HasValue)
-            {
-                DateTime now = DateTime.UtcNow;
-                expires = now + TimeSpan.FromMinutes(TokenLifetimeInMinutes);
-                notBefore = now;
             }
 
             JwtPayload payload = new JwtPayload(issuer, audience, subject == null ? null : subject.Claims, notBefore, expires);
@@ -564,7 +575,7 @@ namespace System.IdentityModel.Tokens
         {
             if (reader == null)
             {
-                throw new ArgumentNullException(nameof(reader));
+                throw new ArgumentNullException("reader");
             }
 
             if (!this.CanReadToken(reader))
@@ -582,17 +593,15 @@ namespace System.IdentityModel.Tokens
                             JwtConstants.TokenType));
             }
 
-            using (XmlDictionaryReader dictionaryReader = XmlDictionaryReader.CreateDictionaryReader(reader))
+            XmlDictionaryReader dictionaryReader = XmlDictionaryReader.CreateDictionaryReader(reader);
+            string wsuId = dictionaryReader.GetAttribute(WSSecurityUtilityConstantsInternal.Attributes.Id, WSSecurityConstantsInternal.Namespace);
+            JwtSecurityToken jwt = this.ReadToken(Encoding.UTF8.GetString(dictionaryReader.ReadElementContentAsBase64())) as JwtSecurityToken;
+            if (wsuId != null && jwt != null)
             {
-                string wsuId = dictionaryReader.GetAttribute(WSSecurityUtilityConstantsInternal.Attributes.Id, WSSecurityConstantsInternal.Namespace);
-                JwtSecurityToken jwt = this.ReadToken(Encoding.UTF8.GetString(dictionaryReader.ReadElementContentAsBase64())) as JwtSecurityToken;
-                if (wsuId != null && jwt != null)
-                {
-                    jwt.SetId(wsuId);
-                }
-
-                return jwt;
+                jwt.SetId(wsuId);
             }
+
+            return jwt;
         }
 
         /// <summary>
@@ -655,12 +664,12 @@ namespace System.IdentityModel.Tokens
         {
             if (string.IsNullOrWhiteSpace(securityToken))
             {
-                throw new ArgumentNullException(nameof(securityToken));
+                throw new ArgumentNullException("securityToken");
             }
 
             if (validationParameters == null)
             {
-                throw new ArgumentNullException(nameof(validationParameters));
+                throw new ArgumentNullException("validationParameters");
             }
 
             if (securityToken.Length > MaximumTokenSizeInBytes)
@@ -760,12 +769,12 @@ namespace System.IdentityModel.Tokens
         {
             if (writer == null)
             {
-                throw new ArgumentNullException(nameof(writer));
+                throw new ArgumentNullException("writer");
             }
 
             if (token == null)
             {
-                throw new ArgumentNullException(nameof(token));
+                throw new ArgumentNullException("token");
             }
 
             if (!(token is JwtSecurityToken))
@@ -800,7 +809,7 @@ namespace System.IdentityModel.Tokens
         {
             if (token == null)
             {
-                throw new ArgumentNullException(nameof(token));
+                throw new ArgumentNullException("token");
             }
 
             JwtSecurityToken jwt = token as JwtSecurityToken;
@@ -835,7 +844,7 @@ namespace System.IdentityModel.Tokens
         {
             if (null == inputString)
             {
-                throw new ArgumentNullException(nameof(inputString));
+                throw new ArgumentNullException("inputString");
             }
 
             SignatureProvider provider;
@@ -888,12 +897,12 @@ namespace System.IdentityModel.Tokens
         {
             if (string.IsNullOrWhiteSpace(token))
             {
-                throw new ArgumentNullException(nameof(token));
+                throw new ArgumentNullException("token");
             }
 
             if (validationParameters == null)
             {
-                throw new ArgumentNullException(nameof(validationParameters));
+                throw new ArgumentNullException("validationParameters");
             }
 
             JwtSecurityToken jwt = this.ReadToken(token) as JwtSecurityToken;
@@ -1054,14 +1063,9 @@ namespace System.IdentityModel.Tokens
         {
             if (jwt == null)
             {
-                throw new ArgumentNullException(nameof(jwt));
+                throw new ArgumentNullException("jwt");
             }
-
-            if (string.IsNullOrWhiteSpace(issuer))
-            {
-                throw new ArgumentException(ErrorMessages.IDX10221);
-            }
-
+            
             ClaimsIdentity identity = validationParameters.CreateClaimsIdentity(jwt, issuer);
             foreach (Claim jwtClaim in jwt.Claims)
             {
@@ -1130,7 +1134,7 @@ namespace System.IdentityModel.Tokens
         {
             if (actor == null)
             {
-                throw new ArgumentNullException(nameof(actor));
+                throw new ArgumentNullException("actor");
             }
 
             if (actor.BootstrapContext != null)
@@ -1220,12 +1224,12 @@ namespace System.IdentityModel.Tokens
         {
             if (keyIdentifier == null)
             {
-                throw new ArgumentNullException(nameof(keyIdentifier));
+                throw new ArgumentNullException("keyIdentifier");
             }
 
             if (validationParameters == null)
             {
-                throw new ArgumentNullException(nameof(validationParameters));
+                throw new ArgumentNullException("validationParameters");
             }
 
             foreach (SecurityKeyIdentifierClause keyIdentifierClause in keyIdentifier)
