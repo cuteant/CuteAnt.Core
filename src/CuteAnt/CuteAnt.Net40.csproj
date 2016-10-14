@@ -73,6 +73,7 @@
     <Compile Include="Collections\NullableDictionary.cs" />
     <Compile Include="Common\CombGuid.cs" />
     <Compile Include="Common\DataSetSurrogate.cs" />
+    <Compile Include="Common\DateTimeUtil.cs" />
     <Compile Include="Common\DisposeBase.cs" />
     <Compile Include="Common\EmptyArray.cs" />
     <Compile Include="Common\EnvironmentHelper.cs" />
