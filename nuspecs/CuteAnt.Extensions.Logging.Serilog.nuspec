@@ -20,7 +20,7 @@
       </group>
       <group targetFramework=".NETFramework4.5.1">
         <dependency id="Microsoft.Extensions.Logging.Abstractions" version="1.0.0" />
-        <dependency id="Serilog" version="2.2.1" />
+        <dependency id="Serilog" version="2.3.0" />
       </group>
     </dependencies>
     <frameworkAssemblies>

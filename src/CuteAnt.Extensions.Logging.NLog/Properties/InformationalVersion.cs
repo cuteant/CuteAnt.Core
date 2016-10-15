@@ -2,5 +2,5 @@
 
 using System.Reflection;
 
-[assembly: AssemblyInformationalVersion("2.0.0-rc3-160701")]
+[assembly: AssemblyInformationalVersion("2.0.0-rc3-160801")]
 

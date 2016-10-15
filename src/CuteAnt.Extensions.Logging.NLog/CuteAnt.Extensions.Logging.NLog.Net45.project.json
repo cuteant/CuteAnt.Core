@@ -8,6 +8,6 @@
   },
   "dependencies": {
     "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
-    "NLog": "4.4.0-betaV15"
+    "NLog": "4.3.10"
   }
 }
