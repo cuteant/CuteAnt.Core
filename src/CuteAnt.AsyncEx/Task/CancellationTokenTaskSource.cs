@@ -38,10 +38,7 @@ namespace CuteAnt.AsyncEx
     /// <summary>Disposes the cancellation token registration, if any. Note that this may cause <see cref="Task"/> to never complete.</summary>
     public void Dispose()
     {
-      if (_registration != null)
-      {
-        _registration.Dispose();
-      }
+      _registration?.Dispose();
     }
   }
 }

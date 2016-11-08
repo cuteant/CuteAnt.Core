@@ -23,5 +23,11 @@ namespace CuteAnt.AsyncEx
     {
       SynchronizationContext.SetSynchronizationContext(_oldContext);
     }
+
+    /// <summary>Removes the current <see cref="SynchronizationContext"/> and restores it when the returned disposable is disposed.</summary>
+    public static IDisposable NoContext()
+    {
+      return new SynchronizationContextSwitcher(null);
+    }
   }
 }
