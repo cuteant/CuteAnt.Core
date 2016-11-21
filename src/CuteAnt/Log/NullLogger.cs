@@ -13,8 +13,6 @@ namespace Microsoft.Extensions.Logging
   {
     public static readonly NullLogger Instance = new NullLogger();
 
-    public string Name { get { return string.Empty; } }
-
 #if DESKTOPCLR
     public IDisposable BeginScope<TState>(TState state)
 #else

@@ -16,10 +16,8 @@
     <copyright>Copyright (c) 2016 CuteAnt Development Team</copyright>
     <language>en-US</language>
     <dependencies>
-      <group targetFramework=".NETFramework4.0">
-      </group>
       <group targetFramework=".NETFramework4.5.1">
-        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="1.0.0" />
+        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="1.1.0" />
         <dependency id="Serilog" version="2.3.0" />
       </group>
     </dependencies>

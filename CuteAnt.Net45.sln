@@ -51,6 +51,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{F8C90529-8BB0-45F9-87C9-1101EE71F2D9}"
 	ProjectSection(SolutionItems) = preProject
 		nuspecs\CuteAnt.AsyncEx.nuspec = nuspecs\CuteAnt.AsyncEx.nuspec
+		nuspecs\CuteAnt.Extensions.DependencyInjection.nuspec = nuspecs\CuteAnt.Extensions.DependencyInjection.nuspec
 		nuspecs\CuteAnt.nuspec = nuspecs\CuteAnt.nuspec
 		nuspecs\CuteAnt.SharpSerializer.nuspec = nuspecs\CuteAnt.SharpSerializer.nuspec
 		nuspecs\pack_core.cmd = nuspecs\pack_core.cmd

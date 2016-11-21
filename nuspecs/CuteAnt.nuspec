@@ -17,10 +17,10 @@
     <language>en-US</language>
     <dependencies>
       <group targetFramework=".NETFramework4.0">
-        <dependency id="CuteAnt.Extensions.Logging" version="2.0.0-rc3-160701" />
+        <dependency id="CuteAnt.Extensions.Logging" version="2.0.0-rc3-161011" />
       </group>
       <group targetFramework=".NETFramework4.5.1">
-        <dependency id="Microsoft.Extensions.Logging" version="1.0.0" />
+        <dependency id="Microsoft.Extensions.Logging" version="1.1.0" />
       </group>
     </dependencies>
     <frameworkAssemblies>

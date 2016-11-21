@@ -42,11 +42,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CuteAnt.Extensions.Logging.Abstractions, Version=2.8.6.168, Culture=neutral, PublicKeyToken=8df3f1eee85cc956, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CuteAnt.Extensions.Logging.Abstractions.2.0.0-rc3-160701\lib\net40\CuteAnt.Extensions.Logging.Abstractions.dll</HintPath>
+      <HintPath>..\..\packages\CuteAnt.Extensions.Logging.Abstractions.2.0.0-rc3-161011\lib\net40\CuteAnt.Extensions.Logging.Abstractions.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="CuteAnt.Extensions.Primitives, Version=2.8.6.168, Culture=neutral, PublicKeyToken=8df3f1eee85cc956, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CuteAnt.Extensions.Primitives.2.0.0-rc3-160701\lib\net40\CuteAnt.Extensions.Primitives.dll</HintPath>
+      <HintPath>..\..\packages\CuteAnt.Extensions.Primitives.2.0.0-rc3-161011\lib\net40\CuteAnt.Extensions.Primitives.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />

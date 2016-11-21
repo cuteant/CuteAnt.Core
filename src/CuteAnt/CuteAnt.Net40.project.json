@@ -7,6 +7,6 @@
     "win": {}
   },
   "dependencies": {
-    "CuteAnt.Extensions.Logging": "2.0.0-rc3-160701"
+    "CuteAnt.Extensions.Logging": "2.0.0-rc3-161011"
   }
 }

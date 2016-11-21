@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 #if NET40
+
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -534,9 +535,17 @@ namespace System.Collections.Immutable
       }
 
       T[] tmp = new T[self.Length + 1];
-      Array.Copy(self.array, 0, tmp, 0, index);
       tmp[index] = item;
-      Array.Copy(self.array, index, tmp, index + 1, self.Length - index);
+
+      if (index != 0)
+      {
+        Array.Copy(self.array, 0, tmp, 0, index);
+      }
+      if (index != self.Length)
+      {
+        Array.Copy(self.array, index, tmp, index + 1, self.Length - index);
+      }
+
       return new ImmutableArray<T>(tmp);
     }
 
@@ -566,14 +575,31 @@ namespace System.Collections.Immutable
       }
 
       T[] tmp = new T[self.Length + count];
-      Array.Copy(self.array, 0, tmp, 0, index);
-      int sequenceIndex = index;
-      foreach (var item in items)
+
+      if (index != 0)
       {
-        tmp[sequenceIndex++] = item;
+        Array.Copy(self.array, 0, tmp, 0, index);
+      }
+      if (index != self.Length)
+      {
+        Array.Copy(self.array, index, tmp, index + count, self.Length - index);
       }
 
-      Array.Copy(self.array, index, tmp, index + count, self.Length - index);
+      // We want to copy over the items we need to insert.
+      // Check first to see if items is a well-known collection we can call CopyTo
+      // on to the array, which is an order of magnitude faster than foreach.
+      // Otherwise, go to the fallback route where we manually enumerate the sequence
+      // and place the items in the array one-by-one.
+
+      if (!items.TryCopyTo(tmp, index))
+      {
+        int sequenceIndex = index;
+        foreach (var item in items)
+        {
+          tmp[sequenceIndex++] = item;
+        }
+      }
+
       return new ImmutableArray<T>(tmp);
     }
 
@@ -600,7 +626,20 @@ namespace System.Collections.Immutable
         return self;
       }
 
-      return self.InsertRange(index, items.array);
+      T[] tmp = new T[self.Length + items.Length];
+
+      if (index != 0)
+      {
+        Array.Copy(self.array, 0, tmp, 0, index);
+      }
+      if (index != self.Length)
+      {
+        Array.Copy(self.array, index, tmp, index + items.Length, self.Length - index);
+      }
+
+      Array.Copy(items.array, 0, tmp, index, items.Length);
+
+      return new ImmutableArray<T>(tmp);
     }
 
     /// <summary>
@@ -641,19 +680,7 @@ namespace System.Collections.Immutable
     public ImmutableArray<T> AddRange(ImmutableArray<T> items)
     {
       var self = this;
-      self.ThrowNullRefIfNotInitialized();
-      ThrowNullRefIfNotInitialized(items);
-      if (self.IsEmpty)
-      {
-        // Be sure what we return is marked as initialized.
-        return items;
-      }
-      else if (items.IsEmpty)
-      {
-        return self;
-      }
-
-      return self.AddRange(items.array);
+      return self.InsertRange(self.Length, items);
     }
 
     /// <summary>
@@ -1493,10 +1520,10 @@ namespace System.Collections.Immutable
     }
 
     /// <summary>
-    /// Gets or sets the <see cref="Object"/> at the specified index.
+    /// Gets or sets the <see cref="System.Object"/> at the specified index.
     /// </summary>
     /// <value>
-    /// The <see cref="Object"/>.
+    /// The <see cref="System.Object"/>.
     /// </value>
     /// <param name="index">The index.</param>
     /// <returns></returns>
