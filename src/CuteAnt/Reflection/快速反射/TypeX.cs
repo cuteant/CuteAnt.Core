@@ -1041,6 +1041,9 @@ namespace CuteAnt.Reflection
 
       /// <summary>CombGuid</summary>
       public static readonly Type CombGuid = typeof(CombGuid);
+
+      /// <summary>Guid</summary>
+      public static readonly Type ByteArray = typeof(byte[]);
     }
 
     #endregion 常用类型

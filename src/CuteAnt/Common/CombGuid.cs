@@ -8,6 +8,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using CuteAnt.Configuration;
+using CuteAnt.Reflection;
 
 namespace CuteAnt
 {
@@ -25,13 +26,13 @@ namespace CuteAnt
   /// </remarks>
   [Serializable]
   [XmlSchemaProvider("GetXsdType")]
-  public struct CombGuid : INullable, IComparable, IComparable<CombGuid>, IEquatable<CombGuid>, IXmlSerializable
+  public struct CombGuid : INullable, IComparable, IComparable<CombGuid>, IEquatable<CombGuid>, IXmlSerializable, IConvertible
   {
     #region -- Fields --
 
-    private static readonly String _NullString = "nil";
+    private const String _NullString = "nil";
 
-    private static readonly Int32 _SizeOfGuid = 16;
+    private const Int32 _SizeOfGuid = 16;
 
     // Comparison orders.
     private static readonly Int32[] _GuidComparisonOrders = new Int32[16] { 10, 11, 12, 13, 14, 15, 8, 9, 6, 7, 4, 5, 0, 1, 2, 3 };
@@ -286,7 +287,7 @@ namespace CuteAnt
 
     #region - ToByteArray -
 
-    /// <summary>将此 CombGuid 结构转换为字节数组，如果此 CombGuid 结构值为空，抛出异常。</summary>
+    /// <summary>将此 CombGuid 结构转换为字节数组。</summary>
     /// <param name="sequentialType">指示生成的字节数组中标识顺序的 6 位字节的位置</param>
     /// <returns>16 元素字节数组。</returns>
     public Byte[] ToByteArray(CombGuidSequentialSegmentType sequentialType = CombGuidSequentialSegmentType.Guid)
@@ -314,7 +315,7 @@ namespace CuteAnt
 
     #region - GetByteArray -
 
-    /// <summary>直接获取此 CombGuid 结构内部的字节数组，如果此 CombGuid 结构值为空，抛出异常。
+    /// <summary>直接获取此 CombGuid 结构内部的字节数组。
     /// <para>调用此方法后，不要对获取的字节数组做任何改变！！！</para>
     /// </summary>
     /// <param name="sequentialType">指示生成的字节数组中标识顺序的 6 位字节的位置</param>
@@ -358,7 +359,7 @@ namespace CuteAnt
       return new String(guidChars);
     }
 
-    /// <summary>根据所提供的格式方式，返回此 CombGuid 实例值的字符数组，如果此 CombGuid 结构值为空，抛出异常。</summary>
+    /// <summary>根据所提供的格式方式，返回此 CombGuid 实例值的字符数组，如果此 CombGuid 结构值为空，则返回表示空值的字符数组。</summary>
     /// <param name="formatType">格式化方式，它指示如何格式化此 CombGuid 的值。</param>
     /// <returns>此 CombGuid 的字符数组，包含一系列指定格式的小写十六进制位字符</returns>
     public Char[] GetChars(CombGuidFormatStringType formatType)
@@ -446,7 +447,7 @@ namespace CuteAnt
     }
 
     /// <summary>获取 CombGuid 结构字符串指定区域的无序字符（小写十六进制位），每个区域只允许获取 1 或 2 个字符，
-    /// 如果此 CombGuid 结构值为空，抛出异常。</summary>
+    /// 如果此 CombGuid 结构值为空，则返回表示空值的字符。</summary>
     /// <remarks>以 CombGuid 结构作为主键，可用于多级（最多四级）目录结构附件存储，或变相用于实现Hash方式分表分库；单个字符 16 种组合方式，两个字符 256 中组合方式</remarks>
     /// <param name="partType">截取区域</param>
     /// <param name="isSingleCharacter">是否获取单个字符</param>
@@ -512,7 +513,7 @@ namespace CuteAnt
       return new String(chars, 0, length);
     }
 
-    /// <summary>根据所提供的格式方式，返回此 CombGuid 实例值的字符数组，如果此 CombGuid 结构值为空，抛出异常。</summary>
+    /// <summary>根据所提供的格式方式，返回此 CombGuid 实例值的字符数组，如果此 CombGuid 结构值为空，则返回表示空值的字符数组。</summary>
     /// <param name="sequentialType">指示生成的字符数组中标识顺序的 6 位字节的位置。</param>
     /// <returns>此 CombGuid 的字符数组，包含一系列指定格式的小写十六进制位字符</returns>
     public Char[] GetHexChars(CombGuidSequentialSegmentType sequentialType)
@@ -557,7 +558,7 @@ namespace CuteAnt
       return guidChars;
     }
 
-    /// <summary>根据所提供的格式方式，把此 CombGuid 编码为十六进制字符串，如果此 CombGuid 结构值为空，抛出异常。</summary>
+    /// <summary>根据所提供的格式方式，把此 CombGuid 编码为十六进制字符串，如果此 CombGuid 结构值为空，则返回表示空值的字符串。</summary>
     /// <param name="sequentialType">指示生成的字符数组中标识顺序的 6 位字节的位置。</param>
     /// <returns></returns>
     public String ToHex(CombGuidSequentialSegmentType sequentialType)
@@ -613,15 +614,15 @@ namespace CuteAnt
     }
 
     /// <summary>初始化 CombGuid 结构的新实例。</summary>
-    /// <param name="endTime">用于生成 CombGuid 日期时间</param>
+    /// <param name="timestamp">用于生成 CombGuid 日期时间</param>
     /// <returns>一个新的 CombGuid 对象。</returns>
-    public static CombGuid NewComb(DateTime endTime)
+    public static CombGuid NewComb(DateTime timestamp)
     {
       var guidArray = Guid.NewGuid().ToByteArray();
 
       // Get the days and milliseconds which will be used to build the Byte String
-      var days = new TimeSpan(endTime.Ticks - _BaseDate.Ticks).Days;
-      var tenthMilliseconds = (Int32)(endTime.TimeOfDay.TotalMilliseconds * 10D);
+      var days = new TimeSpan(timestamp.Ticks - _BaseDate.Ticks).Days;
+      var tenthMilliseconds = (Int32)(timestamp.TimeOfDay.TotalMilliseconds * 10D);
       var lastDays = _LastDays;
       var lastTenthMilliseconds = _LastTenthMilliseconds;
       if (days == lastDays)
@@ -1008,7 +1009,28 @@ namespace CuteAnt
     /// <returns></returns>
     public override Int32 GetHashCode()
     {
-      return IsNull ? 0 : Value.GetHashCode();
+      //return IsNull ? 0 : Value.GetHashCode();
+      if (IsNull) { return 0; }
+
+      #region guid.cs
+      //_a = ((int)b[3] << 24) | ((int)b[2] << 16) | ((int)b[1] << 8) | b[0];
+      //_b = (short)(((int)b[5] << 8) | b[4]);
+      //_c = (short)(((int)b[7] << 8) | b[6]);
+      //_d = b[8];
+      //_e = b[9];
+      //_f = b[10];
+      //_g = b[11];
+      //_h = b[12];
+      //_i = b[13];
+      //_j = b[14];
+      //_k = b[15];
+      //return _a ^ (((int)_b << 16) | (int)(ushort)_c) ^ (((int)_f << 24) | _k);
+      #endregion
+
+      var a = ((int)m_value[3] << 24) | ((int)m_value[2] << 16) | ((int)m_value[1] << 8) | m_value[0];
+      var b = (short)(((int)m_value[5] << 8) | m_value[4]);
+      var c = (short)(((int)m_value[7] << 8) | m_value[6]);
+      return a ^ (((int)b << 16) | (int)(ushort)c) ^ (((int)m_value[10] << 24) | m_value[15]);
     }
 
     #endregion
@@ -1016,16 +1038,10 @@ namespace CuteAnt
     #region -- INullable 成员 --
 
     /// <summary>获取一个布尔值，该值指示此 CombGuid 结构是否为 null。</summary>
-    public Boolean IsNull
-    {
-      get { return (m_value == null); }
-    }
+    public Boolean IsNull => m_value == null;
 
     /// <summary>获取一个布尔值，该值指示此 CombGuid 结构值是否为空或其值均为零。</summary>
-    public Boolean IsNullOrEmpty
-    {
-      get { return (m_value == null || this == Empty); }
-    }
+    public Boolean IsNullOrEmpty => (m_value == null || this == Empty);
 
     #endregion
 
@@ -1132,6 +1148,107 @@ namespace CuteAnt
     public static XmlQualifiedName GetXsdType(XmlSchemaSet schemaSet)
     {
       return new XmlQualifiedName("String", XmlSchema.Namespace);
+    }
+
+    #endregion
+
+    #region -- IConvertible 成员 --
+
+    TypeCode IConvertible.GetTypeCode() => TypeCode.Object;
+
+    bool IConvertible.ToBoolean(IFormatProvider provider) => m_value != null;
+
+    char IConvertible.ToChar(IFormatProvider provider)
+    {
+      throw new InvalidCastException();
+    }
+
+    sbyte IConvertible.ToSByte(IFormatProvider provider)
+    {
+      throw new InvalidCastException();
+    }
+
+    byte IConvertible.ToByte(IFormatProvider provider)
+    {
+      throw new InvalidCastException();
+    }
+
+    short IConvertible.ToInt16(IFormatProvider provider)
+    {
+      throw new InvalidCastException();
+    }
+
+    ushort IConvertible.ToUInt16(IFormatProvider provider)
+    {
+      throw new InvalidCastException();
+    }
+
+    int IConvertible.ToInt32(IFormatProvider provider)
+    {
+      throw new InvalidCastException();
+    }
+
+    uint IConvertible.ToUInt32(IFormatProvider provider)
+    {
+      throw new InvalidCastException();
+    }
+
+    long IConvertible.ToInt64(IFormatProvider provider)
+    {
+      throw new InvalidCastException();
+    }
+
+    ulong IConvertible.ToUInt64(IFormatProvider provider)
+    {
+      throw new InvalidCastException();
+    }
+
+    float IConvertible.ToSingle(IFormatProvider provider)
+    {
+      throw new InvalidCastException();
+    }
+
+    double IConvertible.ToDouble(IFormatProvider provider)
+    {
+      throw new InvalidCastException();
+    }
+
+    decimal IConvertible.ToDecimal(IFormatProvider provider)
+    {
+      throw new InvalidCastException();
+    }
+
+    DateTime IConvertible.ToDateTime(IFormatProvider provider) => this.DateTime;
+
+    string IConvertible.ToString(IFormatProvider provider) => this.ToString(CombGuidFormatStringType.Comb32Digits);
+
+    object IConvertible.ToType(Type conversionType, IFormatProvider provider)
+    {
+      //switch (Type.GetTypeCode(conversionType))
+      //{
+      //  case TypeCode.String:
+      //    return ((IConvertible)this).ToString(provider);
+      //  case TypeCode.Object:
+      //    break;
+      //}
+      if (conversionType == TypeX._.String)
+      {
+        return this.ToString(CombGuidFormatStringType.Comb32Digits);
+      }
+      if (conversionType == TypeX._.Object)
+      {
+        return this;
+      }
+      if (conversionType == TypeX._.Guid)
+      {
+        return this.Value;
+      }
+      if (conversionType == TypeX._.ByteArray)
+      {
+        return m_value;
+      }
+
+      throw new InvalidCastException();
     }
 
     #endregion
@@ -1256,7 +1373,7 @@ namespace CuteAnt
 
     #endregion
 
-    #region -- enum CombGuidComparison --
+    #region ** enum CombGuidComparison **
 
     private enum CombGuidComparison
     {
@@ -1267,6 +1384,8 @@ namespace CuteAnt
 
     #endregion
   }
+
+  #region -- enum CombGuidSplitPartType --
 
   /// <summary>组成 CombGuid 结构字符串四个数据块</summary>
   public enum CombGuidSplitPartType
@@ -1284,6 +1403,10 @@ namespace CuteAnt
     PartFour
   }
 
+  #endregion
+
+  #region -- enum CombGuidSequentialSegmentType --
+
   /// <summary>指示 CombGuid 结构中标识顺序的 6 位字节的位置</summary>
   /// <remarks>格式化为 CombGuid 格式字节数组，字节数组的排列顺序与传统 GUID 字节数组不同，是为了兼容微软体系数据库与非微软体系数据库进行数据迁移时，
   /// 数据表中的数据保持相同的排序顺序；同时也确保在 .Net FX 中集合的排序规则与数据表的排序规则一致。</remarks>
@@ -1295,6 +1418,10 @@ namespace CuteAnt
     /// <summary>CombGuid 格式，顺序字节（6位）在头部，适用于非微软体系数据库。</summary>
     Comb
   }
+
+  #endregion
+
+  #region -- enum CombGuidFormatStringType --
 
   /// <summary>CombGuid 结构格式化字符串方式</summary>
   /// <remarks>格式化为 CombGuid 格式字符串时，字符串的排列顺序与传统 GUID 字符串不同，是为了兼容微软体系数据库与非微软体系数据库进行数据迁移时，
@@ -1321,4 +1448,6 @@ namespace CuteAnt
     /// </summary>
     Comb32Digits
   }
+
+  #endregion
 }
