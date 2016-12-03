@@ -24,12 +24,12 @@ namespace Microsoft.Extensions.Logging.NLog
   internal class NLogLogger : MS_ILogger
   {
     private readonly NLog_ILogger _logger;
+    private readonly NLogProviderOptions _options;
 
-    public string Name { get { return _logger.Name; } }
-
-    public NLogLogger(NLog_ILogger logger)
+    public NLogLogger(NLog_ILogger logger, NLogProviderOptions options)
     {
       _logger = logger;
+      _options = options ?? NLogProviderOptions.Default;
     }
 
     //todo  callsite showing the framework logging classes/methods
@@ -46,8 +46,8 @@ namespace Microsoft.Extensions.Logging.NLog
           //message arguments are not needed as it is already checked that the loglevel is enabled.
           var eventInfo = LogEventInfo.Create(nLogLogLevel, _logger.Name, message);
           eventInfo.Exception = exception;
-          eventInfo.Properties["EventId.Id"] = eventId.Id;
-          eventInfo.Properties["EventId.Name"] = eventId.Name;
+          eventInfo.Properties[$"EventId{_options.EventIdSeparator}Id"] = eventId.Id;
+          eventInfo.Properties[$"EventId{_options.EventIdSeparator}Name"] = eventId.Name;
           eventInfo.Properties["EventId"] = eventId;
           _logger.Log(eventInfo);
         }

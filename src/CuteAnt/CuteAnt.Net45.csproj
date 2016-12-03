@@ -71,6 +71,7 @@
     <Compile Include="Collections\DictionaryCache.cs" />
     <Compile Include="Collections\NullableDictionary.cs" />
     <Compile Include="Common\DateTimeUtil.cs" />
+    <Compile Include="Domain\IHasId.cs" />
     <Compile Include="Threading\AsyncLocalShim.cs" />
     <Compile Include="Common\CombGuid.cs" />
     <Compile Include="Common\DataSetSurrogate.cs" />

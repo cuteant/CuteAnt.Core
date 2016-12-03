@@ -81,6 +81,7 @@
     <Compile Include="Common\HardInfo.cs" />
     <Compile Include="Common\HmExceptionBase.cs" />
     <Compile Include="Common\IdentityCard.cs" />
+    <Compile Include="Domain\IHasId.cs" />
     <Compile Include="Common\MatchHelper.cs" />
     <Compile Include="Common\PlatformHelper.cs" />
     <Compile Include="Common\RuntimeHelper.cs" />

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 #if NET40
 using CuteAnt.Extensions.Logging.NLog;
@@ -14,39 +15,60 @@ namespace CuteAnt.Extensions.Logging
 namespace Microsoft.Extensions.Logging
 #endif
 {
-  /// <summary>
-  /// Helpers for ASP.NET
-  /// </summary>
+  /// <summary>Helpers for ASP.NET</summary>
   public static class NLogLoggerFactoryExtensions
   {
     /// <summary>
-    /// Enable NLog as logging provider in ASP.NET 5.
+    /// Enable NLog as logging provider in ASP.NET Core.
     /// </summary>
     /// <param name="factory"></param>
     /// <returns></returns>
-    public static ILoggerFactory AddNLog(this ILoggerFactory factory)
+    public static ILoggerFactory AddNLog(this ILoggerFactory factory) => AddNLog(factory, null);
+
+    /// <summary>Enable NLog as logging provider in ASP.NET Core.</summary>
+    /// <param name="factory"></param>
+    /// <param name="options">NLog options</param>
+    /// <returns></returns>
+    public static ILoggerFactory AddNLog(this ILoggerFactory factory, NLogProviderOptions options)
     {
       //ignore this
 #if NET40
       NLog_LogManager.AddHiddenAssembly(Assembly.Load(new AssemblyName("CuteAnt.Extensions.Logging")));
       NLog_LogManager.AddHiddenAssembly(Assembly.Load(new AssemblyName("CuteAnt.Extensions.Logging.Abstractions")));
-      NLog_LogManager.AddHiddenAssembly(typeof(NLogLoggerFactoryExtensions).Assembly);
 #else
       NLog_LogManager.AddHiddenAssembly(Assembly.Load(new AssemblyName("Microsoft.Extensions.Logging")));
       NLog_LogManager.AddHiddenAssembly(Assembly.Load(new AssemblyName("Microsoft.Extensions.Logging.Abstractions")));
+#endif
+
+      try
+      {
+        //try the Filter ext
+#if NET40
+        var filterAssembly = Assembly.Load(new AssemblyName("CuteAnt.Extensions.Logging.Filter"));
+#else
+        var filterAssembly = Assembly.Load(new AssemblyName("Microsoft.Extensions.Logging.Filter"));
+#endif
+        NLog_LogManager.AddHiddenAssembly(filterAssembly);
+      }
+      catch (Exception)
+      {
+        //ignore
+      }
+
+#if NET40
+      NLog_LogManager.AddHiddenAssembly(typeof(NLogLoggerFactoryExtensions).Assembly);
+#else
       NLog_LogManager.AddHiddenAssembly(typeof(NLogLoggerFactoryExtensions).GetTypeInfo().Assembly);
 #endif
 
-      using (var provider = new NLogLoggerProvider())
+      using (var provider = new NLogLoggerProvider(options))
       {
         factory.AddProvider(provider);
       }
       return factory;
     }
 
-    /// <summary>
-    /// Apply NLog configuration from XML config.
-    /// </summary>
+    /// <summary>Apply NLog configuration from XML config.</summary>
     /// <param name="fileName">absolute path  NLog configuration file.</param>
     private static void ConfigureNLog(string fileName)
     {
