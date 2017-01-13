@@ -36,7 +36,7 @@ namespace CuteAnt.Security
 		private const UInt32 CrcSeed = 0xFFFFFFFF;
 
 		/// <summary>校验表</summary>
-		public readonly static uint[] Table;
+		public static readonly uint[] Table;
 
 		static Crc32()
 		{

@@ -137,7 +137,7 @@ namespace System.Threading.Tasks.Dataflow
 
 			/// <summary>Cached continuation delegate that unregisters from cancellation and
 			/// marshals the antecedent's result to the return value.</summary>
-			internal readonly static Func<Task<Boolean>, object, Boolean> s_handleCompletion = (antecedent, state) =>
+			internal static readonly Func<Task<Boolean>, object, Boolean> s_handleCompletion = (antecedent, state) =>
 			{
 				var target = state as OutputAvailableAsyncTarget<T>;
 				Debug.Assert(target != null, "Expected non-null target");
@@ -147,7 +147,7 @@ namespace System.Threading.Tasks.Dataflow
 
 			/// <summary>Cached delegate that cancels the target and unlinks the target from the source.
 			/// Expects an OutputAvailableAsyncTarget as the state argument.</summary>
-			internal readonly static Action<object> s_cancelAndUnlink = CancelAndUnlink;
+			internal static readonly Action<object> s_cancelAndUnlink = CancelAndUnlink;
 
 			/// <summary>The IDisposable used to unlink this target from its source.</summary>
 			internal IDisposable _unlinker;

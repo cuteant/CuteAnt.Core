@@ -10,7 +10,7 @@ namespace CuteAnt.IO
   {
     #region -- Fields --
 
-    private readonly static Char[] separators = { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, Path.VolumeSeparatorChar };
+    private static readonly Char[] separators = { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, Path.VolumeSeparatorChar };
     private const String fileNameRegEx = @"^([a-zA-Z]:)?[^:]+$";
 
     // This is an arbitrary limitation built into the .NET Framework.

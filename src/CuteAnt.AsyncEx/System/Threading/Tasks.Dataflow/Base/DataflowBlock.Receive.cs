@@ -409,7 +409,7 @@ namespace System.Threading.Tasks.Dataflow
 
 			/// <summary>Cached delegate used in ReceiveCoreByLinking on the created timer.  Passed the ReceiveTarget as the argument.</summary>
 			/// <remarks>The C# compiler will not cache this delegate by default due to it being a generic method on a non-generic class.</remarks>
-			internal readonly static TimerCallback CachedLinkingTimerCallback = state =>
+			internal static readonly TimerCallback CachedLinkingTimerCallback = state =>
 			{
 				var receiveTarget = (ReceiveTarget<T>)state;
 				receiveTarget.TryCleanupAndComplete(ReceiveCoreByLinkingCleanupReason.Timer);
@@ -417,7 +417,7 @@ namespace System.Threading.Tasks.Dataflow
 
 			/// <summary>Cached delegate used in ReceiveCoreByLinking on the cancellation token. Passed the ReceiveTarget as the state argument.</summary>
 			/// <remarks>The C# compiler will not cache this delegate by default due to it being a generic method on a non-generic class.</remarks>
-			internal readonly static Action<object> CachedLinkingCancellationCallback = state =>
+			internal static readonly Action<object> CachedLinkingCancellationCallback = state =>
 			{
 				var receiveTarget = (ReceiveTarget<T>)state;
 				receiveTarget.TryCleanupAndComplete(ReceiveCoreByLinkingCleanupReason.Cancellation);

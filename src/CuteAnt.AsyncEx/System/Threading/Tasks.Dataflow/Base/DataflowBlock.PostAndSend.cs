@@ -391,7 +391,7 @@ namespace System.Threading.Tasks.Dataflow
 			#region **& CancellationHandler &**
 
 			/// <summary>Cached delegate used to cancel a send in response to a cancellation request.</summary>
-			private readonly static Action<object> _cancellationCallback = CancellationHandler;
+			private static readonly Action<object> _cancellationCallback = CancellationHandler;
 
 			/// <summary>Attempts to cancel the source passed as state in response to a cancellation request.</summary>
 			/// <param name="state">
