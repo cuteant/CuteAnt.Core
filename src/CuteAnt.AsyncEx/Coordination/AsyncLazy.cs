@@ -75,10 +75,16 @@ namespace CuteAnt.AsyncEx
     public int Id => IDManager<AsyncLazy<object>>.GetID(ref _id);
 
     /// <summary>Whether the asynchronous factory method has started. This is initially <c>false</c> and becomes <c>true</c> when this instance is awaited or after <see cref="Start"/> is called.</summary>
-    public bool IsStarted => _instance.IsValueCreated;
+    public bool IsStarted
+    {
+      get { lock (_mutex) { return _instance.IsValueCreated; } }
+    }
 
     /// <summary>Starts the asynchronous factory method, if it has not already started, and returns the resulting task.</summary>
-    public Task<T> Task => _instance.Value;
+    public Task<T> Task
+    {
+      get { lock (_mutex) { return _instance.Value; } }
+    }
 
     private Func<Task<T>> RetryOnFailure(Func<Task<T>> factory)
     {
