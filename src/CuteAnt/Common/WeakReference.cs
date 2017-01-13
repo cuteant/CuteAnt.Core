@@ -5,7 +5,7 @@
  * 
  * 修改：海洋饼干（cuteant@outlook.com）
 */
-
+#if NET40
 using System;
 
 namespace CuteAnt
@@ -69,3 +69,4 @@ namespace CuteAnt
 		}
 	}
 }
+#endif
