@@ -25,6 +25,7 @@ namespace CuteAnt
   /// (http://www.codeproject.com/Articles/388157/GUIDs-as-fast-primary-keys-under-multiple-database)</para>
   /// </remarks>
   [Serializable]
+  [TypeConverter(typeof(CombGuidTypeConverter))]
   [XmlSchemaProvider("GetXsdType")]
   public struct CombGuid : INullable, IComparable, IComparable<CombGuid>, IEquatable<CombGuid>, IXmlSerializable, IConvertible
   {
@@ -745,6 +746,7 @@ namespace CuteAnt
     /// <para>- 或 Guid 格式字符串 - </para>
     /// <para>8、4、4、4 和 12 位数字的分组，各组之间有连线符，dddddddd-dddd-dddd-dddd-dddddddddddd</para>
     /// </param>
+    /// <param name="sequentialType">指示字符串中标识顺序的 12 位字符串的位置</param>
     /// <param name="result">将包含已分析的值的结构。 如果此方法返回 true，result 包含有效的 CombGuid。 如果此方法返回 false，result 等于 CombGuid.Null。</param>
     /// <remarks>如果传入的 value 为字节数组时，解析生成的 CombGuid 结构实例将拥有此字节数组。</remarks>
     /// <returns></returns>
@@ -757,21 +759,21 @@ namespace CuteAnt
       }
 
       var type = value.GetType();
-      if (type == typeof(CombGuid))
+      if (type == TypeX._.CombGuid)
       {
         result = (CombGuid)value;
         return true;
       }
-      else if (type == typeof(Guid))
+      else if (type == TypeX._.Guid)
       {
         result = (Guid)value;
         return true;
       }
-      else if (type == typeof(String))
+      else if (type == TypeX._.String)
       {
         return TryParse(value as String, sequentialType, out result);
       }
-      else if (type == typeof(Byte[]))
+      else if (type == TypeX._.ByteArray)
       {
         var bs = value as Byte[];
         if (bs != null && bs.Length == _SizeOfGuid)
@@ -1220,7 +1222,7 @@ namespace CuteAnt
 
     DateTime IConvertible.ToDateTime(IFormatProvider provider) => this.DateTime;
 
-    string IConvertible.ToString(IFormatProvider provider) => this.ToString(CombGuidFormatStringType.Comb32Digits);
+    string IConvertible.ToString(IFormatProvider provider) => this.ToString();
 
     object IConvertible.ToType(Type conversionType, IFormatProvider provider)
     {
@@ -1233,7 +1235,7 @@ namespace CuteAnt
       //}
       if (conversionType == TypeX._.String)
       {
-        return this.ToString(CombGuidFormatStringType.Comb32Digits);
+        return this.ToString();
       }
       if (conversionType == TypeX._.Object)
       {
