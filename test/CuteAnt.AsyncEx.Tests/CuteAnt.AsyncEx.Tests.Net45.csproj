@@ -68,7 +68,7 @@
     <Compile Include="Task\TaskFactoryExtensionsUnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\CuteAnt.AsyncEx\CuteAnt.AsyncEx.Net45.csproj">
