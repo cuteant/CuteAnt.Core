@@ -33,6 +33,8 @@ namespace CuteAnt.Xml
   {
     #region 静态
 
+    private static Boolean _loading;
+
     private static readonly ILogger s_logger = TraceLogger.GetLogger("CuteAnt.Configuration");
 
     private static TConfig _Current;
@@ -42,6 +44,8 @@ namespace CuteAnt.Xml
     {
       get
       {
+        if (_loading) return _Current ?? new TConfig();
+
         var dcf = _.ConfigFile;
 
         if (dcf == null) return new TConfig();
@@ -215,6 +219,8 @@ namespace CuteAnt.Xml
       filename = filename.GetFullPath();
       if (!File.Exists(filename)) return null;
 
+      _loading = true;
+
       try
       {
         //var config = filename.ToXmlFileEntity<TConfig>();
@@ -245,6 +251,10 @@ namespace CuteAnt.Xml
         s_logger.LogError(ex.ToString());
         return null;
       }
+      finally
+      {
+        _loading = false;
+      }
     }
 
     #endregion
@@ -269,12 +279,10 @@ namespace CuteAnt.Xml
         var flag = File.Exists(cfi);
         if (!flag) return;
 
-        if (flag)
-        {
-          var xml1 = File.ReadAllText(cfi).Trim();
-          var xml2 = config.ToXml(null, "", "", true, true).Trim();
-          flag = xml1 == xml2;
-        }
+        var xml1 = File.ReadAllText(cfi).Trim();
+        var xml2 = config.ToXml(null, "", "", true, true).Trim();
+        flag = xml1 == xml2;
+
         if (!flag)
         {
           // 异步处理，避免加载日志路径配置时死循环

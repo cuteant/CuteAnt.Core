@@ -253,6 +253,9 @@ namespace CuteAnt.Reflection
       // 判断是否子类时，支持只反射加载的程序集
       if (type.Assembly.ReflectionOnly)
       {
+        // 反射加载时，需要特殊处理接口
+        if (baseType.IsInterface && type.GetInterface(baseType.Name) != null) return true;
+
         while (type != typeof(Object))
         {
           if (type.FullName == baseType.FullName &&

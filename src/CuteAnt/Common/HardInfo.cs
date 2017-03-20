@@ -412,7 +412,7 @@ namespace CuteAnt.Common
     public static String GetInfo(String path, String property)
     {
       // Linux Mono不支持WMI
-      if (RuntimeHelper.IsMono) return null;
+      if (RuntimeHelper.IsMono) return string.Empty;
 
       var bbs = new List<String>();
       try
@@ -432,7 +432,7 @@ namespace CuteAnt.Common
       catch //(Exception ex)
       {
         //throw new HmExceptionBase(ex, "获取{0} {1}硬件信息失败\r\n{2}", path, property);
-        return null;
+        return string.Empty;
       }
       bbs.Sort();
       var sb = new StringBuilder(bbs.Count * 15);

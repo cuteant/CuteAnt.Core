@@ -593,7 +593,9 @@ namespace CuteAnt.Reflection
         if (loadeds.Any(e => string.Equals(e.Location, item.Location, StringComparison.OrdinalIgnoreCase))) continue;
         // 尽管目录不一样，但这两个可能是相同的程序集
         // 这里导致加载了不同目录的同一个程序集，然后导致对象容器频繁报错
-        if (loadeds.Any(e => string.Equals(e.Asm.FullName, item.Asm.FullName, StringComparison.OrdinalIgnoreCase))) continue;
+        //if (loadeds.Any(e => string.Equals(e.Asm.FullName, item.Asm.FullName, StringComparison.OrdinalIgnoreCase))) continue;
+        // 相同程序集不同版本，全名不想等
+        if (loadeds.Any(e => e.Asm.GetName().Name.EqualIgnoreCase(item.Asm.GetName().Name))) continue;
 
         yield return item;
       }
@@ -635,8 +637,11 @@ namespace CuteAnt.Reflection
 
         // 尽管目录不一样，但这两个可能是相同的程序集
         // 这里导致加载了不同目录的同一个程序集，然后导致对象容器频繁报错
-        if (loadeds.Any(e => e.Asm.FullName.EqualIgnoreCase(asm.FullName)) ||
-            loadeds2.Any(e => e.Asm.FullName.EqualIgnoreCase(asm.FullName))) continue;
+        //if (loadeds.Any(e => e.Asm.FullName.EqualIgnoreCase(asm.FullName)) ||
+        //    loadeds2.Any(e => e.Asm.FullName.EqualIgnoreCase(asm.FullName))) continue;
+        // 相同程序集不同版本，全名不想等
+        if (loadeds.Any(e => e.Asm.GetName().Name.EqualIgnoreCase(asm.GetName().Name)) ||
+            loadeds2.Any(e => e.Asm.GetName().Name.EqualIgnoreCase(asm.GetName().Name))) continue;
 
         var asmx = Create(asm);
         if (asmx != null) yield return asmx;
