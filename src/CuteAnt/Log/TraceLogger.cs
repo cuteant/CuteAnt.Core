@@ -69,7 +69,7 @@ namespace Microsoft.Extensions.Logging
     #region -- Print Date --
 
     /// <summary>Utility function to convert a <c>DateTime</c> object into printable data format used by the TraceLogger subsystem.</summary>
-    /// <param name="exception">The <c>DateTime</c> value to be printed.</param>
+    /// <param name="date">The <c>DateTime</c> value to be printed.</param>
     /// <returns>Formatted string representation of the input data, in the printable format used by the TraceLogger subsystem.</returns>
     public static string PrintDate(DateTime date)
     {
@@ -82,7 +82,7 @@ namespace Microsoft.Extensions.Logging
     }
 
     /// <summary>Utility function to convert a <c>DateTime</c> object into printable time format used by the TraceLogger subsystem.</summary>
-    /// <param name="exception">The <c>DateTime</c> value to be printed.</param>
+    /// <param name="date">The <c>DateTime</c> value to be printed.</param>
     /// <returns>Formatted string representation of the input data, in the printable format used by the TraceLogger subsystem.</returns>
     public static string PrintTime(DateTime date)
     {

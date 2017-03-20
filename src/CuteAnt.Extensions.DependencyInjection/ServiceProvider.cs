@@ -87,12 +87,11 @@ namespace CuteAnt.Extensions.DependencyInjection
       {
         if (Interlocked.Increment(ref callCount) == 2)
         {
-          TaskEx.Run(() =>
-                {
-                  var realizedService = new CallSiteExpressionBuilder(_callSiteRuntimeResolver)
-                            .Build(callSite);
-                  table.RealizedServices[serviceType] = realizedService;
-                });
+          Task.Factory.StartNew(() =>
+          {
+            var realizedService = new CallSiteExpressionBuilder(_callSiteRuntimeResolver).Build(callSite);
+            table.RealizedServices[serviceType] = realizedService;
+          }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
         }
 
         return _callSiteRuntimeResolver.Resolve(callSite, provider);

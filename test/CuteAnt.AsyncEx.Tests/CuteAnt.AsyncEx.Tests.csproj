@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0A4978C4-9EB2-477F-B76F-108BA733C070}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CuteAnt.AsyncEx.Tests</RootNamespace>
+    <AssemblyName>CuteAnt.AsyncEx.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <IntermediateOutputPath>obj\Debug\Net45</IntermediateOutputPath>
+    <OutputPath>..\..\Deploy\Net45\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DESKTOPCLR;NET451;NET_3_5_GREATER;NET_4_0_GREATER;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <IntermediateOutputPath>obj\Release\Net45</IntermediateOutputPath>
+    <OutputPath>..\..\Deploy\Net45\</OutputPath>
+    <DefineConstants>TRACE;DESKTOPCLR;NET451;NET_3_5_GREATER;NET_4_0_GREATER;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\tools\StrongKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AsyncAssert.cs" />
+    <Compile Include="Context\AsyncContextThreadUnitTests.cs" />
+    <Compile Include="Context\AsyncContextUnitTests.cs" />
+    <Compile Include="Coordination\AsyncAutoResetEventUnitTests.cs" />
+    <Compile Include="Coordination\AsyncConditionVariableUnitTests.cs" />
+    <Compile Include="Coordination\AsyncCountdownEventUnitTests.cs" />
+    <Compile Include="Coordination\AsyncLazyUnitTests.cs" />
+    <Compile Include="Coordination\AsyncLockUnitTests.cs" />
+    <Compile Include="Coordination\AsyncManualResetEventUnitTests.cs" />
+    <Compile Include="Coordination\AsyncMonitorUnitTests.cs" />
+    <Compile Include="Coordination\AsyncProducerConsumerQueueUnitTests.cs" />
+    <Compile Include="Coordination\AsyncReaderWriterLockUnitTests.cs" />
+    <Compile Include="Coordination\AsyncSemaphoreUnitTests.cs" />
+    <Compile Include="Coordination\AsyncWaitQueueUnitTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Task\CancellationTokenTaskSourceUnitTests.cs" />
+    <Compile Include="Task\SynchronousTaskExtensionsUnitTests.cs" />
+    <Compile Include="Task\TaskCompletionSourceExtensionsUnitTests.cs" />
+    <Compile Include="Task\TaskConstantsUnitTests.cs" />
+    <Compile Include="Task\TaskExtensionsUnitTests.cs" />
+    <Compile Include="Task\TaskFactoryExtensionsUnitTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\CuteAnt.AsyncEx\CuteAnt.AsyncEx.csproj">
+      <Project>{7bdf7fef-331b-48fc-bd9c-882c04211595}</Project>
+      <Name>CuteAnt.AsyncEx</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
