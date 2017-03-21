@@ -286,4 +286,4 @@ TODO.txt
 /nuspecs/nuget.exe
 *.project.lock.json
 /src/CuteAnt.Features
-/nuspecs/publishing.cmd
+/nuspecs
