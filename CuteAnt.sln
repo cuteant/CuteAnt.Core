@@ -25,11 +25,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logging", "Logging", "{B8CC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IdentityModel", "IdentityModel", "{051B0C4B-6583-496C-B73D-FC56B69B6D9D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuspecs", "nuspecs", "{6E5D8926-C5BD-47E9-8B62-08EC3E578682}"
-	ProjectSection(SolutionItems) = preProject
-		nuspecs\publishing.cmd = nuspecs\publishing.cmd
-	EndProjectSection
-EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CuteAnt.Extensions.DateTimeUtilities.Sources", "..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.DateTimeUtilities.Sources\CuteAnt.Extensions.DateTimeUtilities.Sources.shproj", "{F0DCBA0C-1EE9-403C-931C-555776F6C680}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt", "src\CuteAnt\CuteAnt.csproj", "{8559EACA-4A37-4CEB-8671-DC99EB58F94C}"
@@ -49,6 +44,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.IdentityModel.Protocol.Extensions", "src\CuteAnt.IdentityModel.Protocol.Extensions\CuteAnt.IdentityModel.Protocol.Extensions.csproj", "{08ACBE6B-3603-4560-842E-49F913C36481}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.Tests", "test\CuteAnt.Tests\CuteAnt.Tests.csproj", "{7F88C67D-D34E-4516-B719-A66FE8725322}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.AsyncEx.Tests", "test\CuteAnt.AsyncEx.Tests\CuteAnt.AsyncEx.Tests.csproj", "{FF5D8F3A-F1CC-4A4A-BBF2-E4348E622C6B}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -100,6 +97,10 @@ Global
 		{7F88C67D-D34E-4516-B719-A66FE8725322}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F88C67D-D34E-4516-B719-A66FE8725322}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F88C67D-D34E-4516-B719-A66FE8725322}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF5D8F3A-F1CC-4A4A-BBF2-E4348E622C6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF5D8F3A-F1CC-4A4A-BBF2-E4348E622C6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF5D8F3A-F1CC-4A4A-BBF2-E4348E622C6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF5D8F3A-F1CC-4A4A-BBF2-E4348E622C6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,5 +124,6 @@ Global
 		{429E765E-48DF-42AA-9FE6-BDB161870E61} = {051B0C4B-6583-496C-B73D-FC56B69B6D9D}
 		{08ACBE6B-3603-4560-842E-49F913C36481} = {051B0C4B-6583-496C-B73D-FC56B69B6D9D}
 		{7F88C67D-D34E-4516-B719-A66FE8725322} = {2AE2468D-F08E-4DC1-9F5D-35A4013043C0}
+		{FF5D8F3A-F1CC-4A4A-BBF2-E4348E622C6B} = {2AE2468D-F08E-4DC1-9F5D-35A4013043C0}
 	EndGlobalSection
 EndGlobal

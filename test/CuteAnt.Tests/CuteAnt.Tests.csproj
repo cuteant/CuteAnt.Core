@@ -32,12 +32,6 @@
     <ProjectReference Include="..\..\src\CuteAnt\CuteAnt.csproj" />
   </ItemGroup>
   
-  <ItemGroup>
-    <None Update="CuteAnt.Tests.xunit.runner.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
   
 </Project>

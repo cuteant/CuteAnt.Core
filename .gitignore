@@ -287,3 +287,4 @@ TODO.txt
 *.project.lock.json
 /src/CuteAnt.Features
 /nuspecs
+/NuGet.Config

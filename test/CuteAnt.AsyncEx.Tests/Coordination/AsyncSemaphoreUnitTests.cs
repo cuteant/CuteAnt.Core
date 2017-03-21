@@ -110,9 +110,9 @@ namespace CuteAnt.AsyncEx.Tests
         [Fact]
         public void Release_Overflow_ThrowsException()
         {
-            var semaphore = new AsyncSemaphore(int.MaxValue);
-            Assert.Equal(int.MaxValue, semaphore.CurrentCount);
-            AsyncAssert.Throws<InvalidOperationException>(() => semaphore.Release());
+            var semaphore = new AsyncSemaphore(long.MaxValue);
+            Assert.Equal(long.MaxValue, semaphore.CurrentCount);
+            AsyncAssert.Throws<OverflowException>(() => semaphore.Release());
         }
 
         [Fact]

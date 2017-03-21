@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CuteAnt.AsyncEx
 {
@@ -24,10 +25,24 @@ namespace CuteAnt.AsyncEx
       SynchronizationContext.SetSynchronizationContext(_oldContext);
     }
 
-    /// <summary>Removes the current <see cref="SynchronizationContext"/> and restores it when the returned disposable is disposed.</summary>
-    public static IDisposable NoContext()
+    /// <summary>Executes a synchronous delegate without the current <see cref="SynchronizationContext"/>. The current context is restored when this function returns.</summary>
+    /// <param name="action">The delegate to execute.</param>
+    public static void NoContext(Action action)
     {
-      return new SynchronizationContextSwitcher(null);
+      using (new SynchronizationContextSwitcher(null))
+      {
+        action();
+      }
+    }
+
+    /// <summary>Executes an asynchronous delegate without the current <see cref="SynchronizationContext"/>. The current context is restored when this function returns its task.</summary>
+    /// <param name="action">The delegate to execute.</param>
+    public static Task NoContextAsync(Func<Task> action)
+    {
+      using (new SynchronizationContextSwitcher(null))
+      {
+        return action();
+      }
     }
   }
 }
