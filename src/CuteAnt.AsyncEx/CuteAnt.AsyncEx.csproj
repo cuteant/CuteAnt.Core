@@ -11,7 +11,7 @@
     <RootNamespace>CuteAnt.AsyncEx</RootNamespace>
     <DefineConstants>$(DefineConstants);NET_3_5_GREATER</DefineConstants>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
 
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
