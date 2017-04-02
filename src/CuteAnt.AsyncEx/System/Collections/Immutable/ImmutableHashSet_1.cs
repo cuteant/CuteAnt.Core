@@ -1,7 +1,8 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+﻿#if NET40
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-#if NET40
+
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -15,7 +16,7 @@ namespace System.Collections.Immutable
     /// </summary>
     /// <typeparam name="T">The type of elements in the set.</typeparam>
     [DebuggerDisplay("Count = {Count}")]
-    [DebuggerTypeProxy(typeof(ImmutableHashSetDebuggerProxy<>))]
+    [DebuggerTypeProxy(typeof(ImmutableEnumerableDebuggerProxy<>))]
     public sealed partial class ImmutableHashSet<T> : IImmutableSet<T>, IHashKeyCollection<T>, IReadOnlyCollection<T>, ICollection<T>, ISet<T>, ICollection, IStrongEnumerable<T, ImmutableHashSet<T>.Enumerator>
     {
         /// <summary>

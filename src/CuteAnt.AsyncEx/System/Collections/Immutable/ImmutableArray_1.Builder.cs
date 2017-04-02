@@ -1,10 +1,10 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+﻿#if NET40
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-#if NET40
+
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 
 namespace System.Collections.Immutable
@@ -245,6 +245,12 @@ namespace System.Collections.Immutable
         if (items.TryGetCount(out count))
         {
           this.EnsureCapacity(this.Count + count);
+
+          if (items.TryCopyTo(_elements, _count))
+          {
+            _count += count;
+            return;
+          }
         }
 
         foreach (var item in items)
@@ -655,8 +661,7 @@ namespace System.Collections.Immutable
           // We could special case _count == _elements.Length in order to try to avoid
           // the IComparer allocation, but the Array.Sort overload that takes a Comparison
           // allocates such an IComparer internally, anyway.
-
-          //// ## 苦竹 修改 ##
+          // ## 苦竹 修改 ##
           //Array.Sort(_elements, 0, _count, Comparer<T>.Create(comparison));
           Array.Sort(_elements, 0, _count, new ComparisonComparer<T>(comparison));
         }
@@ -741,37 +746,6 @@ namespace System.Collections.Immutable
         {
           nodes[offset + i] = items[i];
         }
-      }
-    }
-  }
-
-  /// <summary>
-  /// A simple view of the immutable collection that the debugger can show to the developer.
-  /// </summary>
-  internal sealed class ImmutableArrayBuilderDebuggerProxy<T>
-  {
-    /// <summary>
-    /// The collection to be enumerated.
-    /// </summary>
-    private readonly ImmutableArray<T>.Builder _builder;
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ImmutableArrayBuilderDebuggerProxy{T}"/> class.
-    /// </summary>
-    /// <param name="builder">The collection to display in the debugger</param>
-    public ImmutableArrayBuilderDebuggerProxy(ImmutableArray<T>.Builder builder)
-    {
-      _builder = builder;
-    }
-
-    /// <summary>
-    /// Gets a simple debugger-viewable collection.
-    /// </summary>
-    [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-    public T[] A
-    {
-      get
-      {
-        return _builder.ToArray();
       }
     }
   }

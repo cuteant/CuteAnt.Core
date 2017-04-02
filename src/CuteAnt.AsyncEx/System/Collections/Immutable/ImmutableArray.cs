@@ -1,7 +1,8 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+﻿#if NET40
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-#if NET40
+
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
@@ -106,14 +107,18 @@ namespace System.Collections.Immutable
             var immutableArray = items as IImmutableArray;
             if (immutableArray != null)
             {
-                immutableArray.ThrowInvalidOperationIfNotInitialized();
+                Array array = immutableArray.Array;
+                if (array == null)
+                {
+                    throw new InvalidOperationException(SR.InvalidOperationOnDefaultArray);
+                }
 
-                // immutableArray.Array must not be null at this point, and we know it's an
+                // `array` must not be null at this point, and we know it's an
                 // ImmutableArray<T> or ImmutableArray<SomethingDerivedFromT> as they are
                 // the only types that could be both IEnumerable<T> and IImmutableArray.
                 // As such, we know that items is either an ImmutableArray<T> or
                 // ImmutableArray<TypeDerivedFromT>, and we can cast the array to T[].
-                return new ImmutableArray<T>((T[])immutableArray.Array);
+                return new ImmutableArray<T>((T[])array);
             }
 
             // We don't recognize the source as an array that is safe to use.
@@ -133,7 +138,7 @@ namespace System.Collections.Immutable
         }
 
         /// <summary>
-        /// Creates an empty <see cref="ImmutableArray{T}"/>.
+        /// Creates an <see cref="ImmutableArray{T}"/> with the specified elements.
         /// </summary>
         /// <typeparam name="T">The type of element stored in the array.</typeparam>
         /// <param name="items">The elements to store in the array.</param>
@@ -177,7 +182,7 @@ namespace System.Collections.Immutable
             }
 
             var array = new T[length];
-            for (int i = 0; i < length; i++)
+            for (int i = 0; i < array.Length; i++)
             {
                 array[i] = items[start + i];
             }
@@ -240,7 +245,7 @@ namespace System.Collections.Immutable
             }
 
             var array = new TResult[length];
-            for (int i = 0; i < length; i++)
+            for (int i = 0; i < array.Length; i++)
             {
                 array[i] = selector(items[i]);
             }
@@ -275,7 +280,7 @@ namespace System.Collections.Immutable
             }
 
             var array = new TResult[length];
-            for (int i = 0; i < length; i++)
+            for (int i = 0; i < array.Length; i++)
             {
                 array[i] = selector(items[i + start]);
             }
@@ -307,7 +312,7 @@ namespace System.Collections.Immutable
             }
 
             var array = new TResult[length];
-            for (int i = 0; i < length; i++)
+            for (int i = 0; i < array.Length; i++)
             {
                 array[i] = selector(items[i], arg);
             }
@@ -343,7 +348,7 @@ namespace System.Collections.Immutable
             }
 
             var array = new TResult[length];
-            for (int i = 0; i < length; i++)
+            for (int i = 0; i < array.Length; i++)
             {
                 array[i] = selector(items[i + start], arg);
             }
