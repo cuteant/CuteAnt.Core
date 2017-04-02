@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-#if !NET_4_0_GREATER
+#if NET40
 using System.Linq;
 #endif
 

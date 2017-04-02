@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+#if NET_4_5_GREATER
+using System.Threading;
+#endif
 
 namespace CuteAnt.AsyncEx
 {
@@ -22,7 +25,7 @@ namespace CuteAnt.AsyncEx
 
     /// <summary>A <see cref="Task"/> that has been completed.</summary>
 #if NET_4_5_GREATER
-    public static Task Completed => Task.CompletedTask;;
+    public static Task Completed => Task.CompletedTask;
 #else
     public static Task Completed => TaskConstants<AsyncVoid>.Default;
 #endif

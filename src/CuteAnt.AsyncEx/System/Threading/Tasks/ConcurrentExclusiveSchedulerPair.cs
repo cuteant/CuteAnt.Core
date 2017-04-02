@@ -1,4 +1,4 @@
-﻿#if !NET_4_0_GREATER
+﻿#if NET40
 // ==++==
 //
 //   Copyright (c) Microsoft Corporation.  All rights reserved.

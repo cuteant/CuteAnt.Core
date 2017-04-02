@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-#if !NET_4_0_GREATER
+#if NET40
 using CuteAnt.AsyncEx.Internal.PlatformEnlightenment;
 #endif
 
@@ -17,7 +17,7 @@ namespace CuteAnt.AsyncEx
 	{
 		#region @@ Constructors @@
 
-#if !NET_4_0_GREATER
+#if NET40
 		/// <summary>The <c>TaskCreationOptions.DenyChildAttach</c> value, if it exists; otherwise, <c>0</c>.</summary>
 		internal static readonly TaskCreationOptions _CreationDenyChildAttach;
 		/// <summary>The <c>TaskContinuationOptions.DenyChildAttach</c> value, if it exists; otherwise, <c>0</c>.</summary>

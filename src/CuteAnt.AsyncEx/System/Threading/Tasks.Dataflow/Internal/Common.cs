@@ -26,7 +26,7 @@ namespace System.Threading.Tasks.Dataflow.Internal
 	/// <summary>Internal helper utilities.</summary>
 	internal static class Common
 	{
-#if !NET_4_0_GREATER
+#if NET40
 		internal static WeakReference WrapWeakReference<T>(T state) where T : class
 		{
 			return new WeakReference(state);
