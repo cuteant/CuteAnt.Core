@@ -2,11 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-#if NET40
-[assembly: AssemblyTitle("CuteAnt.IdentityModel.Protocol.Extensions for .NetFx4.0")]
-#elif NET451 || DNX451
-[assembly: AssemblyTitle("CuteAnt.IdentityModel.Protocol.Extensions for .NetFx4.5")]
-#endif
+[assembly: AssemblyTitle("CuteAnt.IdentityModel.Protocol.Extensions")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 [assembly: AssemblyDescription("CuteAnt.IdentityModel.Protocol.Extensions Library (Flavor=Debug)")]

@@ -2,11 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-#if NET40
-[assembly: AssemblyTitle("CuteAnt.AsyncEx for .NetFx4.0")]
-#elif NET451 || DNX451
-[assembly: AssemblyTitle("CuteAnt.AsyncEx for .NetFx4.5")]
-#endif
+[assembly: AssemblyTitle("CuteAnt.AsyncEx")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 [assembly: AssemblyDescription("CuteAnt.AsyncEx Library (Flavor=Debug)")]

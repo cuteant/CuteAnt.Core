@@ -2,11 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-#if NET40
-[assembly: AssemblyTitle("CuteAnt.SharpSerializer for .NetFx4.0")]
-#elif NET451 || DNX451
-[assembly: AssemblyTitle("CuteAnt.SharpSerializer for .NetFx4.5")]
-#endif
+[assembly: AssemblyTitle("CuteAnt.SharpSerializer")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 [assembly: AssemblyDescription("CuteAnt.SharpSerializer Library (Flavor=Debug)")]

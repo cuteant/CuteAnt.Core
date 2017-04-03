@@ -2,11 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-#if NET40
-[assembly: AssemblyTitle("CuteAnt.Extensions.DependencyInjection for .NetFx4.0")]
-#elif NET451 || DNX451
-[assembly: AssemblyTitle("CuteAnt.Extensions.DependencyInjection for .NetFx4.5")]
-#endif
+[assembly: AssemblyTitle("CuteAnt.Extensions.DependencyInjection")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 [assembly: AssemblyDescription("CuteAnt.Extensions.DependencyInjection Library (Flavor=Debug)")]

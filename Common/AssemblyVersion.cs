@@ -5,7 +5,7 @@ namespace CuteAnt
   internal class AssemblyInfo
   {
     /// <summary>Copyright (c) 2000-2016 CuteAnt Development Team</summary>
-    public const String AssemblyCopyright = "Copyright (c) 2000-2016 CuteAnt Development Team";
+    public const String AssemblyCopyright = "Copyright (c) 2000-2017 CuteAnt Development Team";
 
     /// <summary>CuteAnt Development Team</summary>
     public const String AssemblyCompany = "CuteAnt Development Team(cuteant@outlook.com)";
@@ -28,17 +28,21 @@ namespace CuteAnt
     /// <summary>neutral</summary>
     public const String Culture = "neutral";
 
-#if NET40
+#if NETSTANDARD
+    /// <summary>4</summary>
+    public const String NETVersion = "1";
+#elif NET40
     /// <summary>4</summary>
     public const String NETVersion = "4";
-#elif NET451
-
+#elif NET45 || NET451 || NET452
     /// <summary>5</summary>
     public const String NETVersion = "5";
-
-#elif NET46
+#elif NET46 || NET461 || NET462 || NET463
     /// <summary>6</summary>
     public const String NETVersion = "6";
+#else
+    /// <summary>9</summary>
+    public const String NETVersion = "9";
 #endif
 
     /// <summary>1</summary>
@@ -62,7 +66,23 @@ namespace CuteAnt
     /// <summary>1.2
     /// - x´ú±íNetFX°æ±¾
     /// </summary>
-    public const String FileVersion = VersionShort + ".8.168";
+#if NETSTANDARD1_0 || NET40
+    public const String FileVersion = VersionShort + ".0.168";
+#elif NETSTANDARD1_1 || WINDOWS8 || NET45 || NETCORE45
+    public const String FileVersion = VersionShort + ".1000.168";
+#elif NETSTANDARD1_2 || WINDOWS81 || NET451 || NETCORE451 || WPA81
+    public const String FileVersion = VersionShort + ".2000.168";
+#elif NETSTANDARD1_3 || NET46
+    public const String FileVersion = VersionShort + ".3000.168";
+#elif NETSTANDARD1_4 || UAP10_0 || NETCORE50 || NET461
+    public const String FileVersion = VersionShort + ".4000.168";
+#elif NETSTANDARD1_5 || NET462
+    public const String FileVersion = VersionShort + ".5000.168";
+#elif NETSTANDARD1_6 || NETCOREAPP1_0 || NETCOREAPP1_1 || NET463
+    public const String FileVersion = VersionShort + ".6000.168";
+#else // this is here to prevent the build system from complaining. It should never be hit
+    public const String FileVersion = VersionShort + ".9000.168";
+#endif
 
     ///// <summary>
     ///// v1.x
