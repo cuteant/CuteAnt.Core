@@ -150,7 +150,7 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net461' or '$(TargetFramework)' == 'net451'">
     <PackageReference Include="Microsoft.Extensions.Logging">
-      <Version>1.1.1</Version>
+      <Version>1.1.2</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net40'">

@@ -61,8 +61,26 @@ namespace Microsoft.Extensions.Logging.NLog
     /// <returns></returns>
     public bool IsEnabled(MS_LogLevel logLevel)
     {
-      var convertLogLevel = ConvertLogLevel(logLevel);
-      return IsEnabled(convertLogLevel);
+      switch (logLevel)
+      {
+        case MS_LogLevel.Trace:
+          return _logger.IsTraceEnabled;
+        case MS_LogLevel.Debug:
+          return _logger.IsDebugEnabled;
+        case MS_LogLevel.Information:
+          return _logger.IsInfoEnabled;
+        case MS_LogLevel.Warning:
+          return _logger.IsWarnEnabled;
+        case MS_LogLevel.Error:
+          return _logger.IsErrorEnabled;
+        case MS_LogLevel.Critical:
+          return _logger.IsFatalEnabled;
+        case MS_LogLevel.None:
+        default:
+          return false;
+      }
+      //var convertLogLevel = ConvertLogLevel(logLevel);
+      //return IsEnabled(convertLogLevel);
     }
 
     /// <summary>
