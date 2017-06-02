@@ -6,7 +6,7 @@
   <Import Project="..\CoreVersion.props" />
   
   <PropertyGroup>
-    <TargetFrameworks>net461</TargetFrameworks>
+    <TargetFrameworks>net461;net451;net40</TargetFrameworks>
     <PlatformTarget>anycpu</PlatformTarget>
     <AssemblyName>CuteAnt.AsyncEx</AssemblyName>
     <RootNamespace>CuteAnt.AsyncEx</RootNamespace>
