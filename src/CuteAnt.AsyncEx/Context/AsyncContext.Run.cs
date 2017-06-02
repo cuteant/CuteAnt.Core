@@ -26,7 +26,11 @@ namespace CuteAnt.AsyncEx
       using (var context = new AsyncContext())
       {
         context.OperationStarted();
-        var task = context._taskFactory.Run(action, arg1);
+        var task = context._taskFactory.Run(action, arg1).ContinueWith(t =>
+        {
+          context.OperationCompleted();
+          t.WaitAndUnwrapException();
+        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, context._taskScheduler);
         context.Execute();
         task.WaitAndUnwrapException();
       }
@@ -38,7 +42,11 @@ namespace CuteAnt.AsyncEx
       using (var context = new AsyncContext())
       {
         context.OperationStarted();
-        var task = context._taskFactory.Run(action, arg1, arg2);
+        var task = context._taskFactory.Run(action, arg1, arg2).ContinueWith(t =>
+        {
+          context.OperationCompleted();
+          t.WaitAndUnwrapException();
+        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, context._taskScheduler);
         context.Execute();
         task.WaitAndUnwrapException();
       }
@@ -50,7 +58,11 @@ namespace CuteAnt.AsyncEx
       using (var context = new AsyncContext())
       {
         context.OperationStarted();
-        var task = context._taskFactory.Run(action, arg1, arg2, arg3);
+        var task = context._taskFactory.Run(action, arg1, arg2, arg3).ContinueWith(t =>
+        {
+          context.OperationCompleted();
+          t.WaitAndUnwrapException();
+        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, context._taskScheduler);
         context.Execute();
         task.WaitAndUnwrapException();
       }
@@ -62,7 +74,11 @@ namespace CuteAnt.AsyncEx
       using (var context = new AsyncContext())
       {
         context.OperationStarted();
-        var task = context._taskFactory.Run(action, arg1, arg2, arg3, arg4);
+        var task = context._taskFactory.Run(action, arg1, arg2, arg3, arg4).ContinueWith(t =>
+        {
+          context.OperationCompleted();
+          t.WaitAndUnwrapException();
+        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, context._taskScheduler);
         context.Execute();
         task.WaitAndUnwrapException();
       }
@@ -74,7 +90,11 @@ namespace CuteAnt.AsyncEx
       using (var context = new AsyncContext())
       {
         context.OperationStarted();
-        var task = context._taskFactory.Run(action, arg1, arg2, arg3, arg4, arg5);
+        var task = context._taskFactory.Run(action, arg1, arg2, arg3, arg4, arg5).ContinueWith(t =>
+        {
+          context.OperationCompleted();
+          t.WaitAndUnwrapException();
+        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, context._taskScheduler);
         context.Execute();
         task.WaitAndUnwrapException();
       }
@@ -87,7 +107,11 @@ namespace CuteAnt.AsyncEx
       using (var context = new AsyncContext())
       {
         context.OperationStarted();
-        var task = context._taskFactory.Run(action, arg1, arg2, arg3, arg4, arg5, arg6);
+        var task = context._taskFactory.Run(action, arg1, arg2, arg3, arg4, arg5, arg6).ContinueWith(t =>
+        {
+          context.OperationCompleted();
+          t.WaitAndUnwrapException();
+        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, context._taskScheduler);
         context.Execute();
         task.WaitAndUnwrapException();
       }
@@ -237,7 +261,11 @@ namespace CuteAnt.AsyncEx
       using (var context = new AsyncContext())
       {
         context.OperationStarted();
-        var task = context._taskFactory.Run(function, arg1);
+        var task = context._taskFactory.Run(function, arg1).ContinueWith(t =>
+        {
+          context.OperationCompleted();
+          return t.WaitAndUnwrapException();
+        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, context._taskScheduler);
         context.Execute();
         return task.WaitAndUnwrapException();
       }
@@ -249,7 +277,11 @@ namespace CuteAnt.AsyncEx
       using (var context = new AsyncContext())
       {
         context.OperationStarted();
-        var task = context._taskFactory.Run(function, arg1, arg2);
+        var task = context._taskFactory.Run(function, arg1, arg2).ContinueWith(t =>
+        {
+          context.OperationCompleted();
+          return t.WaitAndUnwrapException();
+        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, context._taskScheduler);
         context.Execute();
         return task.WaitAndUnwrapException();
       }
@@ -261,7 +293,11 @@ namespace CuteAnt.AsyncEx
       using (var context = new AsyncContext())
       {
         context.OperationStarted();
-        var task = context._taskFactory.Run(function, arg1, arg2, arg3);
+        var task = context._taskFactory.Run(function, arg1, arg2, arg3).ContinueWith(t =>
+        {
+          context.OperationCompleted();
+          return t.WaitAndUnwrapException();
+        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, context._taskScheduler);
         context.Execute();
         return task.WaitAndUnwrapException();
       }
@@ -273,7 +309,11 @@ namespace CuteAnt.AsyncEx
       using (var context = new AsyncContext())
       {
         context.OperationStarted();
-        var task = context._taskFactory.Run(function, arg1, arg2, arg3, arg4);
+        var task = context._taskFactory.Run(function, arg1, arg2, arg3, arg4).ContinueWith(t =>
+        {
+          context.OperationCompleted();
+          return t.WaitAndUnwrapException();
+        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, context._taskScheduler);
         context.Execute();
         return task.WaitAndUnwrapException();
       }
@@ -286,7 +326,11 @@ namespace CuteAnt.AsyncEx
       using (var context = new AsyncContext())
       {
         context.OperationStarted();
-        var task = context._taskFactory.Run(function, arg1, arg2, arg3, arg4, arg5);
+        var task = context._taskFactory.Run(function, arg1, arg2, arg3, arg4, arg5).ContinueWith(t =>
+        {
+          context.OperationCompleted();
+          return t.WaitAndUnwrapException();
+        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, context._taskScheduler);
         context.Execute();
         return task.WaitAndUnwrapException();
       }
@@ -299,7 +343,11 @@ namespace CuteAnt.AsyncEx
       using (var context = new AsyncContext())
       {
         context.OperationStarted();
-        var task = context._taskFactory.Run(function, arg1, arg2, arg3, arg4, arg5, arg6);
+        var task = context._taskFactory.Run(function, arg1, arg2, arg3, arg4, arg5, arg6).ContinueWith(t =>
+        {
+          context.OperationCompleted();
+          return t.WaitAndUnwrapException();
+        }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, context._taskScheduler);
         context.Execute();
         return task.WaitAndUnwrapException();
       }

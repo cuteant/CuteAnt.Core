@@ -35,6 +35,224 @@ namespace CuteAnt.AsyncEx.Tests
     public void Run_AsyncVoid_MultiParams_BlocksUntilCompletion()
     {
       var count = 0;
+      AsyncContext.Run((Action<int>)(async (a) =>
+      {
+        await Task.Yield();
+        count = a;
+      }), 1);
+      Assert.Equal(1, count);
+      AsyncContext.Run((Action<int, int>)(async (a, b) =>
+      {
+        await Task.Yield();
+        count = a + b;
+      }), 1, 1);
+      Assert.Equal(2, count);
+      AsyncContext.Run((Action<int, int, int>)(async (a, b, c) =>
+      {
+        await Task.Yield();
+        count = a + b + c;
+      }), 1, 1, 1);
+      Assert.Equal(3, count);
+      AsyncContext.Run((Action<int, int, int, int>)(async (a, b, c, d) =>
+      {
+        await Task.Yield();
+        count = a + b + c + d;
+      }), 1, 1, 1, 1);
+      Assert.Equal(4, count);
+      AsyncContext.Run((Action<int, int, int, int, int>)(async (a, b, c, d, e) =>
+      {
+        await Task.Yield();
+        count = a + b + c + d + e;
+      }), 1, 1, 1, 1, 1);
+      Assert.Equal(5, count);
+      AsyncContext.Run((Action<int, int, int, int, int, int>)(async (a, b, c, d, e, f) =>
+      {
+        await Task.Yield();
+        count = a + b + c + d + e + f;
+      }), 1, 1, 1, 1, 1, 1);
+      Assert.Equal(6, count);
+
+      AsyncContext.Run((a) =>
+      {
+        count = a;
+      }, 1);
+      Assert.Equal(1, count);
+      AsyncContext.Run((a, b) =>
+      {
+        count = a + b;
+      }, 1, 1);
+      Assert.Equal(2, count);
+      AsyncContext.Run((a, b, c) =>
+      {
+        count = a + b + c;
+      }, 1, 1, 1);
+      Assert.Equal(3, count);
+      AsyncContext.Run((a, b, c, d) =>
+      {
+        count = a + b + c + d;
+      }, 1, 1, 1, 1);
+      Assert.Equal(4, count);
+      AsyncContext.Run((a, b, c, d, e) =>
+      {
+        count = a + b + c + d + e;
+      }, 1, 1, 1, 1, 1);
+      Assert.Equal(5, count);
+      AsyncContext.Run((a, b, c, d, e, f) =>
+      {
+        count = a + b + c + d + e + f;
+      }, 1, 1, 1, 1, 1, 1);
+      Assert.Equal(6, count);
+    }
+
+    [Fact]
+    public void Run_FuncThatCallsAsyncVoid_BlocksUntilCompletion()
+    {
+      bool resumed = false;
+      var result = AsyncContext.Run((Func<int>)(() =>
+      {
+        Action asyncVoid = async () =>
+              {
+                await Task.Yield();
+                resumed = true;
+              };
+        asyncVoid();
+        return 13;
+      }));
+      Assert.True(resumed);
+      Assert.Equal(13, result);
+    }
+
+    [Fact]
+    public void Run_FuncThatCallsAsyncVoid_MultiParams_BlocksUntilCompletion()
+    {
+      bool resumed = false;
+      var result = AsyncContext.Run(((a) =>
+      {
+        Action asyncVoid = async () =>
+              {
+                await Task.Yield();
+                resumed = true;
+              };
+        asyncVoid();
+        return a;
+      }), 1);
+      Assert.True(resumed);
+      Assert.Equal(1, result);
+      resumed = false;
+      result = AsyncContext.Run(((a, b) =>
+      {
+        Action asyncVoid = async () =>
+              {
+                await Task.Yield();
+                resumed = true;
+              };
+        asyncVoid();
+        return a + b;
+      }), 1, 1);
+      Assert.True(resumed);
+      Assert.Equal(2, result);
+      resumed = false;
+      result = AsyncContext.Run(((a, b, c) =>
+      {
+        Action asyncVoid = async () =>
+              {
+                await Task.Yield();
+                resumed = true;
+              };
+        asyncVoid();
+        return a + b + c;
+      }), 1, 1, 1);
+      Assert.True(resumed);
+      Assert.Equal(3, result);
+      resumed = false;
+      result = AsyncContext.Run(((a, b, c, d) =>
+      {
+        Action asyncVoid = async () =>
+              {
+                await Task.Yield();
+                resumed = true;
+              };
+        asyncVoid();
+        return a + b + c + d;
+      }), 1, 1, 1, 1);
+      Assert.True(resumed);
+      Assert.Equal(4, result);
+      resumed = false;
+      result = AsyncContext.Run(((a, b, c, d, e) =>
+      {
+        Action asyncVoid = async () =>
+              {
+                await Task.Yield();
+                resumed = true;
+              };
+        asyncVoid();
+        return a + b + c + d + e;
+      }), 1, 1, 1, 1, 1);
+      Assert.True(resumed);
+      Assert.Equal(5, result);
+      resumed = false;
+      result = AsyncContext.Run(((a, b, c, d, e, f) =>
+      {
+        Action asyncVoid = async () =>
+              {
+                await Task.Yield();
+                resumed = true;
+              };
+        asyncVoid();
+        return a + b + c + d + e + f;
+      }), 1, 1, 1, 1, 1, 1);
+      Assert.True(resumed);
+      Assert.Equal(6, result);
+
+
+      result = AsyncContext.Run(((a) =>
+      {
+        return a;
+      }), 1);
+      Assert.Equal(1, result);
+      result = AsyncContext.Run(((a, b) =>
+      {
+        return a + b;
+      }), 1, 1);
+      Assert.Equal(2, result);
+      result = AsyncContext.Run(((a, b, c) =>
+      {
+        return a + b + c;
+      }), 1, 1, 1);
+      Assert.Equal(3, result);
+      result = AsyncContext.Run(((a, b, c, d) =>
+      {
+        return a + b + c + d;
+      }), 1, 1, 1, 1);
+      Assert.Equal(4, result);
+      result = AsyncContext.Run(((a, b, c, d, e) =>
+      {
+        return a + b + c + d + e;
+      }), 1, 1, 1, 1, 1);
+      Assert.Equal(5, result);
+      result = AsyncContext.Run(((a, b, c, d, e, f) =>
+      {
+        return a + b + c + d + e + f;
+      }), 1, 1, 1, 1, 1, 1);
+      Assert.Equal(6, result);
+    }
+
+    [Fact]
+    public void Run_AsyncTask_BlocksUntilCompletion()
+    {
+      bool resumed = false;
+      AsyncContext.Run(async () =>
+      {
+        await Task.Yield();
+        resumed = true;
+      });
+      Assert.True(resumed);
+    }
+
+    [Fact]
+    public void Run_AsyncTask_MultiParams_BlocksUntilCompletion()
+    {
+      var count = 0;
       AsyncContext.Run((async (a) =>
       {
         await Task.Yield();
@@ -74,36 +292,6 @@ namespace CuteAnt.AsyncEx.Tests
     }
 
     [Fact]
-    public void Run_FuncThatCallsAsyncVoid_BlocksUntilCompletion()
-    {
-      bool resumed = false;
-      var result = AsyncContext.Run((Func<int>)(() =>
-      {
-        Action asyncVoid = async () =>
-              {
-                await Task.Yield();
-                resumed = true;
-              };
-        asyncVoid();
-        return 13;
-      }));
-      Assert.True(resumed);
-      Assert.Equal(13, result);
-    }
-
-    [Fact]
-    public void Run_AsyncTask_BlocksUntilCompletion()
-    {
-      bool resumed = false;
-      AsyncContext.Run(async () =>
-      {
-        await Task.Yield();
-        resumed = true;
-      });
-      Assert.True(resumed);
-    }
-
-    [Fact]
     public void Run_AsyncTaskWithResult_BlocksUntilCompletion()
     {
       bool resumed = false;
@@ -115,6 +303,46 @@ namespace CuteAnt.AsyncEx.Tests
       });
       Assert.True(resumed);
       Assert.Equal(17, result);
+    }
+    [Fact]
+    public void Run_AsyncTaskWithResult_MultiParams_BlocksUntilCompletion()
+    {
+      var result = AsyncContext.Run((async (a) =>
+      {
+        await Task.Yield();
+        return a;
+      }), 1);
+      Assert.Equal(1, result);
+      result = AsyncContext.Run((async (a, b) =>
+      {
+        await Task.Yield();
+        return a + b;
+      }), 1, 1);
+      Assert.Equal(2, result);
+      result = AsyncContext.Run((async (a, b, c) =>
+      {
+        await Task.Yield();
+        return a + b + c;
+      }), 1, 1, 1);
+      Assert.Equal(3, result);
+      result = AsyncContext.Run((async (a, b, c, d) =>
+      {
+        await Task.Yield();
+        return a + b + c + d;
+      }), 1, 1, 1, 1);
+      Assert.Equal(4, result);
+      result = AsyncContext.Run((async (a, b, c, d, e) =>
+      {
+        await Task.Yield();
+        return a + b + c + d + e;
+      }), 1, 1, 1, 1, 1);
+      Assert.Equal(5, result);
+      result = AsyncContext.Run((async (a, b, c, d, e, f) =>
+      {
+        await Task.Yield();
+        return a + b + c + d + e + f;
+      }), 1, 1, 1, 1, 1, 1);
+      Assert.Equal(6, result);
     }
 
     [Fact]
