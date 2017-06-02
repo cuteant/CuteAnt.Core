@@ -2,10 +2,11 @@
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Sources\CuteAnt.Extensions.Sources.projitems" Label="Shared" />
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.projitems" Label="Shared" />
+  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.TaskFactory.Sources\CuteAnt.Extensions.TaskFactory.Sources.projitems" Label="Shared" />
   <Import Project="..\CoreVersion.props" />
   
   <PropertyGroup>
-    <TargetFrameworks>net461;net451;net40</TargetFrameworks>
+    <TargetFrameworks>net461</TargetFrameworks>
     <PlatformTarget>anycpu</PlatformTarget>
     <AssemblyName>CuteAnt.AsyncEx</AssemblyName>
     <RootNamespace>CuteAnt.AsyncEx</RootNamespace>
