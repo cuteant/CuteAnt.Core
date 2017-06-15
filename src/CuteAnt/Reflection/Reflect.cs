@@ -9,12 +9,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Xml.Serialization;
@@ -1755,7 +1753,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static object GetPropertyInfoValue(this object target, PropertyInfo property)
     {
-      return GetValueGetter(property)?.Invoke(target);
+      return GetValueGetter(property).Invoke(target);
     }
 
     /// <summary>获取目标对象的属性值</summary>
@@ -1767,15 +1765,15 @@ namespace CuteAnt.Reflection
     {
       var getter = GetValueGetter(property);
 
-      if (getter != null)
-      {
-        value = getter(target);
-        return true;
-      }
-      else
+      if (null == getter || getter.IsEmpty())
       {
         value = null;
         return false;
+      }
+      else
+      {
+        value = getter(target);
+        return true;
       }
     }
 
@@ -1859,7 +1857,7 @@ namespace CuteAnt.Reflection
     /// <param name="value">数值</param>
     public static void SetPropertyInfoValue(this object target, PropertyInfo property, object value)
     {
-      GetValueSetter(property)?.Invoke(target, value);
+      GetValueSetter(property).Invoke(target, value);
     }
 
     /// <summary>设置目标对象的属性值</summary>
@@ -1869,12 +1867,9 @@ namespace CuteAnt.Reflection
     public static bool TrySetPropertyInfoValue(this object target, PropertyInfo property, object value)
     {
       var setter = GetValueSetter(property);
-      if (setter != null)
-      {
-        setter(target, value);
-        return true;
-      }
-      return false;
+      if (null == setter || setter.IsEmpty()) { return false; }
+      setter(target, value);
+      return true;
     }
 
     /// <summary>设置目标对象的字段值</summary>
@@ -1892,6 +1887,8 @@ namespace CuteAnt.Reflection
 
     public static bool IsEmpty(this MemberGetter getter) => object.ReferenceEquals(TypeAccessorHelper.EmptyMemberGetter, getter);
     public static bool IsEmpty<T>(this MemberGetter<T> getter) => object.ReferenceEquals(TypeAccessorHelper<T>.EmptyMemberGetter, getter);
+    public static bool IsNullOrEmpty(this MemberGetter getter) => null == getter || object.ReferenceEquals(TypeAccessorHelper.EmptyMemberGetter, getter);
+    public static bool IsNullOrEmpty<T>(this MemberGetter<T> getter) => null == getter || object.ReferenceEquals(TypeAccessorHelper<T>.EmptyMemberGetter, getter);
 
     #endregion
 
@@ -1899,6 +1896,8 @@ namespace CuteAnt.Reflection
 
     public static bool IsEmpty(this MemberSetter setter) => object.ReferenceEquals(TypeAccessorHelper.EmptyMemberSetter, setter);
     public static bool IsEmpty<T>(this MemberSetter<T> setter) => object.ReferenceEquals(TypeAccessorHelper<T>.EmptyMemberSetter, setter);
+    public static bool IsNullOrEmpty(this MemberSetter setter) => null == setter || object.ReferenceEquals(TypeAccessorHelper.EmptyMemberSetter, setter);
+    public static bool IsNullOrEmpty<T>(this MemberSetter<T> setter) => null == setter || object.ReferenceEquals(TypeAccessorHelper<T>.EmptyMemberSetter, setter);
 
     #endregion
 
