@@ -137,8 +137,8 @@ namespace CuteAnt.Reflection
 
       var declaringType = memberInfo.GetDeclaringType();
       return !declaringType.IsInterface()
-          ? new DynamicMethod(name, ThisType, s_dynamicGetMethodArgs, declaringType, true)
-          : new DynamicMethod(name, ThisType, s_dynamicGetMethodArgs, memberInfo.Module, true);
+          ? new DynamicMethod(name, s_objectType, s_dynamicGetMethodArgs, declaringType, true)
+          : new DynamicMethod(name, s_objectType, s_dynamicGetMethodArgs, memberInfo.Module, true);
     }
 
     #endregion
