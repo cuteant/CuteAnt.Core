@@ -63,10 +63,10 @@ namespace CuteAnt.Reflection
       set { _SetMethod = value; }
     }
 
-    private Func<object, object> _GetHandler;
+    private MemberGetter _GetHandler;
 
     /// <summary>快速调用委托，延迟到首次使用才创建</summary>
-    public Func<object, object> GetHandler
+    public MemberGetter GetHandler
     {
       get
       {
@@ -80,10 +80,10 @@ namespace CuteAnt.Reflection
       }
     }
 
-    private Action<object, object> _SetHandler;
+    private MemberSetter _SetHandler;
 
     /// <summary>快速调用委托，延迟到首次使用才创建</summary>
-    public Action<object, object> SetHandler
+    public MemberSetter SetHandler
     {
       get
       {
@@ -157,7 +157,7 @@ namespace CuteAnt.Reflection
 
     //private delegate void FastSetValueHandler(Object obj, Object value);
 
-    private static Func<object, object> GetValueInvoker(MethodInfo method)
+    private static MemberGetter GetValueInvoker(MethodInfo method)
     {
       //定义一个没有名字的动态方法
       var dynamicMethod = new DynamicMethod(String.Empty, typeof(Object), new Type[] { typeof(Object) }, method.DeclaringType.Module, true);
@@ -171,10 +171,10 @@ namespace CuteAnt.Reflection
           .BoxIfValueType(method.ReturnType)
           .Ret();
 
-      return (Func<object, object>)dynamicMethod.CreateDelegate(typeof(Func<object, object>));
+      return (MemberGetter)dynamicMethod.CreateDelegate(typeof(MemberGetter));
     }
 
-    private static Action<object, object> SetValueInvoker(MethodInfo method)
+    private static MemberSetter SetValueInvoker(MethodInfo method)
     {
       //定义一个没有名字的动态方法
       var dynamicMethod = new DynamicMethod(String.Empty, null, new Type[] { typeof(Object), typeof(Object) }, method.DeclaringType.Module, true);
@@ -189,7 +189,7 @@ namespace CuteAnt.Reflection
           .Call(method)
           .Ret();
 
-      return (Action<object, object>)dynamicMethod.CreateDelegate(typeof(Action<object, object>));
+      return (MemberSetter)dynamicMethod.CreateDelegate(typeof(MemberSetter));
     }
 
     #endregion 创建动态方法

@@ -196,19 +196,19 @@ namespace CuteAnt.Reflection.Tests
       {
         idx++;
         var setter = item.GetValueSetter<User>();
-        if (setter == null) { continue; }
+        if (setter.IsEmpty()) { continue; }
         setter(user, idx);
         var getter = item.GetValueGetter<User>();
-        if (getter != null) Assert.Equal(idx, (int)getter(user));
+        if (!getter.IsEmpty()) Assert.Equal(idx, (int)getter(user));
       }
       foreach (var item in myuserProperties)
       {
         idx++;
         var setter = item.GetValueSetter<MyUser>();
-        if (setter == null) { continue; }
+        if (setter.IsEmpty()) { continue; }
         setter(myuser, idx);
         var getter = item.GetValueGetter<MyUser>();
-        if (getter != null) Assert.Equal(idx, (int)getter(myuser));
+        if (!getter.IsEmpty()) Assert.Equal(idx, (int)getter(myuser));
       }
     }
 

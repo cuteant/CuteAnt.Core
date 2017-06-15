@@ -11,27 +11,27 @@ namespace CuteAnt.Reflection.Tests
   {
     private static readonly int s_counter = 1000000;
 
-    private static readonly Func<MyUser, object> GetIdFn;
+    private static readonly MemberGetter<MyUser> GetIdFn;
 
-    private static readonly Func<object, object> PublicFieldGetHandler;
-    private static readonly Action<object, object> PublicFieldSetHandler;
-    private static readonly Func<object, object> PublicStaticFieldGetHandler;
-    private static readonly Action<object, object> PublicStaticFieldSetHandler;
+    private static readonly MemberGetter PublicFieldGetHandler;
+    private static readonly MemberSetter PublicFieldSetHandler;
+    private static readonly MemberGetter PublicStaticFieldGetHandler;
+    private static readonly MemberSetter PublicStaticFieldSetHandler;
 
-    private static readonly Func<User, object> PublicFieldGetter;
-    private static readonly Action<User, object> PublicFieldSetter;
-    private static readonly Func<User, object> PublicStaticFieldGetter;
-    private static readonly Action<User, object> PublicStaticFieldSetter;
+    private static readonly MemberGetter<User> PublicFieldGetter;
+    private static readonly MemberSetter<User> PublicFieldSetter;
+    private static readonly MemberGetter<User> PublicStaticFieldGetter;
+    private static readonly MemberSetter<User> PublicStaticFieldSetter;
 
-    private static readonly Func<object, object> PublicPropertyGetHandler;
-    private static readonly Action<object, object> PublicPropertySetHandler;
-    private static readonly Func<object, object> PublicStaticPropertyGetHandler;
-    private static readonly Action<object, object> PublicStaticPropertySetHandler;
+    private static readonly MemberGetter PublicPropertyGetHandler;
+    private static readonly MemberSetter PublicPropertySetHandler;
+    private static readonly MemberGetter PublicStaticPropertyGetHandler;
+    private static readonly MemberSetter PublicStaticPropertySetHandler;
 
-    private static readonly Func<User, object> PublicPropertyGetter;
-    private static readonly Action<User, object> PublicPropertySetter;
-    private static readonly Func<User, object> PublicStaticPropertyGetter;
-    private static readonly Action<User, object> PublicStaticPropertySetter;
+    private static readonly MemberGetter<User> PublicPropertyGetter;
+    private static readonly MemberSetter<User> PublicPropertySetter;
+    private static readonly MemberGetter<User> PublicStaticPropertyGetter;
+    private static readonly MemberSetter<User> PublicStaticPropertySetter;
 
     static ReflectionPerformanceTests()
     {
@@ -71,15 +71,15 @@ namespace CuteAnt.Reflection.Tests
       var oInstanceParam = System.Linq.Expressions.Expression.Parameter(typeof(MyUser), "oInstanceParam");
       var exprCallStaticMethod = System.Linq.Expressions.Expression.Call
           (
-              genericType,
-              "GetId",
-              EmptyArray<Type>.Instance,
-              oInstanceParam
+            genericType,
+            "GetId",
+            EmptyArray<Type>.Instance,
+            oInstanceParam
           );
-      GetIdFn = System.Linq.Expressions.Expression.Lambda<Func<MyUser, object>>
+      GetIdFn = System.Linq.Expressions.Expression.Lambda<MemberGetter<MyUser>>
           (
-              exprCallStaticMethod,
-              oInstanceParam
+            exprCallStaticMethod,
+            oInstanceParam
           ).Compile();
     }
 
