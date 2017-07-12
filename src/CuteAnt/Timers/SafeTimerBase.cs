@@ -110,7 +110,7 @@ namespace CuteAnt.Runtime
     }
 
     public static bool CheckTimerDelay(DateTime previousTickTime, int totalNumTicks,
-                    TimeSpan dueTime, TimeSpan timerFrequency, ILogger logger, Func<string> getName, int errorCode, bool freezeCheck)
+      TimeSpan dueTime, TimeSpan timerFrequency, ILogger logger, Func<string> getName, int errorCode, bool freezeCheck)
     {
       TimeSpan timeSinceLastTick = DateTime.UtcNow - previousTickTime;
       TimeSpan exceptedTimeToNexTick = totalNumTicks == 0 ? dueTime : timerFrequency;

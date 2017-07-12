@@ -40,7 +40,7 @@ namespace CuteAnt.Runtime
 
     // May be called by finalizer thread with disposing=false. As per guidelines, in such a case do not touch other objects.
     // Dispose() may be called multiple times
-    protected void Dispose(bool disposing)
+    public void Dispose(bool disposing)
     {
       if (disposing)
       {
