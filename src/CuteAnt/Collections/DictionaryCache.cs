@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using CuteAnt.Runtime;
+using Microsoft.Extensions.Logging;
 
 namespace CuteAnt.Collections
 {
@@ -53,6 +54,8 @@ namespace CuteAnt.Collections
   public class DictionaryCache<TKey, TValue> : /*DisposeBase, */IDictionary<TKey, TValue>, IDisposable
   {
     #region -- 字段 --
+
+    private static readonly ILogger s_logger = TraceLogger.GetLogger("CuteAnt.Collections.DictionaryCache");
 
     // The default concurrency level is DEFAULT_CONCURRENCY_MULTIPLIER * #CPUs. The higher the
     // DEFAULT_CONCURRENCY_MULTIPLIER, the more concurrent writes can take place without interference
@@ -148,7 +151,7 @@ namespace CuteAnt.Collections
       this._cacheCleanupInterval = (cleanupFreq <= TimeSpan.Zero) ? TimeoutShim.InfiniteTimeSpan : cleanupFreq;
       if (TimeoutShim.InfiniteTimeSpan != _cacheCleanupInterval)
       {
-        _cacheCleanupTimer = new SafeTimer(InternCacheCleanupTimerCallback, null, _cacheCleanupInterval, _cacheCleanupInterval);
+        _cacheCleanupTimer = new SafeTimer(s_logger, InternCacheCleanupTimerCallback, null, _cacheCleanupInterval, _cacheCleanupInterval);
       }
     }
 

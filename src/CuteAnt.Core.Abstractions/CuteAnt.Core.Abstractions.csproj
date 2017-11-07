@@ -13,10 +13,6 @@
     <PackageTags>CuteAnt Core</PackageTags>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Serialization\" />
-  </ItemGroup>
-
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.ValidationHelper.Sources\CuteAnt.Extensions.ValidationHelper.Sources.projitems" Label="Shared" />
 
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Collection.Sources\CuteAnt.Extensions.Collection.Sources.projitems" Label="Shared" />

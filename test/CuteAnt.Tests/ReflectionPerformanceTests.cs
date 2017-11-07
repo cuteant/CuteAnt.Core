@@ -13,20 +13,10 @@ namespace CuteAnt.Reflection.Tests
 
     private static readonly MemberGetter<MyUser> GetIdFn;
 
-    private static readonly MemberGetter PublicFieldGetHandler;
-    private static readonly MemberSetter PublicFieldSetHandler;
-    private static readonly MemberGetter PublicStaticFieldGetHandler;
-    private static readonly MemberSetter PublicStaticFieldSetHandler;
-
     private static readonly MemberGetter<User> PublicFieldGetter;
     private static readonly MemberSetter<User> PublicFieldSetter;
     private static readonly MemberGetter<User> PublicStaticFieldGetter;
     private static readonly MemberSetter<User> PublicStaticFieldSetter;
-
-    private static readonly MemberGetter PublicPropertyGetHandler;
-    private static readonly MemberSetter PublicPropertySetHandler;
-    private static readonly MemberGetter PublicStaticPropertyGetHandler;
-    private static readonly MemberSetter PublicStaticPropertySetHandler;
 
     private static readonly MemberGetter<User> PublicPropertyGetter;
     private static readonly MemberSetter<User> PublicPropertySetter;
@@ -39,26 +29,18 @@ namespace CuteAnt.Reflection.Tests
       var myuserType = typeof(MyUser);
 
       var field = userType.GetTypeField("PublicField");
-      PublicFieldGetHandler = FieldInfoX.Create(field).GetHandler;
-      PublicFieldSetHandler = FieldInfoX.Create(field).SetHandler;
       PublicFieldGetter = field.GetValueGetter<User>();
       PublicFieldSetter = field.GetValueSetter<User>();
 
       field = userType.GetTypeField("PublicStaticField");
-      PublicStaticFieldGetHandler = FieldInfoX.Create(field).GetHandler;
-      PublicStaticFieldSetHandler = FieldInfoX.Create(field).SetHandler;
       PublicStaticFieldGetter = field.GetValueGetter<User>();
       PublicStaticFieldSetter = field.GetValueSetter<User>();
 
       var property = userType.GetTypeProperty("PublicProperty");
-      PublicPropertyGetHandler = PropertyInfoX.Create(property).GetHandler;
-      PublicPropertySetHandler = PropertyInfoX.Create(property).SetHandler;
       PublicPropertyGetter = property.GetValueGetter<User>();
       PublicPropertySetter = property.GetValueSetter<User>();
 
       property = userType.GetTypeProperty("PublicStaticProperty");
-      PublicStaticPropertyGetHandler = PropertyInfoX.Create(property).GetHandler;
-      PublicStaticPropertySetHandler = PropertyInfoX.Create(property).SetHandler;
       PublicStaticPropertyGetter = property.GetValueGetter<User>();
       PublicStaticPropertySetter = property.GetValueSetter<User>();
 
@@ -84,18 +66,6 @@ namespace CuteAnt.Reflection.Tests
     }
 
     [Fact]
-    public void DynamicFieldPerformanceTest()
-    {
-      var user = new User();
-      var idx = 0;
-      while (idx <= s_counter)
-      {
-        idx++;
-        PublicFieldSetHandler(user, idx);
-        Assert.Equal(idx, PublicFieldGetHandler(user));
-      }
-    }
-    [Fact]
     public void ExpressionFieldPerformanceTest()
     {
       var user = new User();
@@ -108,18 +78,6 @@ namespace CuteAnt.Reflection.Tests
       }
     }
 
-    [Fact]
-    public void DynamicStaticFieldPerformanceTest()
-    {
-      var user = new User();
-      var idx = 0;
-      while (idx <= s_counter)
-      {
-        idx++;
-        PublicStaticFieldSetHandler(user, idx);
-        Assert.Equal(idx, PublicStaticFieldGetHandler(user));
-      }
-    }
     [Fact]
     public void ExpressionStaticFieldPerformanceTest()
     {
@@ -148,18 +106,6 @@ namespace CuteAnt.Reflection.Tests
     }
 
     [Fact]
-    public void DynamicPropertyPerformanceTest()
-    {
-      var user = new User();
-      var idx = 0;
-      while (idx <= s_counter)
-      {
-        idx++;
-        PublicPropertySetHandler(user, idx);
-        Assert.Equal(idx, PublicPropertyGetHandler(user));
-      }
-    }
-    [Fact]
     public void ExpressionPropertyPerformanceTest()
     {
       var user = new User();
@@ -172,18 +118,6 @@ namespace CuteAnt.Reflection.Tests
       }
     }
 
-    [Fact]
-    public void DynamicStaticPropertyPerformanceTest()
-    {
-      var user = new User();
-      var idx = 0;
-      while (idx <= s_counter)
-      {
-        idx++;
-        PublicStaticPropertySetHandler(user, idx);
-        Assert.Equal(idx, PublicStaticPropertyGetHandler(user));
-      }
-    }
     [Fact]
     public void ExpressionStaticPropertyPerformanceTest()
     {

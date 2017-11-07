@@ -1,0 +1,34 @@
+<Project>
+  <PropertyGroup>
+    <_ParentDirectoryBuildPropsPath Condition="'$(_DirectoryBuildPropsFile)' != ''">$([System.IO.Path]::Combine('..', '$(_DirectoryBuildPropsFile)'))</_ParentDirectoryBuildPropsPath>
+  </PropertyGroup>
+
+  <Import Project="$(_ParentDirectoryBuildPropsPath)" Condition="Exists('$(_ParentDirectoryBuildPropsPath)')"/>
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <!-- Needed for tests to force the generation of binding redirects -->
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
+
+  <!-- For test project we still need to target various desktop .Net versions instead of .Net Standard -->
+  <PropertyGroup>
+    <TargetFramework>$(TestProjectTargetFramework)</TargetFramework>
+  </PropertyGroup>
+
+  <!-- To make CodeLens and Test Explorer happy, we're generating full symbols -->
+  <PropertyGroup>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+  <!-- Needed for to not to have failed tests because wrong binding redirects were generated for older packages -->
+  <ItemGroup>
+    <PackageReference Include="System.Net.Http" Version="$(SystemNetHttpVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">
+    <PackageReference Include="xunit.runner.visualstudio" Version="$(xUnitVersion)" />
+  </ItemGroup>
+</Project>

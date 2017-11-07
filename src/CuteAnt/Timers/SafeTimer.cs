@@ -1,50 +1,53 @@
 ﻿using System;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 
 namespace CuteAnt.Runtime
 {
-  /// <summary>SafeTimer - A wrapper class around .NET Timer objects, with some additional built-in safeguards against edge-case errors.
+  /// <summary>
+  /// SafeTimer - A wrapper class around .NET Timer objects, with some additional built-in safeguards against edge-case errors.
   /// 
   /// SafeTimer is a replacement for .NET Timer objects, and removes some of the more infrequently used method overloads for simplification.
   /// SafeTimer provides centralization of various "guard code" previously added in various places for handling edge-case fault conditions.
   /// 
-  /// Log levels used: Recovered faults => Warning, Per-Timer operations => Verbose, Per-tick operations => Verbose3 </summary>
-  internal sealed class SafeTimer : IDisposable
+  /// Log levels used: Recovered faults => Warning, Per-Timer operations => Verbose, Per-tick operations => Verbose3
+  /// </summary>
+  public class SafeTimer : IDisposable
   {
-    private readonly SafeTimerBase m_safeTimerBase;
-    private readonly TimerCallback m_callbackFunc;
+    private readonly SafeTimerBase safeTimerBase;
+    private readonly TimerCallback callbackFunc;
 
-    public SafeTimer(TimerCallback callback, object state)
+    public SafeTimer(ILogger logger, TimerCallback callback, object state)
     {
-      m_callbackFunc = callback;
-      m_safeTimerBase = new SafeTimerBase(m_callbackFunc, state);
+      callbackFunc = callback;
+      safeTimerBase = new SafeTimerBase(logger, callbackFunc, state);
     }
 
-    public SafeTimer(TimerCallback callback, object state, TimeSpan dueTime, TimeSpan period)
+    public SafeTimer(ILogger logger, TimerCallback callback, object state, TimeSpan dueTime, TimeSpan period)
     {
-      m_callbackFunc = callback;
-      m_safeTimerBase = new SafeTimerBase(m_callbackFunc, state, dueTime, period);
+      callbackFunc = callback;
+      safeTimerBase = new SafeTimerBase(logger, callbackFunc, state, dueTime, period);
     }
 
     public void Start(TimeSpan dueTime, TimeSpan period)
     {
-      m_safeTimerBase.Start(dueTime, period);
+      safeTimerBase.Start(dueTime, period);
     }
 
     #region IDisposable Members
 
     public void Dispose()
     {
-      m_safeTimerBase.Dispose();
+      safeTimerBase.Dispose();
     }
 
     // May be called by finalizer thread with disposing=false. As per guidelines, in such a case do not touch other objects.
     // Dispose() may be called multiple times
-    public void Dispose(bool disposing)
+    protected virtual void Dispose(bool disposing)
     {
       if (disposing)
       {
-        m_safeTimerBase.DisposeTimer();
+        safeTimerBase.DisposeTimer();
       }
     }
 
@@ -52,12 +55,12 @@ namespace CuteAnt.Runtime
 
     internal string GetFullName()
     {
-      return String.Format("SafeTimer: {0}. ", m_callbackFunc != null ? m_callbackFunc.GetType().FullName : "");
+      return String.Format("SafeTimer: {0}. ", callbackFunc != null ? callbackFunc.GetType().FullName : "");
     }
 
     public bool CheckTimerFreeze(DateTime lastCheckTime, Func<string> callerName)
     {
-      return m_safeTimerBase.CheckTimerFreeze(lastCheckTime, callerName);
+      return safeTimerBase.CheckTimerFreeze(lastCheckTime, callerName);
     }
   }
 }

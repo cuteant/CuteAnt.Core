@@ -1,60 +1,87 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace CuteAnt.Runtime
 {
   /// <summary>SafeTimerBase - an internal base class for implementing sync and async timers.</summary>
-  internal class SafeTimerBase : IDisposable
+  public class SafeTimerBase : IDisposable
   {
-    private const string c_syncTimerName = "sync.SafeTimerBase";
+#if !NET40
+    private const string asyncTimerName = "CuteAnt.Runtime.asynTask.SafeTimerBase";
+#endif
+    private const string syncTimerName = "CuteAnt.Runtime.sync.SafeTimerBase";
 
-    private static readonly ILogger s_logger = TraceLogger.GetLogger("CuteAnt.Runtime." + c_syncTimerName);//, LoggerType.Runtime);
+    // This needs to be first, as GrainId static initializers reference it. Otherwise, GrainId actually see a uninitialized (ie Zero) value for that "constant"!
+    private static readonly TimeSpan INFINITE_TIMESPAN = TimeSpan.FromMilliseconds(-1);
 
-    private Timer m_timer;
-    private TimerCallback m_syncCallbackFunc;
-    private TimeSpan m_dueTime;
-    private TimeSpan m_timerFrequency;
-    private bool m_timerStarted;
-    private DateTime m_previousTickTime;
-    private int m_totalNumTicks;
+    private Timer timer;
+#if !NET40
+    private Func<object, Task> asynTaskCallback;
+#endif
+    private TimerCallback syncCallbackFunc;
+    private TimeSpan dueTime;
+    private TimeSpan timerFrequency;
+    private bool timerStarted;
+    private DateTime previousTickTime;
+    private int totalNumTicks;
+    private ILogger logger;
 
-    public SafeTimerBase(TimerCallback syncCallback, object state)
+#if !NET40
+    internal SafeTimerBase(ILogger logger, Func<object, Task> asynTaskCallback, object state)
     {
-      Init(syncCallback, state, TimeoutShim.InfiniteTimeSpan, TimeoutShim.InfiniteTimeSpan);
+      Init(logger, asynTaskCallback, null, state, INFINITE_TIMESPAN, INFINITE_TIMESPAN);
     }
 
-    public SafeTimerBase(TimerCallback syncCallback, object state, TimeSpan dueTime, TimeSpan period)
+    internal SafeTimerBase(ILogger logger, Func<object, Task> asynTaskCallback, object state, TimeSpan dueTime, TimeSpan period)
     {
-      Init(syncCallback, state, dueTime, period);
+      Init(logger, asynTaskCallback, null, state, dueTime, period);
+      Start(dueTime, period);
+    }
+#endif
+
+    internal SafeTimerBase(ILogger logger, TimerCallback syncCallback, object state)
+    {
+      Init(logger, null, syncCallback, state, INFINITE_TIMESPAN, INFINITE_TIMESPAN);
+    }
+
+    internal SafeTimerBase(ILogger logger, TimerCallback syncCallback, object state, TimeSpan dueTime, TimeSpan period)
+    {
+      Init(logger, null, syncCallback, state, dueTime, period);
       Start(dueTime, period);
     }
 
     public void Start(TimeSpan due, TimeSpan period)
     {
-      if (m_timerStarted) throw new InvalidOperationException(String.Format("Calling start on timer {0} is not allowed, since it was already created in a started mode with specified due.", GetFullName()));
-      if (period == TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(period), period, "Cannot use TimeSpan.Zero for timer period");
+      if (timerStarted) throw new InvalidOperationException(String.Format("Calling start on timer {0} is not allowed, since it was already created in a started mode with specified due.", GetFullName()));
+      if (period == TimeSpan.Zero) throw new ArgumentOutOfRangeException("period", period, "Cannot use TimeSpan.Zero for timer period");
 
-      m_timerFrequency = period;
-      m_dueTime = due;
-      m_timerStarted = true;
-      m_previousTickTime = DateTime.UtcNow;
-      m_timer.Change(due, TimeoutShim.InfiniteTimeSpan);
+      timerFrequency = period;
+      dueTime = due;
+      timerStarted = true;
+      previousTickTime = DateTime.UtcNow;
+      timer.Change(due, INFINITE_TIMESPAN);
     }
 
-    private void Init(TimerCallback synCallback, object state, TimeSpan due, TimeSpan period)
+    private void Init(ILogger logger, Func<object, Task> asynCallback, TimerCallback synCallback, object state, TimeSpan due, TimeSpan period)
     {
-      if (synCallback == null) { throw new ArgumentNullException(nameof(synCallback)); }
-      if (period == TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(period), period, "Cannot use TimeSpan.Zero for timer period");
+      if (synCallback == null && asynCallback == null) throw new ArgumentNullException("synCallback", "Cannot use null for both sync and asyncTask timer callbacks.");
+      int numNonNulls = (asynCallback != null ? 1 : 0) + (synCallback != null ? 1 : 0);
+      if (numNonNulls > 1) throw new ArgumentNullException("synCallback", "Cannot define more than one timer callbacks. Pick one.");
+      if (period == TimeSpan.Zero) throw new ArgumentOutOfRangeException("period", period, "Cannot use TimeSpan.Zero for timer period");
 
-      m_syncCallbackFunc = synCallback;
-      m_timerFrequency = period;
-      this.m_dueTime = due;
-      m_totalNumTicks = 0;
+#if !NET40
+      this.asynTaskCallback = asynCallback;
+#endif
+      syncCallbackFunc = synCallback;
+      timerFrequency = period;
+      this.dueTime = due;
+      totalNumTicks = 0;
+      this.logger = logger;
+      if (logger.IsDebugLevelEnabled()) logger.LogDebug("Creating timer {0} with dueTime={1} period={2}", GetFullName(), due, period);
 
-      if (s_logger.IsTraceLevelEnabled()) s_logger.LogTrace(ErrorCode.TimerChanging, "Creating timer {0} with dueTime={1} period={2}", GetFullName(), due, period);
-
-      m_timer = new Timer(HandleTimerCallback, state, TimeoutShim.InfiniteTimeSpan, TimeoutShim.InfiniteTimeSpan);
+      timer = new Timer(HandleTimerCallback, state, INFINITE_TIMESPAN, INFINITE_TIMESPAN);
     }
 
     #region IDisposable Members
@@ -78,35 +105,46 @@ namespace CuteAnt.Runtime
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     internal void DisposeTimer()
     {
-      if (m_timer != null)
+      if (timer != null)
       {
         try
         {
-          var t = m_timer;
-          m_timer = null;
-          if (s_logger.IsTraceLevelEnabled()) s_logger.LogTrace(ErrorCode.TimerDisposing, "Disposing timer {0}", GetFullName());
+          var t = timer;
+          timer = null;
+          if (logger.IsDebugLevelEnabled()) logger.LogDebug("Disposing timer {0}", GetFullName());
           t.Dispose();
 
         }
         catch (Exception exc)
         {
-          s_logger.LogWarning(ErrorCode.TimerDisposeError, exc, "Ignored error disposing timer {0}", GetFullName());
+          logger.LogWarning(exc, "Ignored error disposing timer {0}", GetFullName());
         }
       }
     }
 
     #endregion
 
-    private string GetFullName() => c_syncTimerName;
+    private string GetFullName()
+    {
+#if !NET40
+      // the type information is really useless and just too long. 
+      if (syncCallbackFunc != null) { return syncTimerName; }
+      if (asynTaskCallback != null) { return asyncTimerName; }
+
+      throw new InvalidOperationException("invalid SafeTimerBase state");
+#else
+      return syncTimerName;
+#endif
+    }
 
     public bool CheckTimerFreeze(DateTime lastCheckTime, Func<string> callerName)
     {
-      return CheckTimerDelay(m_previousTickTime, m_totalNumTicks,
-                  m_dueTime, m_timerFrequency, s_logger, () => String.Format("{0}.{1}", GetFullName(), callerName()), ErrorCode.Timer_SafeTimerIsNotTicking, true);
+      return CheckTimerDelay(previousTickTime, totalNumTicks,
+                  dueTime, timerFrequency, logger, () => String.Format("{0}.{1}", GetFullName(), callerName()), true);
     }
 
     public static bool CheckTimerDelay(DateTime previousTickTime, int totalNumTicks,
-      TimeSpan dueTime, TimeSpan timerFrequency, ILogger logger, Func<string> getName, int errorCode, bool freezeCheck)
+                    TimeSpan dueTime, TimeSpan timerFrequency, ILogger logger, Func<string> getName, bool freezeCheck)
     {
       TimeSpan timeSinceLastTick = DateTime.UtcNow - previousTickTime;
       TimeSpan exceptedTimeToNexTick = totalNumTicks == 0 ? dueTime : timerFrequency;
@@ -125,17 +163,17 @@ namespace CuteAnt.Runtime
       var errMsg = String.Format("{0}{1} did not fire on time. Last fired at {2}, {3} since previous fire, should have fired after {4}.",
           freezeCheck ? "Watchdog Freeze Alert: " : "-", // 0
           getName == null ? "" : getName(),   // 1
-          previousTickTime.Format(), // 2
+          TraceLogger.PrintDate(previousTickTime), // 2
           timeSinceLastTick,                  // 3
           exceptedTimeToNexTick);             // 4
 
       if (freezeCheck)
       {
-        logger.LogError(errorCode, errMsg);
+        logger.LogError(errMsg);
       }
       else
       {
-        logger.LogWarning(errorCode, errMsg);
+        logger.LogError(errMsg);
       }
       return false;
     }
@@ -149,31 +187,42 @@ namespace CuteAnt.Runtime
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     private bool Change(TimeSpan newDueTime, TimeSpan period)
     {
-      if (period == TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(period), period, string.Format("Cannot use TimeSpan.Zero for timer {0} period", GetFullName()));
+      if (period == TimeSpan.Zero) throw new ArgumentOutOfRangeException("period", period, string.Format("Cannot use TimeSpan.Zero for timer {0} period", GetFullName()));
 
-      if (m_timer == null) return false;
+      if (timer == null) return false;
 
-      m_timerFrequency = period;
+      timerFrequency = period;
 
-      if (s_logger.IsTraceLevelEnabled()) s_logger.LogTrace(ErrorCode.TimerChanging, "Changing timer {0} to dueTime={1} period={2}", GetFullName(), newDueTime, period);
+      if (logger.IsDebugLevelEnabled()) logger.LogDebug("Changing timer {0} to dueTime={1} period={2}", GetFullName(), newDueTime, period);
 
       try
       {
         // Queue first new timer tick
-        return m_timer.Change(newDueTime, TimeoutShim.InfiniteTimeSpan);
+        return timer.Change(newDueTime, INFINITE_TIMESPAN);
       }
       catch (Exception exc)
       {
-        s_logger.LogWarning(ErrorCode.TimerChangeError, exc, "Error changing timer period - timer {0} not changed", GetFullName());
+        logger.LogWarning(exc, "Error changing timer period - timer {0} not changed", GetFullName());
         return false;
       }
     }
 
     private void HandleTimerCallback(object state)
     {
-      if (m_timer == null) return;
+      if (timer == null) return;
 
-      HandleSyncTimerCallback(state);
+#if !NET40
+      if (asynTaskCallback != null)
+      {
+        HandleAsyncTaskTimerCallback(state);
+      }
+      else
+      {
+        HandleSyncTimerCallback(state);
+      }
+#else
+        HandleSyncTimerCallback(state);
+#endif
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
@@ -181,86 +230,91 @@ namespace CuteAnt.Runtime
     {
       try
       {
-        if (s_logger.IsDebugLevelEnabled()) s_logger.LogDebug(ErrorCode.TimerBeforeCallback, "About to make sync timer callback for timer {0}", GetFullName());
-        m_syncCallbackFunc(state);
-        if (s_logger.IsDebugLevelEnabled()) s_logger.LogDebug(ErrorCode.TimerAfterCallback, "Completed sync timer callback for timer {0}", GetFullName());
+        var traceEnabled = logger.IsTraceLevelEnabled();
+        if (traceEnabled) logger.LogTrace("About to make sync timer callback for timer {0}", GetFullName());
+        syncCallbackFunc(state);
+        if (traceEnabled) logger.LogTrace("Completed sync timer callback for timer {0}", GetFullName());
       }
       catch (Exception exc)
       {
-        s_logger.LogWarning(ErrorCode.TimerCallbackError, exc, "Ignored exception {0} during sync timer callback {1}", exc.Message, GetFullName());
+        logger.LogWarning(exc, "Ignored exception {0} during sync timer callback {1}", exc.Message, GetFullName());
       }
       finally
       {
-        m_previousTickTime = DateTime.UtcNow;
+        previousTickTime = DateTime.UtcNow;
         // Queue next timer callback
         QueueNextTimerTick();
       }
     }
+
+#if !NET40
+    private async void HandleAsyncTaskTimerCallback(object state)
+    {
+      if (timer == null) return;
+
+      // There is a subtle race/issue here w.r.t unobserved promises.
+      // It may happen than the asyncCallbackFunc will resolve some promises on which the higher level application code is depends upon
+      // and this promise's await or CW will fire before the below code (after await or Finally) even runs.
+      // In the unit test case this may lead to the situation where unit test has finished, but p1 or p2 or p3 have not been observed yet.
+      // To properly fix this we may use a mutex/monitor to delay execution of asyncCallbackFunc until all CWs and Finally in the code below were scheduled 
+      // (not until CW lambda was run, but just until CW function itself executed). 
+      // This however will relay on scheduler executing these in separate threads to prevent deadlock, so needs to be done carefully. 
+      // In particular, need to make sure we execute asyncCallbackFunc in another thread (so use StartNew instead of ExecuteWithSafeTryCatch).
+
+      try
+      {
+        var traceEnabled = logger.IsTraceLevelEnabled();
+        if (traceEnabled) logger.LogTrace("About to make async task timer callback for timer {0}", GetFullName());
+        await asynTaskCallback(state);
+        if (traceEnabled) logger.LogTrace("Completed async task timer callback for timer {0}", GetFullName());
+      }
+      catch (Exception exc)
+      {
+        logger.LogWarning(exc, "Ignored exception {0} during async task timer callback {1}", exc.Message, GetFullName());
+      }
+      finally
+      {
+        previousTickTime = DateTime.UtcNow;
+        // Queue next timer callback
+        QueueNextTimerTick();
+      }
+    }
+#endif
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     private void QueueNextTimerTick()
     {
       try
       {
-        if (m_timer == null) return;
+        if (timer == null) { return; }
 
-        m_totalNumTicks++;
+        totalNumTicks++;
 
-        if (s_logger.IsDebugLevelEnabled()) s_logger.LogDebug(ErrorCode.TimerChanging, "About to QueueNextTimerTick for timer {0}", GetFullName());
+        var traceEnabled = logger.IsTraceLevelEnabled();
+        if (traceEnabled) logger.LogTrace("About to QueueNextTimerTick for timer {0}", GetFullName());
 
-        if (m_timerFrequency == TimeoutShim.InfiniteTimeSpan)
+        if (timerFrequency == INFINITE_TIMESPAN)
         {
           //timer.Change(Constants.INFINITE_TIMESPAN, Constants.INFINITE_TIMESPAN);
           DisposeTimer();
 
-          if (s_logger.IsTraceLevelEnabled()) s_logger.LogTrace(ErrorCode.TimerStopped, "Timer {0} is now stopped and disposed", GetFullName());
+          if (traceEnabled) logger.LogTrace("Timer {0} is now stopped and disposed", GetFullName());
         }
         else
         {
-          m_timer.Change(m_timerFrequency, TimeoutShim.InfiniteTimeSpan);
+          timer.Change(timerFrequency, INFINITE_TIMESPAN);
 
-          if (s_logger.IsDebugLevelEnabled()) s_logger.LogDebug(ErrorCode.TimerNextTick, "Queued next tick for timer {0} in {1}", GetFullName(), m_timerFrequency);
+          if (traceEnabled) logger.LogTrace("Queued next tick for timer {0} in {1}", GetFullName(), timerFrequency);
         }
       }
       catch (ObjectDisposedException ode)
       {
-        s_logger.LogWarning(ErrorCode.TimerDisposeError, ode, "Timer {0} already disposed - will not queue next timer tick", GetFullName());
+        logger.LogWarning(ode, "Timer {0} already disposed - will not queue next timer tick", GetFullName());
       }
       catch (Exception exc)
       {
-        s_logger.LogError(ErrorCode.TimerQueueTickError, exc, "Error queueing next timer tick - WARNING: timer {0} is now stopped", GetFullName());
+        logger.LogError(exc, "Error queueing next timer tick - WARNING: timer {0} is now stopped", GetFullName());
       }
     }
-
-    #region ** class ErrorCode **
-
-    sealed class ErrorCode
-    {
-      internal const int Runtime = 100000;
-
-      internal const int PerfCounterBase = Runtime + 700;
-      internal const int PerfCounterTimerError = PerfCounterBase + 17;
-
-      internal const int TimerBase = Runtime + 1400;
-      internal const int TimerChangeError = PerfCounterTimerError; // Backward compatability
-
-      internal const int TimerCallbackError = Runtime + 37; // Backward compatability
-      internal const int TimerDisposeError = TimerBase + 1;
-      internal const int TimerStopError = TimerBase + 2;
-      internal const int TimerQueueTickError = TimerBase + 3;
-      internal const int TimerChanging = TimerBase + 4;
-      internal const int TimerBeforeCallback = TimerBase + 5;
-      internal const int TimerAfterCallback = TimerBase + 6;
-      internal const int TimerNextTick = TimerBase + 7;
-      internal const int TimerDisposing = TimerBase + 8;
-      internal const int TimerStopped = TimerBase + 9;
-      internal const int Timer_TimerInsideGrainIsNotTicking = TimerBase + 10;
-      internal const int Timer_TimerInsideGrainIsDelayed = TimerBase + 11;
-      internal const int Timer_SafeTimerIsNotTicking = TimerBase + 12;
-      internal const int Timer_GrainTimerCallbackError = TimerBase + 13;
-      internal const int Timer_InvalidContext = TimerBase + 14;
-    }
-
-    #endregion
   }
 }
