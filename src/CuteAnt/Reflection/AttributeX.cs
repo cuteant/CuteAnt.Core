@@ -343,6 +343,16 @@ namespace System
 
       if (GetRuntimeAttributes(type).Any(_ => _.GetType() == attributeType)) { return true; }
 
+      //if (type.Assembly.ReflectionOnly || attributeType.Assembly.ReflectionOnly)
+      //{
+      //  type = TypeUtils.ToReflectionOnlyType(type);
+      //  attributeType = TypeUtils.ToReflectionOnlyType(attributeType);
+
+      //  // we can't use Type.GetCustomAttributes here because we could potentially be working with a reflection-only type.
+      //  return CustomAttributeData.GetCustomAttributes(type).Any(
+      //          attrib => attributeType.IsAssignableFrom(attrib.AttributeTypeEx()));
+      //}
+
       return GetCustomAttributesX(type, null, inherit).Any(_ => _.GetType() == attributeType);
     }
 
@@ -458,9 +468,9 @@ namespace System
 
       // 二级字典缓存
       var cache = typeCache.GetItem(type, k => new DictionaryCache<Type, Attribute[]>());
-      return cache.GetItem(attributeType, type, inherit, (at, mi, inh) =>
+      return cache.GetItem(attributeType, type, inherit, (at, t, inh) =>
       {
-        var attrs = Attribute.GetCustomAttributes(mi, at, inh);
+        var attrs = Attribute.GetCustomAttributes(t, at, inh);
         return attrs != null ? attrs : EmptyArray<Attribute>.Instance;
       });
     }

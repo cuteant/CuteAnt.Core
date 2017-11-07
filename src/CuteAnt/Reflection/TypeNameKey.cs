@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace CuteAnt.Reflection
 {
+  // 这儿的 TypeName 存储的是 Type.AssemblyQualifiedName, 与 Newtonsoft.Json 不同需要注意
   internal struct TypeNameKey : IEquatable<TypeNameKey>
   {
     internal readonly string AssemblyName;
@@ -17,9 +18,10 @@ namespace CuteAnt.Reflection
 
     public override int GetHashCode()
     {
-      var comparer = StringComparer.Ordinal;
-      return (AssemblyName != null ? comparer.GetHashCode(AssemblyName) : 0) ^
-             (TypeName != null ? comparer.GetHashCode(TypeName) : 0);
+      //var comparer = StringComparer.Ordinal;
+      //return (AssemblyName != null ? comparer.GetHashCode(AssemblyName) : 0) ^
+      //       (TypeName != null ? comparer.GetHashCode(TypeName) : 0);
+      return StringComparer.Ordinal.GetHashCode(TypeName);
     }
 
     public override bool Equals(object obj)
@@ -31,8 +33,9 @@ namespace CuteAnt.Reflection
 
     public bool Equals(TypeNameKey other)
     {
-      return (string.Equals(AssemblyName, other.AssemblyName, StringComparison.Ordinal) &&
-              string.Equals(TypeName, other.TypeName, StringComparison.Ordinal));
+      return StringComparer.Ordinal.Equals(TypeName, other.TypeName);
+      //return (string.Equals(AssemblyName, other.AssemblyName, StringComparison.Ordinal) &&
+      //        string.Equals(TypeName, other.TypeName, StringComparison.Ordinal));
     }
   }
 
@@ -77,10 +80,10 @@ namespace CuteAnt.Reflection
     public int Compare(TypeNameKey x, TypeNameKey y)
     {
       var v = s_stringComparer.Compare(x.TypeName, y.TypeName);
-      if (v == 0)
-      {
-        return s_stringComparer.Compare(x.AssemblyName, y.AssemblyName);
-      }
+      //if (v == 0)
+      //{
+      //  return s_stringComparer.Compare(x.AssemblyName, y.AssemblyName);
+      //}
       return v;
     }
 
@@ -118,12 +121,13 @@ namespace CuteAnt.Reflection
     /// <inheritdoc />
     public bool Equals(TypeNameKey x, TypeNameKey y)
     {
-      return (string.Equals(x.AssemblyName, y.AssemblyName, StringComparison.Ordinal) &&
-              string.Equals(x.TypeName, y.TypeName, StringComparison.Ordinal));
+      return s_stringComparer.Equals(x.TypeName, y.TypeName);
+      //return (string.Equals(x.AssemblyName, y.AssemblyName, StringComparison.Ordinal) &&
+      //        string.Equals(x.TypeName, y.TypeName, StringComparison.Ordinal));
     }
 
     /// <inheritdoc />
-    public int GetHashCode(TypeNameKey obj) => obj.GetHashCode();
+    public int GetHashCode(TypeNameKey obj) => s_stringComparer.GetHashCode(obj.TypeName);// => obj.GetHashCode();
 
     #endregion
   }

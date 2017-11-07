@@ -1,20 +1,4 @@
 ﻿
-//using System;
-//using System.Reflection;
-//using System.Resources;
-//using System.Runtime.CompilerServices;
-//using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
-//// 有关程序集的常规信息通过以下
-//// 特性集控制。更改这些特性值可修改
-//// 与程序集关联的信息。
-//[assembly: AssemblyTitle("CuteAnt")]
-//#if DEBUG
-//[assembly: AssemblyConfiguration("Debug")]
-//[assembly: AssemblyDescription("Core Library (Flavor=Debug)")]
-//#else
-//[assembly: AssemblyConfiguration("Retail")]
-//[assembly: AssemblyDescription("Core Library (Flavor=Retail)")]
-//#endif
-//// 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
-//[assembly: Guid("DB46B13A-906F-426C-B84B-A840D9FF2433")]
+[assembly: InternalsVisibleTo("CuteAnt.Tests, PublicKey=00240000048000009400000006020000002400005253413100040000010001003df2cefc3e3c196195f046768979f5998131a23270da7485c84d0e46175140c4227e93fe392829d51d1e1ffbe0d6edb3bb0b2b05556f829f2f1a184f23ce052e2b2134ba0ae7aa9143a7959cea16accb18d1417bf48dabac10c2c0828ede943c5960e85713ca29eea555959ea6dbdd41d1000bf62da370883c4dc5c3508a22df")]

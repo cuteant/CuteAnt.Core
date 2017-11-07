@@ -19,7 +19,10 @@ namespace CuteAnt.Serialization
     /// <returns>The type of the object the formatter creates a new instance of.</returns>
     public override Type BindToType(string assemblyName, string typeName)
     {
-      return TypeUtils.ResolveType(new TypeNameKey(assemblyName, typeName));
+      //return TypeUtils.ResolveType(new TypeNameKey(assemblyName, typeName));
+
+      // 这儿的 TypeName 存储的是 Type.AssemblyQualifiedName, 与 Newtonsoft.Json 不同需要注意
+      return TypeUtils.ResolveType(new TypeNameKey(assemblyName, typeName + (assemblyName == null ? "" : ", " + assemblyName)));
     }
 
     /// <summary>When overridden in a derived class, controls the binding of a serialized object to a type.</summary>

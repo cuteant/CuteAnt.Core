@@ -134,7 +134,9 @@ namespace CuteAnt.Reflection
       return typeName;
     }
 
-    private static readonly Func<Type, string> _getSimpleTypeNameFunc = GetSimpleTypeNameInternal;
+    // 这里不采用 Json.Net 的代码
+    //private static readonly Func<Type, string> _getSimpleTypeNameFunc = GetSimpleTypeNameInternal;
+    private static readonly Func<Type, string> _getSimpleTypeNameFunc = RuntimeTypeNameFormatter.Format;
     private static readonly DictionaryCache<Type, string> _simpleTypeNameCache = new DictionaryCache<Type, string>(DictionaryCacheConstants.SIZE_MEDIUM);
 
     public static string GetSimpleTypeName(Type type)
@@ -143,57 +145,57 @@ namespace CuteAnt.Reflection
       return _simpleTypeNameCache.GetItem(type, _getSimpleTypeNameFunc);
     }
 
-    private static string GetSimpleTypeNameInternal(Type type)
-    {
-      string fullyQualifiedTypeName = type.AssemblyQualifiedName;
+    //private static string GetSimpleTypeNameInternal(Type type)
+    //{
+    //  string fullyQualifiedTypeName = type.AssemblyQualifiedName;
 
-      return RemoveAssemblyDetails(fullyQualifiedTypeName);
-    }
+    //  return RemoveAssemblyDetails(fullyQualifiedTypeName);
+    //}
 
-    private static string RemoveAssemblyDetails(string fullyQualifiedTypeName)
-    {
-      var builder = new StringBuilder();
+    //private static string RemoveAssemblyDetails(string fullyQualifiedTypeName)
+    //{
+    //  var builder = new StringBuilder();
 
-      // loop through the type name and filter out qualified assembly details from nested type names
-      bool writingAssemblyName = false;
-      bool skippingAssemblyDetails = false;
-      for (int i = 0; i < fullyQualifiedTypeName.Length; i++)
-      {
-        char current = fullyQualifiedTypeName[i];
-        switch (current)
-        {
-          case '[':
-            writingAssemblyName = false;
-            skippingAssemblyDetails = false;
-            builder.Append(current);
-            break;
-          case ']':
-            writingAssemblyName = false;
-            skippingAssemblyDetails = false;
-            builder.Append(current);
-            break;
-          case ',':
-            if (!writingAssemblyName)
-            {
-              writingAssemblyName = true;
-              builder.Append(current);
-            }
-            else
-            {
-              skippingAssemblyDetails = true;
-            }
-            break;
-          default:
-            if (!skippingAssemblyDetails)
-            {
-              builder.Append(current);
-            }
-            break;
-        }
-      }
+    //  // loop through the type name and filter out qualified assembly details from nested type names
+    //  bool writingAssemblyName = false;
+    //  bool skippingAssemblyDetails = false;
+    //  for (int i = 0; i < fullyQualifiedTypeName.Length; i++)
+    //  {
+    //    char current = fullyQualifiedTypeName[i];
+    //    switch (current)
+    //    {
+    //      case '[':
+    //        writingAssemblyName = false;
+    //        skippingAssemblyDetails = false;
+    //        builder.Append(current);
+    //        break;
+    //      case ']':
+    //        writingAssemblyName = false;
+    //        skippingAssemblyDetails = false;
+    //        builder.Append(current);
+    //        break;
+    //      case ',':
+    //        if (!writingAssemblyName)
+    //        {
+    //          writingAssemblyName = true;
+    //          builder.Append(current);
+    //        }
+    //        else
+    //        {
+    //          skippingAssemblyDetails = true;
+    //        }
+    //        break;
+    //      default:
+    //        if (!skippingAssemblyDetails)
+    //        {
+    //          builder.Append(current);
+    //        }
+    //        break;
+    //    }
+    //  }
 
-      return builder.ToString();
-    }
+    //  return builder.ToString();
+    //}
 
     #endregion
 
@@ -574,6 +576,8 @@ namespace CuteAnt.Reflection
 
     #endregion
 
+    #region -- GetAllFields --
+
     /// <summary>Returns all fields of the specified type.</summary>
     /// <param name="type">The type.</param>
     /// <returns>All fields of the specified type.</returns>
@@ -594,6 +598,8 @@ namespace CuteAnt.Reflection
       }
     }
 
+    #endregion
+
     #region -- IsNotSerialized --
 
     /// <summary>Returns <see langword="true"/> if <paramref name="field"/> is marked as
@@ -606,12 +612,16 @@ namespace CuteAnt.Reflection
 
     #endregion
 
+    #region -- IsGeneratedType --
+
 #if !NET40
     public static bool IsGeneratedType(Type type)
     {
       return TypeHasAttribute(type, typeof(GeneratedCodeAttribute));
     }
 #endif
+
+    #endregion
 
     #region -- IsInNamespace --
 
@@ -672,6 +682,8 @@ namespace CuteAnt.Reflection
 
     #endregion
 
+    #region -- ResolveReflectionOnlyType / ToReflectionOnlyType --
+
     public static Type ResolveReflectionOnlyType(string assemblyQualifiedName)
     {
       return ReflectionOnlyTypeResolver.ResolveType(assemblyQualifiedName);
@@ -688,6 +700,8 @@ namespace CuteAnt.Reflection
         return type;
       }
     }
+
+    #endregion
 
     #region -- GetTypes / GetDefinedTypes --
 
@@ -786,8 +800,10 @@ namespace CuteAnt.Reflection
 
     #endregion
 
+    #region == TypeHasAttribute ==
+
 #if !NET40
-    public static bool TypeHasAttribute(Type type, Type attribType)
+    internal static bool TypeHasAttribute(Type type, Type attribType)
     {
       if (type.Assembly.ReflectionOnly || attribType.Assembly.ReflectionOnly)
       {
@@ -802,11 +818,13 @@ namespace CuteAnt.Reflection
       return TypeHasAttribute(type.GetTypeInfo(), attribType);
     }
 
-    public static bool TypeHasAttribute(TypeInfo typeInfo, Type attribType)
+    internal static bool TypeHasAttribute(TypeInfo typeInfo, Type attribType)
     {
       return typeInfo.GetCustomAttributes(attribType, true).Any();
     }
 #endif
+
+    #endregion
 
     #region -- GetSuitableClassName --
 
@@ -1447,7 +1465,7 @@ namespace CuteAnt.Reflection
         }
         else if (typeof(Type).IsAssignableFrom(conversionType))
         {
-          return ResolveReflectionOnlyType((String)value);
+          return ResolveType((String)value);
         }
 
         // 字符串转为简单整型，如果长度比较小，满足32位整型要求，则先转为32位再改变类型
@@ -1820,20 +1838,25 @@ namespace CuteAnt.Reflection
         type = assembly.GetType(typeName, false);
         if (type == null)
         {
-          // if generic type, try manually parsing the type arguments for the case of dynamically loaded assemblies
-          // example generic typeName format: System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]
-          if (typeName.IndexOf('`') >= 0)
-          {
-            try
-            {
-              type = GetGenericTypeFromTypeName(typeName, assembly);
-            }
-            catch //(Exception ex)
-            {
-              return false;
-              //throw new SerializationException("Could not find type '{0}' in assembly '{1}'.".FormatWith(typeName, assembly.FullName), ex);
-            }
-          }
+          //// if generic type, try manually parsing the type arguments for the case of dynamically loaded assemblies
+          //// example generic typeName format: System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]
+          //if (typeName.IndexOf('`') >= 0)
+          //{
+          //  try
+          //  {
+          //    type = GetGenericTypeFromTypeName(typeName, assembly);
+          //  }
+          //  catch //(Exception ex)
+          //  {
+          //    return false;
+          //    //throw new SerializationException("Could not find type '{0}' in assembly '{1}'.".FormatWith(typeName, assembly.FullName), ex);
+          //  }
+          //}
+
+          // 这儿如果采用 Newtonsoft.Json 的代码，是无法通过 RuntimeTypeNameFormatterTests 测试的
+
+          type = Type.GetType(typeName, throwOnError: false)
+              ?? Type.GetType(typeName, ResolveAssembly, ResolveType, false);
         }
       }
       else
@@ -1950,21 +1973,25 @@ namespace CuteAnt.Reflection
     {
       int? assemblyDelimiterIndex = GetAssemblyDelimiterIndex(fullyQualifiedTypeName);
 
-      string typeName;
-      string assemblyName;
+      //string typeName;
+      string assemblyName = null;
 
+      //if (assemblyDelimiterIndex != null)
+      //{
+      //  typeName = fullyQualifiedTypeName.Trim(0, assemblyDelimiterIndex.GetValueOrDefault());
+      //  assemblyName = fullyQualifiedTypeName.Trim(assemblyDelimiterIndex.GetValueOrDefault() + 1, fullyQualifiedTypeName.Length - assemblyDelimiterIndex.GetValueOrDefault() - 1);
+      //}
+      //else
+      //{
+      //  typeName = fullyQualifiedTypeName;
+      //}
+
+      //return new TypeNameKey(assemblyName, typeName);
       if (assemblyDelimiterIndex != null)
       {
-        typeName = fullyQualifiedTypeName.Trim(0, assemblyDelimiterIndex.GetValueOrDefault());
         assemblyName = fullyQualifiedTypeName.Trim(assemblyDelimiterIndex.GetValueOrDefault() + 1, fullyQualifiedTypeName.Length - assemblyDelimiterIndex.GetValueOrDefault() - 1);
       }
-      else
-      {
-        typeName = fullyQualifiedTypeName;
-        assemblyName = null;
-      }
-
-      return new TypeNameKey(assemblyName, typeName);
+      return new TypeNameKey(assemblyName, fullyQualifiedTypeName);
     }
 
     private static int? GetAssemblyDelimiterIndex(string fullyQualifiedTypeName)
