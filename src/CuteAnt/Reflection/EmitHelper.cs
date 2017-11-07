@@ -236,7 +236,7 @@ namespace CuteAnt.Reflection
             break;
 
           default:
-            throw new HmExceptionBase("{0}不支持的类型{1}", "Ldind", type);
+            throw new Exception("{0}不支持的类型{1}".FormatWith("Ldind", type));
         }
       }
       return IL;
@@ -309,7 +309,7 @@ namespace CuteAnt.Reflection
             break;
 
           default:
-            throw new HmExceptionBase("{0}不支持的类型{1}", "Stind", type);
+            throw new Exception("{0}不支持的类型{1}".FormatWith("Stind", type));
         }
       }
       return IL;

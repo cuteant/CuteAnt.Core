@@ -12,7 +12,7 @@ namespace CuteAnt.Reflection
 
     internal const string c_field = "Field";
     internal const string c_property = "Property";
-    private static readonly Type s_objectType = TypeX._.Object;
+    private static readonly Type s_objectType = TypeUtils._.Object;
     internal static readonly Type s_voidType = typeof(void);
     private static readonly Type[] s_dynamicGetMethodArgs = { s_objectType };
     private static readonly Type[] s_dynamicSetMethodArgs = { s_objectType, s_objectType };
@@ -38,14 +38,14 @@ namespace CuteAnt.Reflection
       Expression result;
       var expressionType = expression.Type;
 
-      if (targetType.IsAssignableFromType(expressionType))
+      if (targetType.IsAssignableFrom(expressionType))
       {
         result = expression;
       }
       else
       {
         // Check if we can use the as operator for casting or if we must use the convert method
-        if (targetType.IsValueType() && !targetType.IsNullableType())
+        if (targetType.IsValueType && !targetType.IsNullableType())
         {
           result = Expression.Convert(expression, targetType);
         }
@@ -83,7 +83,7 @@ namespace CuteAnt.Reflection
       var name = $"_Get{memberType}_{memberInfo.Name}_";
 
       var declaringType = memberInfo.GetDeclaringType();
-      return !declaringType.IsInterface()
+      return !declaringType.IsInterface
           ? new DynamicMethod(name, s_objectType, s_dynamicGetMethodArgs, declaringType, true)
           : new DynamicMethod(name, s_objectType, s_dynamicGetMethodArgs, memberInfo.Module, true);
     }
@@ -98,7 +98,7 @@ namespace CuteAnt.Reflection
       var name = $"_Set{memberType}_{memberInfo.Name}_";
 
       var declaringType = memberInfo.GetDeclaringType();
-      return !declaringType.IsInterface()
+      return !declaringType.IsInterface
           ? new DynamicMethod(name, s_voidType, s_dynamicSetMethodArgs, declaringType, true)
           : new DynamicMethod(name, s_voidType, s_dynamicSetMethodArgs, memberInfo.Module, true);
     }
@@ -114,11 +114,11 @@ namespace CuteAnt.Reflection
 
     private const string c_field = TypeAccessorHelper.c_field;
     private const string c_property = TypeAccessorHelper.c_property;
-    private static readonly Type s_objectType = TypeX._.Object;
+    private static readonly Type s_objectType = TypeUtils._.Object;
     private static readonly Type s_voidType = TypeAccessorHelper.s_voidType;
 
     private static readonly Type[] s_dynamicGetMethodArgs = new Type[] { ThisType };
-    private static readonly Type[] s_dynamicSetMethodArgs = new Type[] { ThisType, TypeX._.Object };
+    private static readonly Type[] s_dynamicSetMethodArgs = new Type[] { ThisType, TypeUtils._.Object };
 
     internal static readonly Type MemberGetterType = typeof(MemberGetter<T>);
     internal static readonly Type MemberSetterType = typeof(MemberSetter<T>);
@@ -136,7 +136,7 @@ namespace CuteAnt.Reflection
       var name = $"_Get{memberType}_{memberInfo.Name}_";
 
       var declaringType = memberInfo.GetDeclaringType();
-      return !declaringType.IsInterface()
+      return !declaringType.IsInterface
           ? new DynamicMethod(name, s_objectType, s_dynamicGetMethodArgs, declaringType, true)
           : new DynamicMethod(name, s_objectType, s_dynamicGetMethodArgs, memberInfo.Module, true);
     }

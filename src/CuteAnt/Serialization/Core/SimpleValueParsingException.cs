@@ -1,4 +1,5 @@
-﻿#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
+﻿#if DESKTOPCLR
+#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
 
 //  ***********************************************************************
 //  Project: sharpSerializer
@@ -46,7 +47,7 @@ namespace CuteAnt.Serialization.Core
 	[Serializable]
 #endif
 
-	public class SimpleValueParsingException : HmExceptionBase
+	public class SimpleValueParsingException : Exception
 	{
 		///<summary>
 		///</summary>
@@ -87,3 +88,4 @@ namespace CuteAnt.Serialization.Core
 #endif
 	}
 }
+#endif

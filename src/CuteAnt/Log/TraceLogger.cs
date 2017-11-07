@@ -6,14 +6,9 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using CuteAnt.Configuration;
-using CuteAnt.IO;
+using Microsoft.Extensions.Logging.Abstractions;
 
-#if NET40
-namespace CuteAnt.Extensions.Logging
-#else
 namespace Microsoft.Extensions.Logging
-#endif
 {
   /// <summary>The TraceLogger class is a convenient wrapper around the .Net Trace class.
   /// It provides more flexible configuration than the Trace class.</summary>
@@ -57,11 +52,7 @@ namespace Microsoft.Extensions.Logging
     /// <returns>An <see cref="ILogger"/> instance.</returns>
     public static ILogger GetLogger(Type type)
     {
-#if DESKTOPCLR
       return s_logFactory.CreateLogger(type);
-#else
-      return s_logFactory.CreateLogger(type.FullName); ;
-#endif
     }
 
     #endregion
@@ -157,14 +148,17 @@ namespace Microsoft.Extensions.Logging
       if (exception == null) return String.Empty;
       string stack = String.Empty;
       if (includeStackTrace && exception.StackTrace != null)
+      {
         stack = String.Format(Environment.NewLine + exception.StackTrace);
+      }
 
       string message = exception.Message;
       var excType = exception.GetType();
 
-      Func<Exception, string> decoder;
-      if (s_exceptionDecoders.TryGetValue(excType, out decoder))
+      if (s_exceptionDecoders.TryGetValue(excType, out Func<Exception, string> decoder))
+      {
         message = decoder(exception);
+      }
 
       return String.Format(Environment.NewLine + "Exc level {0}: {1}: {2}{3}",
           level,
@@ -177,27 +171,23 @@ namespace Microsoft.Extensions.Logging
 
     #region -- Dump --
 
-    /// <summary>Create a mini-dump file for the current state of this process.</summary>
+    /// <summary>
+    /// Create a mini-dump file for the current state of this process
+    /// </summary>
     /// <param name="dumpType">Type of mini-dump to create</param>
     /// <returns><c>FileInfo</c> for the location of the newly created mini-dump file</returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2001:AvoidCallingProblematicMethods", MessageId = "System.Runtime.InteropServices.SafeHandle.DangerousGetHandle")]
-    public static FileInfo CreateMiniDump(MiniDumpType dumpType = MiniDumpType.MiniDumpNormal)
+    internal static FileInfo CreateMiniDump(MiniDumpType dumpType = MiniDumpType.MiniDumpNormal)
     {
       const string dateFormat = "yyyy-MM-dd-HH-mm-ss-fffZ"; // Example: 2010-09-02-09-50-43-341Z
 
       var thisAssembly = Assembly.GetEntryAssembly()
-#if !NETSTANDARD
           ?? Assembly.GetCallingAssembly()
-#endif
           ?? typeof(TraceLogger)
-#if !NET40
-          .GetTypeInfo()
-#endif
-          .Assembly;
+          .GetTypeInfo().Assembly;
 
-      var dumpFileName = string.Format(@"{0}-MiniDump-{1}.dmp",
-          thisAssembly.GetName().Name,
-          DateTime.UtcNow.ToString(dateFormat, CultureInfo.InvariantCulture));
+      var dumpFileName = $@"{thisAssembly.GetName().Name}-MiniDump-{DateTime.UtcNow.ToString(dateFormat,
+              CultureInfo.InvariantCulture)}.dmp";
 
       using (var stream = File.Create(dumpFileName))
       {
@@ -220,11 +210,7 @@ namespace Microsoft.Extensions.Logging
 
     private static IntPtr GetProcessHandle(Process process)
     {
-#if NETSTANDARD
-      return process.SafeHandle.DangerousGetHandle();
-#else
       return process.Handle;
-#endif
     }
 
     private static class NativeMethods
@@ -242,153 +228,61 @@ namespace Microsoft.Extensions.Logging
 
     #endregion
 
-    #region -- 调用栈 --
-
-    ///// <summary>堆栈调试。
-    ///// 输出堆栈信息，用于调试时处理调用上下文。
-    ///// 本方法会造成大量日志，请慎用。
-    ///// </summary>
-    //public static void DebugStack()
-    //{
-    //  var msg = GetCaller(2, 0, Environment.NewLine);
-    //  WriteInfo("调用堆栈：" + Environment.NewLine + msg);
-    //}
-
-    ///// <summary>堆栈调试。</summary>
-    ///// <param name="maxNum">最大捕获堆栈方法数</param>
-    //public static void DebugStack(Int32 maxNum)
-    //{
-    //  var msg = GetCaller(2, maxNum, Environment.NewLine);
-    //  WriteInfo("调用堆栈：" + Environment.NewLine + msg);
-    //}
-
-    ///// <summary>堆栈调试</summary>
-    ///// <param name="start">开始方法数，0是DebugStack的直接调用者</param>
-    ///// <param name="maxNum">最大捕获堆栈方法数</param>
-    //public static void DebugStack(Int32 start, Int32 maxNum)
-    //{
-    //  // 至少跳过当前这个
-    //  if (start < 1) { start = 1; }
-    //  var msg = GetCaller(start + 1, maxNum, Environment.NewLine);
-    //  WriteInfo("调用堆栈：" + Environment.NewLine + msg);
-    //}
-
-    /// <summary>获取调用栈</summary>
-    /// <param name="start"></param>
-    /// <param name="maxNum"></param>
-    /// <param name="split"></param>
-    /// <returns></returns>
-    public static String GetCaller(Int32 start = 1, Int32 maxNum = 0, String split = null)
-    {
-      // 至少跳过当前这个
-      if (start < 1) { start = 1; }
-      var st = new StackTrace(start, true);
-
-      if (split.IsNullOrWhiteSpace()) { split = "<-"; }
-
-      Type last = null;
-      var asm = Assembly.GetEntryAssembly();
-      var entry = asm == null ? null : asm.EntryPoint;
-
-      Int32 count = st.FrameCount;
-      var sb = new StringBuilder(count * 20);
-      //if (maxNum > 0 && maxNum < count) count = maxNum;
-      for (int i = 0; i < count && maxNum > 0; i++)
-      {
-        var sf = st.GetFrame(i);
-        var method = sf.GetMethod();
-
-        // 跳过<>类型的匿名方法
-        if (method == null || method.Name.IsNullOrWhiteSpace() || method.Name[0] == '<' && method.Name.Contains(">")) { continue; }
-
-        // 跳过有[DebuggerHidden]特性的方法
-        if (method.GetCustomAttribute<DebuggerHiddenAttribute>() != null) continue;
-
-        var type = method.DeclaringType ?? method.ReflectedType;
-        if (type != null) { sb.Append(type.Name); }
-        sb.Append(".");
-
-        var name = method.ToString();
-        // 去掉前面的返回类型
-        var p = name.IndexOf(" ");
-        if (p >= 0) name = name.Substring(p + 1);
-        // 去掉前面的System
-        name = name
-            .Replace("System.Web.", null)
-            .Replace("System.", null);
-
-        sb.Append(name);
-
-        // 如果到达了入口点，可以结束了
-        if (method == entry) { break; }
-
-        if (i < count - 1) { sb.Append(split); }
-
-        last = type;
-
-        maxNum--;
-      }
-      return sb.ToString();
-    }
-
-    #endregion
-
     #region -- 属性 --
 
-    private static Boolean? _Debug;
+    //private static Boolean? _Debug;
 
-    /// <summary>是否调试。如果代码指定了值，则只会使用代码指定的值，否则每次都读取配置。</summary>
-    public static Boolean Debug
-    {
-      get
-      {
-        if (_Debug != null) { return _Debug.Value; }
+    ///// <summary>是否调试。如果代码指定了值，则只会使用代码指定的值，否则每次都读取配置。</summary>
+    //public static Boolean Debug
+    //{
+    //  get
+    //  {
+    //    if (_Debug != null) { return _Debug.Value; }
 
-        try
-        {
-          return SystemConfigs.GetConfig().IsDebug;
-        }
-        catch { return false; }
-      }
-      set { _Debug = value; }
-    }
+    //    try
+    //    {
+    //      return SystemConfigs.GetConfig().IsDebug;
+    //    }
+    //    catch { return false; }
+    //  }
+    //  set { _Debug = value; }
+    //}
 
-    private static String _TempPath;
+    //private static String _TempPath;
 
-    /// <summary>临时目录</summary>
-    public static String TempPath
-    {
-      get
-      {
-        if (_TempPath != null) { return _TempPath; }
+    ///// <summary>临时目录</summary>
+    //public static String TempPath
+    //{
+    //  get
+    //  {
+    //    if (_TempPath != null) { return _TempPath; }
 
-        // 这里是TempPath而不是_TempPath，因为需要格式化处理一下
-        TempPath = SystemConfigs.GetConfig().TempPath;
-        return _TempPath;
-      }
-      set
-      {
-        _TempPath = value;
-        if (_TempPath.IsNullOrWhiteSpace()) { _TempPath = "Temp4Hm"; }
+    //    // 这里是TempPath而不是_TempPath，因为需要格式化处理一下
+    //    TempPath = SystemConfigs.GetConfig().TempPath;
+    //    return _TempPath;
+    //  }
+    //  set
+    //  {
+    //    _TempPath = value;
+    //    if (_TempPath.IsNullOrWhiteSpace()) { _TempPath = "Temp"; }
 
-        #region ## 苦竹 修改 ##
+    //    #region ## 苦竹 修改 ##
 
-        //if (!Path.IsPathRooted(_TempPath))
-        //{
-        //  _TempPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _TempPath);
-        //}
-        //_TempPath = Path.GetFullPath(_TempPath);
-        _TempPath = PathHelper.ApplicationBasePathCombine(_TempPath);
+    //    //if (!Path.IsPathRooted(_TempPath))
+    //    //{
+    //    //  _TempPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _TempPath);
+    //    //}
+    //    //_TempPath = Path.GetFullPath(_TempPath);
+    //    _TempPath = PathHelper.ApplicationBasePathCombine(_TempPath);
 
-        #endregion
-      }
-    }
+    //    #endregion
+    //  }
+    //}
 
     #endregion
   }
 
-  /// <summary>MiniDumpType</summary>
-  public enum MiniDumpType
+  internal enum MiniDumpType
   {
     // ReSharper disable UnusedMember.Global
     MiniDumpNormal = 0x00000000,

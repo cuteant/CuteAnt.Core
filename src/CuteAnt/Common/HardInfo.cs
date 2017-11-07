@@ -6,13 +6,12 @@
  * 修改：海洋饼干（cuteant@outlook.com）
 */
 
+#if DESKTOPCLR
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Management;
 using System.Text;
-using CuteAnt.Log;
-using CuteAnt.Xml;
 using Microsoft.VisualBasic.Devices;
 
 namespace CuteAnt.Common
@@ -431,7 +430,7 @@ namespace CuteAnt.Common
       }
       catch //(Exception ex)
       {
-        //throw new HmExceptionBase(ex, "获取{0} {1}硬件信息失败\r\n{2}", path, property);
+        //throw new Exception(ex, "获取{0} {1}硬件信息失败\r\n{2}", path, property);
         return string.Empty;
       }
       bbs.Sort();
@@ -447,3 +446,4 @@ namespace CuteAnt.Common
     #endregion
   }
 }
+#endif

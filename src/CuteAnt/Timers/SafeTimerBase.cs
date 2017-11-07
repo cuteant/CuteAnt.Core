@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Threading;
-#if NET40
-using CuteAnt.Extensions.Logging;
-#else
 using Microsoft.Extensions.Logging;
-#endif
 
 namespace CuteAnt.Runtime
 {

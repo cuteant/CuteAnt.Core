@@ -24,6 +24,7 @@ namespace CuteAnt
   /// <summary>运行时</summary>
   public static class RuntimeHelper
   {
+#if DESKTOPCLR
     #region 控制台
 
     private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
@@ -54,22 +55,7 @@ namespace CuteAnt
     }
 
     #endregion
-
-    #region DNX
-
-    public static bool IsDnx
-    {
-      get
-      {
-#if DESKTOPCLR
-        return false;
-#else
-        return true;
 #endif
-      }
-    }
-
-    #endregion
 
     #region Mono
 
@@ -110,6 +96,7 @@ namespace CuteAnt
 
     #endregion
 
+#if DESKTOPCLR
     #region 操作系统
 
     private static String _OSName;
@@ -376,8 +363,10 @@ namespace CuteAnt
     }
 
     #endregion
+#endif
   }
 
+#if DESKTOPCLR
   /// <summary>标识系统上的程序组</summary>
   [Flags]
   internal enum OSSuites : ushort
@@ -497,4 +486,5 @@ namespace CuteAnt
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
   }
+#endif
 }

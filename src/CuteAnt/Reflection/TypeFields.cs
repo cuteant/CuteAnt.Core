@@ -9,7 +9,7 @@ namespace CuteAnt.Reflection
   {
     #region @@ Fields @@
 
-    private static readonly Type s_objectType = TypeX._.Object;
+    private static readonly Type s_objectType = TypeUtils._.Object;
 
     #endregion
 
@@ -62,7 +62,6 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-#if DESKTOPCLR || NETSTANDARD
     #region -- CreateEmitGetter --
 
     public static MemberGetter CreateEmitGetter(FieldInfo fieldInfo)
@@ -74,7 +73,7 @@ namespace CuteAnt.Reflection
       gen.Emit(OpCodes.Ldarg_0);
 
       var declaringType = fieldInfo.GetDeclaringType();
-      if (declaringType.IsValueType())
+      if (declaringType.IsValueType)
       {
         gen.Emit(OpCodes.Unbox, declaringType);
       }
@@ -86,7 +85,7 @@ namespace CuteAnt.Reflection
       gen.Emit(OpCodes.Ldfld, fieldInfo);
 
       var fieldType = fieldInfo.FieldType;
-      if (fieldType.IsValueType())
+      if (fieldType.IsValueType)
       {
         gen.Emit(OpCodes.Box, fieldType);
       }
@@ -108,7 +107,7 @@ namespace CuteAnt.Reflection
       gen.Emit(OpCodes.Ldarg_0);
 
       var declaringType = fieldInfo.GetDeclaringType();
-      if (declaringType.IsValueType())
+      if (declaringType.IsValueType)
       {
         gen.Emit(OpCodes.Unbox, declaringType);
       }
@@ -127,7 +126,7 @@ namespace CuteAnt.Reflection
       }
       else
       {
-        gen.Emit(fieldType.IsClass() ? OpCodes.Castclass : OpCodes.Unbox_Any, fieldType);
+        gen.Emit(fieldType.IsClass ? OpCodes.Castclass : OpCodes.Unbox_Any, fieldType);
       }
 
       gen.Emit(OpCodes.Stfld, fieldInfo);
@@ -137,7 +136,6 @@ namespace CuteAnt.Reflection
     }
 
     #endregion
-#endif
 
     #region ** Helper **
 
@@ -154,7 +152,7 @@ namespace CuteAnt.Reflection
   {
     #region @@ Fields @@
 
-    private static readonly Type s_objectType = TypeX._.Object;
+    private static readonly Type s_objectType = TypeUtils._.Object;
 
     #endregion
 
@@ -224,7 +222,6 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-#if DESKTOPCLR || NETSTANDARD
     #region -- CreateEmitGetter --
 
     public static MemberGetter<T> CreateEmitGetter(FieldInfo fieldInfo)
@@ -238,7 +235,7 @@ namespace CuteAnt.Reflection
       gen.Emit(OpCodes.Ldfld, fieldInfo);
 
       var fieldType = fieldInfo.FieldType;
-      if (fieldType.IsValueType())
+      if (fieldType.IsValueType)
       {
         gen.Emit(OpCodes.Box, fieldType);
       }
@@ -261,7 +258,7 @@ namespace CuteAnt.Reflection
 
       var thisType = TypeAccessorHelper<T>.ThisType;
       var declaringType = fieldInfo.GetDeclaringType();
-      if (declaringType.IsValueType())
+      if (declaringType.IsValueType)
       {
         if (thisType != declaringType) { gen.Emit(OpCodes.Unbox, declaringType); }
       }
@@ -280,7 +277,7 @@ namespace CuteAnt.Reflection
       }
       else
       {
-        gen.Emit(fieldType.IsClass() ? OpCodes.Castclass : OpCodes.Unbox_Any, fieldType);
+        gen.Emit(fieldType.IsClass ? OpCodes.Castclass : OpCodes.Unbox_Any, fieldType);
       }
 
       gen.Emit(OpCodes.Stfld, fieldInfo);
@@ -290,6 +287,5 @@ namespace CuteAnt.Reflection
     }
 
     #endregion
-#endif
   }
 }

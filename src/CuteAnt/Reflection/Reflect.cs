@@ -1,12 +1,4 @@
-﻿/*
- * 作者：新生命开发团队（http://www.newlifex.com/）
- * 
- * 版权：版权所有 (C) 新生命开发团队 2002-2014
- * 
- * 修改：海洋饼干（cuteant@outlook.com）
-*/
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -94,51 +86,11 @@ namespace CuteAnt.Reflection
 
     public static bool SupportsEmit { get; set; } = true;
 
-    /// <summary>当前反射提供者</summary>
-    public static IReflect Provider { get; set; }
-
-#if NETSTANDARD
-    private static readonly Func<Type, object> GetUninitializedObjectDelegate;
-#endif
-
-    static Reflect()
-    {
-      Provider = new EmitReflect();
-
-#if NETSTANDARD
-      var formatterServices = typeof(string).GetTypeInfo().Assembly
-          .GetType("System.Runtime.Serialization.FormatterServices");
-      if (formatterServices != null)
-      {
-        var method = formatterServices.GetMethod("GetUninitializedObject");
-        if (method != null)
-            GetUninitializedObjectDelegate = (Func<Type, object>)method.CreateDelegate(typeof(Func<Type, object>));
-      }
-#endif
-    }
-
     #endregion
 
     #region -- 反射获取 --
 
     #region - Type -
-
-    /// <summary>根据名称获取类型。可搜索当前目录DLL，自动加载</summary>
-    /// <param name="typeName">类型名</param>
-    /// <param name="isLoadAssembly">是否从未加载程序集中获取类型。使用仅反射的方法检查目标类型，如果存在，则进行常规加载</param>
-    /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static Type GetTypeEx(this String typeName, Boolean isLoadAssembly = true)
-    {
-      if (typeName.IsNullOrWhiteSpace()) { return null; }
-
-      var type = Type.GetType(typeName);
-      if (type != null) { return type; }
-
-      return Provider.GetType(typeName, isLoadAssembly);
-    }
 
     private static Dictionary<Type, object> s_defaultValueTypes = new Dictionary<Type, object>();
     /// <summary>GetDefaultValue</summary>
@@ -148,7 +100,7 @@ namespace CuteAnt.Reflection
     {
       if (type == null) { throw new ArgumentNullException(nameof(type)); }
 
-      if (!type.IsValueType()) return null;
+      if (!type.IsValueType) return null;
 
       if (s_defaultValueTypes.TryGetValue(type, out object defaultValue)) return defaultValue;
 
@@ -167,7 +119,7 @@ namespace CuteAnt.Reflection
       return defaultValue;
     }
 
-    private static Dictionary<string, Type> s_genericTypeCache = new Dictionary<string, Type>();
+    private static Dictionary<string, Type> s_genericTypeCache = new Dictionary<string, Type>(StringComparer.Ordinal);
     /// <summary>GetCachedGenericType</summary>
     /// <param name="type"></param>
     /// <param name="argTypes"></param>
@@ -177,7 +129,7 @@ namespace CuteAnt.Reflection
     {
       if (type == null) { throw new ArgumentNullException(nameof(type)); }
 
-      if (!type.IsGenericTypeDefinition())
+      if (!type.IsGenericTypeDefinition)
       {
         throw new ArgumentException($"{type.FullName} is not a Generic Type Definition", nameof(type));
       }
@@ -503,14 +455,18 @@ namespace CuteAnt.Reflection
       if (name.IsNullOrWhiteSpace()) { return null; }
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeX._.Object)
+      while (type != null && type != TypeConstants.Object)
       {
         var fields = s_typeDeclaredFieldsCache.GetItem(type, s_getTypeDeclaredFieldsFunc);
         if (fields.TryGetValue(name, out FieldInfo field)) { return field; };
 
         if (declaredOnly) { break; }
 
-        type = type.BaseType();
+#if NET40
+        type = type.BaseType;
+#else
+        type = type.GetTypeInfo().BaseType;
+#endif
       }
 
       return null;
@@ -545,14 +501,18 @@ namespace CuteAnt.Reflection
       if (name.IsNullOrWhiteSpace()) { return null; }
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeX._.Object)
+      while (type != null && type != TypeUtils._.Object)
       {
         var fields = s_instanceDeclaredFieldsCache.GetItem(type, s_getInstanceDeclaredFieldsFunc);
         if (fields.TryGetValue(name, out FieldInfo field)) { return field; };
 
         if (declaredOnly) { break; }
 
-        type = type.BaseType();
+#if NET40
+        type = type.BaseType;
+#else
+        type = type.GetTypeInfo().BaseType;
+#endif
       }
 
       return null;
@@ -651,7 +611,7 @@ namespace CuteAnt.Reflection
 
     private static PropertyInfo[] GetInstancePublicProperties(Type type, bool ignoreIndexedProperties, bool ignoreNonSerializedProperties)
     {
-      if (type.IsInterface())
+      if (type.IsInterface)
       {
         var propertyInfos = new List<PropertyInfo>();
 
@@ -663,7 +623,7 @@ namespace CuteAnt.Reflection
         while (queue.Count > 0)
         {
           var subType = queue.Dequeue();
-          foreach (var subInterface in subType.GetTypeInterfaces())
+          foreach (var subInterface in subType.GetInterfaces())
           {
             if (considered.Contains(subInterface)) continue;
 
@@ -758,7 +718,7 @@ namespace CuteAnt.Reflection
           break;
       }
 
-      if (type.IsInterface())
+      if (type.IsInterface)
       {
         var propertyInfos = new List<PropertyInfo>();
 
@@ -770,7 +730,7 @@ namespace CuteAnt.Reflection
         while (queue.Count > 0)
         {
           var subType = queue.Dequeue();
-          foreach (var subInterface in subType.GetTypeInterfaces())
+          foreach (var subInterface in subType.GetInterfaces())
           {
             if (considered.Contains(subInterface)) continue;
 
@@ -810,7 +770,7 @@ namespace CuteAnt.Reflection
     {
       if (type == null) { return EmptyArray<PropertyInfo>.Instance; }
 
-      if (type.IsInterface()) { ignoreIndexedProperties = false; }
+      if (type.IsInterface) { ignoreIndexedProperties = false; }
       var propertiesCache = !ignoreIndexedProperties ? s_propertiesCache : s_ignorepropertiesCache;
 
       // 二级字典缓存
@@ -966,14 +926,18 @@ namespace CuteAnt.Reflection
       if (name.IsNullOrWhiteSpace()) { return null; }
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeX._.Object)
+      while (type != null && type != TypeConstants.Object)
       {
         var properties = s_typeDeclaredPropertiesCache.GetItem(type, s_getTypeDeclaredPropertiesFunc);
         if (properties.TryGetValue(name, out PropertyInfo property)) { return property; };
 
         if (declaredOnly) { break; }
 
-        type = type.BaseType();
+#if NET40
+        type = type.BaseType;
+#else
+        type = type.GetTypeInfo().BaseType;
+#endif
       }
 
       return null;
@@ -1006,7 +970,7 @@ namespace CuteAnt.Reflection
       if (returnType == null) throw new ArgumentNullException(nameof(returnType));
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeX._.Object)
+      while (type != null && type != TypeConstants.Object)
       {
         var properties = GetTypeDeclaredProperties(type);
         var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
@@ -1015,7 +979,11 @@ namespace CuteAnt.Reflection
 
         if (declaredOnly) { break; }
 
-        type = type.BaseType();
+#if NET40
+        type = type.BaseType;
+#else
+        type = type.GetTypeInfo().BaseType;
+#endif
       }
 
       return null;
@@ -1033,7 +1001,7 @@ namespace CuteAnt.Reflection
       if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeX._.Object)
+      while (type != null && type != TypeConstants.Object)
       {
         var properties = GetTypeDeclaredProperties(type);
         var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
@@ -1042,7 +1010,11 @@ namespace CuteAnt.Reflection
 
         if (declaredOnly) { break; }
 
-        type = type.BaseType();
+#if NET40
+        type = type.BaseType;
+#else
+        type = type.GetTypeInfo().BaseType;
+#endif
       }
 
       return null;
@@ -1061,7 +1033,7 @@ namespace CuteAnt.Reflection
       if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeX._.Object)
+      while (type != null && type != TypeConstants.Object)
       {
         var properties = GetTypeDeclaredProperties(type);
         var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
@@ -1071,7 +1043,11 @@ namespace CuteAnt.Reflection
 
         if (declaredOnly) { break; }
 
-        type = type.BaseType();
+#if NET40
+        type = type.BaseType;
+#else
+        type = type.GetTypeInfo().BaseType;
+#endif
       }
 
       return null;
@@ -1091,14 +1067,18 @@ namespace CuteAnt.Reflection
       if (name.IsNullOrWhiteSpace()) { return null; }
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeX._.Object)
+      while (type != null && type != TypeConstants.Object)
       {
         var properties = s_instanceDeclaredPropertiesCache.GetItem(type, s_getInstanceDeclaredPropertiesFunc);
         if (properties.TryGetValue(name, out PropertyInfo property)) { return property; };
 
         if (declaredOnly) { break; }
 
-        type = type.BaseType();
+#if NET40
+        type = type.BaseType;
+#else
+        type = type.GetTypeInfo().BaseType;
+#endif
       }
 
       return null;
@@ -1131,7 +1111,7 @@ namespace CuteAnt.Reflection
       if (returnType == null) throw new ArgumentNullException(nameof(returnType));
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeX._.Object)
+      while (type != null && type != TypeConstants.Object)
       {
         var properties = GetInstanceDeclaredProperties(type);
         var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
@@ -1140,7 +1120,11 @@ namespace CuteAnt.Reflection
 
         if (declaredOnly) { break; }
 
-        type = type.BaseType();
+#if NET40
+        type = type.BaseType;
+#else
+        type = type.GetTypeInfo().BaseType;
+#endif
       }
 
       return null;
@@ -1158,7 +1142,7 @@ namespace CuteAnt.Reflection
       if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeX._.Object)
+      while (type != null && type != TypeConstants.Object)
       {
         var properties = GetInstanceDeclaredProperties(type);
         var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
@@ -1167,7 +1151,11 @@ namespace CuteAnt.Reflection
 
         if (declaredOnly) { break; }
 
-        type = type.BaseType();
+#if NET40
+        type = type.BaseType;
+#else
+        type = type.GetTypeInfo().BaseType;
+#endif
       }
 
       return null;
@@ -1186,7 +1174,7 @@ namespace CuteAnt.Reflection
       if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeX._.Object)
+      while (type != null && type != TypeConstants.Object)
       {
         var properties = GetInstanceDeclaredProperties(type);
         var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
@@ -1196,7 +1184,11 @@ namespace CuteAnt.Reflection
 
         if (declaredOnly) { break; }
 
-        type = type.BaseType();
+#if NET40
+        type = type.BaseType;
+#else
+        type = type.GetTypeInfo().BaseType;
+#endif
       }
 
       return null;
@@ -1272,12 +1264,16 @@ namespace CuteAnt.Reflection
       if (field != null) { return field; }
 
       // 通过反射获取
-      while (type != null && type != TypeX._.Object)
+      while (type != null && type != TypeConstants.Object)
       {
         var fs = type.GetMember(name, BindingFlagsHelper.DefaultDeclaredOnlyLookup);
         if (fs != null && fs.Length > 0) { return fs[0]; }
 
-        type = type.BaseType();
+#if NET40
+        type = type.BaseType;
+#else
+        type = type.GetTypeInfo().BaseType;
+#endif
       }
 
       return null;
@@ -1339,14 +1335,60 @@ namespace CuteAnt.Reflection
     /// <param name="name">名称</param>
     /// <param name="paramTypes">参数类型数组</param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
     public static MethodInfo GetMethodEx(this Type type, String name, params Type[] paramTypes)
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
-      return Provider.GetMethod(type, name, paramTypes);
+      // 参数数组必须为空，或者所有参数类型都不为null，才能精确匹配
+      if (paramTypes == null || paramTypes.Length == 0 || paramTypes.All(t => t != null))
+      {
+        MethodInfo method = null;
+        while (true)
+        {
+          if (paramTypes == null || paramTypes.Length == 0)
+          {
+            method = type.GetMethod(name, BindingFlagsHelper.MSRuntimeLookup);
+          }
+          else
+          {
+            method = type.GetMethod(name, BindingFlagsHelper.MSRuntimeLookup, null, paramTypes, null);
+          }
+
+          if (method != null) return method;
+
+#if NET40
+          type = type.BaseType;
+#else
+          type = type.GetTypeInfo().BaseType;
+#endif
+          if (type == null || type == TypeConstants.Object) break;
+        }
+        if (method != null) return method;
+      }
+
+      // 任意参数类型为null，换一种匹配方式
+      //if (paramTypes.Any(t => t == null))
+      //{
+      var ms = GetMethodsEx(type, name, paramTypes.Length);
+      if (ms == null || ms.Length == 0) return null;
+
+      // 对比参数
+      foreach (var mi in ms)
+      {
+        var ps = mi.GetParameters();
+        var flag = true;
+        for (int i = 0; i < ps.Length; i++)
+        {
+          if (paramTypes[i] != null && !ps[i].ParameterType.IsAssignableFrom(paramTypes[i]))
+          {
+            flag = false;
+            break;
+          }
+        }
+        if (flag) return mi;
+      }
+      //}
+      return null;
     }
 
     /// <summary>获取指定名称的方法集合，支持指定参数个数来匹配过滤</summary>
@@ -1358,7 +1400,18 @@ namespace CuteAnt.Reflection
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
-      return Provider.GetMethods(type, name, paramCount);
+      var ms = type.GetMethods(BindingFlagsHelper.MSRuntimeLookup);
+      if (ms == null || ms.Length == 0) return ms;
+
+      var list = new List<MethodInfo>();
+      foreach (var item in ms)
+      {
+        if (string.Equals(item.Name, name, StringComparison.Ordinal))
+        {
+          if (paramCount >= 0 && item.GetParameters().Length == paramCount) list.Add(item);
+        }
+      }
+      return list.ToArray();
     }
 
     #endregion
@@ -1439,8 +1492,7 @@ namespace CuteAnt.Reflection
     {
       if (s_typeNamesMap.TryGetValue(typeName, out EmptyCtorDelegate emptyCtorFn)) return emptyCtorFn;
 
-      var type = typeName.GetTypeEx();
-      if (type == null) return null;
+      if (!TypeUtils.TryResolveType(typeName, out var type)) { return null; }
       emptyCtorFn = GetConstructorMethodToCache(type);
 
       Dictionary<string, EmptyCtorDelegate> snapshot, newCache;
@@ -1467,11 +1519,11 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static EmptyCtorDelegate GetConstructorMethodToCache(Type type)
     {
-      if (type == TypeX._.String)
+      if (type == TypeUtils._.String)
       {
         return () => string.Empty;
       }
-      else if (type.IsInterface())
+      else if (type.IsInterface)
       {
         if (type.HasGenericType())
         {
@@ -1500,13 +1552,9 @@ namespace CuteAnt.Reflection
       {
         return () => Array.CreateInstance(type.GetElementType(), 0);
       }
-      else if (type.IsGenericTypeDefinition())
+      else if (type.IsGenericTypeDefinition)
       {
-#if NETSTANDARD
-        var genericArgs = type.GetTypeInfo().GenericTypeParameters;
-#else
         var genericArgs = type.GetGenericArguments();
-#endif
         var typeArgs = new Type[genericArgs.Length];
         for (var i = 0; i < genericArgs.Length; i++)
           typeArgs[i] = typeof(object);
@@ -1519,149 +1567,109 @@ namespace CuteAnt.Reflection
       var emptyCtor = type.GetEmptyConstructor();
       if (emptyCtor != null)
       {
-#if __IOS__ || XBOX || NETFX_CORE
-        return () => Activator.CreateInstance(type);
-#elif WP || PCL || NETSTANDARD
-        System.Linq.Expressions.Expression conversion = Expression.Convert(
-            System.Linq.Expressions.Expression.New(type), typeof(object));
-
-        return System.Linq.Expressions.Expression.Lambda<EmptyCtorDelegate>(conversion).Compile();
-#else
-
-#if SL5
-        var dm = new System.Reflection.Emit.DynamicMethod("MyCtor", type, Type.EmptyTypes);
-#else
         var dm = new System.Reflection.Emit.DynamicMethod("MyCtor", type, Type.EmptyTypes, typeof(Reflect).Module, true);
-#endif
         var ilgen = dm.GetILGenerator();
         ilgen.Emit(System.Reflection.Emit.OpCodes.Nop);
         ilgen.Emit(System.Reflection.Emit.OpCodes.Newobj, emptyCtor);
         ilgen.Emit(System.Reflection.Emit.OpCodes.Ret);
 
         return (EmptyCtorDelegate)dm.CreateDelegate(typeof(EmptyCtorDelegate));
-#endif
       }
 
-#if (SL5 && !WP) || XBOX
-      return () => Activator.CreateInstance(type);
-#elif NETSTANDARD
-      if (GetUninitializedObjectDelegate != null)
-        return () => GetUninitializedObjectDelegate(type);
-
-      return () => Activator.CreateInstance(type);
-#elif WP || PCL
-      return System.Linq.Expressions.Expression.Lambda<EmptyCtorDelegate>(
-          System.Linq.Expressions.Expression.New(type)).Compile();
-#else
       //Anonymous types don't have empty constructors
-      //return () => FormatterServices.GetUninitializedObject(type);
-      return () => TypeX.Create(type).CreateInstance();
-#endif
+      return () => FormatterServices.GetUninitializedObject(type);
+      // return FormatterServices.GetSafeUninitializedObject(Type);
     }
 
     #endregion
 
-    #region - Invoke -
+    //#region - Invoke -
 
-    /// <summary>反射调用指定对象的方法。target为类型时调用其静态方法</summary>
-    /// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
-    /// <param name="name">方法名</param>
-    /// <param name="parameters">方法参数</param>
-    /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static Object Invoke(this Object target, String name, params Object[] parameters)
-    {
-      ValidationHelper.ArgumentNull(target, "target");
-      ValidationHelper.ArgumentNullOrEmpty(name, "name");
+    ///// <summary>反射调用指定对象的方法。target为类型时调用其静态方法</summary>
+    ///// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
+    ///// <param name="name">方法名</param>
+    ///// <param name="parameters">方法参数</param>
+    ///// <returns></returns>
+    //public static Object Invoke(this Object target, String name, params Object[] parameters)
+    //{
+    //  ValidationHelper.ArgumentNull(target, "target");
+    //  ValidationHelper.ArgumentNullOrEmpty(name, "name");
 
-      if (TryInvoke(target, name, out object value, parameters)) { return value; }
+    //  if (TryInvoke(target, name, out object value, parameters)) { return value; }
 
-      var type = GetTypeInternal(ref target);
-      throw new HmExceptionBase("类{0}中找不到名为{1}的方法！", type, name);
-    }
+    //  var type = GetTypeInternal(ref target);
+    //  throw new TypeAccessException("类{0}中找不到名为{1}的方法！".FormatWith(type, name));
+    //}
 
-    /// <summary>反射调用指定对象的方法</summary>
-    /// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
-    /// <param name="method">方法</param>
-    /// <param name="parameters">方法参数</param>
-    /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    [DebuggerHidden]
-    public static Object Invoke(this Object target, MethodBase method, params Object[] parameters)
-    {
-      //ValidationHelper.ArgumentNull(target, "target");
-      //ValidationHelper.ArgumentNull(method, "method");
-      ValidationHelper.ArgumentNull(method, "method");
-      if (!method.IsStatic)
-      {
-        ValidationHelper.ArgumentNull(target, "target");
-      }
+    ///// <summary>反射调用指定对象的方法</summary>
+    ///// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
+    ///// <param name="method">方法</param>
+    ///// <param name="parameters">方法参数</param>
+    ///// <returns></returns>
+    //[DebuggerHidden]
+    //public static Object Invoke(this Object target, MethodBase method, params Object[] parameters)
+    //{
+    //  //ValidationHelper.ArgumentNull(target, "target");
+    //  //ValidationHelper.ArgumentNull(method, "method");
+    //  ValidationHelper.ArgumentNull(method, "method");
+    //  if (!method.IsStatic)
+    //  {
+    //    ValidationHelper.ArgumentNull(target, "target");
+    //  }
 
-      return Provider.Invoke(target, method, parameters);
-    }
+    //  return method.Invoke(target, parameters);
+    //}
 
-    #endregion
+    //#endregion
 
-    #region - TryInvoke -
+    //#region - TryInvoke -
 
-    /// <summary>反射调用指定对象的方法</summary>
-    /// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
-    /// <param name="name">方法名</param>
-    /// <param name="value">数值</param>
-    /// <param name="parameters">方法参数</param>
-    /// <remarks>反射调用是否成功</remarks>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static Boolean TryInvoke(this Object target, String name, out Object value, params Object[] parameters)
-    {
-      value = null;
+    ///// <summary>反射调用指定对象的方法</summary>
+    ///// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
+    ///// <param name="name">方法名</param>
+    ///// <param name="value">数值</param>
+    ///// <param name="parameters">方法参数</param>
+    ///// <remarks>反射调用是否成功</remarks>
+    //public static Boolean TryInvoke(this Object target, String name, out Object value, params Object[] parameters)
+    //{
+    //  value = null;
 
-      if (name.IsNullOrWhiteSpace()) { return false; }
+    //  if (name.IsNullOrWhiteSpace()) { return false; }
 
-      var type = GetTypeInternal(ref target);
+    //  var type = GetTypeInternal(ref target);
 
-      // 参数类型数组
-      var list = new List<Type>();
-      foreach (var item in parameters)
-      {
-        Type t = null;
-        if (item != null) { t = item.GetType(); }
-        list.Add(t);
-      }
+    //  // 参数类型数组
+    //  var ps = parameters.Select(e => e?.GetType()).ToArray();
 
-      // 如果参数数组出现null，则无法精确匹配，可按参数个数进行匹配
-      var method = GetMethodEx(type, name, list.ToArray());
-      if (method == null) { return false; }
+    //  // 如果参数数组出现null，则无法精确匹配，可按参数个数进行匹配
+    //  var method = ps.Any(e => e == null) ? GetMethodEx(type, name) : GetMethodEx(type, name, ps);
+    //  if (method == null) method = GetMethodsEx(type, name, ps.Length > 0 ? ps.Length : -1).FirstOrDefault();
+    //  if (method == null) return false;
 
-      value = Invoke(target, method, parameters);
-      return true;
-    }
+    //  value = Invoke(target, method, parameters);
+    //  return true;
+    //}
 
-    #endregion
+    //#endregion
 
-    #region - InvokeWithParams -
+    //#region - InvokeWithParams -
 
-    /// <summary>反射调用指定对象的方法</summary>
-    /// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
-    /// <param name="method">方法</param>
-    /// <param name="parameters">方法参数字典</param>
-    /// <returns></returns>
-    [DebuggerHidden]
-    public static Object InvokeWithParams(this Object target, MethodBase method, IDictionary parameters)
-    {
-      //if (target == null) throw new ArgumentNullException("target");
-      if (method == null) throw new ArgumentNullException("method");
-      if (!method.IsStatic && target == null) throw new ArgumentNullException("target");
+    ///// <summary>反射调用指定对象的方法</summary>
+    ///// <param name="target">要调用其方法的对象，如果要调用静态方法，则target是类型</param>
+    ///// <param name="method">方法</param>
+    ///// <param name="parameters">方法参数字典</param>
+    ///// <returns></returns>
+    //[DebuggerHidden]
+    //public static Object InvokeWithParams(this Object target, MethodBase method, IDictionary parameters)
+    //{
+    //  //if (target == null) throw new ArgumentNullException("target");
+    //  if (method == null) throw new ArgumentNullException("method");
+    //  if (!method.IsStatic && target == null) throw new ArgumentNullException("target");
 
-      return Provider.InvokeWithParams(target, method, parameters);
-    }
+    //  return Provider.InvokeWithParams(target, method, parameters);
+    //}
 
-    #endregion
+    //#endregion
 
     #region - GetValue -
 
@@ -1921,7 +1929,7 @@ namespace CuteAnt.Reflection
     {
       //if (!propertyInfo.CanRead) { return TypeAccessorHelper.EmptyMemberGetter; }
 
-      var method = propertyInfo.GetMethodInfo();
+      var method = propertyInfo.GetGetMethod(true);
       if (method == null) { return TypeAccessorHelper.EmptyMemberGetter; }
       try
       {
@@ -1982,7 +1990,7 @@ namespace CuteAnt.Reflection
     {
       //if (!propertyInfo.CanWrite) { return TypeAccessorHelper.EmptyMemberSetter; }
 
-      var method = propertyInfo.SetMethodInfo();
+      var method = propertyInfo.GetSetMethod(true);
       if (method == null) { return TypeAccessorHelper.EmptyMemberSetter; }
       try
       {
@@ -2145,7 +2153,7 @@ namespace CuteAnt.Reflection
       {
         //if (!propertyInfo.CanRead) { return TypeAccessorHelper<T>.EmptyMemberGetter; }
 
-        var method = propertyInfo.GetMethodInfo();
+        var method = propertyInfo.GetGetMethod(true);
         if (method == null) { return TypeAccessorHelper<T>.EmptyMemberGetter; }
         try
         {
@@ -2182,7 +2190,7 @@ namespace CuteAnt.Reflection
       {
         //if (!propertyInfo.CanWrite) { return TypeAccessorHelper<T>.EmptyMemberSetter; }
 
-        var method = propertyInfo.SetMethodInfo();
+        var method = propertyInfo.GetSetMethod(true);
         if (method == null) { return TypeAccessorHelper<T>.EmptyMemberSetter; }
         try
         {
@@ -2307,179 +2315,109 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-    #region - Type / TypeInfo -
+    //#region - Type / TypeInfo -
 
-    /// <summary>获取一个类型的元素类型</summary>
-    /// <param name="type">类型</param>
-    /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static Type GetElementTypeEx(this Type type)
-    {
-      return Provider.GetElementType(type);
-    }
+    //    /// <summary>获取一个类型的元素类型</summary>
+    //    /// <param name="type">类型</param>
+    //    /// <returns></returns>
+    //#if !NET40
+    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //#endif
+    //    public static Type GetElementTypeEx(this Type type)
+    //    {
+    //      return Provider.GetElementType(type);
+    //    }
 
-    #endregion
+    //    #endregion
 
-    /// <summary>类型转换</summary>
-    /// <param name="value">数值</param>
-    /// <param name="conversionType"></param>
-    /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static Object ChangeType(this Object value, Type conversionType)
-    {
-      return Provider.ChangeType(value, conversionType);
-    }
+    //    /// <summary>类型转换</summary>
+    //    /// <param name="value">数值</param>
+    //    /// <param name="conversionType"></param>
+    //    /// <returns></returns>
+    //#if !NET40
+    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //#endif
+    //    public static Object ChangeType(this Object value, Type conversionType)
+    //    {
+    //      return Provider.ChangeType(value, conversionType);
+    //    }
 
-    /// <summary>类型转换</summary>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="value">数值</param>
-    /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static TResult ChangeType<TResult>(this Object value)
-    {
-      if (value is TResult) { return (TResult)value; }
+    //    /// <summary>类型转换</summary>
+    //    /// <typeparam name="TResult"></typeparam>
+    //    /// <param name="value">数值</param>
+    //    /// <returns></returns>
+    //#if !NET40
+    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //#endif
+    //    public static TResult ChangeType<TResult>(this Object value)
+    //    {
+    //      if (value is TResult) { return (TResult)value; }
 
-      return (TResult)ChangeType(value, typeof(TResult));
-    }
+    //      return (TResult)ChangeType(value, typeof(TResult));
+    //    }
 
-    /// <summary>获取类型的友好名称</summary>
-    /// <param name="type">指定类型</param>
-    /// <param name="isfull">是否全名，包含命名空间</param>
-    /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static String GetName(this Type type, Boolean isfull = false)
-    {
-      return Provider.GetName(type, isfull);
-    }
+    //    /// <summary>获取类型的友好名称</summary>
+    //    /// <param name="type">指定类型</param>
+    //    /// <param name="isfull">是否全名，包含命名空间</param>
+    //    /// <returns></returns>
+    //#if !NET40
+    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //#endif
+    //    public static String GetName(this Type type, Boolean isfull = false)
+    //    {
+    //      return Provider.GetName(type, isfull);
+    //    }
 
-    /// <summary>从参数数组中获取类型数组</summary>
-    /// <param name="args"></param>
-    /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    internal static Type[] GetTypeArray(this Object[] args)
-    {
-      if (args == null) { return Type.EmptyTypes; }
+    //    /// <summary>从参数数组中获取类型数组</summary>
+    //    /// <param name="args"></param>
+    //    /// <returns></returns>
+    //#if !NET40
+    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //#endif
+    //    internal static Type[] GetTypeArray(this Object[] args)
+    //    {
+    //      if (args == null) { return Type.EmptyTypes; }
 
-      var typeArray = new Type[args.Length];
-      for (int i = 0; i < typeArray.Length; i++)
-      {
-        if (args[i] == null)
-        {
-          typeArray[i] = typeof(Object);
-        }
-        else
-        {
-          typeArray[i] = args[i].GetType();
-        }
-      }
-      return typeArray;
-    }
+    //      var typeArray = new Type[args.Length];
+    //      for (int i = 0; i < typeArray.Length; i++)
+    //      {
+    //        if (args[i] == null)
+    //        {
+    //          typeArray[i] = typeof(Object);
+    //        }
+    //        else
+    //        {
+    //          typeArray[i] = args[i].GetType();
+    //        }
+    //      }
+    //      return typeArray;
+    //    }
 
-    /// <summary>获取成员的类型，字段和属性是它们的类型，方法是返回类型，类型是自身</summary>
-    /// <param name="member"></param>
-    /// <returns></returns>
-    public static Type GetMemberType(this MemberInfo member)
-    {
-      switch (member.MemberType)
-      {
-        case MemberTypes.Constructor:
-          return (member as ConstructorInfo).DeclaringType;
-        case MemberTypes.Field:
-          return (member as FieldInfo).FieldType;
-        case MemberTypes.Method:
-          return (member as MethodInfo).ReturnType;
-        case MemberTypes.Property:
-          return (member as PropertyInfo).PropertyType;
-        case MemberTypes.TypeInfo:
-        case MemberTypes.NestedType:
-          return member as Type;
-        default:
-          return null;
-      }
-    }
+    ///// <summary>获取成员的类型，字段和属性是它们的类型，方法是返回类型，类型是自身</summary>
+    ///// <param name="member"></param>
+    ///// <returns></returns>
+    //public static Type GetMemberType(this MemberInfo member)
+    //{
+    //  switch (member.MemberType)
+    //  {
+    //    case MemberTypes.Constructor:
+    //      return (member as ConstructorInfo).DeclaringType;
+    //    case MemberTypes.Field:
+    //      return (member as FieldInfo).FieldType;
+    //    case MemberTypes.Method:
+    //      return (member as MethodInfo).ReturnType;
+    //    case MemberTypes.Property:
+    //      return (member as PropertyInfo).PropertyType;
+    //    case MemberTypes.TypeInfo:
+    //    case MemberTypes.NestedType:
+    //      return member as Type;
+    //    default:
+    //      return null;
+    //  }
+    //}
 
-    /// <summary>EmptyTypes</summary>
-#if NETSTANDARD
-    public static readonly Type[] EmptyTypes = new Type[0];
-#else
-    public static readonly Type[] EmptyTypes = Type.EmptyTypes;
-#endif
+    //public static readonly Type[] EmptyTypes = Type.EmptyTypes;
 
-#if (NETSTANDARD1_1 || NETSTANDARD1_3)
-    public static TypeCode GetTypeCode(this Type type)
-    {
-      if (type == null) return TypeCode.Empty;
-      TypeCode result;
-      if (s_typeCodeLookup.TryGetValue(type, out result)) return result;
-
-      if (type.IsEnum())
-      {
-        type = Enum.GetUnderlyingType(type);
-        if (s_typeCodeLookup.TryGetValue(type, out result)) return result;
-      }
-      return TypeCode.Object;
-    }
-
-    public static Type GetTypeFromTypeCode(this TypeCode typeCode)
-    {
-      Type result;
-
-      if (s_typeFromTypeCodeLookup.TryGetValue(typeCode, out result))
-        return result;
-
-      return typeof(Object);
-    }
-    private static readonly Dictionary<Type, TypeCode> s_typeCodeLookup = new Dictionary<Type, TypeCode>
-        {
-            {typeof(bool), TypeCode.Boolean },
-            {typeof(byte), TypeCode.Byte },
-            {typeof(char), TypeCode.Char},
-            {typeof(DateTime), TypeCode.DateTime},
-            {typeof(decimal), TypeCode.Decimal},
-            {typeof(double), TypeCode.Double },
-            {typeof(short), TypeCode.Int16 },
-            {typeof(int), TypeCode.Int32 },
-            {typeof(long), TypeCode.Int64 },
-            {typeof(object), TypeCode.Object},
-            {typeof(sbyte), TypeCode.SByte },
-            {typeof(float), TypeCode.Single },
-            {typeof(string), TypeCode.String },
-            {typeof(ushort), TypeCode.UInt16 },
-            {typeof(uint), TypeCode.UInt32 },
-            {typeof(ulong), TypeCode.UInt64 },
-        };
-
-    private static readonly Dictionary<TypeCode, Type> s_typeFromTypeCodeLookup = new Dictionary<TypeCode, Type>
-        {
-            {TypeCode.Boolean, typeof(bool) },
-            {TypeCode.Byte , typeof(byte) },
-            {TypeCode.Char, typeof(char) },
-            {TypeCode.DateTime, typeof(DateTime) },
-            {TypeCode.Decimal, typeof(decimal) },
-            {TypeCode.Double , typeof(double) },
-            {TypeCode.Int16, typeof(short) },
-            {TypeCode.Int32, typeof(int) },
-            {TypeCode.Int64, typeof(long) },
-            {TypeCode.Object, typeof(object) },
-            {TypeCode.SByte, typeof(sbyte) },
-            {TypeCode.Single, typeof(float) },
-            {TypeCode.String, typeof(string) },
-            {TypeCode.UInt16, typeof(ushort) },
-            {TypeCode.UInt32, typeof(uint) },
-            {TypeCode.UInt64, typeof(ulong) },
-        };
-
-#else
     /// <summary>获取类型代码</summary>
     /// <param name="type"></param>
     /// <returns></returns>
@@ -2487,7 +2425,6 @@ namespace CuteAnt.Reflection
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     public static TypeCode GetTypeCode(this Type type) => Type.GetTypeCode(type);
-#endif
 
 
     #endregion
@@ -2501,9 +2438,40 @@ namespace CuteAnt.Reflection
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static Boolean IsSubOf(this Type type, Type baseType)
+    public static Boolean As(this Type type, Type baseType)
     {
-      return Provider.IsSubOf(type, baseType);
+      if (type == null) return false;
+
+      // 如果基类是泛型定义
+      if (baseType.IsGenericTypeDefinition && type.IsGenericType && !type.IsGenericTypeDefinition) type = type.GetGenericTypeDefinition();
+
+      if (type == baseType) { return true; }
+
+      if (baseType.IsAssignableFrom(type)) { return true; }
+
+      // 接口
+      if (baseType.IsInterface)
+      {
+        if (type.GetInterface(baseType.Name) != null) { return true; }
+        if (type.GetInterfaces().Any(e => e.IsGenericType && baseType.IsGenericTypeDefinition ? e.GetGenericTypeDefinition() == baseType : e == baseType)) return true;
+      }
+
+      // 判断是否子类时，支持只反射加载的程序集
+      if (type.Assembly.ReflectionOnly)
+      {
+        // 反射加载时，需要特殊处理接口
+        //if (baseType.IsInterface && type.GetInterface(baseType.Name) != null) return true;
+        while (type != null && type != TypeConstants.Object)
+        {
+          if (type.FullName == baseType.FullName && type.AssemblyQualifiedName == baseType.AssemblyQualifiedName)
+          {
+            return true;
+          }
+          type = type.BaseType;
+        }
+      }
+
+      return false;
     }
 
     /// <summary>是否子类</summary>
@@ -2513,34 +2481,7 @@ namespace CuteAnt.Reflection
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static Boolean IsSubOf<T>(this Type type)
-    {
-      return Provider.IsSubOf(type, typeof(T));
-    }
-
-    /// <summary>在指定程序集中查找指定基类的子类</summary>
-    /// <param name="asm">指定程序集</param>
-    /// <param name="baseType">基类或接口</param>
-    /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static IEnumerable<Type> GetSubclasses(this Assembly asm, Type baseType)
-    {
-      return Provider.GetSubclasses(asm, baseType);
-    }
-
-    /// <summary>在所有程序集中查找指定基类或接口的子类实现</summary>
-    /// <param name="baseType">基类或接口</param>
-    /// <param name="isLoadAssembly">是否加载为加载程序集</param>
-    /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static IEnumerable<Type> GetAllSubclasses(this Type baseType, Boolean isLoadAssembly = false)
-    {
-      return Provider.GetAllSubclasses(baseType, isLoadAssembly);
-    }
+    public static Boolean As<T>(this Type type) => type.As(typeof(T));
 
     #endregion
 

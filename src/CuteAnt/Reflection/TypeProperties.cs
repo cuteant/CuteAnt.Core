@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Linq.Expressions;
-#if DESKTOPCLR || NETSTANDARD
 using System.Reflection.Emit;
-#endif
 
 namespace CuteAnt.Reflection
 {
@@ -11,7 +9,7 @@ namespace CuteAnt.Reflection
   {
     #region @@ Fields @@
 
-    private static readonly Type s_objectType = TypeX._.Object;
+    private static readonly Type s_objectType = TypeUtils._.Object;
 
     #endregion
 
@@ -20,7 +18,7 @@ namespace CuteAnt.Reflection
     public static MemberGetter CreateDefaultGetter(PropertyInfo propertyInfo)
     {
       //if (!propertyInfo.CanRead) { return TypeAccessorHelper.EmptyMemberGetter; }
-      var getMethodInfo = propertyInfo.GetMethodInfo();
+      var getMethodInfo = propertyInfo.GetGetMethod(true);
       if (getMethodInfo == null) { return TypeAccessorHelper.EmptyMemberGetter; }
 
       return o => getMethodInfo.Invoke(o, EmptyArray<object>.Instance);
@@ -28,7 +26,7 @@ namespace CuteAnt.Reflection
     public static MemberSetter CreateDefaultSetter(PropertyInfo propertyInfo)
     {
       //if (!propertyInfo.CanWrite) { return TypeAccessorHelper.EmptyMemberSetter; }
-      var propertySetMethod = propertyInfo.SetMethodInfo();
+      var propertySetMethod = propertyInfo.GetSetMethod(true);
       if (propertySetMethod == null) return TypeAccessorHelper.EmptyMemberSetter;
 
       return (o, convertedValue) => propertySetMethod.Invoke(o, new[] { convertedValue });
@@ -41,7 +39,7 @@ namespace CuteAnt.Reflection
     public static MemberGetter CreateExpressionGetter(PropertyInfo propertyInfo)
     {
       //if (!propertyInfo.CanRead) { return TypeAccessorHelper.EmptyMemberGetter; }
-      var getMethodInfo = propertyInfo.GetMethodInfo();
+      var getMethodInfo = propertyInfo.GetGetMethod(true);
       if (getMethodInfo == null) { return TypeAccessorHelper.EmptyMemberGetter; }
 
       const string _oInstanceParameterName = "oInstanceParam";
@@ -62,7 +60,7 @@ namespace CuteAnt.Reflection
     public static MemberSetter CreateExpressionSetter(PropertyInfo propertyInfo)
     {
       //if (!propertyInfo.CanWrite) { return TypeAccessorHelper.EmptyMemberSetter; }
-      var propertySetMethod = propertyInfo.SetMethodInfo();
+      var propertySetMethod = propertyInfo.GetSetMethod(true);
       if (propertySetMethod == null) return TypeAccessorHelper.EmptyMemberSetter;
 
       try
@@ -86,13 +84,12 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-#if DESKTOPCLR || NETSTANDARD
     #region -- CreateEmitGetter --
 
     public static MemberGetter CreateEmitGetter(PropertyInfo propertyInfo)
     {
       //if (!propertyInfo.CanRead) { return TypeAccessorHelper.EmptyMemberGetter; }
-      var mi = propertyInfo.GetMethodInfo(true);
+      var mi = propertyInfo.GetGetMethod(true);
       if (null == mi) { return TypeAccessorHelper.EmptyMemberGetter; }
       var isStatic = mi.IsStatic;
 
@@ -103,7 +100,7 @@ namespace CuteAnt.Reflection
       {
         gen.Emit(OpCodes.Ldarg_0);
         var declaringType = propertyInfo.GetDeclaringType();
-        if (declaringType.IsValueType())
+        if (declaringType.IsValueType)
         {
           gen.Emit(OpCodes.Unbox, declaringType);
         }
@@ -117,7 +114,7 @@ namespace CuteAnt.Reflection
       gen.EmitCall(isStatic || mi.IsFinal ? OpCodes.Call : OpCodes.Callvirt, mi, null);
 
       var propertyType = propertyInfo.PropertyType;
-      if (propertyType.IsValueType())
+      if (propertyType.IsValueType)
       {
         gen.Emit(OpCodes.Box, propertyType);
       }
@@ -134,7 +131,7 @@ namespace CuteAnt.Reflection
     public static MemberSetter CreateEmitSetter(PropertyInfo propertyInfo)
     {
       //if (!propertyInfo.CanWrite) { return TypeAccessorHelper.EmptyMemberSetter; }
-      var mi = propertyInfo.SetMethodInfo(true);
+      var mi = propertyInfo.GetSetMethod(true);
       if (mi == null) { return TypeAccessorHelper.EmptyMemberSetter; }
       var isStatic = mi.IsStatic;
 
@@ -146,7 +143,7 @@ namespace CuteAnt.Reflection
         gen.Emit(OpCodes.Ldarg_0);
 
         var declaringType = propertyInfo.GetDeclaringType();
-        if (declaringType.IsValueType())
+        if (declaringType.IsValueType)
         {
           gen.Emit(OpCodes.Unbox, declaringType);
         }
@@ -159,7 +156,7 @@ namespace CuteAnt.Reflection
       gen.Emit(OpCodes.Ldarg_1);
 
       var propertyType = propertyInfo.PropertyType;
-      if (propertyType.IsValueType())
+      if (propertyType.IsValueType)
       {
         gen.Emit(OpCodes.Unbox_Any, propertyType);
       }
@@ -176,14 +173,13 @@ namespace CuteAnt.Reflection
     }
 
     #endregion
-#endif
   }
 
   public static class PropertyInvoker<T>
   {
     #region @@ Fields @@
 
-    private static readonly Type s_objectType = TypeX._.Object;
+    private static readonly Type s_objectType = TypeUtils._.Object;
 
     #endregion
 
@@ -192,7 +188,7 @@ namespace CuteAnt.Reflection
     public static MemberGetter<T> CreateDefaultGetter(PropertyInfo propertyInfo)
     {
       //if (!propertyInfo.CanRead) { return TypeAccessorHelper<T>.EmptyMemberGetter; }
-      var getMethodInfo = propertyInfo.GetMethodInfo();
+      var getMethodInfo = propertyInfo.GetGetMethod(true);
       if (getMethodInfo == null) { return TypeAccessorHelper<T>.EmptyMemberGetter; }
 
       return o => getMethodInfo.Invoke(o, EmptyArray<object>.Instance);
@@ -200,7 +196,7 @@ namespace CuteAnt.Reflection
     public static MemberSetter<T> CreateDefaultSetter(PropertyInfo propertyInfo)
     {
       //if (!propertyInfo.CanWrite) { return TypeAccessorHelper<T>.EmptyMemberSetter; }
-      var propertySetMethod = propertyInfo.SetMethodInfo();
+      var propertySetMethod = propertyInfo.GetSetMethod(true);
       if (propertySetMethod == null) return TypeAccessorHelper<T>.EmptyMemberSetter;
 
       return (o, convertedValue) => propertySetMethod.Invoke(o, new[] { convertedValue });
@@ -231,7 +227,7 @@ namespace CuteAnt.Reflection
     public static MemberSetter<T> CreateExpressionSetter(PropertyInfo propertyInfo)
     {
       //if (!propertyInfo.CanWrite) { return TypeAccessorHelper<T>.EmptyMemberSetter; }
-      var mi = propertyInfo.SetMethodInfo(true);
+      var mi = propertyInfo.GetSetMethod(true);
       if (mi == null) return TypeAccessorHelper<T>.EmptyMemberSetter;
 
       var thisType = TypeAccessorHelper<T>.ThisType;
@@ -254,13 +250,12 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-#if DESKTOPCLR || NETSTANDARD
     #region -- CreateEmitGetter --
 
     public static MemberGetter<T> CreateEmitGetter(PropertyInfo propertyInfo)
     {
       //if (!propertyInfo.CanRead) { return TypeAccessorHelper<T>.EmptyMemberGetter; }
-      var mi = propertyInfo.GetMethodInfo(true);
+      var mi = propertyInfo.GetGetMethod(true);
       if (null == mi) { return TypeAccessorHelper<T>.EmptyMemberGetter; }
       var isStatic = mi.IsStatic;
 
@@ -272,7 +267,7 @@ namespace CuteAnt.Reflection
       {
         var thisType = TypeAccessorHelper<T>.ThisType;
         var declaringType = propertyInfo.GetDeclaringType();
-        if (thisType.IsValueType())
+        if (thisType.IsValueType)
         {
           gen.Emit(OpCodes.Ldarga_S, 0);
 
@@ -295,7 +290,7 @@ namespace CuteAnt.Reflection
       gen.Emit(isStatic || mi.IsFinal ? OpCodes.Call : OpCodes.Callvirt, mi);
 
       var propertyType = propertyInfo.PropertyType;
-      if (propertyType.IsValueType())
+      if (propertyType.IsValueType)
       {
         gen.Emit(OpCodes.Box, propertyType);
       }
@@ -314,7 +309,7 @@ namespace CuteAnt.Reflection
     public static MemberSetter<T> CreateEmitSetter(PropertyInfo propertyInfo)
     {
       //if (!propertyInfo.CanWrite) { return TypeAccessorHelper<T>.EmptyMemberSetter; }
-      var mi = propertyInfo.SetMethodInfo(true);
+      var mi = propertyInfo.GetSetMethod(true);
       if (mi == null) { return TypeAccessorHelper<T>.EmptyMemberSetter; }
       var isStatic = mi.IsStatic;
 
@@ -327,7 +322,7 @@ namespace CuteAnt.Reflection
         gen.Emit(OpCodes.Ldarg_0);
 
         var declaringType = propertyInfo.GetDeclaringType();
-        if (declaringType.IsValueType())
+        if (declaringType.IsValueType)
         {
           if (thisType != declaringType) { gen.Emit(OpCodes.Unbox, declaringType); }
         }
@@ -340,7 +335,7 @@ namespace CuteAnt.Reflection
       gen.Emit(OpCodes.Ldarg_1);
 
       var propertyType = propertyInfo.PropertyType;
-      if (propertyType.IsValueType())
+      if (propertyType.IsValueType)
       {
         gen.Emit(OpCodes.Unbox_Any, propertyType);
       }
@@ -357,7 +352,6 @@ namespace CuteAnt.Reflection
     }
 
     #endregion
-#endif
   }
 }
 

@@ -1,7 +1,7 @@
-﻿using System;
+﻿#if DESKTOPCLR
+using System;
 using System.IO;
 using System.Text;
-using CuteAnt.Log;
 
 namespace CuteAnt.IO
 {
@@ -456,7 +456,7 @@ namespace CuteAnt.IO
           }
         }
       }
-      return filelist.ToString().Split("\r\n");
+      return filelist.ToString().Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
     }
 
     //0000 0000-0000 007F - 0xxxxxxx  (ascii converts to 1 octet!)
@@ -586,3 +586,4 @@ namespace CuteAnt.IO
     #endregion
   }
 }
+#endif

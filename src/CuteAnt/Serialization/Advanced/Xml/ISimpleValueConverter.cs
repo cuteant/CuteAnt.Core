@@ -1,4 +1,5 @@
-﻿#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
+﻿#if DESKTOPCLR
+#region Copyright ?2010 Pawel Idzikowski [idzikowski@sharpserializer.com]
 
 //  ***********************************************************************
 //  Project: sharpSerializer
@@ -48,3 +49,4 @@ namespace CuteAnt.Serialization.Advanced.Xml
 		object ConvertFromString(String text, Type type);
 	}
 }
+#endif

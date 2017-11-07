@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if DESKTOPCLR
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -425,3 +426,4 @@ namespace CuteAnt.IO
 		#endregion
 	}
 }
+#endif

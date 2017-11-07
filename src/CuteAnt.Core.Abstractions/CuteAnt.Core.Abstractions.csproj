@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net461;net451;net40;netstandard2.0</TargetFrameworks>
+    <RootNamespace>CuteAnt</RootNamespace>
+    <AssemblyName>CuteAnt.Core.Abstractions</AssemblyName>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Label="NuGet">
+    <PackageId>CuteAnt.Core.Abstractions</PackageId>
+    <Title>CuteAnt.Core.Abstractions</Title>
+    <Description>Core abstractions library of CuteAnt.</Description>
+    <PackageTags>CuteAnt Core</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Serialization\" />
+  </ItemGroup>
+
+  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.ValidationHelper.Sources\CuteAnt.Extensions.ValidationHelper.Sources.projitems" Label="Shared" />
+
+  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Collection.Sources\CuteAnt.Extensions.Collection.Sources.projitems" Label="Shared" />
+
+  <ImportGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
+  </ImportGroup>
+</Project>

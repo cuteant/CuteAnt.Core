@@ -1,13 +1,4 @@
-﻿/*
- * 作者：新生命开发团队（http://www.newlifex.com/）
- * 
- * 版权：版权所有 (C) 新生命开发团队 2002-2014
- * 
- * 修改：海洋饼干（cuteant@outlook.com）
-*/
-
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CuteAnt;
@@ -445,7 +436,7 @@ namespace System
     /// <param name="attrType"></param>
     /// <returns></returns>
     public static IEnumerable<Attribute> GetRuntimeAttributes(this Type type, Type attrType)
-      => GetRuntimeAttributes(type).Where(_ => _.GetType().IsSubOf(attrType));
+      => GetRuntimeAttributes(type).Where(_ => _.GetType().As(attrType));
 
     #endregion
 
@@ -724,7 +715,7 @@ namespace System
     /// <param name="attrType"></param>
     /// <returns></returns>
     public static IEnumerable<Attribute> GetRuntimeAttributes(this PropertyInfo propertyInfo, Type attrType)
-      => GetRuntimeAttributes(propertyInfo).Where(_ => _.GetType().IsSubOf(attrType));
+      => GetRuntimeAttributes(propertyInfo).Where(_ => _.GetType().As(attrType));
 
     #endregion
 
@@ -1018,7 +1009,7 @@ namespace System
     /// <param name="attrType"></param>
     /// <returns></returns>
     public static IEnumerable<Attribute> GetRuntimeAttributes(this FieldInfo fieldInfo, Type attrType)
-      => GetRuntimeAttributes(fieldInfo).Where(_ => _.GetType().IsSubOf(attrType));
+      => GetRuntimeAttributes(fieldInfo).Where(_ => _.GetType().As(attrType));
 
     #endregion
 
@@ -1322,7 +1313,7 @@ namespace System
         {
           foreach (var item in list)
           {
-            if (!TypeX.Equal(typeof(TAttribute), item.Constructor.DeclaringType)) continue;
+            if (!TypeUtils.Equal(typeof(TAttribute), item.Constructor.DeclaringType)) continue;
 
             var args = item.ConstructorArguments;
             if (args != null && args.Count > 0) return (TResult)args[0].Value;
