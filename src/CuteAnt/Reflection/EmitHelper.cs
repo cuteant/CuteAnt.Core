@@ -566,5 +566,76 @@ namespace CuteAnt.Reflection
     }
 
     #endregion
+
+    #region -- Take from Fast.Reflection --
+
+    public static ILGenerator ret(this ILGenerator il) { il.Emit(OpCodes.Ret); return il; }
+    public static ILGenerator cast(this ILGenerator il, Type type) { il.Emit(OpCodes.Castclass, type); return il; }
+    public static ILGenerator box(this ILGenerator il, Type type) { il.Emit(OpCodes.Box, type); return il; }
+    public static ILGenerator unbox_any(this ILGenerator il, Type type) { il.Emit(OpCodes.Unbox_Any, type); return il; }
+    public static ILGenerator unbox(this ILGenerator il, Type type) { il.Emit(OpCodes.Unbox, type); return il; }
+    public static ILGenerator call(this ILGenerator il, MethodInfo method) { il.Emit(OpCodes.Call, method); return il; }
+    public static ILGenerator callvirt(this ILGenerator il, MethodInfo method) { il.Emit(OpCodes.Callvirt, method); return il; }
+    public static ILGenerator ldnull(this ILGenerator il) { il.Emit(OpCodes.Ldnull); return il; }
+    public static ILGenerator bne_un(this ILGenerator il, Label target) { il.Emit(OpCodes.Bne_Un, target); return il; }
+    public static ILGenerator beq(this ILGenerator il, Label target) { il.Emit(OpCodes.Beq, target); return il; }
+    public static ILGenerator ldc_i4_0(this ILGenerator il) { il.Emit(OpCodes.Ldc_I4_0); return il; }
+    public static ILGenerator ldc_i4_1(this ILGenerator il) { il.Emit(OpCodes.Ldc_I4_1); return il; }
+    public static ILGenerator ldc_i4(this ILGenerator il, int c) { il.Emit(OpCodes.Ldc_I4, c); return il; }
+    public static ILGenerator ldc_r4(this ILGenerator il, float c) { il.Emit(OpCodes.Ldc_R4, c); return il; }
+    public static ILGenerator ldc_r8(this ILGenerator il, double c) { il.Emit(OpCodes.Ldc_R8, c); return il; }
+    public static ILGenerator ldarg0(this ILGenerator il) { il.Emit(OpCodes.Ldarg_0); return il; }
+    public static ILGenerator ldarg1(this ILGenerator il) { il.Emit(OpCodes.Ldarg_1); return il; }
+    public static ILGenerator ldarg2(this ILGenerator il) { il.Emit(OpCodes.Ldarg_2); return il; }
+    public static ILGenerator ldarga(this ILGenerator il, int idx) { il.Emit(OpCodes.Ldarga, idx); return il; }
+    public static ILGenerator ldarga_s(this ILGenerator il, int idx) { il.Emit(OpCodes.Ldarga_S, idx); return il; }
+    public static ILGenerator ldarg(this ILGenerator il, int idx) { il.Emit(OpCodes.Ldarg, idx); return il; }
+    public static ILGenerator ldarg_s(this ILGenerator il, int idx) { il.Emit(OpCodes.Ldarg_S, idx); return il; }
+    public static ILGenerator ldstr(this ILGenerator il, string str) { il.Emit(OpCodes.Ldstr, str); return il; }
+    public static ILGenerator ifclass_ldind_ref(this ILGenerator il, Type type) { if (!type.IsValueType) il.Emit(OpCodes.Ldind_Ref); return il; }
+    public static ILGenerator ldloc0(this ILGenerator il) { il.Emit(OpCodes.Ldloc_0); return il; }
+    public static ILGenerator ldloc1(this ILGenerator il) { il.Emit(OpCodes.Ldloc_1); return il; }
+    public static ILGenerator ldloc2(this ILGenerator il) { il.Emit(OpCodes.Ldloc_2); return il; }
+    public static ILGenerator ldloca_s(this ILGenerator il, int idx) { il.Emit(OpCodes.Ldloca_S, idx); return il; }
+    public static ILGenerator ldloca_s(this ILGenerator il, LocalBuilder local) { il.Emit(OpCodes.Ldloca_S, local); return il; }
+    public static ILGenerator ldloc_s(this ILGenerator il, int idx) { il.Emit(OpCodes.Ldloc_S, idx); return il; }
+    public static ILGenerator ldloc_s(this ILGenerator il, LocalBuilder local) { il.Emit(OpCodes.Ldloc_S, local); return il; }
+    public static ILGenerator ldloca(this ILGenerator il, int idx) { il.Emit(OpCodes.Ldloca, idx); return il; }
+    public static ILGenerator ldloca(this ILGenerator il, LocalBuilder local) { il.Emit(OpCodes.Ldloca, local); return il; }
+    public static ILGenerator ldloc(this ILGenerator il, int idx) { il.Emit(OpCodes.Ldloc, idx); return il; }
+    public static ILGenerator ldloc(this ILGenerator il, LocalBuilder local) { il.Emit(OpCodes.Ldloc, local); return il; }
+    public static ILGenerator initobj(this ILGenerator il, Type type) { il.Emit(OpCodes.Initobj, type); return il; }
+    public static ILGenerator newobj(this ILGenerator il, ConstructorInfo ctor) { il.Emit(OpCodes.Newobj, ctor); return il; }
+    public static ILGenerator Throw(this ILGenerator il) { il.Emit(OpCodes.Throw); return il; }
+    public static ILGenerator throw_new(this ILGenerator il, Type type) { var exp = type.GetConstructor(Type.EmptyTypes); newobj(il, exp).Throw(); return il; }
+    public static ILGenerator stelem_ref(this ILGenerator il) { il.Emit(OpCodes.Stelem_Ref); return il; }
+    public static ILGenerator ldelem_ref(this ILGenerator il) { il.Emit(OpCodes.Ldelem_Ref); return il; }
+    public static ILGenerator ldlen(this ILGenerator il) { il.Emit(OpCodes.Ldlen); return il; }
+    public static ILGenerator stloc(this ILGenerator il, int idx) { il.Emit(OpCodes.Stloc, idx); return il; }
+    public static ILGenerator stloc_s(this ILGenerator il, int idx) { il.Emit(OpCodes.Stloc_S, idx); return il; }
+    public static ILGenerator stloc(this ILGenerator il, LocalBuilder local) { il.Emit(OpCodes.Stloc, local); return il; }
+    public static ILGenerator stloc_s(this ILGenerator il, LocalBuilder local) { il.Emit(OpCodes.Stloc_S, local); return il; }
+    public static ILGenerator stloc0(this ILGenerator il) { il.Emit(OpCodes.Stloc_0); return il; }
+    public static ILGenerator stloc1(this ILGenerator il) { il.Emit(OpCodes.Stloc_1); return il; }
+    public static ILGenerator mark(this ILGenerator il, Label label) { il.MarkLabel(label); return il; }
+    public static ILGenerator ldfld(this ILGenerator il, FieldInfo field) { il.Emit(OpCodes.Ldfld, field); return il; }
+    public static ILGenerator ldsfld(this ILGenerator il, FieldInfo field) { il.Emit(OpCodes.Ldsfld, field); return il; }
+    public static ILGenerator lodfld(this ILGenerator il, FieldInfo field) { if (field.IsStatic) ldsfld(il, field); else ldfld(il, field); return il; }
+    public static ILGenerator ifvaluetype_box(this ILGenerator il, Type type) { if (type.IsValueType) il.Emit(OpCodes.Box, type); return il; }
+    public static ILGenerator stfld(this ILGenerator il, FieldInfo field) { il.Emit(OpCodes.Stfld, field); return il; }
+    public static ILGenerator stsfld(this ILGenerator il, FieldInfo field) { il.Emit(OpCodes.Stsfld, field); return il; }
+    public static ILGenerator setfld(this ILGenerator il, FieldInfo field) { if (field.IsStatic) stsfld(il, field); else stfld(il, field); return il; }
+    public static ILGenerator unboxorcast(this ILGenerator il, Type type) { if (type.IsValueType) unbox(il, type); else cast(il, type); return il; }
+    public static ILGenerator callorvirt(this ILGenerator il, MethodInfo method) { if (method.IsVirtual) il.Emit(OpCodes.Callvirt, method); else il.Emit(OpCodes.Call, method); return il; }
+    public static ILGenerator stind_ref(this ILGenerator il) { il.Emit(OpCodes.Stind_Ref); return il; }
+    public static ILGenerator ldind_ref(this ILGenerator il) { il.Emit(OpCodes.Ldind_Ref); return il; }
+    public static LocalBuilder declocal(this ILGenerator il, Type type) { return il.DeclareLocal(type); }
+    public static Label deflabel(this ILGenerator il) { return il.DefineLabel(); }
+    public static ILGenerator ifclass_ldarg_else_ldarga(this ILGenerator il, int idx, Type type) { if (type.IsValueType) il.ldarga(idx); else il.ldarg(idx); return il; }
+    public static ILGenerator ifclass_ldloc_else_ldloca(this ILGenerator il, int idx, Type type) { if (type.IsValueType) il.ldloca(idx); else il.ldloc(idx); return il; }
+    public static ILGenerator perform(this ILGenerator il, Action<ILGenerator, MemberInfo> action, MemberInfo member) { action(il, member); return il; }
+    public static ILGenerator ifbyref_ldloca_else_ldloc(this ILGenerator il, LocalBuilder local, Type type) { if (type.IsByRef) ldloca(il, local); else ldloc(il, local); return il; }
+
+    #endregion
   }
 }

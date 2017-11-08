@@ -1428,9 +1428,7 @@ namespace CuteAnt.Reflection
 
     #region -- 反射调用 --
 
-    #region - DelegateForCtor / DelegateForCall -
-
-    private static readonly ILEmitter emit = new ILEmitter();
+    #region - MakeDelegateForCtor / MakeDelegateForCall -
 
     private const string kCtorInvokerName = "CI<>";
     private const string kMethodCallerName = "MC<>";
@@ -1439,7 +1437,7 @@ namespace CuteAnt.Reflection
         new DictionaryCache<Type, DictionaryCache<int, Delegate>>(DictionaryCacheConstants.SIZE_SMALL);
 
     /// <summary>Generates or gets a strongly-typed open-instance delegate to the specified type constructor that takes the specified type params.</summary>
-    public static CtorInvoker<T> DelegateForCtor<T>(this Type type, params Type[] paramTypes)
+    public static CtorInvoker<T> MakeDelegateForCtor<T>(this Type type, params Type[] paramTypes)
     {
       int key = kCtorInvokerName.GetHashCode() ^ type.GetHashCode();
       for (int i = 0; i < paramTypes.Length; i++)
@@ -1452,8 +1450,8 @@ namespace CuteAnt.Reflection
       {
         var dynMethod = new DynamicMethod(kCtorInvokerName, typeof(T), new Type[] { typeof(object[]) });
 
-        emit.il = dynMethod.GetILGenerator();
-        GenCtor<T>(type, paramTypes);
+        var il = dynMethod.GetILGenerator();
+        GenCtor<T>(type, il, paramTypes);
 
         return dynMethod.CreateDelegate(typeof(CtorInvoker<T>));
       });
@@ -1461,12 +1459,12 @@ namespace CuteAnt.Reflection
     }
 
     /// <summary>Generates or gets a weakly-typed open-instance delegate to the specified type constructor that takes the specified type params.</summary>
-    public static CtorInvoker<object> DelegateForCtor(this Type type, params Type[] ctorParamTypes)
-        => DelegateForCtor<object>(type, ctorParamTypes);
+    public static CtorInvoker<object> MakeDelegateForCtor(this Type type, params Type[] ctorParamTypes)
+        => MakeDelegateForCtor<object>(type, ctorParamTypes);
 
 
     /// <summary>Generates a strongly-typed open-instance delegate to invoke the specified method</summary>
-    public static MethodCaller<TTarget, TReturn> DelegateForCall<TTarget, TReturn>(this MethodInfo method)
+    public static MethodCaller<TTarget, TReturn> MakeDelegateForCall<TTarget, TReturn>(this MethodInfo method)
     {
       int key = GetKey<TTarget, TReturn>(method, kMethodCallerName);
 
@@ -1476,8 +1474,8 @@ namespace CuteAnt.Reflection
     }
 
     /// <summary>Generates a weakly-typed open-instance delegate to invoke the specified method.</summary>
-    public static MethodCaller<object, object> DelegateForCall(this MethodInfo method)
-        => DelegateForCall<object, object>(method);
+    public static MethodCaller<object, object> MakeDelegateForCall(this MethodInfo method)
+        => MakeDelegateForCall<object, object>(method);
 
     /// <summary>Executes the delegate on the specified target and arguments but only if it's not null.</summary>
     public static void SafeInvoke<TTarget, TValue>(this MethodCaller<TTarget, TValue> caller, TTarget target, params object[] args)
@@ -1491,19 +1489,19 @@ namespace CuteAnt.Reflection
     }
 
     static TDelegate GenDelegateForMember<TDelegate, TMember>(TMember member, string dynMethodName,
-      Action<TMember> generator, Type returnType, params Type[] paramTypes)
+      Action<TMember, ILGenerator> generator, Type returnType, params Type[] paramTypes)
       where TMember : MemberInfo where TDelegate : class
     {
       var dynMethod = new DynamicMethod(dynMethodName, returnType, paramTypes, true);
 
-      emit.il = dynMethod.GetILGenerator();
-      generator(member);
+      var il = dynMethod.GetILGenerator();
+      generator(member, il);
 
       var result = dynMethod.CreateDelegate(typeof(TDelegate));
       return (TDelegate)(object)result;
     }
 
-    static void GenCtor<T>(Type type, Type[] paramTypes)
+    static void GenCtor<T>(Type type, ILGenerator il, Type[] paramTypes)
     {
       // arg0: object[] arguments
       // goal: return new T(arguments)
@@ -1511,8 +1509,8 @@ namespace CuteAnt.Reflection
 
       if (targetType.IsValueType && paramTypes.Length == 0)
       {
-        var tmp = emit.declocal(targetType);
-        emit.ldloca(tmp)
+        var tmp = il.declocal(targetType);
+        il.ldloca(tmp)
             .initobj(targetType)
             .ldloc(0);
       }
@@ -1528,22 +1526,22 @@ namespace CuteAnt.Reflection
         // push parameters in order to then call ctor
         for (int i = 0, imax = paramTypes.Length; i < imax; i++)
         {
-          emit.ldarg0()         // push args array
+          il.ldarg0()         // push args array
               .ldc_i4(i)          // push index
               .ldelem_ref()       // push array[index]
               .unbox_any(paramTypes[i]);  // cast
         }
 
-        emit.newobj(ctor);
+        il.newobj(ctor);
       }
 
       if (typeof(T) == typeof(object) && targetType.IsValueType)
-        emit.box(targetType);
+        il.box(targetType);
 
-      emit.ret();
+      il.ret();
     }
 
-    static void GenMethodInvocation<TTarget>(MethodInfo method)
+    static void GenMethodInvocation<TTarget>(MethodInfo method, ILGenerator il)
     {
       var weaklyTyped = typeof(TTarget) == typeof(object);
 
@@ -1551,11 +1549,11 @@ namespace CuteAnt.Reflection
       if (!method.IsStatic)
       {
         var targetType = weaklyTyped ? method.DeclaringType : typeof(TTarget);
-        emit.declocal(targetType);
-        emit.ldarg0();
+        il.declocal(targetType);
+        il.ldarg0();
         if (weaklyTyped)
-          emit.unbox_any(targetType);
-        emit.stloc0()
+          il.unbox_any(targetType);
+        il.stloc0()
             .ifclass_ldloc_else_ldloca(0, targetType);
       }
 
@@ -1563,7 +1561,7 @@ namespace CuteAnt.Reflection
       var prams = method.GetParameters();
       for (int i = 0, imax = prams.Length; i < imax; i++)
       {
-        emit.ldarg1()   // push array
+        il.ldarg1()   // push array
             .ldc_i4(i)    // push index
             .ldelem_ref();  // pop array, index and push array[index]
 
@@ -1573,14 +1571,14 @@ namespace CuteAnt.Reflection
         if (dataType.IsByRef)
           dataType = dataType.GetElementType();
 
-        var tmp = emit.declocal(dataType);
-        emit.unbox_any(dataType)
+        var tmp = il.declocal(dataType);
+        il.unbox_any(dataType)
             .stloc(tmp)
             .ifbyref_ldloca_else_ldloc(tmp, param.ParameterType);
       }
 
       // perform the correct call (pushes the result)
-      emit.callorvirt(method);
+      il.callorvirt(method);
 
       // if method wasn't static that means we declared a temp local to load the target
       // that means our local variables index for the arguments start from 1
@@ -1591,21 +1589,21 @@ namespace CuteAnt.Reflection
         if (paramType.IsByRef)
         {
           var byRefType = paramType.GetElementType();
-          emit.ldarg1()
+          il.ldarg1()
               .ldc_i4(i)
               .ldloc(i + localVarStart);
           if (byRefType.IsValueType)
-            emit.box(byRefType);
-          emit.stelem_ref();
+            il.box(byRefType);
+          il.stelem_ref();
         }
       }
 
       if (method.ReturnType == typeof(void))
-        emit.ldnull();
+        il.ldnull();
       else if (weaklyTyped)
-        emit.ifvaluetype_box(method.ReturnType);
+        il.ifvaluetype_box(method.ReturnType);
 
-      emit.ret();
+      il.ret();
     }
 
     #endregion
@@ -1993,7 +1991,7 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-    #region -- MemberGetter.IsEmpty --
+    #region - MemberGetter.IsEmpty -
 
     public static bool IsEmpty(this MemberGetter getter) => object.ReferenceEquals(TypeAccessorHelper.EmptyMemberGetter, getter);
     public static bool IsEmpty<T>(this MemberGetter<T> getter) => object.ReferenceEquals(TypeAccessorHelper<T>.EmptyMemberGetter, getter);
@@ -2002,7 +2000,7 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-    #region -- MemberSetter.IsEmpty --
+    #region - MemberSetter.IsEmpty -
 
     public static bool IsEmpty(this MemberSetter setter) => object.ReferenceEquals(TypeAccessorHelper.EmptyMemberSetter, setter);
     public static bool IsEmpty<T>(this MemberSetter<T> setter) => object.ReferenceEquals(TypeAccessorHelper<T>.EmptyMemberSetter, setter);
@@ -2645,82 +2643,6 @@ namespace CuteAnt.Reflection
         return (TFunc)(Object)Delegate.CreateDelegate(typeof(TFunc), target, method);
 #endif
       }
-    }
-
-    #endregion
-
-    #region ** class ILEmitter **
-
-    private sealed class ILEmitter
-    {
-      public ILGenerator il;
-
-      public ILEmitter ret() { il.Emit(OpCodes.Ret); return this; }
-      public ILEmitter cast(Type type) { il.Emit(OpCodes.Castclass, type); return this; }
-      public ILEmitter box(Type type) { il.Emit(OpCodes.Box, type); return this; }
-      public ILEmitter unbox_any(Type type) { il.Emit(OpCodes.Unbox_Any, type); return this; }
-      public ILEmitter unbox(Type type) { il.Emit(OpCodes.Unbox, type); return this; }
-      public ILEmitter call(MethodInfo method) { il.Emit(OpCodes.Call, method); return this; }
-      public ILEmitter callvirt(MethodInfo method) { il.Emit(OpCodes.Callvirt, method); return this; }
-      public ILEmitter ldnull() { il.Emit(OpCodes.Ldnull); return this; }
-      public ILEmitter bne_un(Label target) { il.Emit(OpCodes.Bne_Un, target); return this; }
-      public ILEmitter beq(Label target) { il.Emit(OpCodes.Beq, target); return this; }
-      public ILEmitter ldc_i4_0() { il.Emit(OpCodes.Ldc_I4_0); return this; }
-      public ILEmitter ldc_i4_1() { il.Emit(OpCodes.Ldc_I4_1); return this; }
-      public ILEmitter ldc_i4(int c) { il.Emit(OpCodes.Ldc_I4, c); return this; }
-      public ILEmitter ldc_r4(float c) { il.Emit(OpCodes.Ldc_R4, c); return this; }
-      public ILEmitter ldc_r8(double c) { il.Emit(OpCodes.Ldc_R8, c); return this; }
-      public ILEmitter ldarg0() { il.Emit(OpCodes.Ldarg_0); return this; }
-      public ILEmitter ldarg1() { il.Emit(OpCodes.Ldarg_1); return this; }
-      public ILEmitter ldarg2() { il.Emit(OpCodes.Ldarg_2); return this; }
-      public ILEmitter ldarga(int idx) { il.Emit(OpCodes.Ldarga, idx); return this; }
-      public ILEmitter ldarga_s(int idx) { il.Emit(OpCodes.Ldarga_S, idx); return this; }
-      public ILEmitter ldarg(int idx) { il.Emit(OpCodes.Ldarg, idx); return this; }
-      public ILEmitter ldarg_s(int idx) { il.Emit(OpCodes.Ldarg_S, idx); return this; }
-      public ILEmitter ldstr(string str) { il.Emit(OpCodes.Ldstr, str); return this; }
-      public ILEmitter ifclass_ldind_ref(Type type) { if (!type.IsValueType) il.Emit(OpCodes.Ldind_Ref); return this; }
-      public ILEmitter ldloc0() { il.Emit(OpCodes.Ldloc_0); return this; }
-      public ILEmitter ldloc1() { il.Emit(OpCodes.Ldloc_1); return this; }
-      public ILEmitter ldloc2() { il.Emit(OpCodes.Ldloc_2); return this; }
-      public ILEmitter ldloca_s(int idx) { il.Emit(OpCodes.Ldloca_S, idx); return this; }
-      public ILEmitter ldloca_s(LocalBuilder local) { il.Emit(OpCodes.Ldloca_S, local); return this; }
-      public ILEmitter ldloc_s(int idx) { il.Emit(OpCodes.Ldloc_S, idx); return this; }
-      public ILEmitter ldloc_s(LocalBuilder local) { il.Emit(OpCodes.Ldloc_S, local); return this; }
-      public ILEmitter ldloca(int idx) { il.Emit(OpCodes.Ldloca, idx); return this; }
-      public ILEmitter ldloca(LocalBuilder local) { il.Emit(OpCodes.Ldloca, local); return this; }
-      public ILEmitter ldloc(int idx) { il.Emit(OpCodes.Ldloc, idx); return this; }
-      public ILEmitter ldloc(LocalBuilder local) { il.Emit(OpCodes.Ldloc, local); return this; }
-      public ILEmitter initobj(Type type) { il.Emit(OpCodes.Initobj, type); return this; }
-      public ILEmitter newobj(ConstructorInfo ctor) { il.Emit(OpCodes.Newobj, ctor); return this; }
-      public ILEmitter Throw() { il.Emit(OpCodes.Throw); return this; }
-      public ILEmitter throw_new(Type type) { var exp = type.GetConstructor(Type.EmptyTypes); newobj(exp).Throw(); return this; }
-      public ILEmitter stelem_ref() { il.Emit(OpCodes.Stelem_Ref); return this; }
-      public ILEmitter ldelem_ref() { il.Emit(OpCodes.Ldelem_Ref); return this; }
-      public ILEmitter ldlen() { il.Emit(OpCodes.Ldlen); return this; }
-      public ILEmitter stloc(int idx) { il.Emit(OpCodes.Stloc, idx); return this; }
-      public ILEmitter stloc_s(int idx) { il.Emit(OpCodes.Stloc_S, idx); return this; }
-      public ILEmitter stloc(LocalBuilder local) { il.Emit(OpCodes.Stloc, local); return this; }
-      public ILEmitter stloc_s(LocalBuilder local) { il.Emit(OpCodes.Stloc_S, local); return this; }
-      public ILEmitter stloc0() { il.Emit(OpCodes.Stloc_0); return this; }
-      public ILEmitter stloc1() { il.Emit(OpCodes.Stloc_1); return this; }
-      public ILEmitter mark(Label label) { il.MarkLabel(label); return this; }
-      public ILEmitter ldfld(FieldInfo field) { il.Emit(OpCodes.Ldfld, field); return this; }
-      public ILEmitter ldsfld(FieldInfo field) { il.Emit(OpCodes.Ldsfld, field); return this; }
-      public ILEmitter lodfld(FieldInfo field) { if (field.IsStatic) ldsfld(field); else ldfld(field); return this; }
-      public ILEmitter ifvaluetype_box(Type type) { if (type.IsValueType) il.Emit(OpCodes.Box, type); return this; }
-      public ILEmitter stfld(FieldInfo field) { il.Emit(OpCodes.Stfld, field); return this; }
-      public ILEmitter stsfld(FieldInfo field) { il.Emit(OpCodes.Stsfld, field); return this; }
-      public ILEmitter setfld(FieldInfo field) { if (field.IsStatic) stsfld(field); else stfld(field); return this; }
-      public ILEmitter unboxorcast(Type type) { if (type.IsValueType) unbox(type); else cast(type); return this; }
-      public ILEmitter callorvirt(MethodInfo method) { if (method.IsVirtual) il.Emit(OpCodes.Callvirt, method); else il.Emit(OpCodes.Call, method); return this; }
-      public ILEmitter stind_ref() { il.Emit(OpCodes.Stind_Ref); return this; }
-      public ILEmitter ldind_ref() { il.Emit(OpCodes.Ldind_Ref); return this; }
-      public LocalBuilder declocal(Type type) { return il.DeclareLocal(type); }
-      public Label deflabel() { return il.DefineLabel(); }
-      public ILEmitter ifclass_ldarg_else_ldarga(int idx, Type type) { if (type.IsValueType) emit.ldarga(idx); else emit.ldarg(idx); return this; }
-      public ILEmitter ifclass_ldloc_else_ldloca(int idx, Type type) { if (type.IsValueType) emit.ldloca(idx); else emit.ldloc(idx); return this; }
-      public ILEmitter perform(Action<ILEmitter, MemberInfo> action, MemberInfo member) { action(this, member); return this; }
-      public ILEmitter ifbyref_ldloca_else_ldloc(LocalBuilder local, Type type) { if (type.IsByRef) ldloca(local); else ldloc(local); return this; }
     }
 
     #endregion
