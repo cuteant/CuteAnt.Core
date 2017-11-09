@@ -2,6 +2,7 @@
   <PropertyGroup>
     <RootNamespace>CuteAnt.Tests</RootNamespace>
     <AssemblyName>CuteAnt.Tests</AssemblyName>
+    <TargetFramework>net461</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>

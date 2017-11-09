@@ -621,8 +621,7 @@ namespace System.Threading.Tasks
         get
         {
           var list = new List<T>();
-          //foreach (T item in _queue) { list.Add(item); }
-          _queue.ForEachX(item => list.Add(item));
+          foreach (T item in _queue) { list.Add(item); }
           return list.ToArray();
         }
       }

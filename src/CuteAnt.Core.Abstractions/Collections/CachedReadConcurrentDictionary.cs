@@ -7,121 +7,126 @@ using System.Threading;
 
 namespace CuteAnt.Collections
 {
-  /// <summary>
-  /// A thread-safe dictionary for read-heavy workloads.
-  /// </summary>
+  /// <summary>A thread-safe dictionary for read-heavy workloads.</summary>
   /// <typeparam name="TKey">The key type.</typeparam>
   /// <typeparam name="TValue">The value type.</typeparam>
   public class CachedReadConcurrentDictionary<TKey, TValue> : IDictionary<TKey, TValue>
   {
-    /// <summary>
-    /// The number of cache misses which are tolerated before the cache is regenerated.
-    /// </summary>
+    /// <summary>The number of concurrent writes for which to optimize by default.</summary>
+    private static Int32 DefaultConcurrencyLevel => DEFAULT_CONCURRENCY_MULTIPLIER * PlatformHelper.ProcessorCount;
+    // The default concurrency level is DEFAULT_CONCURRENCY_MULTIPLIER * #CPUs. The higher the
+    // DEFAULT_CONCURRENCY_MULTIPLIER, the more concurrent writes can take place without interference
+    // and blocking, but also the more expensive operations that require all locks become (e.g. table
+    // resizing, ToArray, Count, etc). According to brief benchmarks that we ran, 4 seems like a good
+    // compromise.
+    private const Int32 DEFAULT_CONCURRENCY_MULTIPLIER = 4;
+    // The default capacity, i.e. the initial # of buckets. When choosing this value, we are making
+    // a trade-off between the size of a very small dictionary, and the number of resizes when
+    // constructing a large dictionary. Also, the capacity should not be divisible by a small prime.
+    private const Int32 DEFAULT_CAPACITY = 31;
+
+    /// <summary>The number of cache misses which are tolerated before the cache is regenerated.</summary>
     private const int CacheMissesBeforeCaching = 10;
-    private readonly ConcurrentDictionary<TKey, TValue> dictionary;
-    private readonly IEqualityComparer<TKey> comparer;
+    private readonly ConcurrentDictionary<TKey, TValue> _dictionary;
+    private readonly IEqualityComparer<TKey> _comparer;
 
-    /// <summary>
-    /// Approximate number of reads which did not hit the cache since it was last invalidated.
-    /// This is used as a heuristic that the dictionary is not being modified frequently with respect to the read volume.
-    /// </summary>
-    private int cacheMissReads;
+    /// <summary>Approximate number of reads which did not hit the cache since it was last invalidated.
+    /// This is used as a heuristic that the dictionary is not being modified frequently with respect to the read volume.</summary>
+    private int _cacheMissReads;
 
-    /// <summary>
-    /// Cached version of <see cref="dictionary"/>.
-    /// </summary>
-    private Dictionary<TKey, TValue> readCache;
+    /// <summary>Cached version of inner concurrent dictionary.</summary>
+    private Dictionary<TKey, TValue> _readCache;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> class.</summary>
     public CachedReadConcurrentDictionary()
     {
-      this.dictionary = new ConcurrentDictionary<TKey, TValue>();
+      _dictionary = new ConcurrentDictionary<TKey, TValue>();
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> class
-    /// that contains elements copied from the specified collection.
-    /// </summary>
-    /// <param name="collection">
-    /// The <see cref="T:IEnumerable{KeyValuePair{TKey,TValue}}"/> whose elements are copied to the new instance.
-    /// </param>
-    public CachedReadConcurrentDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection)
+    /// <summary>Initializes a new instance of the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> class.</summary>
+    /// <param name="capacity">The initial number of elements that the <see cref="ConcurrentDictionary{TKey,TValue}"/> can contain.</param>
+    public CachedReadConcurrentDictionary(int capacity)
     {
-      this.dictionary = new ConcurrentDictionary<TKey, TValue>(collection);
+      _dictionary = new ConcurrentDictionary<TKey, TValue>(DefaultConcurrencyLevel, capacity);
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> class
+    /// <summary>Initializes a new instance of the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> class
     /// that contains elements copied from the specified collection and uses the specified
-    /// <see cref="T:System.Collections.Generic.IEqualityComparer{TKey}"/>.
-    /// </summary>
-    /// <param name="comparer">
-    /// The <see cref="IEqualityComparer{TKey}"/> implementation to use when comparing keys.
-    /// </param>
+    /// <see cref="T:System.Collections.Generic.IEqualityComparer{TKey}"/>.</summary>
+    /// <param name="comparer">The <see cref="IEqualityComparer{TKey}"/> implementation to use when comparing keys.</param>
     public CachedReadConcurrentDictionary(IEqualityComparer<TKey> comparer)
     {
-      this.comparer = comparer;
-      this.dictionary = new ConcurrentDictionary<TKey, TValue>(comparer);
+      _dictionary = new ConcurrentDictionary<TKey, TValue>(comparer);
+      _comparer = comparer;
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/>
+    /// <summary>Initializes a new instance of the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> class.</summary>
+    /// <param name="capacity">The initial number of elements that the <see cref="ConcurrentDictionary{TKey,TValue}"/> can contain.</param>
+    /// <param name="comparer">The <see cref="IEqualityComparer{TKey}"/> implementation to use when comparing keys.</param>
+    public CachedReadConcurrentDictionary(int capacity, IEqualityComparer<TKey> comparer)
+    {
+      _dictionary = new ConcurrentDictionary<TKey, TValue>(DefaultConcurrencyLevel, capacity, comparer);
+      _comparer = comparer;
+    }
+
+    /// <summary>Initializes a new instance of the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> class
+    /// that contains elements copied from the specified collection.</summary>
+    /// <param name="collection">The <see cref="T:IEnumerable{KeyValuePair{TKey,TValue}}"/> whose elements are copied to the new instance.</param>
+    public CachedReadConcurrentDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection)
+    {
+      _dictionary = new ConcurrentDictionary<TKey, TValue>(collection);
+    }
+
+    /// <summary>Initializes a new instance of the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/>
     /// class that contains elements copied from the specified collection and uses the specified
-    /// <see cref="T:System.Collections.Generic.IEqualityComparer{TKey}"/>.
-    /// </summary>
-    /// <param name="collection">
-    /// The <see cref="T:IEnumerable{KeyValuePair{TKey,TValue}}"/> whose elements are copied to the new instance.
-    /// </param>
-    /// <param name="comparer">
-    /// The <see cref="IEqualityComparer{TKey}"/> implementation to use when comparing keys.
-    /// </param>
+    /// <see cref="T:System.Collections.Generic.IEqualityComparer{TKey}"/>.</summary>
+    /// <param name="collection">The <see cref="T:IEnumerable{KeyValuePair{TKey,TValue}}"/> whose elements are copied to the new instance.</param>
+    /// <param name="comparer">The <see cref="IEqualityComparer{TKey}"/> implementation to use when comparing keys.</param>
     public CachedReadConcurrentDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey> comparer)
     {
-      this.comparer = comparer;
-      this.dictionary = new ConcurrentDictionary<TKey, TValue>(collection, comparer);
+      _comparer = comparer;
+      _dictionary = new ConcurrentDictionary<TKey, TValue>(collection, comparer);
     }
 
     /// <inheritdoc />
-    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     /// <inheritdoc />
-    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => this.GetReadDictionary().GetEnumerator();
+    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => GetReadDictionary().GetEnumerator();
 
     /// <inheritdoc />
     public void Add(KeyValuePair<TKey, TValue> item)
     {
-      ((IDictionary<TKey, TValue>)this.dictionary).Add(item);
-      this.InvalidateCache();
+      ((IDictionary<TKey, TValue>)_dictionary).Add(item);
+      InvalidateCache();
     }
 
     /// <inheritdoc />
     public void Clear()
     {
-      this.dictionary.Clear();
-      this.InvalidateCache();
+      _dictionary.Clear();
+      InvalidateCache();
     }
 
     /// <inheritdoc />
-    public bool Contains(KeyValuePair<TKey, TValue> item) => this.GetReadDictionary().Contains(item);
+    public bool Contains(KeyValuePair<TKey, TValue> item) => GetReadDictionary().Contains(item);
 
     /// <inheritdoc />
     public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
     {
-      this.GetReadDictionary().CopyTo(array, arrayIndex);
+      GetReadDictionary().CopyTo(array, arrayIndex);
     }
 
     /// <inheritdoc />
     public bool Remove(KeyValuePair<TKey, TValue> item)
     {
-      var result = ((IDictionary<TKey, TValue>)this.dictionary).Remove(item);
-      if (result) this.InvalidateCache();
+      var result = ((IDictionary<TKey, TValue>)_dictionary).Remove(item);
+      if (result) InvalidateCache();
       return result;
     }
 
     /// <inheritdoc />
-    public int Count => this.GetReadDictionary().Count;
+    public int Count => GetReadDictionary().Count;
 
     /// <inheritdoc />
     public bool IsReadOnly => false;
@@ -129,41 +134,34 @@ namespace CuteAnt.Collections
     /// <inheritdoc />
     public void Add(TKey key, TValue value)
     {
-      ((IDictionary<TKey, TValue>)this.dictionary).Add(key, value);
-      this.InvalidateCache();
+      ((IDictionary<TKey, TValue>)_dictionary).Add(key, value);
+      InvalidateCache();
     }
 
-    /// <summary>
-    /// dds a key/value pair to the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> if the key does not exist.
-    /// </summary>
+    /// <summary>dds a key/value pair to the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> if the key does not exist.</summary>
     /// <param name="key">The key of the element to add.</param>
     /// <param name="valueFactory">The function used to generate a value for the key</param>
     /// <returns>The value for the key. This will be either the existing value for the key if the key is already in the dictionary, or the new value if the key was not in the dictionary.</returns>
     public TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory)
     {
-      TValue value;
+      if (GetReadDictionary().TryGetValue(key, out TValue value)) { return value; }
 
-      if (this.GetReadDictionary().TryGetValue(key, out value))
-        return value;
-
-      value = this.dictionary.GetOrAdd(key, valueFactory);
+      value = _dictionary.GetOrAdd(key, valueFactory);
       InvalidateCache();
 
       return value;
     }
 
-    /// <summary>
-    /// Attempts to add the specified key and value.
-    /// </summary>
+    /// <summary>Attempts to add the specified key and value.</summary>
     /// <param name="key">The key of the element to add.</param>
     /// <param name="value">The value of the element to add. The value can be a null reference (Nothing
     /// in Visual Basic) for reference types.</param>
     /// <returns>true if the key/value pair was added successfully; otherwise, false.</returns>
     public bool TryAdd(TKey key, TValue value)
     {
-      if (this.dictionary.TryAdd(key, value))
+      if (_dictionary.TryAdd(key, value))
       {
-        this.InvalidateCache();
+        InvalidateCache();
         return true;
       }
 
@@ -171,55 +169,55 @@ namespace CuteAnt.Collections
     }
 
     /// <inheritdoc />
-    public bool ContainsKey(TKey key) => this.GetReadDictionary().ContainsKey(key);
+    public bool ContainsKey(TKey key) => GetReadDictionary().ContainsKey(key);
 
     /// <inheritdoc />
     public bool Remove(TKey key)
     {
-      var result = ((IDictionary<TKey, TValue>)this.dictionary).Remove(key);
-      if (result) this.InvalidateCache();
+      var result = ((IDictionary<TKey, TValue>)_dictionary).Remove(key);
+      if (result) { InvalidateCache(); }
       return result;
     }
 
     /// <inheritdoc />
-    public bool TryGetValue(TKey key, out TValue value) => this.GetReadDictionary().TryGetValue(key, out value);
+    public bool TryGetValue(TKey key, out TValue value) => GetReadDictionary().TryGetValue(key, out value);
 
     /// <inheritdoc />
     public TValue this[TKey key]
     {
-      get { return this.GetReadDictionary()[key]; }
+      get { return GetReadDictionary()[key]; }
       set
       {
-        this.dictionary[key] = value;
-        this.InvalidateCache();
+        _dictionary[key] = value;
+        InvalidateCache();
       }
     }
 
     /// <inheritdoc />
-    public ICollection<TKey> Keys => this.GetReadDictionary().Keys;
+    public ICollection<TKey> Keys => GetReadDictionary().Keys;
 
     /// <inheritdoc />
-    public ICollection<TValue> Values => this.GetReadDictionary().Values;
+    public ICollection<TValue> Values => GetReadDictionary().Values;
 
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    private IDictionary<TKey, TValue> GetReadDictionary() => this.readCache ?? this.GetWithoutCache();
+    private IDictionary<TKey, TValue> GetReadDictionary() => _readCache ?? GetWithoutCache();
 
     private IDictionary<TKey, TValue> GetWithoutCache()
     {
       // If the dictionary was recently modified or the cache is being recomputed, return the dictionary directly.
-      if (Interlocked.Increment(ref this.cacheMissReads) < CacheMissesBeforeCaching) return this.dictionary;
+      if (Interlocked.Increment(ref _cacheMissReads) < CacheMissesBeforeCaching) return _dictionary;
 
       // Recompute the cache if too many cache misses have occurred.
-      this.cacheMissReads = 0;
-      return this.readCache = new Dictionary<TKey, TValue>(this.dictionary, this.comparer);
+      _cacheMissReads = 0;
+      return _readCache = new Dictionary<TKey, TValue>(_dictionary, _comparer);
     }
 
     private void InvalidateCache()
     {
-      this.cacheMissReads = 0;
-      this.readCache = null;
+      _cacheMissReads = 0;
+      Interlocked.Exchange(ref _readCache, null);
     }
   }
 }

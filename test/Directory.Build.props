@@ -13,11 +13,6 @@
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
-  <!-- For test project we still need to target various desktop .Net versions instead of .Net Standard -->
-  <PropertyGroup>
-    <TargetFramework>$(TestProjectTargetFramework)</TargetFramework>
-  </PropertyGroup>
-
   <!-- To make CodeLens and Test Explorer happy, we're generating full symbols -->
   <PropertyGroup>
     <DebugType>full</DebugType>
