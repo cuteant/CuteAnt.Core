@@ -207,11 +207,12 @@ namespace CuteAnt.Collections
     private IDictionary<TKey, TValue> GetWithoutCache()
     {
       // If the dictionary was recently modified or the cache is being recomputed, return the dictionary directly.
-      if (Interlocked.Increment(ref _cacheMissReads) < CacheMissesBeforeCaching) return _dictionary;
+      if (Interlocked.Increment(ref _cacheMissReads) < CacheMissesBeforeCaching) { return _dictionary; }
 
       // Recompute the cache if too many cache misses have occurred.
       _cacheMissReads = 0;
-      return _readCache = new Dictionary<TKey, TValue>(_dictionary, _comparer);
+      Interlocked.Exchange(ref _readCache, new Dictionary<TKey, TValue>(_dictionary, _comparer));
+      return _readCache;// = new Dictionary<TKey, TValue>(_dictionary, _comparer);
     }
 
     private void InvalidateCache()

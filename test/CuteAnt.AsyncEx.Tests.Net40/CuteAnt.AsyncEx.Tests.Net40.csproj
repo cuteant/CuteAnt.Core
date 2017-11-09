@@ -1,0 +1,71 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <RootNamespace>CuteAnt.AsyncEx.Tests</RootNamespace>
+    <AssemblyName>CuteAnt.AsyncEx.Tests</AssemblyName>
+    <DefineConstants>$(DefineConstants);TEST40</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\AsyncAssert.cs" Link="AsyncAssert.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Context\AsyncContextThreadUnitTests.cs" Link="Context\AsyncContextThreadUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Context\AsyncContextUnitTests.cs" Link="Context\AsyncContextUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Context\WaitHandleInteropUnitTests.cs" Link="Context\WaitHandleInteropUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Coordination\AsyncAutoResetEventUnitTests.cs" Link="Coordination\AsyncAutoResetEventUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Coordination\AsyncConditionVariableUnitTests.cs" Link="Coordination\AsyncConditionVariableUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Coordination\AsyncCountdownEventUnitTests.cs" Link="Coordination\AsyncCountdownEventUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Coordination\AsyncLazyUnitTests.cs" Link="Coordination\AsyncLazyUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Coordination\AsyncLockUnitTests.cs" Link="Coordination\AsyncLockUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Coordination\AsyncManualResetEventUnitTests.cs" Link="Coordination\AsyncManualResetEventUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Coordination\AsyncMonitorUnitTests.cs" Link="Coordination\AsyncMonitorUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Coordination\AsyncProducerConsumerQueueUnitTests.cs" Link="Coordination\AsyncProducerConsumerQueueUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Coordination\AsyncReaderWriterLockUnitTests.cs" Link="Coordination\AsyncReaderWriterLockUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Coordination\AsyncSemaphoreUnitTests.cs" Link="Coordination\AsyncSemaphoreUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Coordination\AsyncWaitQueueUnitTests.cs" Link="Coordination\AsyncWaitQueueUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Oop\DeferralManagerUnitTests.cs" Link="Oop\DeferralManagerUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Task\CancellationTokenTaskSourceUnitTests.cs" Link="Task\CancellationTokenTaskSourceUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Task\EventAsyncFactoryUnitTests.cs" Link="Task\EventAsyncFactoryUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Task\SynchronousTaskExtensionsUnitTests.cs" Link="Task\SynchronousTaskExtensionsUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Task\TaskCompletionSourceExtensionsUnitTests.cs" Link="Task\TaskCompletionSourceExtensionsUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Task\TaskConstantsUnitTests.cs" Link="Task\TaskConstantsUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Task\TaskExtensionsUnitTests.cs" Link="Task\TaskExtensionsUnitTests.cs" />
+    <Compile Include="..\CuteAnt.AsyncEx.Tests\Task\TaskFactoryExtensionsUnitTests.cs" Link="Task\TaskFactoryExtensionsUnitTests.cs" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsVersion)" />
+    <PackageReference Include="xunit" Version="$(xUnitVersion)" />
+    <PackageReference Include="Xunit.SkippableFact" Version="$(XunitSkippableFactVersion)" />
+    <PackageReference Include="Microsoft.Bcl" Version="1.1.10" />
+    <PackageReference Include="Microsoft.Bcl.Async" Version="1.0.168" />
+    <PackageReference Include="Microsoft.Bcl.Build" Version="1.0.21" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Context\" />
+    <Folder Include="Coordination\" />
+    <Folder Include="Oop\" />
+    <Folder Include="Task\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="CuteAnt.AsyncEx">
+      <HintPath>..\..\src\CuteAnt.AsyncEx\bin\Debug\net40\CuteAnt.AsyncEx.dll</HintPath>
+    </Reference>
+    <Reference Include="CuteAnt.Core">
+      <HintPath>..\..\src\CuteAnt.AsyncEx\bin\Debug\net40\CuteAnt.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="CuteAnt.Core.Abstractions">
+      <HintPath>..\..\src\CuteAnt.AsyncEx\bin\Debug\net40\CuteAnt.Core.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives">
+      <HintPath>..\..\src\CuteAnt.AsyncEx\bin\Debug\net40\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable">
+      <HintPath>..\..\src\CuteAnt.AsyncEx\bin\Debug\net40\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection.Metadata">
+      <HintPath>..\..\src\CuteAnt.AsyncEx\bin\Debug\net40\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  
+</Project>

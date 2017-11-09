@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET40
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -53,3 +54,4 @@ namespace CuteAnt.AsyncEx.Internal.PlatformEnlightenment
 		}
 	}
 }
+#endif

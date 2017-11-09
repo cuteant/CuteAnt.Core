@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET40
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
@@ -48,3 +49,4 @@ namespace CuteAnt.AsyncEx.Internal.PlatformEnlightenment
 		}
 	}
 }
+#endif

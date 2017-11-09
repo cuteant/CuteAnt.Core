@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !TEST40
+using System;
 using System.Threading.Tasks;
 using CuteAnt.AsyncEx;
 using System.Linq;
@@ -170,3 +171,4 @@ namespace CuteAnt.AsyncEx.Tests
         }
     }
 }
+#endif

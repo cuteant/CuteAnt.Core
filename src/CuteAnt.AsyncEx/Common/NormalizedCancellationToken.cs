@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using CuteAnt.Disposables;
 
 namespace CuteAnt.AsyncEx
 {

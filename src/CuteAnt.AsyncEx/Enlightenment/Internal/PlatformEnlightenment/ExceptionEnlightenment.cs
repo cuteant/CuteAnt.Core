@@ -1,27 +1,28 @@
-﻿using System;
-#if NET_4_0_GREATER
-using System.Runtime.CompilerServices;
-using System.Runtime.ExceptionServices;
-#else
+﻿#if NET40
+using System;
+//#if NET_4_0_GREATER
+//using System.Runtime.CompilerServices;
+//using System.Runtime.ExceptionServices;
+//#else
 using System.Linq.Expressions;
 using System.Reflection;
-#endif
+//#endif
 
 namespace CuteAnt.AsyncEx.Internal.PlatformEnlightenment
 {
   internal static class ExceptionEnlightenment
   {
-#if NET_4_0_GREATER
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static Exception PrepareForRethrow(Exception exception)
-    {
-      ExceptionDispatchInfo.Capture(exception).Throw();
+//#if NET_4_0_GREATER
+//    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+//    internal static Exception PrepareForRethrow(Exception exception)
+//    {
+//      ExceptionDispatchInfo.Capture(exception).Throw();
 
-      // The code cannot ever get here. We just return a value to work around a badly-designed API (ExceptionDispatchInfo.Throw):
-      //  https://connect.microsoft.com/VisualStudio/feedback/details/689516/exceptiondispatchinfo-api-modifications (http://www.webcitation.org/6XQ7RoJmO)
-      return exception;
-    }
-#else
+//      // The code cannot ever get here. We just return a value to work around a badly-designed API (ExceptionDispatchInfo.Throw):
+//      //  https://connect.microsoft.com/VisualStudio/feedback/details/689516/exceptiondispatchinfo-api-modifications (http://www.webcitation.org/6XQ7RoJmO)
+//      return exception;
+//    }
+//#else
     /// <summary>A delegate that will call <c>ExceptionDispatchInfo.Capture</c> followed by <c>ExceptionDispatchInfo.Throw</c>, 
     /// or <c>null</c> if the <c>ExceptionDispatchInfo</c> type does not exist.</summary>
     private static readonly Action<Exception> CaptureAndThrow;
@@ -76,6 +77,7 @@ namespace CuteAnt.AsyncEx.Internal.PlatformEnlightenment
         // Vexing exception
       }
     }
-#endif
+//#endif
   }
 }
+#endif

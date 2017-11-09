@@ -1,25 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
-    <PlatformTarget>anycpu</PlatformTarget>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <RootNamespace>CuteAnt.AsyncEx.Tests</RootNamespace>
     <AssemblyName>CuteAnt.AsyncEx.Tests</AssemblyName>
   </PropertyGroup>
-
-  <PropertyGroup>
-    <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>../../tools/StrongKey.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <RuntimeIdentifier>win</RuntimeIdentifier>
-  </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="xunit" Version="2.2.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+    <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsVersion)" />
+    <PackageReference Include="xunit" Version="$(xUnitVersion)" />
+    <PackageReference Include="Xunit.SkippableFact" Version="$(XunitSkippableFactVersion)" />
   </ItemGroup>
   
   <ItemGroup>
