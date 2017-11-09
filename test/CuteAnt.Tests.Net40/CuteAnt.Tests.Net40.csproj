@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>CuteAnt.Tests</RootNamespace>
+    <AssemblyName>CuteAnt.Tests</AssemblyName>
+    <TargetFramework>net461</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\CuteAnt.Tests\AsyncLocalShimTest.cs" Link="AsyncLocalShimTest.cs" />
+    <Compile Include="..\CuteAnt.Tests\AttributeTests.cs" Link="AttributeTests.cs" />
+    <Compile Include="..\CuteAnt.Tests\CombGuidTest.cs" Link="CombGuidTest.cs" />
+    <Compile Include="..\CuteAnt.Tests\ReflectionMethodTests.cs" Link="ReflectionMethodTests.cs" />
+    <Compile Include="..\CuteAnt.Tests\ReflectionPerformanceTests.cs" Link="ReflectionPerformanceTests.cs" />
+    <Compile Include="..\CuteAnt.Tests\ReflectionTests.cs" Link="ReflectionTests.cs" />
+    <Compile Include="..\CuteAnt.Tests\RuntimeTypeNameFormatterTests.cs" Link="RuntimeTypeNameFormatterTests.cs" />
+    <Compile Include="..\CuteAnt.Tests\SingleDisposableUnitTests.cs" Link="SingleDisposableUnitTests.cs" />
+    <Compile Include="..\CuteAnt.Tests\SingleNonblockingDisposableUnitTests.cs" Link="SingleNonblockingDisposableUnitTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsVersion)" />
+    <PackageReference Include="xunit" Version="$(xUnitVersion)" />
+    <PackageReference Include="Xunit.SkippableFact" Version="$(XunitSkippableFactVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CuteAnt.Core">
+      <HintPath>..\..\src\CuteAnt\bin\Debug\net40\CuteAnt.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="CuteAnt.Core.Abstractions">
+      <HintPath>..\..\src\CuteAnt\bin\Debug\net40\CuteAnt.Core.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives">
+      <HintPath>..\..\src\CuteAnt\bin\Debug\net40\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable">
+      <HintPath>..\..\src\CuteAnt\bin\Debug\net40\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection.Metadata">
+      <HintPath>..\..\src\CuteAnt\bin\Debug\net40\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>
