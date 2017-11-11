@@ -1676,7 +1676,7 @@ namespace CuteAnt.Reflection
       }
     }
 
-    internal static Type ResolveType(string qualifiedTypeName)
+    public static Type ResolveType(string qualifiedTypeName)
     {
       if (TryResolveType(qualifiedTypeName, out var result)) { return result; }
 

@@ -49,6 +49,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.AsyncEx", "src\Cute
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.AsyncEx.Tests", "test\CuteAnt.AsyncEx.Tests\CuteAnt.AsyncEx.Tests.csproj", "{B289B020-8150-496F-86B3-0865FEBAFDBF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.Runtime", "src\CuteAnt.Runtime\CuteAnt.Runtime.csproj", "{628CCD39-6E65-49AD-A44B-B15A5AE314B8}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.ValidationHelper.Sources\CuteAnt.Extensions.ValidationHelper.Sources.projitems*{3b59b888-7a45-4322-b5dd-3fadc4e74420}*SharedItemsImports = 13
@@ -89,6 +91,10 @@ Global
 		{B289B020-8150-496F-86B3-0865FEBAFDBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B289B020-8150-496F-86B3-0865FEBAFDBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B289B020-8150-496F-86B3-0865FEBAFDBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{628CCD39-6E65-49AD-A44B-B15A5AE314B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{628CCD39-6E65-49AD-A44B-B15A5AE314B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{628CCD39-6E65-49AD-A44B-B15A5AE314B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{628CCD39-6E65-49AD-A44B-B15A5AE314B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -114,6 +120,7 @@ Global
 		{78721A25-E94C-482F-8950-8C708313E16E} = {2AE2468D-F08E-4DC1-9F5D-35A4013043C0}
 		{1DFDF030-219E-46FE-A7C1-7712306998F5} = {31B1F2B1-6BF8-4E83-8CF0-347792B62E26}
 		{B289B020-8150-496F-86B3-0865FEBAFDBF} = {2AE2468D-F08E-4DC1-9F5D-35A4013043C0}
+		{628CCD39-6E65-49AD-A44B-B15A5AE314B8} = {31B1F2B1-6BF8-4E83-8CF0-347792B62E26}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8885A21A-F184-480D-BFE4-86FDB949BEEC}

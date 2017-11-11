@@ -5,80 +5,80 @@ using System.Runtime.CompilerServices;
 
 namespace CuteAnt
 {
-	/// <summary>常用工具类——GUID相关类</summary>
-	public static class GuidHelper
-	{
-		#region -- 扩展 --
+  /// <summary>常用工具类——GUID相关类</summary>
+  public static class GuidHelper
+  {
+    #region -- 扩展 --
 
-		/// <summary>返回此 GUID 实例值的字符串表示形式。
-		/// <para>其中 GUID 的值表示为一系列小写的十六进制位，这些十六进制位分别以 8 个、4 个、4 个、4 个和 12 个位为一组合并而成。
-		/// 例如，返回值可以是“382c74c3721d4f3480e557657b6cbc27”。
-		/// </para></summary>
-		/// <param name="guid"></param>
-		/// <returns></returns>
+    /// <summary>返回此 GUID 实例值的字符串表示形式。
+    /// <para>其中 GUID 的值表示为一系列小写的十六进制位，这些十六进制位分别以 8 个、4 个、4 个、4 个和 12 个位为一组合并而成。
+    /// 例如，返回值可以是“382c74c3721d4f3480e557657b6cbc27”。
+    /// </para></summary>
+    /// <param name="guid"></param>
+    /// <returns></returns>
 #if !NET40
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-		public static String To32Digits(this Guid guid)
-		{
-			return guid.ToString("N");
-		}
+    public static String To32Digits(this Guid guid)
+    {
+      return guid.ToString("N");
+    }
 
-		///// <summary>返回此 GUID 实例值的字符串表示形式。
-		///// <para>其中 GUID 的值表示为一系列小写的十六进制位，这些十六进制位分别以 12 个和 8 个、4 个、4 个、4 个位为一组并由连字符分隔开。
-		///// 例如，返回值可以是“57657b6cbc27-382c74c3-721d-4f34-80e5”。
-		///// </para></summary>
-		///// <param name="guid"></param>
-		///// <returns></returns>
-		//public static String ToComb(this Guid guid)
-		//{
-		//	return ConvertGuidToComb(guid.ToByteArray(), true);
-		//}
+    ///// <summary>返回此 GUID 实例值的字符串表示形式。
+    ///// <para>其中 GUID 的值表示为一系列小写的十六进制位，这些十六进制位分别以 12 个和 8 个、4 个、4 个、4 个位为一组并由连字符分隔开。
+    ///// 例如，返回值可以是“57657b6cbc27-382c74c3-721d-4f34-80e5”。
+    ///// </para></summary>
+    ///// <param name="guid"></param>
+    ///// <returns></returns>
+    //public static String ToComb(this Guid guid)
+    //{
+    //	return ConvertGuidToComb(guid.ToByteArray(), true);
+    //}
 
-		///// <summary>返回此 GUID 实例值的字符串表示形式。
-		///// <para>其中 GUID 的值表示为一系列小写的十六进制位，这些十六进制位分别以 12 个和 8 个、4 个、4 个、4 个位为一组合并而成。
-		///// 例如，返回值可以是“382c74c3721d4f3480e557657b6cbc27”。
-		///// </para></summary>
-		///// <param name="guid"></param>
-		///// <returns></returns>
-		//public static String ToComb32Digits(this Guid guid)
-		//{
-		//	return ConvertGuidToComb(guid.ToByteArray(), false);
-		//}
+    ///// <summary>返回此 GUID 实例值的字符串表示形式。
+    ///// <para>其中 GUID 的值表示为一系列小写的十六进制位，这些十六进制位分别以 12 个和 8 个、4 个、4 个、4 个位为一组合并而成。
+    ///// 例如，返回值可以是“382c74c3721d4f3480e557657b6cbc27”。
+    ///// </para></summary>
+    ///// <param name="guid"></param>
+    ///// <returns></returns>
+    //public static String ToComb32Digits(this Guid guid)
+    //{
+    //	return ConvertGuidToComb(guid.ToByteArray(), false);
+    //}
 
-		#endregion
+    #endregion
 
-		#region -- GUID --
+    #region -- GUID --
 
-		/// <summary>生成默认GUID格式字符串，
-		/// <para>其中 GUID 的值表示为一系列小写的十六进制位，这些十六进制位分别以 8 个、4 个、4 个、4 个和 12 个位为一组并由连字符分隔开。
-		/// 例如，返回值可以是“382c74c3-721d-4f34-80e5-57657b6cbc27”。
-		/// </para></summary>
-		/// <returns>新生成的GUID的字符串</returns>
+    /// <summary>生成默认GUID格式字符串，
+    /// <para>其中 GUID 的值表示为一系列小写的十六进制位，这些十六进制位分别以 8 个、4 个、4 个、4 个和 12 个位为一组并由连字符分隔开。
+    /// 例如，返回值可以是“382c74c3-721d-4f34-80e5-57657b6cbc27”。
+    /// </para></summary>
+    /// <returns>新生成的GUID的字符串</returns>
 #if !NET40
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-		public static String GenerateGuid()
-		{
-			return Guid.NewGuid().ToString("D");
-		}
+    public static String GenerateGuid()
+    {
+      return Guid.NewGuid().ToString("D");
+    }
 
-		/// <summary>生成没有连字符分隔的GUID字符串，
-		/// <para>其中 GUID 的值表示为一系列小写的十六进制位，这些十六进制位分别以 8 个、4 个、4 个、4 个和 12 个位为一组合并而成。
-		/// 例如，返回值可以是“382c74c3721d4f3480e557657b6cbc27”。
-		/// </para></summary>
-		/// <returns>新生成的GUID的字符串</returns>
+    /// <summary>生成没有连字符分隔的GUID字符串，
+    /// <para>其中 GUID 的值表示为一系列小写的十六进制位，这些十六进制位分别以 8 个、4 个、4 个、4 个和 12 个位为一组合并而成。
+    /// 例如，返回值可以是“382c74c3721d4f3480e557657b6cbc27”。
+    /// </para></summary>
+    /// <returns>新生成的GUID的字符串</returns>
 #if !NET40
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-		public static String GenerateGuid32()
-		{
-			return Guid.NewGuid().ToString("N");
-		}
+    public static String GenerateGuid32()
+    {
+      return Guid.NewGuid().ToString("N");
+    }
 
-		#endregion
+    #endregion
 
-		#region -- COMB --
+    #region -- COMB --
 
 //		private static readonly DateTime _CombBaseDate = new DateTime(1900, 1, 1);
 
@@ -245,116 +245,115 @@ namespace CuteAnt
 //#endif
 //		}
 
-		#endregion
+    #endregion
 
-		#region -- 验证给定字符串是否是合法的Guid --
+    #region -- 验证给定字符串是否是合法的Guid --
 
-		/// <summary>验证给定字符串是否是合法的Guid</summary>
-		/// <param name="value">要验证的字符串</param>
-		/// <returns>true/false</returns>
+    /// <summary>验证给定字符串是否是合法的Guid</summary>
+    /// <param name="value">要验证的字符串</param>
+    /// <returns>true/false</returns>
 #if !NET40
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-		public static Boolean IsGuid(String value)
-		{
-			Guid guid;
-			return Guid.TryParse(value, out guid);
-		}
+    public static Boolean IsGuid(String value)
+    {
+      return Guid.TryParse(value, out Guid guid);
+    }
 
-		#endregion
+    #endregion
 
-		#region -- 16位GUID --
+    #region -- 16位GUID --
 
-		/// <summary>产生16位字符串：（例：49f949d735f5c79e）</summary>
-		/// <returns>A String value...</returns>
+    /// <summary>产生16位字符串：（例：49f949d735f5c79e）</summary>
+    /// <returns>A String value...</returns>
 #if !NET40
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-		public static String GenerateId16()
-		{
-			Int64 i = 1;
-			foreach (Byte b in Guid.NewGuid().ToByteArray())
-			{
-				i *= ((Int32)b + 1);
-			}
-			return String.Format("{0:x16}", i - DateTime.Now.Ticks);
-		}
+    public static String GenerateId16()
+    {
+      Int64 i = 1;
+      foreach (Byte b in Guid.NewGuid().ToByteArray())
+      {
+        i *= ((Int32)b + 1);
+      }
+      return String.Format("{0:x16}", i - DateTime.Now.Ticks);
+    }
 
-		//产生Int64 类型：（例：4833055965497820814）
+    //产生Int64 类型：（例：4833055965497820814）
 #if !NET40
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-		public static Int64 GenerateId()
-		{
-			Byte[] buffer = Guid.NewGuid().ToByteArray();
-			return BitConverter.ToInt64(buffer, 0);
-		}
+    public static Int64 GenerateId()
+    {
+      Byte[] buffer = Guid.NewGuid().ToByteArray();
+      return BitConverter.ToInt64(buffer, 0);
+    }
 
-		/// <summary>返加12位的UUID(GUID)</summary>
-		/// <returns></returns>
+    /// <summary>返加12位的UUID(GUID)</summary>
+    /// <returns></returns>
 #if !NET40
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-		public static String GenerateId12()
-		{
-			Byte[] buffer = Guid.NewGuid().ToByteArray();
-			Int64 long_guid = BitConverter.ToInt64(buffer, 0);
+    public static String GenerateId12()
+    {
+      Byte[] buffer = Guid.NewGuid().ToByteArray();
+      Int64 long_guid = BitConverter.ToInt64(buffer, 0);
 
-			String _Value = Math.Abs(long_guid).ToString();
+      String _Value = Math.Abs(long_guid).ToString();
 
-			Byte[] buf = new Byte[_Value.Length];
-			Int32 p = 0;
-			for (Int32 i = 0; i < _Value.Length; )
-			{
-				Byte ph = Convert.ToByte(_Value[i]);
+      Byte[] buf = new Byte[_Value.Length];
+      Int32 p = 0;
+      for (Int32 i = 0; i < _Value.Length; )
+      {
+        Byte ph = Convert.ToByte(_Value[i]);
 
-				Int32 fix = 1;
-				if ((i + 1) < _Value.Length)
-				{
-					Byte pl = Convert.ToByte(_Value[i + 1]);
-					buf[p] = (Byte)((ph << 4) + pl);
-					fix = 2;
-				}
-				else
-				{
-					buf[p] = (Byte)(ph);
-				}
+        Int32 fix = 1;
+        if ((i + 1) < _Value.Length)
+        {
+          Byte pl = Convert.ToByte(_Value[i + 1]);
+          buf[p] = (Byte)((ph << 4) + pl);
+          fix = 2;
+        }
+        else
+        {
+          buf[p] = (Byte)(ph);
+        }
 
-				if ((i + 3) < _Value.Length)
-				{
-					if (Convert.ToInt16(_Value.Substring(i, 3)) < 256)
-					{
-						buf[p] = Convert.ToByte(_Value.Substring(i, 3));
-						fix = 3;
-					}
-				}
-				p++;
-				i = i + fix;
-			}
-			Byte[] buf2 = new Byte[p];
-			for (Int32 i = 0; i < p; i++)
-			{
-				buf2[i] = buf[i];
-			}
-			String cRtn = Convert.ToBase64String(buf2);
-			if (cRtn == null)
-			{
-				cRtn = "";
-			}
-			cRtn = cRtn.ToLower();
-			cRtn = cRtn.Replace("/", "");
-			cRtn = cRtn.Replace("+", "");
-			cRtn = cRtn.Replace("=", "");
-			if (cRtn.Length == 12)
-			{
-				return cRtn;
-			}
-			else
-			{
-				return GenerateId12();
-			}
-		}
+        if ((i + 3) < _Value.Length)
+        {
+          if (Convert.ToInt16(_Value.Substring(i, 3)) < 256)
+          {
+            buf[p] = Convert.ToByte(_Value.Substring(i, 3));
+            fix = 3;
+          }
+        }
+        p++;
+        i = i + fix;
+      }
+      Byte[] buf2 = new Byte[p];
+      for (Int32 i = 0; i < p; i++)
+      {
+        buf2[i] = buf[i];
+      }
+      String cRtn = Convert.ToBase64String(buf2);
+      if (cRtn == null)
+      {
+        cRtn = "";
+      }
+      cRtn = cRtn.ToLower();
+      cRtn = cRtn.Replace("/", "");
+      cRtn = cRtn.Replace("+", "");
+      cRtn = cRtn.Replace("=", "");
+      if (cRtn.Length == 12)
+      {
+        return cRtn;
+      }
+      else
+      {
+        return GenerateId12();
+      }
+    }
 
-		#endregion
-	}
+    #endregion
+  }
 }
