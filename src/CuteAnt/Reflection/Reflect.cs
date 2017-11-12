@@ -463,7 +463,7 @@ namespace CuteAnt.Reflection
       if (name.IsNullOrWhiteSpace()) { return null; }
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeConstants.Object)
+      while (type != null && type != TypeConstants.ObjectType)
       {
         var fields = s_typeDeclaredFieldsCache.GetItem(type, s_getTypeDeclaredFieldsFunc);
         if (fields.TryGetValue(name, out FieldInfo field)) { return field; };
@@ -934,7 +934,7 @@ namespace CuteAnt.Reflection
       if (name.IsNullOrWhiteSpace()) { return null; }
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeConstants.Object)
+      while (type != null && type != TypeConstants.ObjectType)
       {
         var properties = s_typeDeclaredPropertiesCache.GetItem(type, s_getTypeDeclaredPropertiesFunc);
         if (properties.TryGetValue(name, out PropertyInfo property)) { return property; };
@@ -978,7 +978,7 @@ namespace CuteAnt.Reflection
       if (returnType == null) throw new ArgumentNullException(nameof(returnType));
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeConstants.Object)
+      while (type != null && type != TypeConstants.ObjectType)
       {
         var properties = GetTypeDeclaredProperties(type);
         var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
@@ -1009,7 +1009,7 @@ namespace CuteAnt.Reflection
       if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeConstants.Object)
+      while (type != null && type != TypeConstants.ObjectType)
       {
         var properties = GetTypeDeclaredProperties(type);
         var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
@@ -1041,7 +1041,7 @@ namespace CuteAnt.Reflection
       if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeConstants.Object)
+      while (type != null && type != TypeConstants.ObjectType)
       {
         var properties = GetTypeDeclaredProperties(type);
         var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
@@ -1075,7 +1075,7 @@ namespace CuteAnt.Reflection
       if (name.IsNullOrWhiteSpace()) { return null; }
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeConstants.Object)
+      while (type != null && type != TypeConstants.ObjectType)
       {
         var properties = s_instanceDeclaredPropertiesCache.GetItem(type, s_getInstanceDeclaredPropertiesFunc);
         if (properties.TryGetValue(name, out PropertyInfo property)) { return property; };
@@ -1119,7 +1119,7 @@ namespace CuteAnt.Reflection
       if (returnType == null) throw new ArgumentNullException(nameof(returnType));
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeConstants.Object)
+      while (type != null && type != TypeConstants.ObjectType)
       {
         var properties = GetInstanceDeclaredProperties(type);
         var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
@@ -1150,7 +1150,7 @@ namespace CuteAnt.Reflection
       if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeConstants.Object)
+      while (type != null && type != TypeConstants.ObjectType)
       {
         var properties = GetInstanceDeclaredProperties(type);
         var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
@@ -1182,7 +1182,7 @@ namespace CuteAnt.Reflection
       if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeConstants.Object)
+      while (type != null && type != TypeConstants.ObjectType)
       {
         var properties = GetInstanceDeclaredProperties(type);
         var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
@@ -1272,7 +1272,7 @@ namespace CuteAnt.Reflection
       if (field != null) { return field; }
 
       // 通过反射获取
-      while (type != null && type != TypeConstants.Object)
+      while (type != null && type != TypeConstants.ObjectType)
       {
         var fs = type.GetMember(name, BindingFlagsHelper.DefaultDeclaredOnlyLookup);
         if (fs != null && fs.Length > 0) { return fs[0]; }
@@ -1369,7 +1369,7 @@ namespace CuteAnt.Reflection
 #else
           type = type.GetTypeInfo().BaseType;
 #endif
-          if (type == null || type == TypeConstants.Object) break;
+          if (type == null || type == TypeConstants.ObjectType) break;
         }
         if (method != null) return method;
       }
@@ -2561,7 +2561,7 @@ namespace CuteAnt.Reflection
       {
         // 反射加载时，需要特殊处理接口
         //if (baseType.IsInterface && type.GetInterface(baseType.Name) != null) return true;
-        while (type != null && type != TypeConstants.Object)
+        while (type != null && type != TypeConstants.ObjectType)
         {
           if (type.FullName == baseType.FullName && type.AssemblyQualifiedName == baseType.AssemblyQualifiedName)
           {

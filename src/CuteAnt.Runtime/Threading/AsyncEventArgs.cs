@@ -3,6 +3,7 @@
 // </copyright>
 // System.ServiceModel.Internals\System\Runtime\AsyncEventArgs.cs
 
+#if DESKTOPCLR
 using System;
 using System.Diagnostics;
 using CuteAnt.Diagnostics;
@@ -132,3 +133,4 @@ namespace CuteAnt.Runtime
     public TResult Result { get; set; }
   }
 }
+#endif

@@ -21,7 +21,9 @@ using System.Threading;
 using System.Globalization;
 using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
+#if DESKTOPCLR
 using System.Security.Permissions;
+#endif
 using CuteAnt.Pool;
 #if !NET40
 using CuteAnt.AsyncEx;
@@ -175,7 +177,9 @@ namespace CuteAnt.IO
 
 #if !NET40
     #region Task based Async APIs
+#if DESKTOPCLR
     [HostProtection(ExternalThreading = true)]
+#endif
     [ComVisible(false)]
     public override Task WriteAsync(char value)
     {
@@ -183,7 +187,9 @@ namespace CuteAnt.IO
       return TaskConstants.Completed;
     }
 
+#if DESKTOPCLR
     [HostProtection(ExternalThreading = true)]
+#endif
     [ComVisible(false)]
     public override Task WriteAsync(String value)
     {
@@ -191,7 +197,9 @@ namespace CuteAnt.IO
       return TaskConstants.Completed;
     }
 
+#if DESKTOPCLR
     [HostProtection(ExternalThreading = true)]
+#endif
     [ComVisible(false)]
     public override Task WriteAsync(char[] buffer, int index, int count)
     {
@@ -199,7 +207,9 @@ namespace CuteAnt.IO
       return TaskConstants.Completed;
     }
 
+#if DESKTOPCLR
     [HostProtection(ExternalThreading = true)]
+#endif
     [ComVisible(false)]
     public override Task WriteLineAsync(char value)
     {
@@ -207,7 +217,9 @@ namespace CuteAnt.IO
       return TaskConstants.Completed;
     }
 
+#if DESKTOPCLR
     [HostProtection(ExternalThreading = true)]
+#endif
     [ComVisible(false)]
     public override Task WriteLineAsync(String value)
     {
@@ -215,7 +227,9 @@ namespace CuteAnt.IO
       return TaskConstants.Completed;
     }
 
+#if DESKTOPCLR
     [HostProtection(ExternalThreading = true)]
+#endif
     [ComVisible(false)]
     public override Task WriteLineAsync(char[] buffer, int index, int count)
     {
@@ -223,7 +237,9 @@ namespace CuteAnt.IO
       return TaskConstants.Completed;
     }
 
+#if DESKTOPCLR
     [HostProtection(ExternalThreading = true)]
+#endif
     [ComVisible(false)]
     public override Task FlushAsync()
     {

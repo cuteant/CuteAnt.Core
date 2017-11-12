@@ -1,6 +1,7 @@
 ﻿//------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
+#if DESKTOPCLR
 using System;
 using System.Security;
 using System.Security.Permissions;
@@ -141,3 +142,4 @@ namespace CuteAnt.Diagnostics
     }
   }
 }
+#endif

@@ -3,6 +3,7 @@
 // </copyright>
 // System.ServiceModel.Internals\System\Runtime\IOThreadCancellationTokenSource.cs
 
+#if DESKTOPCLR
 using System;
 using System.Threading;
 
@@ -81,3 +82,4 @@ namespace CuteAnt.Runtime
     }
   }
 }
+#endif

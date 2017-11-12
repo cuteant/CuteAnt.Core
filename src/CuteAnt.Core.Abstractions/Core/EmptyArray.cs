@@ -9,35 +9,28 @@ namespace CuteAnt
 {
   public sealed class EmptyArray<T>
   {
-    static T[] s_instance;
+    public static readonly T[] Instance;
 
-    EmptyArray()
+    static EmptyArray()
     {
-    }
-
-    public static T[] Instance
-    {
-      get
-      {
-        if (s_instance == null)
-          s_instance = new T[0];
-        return s_instance;
-      }
+#if NET_4_5_GREATER
+      Instance = Array.Empty<T>();
+#else
+      Instance = new T[0];
+#endif
     }
 
     public static T[] Allocate(int n)
     {
-      if (n == 0)
-        return Instance;
-      else
-        return new T[n];
+      if (n == 0) { return Instance; }
+      else { return new T[n]; }
     }
 
     public static T[] ToArray(IList<T> collection)
     {
       if (collection.Count == 0)
       {
-        return EmptyArray<T>.Instance;
+        return Instance;
       }
       else
       {
@@ -58,23 +51,21 @@ namespace CuteAnt
 
   public sealed class EmptyArray
   {
-    static object[] s_instance = new object[0];
+    public static readonly object[] Instance;
 
-    EmptyArray()
+    static EmptyArray()
     {
-    }
-
-    public static object[] Instance
-    {
-      get { return s_instance; }
+#if NET_4_5_GREATER
+      Instance = Array.Empty<object>();
+#else
+      Instance = new object[0];
+#endif
     }
 
     public static object[] Allocate(int n)
     {
-      if (n == 0)
-        return Instance;
-      else
-        return new object[n];
+      if (n == 0) { return Instance; }
+      else { return new object[n]; }
     }
   }
 }

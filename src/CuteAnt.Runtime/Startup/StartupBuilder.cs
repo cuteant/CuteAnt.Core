@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if DESKTOPCLR
+using System;
 using System.Configuration;
 using CuteAnt.Runtime.Providers;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,3 +39,4 @@ namespace CuteAnt.Runtime.Startup
     }
   }
 }
+#endif

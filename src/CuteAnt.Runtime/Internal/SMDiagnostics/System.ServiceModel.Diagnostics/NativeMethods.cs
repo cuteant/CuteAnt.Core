@@ -2,6 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
 
+#if DESKTOPCLR
 using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -21,3 +22,4 @@ namespace CuteAnt.ServiceModel.Diagnostics
     internal static extern SafeEventLogWriteHandle RegisterEventSource(string uncServerName, string sourceName);
   }
 }
+#endif

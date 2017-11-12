@@ -2,6 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
 
+#if DESKTOPCLR
 namespace CuteAnt.ServiceModel.Diagnostics
 {
   static class DiagnosticsTraceCode
@@ -16,3 +17,4 @@ namespace CuteAnt.ServiceModel.Diagnostics
     public const int TraceTruncatedQuotaExceeded = DiagnosticsTraceCode.Diagnostics | 0X000C; //
   }
 }
+#endif

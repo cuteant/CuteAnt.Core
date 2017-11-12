@@ -10,6 +10,9 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
 using System.Security;
+#if DESKTOPCLR
+using System.Security.Permissions;
+#endif
 #endif //DEBUG
 using CuteAnt.Diagnostics;
 using CuteAnt.Pool;
@@ -286,6 +289,25 @@ namespace CuteAnt.Buffers
       {
         Fx.Assert(buffer != null, "caller must verify");
 
+#if DEBUG
+        int hash = buffer.GetHashCode();
+        if (!_buffersPooled.TryAdd(hash, CaptureStackTrace()))
+        {
+          if (!_buffersPooled.TryGetValue(hash, out string originalStack))
+          {
+            originalStack = "NULL";
+          }
+
+          Fx.Assert(
+              string.Format(
+                  CultureInfo.InvariantCulture,
+                  "Buffer '{0}' has already been returned to the bufferManager before. Previous CallStack: {1} Current CallStack: {2}",
+                  hash,
+                  originalStack,
+                  CaptureStackTrace()));
+
+        }
+#endif //DEBUG
 
         BufferPool bufferPool = FindPool(buffer.Length);
         if (bufferPool != null)
@@ -346,13 +368,22 @@ namespace CuteAnt.Buffers
         }
 
 #if DEBUG && !FEATURE_NETNATIVE
-        string dummy;
-        _buffersPooled.TryRemove(returnValue.GetHashCode(), out dummy);
+        _buffersPooled.TryRemove(returnValue.GetHashCode(), out string dummy);
 #endif //DEBUG
 
         return returnValue;
       }
 
+#if DEBUG
+      [SecuritySafeCritical]
+#if DESKTOPCLR
+      [PermissionSet(SecurityAction.Assert, Unrestricted = true)]
+#endif
+      private static string CaptureStackTrace()
+      {
+        return new StackTrace(true).ToString();
+      }
+#endif //DEBUG
 
       private void TuneQuotas()
       {

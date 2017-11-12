@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -10,17 +10,18 @@ namespace CuteAnt.Pool
   /// <summary>This class implements an LRU cache of values. It keeps a bounded set of values and will flush "old" values.</summary>
   /// <typeparam name="TKey"></typeparam>
   /// <typeparam name="TValue"></typeparam>
-  public class LruCache<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
-    where TKey : class
+  public class LruCache<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>> where TKey : class
   {
     /// <summary>Delegate type for fetching the value associated with a given key.</summary>
     /// <param name="key"></param>
     /// <returns></returns>
     public delegate TValue FetchValueDelegate(TKey key);
 
-    /// <summary>The following machinery is used to notify client objects when a key and its value is being flushed from the cache.
-    /// The client's event handler is called after the key has been removed from the cache,
-    /// but when the cache is in a consistent state so that other methods on the cache may freely be invoked.</summary>
+    // The following machinery is used to notify client objects when a key and its value 
+    // is being flushed from the cache.
+    // The client's event handler is called after the key has been removed from the cache,
+    // but when the cache is in a consistent state so that other methods on the cache may freely
+    // be invoked.
     public class FlushEventArgs : EventArgs
     {
       private readonly TKey key;
@@ -48,8 +49,8 @@ namespace CuteAnt.Pool
     private long nextGeneration = 0;
     private long generationToFree = 0;
     private readonly TimeSpan requiredFreshness;
-    /// <summary>We want this to be a reference type so that we can update the values in the cache
-    /// without having to call AddOrUpdate, which is a nuisance.</summary>
+    // We want this to be a reference type so that we can update the values in the cache
+    // without having to call AddOrUpdate, which is a nuisance
     private class TimestampedValue
     {
       public readonly DateTime WhenLoaded;
@@ -75,7 +76,10 @@ namespace CuteAnt.Pool
     /// <param name="f"></param>
     public LruCache(int maxSize, TimeSpan maxAge, FetchValueDelegate f)
     {
-      if (maxSize <= 0) { throw new ArgumentOutOfRangeException("maxSize", "LruCache maxSize must be greater than 0"); }
+      if (maxSize <= 0)
+      {
+        throw new ArgumentOutOfRangeException(nameof(maxSize), "LRU maxSize must be greater than 0");
+      }
       MaximumSize = maxSize;
       requiredFreshness = maxAge;
       fetcher = f;

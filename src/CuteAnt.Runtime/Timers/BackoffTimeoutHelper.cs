@@ -3,6 +3,7 @@
 // System.ServiceModel.Internals\System\Runtime\BackoffTimeoutHelper.cs
 //-----------------------------------------------------------------------------
 
+#if DESKTOPCLR
 using System;
 using System.Threading;
 
@@ -133,3 +134,4 @@ namespace CuteAnt.Runtime
     }
   }
 }
+#endif

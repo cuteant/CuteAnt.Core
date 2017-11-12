@@ -51,16 +51,28 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.AsyncEx.Tests", "te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.Runtime", "src\CuteAnt.Runtime\CuteAnt.Runtime.csproj", "{628CCD39-6E65-49AD-A44B-B15A5AE314B8}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Nito.AsyncEx.ExceptionEnlightenment.Sources", "..\CuteAnt.Extensions.Common\src\Nito.AsyncEx.ExceptionEnlightenment.Sources\Nito.AsyncEx.ExceptionEnlightenment.Sources.shproj", "{D90E9B82-6317-4055-82E3-FE8625C143E9}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CuteAnt.Extensions.TaskAwaiter.Sources", "..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.TaskAwaiter.Sources\CuteAnt.Extensions.TaskAwaiter.Sources.shproj", "{64950ECC-5C8F-4657-9A1C-1351AC55FB05}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AspNetWebStack.Common.TaskExtensions.Sources", "..\CuteAnt.Extensions.Common\src\AspNetWebStack.Common.TaskExtensions.Sources\AspNetWebStack.Common.TaskExtensions.Sources.shproj", "{931EF605-C589-4766-BD8D-63919A4A1B78}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CuteAnt.Extensions.Async.Sources", "..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Async.Sources\CuteAnt.Extensions.Async.Sources.shproj", "{B2BE33A0-1EB0-49F7-BD28-72806D4A1DF1}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.ValidationHelper.Sources\CuteAnt.Extensions.ValidationHelper.Sources.projitems*{3b59b888-7a45-4322-b5dd-3fadc4e74420}*SharedItemsImports = 13
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.TaskAwaiter.Sources\CuteAnt.Extensions.TaskAwaiter.Sources.projitems*{64950ecc-5c8f-4657-9a1c-1351ac55fb05}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.ReaderWriterLockSlim.Sources\CuteAnt.Extensions.ReaderWriterLockSlim.Sources.projitems*{65e9ed9b-9545-47d8-a39c-da22c323abb2}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.IO.Sources\CuteAnt.Extensions.IO.Sources.projitems*{88b40b6f-fdbd-4384-9581-f53a140d4ffa}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Logging.Sources\CuteAnt.Extensions.Logging.Sources.projitems*{8dbb7dc8-2b90-4a8c-a60d-d41466174bde}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.projitems*{90bcc560-aa2b-4146-858a-9e524b696f75}*SharedItemsImports = 13
+		..\CuteAnt.Extensions.Common\src\AspNetWebStack.Common.TaskExtensions.Sources\AspNetWebStack.Common.TaskExtensions.Sources.projitems*{931ef605-c589-4766-bd8d-63919a4a1b78}*SharedItemsImports = 13
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Async.Sources\CuteAnt.Extensions.Async.Sources.projitems*{b2be33a0-1eb0-49f7-bd28-72806d4a1df1}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.TaskFactory.Sources\CuteAnt.Extensions.TaskFactory.Sources.projitems*{b38b6795-2812-4cd5-92f6-935734090816}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Enum.Sources\CuteAnt.Extensions.Enum.Sources.projitems*{bc937b7e-df90-4aa2-9106-fb16e36b9d9b}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{c7f8dbe6-77b7-494d-af00-018f7579548c}*SharedItemsImports = 13
+		..\CuteAnt.Extensions.Common\src\Nito.AsyncEx.ExceptionEnlightenment.Sources\Nito.AsyncEx.ExceptionEnlightenment.Sources.projitems*{d90e9b82-6317-4055-82e3-fe8625c143e9}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.DateTimeUtilities.Sources\CuteAnt.Extensions.DateTimeUtilities.Sources.projitems*{f0dcba0c-1ee9-403c-931c-555776f6c680}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Collection.Sources\CuteAnt.Extensions.Collection.Sources.projitems*{f1703a5f-a49f-4d68-8248-00506d756f07}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.String.Sources\CuteAnt.Extensions.String.Sources.projitems*{f9dfd05d-92c8-4cb3-8627-dabbb7de21ab}*SharedItemsImports = 13
@@ -121,6 +133,10 @@ Global
 		{1DFDF030-219E-46FE-A7C1-7712306998F5} = {31B1F2B1-6BF8-4E83-8CF0-347792B62E26}
 		{B289B020-8150-496F-86B3-0865FEBAFDBF} = {2AE2468D-F08E-4DC1-9F5D-35A4013043C0}
 		{628CCD39-6E65-49AD-A44B-B15A5AE314B8} = {31B1F2B1-6BF8-4E83-8CF0-347792B62E26}
+		{D90E9B82-6317-4055-82E3-FE8625C143E9} = {CB15FB6C-A497-4C7D-A1B5-DC6F42CFECCC}
+		{64950ECC-5C8F-4657-9A1C-1351AC55FB05} = {CB15FB6C-A497-4C7D-A1B5-DC6F42CFECCC}
+		{931EF605-C589-4766-BD8D-63919A4A1B78} = {CB15FB6C-A497-4C7D-A1B5-DC6F42CFECCC}
+		{B2BE33A0-1EB0-49F7-BD28-72806D4A1DF1} = {CB15FB6C-A497-4C7D-A1B5-DC6F42CFECCC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8885A21A-F184-480D-BFE4-86FDB949BEEC}

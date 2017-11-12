@@ -12,8 +12,7 @@ using Microsoft.Runtime.CompilerServices;
 #endif
 using System.Threading;
 using System.Threading.Tasks;
-using CuteAnt.AsyncEx;
-using CuteAnt.Diagnostics;
+//using CuteAnt.AsyncEx;
 
 namespace CuteAnt.Runtime
 {
@@ -22,15 +21,8 @@ namespace CuteAnt.Runtime
   {
     public static IAsyncResult AsAsyncResult<T>(this Task<T> task, AsyncCallback callback, object state)
     {
-      if (task == null)
-      {
-        throw Fx.Exception.ArgumentNull(nameof(task));
-      }
-
-      if (task.Status == TaskStatus.Created)
-      {
-        throw Fx.Exception.AsError(new InvalidOperationException(InternalSR.SFxTaskNotStarted));
-      }
+      if (task == null) { throw new ArgumentNullException(nameof(task)); }
+      if (task.Status == TaskStatus.Created) { throw new InvalidOperationException("SFx Task Not Started"); }
 
       var tcs = new TaskCompletionSource<T>(state);
 
@@ -52,10 +44,7 @@ namespace CuteAnt.Runtime
               tcs.TrySetResult(t.Result);
             }
 
-            if (callback != null)
-            {
-              callback(tcs.Task);
-            }
+            callback?.Invoke(tcs.Task);
           },
           TaskContinuationOptions.ExecuteSynchronously);
 
@@ -64,15 +53,8 @@ namespace CuteAnt.Runtime
 
     public static IAsyncResult AsAsyncResult(this Task task, AsyncCallback callback, object state)
     {
-      if (task == null)
-      {
-        throw Fx.Exception.ArgumentNull("task");
-      }
-
-      if (task.Status == TaskStatus.Created)
-      {
-        throw Fx.Exception.AsError(new InvalidOperationException(InternalSR.SFxTaskNotStarted));
-      }
+      if (task == null) { throw new ArgumentNullException(nameof(task)); }
+      if (task.Status == TaskStatus.Created) { throw new InvalidOperationException("SFx Task Not Started"); }
 
       var tcs = new TaskCompletionSource<object>(state);
 
@@ -104,25 +86,13 @@ namespace CuteAnt.Runtime
       return tcs.Task;
     }
 
-    public static ConfiguredTaskAwaitable SuppressContextFlow(this Task task)
-    {
-      return task.ConfigureAwait(false);
-    }
+    public static ConfiguredTaskAwaitable SuppressContextFlow(this Task task) => task.ConfigureAwait(false);
 
-    public static ConfiguredTaskAwaitable<T> SuppressContextFlow<T>(this Task<T> task)
-    {
-      return task.ConfigureAwait(false);
-    }
+    public static ConfiguredTaskAwaitable<T> SuppressContextFlow<T>(this Task<T> task) => task.ConfigureAwait(false);
 
-    public static ConfiguredTaskAwaitable ContinueOnCapturedContextFlow(this Task task)
-    {
-      return task.ConfigureAwait(true);
-    }
+    public static ConfiguredTaskAwaitable ContinueOnCapturedContextFlow(this Task task) => task.ConfigureAwait(true);
 
-    public static ConfiguredTaskAwaitable<T> ContinueOnCapturedContextFlow<T>(this Task<T> task)
-    {
-      return task.ConfigureAwait(true);
-    }
+    public static ConfiguredTaskAwaitable<T> ContinueOnCapturedContextFlow<T>(this Task<T> task) => task.ConfigureAwait(true);
 
     public static void Wait<TException>(this Task task)
     {
@@ -201,7 +171,11 @@ namespace CuteAnt.Runtime
     public static Task<TBase> Upcast<TDerived, TBase>(this Task<TDerived> task) where TDerived : TBase
     {
       return (task.Status == TaskStatus.RanToCompletion) ?
-          TaskShim.FromResult((TBase)task.Result) :
+#if NET40
+          TaskEx.FromResult((TBase)task.Result) :
+#else
+          Task.FromResult((TBase)task.Result) :
+#endif
           UpcastPrivate<TDerived, TBase>(task);
     }
 

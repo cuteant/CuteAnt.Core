@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 #if NET_4_5_GREATER
 using System.Threading;
@@ -37,19 +38,16 @@ namespace CuteAnt.AsyncEx
     public static Task Canceled => TaskConstants<AsyncVoid>.Canceled;
 
     /// <summary>Returns an error task. The task is Completed, IsCanceled = False, IsFaulted = True</summary>
-    public static Task FromError(Exception exception) => FromError<AsyncVoid>(exception);
+    [Obsolete("=> AsyncUtils.FromException")]
+    public static Task FromError(Exception exception) => AsyncUtils.FromException(exception);
 
     /// <summary>Returns an error task of the given type. The task is Completed, IsCanceled = False, IsFaulted = True</summary>
     /// <typeparam name="TResult"></typeparam>
-    public static Task<TResult> FromError<TResult>(Exception exception)
-    {
-      var tcs = new TaskCompletionSource<TResult>();
-      tcs.SetException(exception);
-      return tcs.Task;
-    }
+    [Obsolete("=> AsyncUtils.FromException")]
+    public static Task<TResult> FromError<TResult>(Exception exception) => AsyncUtils.FromException<TResult>(exception);
 
     /// <summary>Used as the T in a "conversion" of a Task into a Task{T}</summary>
-    private struct AsyncVoid
+    internal struct AsyncVoid
     {
     }
   }

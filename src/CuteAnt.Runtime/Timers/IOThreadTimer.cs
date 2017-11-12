@@ -3,6 +3,7 @@
 // System.ServiceModel.Internals\System\Runtime\IOThreadTimer.cs
 //------------------------------------------------------------
 
+#if DESKTOPCLR
 using System;
 using System.ComponentModel;
 using System.Security;
@@ -651,5 +652,4 @@ namespace CuteAnt.Runtime
     }
   }
 }
-
-
+#endif

@@ -3,11 +3,15 @@
 //------------------------------------------------------------
 
 using System;
+#if DESKTOPCLR
 using System.Runtime.Serialization;
+#endif
 
 namespace CuteAnt
 {
+#if DESKTOPCLR
   [Serializable]
+#endif
   public class QuotaExceededException : SystemException
   {
     public QuotaExceededException()
@@ -25,10 +29,12 @@ namespace CuteAnt
     {
     }
 
+#if DESKTOPCLR
     protected QuotaExceededException(SerializationInfo info, StreamingContext context)
       : base(info, context)
     {
     }
+#endif
   }
 }
 

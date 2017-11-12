@@ -5,7 +5,9 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Security;
+#if DESKTOPCLR
 using CuteAnt.Runtime.Interop;
+#endif
 
 namespace CuteAnt.Diagnostics
 {
@@ -32,6 +34,7 @@ namespace CuteAnt.Diagnostics
     {
       try
       {
+#if DESKTOPCLR
         string debugMessage = "Assert fired! --> " + message + "\r\n";
         if (Debugger.IsAttached)
         {
@@ -43,6 +46,7 @@ namespace CuteAnt.Diagnostics
           UnsafeNativeMethods.OutputDebugString(debugMessage);
           UnsafeNativeMethods.DebugBreak();
         }
+#endif
 
         if (Fx.AssertsFailFast)
         {

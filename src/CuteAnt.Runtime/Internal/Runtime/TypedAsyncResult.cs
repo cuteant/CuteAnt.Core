@@ -2,6 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //----------------------------------------------------------------------------
 
+#if DESKTOPCLR
 using System;
 
 namespace CuteAnt.Runtime
@@ -33,3 +34,4 @@ namespace CuteAnt.Runtime
     }
   }
 }
+#endif

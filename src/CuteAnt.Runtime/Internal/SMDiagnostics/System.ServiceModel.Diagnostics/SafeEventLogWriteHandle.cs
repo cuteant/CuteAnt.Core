@@ -1,6 +1,7 @@
 ﻿//------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
+#if DESKTOPCLR
 using System;
 using Microsoft.Win32.SafeHandles;
 using System.Runtime.InteropServices;
@@ -52,3 +53,4 @@ namespace CuteAnt.ServiceModel.Diagnostics
 
   }
 }
+#endif

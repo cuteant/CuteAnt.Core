@@ -3,6 +3,7 @@
 // System.ServiceModel.Internals\System\Runtime\Interop\UnsafeNativeMethods.cs
 //------------------------------------------------------------
 
+#if DESKTOPCLR
 using System;
 using System.Text;
 using System.Security;
@@ -247,3 +248,4 @@ namespace CuteAnt.Runtime.Interop
     internal static extern SafeEventLogWriteHandle RegisterEventSource(string uncServerName, string sourceName);
   }
 }
+#endif

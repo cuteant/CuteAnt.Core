@@ -1,127 +1,126 @@
-﻿//-----------------------------------------------------------------------------
-// Copyright (c) Microsoft Corporation.  All rights reserved.
-// System.ServiceModel\System\ServiceModel
-//-----------------------------------------------------------------------------
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.ServiceModel;
+using System.Reflection;
 
 namespace CuteAnt.Collections
 {
   [System.Runtime.InteropServices.ComVisible(false)]
   public class SynchronizedReadOnlyCollection<T> : IList<T>, IList
   {
-    IList<T> m_items;
-    object m_sync;
+    private IList<T> _items;
+    private object _sync;
 
     public SynchronizedReadOnlyCollection()
     {
-      m_items = new List<T>();
-      m_sync = new Object();
+      _items = new List<T>();
+      _sync = new Object();
     }
 
     public SynchronizedReadOnlyCollection(object syncRoot)
     {
       if (syncRoot == null)
-        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException("syncRoot"));
+        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException(nameof(syncRoot)));
 
-      m_items = new List<T>();
-      m_sync = syncRoot;
+      _items = new List<T>();
+      _sync = syncRoot;
     }
 
     public SynchronizedReadOnlyCollection(object syncRoot, IEnumerable<T> list)
     {
       if (syncRoot == null)
-        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException("syncRoot"));
+        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException(nameof(syncRoot)));
       if (list == null)
-        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException("list"));
+        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException(nameof(list)));
 
-      m_items = new List<T>(list);
-      m_sync = syncRoot;
+      _items = new List<T>(list);
+      _sync = syncRoot;
     }
 
     public SynchronizedReadOnlyCollection(object syncRoot, params T[] list)
     {
       if (syncRoot == null)
-        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException("syncRoot"));
+        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException(nameof(syncRoot)));
       if (list == null)
-        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException("list"));
+        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException(nameof(list)));
 
-      m_items = new List<T>(list.Length);
+      _items = new List<T>(list.Length);
       for (int i = 0; i < list.Length; i++)
-        m_items.Add(list[i]);
+        _items.Add(list[i]);
 
-      m_sync = syncRoot;
+      _sync = syncRoot;
     }
 
     internal SynchronizedReadOnlyCollection(object syncRoot, List<T> list, bool makeCopy)
     {
       if (syncRoot == null)
-        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException("syncRoot"));
+        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException(nameof(syncRoot)));
       if (list == null)
-        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException("list"));
+        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException(nameof(list)));
 
       if (makeCopy)
-        m_items = new List<T>(list);
+        _items = new List<T>(list);
       else
-        m_items = list;
+        _items = list;
 
-      m_sync = syncRoot;
+      _sync = syncRoot;
     }
 
     public int Count
     {
-      get { lock (m_sync) { return m_items.Count; } }
+      get { lock (_sync) { return _items.Count; } }
     }
 
     protected IList<T> Items
     {
       get
       {
-        return m_items;
+        return _items;
       }
     }
 
     public T this[int index]
     {
-      get { lock (m_sync) { return m_items[index]; } }
+      get { lock (_sync) { return _items[index]; } }
     }
 
     public bool Contains(T value)
     {
-      lock (m_sync)
+      lock (_sync)
       {
-        return m_items.Contains(value);
+        return _items.Contains(value);
       }
     }
 
     public void CopyTo(T[] array, int index)
     {
-      lock (m_sync)
+      lock (_sync)
       {
-        m_items.CopyTo(array, index);
+        _items.CopyTo(array, index);
       }
     }
 
     public IEnumerator<T> GetEnumerator()
     {
-      lock (m_sync)
+      lock (_sync)
       {
-        return m_items.GetEnumerator();
+        return _items.GetEnumerator();
       }
     }
 
     public int IndexOf(T value)
     {
-      lock (m_sync)
+      lock (_sync)
       {
-        return m_items.IndexOf(value);
+        return _items.IndexOf(value);
       }
     }
 
-    void ThrowReadOnly()
+    private void ThrowReadOnly()
     {
       throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new NotSupportedException(InternalSR.SFxCollectionReadOnly));
     }
@@ -139,34 +138,34 @@ namespace CuteAnt.Collections
       }
       set
       {
-        ThrowReadOnly();
+        this.ThrowReadOnly();
       }
     }
 
     void ICollection<T>.Add(T value)
     {
-      ThrowReadOnly();
+      this.ThrowReadOnly();
     }
 
     void ICollection<T>.Clear()
     {
-      ThrowReadOnly();
+      this.ThrowReadOnly();
     }
 
     bool ICollection<T>.Remove(T value)
     {
-      ThrowReadOnly();
+      this.ThrowReadOnly();
       return false;
     }
 
     void IList<T>.Insert(int index, T value)
     {
-      ThrowReadOnly();
+      this.ThrowReadOnly();
     }
 
     void IList<T>.RemoveAt(int index)
     {
-      ThrowReadOnly();
+      this.ThrowReadOnly();
     }
 
     bool ICollection.IsSynchronized
@@ -176,16 +175,18 @@ namespace CuteAnt.Collections
 
     object ICollection.SyncRoot
     {
-      get { return m_sync; }
+      get { return _sync; }
     }
 
     void ICollection.CopyTo(Array array, int index)
     {
-      ICollection asCollection = m_items as ICollection;
+      var asCollection = _items as ICollection;
       if (asCollection == null)
+      {
         throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new NotSupportedException(InternalSR.SFxCopyToRequiresICollection));
+      }
 
-      lock (m_sync)
+      lock (_sync)
       {
         asCollection.CopyTo(array, index);
       }
@@ -193,13 +194,13 @@ namespace CuteAnt.Collections
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-      lock (m_sync)
+      lock (_sync)
       {
-        IEnumerable asEnumerable = m_items as IEnumerable;
+        IEnumerable asEnumerable = _items as IEnumerable;
         if (asEnumerable != null)
           return asEnumerable.GetEnumerator();
         else
-          return new EnumeratorAdapter(m_items);
+          return new EnumeratorAdapter(_items);
       }
     }
 
@@ -221,87 +222,86 @@ namespace CuteAnt.Collections
       }
       set
       {
-        ThrowReadOnly();
+        this.ThrowReadOnly();
       }
     }
 
     int IList.Add(object value)
     {
-      ThrowReadOnly();
+      this.ThrowReadOnly();
       return 0;
     }
 
     void IList.Clear()
     {
-      ThrowReadOnly();
+      this.ThrowReadOnly();
     }
 
     bool IList.Contains(object value)
     {
       VerifyValueType(value);
-      return Contains((T)value);
+      return this.Contains((T)value);
     }
 
     int IList.IndexOf(object value)
     {
       VerifyValueType(value);
-      return IndexOf((T)value);
+      return this.IndexOf((T)value);
     }
 
     void IList.Insert(int index, object value)
     {
-      ThrowReadOnly();
+      this.ThrowReadOnly();
     }
 
     void IList.Remove(object value)
     {
-      ThrowReadOnly();
+      this.ThrowReadOnly();
     }
 
     void IList.RemoveAt(int index)
     {
-      ThrowReadOnly();
+      this.ThrowReadOnly();
     }
 
-    static void VerifyValueType(object value)
+    private static void VerifyValueType(object value)
     {
-      if ((value is T) || (value == null && !typeof(T).IsValueType))
-        return;
+      if ((value is T) || (value == null && !typeof(T).GetTypeInfo().IsValueType)) { return; }
 
       Type type = (value == null) ? typeof(Object) : value.GetType();
       string message = string.Format(InternalSR.SFxCollectionWrongType2, type.ToString(), typeof(T).ToString());
       throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentException(message));
     }
 
-    sealed class EnumeratorAdapter : IEnumerator, IDisposable
+    internal sealed class EnumeratorAdapter : IEnumerator, IDisposable
     {
-      IList<T> m_list;
-      IEnumerator<T> m_e;
+      private IList<T> _list;
+      private IEnumerator<T> _e;
 
       public EnumeratorAdapter(IList<T> list)
       {
-        m_list = list;
-        m_e = m_list.GetEnumerator();
+        _list = list;
+        _e = list.GetEnumerator();
       }
 
       public object Current
       {
-        get { return m_e.Current; }
+        get { return _e.Current; }
       }
 
       public bool MoveNext()
       {
-        return m_e.MoveNext();
+        return _e.MoveNext();
       }
 
       public void Dispose()
       {
-        m_e.Dispose();
+        _e.Dispose();
       }
 
       public void Reset()
       {
-        m_e = m_list.GetEnumerator();
+        _e = _list.GetEnumerator();
       }
     }
   }

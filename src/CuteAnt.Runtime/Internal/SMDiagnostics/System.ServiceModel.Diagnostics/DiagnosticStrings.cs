@@ -2,6 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
 
+#if DESKTOPCLR
 namespace CuteAnt.ServiceModel.Diagnostics
 {
   static class DiagnosticStrings
@@ -44,3 +45,4 @@ namespace CuteAnt.ServiceModel.Diagnostics
     internal static string[] PiiList = new string[] { "BinarySecret", "Entropy", "Password", "Nonce", "Username", "BinarySecurityToken", "NameIdentifier", "SubjectLocality", "AttributeValue" };
   }
 }
+#endif

@@ -2,6 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //-----------------------------------------------------------------------------
 
+#if DESKTOPCLR
 using System;
 
 namespace CuteAnt.Diagnostics
@@ -16,3 +17,4 @@ namespace CuteAnt.Diagnostics
     Verbose = 5,
   }
 }
+#endif

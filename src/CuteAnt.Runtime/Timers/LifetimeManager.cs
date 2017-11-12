@@ -1,11 +1,15 @@
-﻿//-----------------------------------------------------------------------------
-// Copyright (c) Microsoft Corporation.  All rights reserved.
-// System.ServiceModel\System\ServiceModel\Channels\LifetimeManager.cs
-//-----------------------------------------------------------------------------
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
+#if DESKTOPCLR
+#define DEBUG_EXPENSIVE
+#endif
 using System;
-using System.Runtime;
 using System.Threading;
+#if DESKTOPCLR
+using System.Diagnostics;
+#endif
 
 namespace CuteAnt.Runtime
 {
@@ -19,61 +23,50 @@ namespace CuteAnt.Runtime
   public class LifetimeManager
   {
 #if DEBUG_EXPENSIVE
-    StackTrace closeStack;
+    private StackTrace _closeStack;
 #endif
-    bool m_aborted;
-    int m_busyCount;
-    ICommunicationWaiter m_busyWaiter;
-    int m_busyWaiterCount;
-    object m_mutex;
-    LifetimeState m_state;
+    private bool _aborted;
+    private int _busyCount;
+    private ICommunicationWaiter _busyWaiter;
+    private int _busyWaiterCount;
+    private object _mutex;
+    private LifetimeState _state;
 
     public LifetimeManager(object mutex)
     {
-      m_mutex = mutex;
-      m_state = LifetimeState.Opened;
+      _mutex = mutex;
+      _state = LifetimeState.Opened;
     }
 
-    public int BusyCount
-    {
-      get { return m_busyCount; }
-    }
+    public int BusyCount => _busyCount;
 
-    protected LifetimeState State
-    {
-      get { return m_state; }
-    }
+    protected LifetimeState State => _state;
 
-    protected object ThisLock
-    {
-      get { return m_mutex; }
-    }
+    protected object ThisLock => _mutex;
 
     public void Abort()
     {
       lock (ThisLock)
       {
-        if (State == LifetimeState.Closed || m_aborted)
-          return;
+        if (State == LifetimeState.Closed || _aborted) { return; }
 #if DEBUG_EXPENSIVE
-                if (closeStack == null)
-                    closeStack = new StackTrace();
+        if (_closeStack == null) { _closeStack = new StackTrace(); }
 #endif
-        m_aborted = true;
-        m_state = LifetimeState.Closing;
+        _aborted = true;
+        _state = LifetimeState.Closing;
       }
 
       OnAbort();
-      m_state = LifetimeState.Closed;
+      _state = LifetimeState.Closed;
     }
 
-    void ThrowIfNotOpened()
+    private void ThrowIfNotOpened()
     {
-      if (!m_aborted && m_state != LifetimeState.Opened)
+      if (!_aborted && _state != LifetimeState.Opened)
       {
 #if DEBUG_EXPENSIVE
-                String originalStack = closeStack.ToString().Replace("\r\n", "\r\n    ");
-                throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ObjectDisposedException(GetType().ToString() + ", Object already closed:\r\n    " + originalStack));
+        String originalStack = _closeStack.ToString().Replace("\r\n", "\r\n    ");
+        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ObjectDisposedException(GetType().ToString() + ", Object already closed:\r\n    " + originalStack));
 #else
         throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ObjectDisposedException(GetType().ToString()));
 #endif
@@ -86,10 +79,9 @@ namespace CuteAnt.Runtime
       {
         ThrowIfNotOpened();
 #if DEBUG_EXPENSIVE
-                if (closeStack == null)
-                    closeStack = new StackTrace();
+        if (_closeStack == null) { _closeStack = new StackTrace(); }
 #endif
-        m_state = LifetimeState.Closing;
+        _state = LifetimeState.Closing;
       }
 
       return OnBeginClose(timeout, callback, state);
@@ -101,47 +93,45 @@ namespace CuteAnt.Runtime
       {
         ThrowIfNotOpened();
 #if DEBUG_EXPENSIVE
-                if (closeStack == null)
-                    closeStack = new StackTrace();
+        if (_closeStack == null) { _closeStack = new StackTrace(); }
 #endif
-        m_state = LifetimeState.Closing;
+        _state = LifetimeState.Closing;
       }
 
       OnClose(timeout);
-      m_state = LifetimeState.Closed;
+      _state = LifetimeState.Closed;
     }
 
-    CommunicationWaitResult CloseCore(TimeSpan timeout, bool aborting)
+    private CommunicationWaitResult CloseCore(TimeSpan timeout, bool aborting)
     {
       ICommunicationWaiter busyWaiter = null;
       CommunicationWaitResult result = CommunicationWaitResult.Succeeded;
 
       lock (ThisLock)
       {
-        if (m_busyCount > 0)
+        if (_busyCount > 0)
         {
-          if (m_busyWaiter != null)
+          if (_busyWaiter != null)
           {
-            if (!aborting && m_aborted)
-              return CommunicationWaitResult.Aborted;
-            busyWaiter = m_busyWaiter;
+            if (!aborting && _aborted) { return CommunicationWaitResult.Aborted; }
+            busyWaiter = _busyWaiter;
           }
           else
           {
             busyWaiter = new SyncCommunicationWaiter(ThisLock);
-            m_busyWaiter = busyWaiter;
+            _busyWaiter = busyWaiter;
           }
-          Interlocked.Increment(ref m_busyWaiterCount);
+          Interlocked.Increment(ref _busyWaiterCount);
         }
       }
 
       if (busyWaiter != null)
       {
         result = busyWaiter.Wait(timeout, aborting);
-        if (Interlocked.Decrement(ref m_busyWaiterCount) == 0)
+        if (Interlocked.Decrement(ref _busyWaiterCount) == 0)
         {
           busyWaiter.Dispose();
-          m_busyWaiter = null;
+          _busyWaiter = null;
         }
       }
 
@@ -155,16 +145,16 @@ namespace CuteAnt.Runtime
 
       lock (ThisLock)
       {
-        if (m_busyCount <= 0)
+        if (_busyCount <= 0)
         {
           throw Fx.AssertAndThrow("LifetimeManager.DecrementBusyCount: (busyCount > 0)");
         }
-        if (--m_busyCount == 0)
+        if (--_busyCount == 0)
         {
-          if (m_busyWaiter != null)
+          if (_busyWaiter != null)
           {
-            busyWaiter = m_busyWaiter;
-            Interlocked.Increment(ref m_busyWaiterCount);
+            busyWaiter = _busyWaiter;
+            Interlocked.Increment(ref _busyWaiterCount);
           }
           empty = true;
         }
@@ -173,21 +163,20 @@ namespace CuteAnt.Runtime
       if (busyWaiter != null)
       {
         busyWaiter.Signal();
-        if (Interlocked.Decrement(ref m_busyWaiterCount) == 0)
+        if (Interlocked.Decrement(ref _busyWaiterCount) == 0)
         {
           busyWaiter.Dispose();
-          m_busyWaiter = null;
+          _busyWaiter = null;
         }
       }
 
-      if (empty && State == LifetimeState.Opened)
-        OnEmpty();
+      if (empty && State == LifetimeState.Opened) { OnEmpty(); }
     }
 
     public void EndClose(IAsyncResult result)
     {
       OnEndClose(result);
-      m_state = LifetimeState.Closed;
+      _state = LifetimeState.Closed;
     }
 
     protected virtual void IncrementBusyCount()
@@ -195,14 +184,14 @@ namespace CuteAnt.Runtime
       lock (ThisLock)
       {
         Fx.Assert(State == LifetimeState.Opened, "LifetimeManager.IncrementBusyCount: (State == LifetimeState.Opened)");
-        m_busyCount++;
+        _busyCount++;
       }
     }
 
     protected virtual void IncrementBusyCountWithoutLock()
     {
       Fx.Assert(State == LifetimeState.Opened, "LifetimeManager.IncrementBusyCountWithoutLock: (State == LifetimeState.Opened)");
-      m_busyCount++;
+      _busyCount++;
     }
 
     protected virtual void OnAbort()
@@ -217,19 +206,19 @@ namespace CuteAnt.Runtime
 
       lock (ThisLock)
       {
-        if (m_busyCount > 0)
+        if (_busyCount > 0)
         {
-          if (m_busyWaiter != null)
+          if (_busyWaiter != null)
           {
-            Fx.Assert(m_aborted, "LifetimeManager.OnBeginClose: (aborted == true)");
+            Fx.Assert(_aborted, "LifetimeManager.OnBeginClose: (aborted == true)");
             throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ObjectDisposedException(GetType().ToString()));
           }
           else
           {
             closeResult = new CloseCommunicationAsyncResult(timeout, callback, state, ThisLock);
-            Fx.Assert(m_busyWaiter == null, "LifetimeManager.OnBeginClose: (busyWaiter == null)");
-            m_busyWaiter = closeResult;
-            Interlocked.Increment(ref m_busyWaiterCount);
+            Fx.Assert(_busyWaiter == null, "LifetimeManager.OnBeginClose: (busyWaiter == null)");
+            _busyWaiter = closeResult;
+            Interlocked.Increment(ref _busyWaiterCount);
           }
         }
       }
@@ -264,14 +253,16 @@ namespace CuteAnt.Runtime
       if (result is CloseCommunicationAsyncResult)
       {
         CloseCommunicationAsyncResult.End(result);
-        if (Interlocked.Decrement(ref m_busyWaiterCount) == 0)
+        if (Interlocked.Decrement(ref _busyWaiterCount) == 0)
         {
-          m_busyWaiter.Dispose();
-          m_busyWaiter = null;
+          _busyWaiter.Dispose();
+          _busyWaiter = null;
         }
       }
       else
+      {
         CompletedAsyncResult.End(result);
+      }
     }
   }
 
@@ -292,30 +283,37 @@ namespace CuteAnt.Runtime
 
   public class CloseCommunicationAsyncResult : AsyncResult, ICommunicationWaiter
   {
-    object m_mutex;
-    CommunicationWaitResult m_result;
-    IOThreadTimer m_timer;
-    TimeoutHelper m_timeoutHelper;
-    TimeSpan m_timeout;
+    private object _mutex;
+    private CommunicationWaitResult _result;
+#if DESKTOPCLR
+    private IOThreadTimer _timer;
+#else
+    private Timer _timer;
+#endif
+    private TimeoutHelper _timeoutHelper;
+    private TimeSpan _timeout;
 
     public CloseCommunicationAsyncResult(TimeSpan timeout, AsyncCallback callback, object state, object mutex)
-        : base(callback, state)
+      : base(callback, state)
     {
-      m_timeout = timeout;
-      m_timeoutHelper = new TimeoutHelper(timeout);
-      m_mutex = mutex;
+      _timeout = timeout;
+      _timeoutHelper = new TimeoutHelper(timeout);
+      _mutex = mutex;
 
       if (timeout < TimeSpan.Zero)
+      {
         throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new TimeoutException(string.Format(InternalSR.SFxCloseTimedOut1, timeout)));
+      }
 
-      m_timer = new IOThreadTimer(new Action<object>(TimeoutCallback), this, true);
-      m_timer.Set(timeout);
+#if DESKTOPCLR
+      _timer = new IOThreadTimer(new Action<object>(TimeoutCallback), this, true);
+      _timer.Set(timeout);
+#else
+      _timer = new Timer(new TimerCallback(new Action<object>(TimeoutCallback)), this, timeout, TimeSpan.FromMilliseconds(-1));
+#endif
     }
 
-    object ThisLock
-    {
-      get { return m_mutex; }
-    }
+    private object ThisLock => _mutex;
 
     public void Dispose()
     {
@@ -330,26 +328,28 @@ namespace CuteAnt.Runtime
     {
       lock (ThisLock)
       {
-        if (m_result != CommunicationWaitResult.Waiting)
-          return;
-        m_result = CommunicationWaitResult.Succeeded;
+        if (_result != CommunicationWaitResult.Waiting) { return; }
+        _result = CommunicationWaitResult.Succeeded;
       }
-      m_timer.Cancel();
+#if DESKTOPCLR
+      _timer.Cancel();
+#else
+      _timer.Change(TimeSpan.FromMilliseconds(-1), TimeSpan.FromMilliseconds(-1));
+#endif
       Complete(false);
     }
 
-    void Timeout()
+    private void Timeout()
     {
       lock (ThisLock)
       {
-        if (m_result != CommunicationWaitResult.Waiting)
-          return;
-        m_result = CommunicationWaitResult.Expired;
+        if (_result != CommunicationWaitResult.Waiting) { return; }
+        _result = CommunicationWaitResult.Expired;
       }
-      Complete(false, new TimeoutException(string.Format(InternalSR.SFxCloseTimedOut1, m_timeout)));
+      Complete(false, new TimeoutException(string.Format(InternalSR.SFxCloseTimedOut1, _timeout)));
     }
 
-    static void TimeoutCallback(object state)
+    private static void TimeoutCallback(object state)
     {
       CloseCommunicationAsyncResult closeResult = (CloseCommunicationAsyncResult)state;
       closeResult.Timeout();
@@ -367,47 +367,47 @@ namespace CuteAnt.Runtime
 
       lock (ThisLock)
       {
-        if (m_result != CommunicationWaitResult.Waiting)
+        if (_result != CommunicationWaitResult.Waiting)
         {
-          return m_result;
+          return _result;
         }
-        m_result = CommunicationWaitResult.Aborted;
+        _result = CommunicationWaitResult.Aborted;
       }
-      m_timer.Cancel();
+#if DESKTOPCLR
+      _timer.Cancel();
+#else
+      _timer.Change(TimeSpan.FromMilliseconds(-1), TimeSpan.FromMilliseconds(-1));
+#endif
 
       TimeoutHelper.WaitOne(AsyncWaitHandle, timeout);
 
       Complete(false, new ObjectDisposedException(GetType().ToString()));
-      return m_result;
+      return _result;
     }
   }
 
   public class SyncCommunicationWaiter : ICommunicationWaiter
   {
-    bool m_closed;
-    object m_mutex;
-    CommunicationWaitResult m_result;
-    ManualResetEvent m_waitHandle;
+    private bool _closed;
+    private object _mutex;
+    private CommunicationWaitResult _result;
+    private ManualResetEvent _waitHandle;
 
     public SyncCommunicationWaiter(object mutex)
     {
-      m_mutex = mutex;
-      m_waitHandle = new ManualResetEvent(false);
+      _mutex = mutex;
+      _waitHandle = new ManualResetEvent(false);
     }
 
-    object ThisLock
-    {
-      get { return m_mutex; }
-    }
+    private object ThisLock => _mutex;
 
     public void Dispose()
     {
       lock (ThisLock)
       {
-        if (m_closed)
-          return;
-        m_closed = true;
-        m_waitHandle.Close();
+        if (_closed) { return; }
+        _closed = true;
+        _waitHandle.Close();
       }
     }
 
@@ -415,15 +415,14 @@ namespace CuteAnt.Runtime
     {
       lock (ThisLock)
       {
-        if (m_closed)
-          return;
-        m_waitHandle.Set();
+        if (_closed) { return; }
+        _waitHandle.Set();
       }
     }
 
     public CommunicationWaitResult Wait(TimeSpan timeout, bool aborting)
     {
-      if (m_closed)
+      if (_closed)
       {
         return CommunicationWaitResult.Aborted;
       }
@@ -434,26 +433,26 @@ namespace CuteAnt.Runtime
 
       if (aborting)
       {
-        m_result = CommunicationWaitResult.Aborted;
+        _result = CommunicationWaitResult.Aborted;
       }
 
-      bool expired = !TimeoutHelper.WaitOne(m_waitHandle, timeout);
+      bool expired = !TimeoutHelper.WaitOne(_waitHandle, timeout);
 
       lock (ThisLock)
       {
-        if (m_result == CommunicationWaitResult.Waiting)
+        if (_result == CommunicationWaitResult.Waiting)
         {
-          m_result = (expired ? CommunicationWaitResult.Expired : CommunicationWaitResult.Succeeded);
+          _result = (expired ? CommunicationWaitResult.Expired : CommunicationWaitResult.Succeeded);
         }
       }
 
       lock (ThisLock)
       {
-        if (!m_closed)
-          m_waitHandle.Set();  // unblock other waiters if there are any
+        if (!_closed)
+          _waitHandle.Set();  // unblock other waiters if there are any
       }
 
-      return m_result;
+      return _result;
     }
   }
 }

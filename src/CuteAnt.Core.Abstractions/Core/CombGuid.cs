@@ -737,17 +737,17 @@ namespace CuteAnt
       }
 
       var type = value.GetType();
-      if (type == TypeConstants.CombGuid)
+      if (type == TypeConstants.CombGuidType)
       {
         result = (CombGuid)value;
         return true;
       }
-      else if (type == TypeConstants.Guid)
+      else if (type == TypeConstants.GuidType)
       {
         result = (Guid)value;
         return true;
       }
-      else if (type == TypeConstants.String)
+      else if (type == TypeConstants.StringType)
       {
         return TryParse(value as String, sequentialType, out result);
       }
@@ -1211,15 +1211,15 @@ namespace CuteAnt
       //  case TypeCode.Object:
       //    break;
       //}
-      if (conversionType == TypeConstants.String)
+      if (conversionType == TypeConstants.StringType)
       {
         return this.ToString();
       }
-      if (conversionType == TypeConstants.Object)
+      if (conversionType == TypeConstants.ObjectType)
       {
         return this;
       }
-      if (conversionType == TypeConstants.Guid)
+      if (conversionType == TypeConstants.GuidType)
       {
         return this.Value;
       }

@@ -1,6 +1,7 @@
 ﻿//-----------------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //-----------------------------------------------------------------------------
+#if DESKTOPCLR
 namespace CuteAnt.ServiceModel.Diagnostics
 {
   using System.Diagnostics;
@@ -53,3 +54,4 @@ namespace CuteAnt.ServiceModel.Diagnostics
     }
   }
 }
+#endif

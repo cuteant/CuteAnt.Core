@@ -10,8 +10,8 @@ namespace CuteAnt
     /// <inheritdoc />
     public override bool CanConvertFrom(ITypeDescriptorContext context, System.Type sourceType)
     {
-      if (sourceType == TypeConstants.String ||
-          sourceType == TypeConstants.Guid)
+      if (sourceType == TypeConstants.StringType ||
+          sourceType == TypeConstants.GuidType)
       {
         return true;
       }
@@ -36,9 +36,9 @@ namespace CuteAnt
     /// <inheritdoc />
     public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
     {
-      if (destinationType == TypeConstants.String ||
-          destinationType == TypeConstants.Guid ||
-          destinationType == TypeConstants.Object)
+      if (destinationType == TypeConstants.StringType ||
+          destinationType == TypeConstants.GuidType ||
+          destinationType == TypeConstants.ObjectType)
       {
         return true;
       }
@@ -48,15 +48,15 @@ namespace CuteAnt
     /// <inheritdoc />
     public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
     {
-      if (destinationType == TypeConstants.String)
+      if (destinationType == TypeConstants.StringType)
       {
         return value.ToString();
       }
-      if (destinationType == TypeConstants.Object)
+      if (destinationType == TypeConstants.ObjectType)
       {
         return value;
       }
-      if (destinationType == TypeConstants.Guid)
+      if (destinationType == TypeConstants.GuidType)
       {
         return ((CombGuid)value).Value;
       }

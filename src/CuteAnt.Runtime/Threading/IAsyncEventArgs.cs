@@ -3,6 +3,7 @@
 // </copyright>
 // System.ServiceModel.Internals\System\Runtime\IAsyncEventArgs.cs
 
+#if DESKTOPCLR
 using System;
 
 namespace CuteAnt.Runtime
@@ -14,3 +15,4 @@ namespace CuteAnt.Runtime
     Exception Exception { get; }
   }
 }
+#endif

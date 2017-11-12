@@ -2,6 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
 
+#if DESKTOPCLR
 namespace CuteAnt.ServiceModel.Diagnostics
 {
     enum TraceSourceKind
@@ -10,3 +11,4 @@ namespace CuteAnt.ServiceModel.Diagnostics
         PiiTraceSource
     }
 }
+#endif

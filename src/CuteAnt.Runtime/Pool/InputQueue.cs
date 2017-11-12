@@ -1,5 +1,6 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Collections.Generic;
@@ -19,13 +20,10 @@ namespace CuteAnt.Pool
 
     private QueueState _queueState;
     [Fx.Tag.SynchronizationObject(Blocking = false, Kind = Fx.Tag.SynchronizationKind.LockStatement)]
-
     private ItemQueue _itemQueue;
     [Fx.Tag.SynchronizationObject]
-
     private Queue<IQueueReader> _readerQueue;
     [Fx.Tag.SynchronizationObject]
-
     private List<IQueueWaiter> _waiterList;
 
     public InputQueue()
@@ -37,7 +35,7 @@ namespace CuteAnt.Pool
     }
 
     public InputQueue(Func<Action<AsyncCallback, IAsyncResult>> asyncCallbackGenerator)
-        : this()
+      : this()
     {
       Fx.Assert(asyncCallbackGenerator != null, "use default ctor if you don't have a generator");
       AsyncCallbackGenerator = asyncCallbackGenerator;
@@ -55,23 +53,12 @@ namespace CuteAnt.Pool
     }
 
     // Users like ServiceModel can hook this abort ICommunicationObject or handle other non-IDisposable objects
-    public Action<T> DisposeItemCallback
-    {
-      get;
-      set;
-    }
+    public Action<T> DisposeItemCallback { get; set; }
 
     // Users like ServiceModel can hook this to wrap the AsyncQueueReader callback functionality for tracing, etc
-    private Func<Action<AsyncCallback, IAsyncResult>> AsyncCallbackGenerator
-    {
-      get;
-      set;
-    }
+    private Func<Action<AsyncCallback, IAsyncResult>> AsyncCallbackGenerator { get; set; }
 
-    private object ThisLock
-    {
-      get { return _itemQueue; }
-    }
+    private object ThisLock => _itemQueue;
 
     public IAsyncResult BeginDequeue(TimeSpan timeout, AsyncCallback callback, object state)
     {
@@ -271,9 +258,7 @@ namespace CuteAnt.Pool
     [Fx.Tag.Blocking(CancelMethod = "Close", Conditional = "!result.IsCompleted")]
     public bool EndDequeue(IAsyncResult result, out T value)
     {
-      CompletedAsyncResult<T> typedResult = result as CompletedAsyncResult<T>;
-
-      if (typedResult != null)
+      if (result is CompletedAsyncResult<T> typedResult)
       {
         value = CompletedAsyncResult<T>.End(result);
         return true;
@@ -285,9 +270,7 @@ namespace CuteAnt.Pool
     [Fx.Tag.Blocking(CancelMethod = "Close", Conditional = "!result.IsCompleted")]
     public T EndDequeue(IAsyncResult result)
     {
-      T value;
-
-      if (!this.EndDequeue(result, out value))
+      if (!this.EndDequeue(result, out T value))
       {
         throw Fx.Exception.AsError(new TimeoutException());
       }
@@ -298,8 +281,7 @@ namespace CuteAnt.Pool
     [Fx.Tag.Blocking(CancelMethod = "Dispatch", Conditional = "!result.IsCompleted")]
     public bool EndWaitForItem(IAsyncResult result)
     {
-      CompletedAsyncResult<bool> typedResult = result as CompletedAsyncResult<bool>;
-      if (typedResult != null)
+      if (result is CompletedAsyncResult<bool> typedResult)
       {
         return CompletedAsyncResult<bool>.End(result);
       }
@@ -483,10 +465,7 @@ namespace CuteAnt.Pool
         else
         {
           Action<T> disposeItemCallback = this.DisposeItemCallback;
-          if (disposeItemCallback != null)
-          {
-            disposeItemCallback(value);
-          }
+          disposeItemCallback?.Invoke(value);
         }
       }
     }
@@ -543,10 +522,7 @@ namespace CuteAnt.Pool
 
     private static void InvokeDequeuedCallback(Action dequeuedCallback)
     {
-      if (dequeuedCallback != null)
-      {
-        dequeuedCallback();
-      }
+      dequeuedCallback?.Invoke();
     }
 
     private static void InvokeDequeuedCallbackLater(Action dequeuedCallback)
@@ -800,26 +776,11 @@ namespace CuteAnt.Pool
       private bool _expired;
       private InputQueue<T> _inputQueue;
       private T _item;
-      #region ## 苦竹  修改 ##
-      //private Timer _timer;
-
-      //public AsyncQueueReader(InputQueue<T> inputQueue, TimeSpan timeout, AsyncCallback callback, object state)
-      //    : base(callback, state)
-      //{
-      //  if (inputQueue.AsyncCallbackGenerator != null)
-      //  {
-      //    base.VirtualCallback = inputQueue.AsyncCallbackGenerator();
-      //  }
-      //  _inputQueue = inputQueue;
-      //  if (timeout != TimeSpan.MaxValue)
-      //  {
-      //    _timer = new Timer(new TimerCallback(s_timerCallback), this, timeout, TimeSpan.FromMilliseconds(-1));
-      //  }
-      //}
-      IOThreadTimer _timer;
+#if DESKTOPCLR
+      private IOThreadTimer _timer;
 
       public AsyncQueueReader(InputQueue<T> inputQueue, TimeSpan timeout, AsyncCallback callback, object state)
-          : base(callback, state)
+        : base(callback, state)
       {
         if (inputQueue.AsyncCallbackGenerator != null)
         {
@@ -832,7 +793,23 @@ namespace CuteAnt.Pool
           _timer.Set(timeout);
         }
       }
-      #endregion
+#else
+      private Timer _timer;
+
+      public AsyncQueueReader(InputQueue<T> inputQueue, TimeSpan timeout, AsyncCallback callback, object state)
+        : base(callback, state)
+      {
+        if (inputQueue.AsyncCallbackGenerator != null)
+        {
+          base.VirtualCallback = inputQueue.AsyncCallbackGenerator();
+        }
+        _inputQueue = inputQueue;
+        if (timeout != TimeSpan.MaxValue)
+        {
+          _timer = new Timer(new TimerCallback(s_timerCallback), this, timeout, TimeSpan.FromMilliseconds(-1));
+        }
+      }
+#endif
 
       [Fx.Tag.Blocking(Conditional = "!result.IsCompleted", CancelMethod = "Set")]
       public static bool End(IAsyncResult result, out T value)
@@ -856,10 +833,11 @@ namespace CuteAnt.Pool
         _item = item.Value;
         if (_timer != null)
         {
-          #region ## 苦竹 修改 ##
-          //_timer.Change(TimeSpan.FromMilliseconds(-1), TimeSpan.FromMilliseconds(-1));
+#if DESKTOPCLR
           _timer.Cancel();
-          #endregion
+#else
+          _timer.Change(TimeSpan.FromMilliseconds(-1), TimeSpan.FromMilliseconds(-1));
+#endif
         }
         Complete(false, item.Exception);
       }
@@ -883,15 +861,7 @@ namespace CuteAnt.Pool
       [Fx.Tag.SynchronizationObject(Blocking = false)]
       private object _thisLock = new object();
 
-      #region ## 苦竹 修改 ##
-      //private Timer _timer;
-      //public AsyncQueueWaiter(TimeSpan timeout, AsyncCallback callback, object state) : base(callback, state)
-      //{
-      //  if (timeout != TimeSpan.MaxValue)
-      //  {
-      //    _timer = new Timer(new TimerCallback(s_timerCallback), this, timeout, TimeSpan.FromMilliseconds(-1));
-      //  }
-      //}
+#if DESKTOPCLR
       private IOThreadTimer _timer;
       public AsyncQueueWaiter(TimeSpan timeout, AsyncCallback callback, object state) : base(callback, state)
       {
@@ -901,15 +871,19 @@ namespace CuteAnt.Pool
           _timer.Set(timeout);
         }
       }
-      #endregion
+#else
+      private Timer _timer;
 
-      private object ThisLock
+      public AsyncQueueWaiter(TimeSpan timeout, AsyncCallback callback, object state) : base(callback, state)
       {
-        get
+        if (timeout != TimeSpan.MaxValue)
         {
-          return _thisLock;
+          _timer = new Timer(new TimerCallback(s_timerCallback), this, timeout, TimeSpan.FromMilliseconds(-1));
         }
       }
+#endif
+
+      private object ThisLock => _thisLock;
 
       [Fx.Tag.Blocking(Conditional = "!result.IsCompleted", CancelMethod = "Set")]
       public static bool End(IAsyncResult result)
@@ -924,10 +898,11 @@ namespace CuteAnt.Pool
 
         lock (ThisLock)
         {
-          #region ## 苦竹 修改 ##
-          //timely = (_timer == null) || _timer.Change(TimeSpan.FromMilliseconds(-1), TimeSpan.FromMilliseconds(-1));
+#if DESKTOPCLR
           timely = (_timer == null) || _timer.Cancel();
-          #endregion
+#else
+          timely = (_timer == null) || _timer.Change(TimeSpan.FromMilliseconds(-1), TimeSpan.FromMilliseconds(-1));
+#endif
           _itemAvailable = itemAvailable;
         }
 

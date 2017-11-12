@@ -6,14 +6,18 @@
 //-----------------------------------------------------------------------
 
 using System;
+#if DESKTOPCLR
 using System.Runtime.Serialization;
+#endif
 
 namespace CuteAnt
 {
   /// <summary>
   /// This class defines the exception thrown when a configured limit or quota is exceeded.
   /// </summary>
+#if DESKTOPCLR
   [Serializable]
+#endif
   public class LimitExceededException : SystemException
   {
     /// <summary>
@@ -43,6 +47,7 @@ namespace CuteAnt
     {
     }
 
+#if DESKTOPCLR
     /// <summary>
     /// Initializes a new instance of <see cref="LimitExceededException"/>.
     /// </summary>
@@ -52,5 +57,6 @@ namespace CuteAnt
         : base(info, context)
     {
     }
+#endif
   }
 }

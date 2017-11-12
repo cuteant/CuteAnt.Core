@@ -1,63 +1,62 @@
-﻿//-----------------------------------------------------------------------------
-// Copyright (c) Microsoft Corporation.  All rights reserved.
-// System.ServiceModel\System\ServiceModel
-//-----------------------------------------------------------------------------
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
 using System;
 using System.Collections.Generic;
 using System.Runtime;
 using System.Runtime.InteropServices;
-using System.ServiceModel;
 
 namespace CuteAnt.Collections
 {
   [ComVisible(false)]
   public abstract class SynchronizedKeyedCollection<K, T> : SynchronizedCollection<T>
   {
-    const int c_defaultThreshold = 0;
+    private const int defaultThreshold = 0;
 
-    IEqualityComparer<K> m_comparer;
-    Dictionary<K, T> m_dictionary;
-    int m_keyCount;
-    int m_threshold;
+    private IEqualityComparer<K> _comparer;
+    private Dictionary<K, T> _dictionary;
+    private int _keyCount;
+    private int _threshold;
 
     protected SynchronizedKeyedCollection()
     {
-      m_comparer = EqualityComparer<K>.Default;
-      m_threshold = int.MaxValue;
+      _comparer = EqualityComparer<K>.Default;
+      _threshold = int.MaxValue;
     }
 
     protected SynchronizedKeyedCollection(object syncRoot)
-        : base(syncRoot)
+      : base(syncRoot)
     {
-      m_comparer = EqualityComparer<K>.Default;
-      m_threshold = int.MaxValue;
+      _comparer = EqualityComparer<K>.Default;
+      _threshold = int.MaxValue;
     }
 
     protected SynchronizedKeyedCollection(object syncRoot, IEqualityComparer<K> comparer)
-        : base(syncRoot)
+      : base(syncRoot)
     {
       if (comparer == null)
-        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException("comparer"));
+        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException(nameof(comparer)));
 
-      m_comparer = comparer;
-      m_threshold = int.MaxValue;
+      _comparer = comparer;
+      _threshold = int.MaxValue;
     }
 
     protected SynchronizedKeyedCollection(object syncRoot, IEqualityComparer<K> comparer, int dictionaryCreationThreshold)
-        : base(syncRoot)
+      : base(syncRoot)
     {
       if (comparer == null)
-        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException("comparer"));
+        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException(nameof(comparer)));
 
       if (dictionaryCreationThreshold < -1)
-        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentOutOfRangeException("dictionaryCreationThreshold", dictionaryCreationThreshold,
+        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentOutOfRangeException(nameof(dictionaryCreationThreshold), dictionaryCreationThreshold,
                                             string.Format(InternalSR.ValueMustBeInRange, -1, int.MaxValue)));
       else if (dictionaryCreationThreshold == -1)
-        m_threshold = int.MaxValue;
+        _threshold = int.MaxValue;
       else
-        m_threshold = dictionaryCreationThreshold;
+        _threshold = dictionaryCreationThreshold;
 
-      m_comparer = comparer;
+      _comparer = comparer;
     }
 
     public T this[K key]
@@ -65,17 +64,17 @@ namespace CuteAnt.Collections
       get
       {
         if (key == null)
-          throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException("key"));
+          throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException(nameof(key)));
 
-        lock (SyncRoot)
+        lock (this.SyncRoot)
         {
-          if (m_dictionary != null)
-            return m_dictionary[key];
+          if (_dictionary != null)
+            return _dictionary[key];
 
-          for (int i = 0; i < Items.Count; i++)
+          for (int i = 0; i < this.Items.Count; i++)
           {
-            T item = Items[i];
-            if (m_comparer.Equals(key, GetKeyForItem(item)))
+            T item = this.Items[i];
+            if (_comparer.Equals(key, this.GetKeyForItem(item)))
               return item;
           }
 
@@ -86,41 +85,41 @@ namespace CuteAnt.Collections
 
     protected IDictionary<K, T> Dictionary
     {
-      get { return m_dictionary; }
+      get { return _dictionary; }
     }
 
-    void AddKey(K key, T item)
+    private void AddKey(K key, T item)
     {
-      if (m_dictionary != null)
-        m_dictionary.Add(key, item);
-      else if (m_keyCount == m_threshold)
+      if (_dictionary != null)
+        _dictionary.Add(key, item);
+      else if (_keyCount == _threshold)
       {
-        CreateDictionary();
-        m_dictionary.Add(key, item);
+        this.CreateDictionary();
+        _dictionary.Add(key, item);
       }
       else
       {
-        if (Contains(key))
+        if (this.Contains(key))
           throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentException(InternalSR.CannotAddTwoItemsWithTheSameKeyToSynchronizedKeyedCollection0));
 
-        m_keyCount++;
+        _keyCount++;
       }
     }
 
     protected void ChangeItemKey(T item, K newKey)
     {
       // check if the item exists in the collection
-      if (!ContainsItem(item))
+      if (!this.ContainsItem(item))
         throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentException(InternalSR.ItemDoesNotExistInSynchronizedKeyedCollection0));
 
-      K oldKey = GetKeyForItem(item);
-      if (!m_comparer.Equals(newKey, oldKey))
+      K oldKey = this.GetKeyForItem(item);
+      if (!_comparer.Equals(newKey, oldKey))
       {
         if (newKey != null)
-          AddKey(newKey, item);
+          this.AddKey(newKey, item);
 
         if (oldKey != null)
-          RemoveKey(oldKey);
+          this.RemoveKey(oldKey);
       }
     }
 
@@ -128,28 +127,28 @@ namespace CuteAnt.Collections
     {
       base.ClearItems();
 
-      if (m_dictionary != null)
-        m_dictionary.Clear();
+      if (_dictionary != null)
+        _dictionary.Clear();
 
-      m_keyCount = 0;
+      _keyCount = 0;
     }
 
     public bool Contains(K key)
     {
       if (key == null)
-        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException("key"));
+        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException(nameof(key)));
 
-      lock (SyncRoot)
+      lock (this.SyncRoot)
       {
-        if (m_dictionary != null)
-          return m_dictionary.ContainsKey(key);
+        if (_dictionary != null)
+          return _dictionary.ContainsKey(key);
 
         if (key != null)
         {
           for (int i = 0; i < Items.Count; i++)
           {
             T item = Items[i];
-            if (m_comparer.Equals(key, GetKeyForItem(item)))
+            if (_comparer.Equals(key, GetKeyForItem(item)))
               return true;
           }
         }
@@ -157,29 +156,29 @@ namespace CuteAnt.Collections
       }
     }
 
-    bool ContainsItem(T item)
+    private bool ContainsItem(T item)
     {
       K key;
-      if ((m_dictionary == null) || ((key = GetKeyForItem(item)) == null))
+      if ((_dictionary == null) || ((key = GetKeyForItem(item)) == null))
         return Items.Contains(item);
 
       T itemInDict;
 
-      if (m_dictionary.TryGetValue(key, out itemInDict))
+      if (_dictionary.TryGetValue(key, out itemInDict))
         return EqualityComparer<T>.Default.Equals(item, itemInDict);
 
       return false;
     }
 
-    void CreateDictionary()
+    private void CreateDictionary()
     {
-      m_dictionary = new Dictionary<K, T>(m_comparer);
+      _dictionary = new Dictionary<K, T>(_comparer);
 
       foreach (T item in Items)
       {
         K key = GetKeyForItem(item);
         if (key != null)
-          m_dictionary.Add(key, item);
+          _dictionary.Add(key, item);
       }
     }
 
@@ -187,10 +186,10 @@ namespace CuteAnt.Collections
 
     protected override void InsertItem(int index, T item)
     {
-      K key = GetKeyForItem(item);
+      K key = this.GetKeyForItem(item);
 
       if (key != null)
-        AddKey(key, item);
+        this.AddKey(key, item);
 
       base.InsertItem(index, item);
     }
@@ -198,14 +197,14 @@ namespace CuteAnt.Collections
     public bool Remove(K key)
     {
       if (key == null)
-        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException("key"));
+        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentNullException(nameof(key)));
 
-      lock (SyncRoot)
+      lock (this.SyncRoot)
       {
-        if (m_dictionary != null)
+        if (_dictionary != null)
         {
-          if (m_dictionary.ContainsKey(key))
-            return Remove(m_dictionary[key]);
+          if (_dictionary.ContainsKey(key))
+            return this.Remove(_dictionary[key]);
           else
             return false;
         }
@@ -213,9 +212,9 @@ namespace CuteAnt.Collections
         {
           for (int i = 0; i < Items.Count; i++)
           {
-            if (m_comparer.Equals(key, GetKeyForItem(Items[i])))
+            if (_comparer.Equals(key, GetKeyForItem(Items[i])))
             {
-              RemoveItem(i);
+              this.RemoveItem(i);
               return true;
             }
           }
@@ -226,44 +225,44 @@ namespace CuteAnt.Collections
 
     protected override void RemoveItem(int index)
     {
-      K key = GetKeyForItem(Items[index]);
+      K key = this.GetKeyForItem(this.Items[index]);
 
       if (key != null)
-        RemoveKey(key);
+        this.RemoveKey(key);
 
       base.RemoveItem(index);
     }
 
-    void RemoveKey(K key)
+    private void RemoveKey(K key)
     {
       if (!(key != null))
       {
         Fx.Assert("key shouldn't be null!");
-        throw DiagnosticUtility.ExceptionUtility.ThrowHelperArgumentNull("key");
+        throw DiagnosticUtility.ExceptionUtility.ThrowHelperArgumentNull(nameof(key));
       }
-      if (m_dictionary != null)
-        m_dictionary.Remove(key);
+      if (_dictionary != null)
+        _dictionary.Remove(key);
       else
-        m_keyCount--;
+        _keyCount--;
     }
 
     protected override void SetItem(int index, T item)
     {
-      K newKey = GetKeyForItem(item);
-      K oldKey = GetKeyForItem(Items[index]);
+      K newKey = this.GetKeyForItem(item);
+      K oldKey = this.GetKeyForItem(this.Items[index]);
 
-      if (m_comparer.Equals(newKey, oldKey))
+      if (_comparer.Equals(newKey, oldKey))
       {
-        if ((newKey != null) && (m_dictionary != null))
-          m_dictionary[newKey] = item;
+        if ((newKey != null) && (_dictionary != null))
+          _dictionary[newKey] = item;
       }
       else
       {
         if (newKey != null)
-          AddKey(newKey, item);
+          this.AddKey(newKey, item);
 
         if (oldKey != null)
-          RemoveKey(oldKey);
+          this.RemoveKey(oldKey);
       }
       base.SetItem(index, item);
     }

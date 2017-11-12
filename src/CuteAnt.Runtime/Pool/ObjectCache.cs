@@ -5,7 +5,11 @@
 
 using System;
 using System.Collections.Generic;
+#if DESKTOPCLR
 using CuteAnt.Runtime;
+#else
+using System.Threading;
+#endif
 
 namespace CuteAnt.Pool
 {
@@ -24,13 +28,17 @@ namespace CuteAnt.Pool
     // idle cache items. However, if we're above a certain threshold of items, then we'll start the timer.
     private const int c_timerThreshold = 1;
 
-    private ObjectCacheSettings m_settings;
-    private Dictionary<TKey, Item> m_cacheItems;
-    private bool m_idleTimeoutEnabled;
-    private bool m_leaseTimeoutEnabled;
-    private IOThreadTimer m_idleTimer;
-    private static Action<object> m_onIdle;
-    private bool m_disposed;
+    private ObjectCacheSettings _settings;
+    private Dictionary<TKey, Item> _cacheItems;
+    private bool _idleTimeoutEnabled;
+    private bool _leaseTimeoutEnabled;
+#if DESKTOPCLR
+    private IOThreadTimer _idleTimer;
+#else
+    private Timer _idleTimer;
+#endif
+    private static Action<object> _onIdle;
+    private bool _disposed;
 
     public ObjectCache(ObjectCacheSettings settings)
         : this(settings, null)
@@ -40,38 +48,22 @@ namespace CuteAnt.Pool
     public ObjectCache(ObjectCacheSettings settings, IEqualityComparer<TKey> comparer)
     {
       Fx.Assert(settings != null, "caller must use a valid settings object");
-      m_settings = settings.Clone();
-      m_cacheItems = new Dictionary<TKey, Item>(comparer);
+      _settings = settings.Clone();
+      _cacheItems = new Dictionary<TKey, Item>(comparer);
 
       // idle feature is disabled if settings.IdleTimeout == TimeSpan.MaxValue
-      m_idleTimeoutEnabled = (settings.IdleTimeout != TimeSpan.MaxValue);
+      _idleTimeoutEnabled = (settings.IdleTimeout != TimeSpan.MaxValue);
 
       // lease feature is disabled if settings.LeaseTimeout == TimeSpan.MaxValue
-      m_leaseTimeoutEnabled = (settings.LeaseTimeout != TimeSpan.MaxValue);
+      _leaseTimeoutEnabled = (settings.LeaseTimeout != TimeSpan.MaxValue);
     }
 
-    private object ThisLock
-    {
-      get
-      {
-        return this;
-      }
-    }
+    private object ThisLock => this;
 
     // Users like ServiceModel can hook this for ICommunicationObject or to handle other non-IDisposable objects
-    public Action<TValue> DisposeItemCallback
-    {
-      get;
-      set;
-    }
+    public Action<TValue> DisposeItemCallback { get; set; }
 
-    public int Count
-    {
-      get
-      {
-        return m_cacheItems.Count;
-      }
-    }
+    public int Count => _cacheItems.Count;
 
     public ObjectCacheItem<TValue> Add(TKey key, TValue value)
     {
@@ -79,7 +71,7 @@ namespace CuteAnt.Pool
       Fx.Assert(value != null, "caller must validate parameters");
       lock (ThisLock)
       {
-        if (Count >= m_settings.CacheLimit || m_cacheItems.ContainsKey(key))
+        if (Count >= _settings.CacheLimit || _cacheItems.ContainsKey(key))
         {
           // cache is full or already has an entry - return a shell CacheItem
           return new Item(key, value, DisposeItemCallback);
@@ -104,7 +96,7 @@ namespace CuteAnt.Pool
 
       lock (ThisLock)
       {
-        if (m_cacheItems.TryGetValue(key, out cacheItem))
+        if (_cacheItems.TryGetValue(key, out cacheItem))
         {
           // we have an item, add a reference
           cacheItem.InternalAddReference();
@@ -120,7 +112,7 @@ namespace CuteAnt.Pool
           TValue createdObject = initializerDelegate();
           Fx.Assert(createdObject != null, "initializer delegate must always give us a valid object");
 
-          if (Count >= m_settings.CacheLimit)
+          if (Count >= _settings.CacheLimit)
           {
             // cache is full - return a shell CacheItem
             return new Item(key, createdObject, DisposeItemCallback);
@@ -137,12 +129,12 @@ namespace CuteAnt.Pool
     private Item InternalAdd(TKey key, TValue value)
     {
       Item cacheItem = new Item(key, value, this);
-      if (m_leaseTimeoutEnabled)
+      if (_leaseTimeoutEnabled)
       {
         cacheItem.CreationTime = DateTime.UtcNow;
       }
 
-      m_cacheItems.Add(key, cacheItem);
+      _cacheItems.Add(key, cacheItem);
       StartTimerIfNecessary();
       return cacheItem;
     }
@@ -152,7 +144,7 @@ namespace CuteAnt.Pool
     {
       bool disposeItem = false;
 
-      if (m_disposed)
+      if (_disposed)
       {
         // we would have already disposed this item, do not attempt to return it
         disposeItem = true;
@@ -161,13 +153,13 @@ namespace CuteAnt.Pool
       {
         cacheItem.InternalReleaseReference();
         DateTime now = DateTime.UtcNow;
-        if (m_idleTimeoutEnabled)
+        if (_idleTimeoutEnabled)
         {
           cacheItem.LastUsage = now;
         }
         if (ShouldPurgeItem(cacheItem, now))
         {
-          bool removedFromItems = m_cacheItems.Remove(key);
+          bool removedFromItems = _cacheItems.Remove(key);
           Fx.Assert(removedFromItems, "we should always find the key");
           cacheItem.LockedDispose();
           disposeItem = true;
@@ -178,19 +170,25 @@ namespace CuteAnt.Pool
 
     private void StartTimerIfNecessary()
     {
-      if (m_idleTimeoutEnabled && Count > c_timerThreshold)
+      if (_idleTimeoutEnabled && Count > c_timerThreshold)
       {
-        if (m_idleTimer == null)
+        if (_idleTimer == null)
         {
-          if (m_onIdle == null)
+          if (_onIdle == null)
           {
-            m_onIdle = new Action<object>(OnIdle);
+            _onIdle = new Action<object>(OnIdle);
           }
 
-          m_idleTimer = new IOThreadTimer(m_onIdle, this, false);
+#if DESKTOPCLR
+          _idleTimer = new IOThreadTimer(_onIdle, this, false);
+#else
+          _idleTimer = new Timer(new TimerCallback(_onIdle), this, _settings.IdleTimeout, TimeSpan.FromMilliseconds(-1));
+#endif
         }
 
-        m_idleTimer.Set(m_settings.IdleTimeout);
+#if DESKTOPCLR
+        _idleTimer.Set(_settings.IdleTimeout);
+#endif
       }
     }
 
@@ -220,13 +218,13 @@ namespace CuteAnt.Pool
         return false;
       }
 
-      if (m_idleTimeoutEnabled &&
-          now >= (cacheItem.LastUsage + m_settings.IdleTimeout))
+      if (_idleTimeoutEnabled &&
+          now >= (cacheItem.LastUsage + _settings.IdleTimeout))
       {
         return true;
       }
-      else if (m_leaseTimeoutEnabled &&
-          (now - cacheItem.CreationTime) >= m_settings.LeaseTimeout)
+      else if (_leaseTimeoutEnabled &&
+          (now - cacheItem.CreationTime) >= _settings.LeaseTimeout)
       {
         return true;
       }
@@ -241,7 +239,7 @@ namespace CuteAnt.Pool
         return;
       }
 
-      if (!m_leaseTimeoutEnabled && !m_idleTimeoutEnabled)
+      if (!_leaseTimeoutEnabled && !_idleTimeoutEnabled)
       {
         return;
       }
@@ -251,7 +249,7 @@ namespace CuteAnt.Pool
 
       lock (ThisLock)
       {
-        foreach (KeyValuePair<TKey, Item> cacheItem in m_cacheItems)
+        foreach (KeyValuePair<TKey, Item> cacheItem in _cacheItems)
         {
           if (ShouldPurgeItem(cacheItem.Value, now))
           {
@@ -265,7 +263,7 @@ namespace CuteAnt.Pool
         {
           for (int i = 0; i < expiredItems.Count; i++)
           {
-            m_cacheItems.Remove(expiredItems[i].Key);
+            _cacheItems.Remove(expiredItems[i].Key);
           }
         }
 
@@ -274,7 +272,11 @@ namespace CuteAnt.Pool
 
       if (setTimer)
       {
-        m_idleTimer.Set(m_settings.IdleTimeout);
+#if DESKTOPCLR
+        _idleTimer.Set(_settings.IdleTimeout);
+#else
+        _idleTimer.Change(_settings.IdleTimeout, TimeSpan.FromMilliseconds(-1));
+#endif
       }
     }
 
@@ -300,7 +302,7 @@ namespace CuteAnt.Pool
     {
       lock (ThisLock)
       {
-        foreach (Item item in m_cacheItems.Values)
+        foreach (Item item in _cacheItems.Values)
         {
           if (item != null)
           {
@@ -308,14 +310,18 @@ namespace CuteAnt.Pool
             item.Dispose();
           }
         }
-        m_cacheItems.Clear();
+        _cacheItems.Clear();
         // we don't cache after Dispose
-        m_settings.CacheLimit = 0;
-        m_disposed = true;
-        if (m_idleTimer != null)
+        _settings.CacheLimit = 0;
+        _disposed = true;
+        if (_idleTimer != null)
         {
-          m_idleTimer.Cancel();
-          m_idleTimer = null;
+#if DESKTOPCLR
+          _idleTimer.Cancel();
+#else
+          _idleTimer.Change(TimeSpan.FromMilliseconds(-1), TimeSpan.FromMilliseconds(-1));
+#endif
+          _idleTimer = null;
         }
       }
     }
@@ -400,13 +406,13 @@ namespace CuteAnt.Pool
               LockedDispose();
               disposeSelf = true;
               result = false;
-              m_parent.m_cacheItems.Remove(m_key);
+              m_parent._cacheItems.Remove(m_key);
             }
             else
             {
               // we're still in use, simply add-ref and be done
               m_referenceCount++;
-              Fx.Assert(m_parent.m_cacheItems.ContainsValue(this), "should have a valid value");
+              Fx.Assert(m_parent._cacheItems.ContainsValue(this), "should have a valid value");
               Fx.Assert(Value != null, "should have a valid value");
               result = true;
             }

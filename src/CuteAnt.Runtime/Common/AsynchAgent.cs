@@ -57,9 +57,7 @@ namespace CuteAnt.Runtime
       State = ThreadState.Unstarted;
       OnFault = FaultBehavior.IgnoreFault;
       Log = TraceLogger.GetLogger(Name);//, TraceLogger.LoggerType.Runtime);
-#if !NETSTANDARD
       AppDomain.CurrentDomain.DomainUnload += CurrentDomain_DomainUnload;
-#endif
 
 #if TRACK_DETAILED_STATS
       if (StatisticsCollector.CollectThreadTimeTrackingStats)
@@ -122,9 +120,7 @@ namespace CuteAnt.Runtime
             State = ThreadState.Stopped;
           }
         }
-#if !NETSTANDARD
         AppDomain.CurrentDomain.DomainUnload -= CurrentDomain_DomainUnload;
-#endif
       }
       catch (Exception exc)
       {
@@ -134,13 +130,11 @@ namespace CuteAnt.Runtime
       if (Log.IsTraceLevelEnabled()) Log.LogTrace("Stopped agent");
     }
 
-#if !NETSTANDARD
     public void Abort(object stateInfo)
     {
       if (m_thread != null)
         m_thread.Abort(stateInfo);
     }
-#endif
 
     public void Join(TimeSpan timeout)
     {
@@ -168,9 +162,7 @@ namespace CuteAnt.Runtime
       var agent = obj as AsynchAgent;
       if (agent == null)
       {
-        var log = TraceLogger.GetLogger("CuteAnt.Runtime.AsynchAgent");
-        log.LogError(ErrorCode.Runtime_Error_100022, "Agent thread started with incorrect parameter type");
-        return;
+        throw new InvalidOperationException("Agent thread started with incorrect parameter type");
       }
 
       var agentLog = agent.Log;
@@ -178,9 +170,9 @@ namespace CuteAnt.Runtime
       try
       {
         if (infoEnabled) agentLog.LogInformation("Starting AsyncAgent {0} on managed thread {1}", agent.Name, Thread.CurrentThread.ManagedThreadId);
-        CounterStatistic.SetManagedThread(); // do it before using CounterStatistic.
-        CounterStatistic.FindOrCreate(new StatisticName(StatisticNames.RUNTIME_THREADS_ASYNC_AGENT_PERAGENTTYPE, agent.type)).Increment();
-        CounterStatistic.FindOrCreate(StatisticNames.RUNTIME_THREADS_ASYNC_AGENT_TOTAL_THREADS_CREATED).Increment();
+        //CounterStatistic.SetManagedThread(); // do it before using CounterStatistic.
+        //CounterStatistic.FindOrCreate(new StatisticName(StatisticNames.RUNTIME_THREADS_ASYNC_AGENT_PERAGENTTYPE, agent.type)).Increment();
+        //CounterStatistic.FindOrCreate(StatisticNames.RUNTIME_THREADS_ASYNC_AGENT_TOTAL_THREADS_CREATED).Increment();
         agent.Run();
       }
       catch (Exception exc)
@@ -193,16 +185,15 @@ namespace CuteAnt.Runtime
               //Console.WriteLine(
               //   "The {0} agent has thrown an unhandled exception, {1}. The process will be terminated.",
               //   agent.Name, exc);
-              agentLog.LogError(ErrorCode.Runtime_Error_100023, exc,
-                  "AsynchAgent Run method has thrown an unhandled exception. The process will be terminated.");
-              agentLog.LogCritical(ErrorCode.Runtime_Error_100024, "Terminating process because of an unhandled exception caught in AsynchAgent.Run.");
+              agentLog.LogError(exc, "AsynchAgent Run method has thrown an unhandled exception. The process will be terminated.");
+              agentLog.LogCritical("Terminating process because of an unhandled exception caught in AsynchAgent.Run.");
               break;
             case FaultBehavior.IgnoreFault:
-              agentLog.LogError(ErrorCode.Runtime_Error_100025, exc, "AsynchAgent Run method has thrown an unhandled exception. The agent will exit.");
+              agentLog.LogError(exc, "AsynchAgent Run method has thrown an unhandled exception. The agent will exit.");
               agent.State = ThreadState.Stopped;
               break;
             case FaultBehavior.RestartOnFault:
-              agentLog.LogError(ErrorCode.Runtime_Error_100026, exc, "AsynchAgent Run method has thrown an unhandled exception. The agent will be restarted.");
+              agentLog.LogError(exc, "AsynchAgent Run method has thrown an unhandled exception. The agent will be restarted.");
               agent.State = ThreadState.Stopped;
               try
               {
@@ -210,7 +201,7 @@ namespace CuteAnt.Runtime
               }
               catch (Exception ex)
               {
-                agentLog.LogError(ErrorCode.Runtime_Error_100027, ex, "Unable to restart AsynchAgent");
+                agentLog.LogError(ex, "Unable to restart AsynchAgent");
                 agent.State = ThreadState.Stopped;
               }
               break;
@@ -219,8 +210,8 @@ namespace CuteAnt.Runtime
       }
       finally
       {
-        CounterStatistic.FindOrCreate(new StatisticName(StatisticNames.RUNTIME_THREADS_ASYNC_AGENT_PERAGENTTYPE, agent.type)).DecrementBy(1);
-        if (infoEnabled) agentLog.LogInformation(ErrorCode.Runtime_Error_100328, "Stopping AsyncAgent {0} that runs on managed thread {1}", agent.Name, Thread.CurrentThread.ManagedThreadId);
+        //CounterStatistic.FindOrCreate(new StatisticName(StatisticNames.RUNTIME_THREADS_ASYNC_AGENT_PERAGENTTYPE, agent.type)).DecrementBy(1);
+        if (infoEnabled) agentLog.LogInformation("Stopping AsyncAgent {0} that runs on managed thread {1}", agent.Name, Thread.CurrentThread.ManagedThreadId);
       }
     }
 

@@ -1,17 +1,19 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Diagnostics.Contracts;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using CuteAnt.AsyncEx;
+using CuteAnt.Buffers;
 
 namespace CuteAnt.IO
 {
-  /// <summary>This class is based on BufferedStream from the Desktop version of .Net. Only the write functionality
+  /// <summary>
+  /// This class is based on BufferedStream from the Desktop version of .Net. Only the write functionality
   /// is needed by WCF so the read capability has been removed. This allowed some extra logic to be removed
   /// from the write code path. Also some validation code has been removed as this class is no longer
   /// general purpose and is only used in pre-known scenarios and only called by WCF code. Some validation
@@ -29,24 +31,29 @@ namespace CuteAnt.IO
   /// The max size of this "shadow" buffer is limited as to not allocate it on the LOH.
   /// Shadowing is always transient. Even when using this technique, this class still guarantees that the number of
   /// bytes cached (not yet written to the target stream or not yet consumed by the user) is never larger than the 
-  /// actual specified buffer size.</summary>
+  /// actual specified buffer size.
+  /// </summary>
   internal sealed class BufferedWriteStream : Stream
   {
-    public const int DefaultBufferSize = 4096;
+    public const int DefaultBufferSize = 8192;
     private Stream _stream; // Underlying stream.  Close sets _stream to null.
-    private byte[] _buffer; // Wwrite buffer.
+    private BufferManager _bufferManager;
+    private byte[] _buffer; // Write buffer.
     private readonly int _bufferSize; // Length of internal buffer (not counting the shadow buffer).
     private int _writePos; // Write pointer within buffer.
     private readonly SemaphoreSlim _sem = new SemaphoreSlim(1, 1);
 
-    public BufferedWriteStream(Stream stream) : this(stream, DefaultBufferSize) { }
+    public BufferedWriteStream(Stream stream) : this(stream, null, DefaultBufferSize) { }
 
-    public BufferedWriteStream(Stream stream, int bufferSize)
+    public BufferedWriteStream(Stream stream, BufferManager bufferManager) : this(stream, bufferManager, DefaultBufferSize) { }
+    public BufferedWriteStream(Stream stream, BufferManager bufferManager, int bufferSize)
     {
-      Contract.Assert(stream != Null, "stream!=Null");
-      Contract.Assert(bufferSize > 0, "bufferSize>0");
+      Contract.Assert(stream != Null, "stream != Stream.Null");
+      Contract.Assert(stream != null, "stream != null");
+      Contract.Assert(bufferSize > 0, "bufferSize > 0");
       Contract.Assert(stream.CanWrite);
       _stream = stream;
+      _bufferManager = bufferManager;
       _bufferSize = bufferSize;
 
       EnsureBufferAllocated();
@@ -55,14 +62,13 @@ namespace CuteAnt.IO
     private void EnsureNotClosed()
     {
       if (_stream == null)
-        throw new ObjectDisposedException("BufferedWriteStream");
+        throw new ObjectDisposedException(nameof(BufferedWriteStream));
     }
 
     private void EnsureCanWrite()
     {
-      Contract.Requires(_stream != null);
-      if (!_stream.CanWrite)
-        throw new NotSupportedException("write");
+      Contract.Assert(_stream != null);
+      Contract.Assert(_stream.CanWrite);
     }
 
     /// <summary><code>MaxShadowBufferSize</code> is chosen such that shadow buffers are not allocated on the Large Object Heap.
@@ -89,7 +95,16 @@ namespace CuteAnt.IO
     private void EnsureBufferAllocated()
     {
       if (_buffer == null)
-        _buffer = new byte[_bufferSize];
+      {
+        if (_bufferManager != null)
+        {
+          _buffer = _bufferManager.TakeBuffer(_bufferSize);
+        }
+        else
+        {
+          _buffer = new byte[_bufferSize];
+        }
+      }
     }
 
     public override bool CanRead
@@ -109,39 +124,35 @@ namespace CuteAnt.IO
 
     public override long Length
     {
-      get { throw new NotSupportedException("Position"); }
+      get { throw new NotSupportedException(nameof(Length)); }
     }
 
     public override long Position
     {
-      get { throw new NotSupportedException("Position"); }
-      set { throw new NotSupportedException("Position"); }
+      get { throw new NotSupportedException(nameof(Position)); }
+      set { throw new NotSupportedException(nameof(Position)); }
     }
 
     protected override void Dispose(bool disposing)
     {
-      try
+      if (disposing)
       {
-        if (disposing && _stream != null)
+        try
         {
-          try
-          {
-            Flush();
-          }
-          finally
-          {
-            _stream.Dispose();
-          }
+          _stream?.Dispose();
+        }
+        finally
+        {
+          _stream = null;
+          var tempBuffer = _buffer;
+          _buffer = null;
+          _bufferManager?.ReturnBuffer(tempBuffer);
+          _bufferManager = null;
         }
       }
-      finally
-      {
-        _stream = null;
-        _buffer = null;
 
-        // Call base.Dispose(bool) to cleanup async IO resources
-        base.Dispose(disposing);
-      }
+      // Call base.Dispose(bool) to cleanup async IO resources
+      base.Dispose(disposing);
     }
 
     public override void Flush()
@@ -160,12 +171,11 @@ namespace CuteAnt.IO
       _stream.Flush();
     }
 
-#if !NET40
+#if NET_4_0_GREATER
     public override Task FlushAsync(CancellationToken cancellationToken)
     {
       if (cancellationToken.IsCancellationRequested)
       {
-        // ## ¿àÖñ ÐÞ¸Ä ##
 #if NET_4_5_GREATER
         return Task.FromCanceled<int>(cancellationToken);
 #else
@@ -201,6 +211,16 @@ namespace CuteAnt.IO
         _sem.Release();
       }
     }
+
+    private async Task FlushWriteAsync(CancellationToken cancellationToken)
+    {
+      Contract.Assert(_buffer != null && _bufferSize >= _writePos,
+          "BufferedWriteStream: Write buffer must be allocated and write position must be in the bounds of the buffer in FlushWrite!");
+
+      await _stream.WriteAsync(_buffer, 0, _writePos, cancellationToken).ConfigureAwait(false);
+      _writePos = 0;
+      await _stream.FlushAsync(cancellationToken).ConfigureAwait(false);
+    }
 #endif
 
     private void FlushWrite()
@@ -213,31 +233,21 @@ namespace CuteAnt.IO
       _stream.Flush();
     }
 
-    private async Task FlushWriteAsync(CancellationToken cancellationToken)
+    public override int Read(byte[] array, int offset, int count)
     {
-      Contract.Assert(_buffer != null && _bufferSize >= _writePos,
-          "BufferedWriteStream: Write buffer must be allocated and write position must be in the bounds of the buffer in FlushWrite!");
-
-      await _stream.WriteAsync(_buffer, 0, _writePos, cancellationToken).ConfigureAwait(false);
-      _writePos = 0;
-      await _stream.FlushAsync(cancellationToken).ConfigureAwait(false);
+      throw new NotSupportedException(nameof(Read));
     }
 
-    public override int Read([In, Out] byte[] array, int offset, int count)
-    {
-      throw new NotSupportedException("Read");
-    }
-
-#if !NET40
+#if NET_4_0_GREATER
     public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
-      throw new NotSupportedException("ReadAsync");
+      throw new NotSupportedException(nameof(ReadAsync));
     }
 #endif
 
     public override int ReadByte()
     {
-      throw new NotSupportedException("ReadByte");
+      throw new NotSupportedException(nameof(ReadByte));
     }
 
     private void WriteToBuffer(byte[] array, ref int offset, ref int count)
@@ -400,7 +410,7 @@ namespace CuteAnt.IO
       }
     }
 
-#if !NET40
+#if NET_4_0_GREATER
     public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
       Contract.Assert(buffer != null);
@@ -410,21 +420,20 @@ namespace CuteAnt.IO
       // Fast path check for cancellation already requested
       if (cancellationToken.IsCancellationRequested)
       {
-        // ## ¿àÖñ ÐÞ¸Ä ##
 #if NET_4_5_GREATER
         return Task.FromCanceled<int>(cancellationToken);
 #else
         return TaskConstants<int>.Canceled;
 #endif
       }
-      //var ta=new Task(true, TaskCreationOptions.None, cancellationToken)
+
       EnsureNotClosed();
       EnsureCanWrite();
 
       // Try to satisfy the request from the buffer synchronously. But still need a sem-lock in case that another
       // Async IO Task accesses the buffer concurrently. If we fail to acquire the lock without waiting, make this 
       // an Async operation.
-      Task semaphoreLockTask = _sem.WaitAsync();
+      Task semaphoreLockTask = _sem.WaitAsync(cancellationToken);
       if (semaphoreLockTask.Status == TaskStatus.RanToCompletion)
       {
         bool completeSynchronously = true;
@@ -437,13 +446,12 @@ namespace CuteAnt.IO
 
           if (completeSynchronously)
           {
-            Exception error;
-            WriteToBuffer(buffer, ref offset, ref count, out error);
+            WriteToBuffer(buffer, ref offset, ref count, out Exception error);
             Contract.Assert(count == 0);
 
-            // ## ¿àÖñ ÐÞ¸Ä ##
-            //return (error == null) ? Task.CompletedTask : Task.FromException(error);
-            return (error == null) ? TaskConstants.Completed : TaskConstants.FromError(error);
+            return (error == null)
+                       ? TaskConstants.Completed
+                       : AsyncUtils.FromException(error);
           }
         }
         finally
@@ -464,7 +472,6 @@ namespace CuteAnt.IO
                                                     CancellationToken cancellationToken,
                                                     Task semaphoreLockTask)
     {
-      // (These should be Contract.Requires(..) but that method had some issues in async methods; using Assert(..) for now.)
       EnsureNotClosed();
       EnsureCanWrite();
 
@@ -559,13 +566,13 @@ namespace CuteAnt.IO
 
     public override long Seek(long offset, SeekOrigin origin)
     {
-      throw new NotSupportedException("seek");
+      throw new NotSupportedException(nameof(Seek));
     }
 
 
     public override void SetLength(long value)
     {
-      throw new NotSupportedException("SetLength");
+      throw new NotSupportedException(nameof(SetLength));
     }
   }
 }

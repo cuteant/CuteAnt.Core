@@ -1,5 +1,6 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace CuteAnt
     private static string s_eventSourceName;
     private static EtwDiagnosticTrace s_diagnosticTrace;
     private static ExceptionTrace s_exceptionTrace;
-    private static object s_lockObject = new object();
+    private static readonly object s_lockObject = new object();
 
     [SuppressMessage(FxCop.Category.Performance, FxCop.Rule.AvoidUncalledPrivateCode,
         Justification = "This template is shared across all assemblies, some of which use this accessor.")]

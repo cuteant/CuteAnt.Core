@@ -113,7 +113,7 @@ namespace CuteAnt.Runtime
         }
         catch (InvalidOperationException)
         {
-          if (Log.IsInformationLevelEnabled()) Log.LogInformation(ErrorCode.Runtime_Error_100312, "Stop request processed");
+          if (Log.IsInformationLevelEnabled()) Log.LogInformation("Stop request processed");
           break;
         }
 #if TRACK_DETAILED_STATS
@@ -159,7 +159,7 @@ namespace CuteAnt.Runtime
         }
         catch (InvalidOperationException)
         {
-          Log.LogWarning(ErrorCode.Runtime_Error_100312, "Stop request processed");
+          Log.LogWarning("Stop request processed");
           break;
         }
 

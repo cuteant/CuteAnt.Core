@@ -1,6 +1,7 @@
 ﻿//------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
+#if DESKTOPCLR
 using System;
 using System.Diagnostics;
 using System.Runtime;
@@ -185,7 +186,7 @@ namespace CuteAnt.ServiceModel.Diagnostics
 
     public ArgumentException ThrowHelperArgumentNullOrEmptyString(string arg)
     {
-      return (ArgumentException)this.ThrowHelperError(new ArgumentException("'{0}' cannot be empty.", arg));
+      return (ArgumentException)this.ThrowHelperError(new ArgumentException($"'{arg}' cannot be empty."));
     }
 
     public Exception ThrowHelperFatal(string message, Exception innerException)
@@ -279,3 +280,4 @@ namespace CuteAnt.ServiceModel.Diagnostics
     }
   }
 }
+#endif

@@ -2,6 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // System.ServiceModel.Internals\System\Runtime\AsyncWaitHandle.cs
 //----------------------------------------------------------------
+#if DESKTOPCLR
 using System;
 using System.Collections.Generic;
 using System.Security;
@@ -282,3 +283,4 @@ namespace CuteAnt.Runtime
     }
   }
 }
+#endif

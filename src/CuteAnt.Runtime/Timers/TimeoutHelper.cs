@@ -8,7 +8,6 @@ using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 using CuteAnt.AsyncEx;
-using CuteAnt.Diagnostics;
 
 namespace CuteAnt.Runtime
 {
@@ -209,7 +208,9 @@ namespace CuteAnt.Runtime
       }
     }
 
+#if DESKTOPCLR
     [Fx.Tag.Blocking]
+#endif
     public static bool WaitOne(WaitHandle waitHandle, TimeSpan timeout)
     {
       ThrowIfNegativeArgument(timeout);
@@ -220,11 +221,13 @@ namespace CuteAnt.Runtime
       }
       else
       {
+#if DESKTOPCLR
+        return waitHandle.WaitOne(timeout, false);
+#else
         //// http://msdn.microsoft.com/en-us/library/85bbbxt9(v=vs.110).aspx 
         //// with exitContext was used in Desktop which is not supported in Net Native or CoreClr
-        //return waitHandle.WaitOne(timeout);
-        // ## 苦竹 修改 ##
-        return waitHandle.WaitOne(timeout, false);
+        return waitHandle.WaitOne(timeout);
+#endif
       }
     }
 
@@ -251,10 +254,9 @@ namespace CuteAnt.Runtime
     private static readonly Action<object> s_deregisterToken = (object state) =>
     {
       var args = (Tuple<long, CancellationTokenSource>)state;
-      Task<CancellationToken> ignored;
       try
       {
-        s_tokenCache.TryRemove(args.Item1, out ignored);
+        s_tokenCache.TryRemove(args.Item1, out var ignored);
       }
       finally
       {
@@ -296,11 +298,13 @@ namespace CuteAnt.Runtime
       }
       targetTime = ((targetTime + (coalescingSpanMs - 1)) / coalescingSpanMs) * coalescingSpanMs;
 
-      Task<CancellationToken> tokenTask;
-
-      if (!s_tokenCache.TryGetValue(targetTime, out tokenTask))
+      if (!s_tokenCache.TryGetValue(targetTime, out Task<CancellationToken> tokenTask))
       {
+#if NET_4_5_GREATER
+        var tcs = new TaskCompletionSource<CancellationToken>(TaskCreationOptions.RunContinuationsAsynchronously);
+#else
         var tcs = new TaskCompletionSource<CancellationToken>();
+#endif
 
         // only a single thread may succeed adding its task into the cache
         if (s_tokenCache.TryAdd(targetTime, tcs.Task))

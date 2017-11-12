@@ -2,6 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //-----------------------------------------------------------------------------
 
+#if DESKTOPCLR
 namespace CuteAnt.Diagnostics
 {
     using System;
@@ -18,3 +19,4 @@ namespace CuteAnt.Diagnostics
         Receive = 240
     }
 }
+#endif

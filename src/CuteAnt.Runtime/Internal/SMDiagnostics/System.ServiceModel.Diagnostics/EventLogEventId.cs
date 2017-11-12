@@ -1,6 +1,7 @@
 ﻿//------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
+#if DESKTOPCLR
 using System;
 
 namespace CuteAnt.ServiceModel.Diagnostics
@@ -99,3 +100,4 @@ namespace CuteAnt.ServiceModel.Diagnostics
     ImpersonationFailure = 0xC006000A
   }
 }
+#endif

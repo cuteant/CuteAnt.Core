@@ -2,7 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // System.ServiceModel.Internals\System\Runtime\Interop\SafeEventLogWriteHandle.cs
 //------------------------------------------------------------
-
+#if DESKTOPCLR
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -50,3 +50,4 @@ namespace CuteAnt.Runtime.Interop
     }
   }
 }
+#endif

@@ -1,5 +1,6 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Diagnostics.Contracts;
@@ -182,9 +183,25 @@ namespace CuteAnt.Runtime
     }
 
     // Task.GetAwaiter().GetResult() calls an internal variant of Wait() which doesn't wrap exceptions in
-    // an AggregateException.
+    // an AggregateException. It does spinwait so if it's expected that the Task isn't about to complete,
+    // then use the NoSpin variant.
     public static void WaitForCompletion(this Task task)
     {
+      task.GetAwaiter().GetResult();
+    }
+
+    // If the task is about to complete, this method will be more expensive than the regular method as it
+    // always causes a WaitHandle to be allocated. If it is expected that the task will take longer than
+    // the time of a spin wait, then a WaitHandle will be allocated anyway and this method avoids the CPU
+    // cost of the spin wait.
+    public static void WaitForCompletionNoSpin(this Task task)
+    {
+      if (!task.IsCompleted)
+      {
+        ((IAsyncResult)task).AsyncWaitHandle.WaitOne();
+      }
+
+      // Call GetResult() to get any exceptions that were thrown
       task.GetAwaiter().GetResult();
     }
 
@@ -193,49 +210,64 @@ namespace CuteAnt.Runtime
       return task.GetAwaiter().GetResult();
     }
 
-    public static bool WaitWithTimeSpan(this Task task, TimeSpan timeout)
+    public static TResult WaitForCompletionNoSpin<TResult>(this Task<TResult> task)
+    {
+      if (!task.IsCompleted)
+      {
+        ((IAsyncResult)task).AsyncWaitHandle.WaitOne();
+      }
+
+      return task.GetAwaiter().GetResult();
+    }
+
+    public static bool WaitForCompletionNoSpin(this Task task, TimeSpan timeout)
     {
       if (timeout >= TimeoutHelper.MaxWait)
       {
-        task.Wait();
+        task.WaitForCompletionNoSpin();
         return true;
       }
 
-      return task.Wait(timeout);
+      bool completed = true;
+      if (!task.IsCompleted)
+      {
+        completed = ((IAsyncResult)task).AsyncWaitHandle.WaitOne(timeout);
+      }
+
+      if (completed)
+      {
+        // Throw any exceptions if there are any
+        task.GetAwaiter().GetResult();
+      }
+
+      return completed;
     }
 
-    //// Used by WebSocketTransportDuplexSessionChannel on the sync code path.
-    //// TODO: Try and switch as many code paths as possible which use this to async
-    //public static void Wait(this Task task, TimeSpan timeout, Action<Exception, TimeSpan, string> exceptionConverter, string operationType)
-    //{
-    //  bool timedOut = false;
+    // Used by WebSocketTransportDuplexSessionChannel on the sync code path.
+    // TODO: Try and switch as many code paths as possible which use this to async
+    public static void Wait(this Task task, TimeSpan timeout, Action<Exception, TimeSpan, string> exceptionConverter, string operationType)
+    {
+      bool timedOut = false;
 
-    //  try
-    //  {
-    //    if (timeout > TimeoutHelper.MaxWait)
-    //    {
-    //      task.Wait();
-    //    }
-    //    else
-    //    {
-    //      timedOut = !task.Wait(timeout);
-    //    }
-    //  }
-    //  catch (Exception ex)
-    //  {
-    //    if (Fx.IsFatal(ex) || exceptionConverter == null)
-    //    {
-    //      throw;
-    //    }
+      try
+      {
+        timedOut = !task.WaitForCompletionNoSpin(timeout);
+      }
+      catch (Exception ex)
+      {
+        if (Fx.IsFatal(ex) || exceptionConverter == null)
+        {
+          throw;
+        }
 
-    //    exceptionConverter(ex, timeout, operationType);
-    //  }
+        exceptionConverter(ex, timeout, operationType);
+      }
 
-    //  if (timedOut)
-    //  {
-    //    throw Fx.Exception.AsError(new TimeoutException(InternalSR.TaskTimedOutError(timeout)));
-    //  }
-    //}
+      if (timedOut)
+      {
+        throw Fx.Exception.AsError(new TimeoutException(InternalSR.TaskTimedOutError(timeout)));
+      }
+    }
 
     public static Task CompletedTask()
     {
@@ -260,6 +292,46 @@ namespace CuteAnt.Runtime
       var tcs = state as TaskCompletionSource<bool>;
       Contract.Assert(state != null, "Async state should be of type TaskCompletionSource<bool>");
       tcs.TrySetResult(true);
+    }
+
+    public static IDisposable RunTaskContinuationsOnOurThreads()
+    {
+      if (SynchronizationContext.Current == WCFSynchronizationContext.Instance)
+      {
+        return null; // No need to save and restore state as we're already using the correct sync context
+      }
+
+      return new SyncContextScope();
+    }
+
+    // Calls the given Action asynchronously.
+    public static async Task CallActionAsync<TArg>(Action<TArg> action, TArg argument)
+    {
+      using (var scope = RunTaskContinuationsOnOurThreads())
+      {
+        if (scope != null)  // No need to change threads if already off of thread pool
+        {
+          await TaskShim.Yield(); // Move synchronous method off of thread pool
+        }
+
+        action(argument);
+      }
+    }
+
+    private class SyncContextScope : IDisposable
+    {
+      private readonly SynchronizationContext _prevContext;
+
+      public SyncContextScope()
+      {
+        _prevContext = SynchronizationContext.Current;
+        SynchronizationContext.SetSynchronizationContext(WCFSynchronizationContext.Instance);
+      }
+
+      public void Dispose()
+      {
+        SynchronizationContext.SetSynchronizationContext(_prevContext);
+      }
     }
   }
 

@@ -1,6 +1,6 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-// System.ServiceModel.Internals\System\Runtime\AsyncResult.cs
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Diagnostics;
@@ -24,11 +24,11 @@ namespace CuteAnt.Runtime
     private object _state;
     private Action _beforePrepareAsyncCompletionAction;
     private Func<IAsyncResult, bool> _checkSyncValidationFunc;
+
     [Fx.Tag.SynchronizationObject]
-
     private ManualResetEvent _manualResetEvent;
-    [Fx.Tag.SynchronizationObject(Blocking = false)]
 
+    [Fx.Tag.SynchronizationObject(Blocking = false)]
     private object _thisLock;
 
 
@@ -166,7 +166,7 @@ namespace CuteAnt.Runtime
           }
           else
           {
-            this._callback(this);
+            _callback(this);
           }
         }
 #pragma warning disable 1634
@@ -257,7 +257,7 @@ namespace CuteAnt.Runtime
     {
       if (_beforePrepareAsyncCompletionAction != null)
       {
-        this._beforePrepareAsyncCompletionAction();
+        _beforePrepareAsyncCompletionAction();
       }
 
       _nextAsyncCompletion = callback;
@@ -297,7 +297,7 @@ namespace CuteAnt.Runtime
       callback = null;
       if (_checkSyncValidationFunc != null)
       {
-        if (!this._checkSyncValidationFunc(result))
+        if (!_checkSyncValidationFunc(result))
         {
           return false;
         }

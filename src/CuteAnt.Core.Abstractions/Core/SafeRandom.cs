@@ -53,5 +53,36 @@ namespace CuteAnt
     {
       return GetRandom().NextDouble();
     }
+
+    #region --& Extensions &--
+
+    public TimeSpan NextTimeSpan(TimeSpan timeSpan)
+    {
+      if (timeSpan <= TimeSpan.Zero)
+      {
+        throw new ArgumentOutOfRangeException(nameof(timeSpan), timeSpan, "SafeRandom.NextTimeSpan timeSpan must be a positive number.");
+      }
+
+      double ticksD = ((double)timeSpan.Ticks) * NextDouble();
+      long ticks = checked((long)ticksD);
+      return TimeSpan.FromTicks(ticks);
+    }
+
+    public TimeSpan NextTimeSpan(TimeSpan minValue, TimeSpan maxValue)
+    {
+      if (minValue <= TimeSpan.Zero)
+      {
+        throw new ArgumentOutOfRangeException(nameof(minValue), minValue, "SafeRandom.NextTimeSpan minValue must be a positive number.");
+      }
+      if (minValue >= maxValue)
+      {
+        throw new ArgumentOutOfRangeException(nameof(minValue), minValue, "SafeRandom.NextTimeSpan minValue must be greater than maxValue.");
+      }
+
+      var span = maxValue - minValue;
+      return minValue + NextTimeSpan(span);
+    }
+
+    #endregion
   }
 }

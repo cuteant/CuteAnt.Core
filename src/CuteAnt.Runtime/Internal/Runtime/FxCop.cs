@@ -3,7 +3,7 @@
 
 namespace CuteAnt.Diagnostics
 {
-  public static class FxCop
+  internal static class FxCop
   {
     public static class Category
     {

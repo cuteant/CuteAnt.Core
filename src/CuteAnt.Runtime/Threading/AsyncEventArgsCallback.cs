@@ -3,7 +3,9 @@
 // </copyright>
 // System.ServiceModel.Internals\System\Runtime\AsyncEventArgsCallback.cs
 
+#if DESKTOPCLR
 namespace CuteAnt.Runtime
 {
   public delegate void AsyncEventArgsCallback(IAsyncEventArgs eventArgs);
 }
+#endif

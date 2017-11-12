@@ -282,7 +282,7 @@ namespace CuteAnt.Runtime
             }
             foreach (var e in exc.FlattenAggregate())
             {
-              logger.LogWarning(ErrorCode.Runtime_Error_100325, exc, $"Ignoring {e.GetType().FullName} exception thrown from an action called by {caller ?? String.Empty}.");
+              logger.LogWarning(exc, $"Ignoring {e.GetType().FullName} exception thrown from an action called by {caller ?? String.Empty}.");
             }
           }
         }

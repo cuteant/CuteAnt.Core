@@ -3,6 +3,7 @@
 // System.ServiceModel.Internals\System\Runtime\ThreadNeutralSemaphore.cs
 //------------------------------------------------------------
 
+#if DESKTOPCLR
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -352,3 +353,4 @@ namespace CuteAnt.Runtime
     }
   }
 }
+#endif

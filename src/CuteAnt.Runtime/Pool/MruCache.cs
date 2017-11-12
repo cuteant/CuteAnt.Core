@@ -1,26 +1,25 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections.Generic;
 
 namespace CuteAnt.Pool
 {
-  /// <summary>The cache will grow until the high watermark. At which point, the least recently used items 
-  /// will be purge until the cache's size is reduced to low watermark.</summary>
-  /// <typeparam name="TKey"></typeparam>
-  /// <typeparam name="TValue"></typeparam>
-  public class MruCache<TKey, TValue>
-    where TKey : class
-    where TValue : class
+  internal class MruCache<TKey, TValue> : IDisposable
+      where TKey : class
+      where TValue : class
   {
     private LinkedList<TKey> _mruList;
     private Dictionary<TKey, CacheEntry> _items;
-    private int _lowWatermark;
-    private int _highWatermark;
+    private readonly int _lowWatermark;
+    private readonly int _highWatermark;
     private CacheEntry _mruEntry;
+    private bool _disposed;
 
     public MruCache(int watermark)
-        : this(watermark * 4 / 5, watermark)
+      : this(watermark * 4 / 5, watermark)
     {
     }
 
@@ -29,7 +28,7 @@ namespace CuteAnt.Pool
     // will be purge until the cache's size is reduced to low watermark
     //
     public MruCache(int lowWatermark, int highWatermark)
-        : this(lowWatermark, highWatermark, null)
+      : this(lowWatermark, highWatermark, null)
     {
     }
 
@@ -53,12 +52,19 @@ namespace CuteAnt.Pool
 
     public int Count
     {
-      get { return _items.Count; }
+      get
+      {
+        ThrowIfDisposed();
+        return _items.Count;
+      }
     }
+
+    public bool IsDisposed => _disposed;
 
     public void Add(TKey key, TValue value)
     {
       Fx.Assert(null != key, "");
+      ThrowIfDisposed();
 
       // if anything goes wrong (duplicate entry, etc) we should 
       // clear our caches so that we don't get out of sync
@@ -99,7 +105,34 @@ namespace CuteAnt.Pool
 
     public void Clear()
     {
+      ThrowIfDisposed();
+      Clear(false);
+    }
+
+    private void Clear(bool dispose)
+    {
       _mruList.Clear();
+      if (dispose)
+      {
+        foreach (CacheEntry cacheEntry in _items.Values)
+        {
+          if (cacheEntry.value is IDisposable item)
+          {
+            try
+            {
+              item.Dispose();
+            }
+            catch (Exception e)
+            {
+              if (Fx.IsFatal(e))
+              {
+                throw;
+              }
+            }
+          }
+        }
+      }
+
       _items.Clear();
       _mruEntry.value = null;
       _mruEntry.node = null;
@@ -108,9 +141,9 @@ namespace CuteAnt.Pool
     public bool Remove(TKey key)
     {
       Fx.Assert(null != key, "");
+      ThrowIfDisposed();
 
-      CacheEntry entry;
-      if (_items.TryGetValue(key, out entry))
+      if (_items.TryGetValue(key, out CacheEntry entry))
       {
         _items.Remove(key);
         OnSingleItemRemoved(entry.value);
@@ -128,10 +161,12 @@ namespace CuteAnt.Pool
 
     protected virtual void OnSingleItemRemoved(TValue item)
     {
+      ThrowIfDisposed();
     }
 
     protected virtual void OnItemAgedOutOfCache(TValue item)
     {
+      ThrowIfDisposed();
     }
 
     //
@@ -146,9 +181,7 @@ namespace CuteAnt.Pool
         return true;
       }
 
-      CacheEntry entry;
-
-      bool found = _items.TryGetValue(key, out entry);
+      bool found = _items.TryGetValue(key, out CacheEntry entry);
       value = entry.value;
 
       // Move the node to the head of the MRU list if it's not already there
@@ -161,6 +194,31 @@ namespace CuteAnt.Pool
       }
 
       return found;
+    }
+
+    public void Dispose()
+    {
+      Dispose(true);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+      if (disposing)
+      {
+        if (!IsDisposed)
+        {
+          _disposed = true;
+          Clear(true);
+        }
+      }
+    }
+
+    private void ThrowIfDisposed()
+    {
+      if (IsDisposed)
+      {
+        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ObjectDisposedException(this.GetType().FullName));
+      }
     }
 
     private struct CacheEntry

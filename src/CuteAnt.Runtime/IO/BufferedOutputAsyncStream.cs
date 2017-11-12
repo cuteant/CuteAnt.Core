@@ -1,6 +1,7 @@
 ﻿//------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
+#if DESKTOPCLR
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -1019,3 +1020,4 @@ namespace CuteAnt.IO
     }
   }
 }
+#endif
