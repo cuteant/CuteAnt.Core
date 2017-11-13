@@ -37,7 +37,7 @@
         <FileVersion>2.8.2000.168</FileVersion>
       </PropertyGroup>
     </When>
-    <When Condition="'$(TargetFramework)' == 'net461' or '$(TargetFramework)' == 'netstandard2.0'">
+    <When Condition="'$(TargetFramework)' == 'net461'">
       <PropertyGroup>
         <FileVersion>2.8.2100.168</FileVersion>
       </PropertyGroup>
@@ -55,6 +55,11 @@
     <When Condition="'$(TargetFramework)' == 'net471'">
       <PropertyGroup>
         <FileVersion>2.8.3100.168</FileVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(TargetFramework)' == 'netstandard2.0'">
+      <PropertyGroup>
+        <FileVersion>2.8.5000.168</FileVersion>
       </PropertyGroup>
     </When>
     <Otherwise>

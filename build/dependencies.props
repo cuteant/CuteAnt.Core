@@ -40,6 +40,7 @@
 
     <!-- 3rd party packages -->
     <NewtonsoftJsonVersion>10.0.3</NewtonsoftJsonVersion>
+    <CastleCoreVersion>4.2.1</CastleCoreVersion>
     <NLogVersion>5.0.0-beta11</NLogVersion>
     <NLog4Version>4.4.12</NLog4Version>
     <SerilogVersion>2.5.0</SerilogVersion>
