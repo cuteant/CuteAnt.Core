@@ -1,0 +1,17 @@
+<Project>
+  <!-- Set common properties regarding assembly information and nuget packages -->
+  <PropertyGroup>
+    <Authors>Seabiscuit</Authors>
+    <Company>CuteAnt Development Team(cuteant@outlook.com)</Company>
+    <Product>CuteAnt</Product>
+    <Copyright>Copyright © CuteAnt Development Team</Copyright>
+    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <PackageProjectUrl>http://git.oschina.net/cuteant</PackageProjectUrl>
+    <PackageIconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</PackageIconUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>http://git.oschina.net/cuteant</RepositoryUrl>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <IncludeSymbols>false</IncludeSymbols>
+    <IncludeSource>false</IncludeSource>
+  </PropertyGroup>
+</Project>

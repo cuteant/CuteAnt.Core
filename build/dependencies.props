@@ -1,0 +1,64 @@
+<Project>
+  <!-- Shared Package Versions -->
+  <PropertyGroup Label="Package Versions">
+    <!-- System packages -->
+    <SystemRuntimeVersion>4.3.0</SystemRuntimeVersion>
+    
+    <SystemCollectionsImmutableVersion>1.4.0</SystemCollectionsImmutableVersion>
+    <SystemCollectionsImmutableNet40Version>1.4.0</SystemCollectionsImmutableNet40Version>
+    <SystemReflectionMetadataVersion>1.5.0</SystemReflectionMetadataVersion>
+    <SystemReflectionMetadataNet40Version>1.4.0</SystemReflectionMetadataNet40Version>
+    <SystemNetHttpVersion>4.3.2</SystemNetHttpVersion>
+    <SystemReflectionTypeExtensionsVersion>4.4.0</SystemReflectionTypeExtensionsVersion>
+    <SystemValueTupleVersion>4.4.0</SystemValueTupleVersion>
+
+    <!-- Microsoft packages -->
+    <MicrosoftBuildVersion>15.3.409</MicrosoftBuildVersion>
+
+    <MicrosoftBclVersion>1.1.10</MicrosoftBclVersion>
+    <MicrosoftBclAsyncVersion>1.0.168</MicrosoftBclAsyncVersion>
+    <MicrosoftBclBuildVersion>1.0.21</MicrosoftBclBuildVersion>
+
+    <MicrosoftCodeAnalysisCSharpNet45Version>1.3.2</MicrosoftCodeAnalysisCSharpNet45Version>
+    <MicrosoftCodeAnalysisCSharpVersion>2.4.0</MicrosoftCodeAnalysisCSharpVersion>
+
+    <MicrosoftExtensionsConfigurationBinderVersion>2.0.0</MicrosoftExtensionsConfigurationBinderVersion>
+    <MicrosoftExtensionsConfigurationEnvironmentVariablesVersion>2.0.0</MicrosoftExtensionsConfigurationEnvironmentVariablesVersion>
+    <MicrosoftExtensionsConfigurationJsonVersion>2.0.0</MicrosoftExtensionsConfigurationJsonVersion>
+    <MicrosoftExtensionsConfigurationVersion>2.0.0</MicrosoftExtensionsConfigurationVersion>
+    <MicrosoftExtensionsDependencyInjectionVersion>2.0.0</MicrosoftExtensionsDependencyInjectionVersion>
+    <MicrosoftExtensionsDependencyModelVersion>2.0.0</MicrosoftExtensionsDependencyModelVersion>
+    <MicrosoftExtensionsFileProvidersVersion>2.0.0</MicrosoftExtensionsFileProvidersVersion>
+    <MicrosoftExtensionsLoggingVersion>2.0.0</MicrosoftExtensionsLoggingVersion>
+    <MicrosoftExtensionsOptionsConfigurationExtensionsVersion>2.0.0</MicrosoftExtensionsOptionsConfigurationExtensionsVersion>
+    <MicrosoftExtensionsOptionsVersion>2.0.0</MicrosoftExtensionsOptionsVersion>
+
+    <MicrosoftApplicationInsightsVersion>2.4.0</MicrosoftApplicationInsightsVersion>
+    <MicrosoftDataSQLiteVersion>2.0.0</MicrosoftDataSQLiteVersion>
+
+    <FSharpCoreVersion>4.2.3</FSharpCoreVersion>
+
+    <!-- 3rd party packages -->
+    <NewtonsoftJsonVersion>10.0.3</NewtonsoftJsonVersion>
+    <NLogVersion>5.0.0-beta11</NLogVersion>
+    <NLog4Version>4.4.12</NLog4Version>
+    <SerilogVersion>2.5.0</SerilogVersion>
+    <BouncyCastleVersion>1.8.1</BouncyCastleVersion>
+    <PortableBouncyCastleVersion>1.8.1.3</PortableBouncyCastleVersion>
+    <MimeKitVersion>1.20.0</MimeKitVersion>
+    <MailKitVersion>1.20.0</MailKitVersion>
+
+    <!-- Test related packages -->
+    <BenchmarkDotNetVersion>0.10.9</BenchmarkDotNetVersion>
+    <FluentAssertionsVersion>4.19.4</FluentAssertionsVersion>
+    <XunitSkippableFactVersion>1.3.3</XunitSkippableFactVersion>
+    <xUnitVersion>2.3.0</xUnitVersion>
+    <MoqPackageVersion>4.7.145</MoqPackageVersion>
+
+    <!-- Tooling related packages -->
+    <MicrosoftCodeAnalysisAnalyzersVersion>2.3.0-beta1</MicrosoftCodeAnalysisAnalyzersVersion>
+    <MicrosoftCodeAnalysisFxCopAnalyzersVersion>2.3.0-beta1</MicrosoftCodeAnalysisFxCopAnalyzersVersion>
+    <MicrosoftNetRoslynDiagnosticsVersion>2.3.0-beta1</MicrosoftNetRoslynDiagnosticsVersion>
+    <StyleCopAnalyzersVersion>1.1.0-beta004</StyleCopAnalyzersVersion>
+  </PropertyGroup>
+</Project>

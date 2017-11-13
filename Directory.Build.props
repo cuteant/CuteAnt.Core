@@ -4,25 +4,13 @@
     <SourceRoot>$(MSBuildThisFileDirectory)</SourceRoot>
   </PropertyGroup>
 
-  <!-- Set common properties regarding assembly information and nuget packages -->
-  <PropertyGroup>
-    <Authors>Seabiscuit</Authors>
-    <Company>CuteAnt Development Team(cuteant@outlook.com)</Company>
-    <Product>CuteAnt</Product>
-    <Copyright>Copyright © CuteAnt Development Team</Copyright>
-    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
-    <PackageProjectUrl>http://git.oschina.net/cuteant</PackageProjectUrl>
-    <PackageIconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</PackageIconUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>http://git.oschina.net/cuteant</RepositoryUrl>
-    <NeutralLanguage>en-US</NeutralLanguage>
-    <IncludeSymbols>false</IncludeSymbols>
-    <IncludeSource>false</IncludeSource>
-  </PropertyGroup>
+  <Import Project="nuget.props" />
+  <Import Project="version.props" />
+  <Import Project="build\dependencies.props" />
 
   <PropertyGroup>
     <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>../../tools/StrongKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>../../build/StrongKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <!-- Common compile parameters -->
@@ -149,59 +137,6 @@
     <Optimize>true</Optimize>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-
-  <!-- Shared Package Versions -->
-  <PropertyGroup>
-    <!-- System packages -->
-    <SystemRuntimeVersion>4.3.0</SystemRuntimeVersion>
-    
-    <SystemCollectionsImmutableVersion>1.4.0</SystemCollectionsImmutableVersion>
-    <SystemCollectionsImmutableNet40Version>1.4.0</SystemCollectionsImmutableNet40Version>
-    <SystemReflectionMetadataVersion>1.5.0</SystemReflectionMetadataVersion>
-    <SystemReflectionMetadataNet40Version>1.4.0</SystemReflectionMetadataNet40Version>
-    <SystemNetHttpVersion>4.3.2</SystemNetHttpVersion>
-    <SystemReflectionTypeExtensionsVersion>4.4.0</SystemReflectionTypeExtensionsVersion>
-    <SystemValueTupleVersion>4.4.0</SystemValueTupleVersion>
-
-    <!-- Microsoft packages -->
-    <MicrosoftBuildVersion>15.3.409</MicrosoftBuildVersion>
-    <MicrosoftCodeAnalysisCSharpVersion>2.0.0</MicrosoftCodeAnalysisCSharpVersion>
-
-    <MicrosoftExtensionsConfigurationBinderVersion>2.0.0</MicrosoftExtensionsConfigurationBinderVersion>
-    <MicrosoftExtensionsConfigurationEnvironmentVariablesVersion>2.0.0</MicrosoftExtensionsConfigurationEnvironmentVariablesVersion>
-    <MicrosoftExtensionsConfigurationJsonVersion>2.0.0</MicrosoftExtensionsConfigurationJsonVersion>
-    <MicrosoftExtensionsConfigurationVersion>2.0.0</MicrosoftExtensionsConfigurationVersion>
-    <MicrosoftExtensionsDependencyInjectionVersion>2.0.0</MicrosoftExtensionsDependencyInjectionVersion>
-    <MicrosoftExtensionsDependencyModelVersion>2.0.0</MicrosoftExtensionsDependencyModelVersion>
-    <MicrosoftExtensionsFileProvidersVersion>2.0.0</MicrosoftExtensionsFileProvidersVersion>
-    <MicrosoftExtensionsLoggingVersion>2.0.0</MicrosoftExtensionsLoggingVersion>
-    <MicrosoftExtensionsOptionsConfigurationExtensionsVersion>2.0.0</MicrosoftExtensionsOptionsConfigurationExtensionsVersion>
-    <MicrosoftExtensionsOptionsVersion>2.0.0</MicrosoftExtensionsOptionsVersion>
-
-    <MicrosoftApplicationInsightsVersion>2.4.0</MicrosoftApplicationInsightsVersion>
-    <MicrosoftDataSQLiteVersion>2.0.0</MicrosoftDataSQLiteVersion>
-
-    <FSharpCoreVersion>4.2.3</FSharpCoreVersion>
-
-    <!-- 3rd party packages -->
-    <NewtonsoftJsonVersion>10.0.3</NewtonsoftJsonVersion>
-
-    <!-- Test related packages -->
-    <BenchmarkDotNetVersion>0.10.9</BenchmarkDotNetVersion>
-    <FluentAssertionsVersion>4.19.4</FluentAssertionsVersion>
-    <XunitSkippableFactVersion>1.3.3</XunitSkippableFactVersion>
-    <xUnitVersion>2.3.0</xUnitVersion>
-
-    <!-- Tooling related packages -->
-  </PropertyGroup>
-
-  <!-- Versioning properties -->
-  <PropertyGroup>
-    <VersionPrefix Condition=" '$(VersionPrefix)'=='' ">2.0.0</VersionPrefix>
-    <VersionSuffix Condition=" '$(VersionSuffix)'=='' ">rtm</VersionSuffix>
-    <VersionDateSuffix Condition=" '$(VersionDateSuffix)'=='' ">171101</VersionDateSuffix>
-    <VersionSuffix Condition=" '$(VersionDateSuffix)'!='' ">$(VersionSuffix)-$(VersionDateSuffix)</VersionSuffix>
   </PropertyGroup>
 
   <!-- Set output folder for created NuGet packages -->

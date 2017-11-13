@@ -54,6 +54,9 @@
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="$(SystemRuntimeVersion)" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="$(SystemReflectionTypeExtensionsVersion)" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <PackageReference Include="System.Reflection.Metadata.Net40" Version="$(SystemReflectionMetadataNet40Version)" />
+  </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net451' or '$(TargetFramework)' == 'net461' or '$(TargetFramework)' == 'net47'  or '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="System.Reflection.Metadata" Version="$(SystemReflectionMetadataVersion)" />
   </ItemGroup>
@@ -66,6 +69,5 @@
     <PackageReference Include="CuteAnt.Extensions.Configuration" Version="$(MicrosoftExtensionsConfigurationVersion)" />
     <PackageReference Include="CuteAnt.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsDependencyInjectionVersion)" />
     <PackageReference Include="CuteAnt.Extensions.Logging" Version="$(MicrosoftExtensionsLoggingVersion)" />
-    <PackageReference Include="System.Reflection.Metadata.Net40" Version="$(SystemReflectionMetadataNet40Version)" />
   </ItemGroup>
 </Project>
