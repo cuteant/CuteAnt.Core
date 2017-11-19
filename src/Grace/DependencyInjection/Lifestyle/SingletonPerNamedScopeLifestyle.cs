@@ -57,6 +57,8 @@ namespace Grace.DependencyInjection.Lifestyle
                 typeof(ActivationStrategyDelegate),
                 typeof(string),
                 typeof(string),
+                typeof(bool),
+                typeof(IInjectionContext),
                 typeof(StaticInjectionContext)
               });
 
@@ -67,6 +69,8 @@ namespace Grace.DependencyInjection.Lifestyle
                                        Expression.Constant(CompiledDelegate),
                                        Expression.Constant(UniqueId),
                                        Expression.Constant(_scopeName),
+                                       Expression.Constant(scope.ScopeConfiguration.SingletonPerScopeShareContext),
+                                       request.InjectionContextParameter,
                                        Expression.Constant(request.GetStaticInjectionContext()));
 
       return request.Services.Compiler.CreateNewResult(request, expression);
@@ -78,10 +82,12 @@ namespace Grace.DependencyInjection.Lifestyle
     /// <param name="creationDelegate"></param>
     /// <param name="uniqueId"></param>
     /// <param name="scopeName"></param>
-    /// <param name="injectionContext"></param>
+    /// <param name="context"></param>
+    /// <param name="staticContext"></param>
+    /// <param name="shareContext"></param>
     /// <returns></returns>
     public static T GetValueFromScope<T>(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate,
-      string uniqueId, string scopeName, StaticInjectionContext injectionContext)
+      string uniqueId, string scopeName, bool shareContext, IInjectionContext context, StaticInjectionContext staticContext)
     {
       while (scope != null)
       {
@@ -90,7 +96,7 @@ namespace Grace.DependencyInjection.Lifestyle
         scope = scope.Parent;
       }
 
-      if (scope == null) { throw new NamedScopeLocateException(scopeName, injectionContext); }
+      if (scope == null) { throw new NamedScopeLocateException(scopeName, staticContext); }
 
       var value = scope.GetExtraData(uniqueId);
 
@@ -102,7 +108,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
         if (value == null)
         {
-          value = creationDelegate(scope, scope, null);
+          value = creationDelegate(scope, scope, shareContext ? context : null);
 
           scope.SetExtraData(uniqueId, value);
         }
