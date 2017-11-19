@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using CuteAnt;
 using CuteAnt.Collections;
 using CuteAnt.Reflection;
-#if !NET40
-using System.Runtime.CompilerServices;
-#endif
 
 namespace System
 {
@@ -836,9 +834,7 @@ namespace System
 
     #region * UniqueKey *
 
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     private static string UniqueKey(PropertyInfo pi)
     {
       if (pi.DeclaringType == null) throw new ArgumentException($"Property '{pi.Name}' has no DeclaringType");
@@ -1130,9 +1126,7 @@ namespace System
 
     #region * UniqueKey *
 
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     private static string UniqueKey(FieldInfo fi)
     {
       if (fi.DeclaringType == null) throw new ArgumentException($"Property '{fi.Name}' has no DeclaringType");

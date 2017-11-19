@@ -199,9 +199,7 @@ namespace CuteAnt.Collections
     /// <inheritdoc />
     public ICollection<TValue> Values => GetReadDictionary().Values;
 
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     private IDictionary<TKey, TValue> GetReadDictionary() => _readCache ?? GetWithoutCache();
 
     private IDictionary<TKey, TValue> GetWithoutCache()

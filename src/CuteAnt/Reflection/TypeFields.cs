@@ -122,7 +122,14 @@ namespace CuteAnt.Reflection
       var method = TypeAccessorHelper.GetFieldValueConvertMethod(fieldType);
       if (method != null)
       {
-        gen.Call(method);
+        if (method.IsStatic || method.IsFinal)
+        {
+          gen.Emit(OpCodes.Call, method);
+        }
+        else
+        {
+          gen.Emit(OpCodes.Callvirt, method);
+        }
       }
       else
       {
@@ -273,7 +280,14 @@ namespace CuteAnt.Reflection
       var method = TypeAccessorHelper.GetFieldValueConvertMethod(fieldType);
       if (method != null)
       {
-        gen.Call(method);
+        if (method.IsStatic || method.IsFinal)
+        {
+          gen.Emit(OpCodes.Call, method);
+        }
+        else
+        {
+          gen.Emit(OpCodes.Callvirt, method);
+        }
       }
       else
       {

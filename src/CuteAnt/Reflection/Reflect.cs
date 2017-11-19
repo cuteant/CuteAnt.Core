@@ -6,14 +6,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Xml.Serialization;
 using CuteAnt.Collections;
 using CuteAnt.Text;
-#if !NET40
-using System.Runtime.CompilerServices;
-#endif
 
 namespace CuteAnt.Reflection
 {
@@ -86,7 +84,7 @@ namespace CuteAnt.Reflection
   #endregion
 
   /// <summary>反射工具类</summary>
-  public static class Reflect
+  public static partial class ReflectUtils
   {
     #region -- 属性 --
 
@@ -200,9 +198,7 @@ namespace CuteAnt.Reflection
     /// <param name="type">类型</param>
     /// <param name="name">名称</param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static EventInfo GetDeclaredEventEx(this Type type, String name)
     {
 #if !NET40
@@ -215,9 +211,7 @@ namespace CuteAnt.Reflection
     /// <summary>获取当前类型定义的操作的集合</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static IEnumerable<EventInfo> GetDeclaredEventsEx(this Type type)
     {
 #if !NET40
@@ -248,9 +242,7 @@ namespace CuteAnt.Reflection
     /// <summary>获取当前类型定义的字段的集合</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static IEnumerable<FieldInfo> GetDeclaredFieldsEx(this Type type)
     {
       //#if !NET40
@@ -264,18 +256,14 @@ namespace CuteAnt.Reflection
     /// <summary>获取指定类型定义的属性的集合</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetFieldsEx(this Type type) =>
         GetFieldsInternal(type, ReflectMembersTokenType.TypePublicOnlyMembers);
 
     /// <summary>获取指定类型定义的属性的集合</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static IEnumerable<FieldInfo> GetRuntimeFieldsEx(this Type type) =>
         GetFieldsInternal(type, ReflectMembersTokenType.TypeMembers);
 
@@ -357,90 +345,70 @@ namespace CuteAnt.Reflection
     /// <summary>GetInstanceDeclaredPublicFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetInstanceDeclaredPublicFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.InstanceDeclaredAndPublicOnlyMembers);
 
     /// <summary>GetInstanceDeclaredFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetInstanceDeclaredFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.InstanceDeclaredOnlyMembers);
 
     /// <summary>GetInstancePublicFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetInstancePublicFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.InstancePublicOnlyMembers);
 
     /// <summary>GetInstanceFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetInstanceFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.InstanceMembers);
 
     /// <summary>GetTypeDeclaredPublicFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetTypeDeclaredPublicFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.TypeDeclaredAndPublicOnlyMembers);
 
     /// <summary>GetTypeDeclaredFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetTypeDeclaredFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.TypeDeclaredOnlyMembers);
 
     /// <summary>GetTypePublicFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetTypePublicFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.TypePublicOnlyMembers);
 
     /// <summary>GetTypeFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetTypeFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.TypeMembers);
 
     /// <summary>GetTypeFlattenHierarchyPublicFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetTypeFlattenHierarchyPublicFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.TypeFlattenHierarchyPublicOnlyMembers);
 
     /// <summary>GetTypeFlattenHierarchyFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetTypeFlattenHierarchyFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.TypeFlattenHierarchyMembers);
 
@@ -564,9 +532,7 @@ namespace CuteAnt.Reflection
     /// <summary>获取指定类型定义的属性的集合</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static IEnumerable<PropertyInfo> GetDeclaredPropertiesEx(this Type type)
     {
       //#if !NET40
@@ -580,18 +546,14 @@ namespace CuteAnt.Reflection
     /// <summary>获取指定类型定义的属性的集合</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetPropertiesEx(this Type type) =>
         GetPropertiesInternal(type, false, ReflectMembersTokenType.TypePublicOnlyMembers);
 
     /// <summary>获取指定类型定义的属性的集合</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static IEnumerable<PropertyInfo> GetRuntimePropertiesEx(this Type type) =>
         GetPropertiesInternal(type, false, ReflectMembersTokenType.TypeMembers);
 
@@ -829,9 +791,7 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetInstanceDeclaredPublicProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.InstanceDeclaredAndPublicOnlyMembers);
 
@@ -839,9 +799,7 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetInstanceDeclaredProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.InstanceDeclaredOnlyMembers);
 
@@ -849,9 +807,7 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetInstanceProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.InstanceMembers);
 
@@ -859,9 +815,7 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetTypeDeclaredPublicProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeDeclaredAndPublicOnlyMembers);
 
@@ -869,9 +823,7 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetTypeDeclaredProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeDeclaredOnlyMembers);
 
@@ -879,9 +831,7 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetTypePublicProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypePublicOnlyMembers);
 
@@ -889,9 +839,7 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetTypeProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeMembers);
 
@@ -899,9 +847,7 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetTypeFlattenHierarchyPublicProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeFlattenHierarchyPublicOnlyMembers);
 
@@ -909,9 +855,7 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetTypeFlattenHierarchyProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeFlattenHierarchyMembers);
 
@@ -1295,9 +1239,7 @@ namespace CuteAnt.Reflection
     /// <param name="type">类型</param>
     /// <param name="name">名称</param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static MethodInfo GetDeclaredMethodEx(this Type type, String name)
     {
 #if !NET40
@@ -1310,9 +1252,7 @@ namespace CuteAnt.Reflection
     /// <summary>获取当前类型定义方法的集合</summary>
     /// <param name="type">类型</param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static IEnumerable<MethodInfo> GetDeclaredMethodsEx(this Type type)
     {
 #if !NET40
@@ -1326,9 +1266,7 @@ namespace CuteAnt.Reflection
     /// <param name="type">类型</param>
     /// <param name="name">名称</param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static IEnumerable<MethodInfo> GetDeclaredMethodsEx(this Type type, String name)
     {
 #if !NET40
@@ -1462,7 +1400,6 @@ namespace CuteAnt.Reflection
     public static CtorInvoker<object> MakeDelegateForCtor(this Type type, params Type[] ctorParamTypes)
         => MakeDelegateForCtor<object>(type, ctorParamTypes);
 
-
     /// <summary>Generates a strongly-typed open-instance delegate to invoke the specified method</summary>
     public static MethodCaller<TTarget, TReturn> MakeDelegateForCall<TTarget, TReturn>(this MethodInfo method)
     {
@@ -1479,16 +1416,12 @@ namespace CuteAnt.Reflection
 
     /// <summary>Executes the delegate on the specified target and arguments but only if it's not null.</summary>
     public static void SafeInvoke<TTarget, TValue>(this MethodCaller<TTarget, TValue> caller, TTarget target, params object[] args)
-    {
-      caller?.Invoke(target, args);
-    }
+        => caller?.Invoke(target, args);
 
-    static int GetKey<T, R>(MemberInfo member, string dynMethodName)
-    {
-      return member.GetHashCode() ^ dynMethodName.GetHashCode() ^ typeof(T).GetHashCode() ^ typeof(R).GetHashCode();
-    }
+    private static int GetKey<T, R>(MemberInfo member, string dynMethodName)
+        => member.GetHashCode() ^ dynMethodName.GetHashCode() ^ typeof(T).GetHashCode() ^ typeof(R).GetHashCode();
 
-    static TDelegate GenDelegateForMember<TDelegate, TMember>(TMember member, string dynMethodName,
+    private static TDelegate GenDelegateForMember<TDelegate, TMember>(TMember member, string dynMethodName,
       Action<TMember, ILGenerator> generator, Type returnType, params Type[] paramTypes)
       where TMember : MemberInfo where TDelegate : class
     {
@@ -1501,7 +1434,7 @@ namespace CuteAnt.Reflection
       return (TDelegate)(object)result;
     }
 
-    static void GenCtor<T>(Type type, ILGenerator il, Type[] paramTypes)
+    private static void GenCtor<T>(Type type, ILGenerator il, Type[] paramTypes)
     {
       // arg0: object[] arguments
       // goal: return new T(arguments)
@@ -1509,39 +1442,43 @@ namespace CuteAnt.Reflection
 
       if (targetType.IsValueType && paramTypes.Length == 0)
       {
-        var tmp = il.declocal(targetType);
-        il.ldloca(tmp)
-            .initobj(targetType)
-            .ldloc(0);
+        var tmp = il.DeclareLocal(targetType);
+        il.Emit(OpCodes.Ldloca, tmp);
+        il.Emit(OpCodes.Initobj, targetType);
+        il.Emit(OpCodes.Ldloc, 0);
       }
       else
       {
         var ctor = targetType.GetConstructor(paramTypes);
         if (ctor == null)
+        {
           throw new Exception("Generating constructor for type: " + targetType +
               (paramTypes.Length == 0 ? "No empty constructor found!" :
               "No constructor found that matches the following parameter types: " +
               string.Join(",", paramTypes.Select(x => x.Name).ToArray())));
+        }
 
         // push parameters in order to then call ctor
         for (int i = 0, imax = paramTypes.Length; i < imax; i++)
         {
-          il.ldarg0()         // push args array
-              .ldc_i4(i)          // push index
-              .ldelem_ref()       // push array[index]
-              .unbox_any(paramTypes[i]);  // cast
+          il.Emit(OpCodes.Ldarg_0);                   // push args array
+          il.Emit(OpCodes.Ldc_I4, i);                 // push index
+          il.Emit(OpCodes.Ldelem_Ref);                // push array[index]
+          il.Emit(OpCodes.Unbox_Any, paramTypes[i]);  // cast
         }
 
-        il.newobj(ctor);
+        il.Emit(OpCodes.Newobj, ctor);
       }
 
       if (typeof(T) == typeof(object) && targetType.IsValueType)
-        il.box(targetType);
+      {
+        il.Emit(OpCodes.Box, targetType);
+      }
 
-      il.ret();
+      il.Emit(OpCodes.Ret);
     }
 
-    static void GenMethodInvocation<TTarget>(MethodInfo method, ILGenerator il)
+    private static void GenMethodInvocation<TTarget>(MethodInfo method, ILGenerator il)
     {
       var weaklyTyped = typeof(TTarget) == typeof(object);
 
@@ -1549,36 +1486,58 @@ namespace CuteAnt.Reflection
       if (!method.IsStatic)
       {
         var targetType = weaklyTyped ? method.DeclaringType : typeof(TTarget);
-        il.declocal(targetType);
-        il.ldarg0();
+        il.DeclareLocal(targetType);
+        il.Emit(OpCodes.Ldarg_0);
         if (weaklyTyped)
-          il.unbox_any(targetType);
-        il.stloc0()
-            .ifclass_ldloc_else_ldloca(0, targetType);
+        {
+          il.Emit(OpCodes.Unbox_Any, targetType);
+        }
+        il.Emit(OpCodes.Stloc_0);
+        if (targetType.GetTypeInfo().IsValueType)
+        {
+          il.Emit(OpCodes.Ldloca, 0);
+        }
+        else
+        {
+          il.Emit(OpCodes.Ldloc, 0);
+        }
       }
 
       // push arguments in order to call method
       var prams = method.GetParameters();
       for (int i = 0, imax = prams.Length; i < imax; i++)
       {
-        il.ldarg1()   // push array
-            .ldc_i4(i)    // push index
-            .ldelem_ref();  // pop array, index and push array[index]
+        il.Emit(OpCodes.Ldarg_1);     // push array
+        il.Emit(OpCodes.Ldc_I4, i);   // push index
+        il.Emit(OpCodes.Ldelem_Ref);  // pop array, index and push array[index]
 
         var param = prams[i];
-        var dataType = param.ParameterType;
+        var paramType = param.ParameterType;
 
-        if (dataType.IsByRef)
-          dataType = dataType.GetElementType();
+        var dataType = paramType.GetTypeInfo().IsByRef ? paramType.GetElementType() : paramType;
 
-        var tmp = il.declocal(dataType);
-        il.unbox_any(dataType)
-            .stloc(tmp)
-            .ifbyref_ldloca_else_ldloc(tmp, param.ParameterType);
+        var tmp = il.DeclareLocal(dataType);
+        il.Emit(OpCodes.Unbox_Any, dataType);
+        il.Emit(OpCodes.Stloc, tmp);
+        if (paramType.IsByRef)
+        {
+          il.Emit(OpCodes.Ldloca, tmp);
+        }
+        else
+        {
+          il.Emit(OpCodes.Ldloc, tmp);
+        }
       }
 
       // perform the correct call (pushes the result)
-      il.callorvirt(method);
+      if (method.IsStatic || method.IsFinal)
+      {
+        il.Emit(OpCodes.Call, method);
+      }
+      else
+      {
+        il.Emit(OpCodes.Callvirt, method);
+      }
 
       // if method wasn't static that means we declared a temp local to load the target
       // that means our local variables index for the arguments start from 1
@@ -1589,21 +1548,28 @@ namespace CuteAnt.Reflection
         if (paramType.IsByRef)
         {
           var byRefType = paramType.GetElementType();
-          il.ldarg1()
-              .ldc_i4(i)
-              .ldloc(i + localVarStart);
-          if (byRefType.IsValueType)
-            il.box(byRefType);
-          il.stelem_ref();
+          il.Emit(OpCodes.Ldarg_1);
+          il.Emit(OpCodes.Ldc_I4, i);
+          il.Emit(OpCodes.Ldloc, i + localVarStart);
+          if (byRefType.GetTypeInfo().IsValueType)
+          {
+            il.Emit(OpCodes.Box, byRefType);
+          }
+          il.Emit(OpCodes.Stelem_Ref);
         }
       }
 
       if (method.ReturnType == typeof(void))
-        il.ldnull();
+      {
+        il.Emit(OpCodes.Ldnull);
+      }
       else if (weaklyTyped)
-        il.ifvaluetype_box(method.ReturnType);
+      {
+        var returnType = method.ReturnType;
+        if (returnType.IsValueType) { il.Emit(OpCodes.Box, returnType); }
+      }
 
-      il.ret();
+      il.Emit(OpCodes.Ret);
     }
 
     #endregion
@@ -1755,7 +1721,7 @@ namespace CuteAnt.Reflection
       var emptyCtor = type.GetEmptyConstructor();
       if (emptyCtor != null)
       {
-        var dm = new System.Reflection.Emit.DynamicMethod("MyCtor", type, Type.EmptyTypes, typeof(Reflect).Module, true);
+        var dm = new System.Reflection.Emit.DynamicMethod("MyCtor", type, Type.EmptyTypes, typeof(ReflectUtils).Module, true);
         var ilgen = dm.GetILGenerator();
         ilgen.Emit(System.Reflection.Emit.OpCodes.Nop);
         ilgen.Emit(System.Reflection.Emit.OpCodes.Newobj, emptyCtor);
@@ -2415,115 +2381,10 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-    //#region - Type / TypeInfo -
-
-    //    /// <summary>获取一个类型的元素类型</summary>
-    //    /// <param name="type">类型</param>
-    //    /// <returns></returns>
-    //#if !NET40
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //#endif
-    //    public static Type GetElementTypeEx(this Type type)
-    //    {
-    //      return Provider.GetElementType(type);
-    //    }
-
-    //    #endregion
-
-    //    /// <summary>类型转换</summary>
-    //    /// <param name="value">数值</param>
-    //    /// <param name="conversionType"></param>
-    //    /// <returns></returns>
-    //#if !NET40
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //#endif
-    //    public static Object ChangeType(this Object value, Type conversionType)
-    //    {
-    //      return Provider.ChangeType(value, conversionType);
-    //    }
-
-    //    /// <summary>类型转换</summary>
-    //    /// <typeparam name="TResult"></typeparam>
-    //    /// <param name="value">数值</param>
-    //    /// <returns></returns>
-    //#if !NET40
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //#endif
-    //    public static TResult ChangeType<TResult>(this Object value)
-    //    {
-    //      if (value is TResult) { return (TResult)value; }
-
-    //      return (TResult)ChangeType(value, typeof(TResult));
-    //    }
-
-    //    /// <summary>获取类型的友好名称</summary>
-    //    /// <param name="type">指定类型</param>
-    //    /// <param name="isfull">是否全名，包含命名空间</param>
-    //    /// <returns></returns>
-    //#if !NET40
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //#endif
-    //    public static String GetName(this Type type, Boolean isfull = false)
-    //    {
-    //      return Provider.GetName(type, isfull);
-    //    }
-
-    //    /// <summary>从参数数组中获取类型数组</summary>
-    //    /// <param name="args"></param>
-    //    /// <returns></returns>
-    //#if !NET40
-    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //#endif
-    //    internal static Type[] GetTypeArray(this Object[] args)
-    //    {
-    //      if (args == null) { return Type.EmptyTypes; }
-
-    //      var typeArray = new Type[args.Length];
-    //      for (int i = 0; i < typeArray.Length; i++)
-    //      {
-    //        if (args[i] == null)
-    //        {
-    //          typeArray[i] = typeof(Object);
-    //        }
-    //        else
-    //        {
-    //          typeArray[i] = args[i].GetType();
-    //        }
-    //      }
-    //      return typeArray;
-    //    }
-
-    ///// <summary>获取成员的类型，字段和属性是它们的类型，方法是返回类型，类型是自身</summary>
-    ///// <param name="member"></param>
-    ///// <returns></returns>
-    //public static Type GetMemberType(this MemberInfo member)
-    //{
-    //  switch (member.MemberType)
-    //  {
-    //    case MemberTypes.Constructor:
-    //      return (member as ConstructorInfo).DeclaringType;
-    //    case MemberTypes.Field:
-    //      return (member as FieldInfo).FieldType;
-    //    case MemberTypes.Method:
-    //      return (member as MethodInfo).ReturnType;
-    //    case MemberTypes.Property:
-    //      return (member as PropertyInfo).PropertyType;
-    //    case MemberTypes.TypeInfo:
-    //    case MemberTypes.NestedType:
-    //      return member as Type;
-    //    default:
-    //      return null;
-    //  }
-    //}
-
-    //public static readonly Type[] EmptyTypes = Type.EmptyTypes;
-
     /// <summary>获取类型代码</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static TypeCode GetTypeCode(this Type type) => Type.GetTypeCode(type);
 
 
@@ -2535,9 +2396,6 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="baseType"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
     public static Boolean As(this Type type, Type baseType)
     {
       if (type == null) return false;
@@ -2578,9 +2436,7 @@ namespace CuteAnt.Reflection
     /// <typeparam name="T"></typeparam>
     /// <param name="type"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static Boolean As<T>(this Type type) => type.As(typeof(T));
 
     #endregion

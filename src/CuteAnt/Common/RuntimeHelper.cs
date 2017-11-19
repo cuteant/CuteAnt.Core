@@ -12,9 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
-#if !NET40
 using System.Runtime.CompilerServices;
-#endif
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -113,7 +111,7 @@ namespace CuteAnt
         var is64 = Is64BitOperatingSystem;
         var sys = "";
 
-        #region Win32
+    #region Win32
 
         if (os.Platform == PlatformID.Win32Windows)
         {
@@ -142,7 +140,7 @@ namespace CuteAnt
           sys = "Windows " + sys;
         }
 
-        #endregion
+    #endregion
 
         else if (os.Platform == PlatformID.Win32NT)
         {
@@ -301,9 +299,7 @@ namespace CuteAnt
 
     /// <summary>释放当前进程所占用的内存</summary>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static Boolean ReleaseMemory()
     {
       GC.Collect();

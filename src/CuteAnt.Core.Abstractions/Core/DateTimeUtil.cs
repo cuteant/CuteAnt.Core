@@ -3,11 +3,7 @@
 // System.IdentityModel\System\IdentityModel\DateTimeUtil.cs
 //------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Text;
-#if !NET40
 using System.Runtime.CompilerServices;
-#endif
 
 namespace CuteAnt
 {
@@ -19,9 +15,7 @@ namespace CuteAnt
     /// <param name="time">Initial <see cref="DateTime"/> value.</param>
     /// <param name="timespan"><see cref="TimeSpan"/> to add.</param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static DateTime Add(DateTime time, TimeSpan timespan)
     {
       if (timespan >= TimeSpan.Zero && DateTime.MaxValue - time <= timespan)
@@ -43,9 +37,7 @@ namespace CuteAnt
     /// <param name="time"></param>
     /// <param name="timespan"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static DateTime AddNonNegative(DateTime time, TimeSpan timespan)
     {
       if (timespan <= TimeSpan.Zero)
@@ -55,25 +47,19 @@ namespace CuteAnt
       return Add(time, timespan);
     }
 
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static DateTime GetMaxValue(DateTimeKind kind)
     {
       return new DateTime(DateTime.MaxValue.Ticks, kind);
     }
 
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static DateTime GetMinValue(DateTimeKind kind)
     {
       return new DateTime(DateTime.MinValue.Ticks, kind);
     }
 
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static DateTime? ToUniversalTime(DateTime? value)
     {
       if (null == value || value.Value.Kind == DateTimeKind.Utc)
@@ -83,9 +69,7 @@ namespace CuteAnt
       return ToUniversalTime(value.Value);
     }
 
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static DateTime ToUniversalTime(DateTime value)
     {
       if (value.Kind == DateTimeKind.Utc)

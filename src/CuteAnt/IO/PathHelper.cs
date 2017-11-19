@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
-#if !NET40
 using System.Runtime.CompilerServices;
-#endif
 
 namespace CuteAnt.IO
 {
   /// <summary>路径操作帮助</summary>
   public static class PathHelper
   {
+    /// <summary>Value for lining method</summary>
+    private const MethodImplOptions AggressiveInlining = (MethodImplOptions)256;
+
     #region -- Fields --
 
     private static readonly String _ApplicationBasePath;
@@ -39,9 +40,7 @@ namespace CuteAnt.IO
     /// <summary>Fixes path separator, replaces / \ with platform separator Char.</summary>
     /// <param name="path">Path to fix.</param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(AggressiveInlining)]
     public static String PathFix(String path)
     {
       return path.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar);
@@ -55,9 +54,7 @@ namespace CuteAnt.IO
     /// <param name="path1"></param>
     /// <param name="path2"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(AggressiveInlining)]
     [Obsolete("Path.Combine")]
     public static String PathCombineFix(String path1, String path2)
     {
@@ -71,9 +68,7 @@ namespace CuteAnt.IO
     /// <param name="path2"></param>
     /// <param name="path3"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(AggressiveInlining)]
     [Obsolete("Path.Combine")]
     public static String PathCombineFix(String path1, String path2, String path3)
     {
@@ -87,9 +82,7 @@ namespace CuteAnt.IO
     /// <param name="path3"></param>
     /// <param name="path4"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(AggressiveInlining)]
     [Obsolete("Path.Combine")]
     public static String PathCombineFix(String path1, String path2, String path3, String path4)
     {
@@ -99,9 +92,7 @@ namespace CuteAnt.IO
     /// <summary>将字符串数组组合成一个路径</summary>
     /// <param name="paths"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(AggressiveInlining)]
     [Obsolete("Path.Combine")]
     public static String PathCombineFix(params String[] paths)
     {
@@ -112,33 +103,25 @@ namespace CuteAnt.IO
 
     #region -- method ApplicationBasePathCombine --
 
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(AggressiveInlining)]
     public static String ApplicationBasePathCombine(String path1)
     {
       return Path.GetFullPath(Path.Combine(ApplicationBasePath, path1));
     }
 
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(AggressiveInlining)]
     public static String ApplicationBasePathCombine(String path1, String path2)
     {
       return Path.GetFullPath(Path.Combine(ApplicationBasePath, path1, path2));
     }
 
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(AggressiveInlining)]
     public static String ApplicationBasePathCombine(String path1, String path2, String path3)
     {
       return Path.GetFullPath(Path.Combine(ApplicationBasePath, path1, path2, path3));
     }
 
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(AggressiveInlining)]
     public static String ApplicationBasePathCombine(params String[] paths)
     {
       ValidationHelper.ArgumentNull(paths, "paths");
@@ -186,9 +169,6 @@ namespace CuteAnt.IO
     /// </summary>
     /// <param name="dirName">Directory to check.</param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
     public static String DirectoryExists(String dirName)
     {
       // Windows we can use Directory.Exists
@@ -258,9 +238,7 @@ namespace CuteAnt.IO
     /// Returns actual dir (In linux it may differ from requested directory, because of case-sensitivity.).
     /// </summary>
     /// <param name="folder">Folder name with path.</param>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(AggressiveInlining)]
     public static String EnsureDirectory(String folder)
     {
       String normalizedFolder = DirectoryExists(folder);
@@ -282,9 +260,7 @@ namespace CuteAnt.IO
     /// <summary>检测目录是否存在</summary>
     /// <param name="StrPath">路径</param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(AggressiveInlining)]
     public static Boolean DirectoryIsExists(String StrPath)
     {
       DirectoryInfo dirInfo = new DirectoryInfo(StrPath);
@@ -294,9 +270,7 @@ namespace CuteAnt.IO
     /// <summary>检测目录是否存在</summary>
     /// <param name="StrPath">路径</param>
     /// <param name="Create">如果不存在，是否创建</param>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(AggressiveInlining)]
     public static void DirectoryIsExists(String StrPath, Boolean Create)
     {
       DirectoryInfo dirInfo = new DirectoryInfo(StrPath);

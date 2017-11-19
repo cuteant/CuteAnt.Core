@@ -11,9 +11,7 @@ using System.Threading;
 using CuteAnt.Collections;
 using CuteAnt.Hosting;
 using Microsoft.Extensions.Logging;
-#if !NET40
 using System.Runtime.CompilerServices;
-#endif
 
 namespace CuteAnt.Reflection
 {
@@ -1692,9 +1690,7 @@ namespace CuteAnt.Reflection
 
     #region -- IsEnumFlags --
 
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     public static bool IsEnumFlags(this Type type) => type.IsEnum && type.FirstAttribute<FlagsAttribute>() != null;
 
     #endregion
@@ -1779,9 +1775,7 @@ namespace CuteAnt.Reflection
       return true;
     }
 
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     private static void AddTypeToCache(string typeName, Type type)
     {
       var entry = _resolveTypeCache.GetItem(typeName, _ => type);
@@ -1817,9 +1811,7 @@ namespace CuteAnt.Reflection
       return true;
     }
 
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     private static void AddTypeToCache(TypeNameKey typeNameKey, Type type)
     {
       var entry = _typeNameKeyCache.GetItem(typeNameKey, _ => type);

@@ -13,9 +13,6 @@ using System.ComponentModel;
 using System.Runtime.ConstrainedExecution;
 using System.Threading;
 using System.Xml.Serialization;
-#if !NET40
-using System.Runtime.CompilerServices;
-#endif
 
 namespace CuteAnt
 {
@@ -166,9 +163,6 @@ namespace CuteAnt
     /// <summary>尝试销毁对象，如果有<see cref="IDisposable"/>则调用</summary>
     /// <param name="obj"></param>
     /// <returns></returns>
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
     public static Object TryDispose(this Object obj)
     {
       if (obj == null) { return obj; }

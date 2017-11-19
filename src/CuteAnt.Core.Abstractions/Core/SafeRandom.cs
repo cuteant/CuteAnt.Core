@@ -14,9 +14,7 @@ namespace CuteAnt
     [ThreadStatic]
     private static Random random;
 
-#if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+    [MethodImpl(InlineMethod.Value)]
     private static Random GetRandom()
     {
       if (random == null)
