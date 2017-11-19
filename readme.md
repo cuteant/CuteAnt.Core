@@ -82,7 +82,7 @@ limitations under the License.
   SOFTWARE.
 
 *******************************************
-[ASP.NET 5] (https://github.com/aspnet)
+[ASP.NET Core] (https://github.com/aspnet)
 
 Copyright (c) .NET Foundation. All rights reserved.
 

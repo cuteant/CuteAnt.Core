@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\version.autofac.props" />
+  <Import Project="..\nuget.autofac.props" />
+  
+  <PropertyGroup>
+    <TargetFrameworks>net471;net451;netstandard2.0</TargetFrameworks>
+    <AssemblyName>Autofac.Extras.DynamicProxy</AssemblyName>
+    <RootNamespace>Autofac.Extras.DynamicProxy</RootNamespace>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Label="NuGet">
+    <PackageId>Autofac.Extras.DynamicProxy.Unofficial</PackageId>
+    <Title>Autofac.Extras.DynamicProxy.Unofficial</Title>
+    <Description>The dynamic proxy integration enables method calls on Autofac components to be intercepted by other components. Common use cases are transaction handling, logging, and declarative security.</Description>
+    <PackageTags>autofac,di,ioc,dependencyinjection</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Castle.Core" Version="$(CastleCorePackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Autofac\Autofac.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="RegistrationExtensionsResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RegistrationExtensionsResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="RegistrationExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RegistrationExtensionsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

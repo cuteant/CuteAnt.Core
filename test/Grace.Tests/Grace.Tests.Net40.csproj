@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net471</TargetFrameworks>
+    <AssemblyName>Grace.Tests.Net40</AssemblyName>
+    <RootNamespace>Grace.Test</RootNamespace>
+    <SignAssembly>false</SignAssembly>
+    <DefineConstants>$(DefineConstants);TEST40</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNetTestSdkPackageVersion)" />
+    <PackageReference Include="xunit" Version="$(xUnitPackageVersion)" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="$(xUnitPackageVersion)" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsDependencyInjectionPackageVersion)" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Specification.Tests" Version="$(MicrosoftExtensionsDependencyInjectionPackageVersion)" />
+    <PackageReference Include="System.Collections.Immutable" Version="$(SystemCollectionsImmutablePackageVersion)" />
+    <PackageReference Include="Castle.Core" Version="$(CastleCorePackageVersion)" />
+    <PackageReference Include="NSubstitute" Version="$(NSubstitutePackageVersion)" />
+    <PackageReference Include="Optional" Version="$(OptionalPackageVersion)" />
+    <PackageReference Include="SimpleFixture.NSubstitute" Version="$(SimpleFixtureNSubstitutePackageVersion)" />
+    <PackageReference Include="SimpleFixture.xUnit" Version="$(SimpleFixturexUnitPackageVersion)" />
+  </ItemGroup>
+
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' or '$(TargetFramework)' == 'net471' ">
+    <Reference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Reference Include="Grace">
+      <HintPath>..\..\src\Grace\bin\Debug\net40\Grace.dll</HintPath>
+    </Reference>
+    <Reference Include="Grace.Dynamic">
+      <HintPath>..\..\src\Grace.Dynamic\bin\Debug\net40\Grace.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Grace.Factory">
+      <HintPath>..\..\src\Grace.Factory\bin\Debug\net40\Grace.Factory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives">
+      <HintPath>..\..\src\Grace\bin\Debug\net40\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+</Project>

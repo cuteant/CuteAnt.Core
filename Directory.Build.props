@@ -4,13 +4,18 @@
     <SourceRoot>$(MSBuildThisFileDirectory)</SourceRoot>
   </PropertyGroup>
 
-  <Import Project="nuget.props" />
-  <Import Project="version.props" />
-  <Import Project="build\dependencies.props" />
+  <Import Project="..\CuteAnt.Extensions.Common\build\Dependencies.props" />
+  <Import Project="..\CuteAnt.Extensions.Common\build\Dependencies.System.props" />
+  <Import Project="..\CuteAnt.Extensions.Common\build\Dependencies.3rdParty.props" />
+  <Import Project="..\CuteAnt.Extensions.Common\build\Dependencies.AspNetCore.props" />
+  <Import Project="..\CuteAnt.Extensions.Common\build\Dependencies.AspNet.props" />
+  <Import Project="..\CuteAnt.Extensions.Common\build\Dependencies.CuteAnt.props" />
+  <Import Project="..\CuteAnt.Extensions.Common\build\Dependencies.Testing.props" />
+  <Import Project="..\CuteAnt.Extensions.Common\build\Dependencies.Tooling.props" />
 
   <PropertyGroup>
     <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>../../build/StrongKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\build\StrongKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <!-- Common compile parameters -->

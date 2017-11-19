@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\version.grace.props" />
+  <Import Project="..\nuget.grace.props" />
+  
+  <PropertyGroup>
+    <TargetFrameworks>net471;net451;net40;netstandard2.0</TargetFrameworks>
+    <AssemblyName>Grace.Dynamic</AssemblyName>
+    <RootNamespace>Grace.Dynamic</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Label="NuGet">
+    <PackageId>Grace.Dynamic.Unofficial</PackageId>
+    <Title>Grace.Dynamic.Unofficial</Title>
+    <Description>IL Generation library for Grace dependency injection container.
+    The complete port of the Grace.Dynamic assembly to support .NET 4.0 and newer.</Description>
+    <PackageTags>Grace di ioc dependencyinjection</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Grace\Grace.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\version.autofac.props" />
+  <Import Project="..\nuget.autofac.props" />
+  
+  <PropertyGroup>
+    <TargetFrameworks>net471;net451;net40;netstandard2.0</TargetFrameworks>
+    <AssemblyName>Autofac.Configuration</AssemblyName>
+    <RootNamespace>Autofac.Configuration</RootNamespace>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Label="NuGet">
+    <PackageId>Autofac.Configuration.Unofficial</PackageId>
+    <Title>Autofac.Configuration.Unofficial</Title>
+    <Description>Configuration support for Autofac.</Description>
+    <PackageTags>autofac,di,ioc,dependencyinjection</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net471' or '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(MicrosoftExtensionsConfigurationPackageVersion)" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' or '$(TargetFramework)' == 'net451' ">
+    <PackageReference Include="NetFx.Extensions.Configuration" Version="$(NetFxExtensionsConfigurationPackageVersion)" />
+  </ItemGroup>
+
+  <ImportGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
+  </ImportGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Autofac\Autofac.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ConfigurationResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ConfigurationResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="ConfigurationResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConfigurationResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
