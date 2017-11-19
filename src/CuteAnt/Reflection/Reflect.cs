@@ -1604,7 +1604,9 @@ namespace CuteAnt.Reflection
     {
       if (typeName == null) { return null; }
 
-      var ctorFn = GetConstructorMethod(typeName);
+      if (!TypeUtils.TryResolveType(typeName, out var type)) { return null; }
+
+      var ctorFn = GetConstructorMethod(type);
       return ctorFn();
     }
 
@@ -1612,56 +1614,17 @@ namespace CuteAnt.Reflection
 
     #region - GetConstructorMethod -
 
-    private static Dictionary<Type, EmptyCtorDelegate> s_constructorMethods = new Dictionary<Type, EmptyCtorDelegate>();
+    private static readonly Func<Type, EmptyCtorDelegate> s_getConstructorMethodToCacheFunc = GetConstructorMethodToCache;
+    private static CachedReadConcurrentDictionary<Type, EmptyCtorDelegate> s_constructorMethods =
+        new CachedReadConcurrentDictionary<Type, EmptyCtorDelegate>(DictionaryCacheConstants.SIZE_SMALL);
+
     /// <summary>GetConstructorMethod</summary>
     /// <remarks>Code taken from ServiceStack.Text Library &lt;a href="https://github.com/ServiceStack/ServiceStack.Text"&gt;</remarks>
     /// <param name="type"></param>
     /// <returns></returns>
+    [MethodImpl(InlineMethod.Value)]
     public static EmptyCtorDelegate GetConstructorMethod(Type type)
-    {
-      if (s_constructorMethods.TryGetValue(type, out EmptyCtorDelegate emptyCtorFn)) return emptyCtorFn;
-
-      emptyCtorFn = GetConstructorMethodToCache(type);
-
-      Dictionary<Type, EmptyCtorDelegate> snapshot, newCache;
-      do
-      {
-        snapshot = s_constructorMethods;
-        newCache = new Dictionary<Type, EmptyCtorDelegate>(s_constructorMethods)
-        {
-          [type] = emptyCtorFn
-        };
-      } while (!ReferenceEquals(
-          Interlocked.CompareExchange(ref s_constructorMethods, newCache, snapshot), snapshot));
-
-      return emptyCtorFn;
-    }
-
-    private static Dictionary<string, EmptyCtorDelegate> s_typeNamesMap = new Dictionary<string, EmptyCtorDelegate>();
-    /// <summary>GetConstructorMethod</summary>
-    /// <remarks>Code taken from ServiceStack.Text Library &lt;a href="https://github.com/ServiceStack/ServiceStack.Text"&gt;</remarks>
-    /// <param name="typeName"></param>
-    /// <returns></returns>
-    public static EmptyCtorDelegate GetConstructorMethod(string typeName)
-    {
-      if (s_typeNamesMap.TryGetValue(typeName, out EmptyCtorDelegate emptyCtorFn)) return emptyCtorFn;
-
-      if (!TypeUtils.TryResolveType(typeName, out var type)) { return null; }
-      emptyCtorFn = GetConstructorMethodToCache(type);
-
-      Dictionary<string, EmptyCtorDelegate> snapshot, newCache;
-      do
-      {
-        snapshot = s_typeNamesMap;
-        newCache = new Dictionary<string, EmptyCtorDelegate>(s_typeNamesMap)
-        {
-          [typeName] = emptyCtorFn
-        };
-      } while (!ReferenceEquals(
-          Interlocked.CompareExchange(ref s_typeNamesMap, newCache, snapshot), snapshot));
-
-      return emptyCtorFn;
-    }
+        => s_constructorMethods.GetOrAdd(type, s_getConstructorMethodToCacheFunc);
 
     #endregion
 
@@ -2448,7 +2411,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     static Type GetTypeInternal(ref Object target)
     {
-      if (target == null) { throw new ArgumentNullException("target"); }
+      if (target == null) { throw new ArgumentNullException(nameof(target)); }
 
       var type = target as Type;
       if (type == null)
