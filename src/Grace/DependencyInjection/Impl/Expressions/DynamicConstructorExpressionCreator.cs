@@ -219,7 +219,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
               //if (p.ParameterType == typeof(IExportLocatorScope)) { return true; }
               //if (p.ParameterType == typeof(IDisposalScope)) { return true; }
               //if (p.ParameterType == typeof(IInjectionContext)) { return true; }
-              //return true; // 这儿？？？
+              //return false;
               return s_standardParamTypes.Contains(p.ParameterType);
               #endregion
             });
