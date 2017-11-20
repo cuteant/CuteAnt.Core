@@ -47,7 +47,7 @@ namespace CuteAnt.Reflection
     /// <summary>Creates a new instance from the default constructor of type</summary>
     /// <param name="typeName"></param>
     /// <returns></returns>
-    public static object CreateInstance(string typeName)
+    public static object CreateInstance(this string typeName)
     {
       if (typeName == null) { return null; }
 
@@ -143,6 +143,8 @@ namespace CuteAnt.Reflection
 
     #endregion
 
+    // TODO FastCreateInstance
+
     #region -- MakeDelegateForCtor --
 
     /// <summary>Generates or gets a strongly-typed open-instance delegate to the specified type constructor that takes the specified type params.</summary>
@@ -157,7 +159,10 @@ namespace CuteAnt.Reflection
       var cache = s_ctorInvokerCache.GetItem(type, k => new DictionaryCache<int, Delegate>());
       var result = cache.GetItem(key, k =>
       {
-        var dynMethod = new DynamicMethod(kCtorInvokerName, typeof(T), new Type[] { typeof(object[]) });
+        var dynMethod = new DynamicMethod(kCtorInvokerName,
+            MethodAttributes.Static | MethodAttributes.Public,
+            CallingConventions.Standard,
+            typeof(T), new Type[] { TypeConstants.ObjectArrayType }, type, true);
 
         var il = dynMethod.GetILGenerator();
         GenCtor<T>(type, il, paramTypes);
@@ -175,7 +180,7 @@ namespace CuteAnt.Reflection
     {
       // arg0: object[] arguments
       // goal: return new T(arguments)
-      Type targetType = typeof(T) == typeof(object) ? type : typeof(T);
+      Type targetType = typeof(T) == TypeConstants.ObjectType ? type : typeof(T);
 
       if (targetType.IsValueType && paramTypes.Length == 0)
       {

@@ -60,7 +60,7 @@ namespace CuteAnt
       {
         return ((CombGuid)value).Value;
       }
-      if (destinationType == TypeConstants.ByteArray)
+      if (destinationType == TypeConstants.ByteArrayType)
       {
         return ((CombGuid)value).ToByteArray(CombGuidSequentialSegmentType.Comb);
       }

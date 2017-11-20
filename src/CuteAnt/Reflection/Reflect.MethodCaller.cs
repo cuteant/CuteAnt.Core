@@ -13,9 +13,9 @@ namespace CuteAnt.Reflection
     /// <summary>Generates a strongly-typed open-instance delegate to invoke the specified method</summary>
     public static MethodCaller<TTarget, TReturn> MakeDelegateForCall<TTarget, TReturn>(this MethodInfo method)
     {
-      return GenDelegateForMember<MethodCaller<TTarget, TReturn>, MethodInfo>(
+      return GenDelegateForMethod<MethodCaller<TTarget, TReturn>>(
           method, kMethodCallerName, GenMethodInvocation<TTarget>,
-          typeof(TReturn), typeof(TTarget), typeof(object[]));
+          typeof(TReturn), typeof(TTarget), TypeConstants.ObjectArrayType);
     }
 
     /// <summary>Generates a weakly-typed open-instance delegate to invoke the specified method.</summary>
@@ -26,14 +26,23 @@ namespace CuteAnt.Reflection
     public static void SafeInvoke<TTarget, TValue>(this MethodCaller<TTarget, TValue> caller, TTarget target, params object[] args)
         => caller?.Invoke(target, args);
 
-    private static TDelegate GenDelegateForMember<TDelegate, TMember>(TMember member, string dynMethodName,
-      Action<TMember, ILGenerator> generator, Type returnType, params Type[] paramTypes)
-      where TMember : MemberInfo where TDelegate : class
+    private static TDelegate GenDelegateForMethod<TDelegate>(MethodInfo method, string dynMethodName,
+      Action<MethodInfo, ILGenerator> generator, Type returnType, params Type[] paramTypes)
+      where TDelegate : class
     {
-      var dynMethod = new DynamicMethod(dynMethodName, returnType, paramTypes, true);
+      var declaringType = method.GetDeclaringType();
+      var dynMethod= !declaringType.IsInterface
+          ? new DynamicMethod(dynMethodName,
+                MethodAttributes.Static | MethodAttributes.Public,
+                CallingConventions.Standard,
+                returnType, paramTypes, declaringType, true)
+          : new DynamicMethod(dynMethodName,
+                MethodAttributes.Static | MethodAttributes.Public,
+                CallingConventions.Standard,
+                returnType, paramTypes, method.Module, true);
 
       var il = dynMethod.GetILGenerator();
-      generator(member, il);
+      generator(method, il);
 
       var result = dynMethod.CreateDelegate(typeof(TDelegate));
       return (TDelegate)(object)result;
@@ -41,10 +50,11 @@ namespace CuteAnt.Reflection
 
     private static void GenMethodInvocation<TTarget>(MethodInfo method, ILGenerator il)
     {
-      var weaklyTyped = typeof(TTarget) == typeof(object);
+      var weaklyTyped = typeof(TTarget) == TypeConstants.ObjectType;
 
+      var isStatic = method.IsStatic;
       // push target if not static (instance-method. in that case first arg is always 'this')
-      if (!method.IsStatic)
+      if (!isStatic)
       {
         var targetType = weaklyTyped ? method.DeclaringType : typeof(TTarget);
         il.DeclareLocal(targetType);
@@ -91,7 +101,7 @@ namespace CuteAnt.Reflection
       }
 
       // perform the correct call (pushes the result)
-      if (method.IsStatic || method.IsFinal)
+      if (isStatic || method.IsFinal)
       {
         il.Emit(OpCodes.Call, method);
       }
@@ -102,7 +112,7 @@ namespace CuteAnt.Reflection
 
       // if method wasn't static that means we declared a temp local to load the target
       // that means our local variables index for the arguments start from 1
-      int localVarStart = method.IsStatic ? 0 : 1;
+      int localVarStart = isStatic ? 0 : 1;
       for (int i = 0; i < prams.Length; i++)
       {
         var paramType = prams[i].ParameterType;
@@ -120,7 +130,7 @@ namespace CuteAnt.Reflection
         }
       }
 
-      if (method.ReturnType == typeof(void))
+      if (method.ReturnType == TypeConstants.VoidType)
       {
         il.Emit(OpCodes.Ldnull);
       }

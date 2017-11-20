@@ -45,7 +45,7 @@ namespace CuteAnt.Reflection
       public static readonly Type CombGuid = TypeConstants.CombGuidType;
 
       /// <summary>Guid</summary>
-      public static readonly Type ByteArray = TypeConstants.ByteArray;
+      public static readonly Type ByteArray = TypeConstants.ByteArrayType;
     }
 
     #endregion

@@ -751,7 +751,7 @@ namespace CuteAnt
       {
         return TryParse(value as String, sequentialType, out result);
       }
-      else if (type == TypeConstants.ByteArray)
+      else if (type == TypeConstants.ByteArrayType)
       {
         var bs = value as Byte[];
         if (bs != null && bs.Length == _SizeOfGuid)
@@ -1223,7 +1223,7 @@ namespace CuteAnt
       {
         return this.Value;
       }
-      if (conversionType == TypeConstants.ByteArray)
+      if (conversionType == TypeConstants.ByteArrayType)
       {
         return m_value;
       }

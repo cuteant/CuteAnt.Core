@@ -18,6 +18,7 @@ namespace CuteAnt
 
     /// <summary>对象类型</summary>
     public static readonly Type ObjectType = typeof(Object);
+    public static readonly Type ObjectArrayType = typeof(Object[]);
 
     /// <summary>字符串类型</summary>
     public static readonly Type StringType = typeof(String);
@@ -29,7 +30,7 @@ namespace CuteAnt
     public static readonly Type CombGuidType = typeof(CombGuid);
 
     /// <summary>Guid</summary>
-    public static readonly Type ByteArray = typeof(byte[]);
+    public static readonly Type ByteArrayType = typeof(byte[]);
 
     public static readonly Type ArrayType = typeof(Array);
 
