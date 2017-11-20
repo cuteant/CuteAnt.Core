@@ -12,36 +12,31 @@ namespace CuteAnt.Reflection
   public delegate T CtorInvoker<T>(object[] parameters);
   /// <summary>EmptyCtorDelegate</summary>
   /// <remarks>Code taken from ServiceStack.Text Library &lt;a href="https://github.com/ServiceStack/ServiceStack.Text"&gt;</remarks>
-  /// <returns></returns>
-  public delegate object EmptyCtorDelegate();
+  public delegate object EmptyCtorInvoker();
 
   partial class ReflectUtils
   {
     private const string kCtorInvokerName = "CI<>";
-    private static readonly DictionaryCache<Type, DictionaryCache<int, Delegate>> s_ctorInvokerCache =
-        new DictionaryCache<Type, DictionaryCache<int, Delegate>>(DictionaryCacheConstants.SIZE_SMALL);
 
     #region -- CreateInstance --
 
     /// <summary>Creates a new instance from the default constructor of type</summary>
-    public static object CreateInstance(this Type type)
+    public static object CreateInstance(this Type instanceType)
     {
-      if (type == null) { return null; }
+      if (instanceType == null) { return null; }
 
-      var ctorFn = GetConstructorMethod(type);
-      return ctorFn();
+      return GetConstructorMethod(instanceType).Invoke();
     }
 
     /// <summary>Creates a new instance from the default constructor of type</summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="type"></param>
+    /// <param name="instanceType"></param>
     /// <returns></returns>
-    public static T CreateInstance<T>(this Type type)
+    public static T CreateInstance<T>(this Type instanceType)
     {
-      if (type == null) { return default(T); }
+      if (instanceType == null) { return default(T); }
 
-      var ctorFn = GetConstructorMethod(type);
-      return (T)ctorFn();
+      return (T)GetConstructorMethod(instanceType).Invoke();
     }
 
     /// <summary>Creates a new instance from the default constructor of type</summary>
@@ -51,43 +46,42 @@ namespace CuteAnt.Reflection
     {
       if (typeName == null) { return null; }
 
-      if (!TypeUtils.TryResolveType(typeName, out var type)) { return null; }
+      if (!TypeUtils.TryResolveType(typeName, out var instanceType)) { return null; }
 
-      var ctorFn = GetConstructorMethod(type);
-      return ctorFn();
+      return GetConstructorMethod(instanceType).Invoke();
     }
 
     #endregion
 
     #region -- GetConstructorMethod --
 
-    private static readonly Func<Type, EmptyCtorDelegate> s_getConstructorMethodToCacheFunc = GetConstructorMethodToCache;
-    private static CachedReadConcurrentDictionary<Type, EmptyCtorDelegate> s_constructorMethods =
-        new CachedReadConcurrentDictionary<Type, EmptyCtorDelegate>(DictionaryCacheConstants.SIZE_MEDIUM);
+    private static readonly Func<Type, EmptyCtorInvoker> s_getConstructorMethodToCacheFunc = GetConstructorMethodToCache;
+    private static CachedReadConcurrentDictionary<Type, EmptyCtorInvoker> s_constructorMethods =
+        new CachedReadConcurrentDictionary<Type, EmptyCtorInvoker>(DictionaryCacheConstants.SIZE_MEDIUM);
 
     /// <summary>GetConstructorMethod</summary>
     /// <remarks>Code taken from ServiceStack.Text Library &lt;a href="https://github.com/ServiceStack/ServiceStack.Text"&gt;</remarks>
-    /// <param name="type"></param>
+    /// <param name="instanceType"></param>
     /// <returns></returns>
     [MethodImpl(InlineMethod.Value)]
-    public static EmptyCtorDelegate GetConstructorMethod(Type type)
-        => s_constructorMethods.GetOrAdd(type, s_getConstructorMethodToCacheFunc);
+    public static EmptyCtorInvoker GetConstructorMethod(this Type instanceType)
+        => s_constructorMethods.GetOrAdd(instanceType, s_getConstructorMethodToCacheFunc);
 
     /// <summary>GetConstructorMethodToCache</summary>
     /// <remarks>Code taken from ServiceStack.Text Library &lt;a href="https://github.com/ServiceStack/ServiceStack.Text"&gt;</remarks>
-    /// <param name="type"></param>
+    /// <param name="instanceType"></param>
     /// <returns></returns>
-    private static EmptyCtorDelegate GetConstructorMethodToCache(Type type)
+    private static EmptyCtorInvoker GetConstructorMethodToCache(Type instanceType)
     {
-      if (type == TypeConstants.StringType)
+      if (instanceType == TypeConstants.StringType)
       {
         return () => string.Empty;
       }
-      else if (type.IsInterface)
+      else if (instanceType.IsInterface)
       {
-        if (type.HasGenericType())
+        if (instanceType.HasGenericType())
         {
-          var genericType = type.GetTypeWithGenericTypeDefinitionOfAny(typeof(IDictionary<,>));
+          var genericType = instanceType.GetTypeWithGenericTypeDefinitionOfAny(typeof(IDictionary<,>));
 
           if (genericType != null)
           {
@@ -96,7 +90,7 @@ namespace CuteAnt.Reflection
             return GetConstructorMethodToCache(typeof(Dictionary<,>).MakeGenericType(keyType, valueType));
           }
 
-          genericType = type.GetTypeWithGenericTypeDefinitionOfAny(
+          genericType = instanceType.GetTypeWithGenericTypeDefinitionOfAny(
               typeof(IEnumerable<>),
               typeof(ICollection<>),
               typeof(IList<>));
@@ -108,79 +102,115 @@ namespace CuteAnt.Reflection
           }
         }
       }
-      else if (type.IsArray)
+      else if (instanceType.IsArray)
       {
-        return () => Array.CreateInstance(type.GetElementType(), 0);
+        return () => Array.CreateInstance(instanceType.GetElementType(), 0);
       }
-      else if (type.IsGenericTypeDefinition)
+      else if (instanceType.IsGenericTypeDefinition)
       {
-        var genericArgs = type.GetGenericArguments();
+        var genericArgs = instanceType.GetGenericArguments();
         var typeArgs = new Type[genericArgs.Length];
         for (var i = 0; i < genericArgs.Length; i++)
-          typeArgs[i] = typeof(object);
+        {
+          typeArgs[i] = TypeConstants.ObjectType;
+        }
 
-        var realizedType = type.MakeGenericType(typeArgs);
+        var realizedType = instanceType.MakeGenericType(typeArgs);
 
         return realizedType.CreateInstance;
       }
 
-      var emptyCtor = type.GetEmptyConstructor();
+      var emptyCtor = instanceType.GetEmptyConstructor();
       if (emptyCtor != null)
       {
-        var dm = new System.Reflection.Emit.DynamicMethod("MyCtor", type, Type.EmptyTypes, typeof(ReflectUtils).Module, true);
+        var dm = new DynamicMethod("MyCtor", instanceType, Type.EmptyTypes, typeof(ReflectUtils).Module, true);
         var ilgen = dm.GetILGenerator();
-        ilgen.Emit(System.Reflection.Emit.OpCodes.Nop);
-        ilgen.Emit(System.Reflection.Emit.OpCodes.Newobj, emptyCtor);
-        ilgen.Emit(System.Reflection.Emit.OpCodes.Ret);
+        ilgen.Emit(OpCodes.Nop);
+        ilgen.Emit(OpCodes.Newobj, emptyCtor);
+        ilgen.Emit(OpCodes.Ret);
 
-        return (EmptyCtorDelegate)dm.CreateDelegate(typeof(EmptyCtorDelegate));
+        return (EmptyCtorInvoker)dm.CreateDelegate(typeof(EmptyCtorInvoker));
       }
 
       //Anonymous types don't have empty constructors
-      return () => FormatterServices.GetUninitializedObject(type);
-      // return FormatterServices.GetSafeUninitializedObject(Type);
+      return () => FormatterServices.GetUninitializedObject(instanceType);
+      //return () => FormatterServices.GetSafeUninitializedObject(instanceType);
     }
 
     #endregion
 
-    // TODO FastCreateInstance
-
     #region -- MakeDelegateForCtor --
 
+    /// <summary>Generates or gets a weakly-typed open-instance delegate to the specified type constructor that takes the specified type params.</summary>
+    public static CtorInvoker<object> MakeDelegateForCtor(this Type instanceType, params Type[] ctorParamTypes)
+        => MakeDelegateForCtor<object>(instanceType, ctorParamTypes);
+
     /// <summary>Generates or gets a strongly-typed open-instance delegate to the specified type constructor that takes the specified type params.</summary>
-    public static CtorInvoker<T> MakeDelegateForCtor<T>(this Type type, params Type[] paramTypes)
+    public static CtorInvoker<T> MakeDelegateForCtor<T>(this Type instanceType, params Type[] paramTypes)
     {
-      int key = kCtorInvokerName.GetHashCode() ^ type.GetHashCode();
-      for (int i = 0; i < paramTypes.Length; i++)
-      {
-        key ^= paramTypes[i].GetHashCode();
-      }
+      if (TryMakeDelegateForCtor<T>(instanceType, paramTypes, out var result)) { return result; }
 
-      var cache = s_ctorInvokerCache.GetItem(type, k => new DictionaryCache<int, Delegate>());
-      var result = cache.GetItem(key, k =>
-      {
-        var dynMethod = new DynamicMethod(kCtorInvokerName,
-            MethodAttributes.Static | MethodAttributes.Public,
-            CallingConventions.Standard,
-            typeof(T), new Type[] { TypeConstants.ObjectArrayType }, type, true);
-
-        var il = dynMethod.GetILGenerator();
-        GenCtor<T>(type, il, paramTypes);
-
-        return dynMethod.CreateDelegate(typeof(CtorInvoker<T>));
-      });
-      return (CtorInvoker<T>)result;
+      throw new TypeAccessException("Generating constructor for type: " + instanceType +
+          (paramTypes == null || paramTypes.Length == 0 ? " No empty constructor found!" :
+          " No constructor found that matches the following parameter types: " +
+          string.Join(",", paramTypes.Select(x => x.Name).ToArray())));
     }
 
-    /// <summary>Generates or gets a weakly-typed open-instance delegate to the specified type constructor that takes the specified type params.</summary>
-    public static CtorInvoker<object> MakeDelegateForCtor(this Type type, params Type[] ctorParamTypes)
-        => MakeDelegateForCtor<object>(type, ctorParamTypes);
+    /// <summary>Try generates or gets a weakly-typed open-instance delegate to the specified type constructor that takes the specified type params.</summary>
+    public static bool TryMakeDelegateForCtor(this Type instanceType, Type[] paramTypes, out CtorInvoker<object> result)
+        => TryMakeDelegateForCtor<object>(instanceType, paramTypes, out result);
 
-    private static void GenCtor<T>(Type type, ILGenerator il, Type[] paramTypes)
+    /// <summary>Try generates or gets a strongly-typed open-instance delegate to the specified type constructor that takes the specified type params.</summary>
+    public static bool TryMakeDelegateForCtor<T>(this Type instanceType, Type[] paramTypes, out CtorInvoker<T> result)
+    {
+      if (null == instanceType) { throw new ArgumentNullException(nameof(instanceType)); }
+
+      ConstructorInfo ctor = null;
+      var typeInfo = instanceType.GetTypeInfo();
+      if (!(typeInfo.AsType() == TypeConstants.StringType ||
+          typeInfo.IsArray || typeInfo.IsInterface || typeInfo.IsGenericTypeDefinition))
+      {
+        try
+        {
+          ctor = instanceType.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, paramTypes, null);
+        }
+        catch { }
+      }
+      if (ctor == null)
+      {
+        if (paramTypes == null || paramTypes.Length == 0)
+        {
+          var emptyInvoker = instanceType.GetConstructorMethod();
+          result = (object[] ps) => (T)emptyInvoker.Invoke();
+          return true;
+        }
+        result = null; return false;
+      }
+
+      result = MakeDelegateForCtor<T>(instanceType, paramTypes, ctor);
+      return true;
+    }
+
+    internal static CtorInvoker<T> MakeDelegateForCtor<T>(Type instanceType, Type[] paramTypes, ConstructorInfo ctor)
+    {
+      if (null == paramTypes) { paramTypes = Type.EmptyTypes; }
+
+      var dynMethod = new DynamicMethod(kCtorInvokerName,
+          MethodAttributes.Static | MethodAttributes.Public,
+          CallingConventions.Standard,
+          typeof(T), new Type[] { TypeConstants.ObjectArrayType }, instanceType, true);
+
+      var il = dynMethod.GetILGenerator();
+      GenCtor<T>(instanceType, il, paramTypes, ctor);
+
+      return (CtorInvoker<T>)dynMethod.CreateDelegate(typeof(CtorInvoker<T>));
+    }
+
+    private static void GenCtor<T>(Type instanceType, ILGenerator il, Type[] paramTypes, ConstructorInfo ctor)
     {
       // arg0: object[] arguments
       // goal: return new T(arguments)
-      Type targetType = typeof(T) == TypeConstants.ObjectType ? type : typeof(T);
+      Type targetType = typeof(T) == TypeConstants.ObjectType ? instanceType : typeof(T);
 
       if (targetType.IsValueType && paramTypes.Length == 0)
       {
@@ -191,15 +221,6 @@ namespace CuteAnt.Reflection
       }
       else
       {
-        var ctor = targetType.GetConstructor(paramTypes);
-        if (ctor == null)
-        {
-          throw new Exception("Generating constructor for type: " + targetType +
-              (paramTypes.Length == 0 ? "No empty constructor found!" :
-              "No constructor found that matches the following parameter types: " +
-              string.Join(",", paramTypes.Select(x => x.Name).ToArray())));
-        }
-
         // push parameters in order to then call ctor
         for (int i = 0, imax = paramTypes.Length; i < imax; i++)
         {
@@ -212,7 +233,7 @@ namespace CuteAnt.Reflection
         il.Emit(OpCodes.Newobj, ctor);
       }
 
-      if (typeof(T) == typeof(object) && targetType.IsValueType)
+      if (typeof(T) == TypeConstants.ObjectType && targetType.IsValueType)
       {
         il.Emit(OpCodes.Box, targetType);
       }

@@ -55,7 +55,7 @@ namespace CuteAnt.Reflection.Tests
           (
             genericType,
             "GetId",
-            EmptyArray<Type>.Instance,
+            Type.EmptyTypes,
             oInstanceParam
           );
       GetIdFn = System.Linq.Expressions.Expression.Lambda<MemberGetter<MyUser>>

@@ -58,7 +58,7 @@ namespace CuteAnt.Reflection
         throw new ArgumentException($"{type.FullName} is not a Generic Type Definition", nameof(type));
       }
 
-      if (argTypes == null) { argTypes = EmptyArray<Type>.Instance; }
+      if (argTypes == null) { argTypes = Type.EmptyTypes; }
 
       var sb = StringBuilderCache.Acquire().Append(type.FullName);
 
