@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using CuteAnt.SampleModel.Animals;
+using CuteAnt.SampleModel.Animals.Enumerations;
 using Xunit;
 
 namespace CuteAnt.Reflection.Tests
@@ -13,30 +14,41 @@ namespace CuteAnt.Reflection.Tests
     public void TestTryCreateInstanceWithMatchingEmptyArgumentShouldInvokeConstructor0()
     {
       var matcher = ActivatorUtils.GetConstructorMatcher(typeof(Lion));
-      Lion animal = matcher.Invoker.Invoke(EmptyArray<object>.Instance) as Lion;
+      Lion animal = matcher.Invocation.Invoke(EmptyArray<object>.Instance) as Lion;
+      Verify(animal, 1, Animal.LastID, "Simba", null);
+
+      animal = ActivatorUtils.FastCreateInstance(typeof(Lion)) as Lion;
       Verify(animal, 1, Animal.LastID, "Simba", null);
 
       var matcher1 = ActivatorUtils.GetConstructorMatcher<Lion>();
-      animal = matcher1.Invoker.Invoke(EmptyArray<object>.Instance);
+      animal = matcher1.Invocation.Invoke(EmptyArray<object>.Instance);
+      Verify(animal, 1, Animal.LastID, "Simba", null);
+
+      animal = ActivatorUtils.FastCreateInstance<Lion>();
       Verify(animal, 1, Animal.LastID, "Simba", null);
 
       var listMatcher = ActivatorUtils.GetConstructorMatcher<List<int>>();
-      var list = listMatcher.Invoker.Invoke(EmptyArray<object>.Instance);
+      var list = listMatcher.Invocation.Invoke(EmptyArray<object>.Instance);
       list.Add(100);
       var listCount = list.Count;
       Assert.Equal(1, listCount);
       Assert.Equal(100, list[0]);
 
+      list = ActivatorUtils.FastCreateInstance<List<int>>();
+      list.Add(100);
+      Assert.Equal(1, listCount);
+      Assert.Equal(100, list[0]);
+
       var stringMatcher = ActivatorUtils.GetConstructorMatcher<string>();
-      var str = stringMatcher.Invoker.Invoke(EmptyArray<object>.Instance);
+      var str = stringMatcher.Invocation.Invoke(EmptyArray<object>.Instance);
       Assert.True(string.IsNullOrEmpty(str));
 
       var intMatcher = ActivatorUtils.GetConstructorMatcher<int>();
-      var iv = intMatcher.Invoker.Invoke(EmptyArray<object>.Instance);
+      var iv = intMatcher.Invocation.Invoke(EmptyArray<object>.Instance);
       Assert.Equal(0, iv);
 
       var intArrayMatcher = ActivatorUtils.GetConstructorMatcher<int[]>();
-      var aryInt = intArrayMatcher.Invoker.Invoke(EmptyArray<object>.Instance);
+      var aryInt = intArrayMatcher.Invocation.Invoke(EmptyArray<object>.Instance);
       var intCount = aryInt.Length;
       Assert.Equal(0, intCount);
     }
@@ -85,67 +97,81 @@ namespace CuteAnt.Reflection.Tests
       Assert.NotNull(dictOjb);
     }
 
-    //[Fact]
-    //public void TestTryCreateInstanceWithMatchingSingleArgumentShouldInvokeConstructor2()
-    //{
-    //  Lion animal = typeof(Lion).TryCreateInstance(new { Name = "Scar" }) as Lion;
-    //  Verify(animal, 2, Animal.LastID, "Scar", null);
+    [Fact]
+    public void TestTryCreateInstanceWithMatchingSingleArgumentShouldInvokeConstructor2()
+    {
+      Lion animal = ActivatorUtils.CreateInstance(typeof(Lion), "Scar") as Lion;
+      Verify(animal, 2, Animal.LastID, "Scar", null);
 
-    //  animal = typeof(Lion).TryCreateInstance(new Dictionary<string, object> { { "Name", "Scar" } }) as Lion;
-    //  Verify(animal, 2, Animal.LastID, "Scar", null);
+      animal = ActivatorUtils.CreateInstance<Lion>("Scar");
+      Verify(animal, 2, Animal.LastID, "Scar", null);
+    }
 
-    //  animal = typeof(Lion).TryCreateInstance(new[] { "Name" }, new object[] { "Scar" }) as Lion;
-    //  Verify(animal, 2, Animal.LastID, "Scar", null);
+    [Fact]
+    public void TestTryCreateInstanceWithMatchingSingleArgumentShouldInvokeConstructor3()
+    {
+      Lion animal = ActivatorUtils.CreateInstance(typeof(Lion), 42) as Lion;
+      Verify(animal, 3, 42, "Simba", null);
 
-    //  animal = typeof(Lion).TryCreateInstance(new[] { "Name" }, new[] { typeof(string) }, new object[] { "Scar" }) as Lion;
-    //  Verify(animal, 2, Animal.LastID, "Scar", null);
-    //}
+      animal = ActivatorUtils.CreateInstance<Lion>(42);
+      Verify(animal, 3, 42, "Simba", null);
+    }
 
-    //[Fact]
-    //public void TestTryCreateInstanceWithMatchingSingleArgumentShouldInvokeConstructor3()
-    //{
-    //  Lion animal = typeof(Lion).TryCreateInstance(new { Id = 42 }) as Lion;
-    //  Verify(animal, 3, 42, "Simba", null);
+    [Fact]
+    public void TestTryCreateInstanceWithMatchingDoubleArgumentShouldInvokeConstructor4()
+    {
+      Lion animal = ActivatorUtils.CreateInstance(typeof(Lion), 42, "Scar") as Lion;
+      Verify(animal, 4, 42, "Scar", null);
 
-    //  animal = typeof(Lion).TryCreateInstance(new Dictionary<string, object> { { "Id", 42 } }) as Lion;
-    //  Verify(animal, 3, 42, "Simba", null);
+      animal = ActivatorUtils.CreateInstance<Lion>(42, "Scar");
+      Verify(animal, 4, 42, "Scar", null);
+    }
 
-    //  animal = typeof(Lion).TryCreateInstance(new[] { "Id" }, new object[] { 42 }) as Lion;
-    //  Verify(animal, 3, 42, "Simba", null);
+    [Fact]
+    public void TestTryCreateInstanceWithMatchingDoubleArgumentShouldInvokeConstructor5()
+    {
+      Lion animal = ActivatorUtils.CreateInstance(typeof(Lion), "Scar", 52) as Lion;
+      Verify(animal, 5, 52, "Scar", null);
+      Assert.Equal(Climate.Cold, animal.ClimateRequirements);
+      Assert.Equal(MovementCapabilities.Air, animal.MovementCapabilities);
 
-    //  animal = typeof(Lion).TryCreateInstance(new[] { "Id" }, new[] { typeof(string) }, new object[] { 42 }) as Lion;
-    //  Verify(animal, 3, 42, "Simba", null);
-    //}
+      animal = ActivatorUtils.CreateInstance<Lion>("Scar", 52);
+      Verify(animal, 5, 52, "Scar", null);
+      Assert.Equal(Climate.Cold, animal.ClimateRequirements);
+      Assert.Equal(MovementCapabilities.Air, animal.MovementCapabilities);
 
-    //[Fact]
-    //public void TestTryCreateInstanceWithMatchingDoubleArgumentShouldInvokeConstructor4()
-    //{
-    //  Lion animal = typeof(Lion).TryCreateInstance(new { Id = 42, Name = "Scar" }) as Lion;
-    //  Verify(animal, 4, 42, "Scar", null);
-    //}
 
-    //[Fact]
-    //public void TestTryCreateInstanceWithPartialMatchShouldInvokeConstructor3AndSetProperty()
-    //{
-    //  DateTime? birthday = new DateTime(1973, 1, 27);
-    //  Lion animal = typeof(Lion).TryCreateInstance(new { Id = 42, Birthday = birthday }) as Lion;
-    //  Verify(animal, 3, 42, "Simba", birthday);
-    //}
+      animal = ActivatorUtils.CreateInstance(typeof(Lion), "Scar", 52, Climate.Hot) as Lion;
+      Verify(animal, 5, 52, "Scar", null);
+      Assert.Equal(Climate.Hot, animal.ClimateRequirements);
+      Assert.Equal(MovementCapabilities.Air, animal.MovementCapabilities);
 
-    //[Fact]
-    //public void TestTryCreateInstanceWithPartialMatchShouldInvokeConstructor4AndIgnoreExtraArgs()
-    //{
-    //  DateTime? birthday = new DateTime(1973, 1, 27);
-    //  Lion animal = typeof(Lion).TryCreateInstance(new { Id = 42, Name = "Scar", Birthday = birthday, Dummy = 0 }) as Lion;
-    //  Verify(animal, 4, 42, "Scar", birthday);
-    //}
+      animal = ActivatorUtils.CreateInstance<Lion>("Scar", 52, Climate.Hot);
+      Verify(animal, 5, 52, "Scar", null);
+      Assert.Equal(Climate.Hot, animal.ClimateRequirements);
+      Assert.Equal(MovementCapabilities.Air, animal.MovementCapabilities);
 
-    //[Fact]
-    //public void TestTryCreateInstanceWithConvertibleArgumentTypeShouldUseConstructor3()
-    //{
-    //  Lion animal = typeof(Lion).TryCreateInstance(new { Id = "2" }) as Lion;
-    //  Verify(animal, 3, 2, "Simba", null);
-    //}
+
+      animal = ActivatorUtils.CreateInstance(typeof(Lion), "Scar", 52, MovementCapabilities.Land) as Lion;
+      Verify(animal, 5, 52, "Scar", null);
+      Assert.Equal(Climate.Cold, animal.ClimateRequirements);
+      Assert.Equal(MovementCapabilities.Land, animal.MovementCapabilities);
+
+      animal = ActivatorUtils.CreateInstance<Lion>("Scar", 52, MovementCapabilities.Land);
+      Verify(animal, 5, 52, "Scar", null);
+      Assert.Equal(Climate.Cold, animal.ClimateRequirements);
+      Assert.Equal(MovementCapabilities.Land, animal.MovementCapabilities);
+
+      animal = ActivatorUtils.CreateInstance(typeof(Lion), "Scar", 52, Climate.Any, MovementCapabilities.Water) as Lion;
+      Verify(animal, 5, 52, "Scar", null);
+      Assert.Equal(Climate.Any, animal.ClimateRequirements);
+      Assert.Equal(MovementCapabilities.Water, animal.MovementCapabilities);
+
+      animal = ActivatorUtils.CreateInstance<Lion>("Scar", 52, Climate.Any, MovementCapabilities.Water);
+      Verify(animal, 5, 52, "Scar", null);
+      Assert.Equal(Climate.Any, animal.ClimateRequirements);
+      Assert.Equal(MovementCapabilities.Water, animal.MovementCapabilities);
+    }
 
     private static void Verify(Lion animal, int constructorInstanceUsed, int id, string name, DateTime? birthday)
     {

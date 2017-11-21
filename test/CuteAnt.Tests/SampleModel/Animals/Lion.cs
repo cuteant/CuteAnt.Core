@@ -67,6 +67,12 @@ namespace CuteAnt.SampleModel.Animals
       Name = name;
       ConstructorInstanceUsed = 4;
     }
+    public Lion(string name, int id, Climate climate = Climate.Cold, MovementCapabilities mc = MovementCapabilities.Air)
+      : base(id, climate, mc)
+    {
+      Name = name;
+      ConstructorInstanceUsed = 5;
+    }
     #endregion
   }
 }

@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using CuteAnt.Collections;
 using CuteAnt.Hosting;
+using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
-using System.Runtime.CompilerServices;
 
 namespace CuteAnt.Reflection
 {
@@ -1134,6 +1134,68 @@ namespace CuteAnt.Reflection
       }
 
       throw new ArgumentException("Expression type unsupported.");
+    }
+
+    #endregion
+
+    #region -- CallMethod --
+
+    private static readonly CachedReadConcurrentDictionary<MethodInfo, MethodMatcher> s_methodMatcherCache =
+        new CachedReadConcurrentDictionary<MethodInfo, MethodMatcher>(DictionaryCacheConstants.SIZE_SMALL);
+
+    /// <summary>CallMethod</summary>
+    /// <param name="method"></param>
+    /// <param name="target"></param>
+    /// <param name="parameters"></param>
+    /// <returns></returns>
+    public static object CallMethod(MethodInfo method, object target, params object[] parameters)
+    {
+      if (null == method) { throw new ArgumentNullException(nameof(method)); }
+
+      var matcher = s_methodMatcherCache.GetOrAdd(method, mi => new MethodMatcher(mi));
+
+      matcher.Match(parameters, out var parameterValues, out var parameterValuesSet, out var paramInfos);
+      for (var index = 0; index != paramInfos.Length; index++)
+      {
+        if (parameterValuesSet[index] == false)
+        {
+          if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
+          {
+            throw new InvalidOperationException($"Unable to resolve service for type '{paramInfos[index].ParameterType}' while attempting to activate '{method}'.");
+          }
+          else
+          {
+            parameterValues[index] = defaultValue;
+          }
+        }
+      }
+
+      return matcher.Invocation.Invoke(target, parameterValues);
+    }
+
+    public static TReturn CallMethod<TTarget, TReturn>(MethodInfo method, TTarget target, params object[] parameters)
+    {
+      if (null == method) { throw new ArgumentNullException(nameof(method)); }
+
+      var matcher = MethodMatcher<TTarget, TReturn>.GetMethodMatcher(method);
+
+      matcher.Match(parameters, out var parameterValues, out var parameterValuesSet, out var paramInfos);
+      for (var index = 0; index != paramInfos.Length; index++)
+      {
+        if (parameterValuesSet[index] == false)
+        {
+          if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
+          {
+            throw new InvalidOperationException($"Unable to resolve service for type '{paramInfos[index].ParameterType}' while attempting to activate '{method}'.");
+          }
+          else
+          {
+            parameterValues[index] = defaultValue;
+          }
+        }
+      }
+
+      return matcher.Invocation.Invoke(target, parameterValues);
     }
 
     #endregion

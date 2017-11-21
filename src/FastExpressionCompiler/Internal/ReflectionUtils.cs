@@ -21,7 +21,7 @@ namespace FastExpressionCompiler
       return type.IsGenericType && !type.IsGenericTypeDefinition ? type.GetGenericArguments() : Type.EmptyTypes;
     }
 
-    public static bool HasDefaultValueEx(this ParameterInfo pi)
+    public static bool HasDefaultValue(this ParameterInfo pi)
     {
       const string _DBNullType = "System.DBNull";
       return pi.DefaultValue == null || pi.DefaultValue.GetType().FullName != _DBNullType;

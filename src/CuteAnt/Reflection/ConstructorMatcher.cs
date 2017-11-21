@@ -8,7 +8,7 @@ namespace CuteAnt.Reflection
   {
     #region @@ Fields @@
 
-    public readonly CtorInvoker<object> Invoker;
+    public readonly CtorInvoker<object> Invocation;
     public readonly Type InstanceType;
 
     #endregion
@@ -19,13 +19,13 @@ namespace CuteAnt.Reflection
       : base(constructor)
     {
       InstanceType = instanceType ?? throw new ArgumentNullException(nameof(instanceType));
-      Invoker = ReflectUtils.MakeDelegateForCtor<object>(InstanceType, Parameters.Select(_ => _.ParameterType).ToArray(), Value);
+      Invocation = ReflectUtils.MakeDelegateForCtor<object>(InstanceType, Parameters.Select(_ => _.ParameterType).ToArray(), Value);
     }
     internal ConstructorMatcher(Type instanceType, CtorInvoker<object> invoker)
       : base(null)
     {
       InstanceType = instanceType ?? throw new ArgumentNullException(nameof(instanceType));
-      Invoker = invoker ?? throw new ArgumentNullException(nameof(invoker));
+      Invocation = invoker ?? throw new ArgumentNullException(nameof(invoker));
     }
 
     #endregion

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using CuteAnt.Collections;
 using Microsoft.Extensions.Internal;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CuteAnt.Reflection
 {
@@ -95,16 +94,15 @@ namespace CuteAnt.Reflection
     private static readonly object[] s_emptyObjects = EmptyArray<object>.Instance;
 
     private static CtorInvoker<object> GetConstructorMethodInternal(Type instanceType)
-        => GetConstructorMatcher(instanceType).Invoker;
+        => GetConstructorMatcher(instanceType).Invocation;
 
     /// <summary>Creates a new instance from the default constructor of type</summary>
     /// <param name="typeName"></param>
     /// <returns></returns>
     public static object FastCreateInstance(string typeName)
     {
-      if (string.IsNullOrWhiteSpace(typeName)) { return null; }
-
-      if (!TypeUtils.TryResolveType(typeName, out var instanceType)) { return null; }
+      if (string.IsNullOrWhiteSpace(typeName)) { throw new ArgumentNullException(nameof(typeName)); }
+      var instanceType = TypeUtils.ResolveType(typeName);
 
       return FastCreateInstance(instanceType);
     }
@@ -112,22 +110,24 @@ namespace CuteAnt.Reflection
     /// <summary>Creates a new instance from the default constructor of type</summary>
     public static object FastCreateInstance(Type instanceType)
     {
-      if (instanceType == null || instanceType.GetTypeInfo().IsAbstract) { return null; }
+      if (instanceType == null) { throw new ArgumentNullException(nameof(instanceType)); }
+      var typeInfo = instanceType.GetTypeInfo();
+      if (typeInfo.IsAbstract) { throw new TypeAccessException($"Type '{typeInfo.AssemblyQualifiedName}' is an abstract class and cannot be instantiated"); }
 
-      return s_typeEmptyConstructorCache.GetOrAdd(instanceType, s_makeDelegateForCtorFunc).Invoke(s_emptyObjects);
+      return s_typeEmptyConstructorCache.GetOrAdd(typeInfo.AsType(), s_makeDelegateForCtorFunc).Invoke(s_emptyObjects);
     }
 
     /// <summary>Creates a new instance from the default constructor of type</summary>
     /// <typeparam name="TInstance"></typeparam>
     /// <returns></returns>
     public static TInstance FastCreateInstance<TInstance>()
-        => ConstructorMatcher<TInstance>.DefaultInvoker.Invoke(s_emptyObjects);
+        => ConstructorMatcher<TInstance>.DefaultInvocation.Invoke(s_emptyObjects);
 
     /// <summary>Creates a new instance from the default constructor of type</summary>
     /// <typeparam name="TInstance"></typeparam>
-    /// <param name="instanceType"></param>
+    /// <param name="implementationType"></param>
     /// <returns></returns>
-    public static TInstance FastCreateInstance<TInstance>(Type instanceType) => (TInstance)FastCreateInstance(instanceType);
+    public static TInstance FastCreateInstance<TInstance>(Type implementationType) => (TInstance)FastCreateInstance(implementationType);
 
     #endregion
 
@@ -135,89 +135,24 @@ namespace CuteAnt.Reflection
 
     public static object CreateInstance(string typeName, params object[] parameters)
     {
-      if (string.IsNullOrWhiteSpace(typeName)) { return null; }
-
-      if (!TypeUtils.TryResolveType(typeName, out var instanceType)) { return null; }
+      if (string.IsNullOrWhiteSpace(typeName)) { throw new ArgumentNullException(nameof(typeName)); }
+      var instanceType = TypeUtils.ResolveType(typeName);
 
       return CreateInstance(instanceType, parameters);
     }
 
     public static object CreateInstance(Type instanceType, params object[] parameters)
     {
-      if (instanceType == null || instanceType.GetTypeInfo().IsAbstract) { return null; }
+      if (instanceType == null) { throw new ArgumentNullException(nameof(instanceType)); }
+      var instanceTypeInfo = instanceType.GetTypeInfo();
+      if (instanceTypeInfo.IsInterface || instanceTypeInfo.IsAbstract)
+      {
+        throw new TypeAccessException($"Type '{instanceTypeInfo.AssemblyQualifiedName}' is an interface or abstract class and cannot be instantiated");
+      }
 
       if (null == parameters || parameters.Length == 0)
       {
-        return s_typeEmptyConstructorCache.GetOrAdd(instanceType, s_makeDelegateForCtorFunc).Invoke(s_emptyObjects);
-      }
-
-      int bestLength = -1;
-      ConstructorMatcher bestMatcher = null;
-      object[] parameterValues = null;
-      foreach (var matcher in s_typeConstructorMatcherCache.GetOrAdd(instanceType, s_getTypeDeclaredConstructorsFunc))
-      {
-        var length = matcher.Match(parameters, out var pvs, out var pvSet, out var paramInfos);
-        if (length == -1) { continue; }
-        if (bestLength < length)
-        {
-          bestLength = length;
-          bestMatcher = matcher;
-          parameterValues = pvs;
-        }
-      }
-
-      if (bestMatcher == null)
-      {
-        var message = $"A suitable constructor for type '{instanceType}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
-        throw new InvalidOperationException(message);
-      }
-
-      return bestMatcher.Invoker.Invoke(parameterValues);
-    }
-
-    public static TInstance CreateInstance<TInstance>(params object[] parameters)
-    {
-      if (null == parameters || parameters.Length == 0)
-      {
-        return ConstructorMatcher<TInstance>.DefaultInvoker.Invoke(s_emptyObjects);
-      }
-
-      int bestLength = -1;
-      ConstructorMatcher<TInstance> bestMatcher = null;
-      object[] parameterValues = null;
-      foreach (var matcher in ConstructorMatcher<TInstance>.ConstructorMatchers)
-      {
-        var length = matcher.Match(parameters, out var pvs, out var pvSet, out var paramInfos);
-        if (length == -1) { continue; }
-        if (bestLength < length)
-        {
-          bestLength = length;
-          bestMatcher = matcher;
-          parameterValues = pvs;
-        }
-      }
-
-      if (bestMatcher == null)
-      {
-        var message = $"A suitable constructor for type '{typeof(TInstance)}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
-        throw new InvalidOperationException(message);
-      }
-
-      return bestMatcher.Invoker.Invoke(parameterValues);
-    }
-
-    public static TInstance CreateInstance<TInstance>(Type instanceType, params object[] parameters)
-        => (TInstance)CreateInstance(instanceType, parameters);
-
-    #endregion
-
-    public static object CreateInstance(IServiceProvider serviceProvider, Type instanceType, params object[] parameters)
-    {
-      if (instanceType == null || instanceType.GetTypeInfo().IsAbstract) { return null; }
-
-      if (null == parameters || parameters.Length == 0)
-      {
-        return s_typeEmptyConstructorCache.GetOrAdd(instanceType, s_makeDelegateForCtorFunc).Invoke(s_emptyObjects);
+        return s_typeEmptyConstructorCache.GetOrAdd(instanceTypeInfo.AsType(), s_makeDelegateForCtorFunc).Invoke(s_emptyObjects);
       }
 
       int bestLength = -1;
@@ -225,7 +160,7 @@ namespace CuteAnt.Reflection
       object[] parameterValues = null;
       bool[] parameterValuesSet = null;
       ParameterInfo[] paramInfos = null;
-      foreach (var matcher in s_typeConstructorMatcherCache.GetOrAdd(instanceType, s_getTypeDeclaredConstructorsFunc))
+      foreach (var matcher in s_typeConstructorMatcherCache.GetOrAdd(instanceTypeInfo.AsType(), s_getTypeDeclaredConstructorsFunc))
       {
         var length = matcher.Match(parameters, out var pvs, out var pvSet, out var pis);
         if (length == -1) { continue; }
@@ -241,7 +176,134 @@ namespace CuteAnt.Reflection
 
       if (bestMatcher == null)
       {
-        var message = $"A suitable constructor for type '{instanceType}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
+        var message = $"A suitable constructor for type '{instanceTypeInfo.AssemblyQualifiedName}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
+        throw new InvalidOperationException(message);
+      }
+
+      for (var index = 0; index != paramInfos.Length; index++)
+      {
+        if (parameterValuesSet[index] == false)
+        {
+          if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
+          {
+            throw new InvalidOperationException($"Unable to resolve service for type '{paramInfos[index].ParameterType}' while attempting to activate '{instanceTypeInfo.AssemblyQualifiedName}'.");
+          }
+          else
+          {
+            parameterValues[index] = defaultValue;
+          }
+        }
+      }
+
+      return bestMatcher.Invocation.Invoke(parameterValues);
+    }
+
+    public static TInstance CreateInstance<TInstance>(params object[] parameters)
+    {
+      var instanceTypeInfo = typeof(TInstance).GetTypeInfo();
+      if (instanceTypeInfo.IsInterface || instanceTypeInfo.IsAbstract)
+      {
+        throw new TypeAccessException($"Type '{instanceTypeInfo.AssemblyQualifiedName}' is an interface or abstract class and cannot be instantiated");
+      }
+      if (null == parameters || parameters.Length == 0)
+      {
+        return ConstructorMatcher<TInstance>.DefaultInvocation.Invoke(s_emptyObjects);
+      }
+
+      int bestLength = -1;
+      ConstructorMatcher<TInstance> bestMatcher = null;
+      object[] parameterValues = null;
+      bool[] parameterValuesSet = null;
+      ParameterInfo[] paramInfos = null;
+      foreach (var matcher in ConstructorMatcher<TInstance>.ConstructorMatchers)
+      {
+        var length = matcher.Match(parameters, out var pvs, out var pvSet, out var pis);
+        if (length == -1) { continue; }
+        if (bestLength < length)
+        {
+          bestLength = length;
+          bestMatcher = matcher;
+          parameterValues = pvs;
+          parameterValuesSet = pvSet;
+          paramInfos = pis;
+        }
+      }
+
+      if (bestMatcher == null)
+      {
+        var message = $"A suitable constructor for type '{instanceTypeInfo.AssemblyQualifiedName}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
+        throw new InvalidOperationException(message);
+      }
+
+      for (var index = 0; index != paramInfos.Length; index++)
+      {
+        if (parameterValuesSet[index] == false)
+        {
+          if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
+          {
+            throw new InvalidOperationException($"Unable to resolve service for type '{paramInfos[index].ParameterType}' while attempting to activate '{instanceTypeInfo.AssemblyQualifiedName}'.");
+          }
+          else
+          {
+            parameterValues[index] = defaultValue;
+          }
+        }
+      }
+
+      return bestMatcher.Invocation.Invoke(parameterValues);
+    }
+
+    public static TInstance CreateInstance<TInstance>(Type implementationType, params object[] parameters)
+        => (TInstance)CreateInstance(implementationType, parameters);
+
+    #endregion
+
+    #region -- CreateInstance with MSDI --
+
+    public static object CreateInstance(IServiceProvider serviceProvider, string typeName, params object[] parameters)
+    {
+      if (string.IsNullOrWhiteSpace(typeName)) { throw new ArgumentNullException(nameof(typeName)); }
+      var instanceType = TypeUtils.ResolveType(typeName);
+
+      return CreateInstance(serviceProvider, instanceType, parameters);
+    }
+
+    public static object CreateInstance(IServiceProvider serviceProvider, Type instanceType, params object[] parameters)
+    {
+      if (instanceType == null) { throw new ArgumentNullException(nameof(instanceType)); }
+      var instanceTypeInfo = instanceType.GetTypeInfo();
+      if (instanceTypeInfo.IsInterface || instanceTypeInfo.IsAbstract)
+      {
+        throw new TypeAccessException($"Type '{instanceTypeInfo.AssemblyQualifiedName}' is an interface or abstract class and cannot be instantiated");
+      }
+
+      if (null == parameters || parameters.Length == 0)
+      {
+        return s_typeEmptyConstructorCache.GetOrAdd(instanceTypeInfo.AsType(), s_makeDelegateForCtorFunc).Invoke(s_emptyObjects);
+      }
+
+      int bestLength = -1;
+      ConstructorMatcher bestMatcher = null;
+      object[] parameterValues = null;
+      bool[] parameterValuesSet = null;
+      ParameterInfo[] paramInfos = null;
+      foreach (var matcher in s_typeConstructorMatcherCache.GetOrAdd(instanceTypeInfo.AsType(), s_getTypeDeclaredConstructorsFunc))
+      {
+        var length = matcher.Match(parameters, out var pvs, out var pvSet, out var pis);
+        if (length == -1) { continue; }
+        if (bestLength < length)
+        {
+          bestLength = length;
+          bestMatcher = matcher;
+          parameterValues = pvs;
+          parameterValuesSet = pvSet;
+          paramInfos = pis;
+        }
+      }
+
+      if (bestMatcher == null)
+      {
+        var message = $"A suitable constructor for type '{instanceTypeInfo.AssemblyQualifiedName}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
         throw new InvalidOperationException(message);
       }
 
@@ -254,7 +316,7 @@ namespace CuteAnt.Reflection
           {
             if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
             {
-              throw new InvalidOperationException($"Unable to resolve service for type '{paramInfos[index].ParameterType}' while attempting to activate '{instanceType}'.");
+              throw new InvalidOperationException($"Unable to resolve service for type '{paramInfos[index].ParameterType}' while attempting to activate '{instanceTypeInfo.AssemblyQualifiedName}'.");
             }
             else
             {
@@ -268,15 +330,76 @@ namespace CuteAnt.Reflection
         }
       }
 
-      return bestMatcher.Invoker.Invoke(parameterValues);
+      return bestMatcher.Invocation.Invoke(parameterValues);
     }
 
-    // OptimizeCreateInstance
+    public static object CreateInstance<TInstance>(IServiceProvider serviceProvider, params object[] parameters)
+    {
+      var instanceTypeInfo = typeof(TInstance).GetTypeInfo();
+      if (instanceTypeInfo.IsInterface || instanceTypeInfo.IsAbstract)
+      {
+        throw new TypeAccessException($"Type '{instanceTypeInfo.AssemblyQualifiedName}' is an interface or abstract class and cannot be instantiated");
+      }
 
-    //public static object CreateInstance(Type instanceType, params object[] parameters)
-    //{
-    //  var bestMatcher = GetConstructorMatcher(instanceType, Type.EmptyTypes);
-    //  return bestMatcher.Invoker.Invoke(parameters);
-    //}
+      if (null == parameters || parameters.Length == 0)
+      {
+        return ConstructorMatcher<TInstance>.DefaultInvocation.Invoke(s_emptyObjects);
+      }
+
+      int bestLength = -1;
+      ConstructorMatcher<TInstance> bestMatcher = null;
+      object[] parameterValues = null;
+      bool[] parameterValuesSet = null;
+      ParameterInfo[] paramInfos = null;
+      foreach (var matcher in ConstructorMatcher<TInstance>.ConstructorMatchers)
+      {
+        var length = matcher.Match(parameters, out var pvs, out var pvSet, out var pis);
+        if (length == -1) { continue; }
+        if (bestLength < length)
+        {
+          bestLength = length;
+          bestMatcher = matcher;
+          parameterValues = pvs;
+          parameterValuesSet = pvSet;
+          paramInfos = pis;
+        }
+      }
+
+      if (bestMatcher == null)
+      {
+        var message = $"A suitable constructor for type '{instanceTypeInfo.AssemblyQualifiedName}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
+        throw new InvalidOperationException(message);
+      }
+
+      for (var index = 0; index != paramInfos.Length; index++)
+      {
+        if (parameterValuesSet[index] == false)
+        {
+          var value = serviceProvider.GetService(paramInfos[index].ParameterType);
+          if (value == null)
+          {
+            if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
+            {
+              throw new InvalidOperationException($"Unable to resolve service for type '{paramInfos[index].ParameterType}' while attempting to activate '{instanceTypeInfo.AssemblyQualifiedName}'.");
+            }
+            else
+            {
+              parameterValues[index] = defaultValue;
+            }
+          }
+          else
+          {
+            parameterValues[index] = value;
+          }
+        }
+      }
+
+      return bestMatcher.Invocation.Invoke(parameterValues);
+    }
+
+    public static TInstance CreateInstance<TInstance>(IServiceProvider serviceProvider, Type implementationType, params object[] parameters)
+        => (TInstance)CreateInstance(serviceProvider, implementationType, parameters);
+
+    #endregion
   }
 }

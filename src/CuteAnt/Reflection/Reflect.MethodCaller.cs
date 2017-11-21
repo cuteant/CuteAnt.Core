@@ -8,23 +8,19 @@ namespace CuteAnt.Reflection
 
   partial class ReflectUtils
   {
-    private const string kMethodCallerName = "MC<>";
+    private const string c_methodCallerName = "MC<>";
 
     /// <summary>Generates a strongly-typed open-instance delegate to invoke the specified method</summary>
     public static MethodCaller<TTarget, TReturn> MakeDelegateForCall<TTarget, TReturn>(this MethodInfo method)
     {
       return GenDelegateForMethod<MethodCaller<TTarget, TReturn>>(
-          method, kMethodCallerName, GenMethodInvocation<TTarget>,
+          method, c_methodCallerName, GenMethodInvocation<TTarget>,
           typeof(TReturn), typeof(TTarget), TypeConstants.ObjectArrayType);
     }
 
     /// <summary>Generates a weakly-typed open-instance delegate to invoke the specified method.</summary>
     public static MethodCaller<object, object> MakeDelegateForCall(this MethodInfo method)
         => MakeDelegateForCall<object, object>(method);
-
-    /// <summary>Executes the delegate on the specified target and arguments but only if it's not null.</summary>
-    public static void SafeInvoke<TTarget, TValue>(this MethodCaller<TTarget, TValue> caller, TTarget target, params object[] args)
-        => caller?.Invoke(target, args);
 
     private static TDelegate GenDelegateForMethod<TDelegate>(MethodInfo method, string dynMethodName,
       Action<MethodInfo, ILGenerator> generator, Type returnType, params Type[] paramTypes)

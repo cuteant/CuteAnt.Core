@@ -105,7 +105,7 @@ namespace Grace.DependencyInjection.Impl
             constructorParameters[index] = null;
           }
         }
-        else if (parameter.HasDefaultValueEx())
+        else if (parameter.HasDefaultValue())
         {
           constructorParameters[index] = parameter.DefaultValue;
         }

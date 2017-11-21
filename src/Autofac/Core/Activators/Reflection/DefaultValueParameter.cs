@@ -58,7 +58,7 @@ namespace Autofac.Core.Activators.Reflection
                 if (pi.Member.DeclaringType?.GetTypeInfo().Assembly.IsDynamic ?? true)
                 {
 #if NET40
-                    hasDefaultValue = pi.DefaultValue != null && pi.HasDefaultValueEx();
+                    hasDefaultValue = pi.DefaultValue != null && pi.HasDefaultValue();
 #else
                     hasDefaultValue = pi.DefaultValue != null && pi.HasDefaultValue;
 #endif
@@ -66,7 +66,7 @@ namespace Autofac.Core.Activators.Reflection
                 else
                 {
 #if NET40
-                    hasDefaultValue = pi.HasDefaultValueEx();
+                    hasDefaultValue = pi.HasDefaultValue();
 #else
                     hasDefaultValue = pi.HasDefaultValue;
 #endif

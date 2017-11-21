@@ -9,11 +9,11 @@ namespace CuteAnt.Reflection
   {
     #region @@ Fields @@
 
-    public readonly CtorInvoker<TInstance> Invoker;
+    public readonly CtorInvoker<TInstance> Invocation;
 
     public static readonly ConstructorMatcher<TInstance>[] ConstructorMatchers;
     public static readonly ConstructorMatcher<TInstance> Default;
-    public static readonly CtorInvoker<TInstance> DefaultInvoker;
+    public static readonly CtorInvoker<TInstance> DefaultInvocation;
 
     #endregion
 
@@ -26,7 +26,7 @@ namespace CuteAnt.Reflection
       if (typeInfo.IsAbstract) { ConstructorMatchers = EmptyArray<ConstructorMatcher<TInstance>>.Instance; return; }
 
       Default = new ConstructorMatcher<TInstance>(typeInfo.AsType().MakeDelegateForCtor<TInstance>());
-      DefaultInvoker = Default.Invoker;
+      DefaultInvocation = Default.Invocation;
       var defaultCtorMatchers = new ConstructorMatcher<TInstance>[] { Default };
 
       if (typeInfo.AsType() == TypeConstants.StringType ||
@@ -51,12 +51,12 @@ namespace CuteAnt.Reflection
     internal ConstructorMatcher(ConstructorInfo constructor)
       : base(constructor)
     {
-      Invoker = ReflectUtils.MakeDelegateForCtor<TInstance>(typeof(TInstance), Parameters.Select(_ => _.ParameterType).ToArray(), Value);
+      Invocation = ReflectUtils.MakeDelegateForCtor<TInstance>(typeof(TInstance), Parameters.Select(_ => _.ParameterType).ToArray(), Value);
     }
     internal ConstructorMatcher(CtorInvoker<TInstance> invoker)
       : base(null)
     {
-      Invoker = invoker ?? throw new ArgumentNullException(nameof(invoker));
+      Invocation = invoker ?? throw new ArgumentNullException(nameof(invoker));
     }
 
     #endregion

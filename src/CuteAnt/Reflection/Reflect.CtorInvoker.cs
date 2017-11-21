@@ -16,7 +16,7 @@ namespace CuteAnt.Reflection
 
   partial class ReflectUtils
   {
-    private const string kCtorInvokerName = "CI<>";
+    private const string c_ctorInvokerName = "CI<>";
 
     #region -- CreateInstance --
 
@@ -195,7 +195,7 @@ namespace CuteAnt.Reflection
     {
       if (null == paramTypes) { paramTypes = Type.EmptyTypes; }
 
-      var dynMethod = new DynamicMethod(kCtorInvokerName,
+      var dynMethod = new DynamicMethod(c_ctorInvokerName,
           MethodAttributes.Static | MethodAttributes.Public,
           CallingConventions.Standard,
           typeof(T), new Type[] { TypeConstants.ObjectArrayType }, instanceType, true);

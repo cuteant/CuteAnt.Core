@@ -69,6 +69,12 @@ namespace CuteAnt.SampleModel.Animals
     {
       MethodInvoked = 5;
     }
+    public string Name;
+    public void Eat(bool isHay, double count, string food, string name = "a", int age = 168)
+    {
+      MethodInvoked = age;
+      Name = name;
+    }
 
     public void Roar(int count)
     {
