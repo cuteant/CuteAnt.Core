@@ -174,17 +174,13 @@
       <Project>{c9fdffae-4858-4077-be92-541a1972a073}</Project>
       <Name>Autofac</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Grace.Dynamic\Grace.Dynamic.csproj">
-      <Project>{6ac491c9-cfd9-4956-ab02-4b049347f8a9}</Project>
-      <Name>Grace.Dynamic</Name>
+    <ProjectReference Include="..\..\src\CuteAnt.Core.Abstractions\CuteAnt.Core.Abstractions.csproj">
+      <Project>{088742ee-16d9-440d-b142-86acc4815be7}</Project>
+      <Name>CuteAnt.Core.Abstractions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Grace.Factory\Grace.Factory.csproj">
-      <Project>{f910a6db-99a1-4dd0-8b7f-a3162c05ca52}</Project>
-      <Name>Grace.Factory</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Grace\Grace.csproj">
-      <Project>{430e7532-0e0c-4dc8-80b1-586ee9906e8a}</Project>
-      <Name>Grace</Name>
+    <ProjectReference Include="..\..\src\CuteAnt\CuteAnt.Core.csproj">
+      <Project>{de6def55-9e27-4c3d-b001-994dba74d72e}</Project>
+      <Name>CuteAnt.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

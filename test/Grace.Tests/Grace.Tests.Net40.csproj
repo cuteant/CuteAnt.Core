@@ -14,7 +14,6 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="$(xUnitPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsDependencyInjectionPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Specification.Tests" Version="$(MicrosoftExtensionsDependencyInjectionPackageVersion)" />
-    <PackageReference Include="System.Collections.Immutable" Version="$(SystemCollectionsImmutablePackageVersion)" />
     <PackageReference Include="Castle.Core" Version="$(CastleCorePackageVersion)" />
     <PackageReference Include="NSubstitute" Version="$(NSubstitutePackageVersion)" />
     <PackageReference Include="Optional" Version="$(OptionalPackageVersion)" />
@@ -29,17 +28,17 @@
 
 
   <ItemGroup>
-    <Reference Include="Grace">
-      <HintPath>..\..\src\Grace\bin\Debug\net40\Grace.dll</HintPath>
+    <Reference Include="CuteAnt.Core">
+      <HintPath>..\..\src\CuteAnt\bin\Debug\net40\CuteAnt.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Grace.Dynamic">
-      <HintPath>..\..\src\Grace.Dynamic\bin\Debug\net40\Grace.Dynamic.dll</HintPath>
-    </Reference>
-    <Reference Include="Grace.Factory">
-      <HintPath>..\..\src\Grace.Factory\bin\Debug\net40\Grace.Factory.dll</HintPath>
+    <Reference Include="CuteAnt.Core.Abstractions">
+      <HintPath>..\..\src\CuteAnt\bin\Debug\net40\CuteAnt.Core.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Primitives">
-      <HintPath>..\..\src\Grace\bin\Debug\net40\Microsoft.Extensions.Primitives.dll</HintPath>
+      <HintPath>..\..\src\CuteAnt\bin\Debug\net40\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable">
+      <HintPath>..\..\src\CuteAnt\bin\Debug\net40\System.Collections.Immutable.dll</HintPath>
     </Reference>
   </ItemGroup>
 
