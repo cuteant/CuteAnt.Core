@@ -18,17 +18,38 @@ namespace CuteAnt.Reflection
       Parameters = method?.GetParameters() ?? EmptyArray<ParameterInfo>.Instance;
     }
 
-    internal int Match(Type[] argumentTypes)
+    internal bool StrictMatch(Type[] argumentTypes)
     {
+      if (null == argumentTypes) { argumentTypes = Type.EmptyTypes; }
+
+      if (argumentTypes.Length != Parameters.Length) { return false; }
+
+      // 所有参数类型都不为null，才能精确匹配
+      if (argumentTypes.Length > 0 && argumentTypes.Any(_ => _ == null)) { return false; }
+
+      for (var idx = 0; idx != argumentTypes.Length; idx++)
+      {
+        if (!Parameters[idx].ParameterType.GetTypeInfo().IsAssignableFrom(argumentTypes[idx]?.GetTypeInfo())) { return false; }
+      }
+
+      return true;
+    }
+
+    public int Match(object[] givenParameters, out object[] parameterValues, out bool[] parameterValuesSet, out ParameterInfo[] paramInfos)
+    {
+      parameterValuesSet = new bool[Parameters.Length];
+      parameterValues = new object[Parameters.Length];
+      paramInfos = Parameters;
+
       var applyIndexStart = 0;
       var applyExactLength = 0;
-      var parameterValuesSet = new bool[Parameters.Length];
-      for (var givenIndex = 0; givenIndex != argumentTypes.Length; givenIndex++)
+
+      for (var givenIndex = 0; givenIndex != givenParameters.Length; givenIndex++)
       {
 #if NET40
-        var givenType = argumentTypes[givenIndex];
+        var givenType = givenParameters[givenIndex]?.GetType();
 #else
-        var givenType = argumentTypes[givenIndex]?.GetTypeInfo();
+        var givenType = givenParameters[givenIndex]?.GetType().GetTypeInfo();
 #endif
         var givenMatched = false;
 
@@ -43,6 +64,7 @@ namespace CuteAnt.Reflection
           {
             givenMatched = true;
             parameterValuesSet[applyIndex] = true;
+            parameterValues[applyIndex] = givenParameters[givenIndex];
             if (applyIndexStart == applyIndex)
             {
               applyIndexStart++;
@@ -57,15 +79,6 @@ namespace CuteAnt.Reflection
         if (givenMatched == false) { return -1; }
       }
       return applyExactLength;
-    }
-
-    internal int Match(object[] givenParameters)
-    {
-      if (null == givenParameters || givenParameters.Length == 0)
-      {
-        return Match(Type.EmptyTypes);
-      }
-      return Match(givenParameters.Select(_ => _?.GetType()).ToArray());
     }
   }
 }

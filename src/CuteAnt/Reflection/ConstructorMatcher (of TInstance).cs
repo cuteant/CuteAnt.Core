@@ -12,6 +12,8 @@ namespace CuteAnt.Reflection
     public readonly CtorInvoker<TInstance> Invoker;
 
     public static readonly ConstructorMatcher<TInstance>[] ConstructorMatchers;
+    public static readonly ConstructorMatcher<TInstance> Default;
+    public static readonly CtorInvoker<TInstance> DefaultInvoker;
 
     #endregion
 
@@ -20,25 +22,30 @@ namespace CuteAnt.Reflection
     static ConstructorMatcher()
     {
       var thisType = typeof(TInstance);
-      var emptyCtorMatchers = new ConstructorMatcher<TInstance>[] { new ConstructorMatcher<TInstance>(thisType.MakeDelegateForCtor<TInstance>()) };
-      if (thisType.IsAbstract) { ConstructorMatchers = EmptyArray<ConstructorMatcher<TInstance>>.Instance; return; }
-      if (thisType == TypeConstants.StringType ||
-          thisType.IsArray || thisType.IsInterface || thisType.IsGenericTypeDefinition)
+      var typeInfo = thisType.GetTypeInfo();
+      if (typeInfo.IsAbstract) { ConstructorMatchers = EmptyArray<ConstructorMatcher<TInstance>>.Instance; return; }
+
+      Default = new ConstructorMatcher<TInstance>(typeInfo.AsType().MakeDelegateForCtor<TInstance>());
+      DefaultInvoker = Default.Invoker;
+      var defaultCtorMatchers = new ConstructorMatcher<TInstance>[] { Default };
+
+      if (typeInfo.AsType() == TypeConstants.StringType ||
+          typeInfo.IsArray || typeInfo.IsInterface || typeInfo.IsGenericTypeDefinition)
       {
-        ConstructorMatchers = emptyCtorMatchers;
+        ConstructorMatchers = defaultCtorMatchers;
         return;
       }
       try
       {
 
-        ConstructorMatchers = thisType
-            .GetTypeInfo().DeclaredConstructors
+        ConstructorMatchers = typeInfo
+            .DeclaredConstructors
             .Where(_ => !_.IsStatic)
             .Select(_ => new ConstructorMatcher<TInstance>(_))
             .ToArray();
-        if (ConstructorMatchers.Length == 0) { ConstructorMatchers = emptyCtorMatchers; }
+        if (ConstructorMatchers.Length == 0) { ConstructorMatchers = defaultCtorMatchers; }
       }
-      catch { ConstructorMatchers = emptyCtorMatchers; }
+      catch { ConstructorMatchers = defaultCtorMatchers; }
     }
 
     internal ConstructorMatcher(ConstructorInfo constructor)

@@ -44,7 +44,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static object CreateInstance(this string typeName)
     {
-      if (typeName == null) { return null; }
+      if (string.IsNullOrWhiteSpace(typeName)) { return null; }
 
       if (!TypeUtils.TryResolveType(typeName, out var instanceType)) { return null; }
 
