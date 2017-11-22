@@ -35,7 +35,7 @@ namespace CuteAnt.Collections
     private TimeSpan _cacheCleanupInterval;
     private SafeTimer _cacheCleanupTimer;
 
-    private ConcurrentDictionary<TKey, TValue> _internCache;
+    private ConcurrentDictionary<TKey, TValue> _innerDictionary;
 
     #endregion
 
@@ -70,7 +70,7 @@ namespace CuteAnt.Collections
     public DictionaryCache(Int32 capacity, TimeSpan cleanupFreq)
     {
       if (capacity <= 0) capacity = DictionaryCacheConstants.SIZE_MEDIUM;
-      _internCache = new ConcurrentDictionary<TKey, TValue>(DefaultConcurrencyLevel, capacity);
+      _innerDictionary = new ConcurrentDictionary<TKey, TValue>(DefaultConcurrencyLevel, capacity);
       InitializeTimer(cleanupFreq);
     }
 
@@ -103,7 +103,7 @@ namespace CuteAnt.Collections
     public DictionaryCache(Int32 capacity, IEqualityComparer<TKey> comparer, TimeSpan cleanupFreq)
     {
       if (capacity <= 0) capacity = DictionaryCacheConstants.SIZE_MEDIUM;
-      _internCache = new ConcurrentDictionary<TKey, TValue>(DefaultConcurrencyLevel, capacity, comparer);
+      _innerDictionary = new ConcurrentDictionary<TKey, TValue>(DefaultConcurrencyLevel, capacity, comparer);
       InitializeTimer(cleanupFreq);
     }
 
@@ -136,11 +136,10 @@ namespace CuteAnt.Collections
     {
       get
       {
-        TValue item;
-        if (_internCache.TryGetValue(key, out item)) { return item; }
+        if (_innerDictionary.TryGetValue(key, out TValue item)) { return item; }
         return s_defaultValue;
       }
-      set { _internCache[key] = value; }
+      set { _innerDictionary[key] = value; }
     }
 
     /// <summary>扩展获取数据项，当数据项不存在时，通过调用委托获取数据项。线程安全。</summary>
@@ -151,19 +150,18 @@ namespace CuteAnt.Collections
     {
       if (func == null) { throw new ArgumentNullException(nameof(func)); }
 
-      TValue value;
-      if (!_internCache.TryGetValue(key, out value))
+      if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
         var addedValue = func(key);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
-          if (_internCache.TryAdd(key, addedValue))
+          if (_innerDictionary.TryAdd(key, addedValue))
           {
             value = addedValue;
           }
           else
           {
-            _internCache.TryGetValue(key, out value);
+            _innerDictionary.TryGetValue(key, out value);
           }
         }
       }
@@ -181,19 +179,18 @@ namespace CuteAnt.Collections
     {
       if (func == null) { throw new ArgumentNullException(nameof(func)); }
 
-      TValue value;
-      if (!_internCache.TryGetValue(key, out value))
+      if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
         var addedValue = func(key, arg);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
-          if (_internCache.TryAdd(key, addedValue))
+          if (_innerDictionary.TryAdd(key, addedValue))
           {
             value = addedValue;
           }
           else
           {
-            _internCache.TryGetValue(key, out value);
+            _innerDictionary.TryGetValue(key, out value);
           }
         }
       }
@@ -213,19 +210,18 @@ namespace CuteAnt.Collections
     {
       if (func == null) { throw new ArgumentNullException(nameof(func)); }
 
-      TValue value;
-      if (!_internCache.TryGetValue(key, out value))
+      if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
         var addedValue = func(key, arg, arg2);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
-          if (_internCache.TryAdd(key, addedValue))
+          if (_innerDictionary.TryAdd(key, addedValue))
           {
             value = addedValue;
           }
           else
           {
-            _internCache.TryGetValue(key, out value);
+            _innerDictionary.TryGetValue(key, out value);
           }
         }
       }
@@ -247,19 +243,18 @@ namespace CuteAnt.Collections
     {
       if (func == null) { throw new ArgumentNullException(nameof(func)); }
 
-      TValue value;
-      if (!_internCache.TryGetValue(key, out value))
+      if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
         var addedValue = func(key, arg, arg2, arg3);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
-          if (_internCache.TryAdd(key, addedValue))
+          if (_innerDictionary.TryAdd(key, addedValue))
           {
             value = addedValue;
           }
           else
           {
-            _internCache.TryGetValue(key, out value);
+            _innerDictionary.TryGetValue(key, out value);
           }
         }
       }
@@ -283,19 +278,18 @@ namespace CuteAnt.Collections
     {
       if (func == null) { throw new ArgumentNullException(nameof(func)); }
 
-      TValue value;
-      if (!_internCache.TryGetValue(key, out value))
+      if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
         var addedValue = func(key, arg, arg2, arg3, arg4);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
-          if (_internCache.TryAdd(key, addedValue))
+          if (_innerDictionary.TryAdd(key, addedValue))
           {
             value = addedValue;
           }
           else
           {
-            _internCache.TryGetValue(key, out value);
+            _innerDictionary.TryGetValue(key, out value);
           }
         }
       }
@@ -322,19 +316,18 @@ namespace CuteAnt.Collections
     {
       if (func == null) { throw new ArgumentNullException(nameof(func)); }
 
-      TValue value;
-      if (!_internCache.TryGetValue(key, out value))
+      if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
-          if (_internCache.TryAdd(key, addedValue))
+          if (_innerDictionary.TryAdd(key, addedValue))
           {
             value = addedValue;
           }
           else
           {
-            _internCache.TryGetValue(key, out value);
+            _innerDictionary.TryGetValue(key, out value);
           }
         }
       }
@@ -363,19 +356,18 @@ namespace CuteAnt.Collections
     {
       if (func == null) { throw new ArgumentNullException(nameof(func)); }
 
-      TValue value;
-      if (!_internCache.TryGetValue(key, out value))
+      if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5, arg6);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
-          if (_internCache.TryAdd(key, addedValue))
+          if (_innerDictionary.TryAdd(key, addedValue))
           {
             value = addedValue;
           }
           else
           {
-            _internCache.TryGetValue(key, out value);
+            _innerDictionary.TryGetValue(key, out value);
           }
         }
       }
@@ -406,19 +398,18 @@ namespace CuteAnt.Collections
     {
       if (func == null) { throw new ArgumentNullException(nameof(func)); }
 
-      TValue value;
-      if (!_internCache.TryGetValue(key, out value))
+      if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5, arg6, arg7);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
-          if (_internCache.TryAdd(key, addedValue))
+          if (_innerDictionary.TryAdd(key, addedValue))
           {
             value = addedValue;
           }
           else
           {
-            _internCache.TryGetValue(key, out value);
+            _innerDictionary.TryGetValue(key, out value);
           }
         }
       }
@@ -451,19 +442,18 @@ namespace CuteAnt.Collections
     {
       if (func == null) { throw new ArgumentNullException(nameof(func)); }
 
-      TValue value;
-      if (!_internCache.TryGetValue(key, out value))
+      if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
-          if (_internCache.TryAdd(key, addedValue))
+          if (_innerDictionary.TryAdd(key, addedValue))
           {
             value = addedValue;
           }
           else
           {
-            _internCache.TryGetValue(key, out value);
+            _innerDictionary.TryGetValue(key, out value);
           }
         }
       }
@@ -498,19 +488,18 @@ namespace CuteAnt.Collections
     {
       if (func == null) { throw new ArgumentNullException(nameof(func)); }
 
-      TValue value;
-      if (!_internCache.TryGetValue(key, out value))
+      if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
-          if (_internCache.TryAdd(key, addedValue))
+          if (_innerDictionary.TryAdd(key, addedValue))
           {
             value = addedValue;
           }
           else
           {
-            _internCache.TryGetValue(key, out value);
+            _innerDictionary.TryGetValue(key, out value);
           }
         }
       }
@@ -547,19 +536,18 @@ namespace CuteAnt.Collections
     {
       if (func == null) { throw new ArgumentNullException(nameof(func)); }
 
-      TValue value;
-      if (!_internCache.TryGetValue(key, out value))
+      if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
-          if (_internCache.TryAdd(key, addedValue))
+          if (_innerDictionary.TryAdd(key, addedValue))
           {
             value = addedValue;
           }
           else
           {
-            _internCache.TryGetValue(key, out value);
+            _innerDictionary.TryGetValue(key, out value);
           }
         }
       }
@@ -587,23 +575,22 @@ namespace CuteAnt.Collections
     /// <summary></summary>
     /// <param name="key"></param>
     /// <param name="value">数值</param>
-    public void Add(TKey key, TValue value) => _internCache.TryAdd(key, value);
+    public void Add(TKey key, TValue value) => _innerDictionary.TryAdd(key, value);
 
     /// <summary></summary>
     /// <param name="key"></param>
     /// <returns></returns>
-    public Boolean ContainsKey(TKey key) => _internCache.ContainsKey(key);
+    public Boolean ContainsKey(TKey key) => _innerDictionary.ContainsKey(key);
 
     /// <summary></summary>
-    public ICollection<TKey> Keys => _internCache.Keys;
+    public ICollection<TKey> Keys => _innerDictionary.Keys;
 
     /// <summary></summary>
     /// <param name="key"></param>
     /// <returns></returns>
     public Boolean Remove(TKey key)
     {
-      TValue cache;
-      var result = _internCache.TryRemove(key, out cache);
+      var result = _innerDictionary.TryRemove(key, out TValue cache);
       if (AutoDispose) { cache?.TryDispose(); }
       return result;
     }
@@ -612,10 +599,10 @@ namespace CuteAnt.Collections
     /// <param name="key"></param>
     /// <param name="value">数值</param>
     /// <returns></returns>
-    public Boolean TryGetValue(TKey key, out TValue value) => _internCache.TryGetValue(key, out value);
+    public Boolean TryGetValue(TKey key, out TValue value) => _innerDictionary.TryGetValue(key, out value);
 
     /// <summary></summary>
-    public ICollection<TValue> Values => _internCache.Values;
+    public ICollection<TValue> Values => _innerDictionary.Values;
 
     #endregion
 
@@ -630,14 +617,13 @@ namespace CuteAnt.Collections
     {
       if (!AutoDispose)
       {
-        _internCache.Clear();
+        _innerDictionary.Clear();
       }
       else
       {
-        foreach (var item in _internCache)
+        foreach (var item in _innerDictionary)
         {
-          TValue value;
-          if (_internCache.TryRemove(item.Key, out value)) { value?.TryDispose(); }
+          if (_innerDictionary.TryRemove(item.Key, out TValue value)) { value?.TryDispose(); }
         }
       }
     }
@@ -651,13 +637,13 @@ namespace CuteAnt.Collections
     /// <param name="array"></param>
     /// <param name="arrayIndex"></param>
     public void CopyTo(KeyValuePair<TKey, TValue>[] array, Int32 arrayIndex) =>
-      ((ICollection<KeyValuePair<TKey, TValue>>)_internCache).CopyTo(array, arrayIndex);
+      ((ICollection<KeyValuePair<TKey, TValue>>)_innerDictionary).CopyTo(array, arrayIndex);
 
     /// <summary></summary>
-    public Int32 Count => _internCache.Count;
+    public Int32 Count => _innerDictionary.Count;
 
     /// <summary></summary>
-    public Boolean IsReadOnly => ((ICollection<KeyValuePair<TKey, TValue>>)_internCache).IsReadOnly;
+    public Boolean IsReadOnly => ((ICollection<KeyValuePair<TKey, TValue>>)_innerDictionary).IsReadOnly;
 
     /// <summary></summary>
     /// <param name="item"></param>
@@ -670,7 +656,7 @@ namespace CuteAnt.Collections
 
     /// <summary>GetEnumerator</summary>
     /// <returns></returns>
-    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => _internCache.GetEnumerator();
+    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => _innerDictionary.GetEnumerator();
     //{
     //  //return Items.Select(e => new KeyValuePair<TKey, TValue>(e.Key, e.Value.Value.Value)).ToList().GetEnumerator();
     //  foreach (var item in _internCache)

@@ -110,7 +110,7 @@ namespace CuteAnt.AsyncEx
 			var resultName = resultType.Name;
 			if (resultName.EndsWith("EventArgs", StringComparison.Ordinal))
 			{
-				var eventInfo = type.GetDeclaredEventEx(resultName.Remove(resultName.Length - 9));
+				var eventInfo = type.GetTypeInfo().GetDeclaredEvent(resultName.Remove(resultName.Length - 9));
 				if (eventInfo != null)
 				{
 					return new EventArgsTask<TResult>(target, eventInfo).Task;
@@ -119,9 +119,9 @@ namespace CuteAnt.AsyncEx
 
 			// Try to match to any event with the correct signature.
 			EventInfo match = null;
-			foreach (var eventInfo in type.GetDeclaredEventsEx())
+			foreach (var eventInfo in type.GetTypeInfo().DeclaredEvents)
 			{
-				var invoke = eventInfo.EventHandlerType.GetDeclaredMethodEx("Invoke");
+				var invoke = eventInfo.EventHandlerType.GetTypeInfo().GetDeclaredMethod("Invoke");
 				if (invoke.ReturnType != typeof(void)) { continue; }
 				var parameters = invoke.GetParameters();
 				if (parameters.Length != 2 || parameters[0].ParameterType != typeof(Object) || parameters[1].ParameterType != resultType) { continue; }
@@ -147,7 +147,7 @@ namespace CuteAnt.AsyncEx
 		/// <returns>The event args.</returns>
 		public static Task<TResult> FromEvent(Object target, String eventName)
 		{
-			var eventInfo = target.GetType().GetDeclaredEventEx(eventName);
+			var eventInfo = target.GetType().GetTypeInfo().GetDeclaredEvent(eventName);
 			if (eventInfo == null)
 			{
 				throw new InvalidOperationException("Could not find event " + eventName + " on type " + target.GetType().FullName);
@@ -185,7 +185,7 @@ namespace CuteAnt.AsyncEx
 				_tcs = new TaskCompletionSource<TEventArgs>();
 				_target = target;
 				_eventInfo = eventInfo;
-				var eventCompletedMethod = GetType().GetDeclaredMethodEx("EventCompleted");
+				var eventCompletedMethod = GetType().GetTypeInfo().GetDeclaredMethod("EventCompleted");
 				_subscription = eventCompletedMethod.CreateDelegate(eventInfo.EventHandlerType, this);
 				eventInfo.AddEventHandler(target, _subscription);
 			}
