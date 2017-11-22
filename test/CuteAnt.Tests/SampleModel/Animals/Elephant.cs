@@ -43,9 +43,9 @@ namespace CuteAnt.SampleModel.Animals
     }
     #endregion
 
-    internal static void MakeInternal(Elephant obj)
+    internal static void MakeInternal(Animal obj)
     {
-      obj.MethodInvoked = 100;
+      ((Elephant)obj).MethodInvoked = 100;
     }
 
     #region Methods

@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using CuteAnt.Collections;
 using CuteAnt.Hosting;
+using CuteAnt.Runtime;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 
@@ -2120,6 +2121,19 @@ namespace CuteAnt.Reflection
       }
 
       return null;
+    }
+
+    #endregion
+
+    #region -- GetTypeIdentifier --
+
+    private static readonly CachedReadConcurrentDictionary<Type, string> s_typeIdentifierCache =
+        new CachedReadConcurrentDictionary<Type, string>(DictionaryCacheConstants.SIZE_MEDIUM);
+    private static long _typeIdentifier;
+    public static string GetTypeIdentifier(Type type)
+    {
+      if (null == type) { throw new ArgumentNullException(nameof(type)); }
+      return s_typeIdentifierCache.GetOrAdd(type, t => Utils.GenerateStringId(Interlocked.Increment(ref _typeIdentifier)));
     }
 
     #endregion

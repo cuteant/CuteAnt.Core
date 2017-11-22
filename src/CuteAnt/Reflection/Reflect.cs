@@ -60,11 +60,11 @@ namespace CuteAnt.Reflection
 
       if (argTypes == null) { argTypes = Type.EmptyTypes; }
 
-      var sb = StringBuilderCache.Acquire().Append(type.FullName);
+      var sb = StringBuilderCache.Acquire().Append(TypeUtils.GetTypeIdentifier(type));
 
       foreach (var argType in argTypes)
       {
-        sb.Append('|').Append(argType.FullName);
+        sb.Append('|').Append(TypeUtils.GetTypeIdentifier(argType));
       }
 
       var key = StringBuilderCache.GetStringAndRelease(sb);

@@ -5,6 +5,8 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using CuteAnt;
+using CuteAnt.Reflection;
+using Microsoft.Extensions.Internal;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -40,7 +42,9 @@ namespace Grace.DependencyInjection.Impl
 
       var constructorParameters = GetConstructorParameters(metadataType, metadata);
 
-      var instance = Activator.CreateInstance(metadataType, constructorParameters);
+      // ## 苦竹 修改 ##
+      //var instance = Activator.CreateInstance(metadataType, constructorParameters);
+      var instance = ActivatorUtils.CreateInstance(metadataType, constructorParameters);
 
       BindPropertyValues(instance, metadata);
 
@@ -78,8 +82,9 @@ namespace Grace.DependencyInjection.Impl
       int index = 0;
       foreach (var parameter in parameters)
       {
-        if (parameter.ParameterType == typeof(IActivationStrategyMetadata) ||
-            parameter.ParameterType == typeof(IReadOnlyDictionary<object, object>))
+        var parameterType = parameter.ParameterType;
+        if (parameterType == typeof(IActivationStrategyMetadata) ||
+            parameterType == typeof(IReadOnlyDictionary<object, object>))
         {
           constructorParameters[index] = metadata;
         }
@@ -97,25 +102,34 @@ namespace Grace.DependencyInjection.Impl
           if (parameterValue != null)
           {
             constructorParameters[index] =
-                parameter.ParameterType.GetTypeInfo().IsAssignableFrom(parameterValue.GetType().GetTypeInfo())
+                parameterType.GetTypeInfo().IsAssignableFrom(parameterValue.GetType().GetTypeInfo())
                     ? parameterValue
-                    : ConvertValue(parameter.ParameterType, parameterValue);
+                    : ConvertValue(parameterType, parameterValue);
           }
           else
           {
             constructorParameters[index] = null;
           }
         }
-        else if (parameter.HasDefaultValue())
+        else if (ParameterDefaultValue.TryGetDefaultValue(parameter, out var defaultValue))
         {
-          constructorParameters[index] = parameter.DefaultValue;
+          constructorParameters[index] = defaultValue;
         }
         else
         {
-          constructorParameters[index] = parameter.ParameterType.GetTypeInfo().IsValueType
-              ? Activator.CreateInstance(parameter.ParameterType)
-              : null;
+          constructorParameters[index] = null;
         }
+        // ## 苦竹 修改 ##
+        //else if (parameter.HasDefaultValue())
+        //{
+        //  constructorParameters[index] = parameter.DefaultValue;
+        //}
+        //else
+        //{
+        //  constructorParameters[index] = parameterTypeInfo.IsValueType
+        //      ? ActivatorUtils.FastCreateInstance(parameterType)
+        //      : null;
+        //}
       }
 
       return constructorParameters;
@@ -132,9 +146,9 @@ namespace Grace.DependencyInjection.Impl
 
         object setValue = null;
 
-        setValue = metadata.ContainsKey(propertyInfo.Name) ?
-                    metadata[propertyInfo.Name] :
-                    propertyInfo.GetCustomAttribute<DefaultValueAttribute>()?.Value;
+        setValue = metadata.ContainsKey(propertyInfo.Name)
+                 ? metadata[propertyInfo.Name]
+                 : propertyInfo.GetCustomAttribute<DefaultValueAttribute>()?.Value;
 
         if (setValue != null)
         {

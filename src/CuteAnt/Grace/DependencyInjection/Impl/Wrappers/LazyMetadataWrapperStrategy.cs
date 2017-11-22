@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using CuteAnt.Reflection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl.Expressions;
 
@@ -83,7 +84,9 @@ namespace Grace.DependencyInjection.Impl.Wrappers
       var metadata = _strongMetadataInstanceProvider.GetMetadata(request.ActivationType.GenericTypeArguments()[1],
           wrappedStrategy.Metadata);
 
-      var instance = Activator.CreateInstance(closedClass, scope, request, this, metadata);
+      // ## 苦竹 修改 ##
+      //var instance = Activator.CreateInstance(closedClass, scope, request, this, metadata);
+      var instance = ActivatorUtils.CreateInstance(closedClass, scope, request, this, metadata);
 
       var callExpression =
           Expression.Call(Expression.Constant(instance), closedMethod, request.ScopeParameter,

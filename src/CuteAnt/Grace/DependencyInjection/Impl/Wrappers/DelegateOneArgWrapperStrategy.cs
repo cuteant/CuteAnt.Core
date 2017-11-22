@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using CuteAnt.Reflection;
 using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
@@ -45,7 +46,9 @@ namespace Grace.DependencyInjection.Impl.Wrappers
       var closedMethod = closedClass.GetRuntimeMethod(CreateDelegateMethodName, 
           new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
 
-      var instance = Activator.CreateInstance(closedClass, scope, request, request.Services.InjectionContextCreator, this);
+      // ## 苦竹 修改 ##
+      //var instance = Activator.CreateInstance(closedClass, scope, request, request.Services.InjectionContextCreator, this);
+      var instance = ActivatorUtils.CreateInstance(closedClass, scope, request, request.Services.InjectionContextCreator, this);
 
       var callExpression =
           Expression.Call(Expression.Constant(instance), closedMethod, request.ScopeParameter,

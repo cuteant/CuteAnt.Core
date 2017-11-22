@@ -7,20 +7,8 @@ using CuteAnt.ApplicationParts;
 
 namespace CuteAnt.Performance
 {
-  /// <summary>dynamic method target with five args</summary>
-  /// <typeparam name="T1"></typeparam>
-  /// <typeparam name="T2"></typeparam>
-  /// <typeparam name="T3"></typeparam>
-  /// <typeparam name="T4"></typeparam>
-  /// <typeparam name="T5"></typeparam>
   internal sealed class DynamicMethodTarget<T1, T2, T3, T4, T5>
   {
-    /// <summary>Default constructor</summary>
-    /// <param name="t1"></param>
-    /// <param name="t2"></param>
-    /// <param name="t3"></param>
-    /// <param name="t4"></param>
-    /// <param name="t5"></param>
     public DynamicMethodTarget(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
     {
       TArg1 = t1;
@@ -30,19 +18,10 @@ namespace CuteAnt.Performance
       TArg5 = t5;
     }
 
-    /// <summary>constant one</summary>
     public T1 TArg1;
-
-    /// <summary>constant two</summary>
     public T2 TArg2;
-
-    /// <summary>constnat three</summary>
     public T3 TArg3;
-
-    /// <summary>constant four</summary>
     public T4 TArg4;
-
-    /// <summary>constant five</summary>
     public T5 TArg5;
   }
 
@@ -57,11 +36,11 @@ namespace CuteAnt.Performance
     public void GlobalSetup()
     {
       _typeArguments = new Type[] { typeof(int), typeof(string), typeof(ObjectId), typeof(AssemblyPart), typeof(bool) };
-      _typeArguments2 = new Type[] { typeof(int), typeof(string), typeof(ObjectId), typeof(AssemblyPart), typeof(bool) };
+      _typeArguments2 = new Type[] { typeof(int), typeof(string), typeof(List<int>), typeof(Dictionary<string, long>), typeof(bool) };
     }
 
     [Benchmark(Baseline = true, OperationsPerInvoke = OperationsPerInvoke)]
-    public void MakeGenericType()
+    public void MakeGenericType5()
     {
       var type = typeof(DynamicMethodTarget<,,,,>);
       for (int i = 0; i < OperationsPerInvoke; i++)
@@ -72,13 +51,57 @@ namespace CuteAnt.Performance
     }
 
     [Benchmark(OperationsPerInvoke = OperationsPerInvoke)]
-    public void MakeGenericTypeWithCache()
+    public void MakeGenericTypeWithCache5()
     {
       var type = typeof(DynamicMethodTarget<,,,,>);
       for (int i = 0; i < OperationsPerInvoke; i++)
       {
         var closedType1 = type.GetCachedGenericType(_typeArguments);
         var closedType2 = type.GetCachedGenericType(_typeArguments2);
+      }
+    }
+
+    [Benchmark(OperationsPerInvoke = OperationsPerInvoke)]
+    public void MakeGenericType1()
+    {
+      var type = typeof(List<>);
+      for (int i = 0; i < OperationsPerInvoke; i++)
+      {
+        var closedType1 = type.MakeGenericType(typeof(string));
+        var closedType2 = type.MakeGenericType(typeof(int));
+      }
+    }
+
+    [Benchmark(OperationsPerInvoke = OperationsPerInvoke)]
+    public void MakeGenericTypeWithCache1()
+    {
+      var type = typeof(List<>);
+      for (int i = 0; i < OperationsPerInvoke; i++)
+      {
+        var closedType1 = type.GetCachedGenericType(typeof(string));
+        var closedType2 = type.GetCachedGenericType(typeof(int));
+      }
+    }
+
+    [Benchmark(OperationsPerInvoke = OperationsPerInvoke)]
+    public void MakeGenericType2()
+    {
+      var type = typeof(Dictionary<,>);
+      for (int i = 0; i < OperationsPerInvoke; i++)
+      {
+        var closedType1 = type.MakeGenericType(typeof(string), typeof(string));
+        var closedType2 = type.MakeGenericType(typeof(int), typeof(string));
+      }
+    }
+
+    [Benchmark(OperationsPerInvoke = OperationsPerInvoke)]
+    public void MakeGenericTypeWithCache2()
+    {
+      var type = typeof(Dictionary<,>);
+      for (int i = 0; i < OperationsPerInvoke; i++)
+      {
+        var closedType1 = type.GetCachedGenericType(typeof(string), typeof(string));
+        var closedType2 = type.GetCachedGenericType(typeof(int), typeof(string));
       }
     }
   }

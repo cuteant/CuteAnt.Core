@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using CuteAnt.Reflection;
 
 namespace Grace.Dynamic.Impl
 {
@@ -63,9 +64,11 @@ namespace Grace.Dynamic.Impl
           return CreateArrayTarget(request);
       }
 
-      var closedType = openType.MakeGenericType(request.Constants.Select(c => c.GetType()).ToArray());
-
-      return Activator.CreateInstance(closedType, request.Constants.ToArray());
+      // ## 苦竹 修改 ##
+      //var closedType = openType.MakeGenericType(request.Constants.Select(c => c.GetType()).ToArray());
+      //return Activator.CreateInstance(closedType, request.Constants.ToArray());
+      var closedType = openType.GetCachedGenericType(request.Constants.Select(c => c.GetType()).ToArray());
+      return ActivatorUtils.CreateInstance(closedType, request.Constants.ToArray());
     }
 
     private object CreateArrayTarget(DynamicMethodGenerationRequest request)

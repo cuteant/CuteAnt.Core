@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using CuteAnt.Reflection;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
@@ -36,7 +37,9 @@ namespace Grace.DependencyInjection.Impl.Wrappers
       var closedMethod = closedClass.GetRuntimeMethod(CreateFuncMethodName,
           new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
 
-      var instance = Activator.CreateInstance(closedClass, scope, request, this);
+      // ## 苦竹 修改 ##
+      //var instance = Activator.CreateInstance(closedClass, scope, request, this);
+      var instance = ActivatorUtils.CreateInstance(closedClass, scope, request, this);
 
       var callExpression =
           Expression.Call(Expression.Constant(instance), closedMethod, request.ScopeParameter,
