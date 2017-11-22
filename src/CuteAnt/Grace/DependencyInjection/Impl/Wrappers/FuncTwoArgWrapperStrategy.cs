@@ -32,7 +32,9 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <returns></returns>
     public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
     {
-      var closedClass = typeof(FuncExpression<,,>).MakeGenericType(request.ActivationType.GenericTypeArguments());
+      // ## 苦竹 修改 ##
+      //var closedClass = typeof(FuncExpression<,,>).MakeGenericType(request.ActivationType.GenericTypeArguments());
+      var closedClass = typeof(FuncExpression<,,>).GetCachedGenericType(request.ActivationType.GenericTypeArguments());
 
       var closedMethod = closedClass.GetRuntimeMethod(CreateFuncMethodName,
           new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });

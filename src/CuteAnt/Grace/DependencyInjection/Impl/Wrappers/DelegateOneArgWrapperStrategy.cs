@@ -33,15 +33,18 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <returns></returns>
     public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
     {
-      var invokeMethod = request.ActivationType.GetTypeInfo().GetDeclaredMethod(InvokeMethodName);
+      var activationType = request.ActivationType;
+      var invokeMethod = activationType.GetTypeInfo().GetDeclaredMethod(InvokeMethodName);
 
       var list = new List<Type>(invokeMethod.GetParameters().Select(p => p.ParameterType))
       {
         invokeMethod.ReturnType,
-        request.ActivationType
+        activationType
       };
 
-      var closedClass = typeof(DelegateExpression<,,>).MakeGenericType(list.ToArray());
+      // ## 苦竹 修改 ##
+      //var closedClass = typeof(DelegateExpression<,,>).MakeGenericType(list.ToArray());
+      var closedClass = typeof(DelegateExpression<,,>).GetCachedGenericType(list.ToArray());
 
       var closedMethod = closedClass.GetRuntimeMethod(CreateDelegateMethodName, 
           new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });

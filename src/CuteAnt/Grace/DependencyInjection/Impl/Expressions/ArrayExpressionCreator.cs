@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using CuteAnt.Reflection;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl.Expressions
@@ -53,14 +54,18 @@ namespace Grace.DependencyInjection.Impl.Expressions
     protected virtual Expression CreateSortedArrayExpression(
       Expression arrayInit, Type arrayElementType, IActivationExpressionRequest request)
     {
-      var compareInterface = typeof(IComparer<>).MakeGenericType(arrayElementType);
+      // ## 苦竹 修改 ##
+      //var compareInterface = typeof(IComparer<>).MakeGenericType(arrayElementType);
+      var compareInterface = typeof(IComparer<>).GetCachedGenericType(arrayElementType);
 
       if (request.EnumerableComparer.GetType().GetTypeInfo().IsAssignableFrom(compareInterface.GetTypeInfo()))
       {
         return arrayInit;
       }
 
-      var openMethod = typeof(ArrayExpressionCreator).GetRuntimeMethods().First(m => m.Name == "SortArray");
+      const string _sortArrayMethodName = nameof(ArrayExpressionCreator.SortArray);
+      var openMethod = typeof(ArrayExpressionCreator).GetRuntimeMethods()
+          .First(m => string.Equals(_sortArrayMethodName, m.Name, StringComparison.Ordinal));
 
       var closedMethod = openMethod.MakeGenericMethod(arrayElementType);
 
@@ -85,7 +90,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
         if (expressions.Count != 0) { return expressions; }
 
-        request.Services.Compiler.ProcessMissingStrategyProviders(scope, request.Services.Compiler.CreateNewRequest(arrayElementType, request.ObjectGraphDepth + 1, scope));
+        request.Services.Compiler.ProcessMissingStrategyProviders(scope,
+            request.Services.Compiler.CreateNewRequest(arrayElementType, request.ObjectGraphDepth + 1, scope));
 
         expressions = GetActivationExpressionResultsFromStrategies(scope, request, arrayElementType);
       }
@@ -134,8 +140,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (strategy != null && parentStrategy != strategy)
             {
-              var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType,
-                  request.Info, true, true);
+              var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy,
+                  request.RequestingStrategy?.ActivationType, request.RequestType, request.Info, true, true);
 
               var expression = strategy.GetActivationExpression(scope, newRequest);
 
@@ -171,8 +177,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
               continue;
             }
 
-            var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, request.RequestType,
-                request.Info, true, true);
+            var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy,
+                request.RequestingStrategy?.ActivationType, request.RequestType, request.Info, true, true);
 
             var expression = strategy.GetActivationExpression(scope, newRequest);
 
@@ -280,7 +286,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// <param name="arrayElementType"></param>
     /// <param name="request"></param>
     /// <param name="expressions"></param>
-    protected virtual void ProcessWrappers(IInjectionScope scope, Type arrayElementType, IActivationExpressionRequest request, List<IActivationExpressionResult> expressions)
+    protected virtual void ProcessWrappers(IInjectionScope scope, Type arrayElementType,
+      IActivationExpressionRequest request, List<IActivationExpressionResult> expressions)
     {
       var wrappers = _wrapperExpressionCreator.GetWrappers(scope, arrayElementType, request, out Type wrappedType);
 
@@ -298,7 +305,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             if (expressions.Count == 0)
             {
-              var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy, request.RequestingStrategy?.ActivationType, RequestType.Other, null, true, true);
+              var newRequest = request.NewRequest(arrayElementType, request.RequestingStrategy,
+                  request.RequestingStrategy?.ActivationType, RequestType.Other, null, true, true);
 
               request.Services.Compiler.ProcessMissingStrategyProviders(scope, newRequest);
 
@@ -328,8 +336,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// <param name="expressions"></param>
     /// <param name="wrappedType"></param>
     /// <param name="wrappers"></param>
-    public static void GetExpressionsFromCollections(IInjectionScope scope, Type arrayElementType,
-      IActivationExpressionRequest request, List<IActivationExpressionResult> expressions, Type wrappedType, ImmutableLinkedList<IActivationPathNode> wrappers)
+    public static void GetExpressionsFromCollections(IInjectionScope scope, Type arrayElementType, IActivationExpressionRequest request,
+      List<IActivationExpressionResult> expressions, Type wrappedType, ImmutableLinkedList<IActivationPathNode> wrappers)
     {
       var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(wrappedType);
 
@@ -361,8 +369,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// <param name="collection"></param>
     /// <param name="wrappedType"></param>
     /// <param name="wrappers"></param>
-    public static void GetExpressionFromCollection(IInjectionScope scope, Type arrayElementType,
-      IActivationExpressionRequest request, List<IActivationExpressionResult> expressions, IActivationStrategyCollection<ICompiledExportStrategy> collection, Type wrappedType,
+    public static void GetExpressionFromCollection(IInjectionScope scope, Type arrayElementType, IActivationExpressionRequest request,
+      List<IActivationExpressionResult> expressions, IActivationStrategyCollection<ICompiledExportStrategy> collection, Type wrappedType,
       ImmutableLinkedList<IActivationPathNode> wrappers)
     {
       foreach (var strategy in collection.GetStrategies())

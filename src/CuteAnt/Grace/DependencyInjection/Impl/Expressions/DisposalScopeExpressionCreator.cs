@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using CuteAnt.Reflection;
 
 namespace Grace.DependencyInjection.Impl.Expressions
 {
@@ -16,9 +17,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// <param name="activationConfiguration">activation configuration</param>
     /// <param name="result">result for instantiation</param>
     /// <returns></returns>
-    public IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result)
+    public IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, 
+      TypeActivationConfiguration activationConfiguration, IActivationExpressionResult result)
     {
-      var closedActionType = typeof(Action<>).MakeGenericType(activationConfiguration.ActivationType);
+      // ## 苦竹 修改 ##
+      //var closedActionType = typeof(Action<>).MakeGenericType(activationConfiguration.ActivationType);
+      var closedActionType = typeof(Action<>).GetCachedGenericType(activationConfiguration.ActivationType);
 
       object disposalDelegate = null;
 

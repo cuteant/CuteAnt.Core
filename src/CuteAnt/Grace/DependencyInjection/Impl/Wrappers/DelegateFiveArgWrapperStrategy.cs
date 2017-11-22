@@ -33,15 +33,18 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <returns></returns>
     public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
     {
-      var invokeMethod = request.ActivationType.GetTypeInfo().GetDeclaredMethod(InvokeMethodName);
+      var activationType = request.ActivationType;
+      var invokeMethod = activationType.GetTypeInfo().GetDeclaredMethod(InvokeMethodName);
 
       var list = new List<Type>(invokeMethod.GetParameters().Select(p => p.ParameterType))
       {
         invokeMethod.ReturnType,
-        request.ActivationType
+        activationType
       };
 
-      var closedClass = typeof(DelegateExpression<,,,,,,>).MakeGenericType(list.ToArray());
+      // ## 苦竹 修改 ##
+      //var closedClass = typeof(DelegateExpression<,,,,,,>).MakeGenericType(list.ToArray());
+      var closedClass = typeof(DelegateExpression<,,,,,,>).GetCachedGenericType(list.ToArray());
 
       var closedMethod = closedClass.GetRuntimeMethod(CreateDelegateMethodName,
           new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
@@ -81,7 +84,8 @@ namespace Grace.DependencyInjection.Impl.Wrappers
       /// <param name="request">request</param>
       /// <param name="injectionContextCreator">injection context creator</param>
       /// <param name="strategy">strategy</param>
-      public DelegateExpression(IInjectionScope scope, IActivationExpressionRequest request, IInjectionContextCreator injectionContextCreator, IActivationStrategy strategy)
+      public DelegateExpression(IInjectionScope scope, IActivationExpressionRequest request,
+        IInjectionContextCreator injectionContextCreator, IActivationStrategy strategy)
       {
         _injectionContextCreator = injectionContextCreator;
 
@@ -140,7 +144,9 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         /// <param name="arg3Id"></param>
         /// <param name="arg4Id"></param>
         /// <param name="arg5Id"></param>
-        public FuncClass(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context, ActivationStrategyDelegate action, IInjectionContextCreator injectionContextCreator, string arg1Id, string arg2Id, string arg3Id, string arg4Id, string arg5Id)
+        public FuncClass(IExportLocatorScope scope, IDisposalScope disposalScope,
+          IInjectionContext context, ActivationStrategyDelegate action, IInjectionContextCreator injectionContextCreator,
+          string arg1Id, string arg2Id, string arg3Id, string arg4Id, string arg5Id)
         {
           _scope = scope;
           _disposalScope = disposalScope;

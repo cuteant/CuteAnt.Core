@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using CuteAnt.Reflection;
 
 namespace Grace.DependencyInjection.Impl.EnumerableStrategies
 {
@@ -25,7 +26,9 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
     {
       var elementType = request.ActivationType.GenericTypeArguments()[0];
 
-      var closedType = typeof(List<>).MakeGenericType(elementType);
+      // ## 苦竹 修改 ##
+      //var closedType = typeof(List<>).MakeGenericType(elementType);
+      var closedType = typeof(List<>).GetCachedGenericType(elementType);
 
       var newRequest = request.NewRequest(elementType.MakeArrayType(), this, closedType, RequestType.Other, null, true, true);
 
@@ -40,8 +43,9 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
 
         if (parameters.Length == 1)
         {
-          return parameters[0].ParameterType.IsConstructedGenericType() &&
-                       parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+          var parameterType = parameters[0].ParameterType;
+          return parameterType.IsConstructedGenericType() &&
+                       parameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
         }
 
         return false;

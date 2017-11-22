@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using CuteAnt.Reflection;
 
 namespace Grace.DependencyInjection.Impl.EnumerableStrategies
 {
@@ -29,9 +30,11 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
     {
       var elementType = request.ActivationType.GenericTypeArguments()[0];
 
-      var closedType = typeof(ReadOnlyCollection<>).MakeGenericType(elementType);
-
-      var newRequest = request.NewRequest(typeof(IList<>).MakeGenericType(elementType), this, closedType, RequestType.Other, null, true);
+      // ## 苦竹 修改 ##
+      //var closedType = typeof(ReadOnlyCollection<>).MakeGenericType(elementType);
+      //var newRequest = request.NewRequest(typeof(IList<>).MakeGenericType(elementType), this, closedType, RequestType.Other, null, true);
+      var closedType = typeof(ReadOnlyCollection<>).GetCachedGenericType(elementType);
+      var newRequest = request.NewRequest(typeof(IList<>).GetCachedGenericType(elementType), this, closedType, RequestType.Other, null, true);
 
       newRequest.SetFilter(request.Filter);
       newRequest.SetEnumerableComparer(request.EnumerableComparer);
@@ -44,8 +47,9 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
 
         if (parameters.Length == 1)
         {
-          return parameters[0].ParameterType.IsConstructedGenericType() &&
-                       parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(IList<>);
+          var parameterType = parameters[0].ParameterType;
+          return parameterType.IsConstructedGenericType() &&
+                       parameterType.GetGenericTypeDefinition() == typeof(IList<>);
         }
 
         return false;
@@ -83,9 +87,9 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
     {
       var elementType = request.ActivationType.GenericTypeArguments()[0];
 
-      var closedType = typeof(ReadOnlyCollectionX<>).MakeGenericType(elementType);
+      var closedType = typeof(ReadOnlyCollectionX<>).GetCachedGenericType(elementType);
 
-      var newRequest = request.NewRequest(typeof(IList<>).MakeGenericType(elementType), this, closedType, RequestType.Other, null, true);
+      var newRequest = request.NewRequest(typeof(IList<>).GetCachedGenericType(elementType), this, closedType, RequestType.Other, null, true);
 
       newRequest.SetFilter(request.Filter);
       newRequest.SetEnumerableComparer(request.EnumerableComparer);
@@ -98,8 +102,9 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
 
         if (parameters.Length == 1)
         {
-          return parameters[0].ParameterType.IsConstructedGenericType() &&
-                       parameters[0].ParameterType.GetGenericTypeDefinition() == typeof(IList<>);
+          var parameterType = parameters[0].ParameterType;
+          return parameterType.IsConstructedGenericType() &&
+                       parameterType.GetGenericTypeDefinition() == typeof(IList<>);
         }
 
         return false;
