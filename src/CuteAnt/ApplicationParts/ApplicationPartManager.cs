@@ -4,11 +4,13 @@ using System.Linq;
 
 namespace CuteAnt.ApplicationParts
 {
-  /// <summary>Manages the parts and features of an Orleans application.</summary>
+  /// <summary>Manages the parts and features of an application.</summary>
   public class ApplicationPartManager
   {
     private readonly List<IApplicationPart> _applicationParts = new List<IApplicationPart>();
     private readonly List<IApplicationFeatureProvider> _featureProviders = new List<IApplicationFeatureProvider>();
+
+    public static ApplicationPartManager Singleton { get; } = new ApplicationPartManager();
 
     /// <summary>Gets the list of <see cref="IApplicationFeatureProvider"/>s.</summary>
     public

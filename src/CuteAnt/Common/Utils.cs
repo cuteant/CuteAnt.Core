@@ -7,7 +7,7 @@ using System.Text;
 using CuteAnt.Text;
 using Microsoft.Extensions.Logging;
 
-namespace CuteAnt.Runtime
+namespace CuteAnt
 {
   /// <summary>The Utils class contains a variety of utility methods for use in application and grain code.</summary>
   public static class Utils

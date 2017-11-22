@@ -6,7 +6,7 @@ namespace CuteAnt.ApplicationParts
 {
   /// <summary>An <see cref="IApplicationPart"/> backed by an <see cref="Assembly"/>.</summary>
   [DebuggerDisplay("{" + nameof(Assembly) + "}")]
-  public class AssemblyPart : IApplicationPart
+  public class AssemblyPart : ApplicationPart, IApplicationPart
   {
     /// <summary>Initalizes a new <see cref="AssemblyPart"/> instance.</summary>
     /// <param name="assembly"></param>
@@ -17,6 +17,9 @@ namespace CuteAnt.ApplicationParts
 
     /// <summary>Gets the <see cref="Assembly"/> of the <see cref="IApplicationPart"/>.</summary>
     public Assembly Assembly { get; }
+
+    /// <summary>Gets the name of the <see cref="ApplicationPart"/>.</summary>
+    public override string Name => this.Assembly.GetName().Name;
 
     /// <summary>Returns <see langword="true"/> if this instance is equivalent to the provided instance, <see langword="false"/> otherwise.</summary>
     /// <param name="other">The other instance/</param>

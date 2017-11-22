@@ -478,7 +478,7 @@ namespace CuteAnt.Reflection
       return bestMatcher.Invocation.Invoke(parameterValues);
     }
 
-    public static object CreateInstance<TInstance>(ILocatorService services, params object[] parameters)
+    public static TInstance CreateInstance<TInstance>(ILocatorService services, params object[] parameters)
     {
       var instanceTypeInfo = typeof(TInstance).GetTypeInfo();
       if (instanceTypeInfo.IsInterface || instanceTypeInfo.IsAbstract)
@@ -544,6 +544,22 @@ namespace CuteAnt.Reflection
 
     public static TInstance CreateInstance<TInstance>(ILocatorService services, Type implementationType, params object[] parameters)
         => (TInstance)CreateInstance(services, implementationType, parameters);
+
+    #endregion
+
+    #region -- GetServiceOrCreateInstance --
+
+    public static T GetServiceOrCreateInstance<T>(IServiceProvider provider)
+        => (T)GetServiceOrCreateInstance(provider, typeof(T));
+
+    public static object GetServiceOrCreateInstance(IServiceProvider provider, Type type)
+        => provider.GetService(type) ?? CreateInstance(provider, type);
+
+    public static T GetServiceOrCreateInstance<T>(ILocatorService services)
+        => (T)GetServiceOrCreateInstance(services, typeof(T));
+
+    public static object GetServiceOrCreateInstance(ILocatorService services, Type type)
+        => services.LocateOrDefault(type) ?? CreateInstance(services, type);
 
     #endregion
   }

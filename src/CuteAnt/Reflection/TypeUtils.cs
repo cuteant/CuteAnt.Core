@@ -9,8 +9,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using CuteAnt.Collections;
-using CuteAnt.Hosting;
-using CuteAnt.Runtime;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 
@@ -52,6 +50,8 @@ namespace CuteAnt.Reflection
     #endregion
 
     #region @@ Fields @@
+
+    private static readonly ILogger s_logger = TraceLogger.GetLogger(typeof(TypeUtils));
 
     private static readonly ConcurrentDictionary<Tuple<Type, TypeFormattingOptions>, string> ParseableNameCache = new ConcurrentDictionary<Tuple<Type, TypeFormattingOptions>, string>();
 
@@ -705,11 +705,11 @@ namespace CuteAnt.Reflection
     #region -- GetTypes / GetDefinedTypes --
 
 #if NET40
-    public static IEnumerable<Type> GetTypes(Assembly assembly, Predicate<Type> whereFunc, ILogger logger)
+    public static IEnumerable<Type> GetTypes(Assembly assembly, Predicate<Type> whereFunc, ILogger logger = null)
     {
       return assembly.IsDynamic ? Enumerable.Empty<Type>() : GetDefinedTypes(assembly, logger).Where(type => !type.GetTypeInfo().IsNestedPrivate && whereFunc(type));
     }
-    public static IEnumerable<Type> GetDefinedTypes(Assembly assembly, ILogger logger)
+    public static IEnumerable<Type> GetDefinedTypes(Assembly assembly, ILogger logger = null)
     {
       try
       {
@@ -717,6 +717,7 @@ namespace CuteAnt.Reflection
       }
       catch (Exception exception)
       {
+        if (null == logger) { logger = s_logger; }
         if (logger.IsWarningLevelEnabled())
         {
           var message = $"Exception loading types from assembly '{assembly.FullName}': {TraceLogger.PrintException(exception)}.";
@@ -772,12 +773,12 @@ namespace CuteAnt.Reflection
     //  }
     //}
 #else
-    public static IEnumerable<Type> GetTypes(Assembly assembly, Predicate<Type> whereFunc, ILogger logger)
+    public static IEnumerable<Type> GetTypes(Assembly assembly, Predicate<Type> whereFunc, ILogger logger = null)
     {
       return assembly.IsDynamic ? Enumerable.Empty<Type>() : GetDefinedTypes(assembly, logger).Select(t => t.AsType()).Where(type => !type.GetTypeInfo().IsNestedPrivate && whereFunc(type));
     }
 
-    public static IEnumerable<TypeInfo> GetDefinedTypes(Assembly assembly, ILogger logger)
+    public static IEnumerable<TypeInfo> GetDefinedTypes(Assembly assembly, ILogger logger = null)
     {
       try
       {
@@ -785,6 +786,7 @@ namespace CuteAnt.Reflection
       }
       catch (Exception exception)
       {
+        if (null == logger) { logger = s_logger; }
         if (logger.IsWarningLevelEnabled())
         {
           var message = $"Exception loading types from assembly '{assembly.FullName}': {TraceLogger.PrintException(exception)}.";
@@ -1760,14 +1762,14 @@ namespace CuteAnt.Reflection
 
     #region -- ResolveType / TryResolveType --
 
-    private static readonly DictionaryCache<string, Type> _resolveTypeCache =
-        new DictionaryCache<string, Type>(DictionaryCacheConstants.SIZE_MEDIUM, StringComparer.Ordinal);
+    private static readonly CachedReadConcurrentDictionary<string, Type> _resolveTypeCache =
+        new CachedReadConcurrentDictionary<string, Type>(DictionaryCacheConstants.SIZE_MEDIUM, StringComparer.Ordinal);
     private static readonly List<Func<string, Type>> _resolvers = new List<Func<string, Type>>();
     private static readonly ReaderWriterLockSlim _resolverLock = new ReaderWriterLockSlim();
     private static readonly CachedReadConcurrentDictionary<string, Assembly> _assemblyCache =
         new CachedReadConcurrentDictionary<string, Assembly>(StringComparer.Ordinal);
-    private static readonly DictionaryCache<TypeNameKey, Type> _typeNameKeyCache =
-        new DictionaryCache<TypeNameKey, Type>(DictionaryCacheConstants.SIZE_MEDIUM, TypeNameKeyComparer.Default);
+    private static readonly CachedReadConcurrentDictionary<TypeNameKey, Type> _typeNameKeyCache =
+        new CachedReadConcurrentDictionary<TypeNameKey, Type>(DictionaryCacheConstants.SIZE_MEDIUM, TypeNameKeyComparer.Default);
 
     /// <summary>Registers a custom type resolver in case you really need to manipulate the way serialization works with types.
     /// The <paramref name="resolve"/> func is allowed to return null in case you cannot resolve the requested type.
@@ -1841,7 +1843,7 @@ namespace CuteAnt.Reflection
     [MethodImpl(InlineMethod.Value)]
     private static void AddTypeToCache(string typeName, Type type)
     {
-      var entry = _resolveTypeCache.GetItem(typeName, _ => type);
+      var entry = _resolveTypeCache.GetOrAdd(typeName, _ => type);
       if (!ReferenceEquals(entry, type)) { throw new InvalidOperationException("inconsistent type name association"); }
     }
 
@@ -1877,7 +1879,7 @@ namespace CuteAnt.Reflection
     [MethodImpl(InlineMethod.Value)]
     private static void AddTypeToCache(TypeNameKey typeNameKey, Type type)
     {
-      var entry = _typeNameKeyCache.GetItem(typeNameKey, _ => type);
+      var entry = _typeNameKeyCache.GetOrAdd(typeNameKey, _ => type);
       if (!ReferenceEquals(entry, type)) { throw new InvalidOperationException("inconsistent type name association"); }
     }
 
@@ -1916,49 +1918,28 @@ namespace CuteAnt.Reflection
             }
           }
         }
-        if (assembly == null)
+
+        if (assembly != null)
         {
-          var dirEnumArgs = HostBuilderContext.Singleton.GetDictionaryEnumArgs();
-          foreach (var asm in AssemblyLoader.LoadAssemblies(dirEnumArgs))
-          {
-            if (string.Equals(asm.FullName, assemblyName, StringComparison.Ordinal) ||
-                string.Equals(asm.GetName().Name, assemblyName, StringComparison.Ordinal))
-            {
-              assembly = asm;
-              break;
-            }
-          }
+          type = assembly.GetType(typeName, false);
+          if (type != null) { return true; }
         }
 
-        if (assembly == null)
-        {
-          type = null;
-          return false;
-        }
-
-        type = assembly.GetType(typeName, false);
-        if (type == null)
-        {
-          //// if generic type, try manually parsing the type arguments for the case of dynamically loaded assemblies
-          //// example generic typeName format: System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]
-          //if (typeName.IndexOf('`') >= 0)
-          //{
-          //  try
-          //  {
-          //    type = GetGenericTypeFromTypeName(typeName, assembly);
-          //  }
-          //  catch //(Exception ex)
-          //  {
-          //    return false;
-          //    //throw new SerializationException("Could not find type '{0}' in assembly '{1}'.".FormatWith(typeName, assembly.FullName), ex);
-          //  }
-          //}
-
-          // 这儿如果采用 Newtonsoft.Json 的代码，是无法通过 RuntimeTypeNameFormatterTests 测试的
-
-          type = Type.GetType(typeName, throwOnError: false)
-              ?? Type.GetType(typeName, ResolveAssembly, ResolveType, false);
-        }
+        // 这儿如果采用 Newtonsoft.Json 的代码，是无法通过 RuntimeTypeNameFormatterTests 测试的
+        //// if generic type, try manually parsing the type arguments for the case of dynamically loaded assemblies
+        //// example generic typeName format: System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]
+        //if (typeName.IndexOf('`') >= 0)
+        //{
+        //  try
+        //  {
+        //    type = GetGenericTypeFromTypeName(typeName, assembly);
+        //  }
+        //  catch //(Exception ex)
+        //  {
+        //    return false;
+        //    //throw new SerializationException("Could not find type '{0}' in assembly '{1}'.".FormatWith(typeName, assembly.FullName), ex);
+        //  }
+        //}
       }
       else
       {
@@ -1967,17 +1948,18 @@ namespace CuteAnt.Reflection
           type = assembly.GetType(typeName, false);
           if (type != null) { return true; }
         }
-
-        type = Type.GetType(typeName, throwOnError: false)
-            ?? Type.GetType(typeName, ResolveAssembly, ResolveType, false);
       }
 
-      if (null == type) { return false; }
-      if (type.Assembly.ReflectionOnly)
-      {
-        throw new InvalidOperationException($"Type resolution for {typeName}[{assemblyName}] yielded reflection-only type.");
-      }
-      return true;
+      type = Type.GetType(typeName, throwOnError: false)
+          ?? Type.GetType(typeName, ResolveAssembly, ResolveType, false);
+
+      //if (null == type) { return false; }
+      //if (type.Assembly.ReflectionOnly)
+      //{
+      //  throw new InvalidOperationException($"Type resolution for {typeName}[{assemblyName}] yielded reflection-only type.");
+      //}
+      //return true;
+      return type != null;
 
       Assembly ResolveAssembly(AssemblyName asmName)
       {
@@ -1995,8 +1977,7 @@ namespace CuteAnt.Reflection
         }
         if (_assemblyCache.TryGetValue(fullAssemblyName, out result)) return result;
 
-        var dirEnumArgs = HostBuilderContext.Singleton.GetDictionaryEnumArgs();
-        foreach (var assembly in AssemblyLoader.LoadAssemblies(dirEnumArgs))
+        foreach (var assembly in AssemblyLoader.LoadAssemblies())
         {
           var name = assembly.GetName();
           if (!_assemblyCache.ContainsKey(name.FullName))

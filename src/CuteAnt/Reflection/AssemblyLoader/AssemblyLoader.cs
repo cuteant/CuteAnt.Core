@@ -6,12 +6,12 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Text;
-using Microsoft.Extensions.DependencyInjection;
+using Grace.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace CuteAnt.Reflection
 {
-  internal sealed class AssemblyLoader
+  public sealed class AssemblyLoader
   {
     #region @@ Fields @@
 
@@ -30,6 +30,9 @@ namespace CuteAnt.Reflection
     internal bool SimulateLoadCriteriaFailure { get; set; }
     internal bool SimulateReflectionOnlyLoadFailure { get; set; }
     internal bool RethrowDiscoveryExceptions { get; set; }
+
+    /// <summary>Gets reference paths used to perform runtime compilation.</summary>
+    public static string[] AssemblyReferencePaths { get; set; }
 
     #endregion
 
@@ -51,6 +54,26 @@ namespace CuteAnt.Reflection
     #endregion
 
     #region --& LoadAssemblies &--
+
+    public static List<Assembly> LoadAssemblies(ILogger logger = null)
+    {
+      var dirEnumArgs = new Dictionary<string, SearchOption>(StringComparer.Ordinal);
+
+      if (AssemblyReferencePaths != null && AssemblyReferencePaths.Length > 0)
+      {
+        foreach (var dir in AssemblyReferencePaths)
+        {
+          if (!Directory.Exists(dir)) { continue; }
+          dirEnumArgs[dir] = SearchOption.TopDirectoryOnly;
+        }
+      }
+      if (dirEnumArgs.Count == 0)
+      {
+        dirEnumArgs[AppDomain.CurrentDomain.BaseDirectory] = SearchOption.TopDirectoryOnly;
+      }
+
+      return LoadAssemblies(dirEnumArgs, logger);
+    }
 
     public static List<Assembly> LoadAssemblies(Dictionary<string, SearchOption> dirEnumArgs, ILogger logger = null)
     {
@@ -108,17 +131,35 @@ namespace CuteAnt.Reflection
 
     #region --& LoadAndCreateInstance &--
 
-    public static T LoadAndCreateInstance<T>(string assemblyName, ILogger logger, IServiceProvider serviceProvider) where T : class
+    public static T LoadAndCreateInstance<T>(string assemblyName, ILocatorService services, ILogger logger = null) where T : class
     {
       try
       {
         var assembly = Assembly.Load(new AssemblyName(assemblyName));
         var foundType = TypeUtils.GetTypes(assembly, type => typeof(T).IsAssignableFrom(type), logger).First();
 
-        return (T)ActivatorUtilities.GetServiceOrCreateInstance(serviceProvider, foundType);
+        return (T)ActivatorUtils.GetServiceOrCreateInstance(services, foundType);
       }
       catch (Exception exc)
       {
+        if (null == logger) { logger = s_logger; }
+        logger.LogError(exc, exc.Message);
+        throw;
+      }
+    }
+
+    public static T LoadAndCreateInstance<T>(string assemblyName, IServiceProvider serviceProvider, ILogger logger = null) where T : class
+    {
+      try
+      {
+        var assembly = Assembly.Load(new AssemblyName(assemblyName));
+        var foundType = TypeUtils.GetTypes(assembly, type => typeof(T).IsAssignableFrom(type), logger).First();
+
+        return (T)ActivatorUtils.GetServiceOrCreateInstance(serviceProvider, foundType);
+      }
+      catch (Exception exc)
+      {
+        if (null == logger) { logger = s_logger; }
         logger.LogError(exc, exc.Message);
         throw;
       }
@@ -158,11 +199,11 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-    #region -- DiscoverAssemblies --
+    #region == DiscoverAssemblies ==
 
     // this method is internal so that it can be accessed from unit tests, which only test the discovery
     // process-- not the actual loading of assemblies.
-    public List<string> DiscoverAssemblies()
+    internal List<string> DiscoverAssemblies()
     {
       try
       {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CuteAnt.Metadata;
+using CuteAnt.Reflection;
 
 namespace CuteAnt.ApplicationParts
 {
@@ -39,7 +40,8 @@ namespace CuteAnt.ApplicationParts
         {
           if (!typeof(IFeaturePopulator<TFeature>).IsAssignableFrom(attribute.PopulatorType)) continue;
 
-          var populator = (IFeaturePopulator<TFeature>)Activator.CreateInstance(attribute.PopulatorType);
+          //var populator = (IFeaturePopulator<TFeature>)Activator.CreateInstance(attribute.PopulatorType);
+          var populator = ActivatorUtils.FastCreateInstance<IFeaturePopulator<TFeature>>(attribute.PopulatorType);
           populator.Populate(feature);
         }
       }
