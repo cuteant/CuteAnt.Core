@@ -6,6 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using CuteAnt.Text;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Microsoft.Extensions.Logging
@@ -105,7 +106,7 @@ namespace Microsoft.Extensions.Logging
     private static string PrintException_Helper(Exception exception, int level, bool includeStackTrace)
     {
       if (exception == null) return String.Empty;
-      var sb = new StringBuilder();
+      var sb = StringBuilderCache.Acquire();
       sb.Append(PrintOneException(exception, level, includeStackTrace));
       if (exception is ReflectionTypeLoadException)
       {
@@ -127,7 +128,7 @@ namespace Microsoft.Extensions.Logging
       else if (exception is AggregateException)
       {
         var innerExceptions = ((AggregateException)exception).InnerExceptions;
-        if (innerExceptions == null) return sb.ToString();
+        if (innerExceptions == null) { return StringBuilderCache.GetStringAndRelease(sb); }
 
         foreach (Exception inner in innerExceptions)
         {
@@ -140,7 +141,7 @@ namespace Microsoft.Extensions.Logging
         // call recursively on a single inner exception.
         sb.Append(PrintException_Helper(exception.InnerException, level + 1, includeStackTrace));
       }
-      return sb.ToString();
+      return StringBuilderCache.GetStringAndRelease(sb);
     }
 
     private static string PrintOneException(Exception exception, int level, bool includeStackTrace)

@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text;
 using CuteAnt.Collections;
+using CuteAnt.Text;
 
 namespace CuteAnt.Reflection
 {
@@ -34,13 +35,9 @@ namespace CuteAnt.Reflection
       {
         string FormatType(Type t)
         {
-          var builder = new StringBuilder();
-#if NET40
+          var builder = StringBuilderCache.Acquire();
           Format(builder, t, isElementType: false);
-#else
-          Format(builder, t.GetTypeInfo(), isElementType: false);
-#endif
-          return builder.ToString();
+          return StringBuilderCache.GetStringAndRelease(builder);
         }
 
         result = Cache.GetOrAdd(type, FormatType);
@@ -65,9 +62,9 @@ namespace CuteAnt.Reflection
       {
         string FormatType(Type t)
         {
-          var builder = new StringBuilder();
+          var builder = StringBuilderCache.Acquire();
           Format(builder, t.GetTypeInfo(), isElementType: false);
-          return builder.ToString();
+          return StringBuilderCache.GetStringAndRelease(builder);
         }
 
         result = Cache.GetOrAdd(type, FormatType);

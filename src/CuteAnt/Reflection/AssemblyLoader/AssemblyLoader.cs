@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Text;
+using CuteAnt.Text;
 using Grace.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -537,9 +538,11 @@ namespace CuteAnt.Reflection
 
     private void LogComplaints(string pathName, IEnumerable<string> complaints)
     {
+      if (!_logger.IsInformationLevelEnabled()) { return; }
+
       var distinctComplaints = complaints.Distinct();
       // generate feedback so that the operator can determine why her DLL didn't load.
-      var msg = new StringBuilder();
+      var msg = StringBuilderCache.Acquire();
       string bullet = Environment.NewLine + "\t* ";
       msg.Append(String.Format("User assembly ignored: {0}", pathName));
       int count = 0;
@@ -551,9 +554,12 @@ namespace CuteAnt.Reflection
       }
 
       if (0 == count)
+      {
+        StringBuilderCache.Release(msg);
         throw new InvalidOperationException("No complaint provided for assembly.");
+      }
       // we can't use an error code here because we want each log message to be displayed.
-      if (_logger.IsInformationLevelEnabled()) _logger.LogInformation(msg.ToString());
+      _logger.LogInformation(StringBuilderCache.GetStringAndRelease(msg));
     }
 
     #endregion
