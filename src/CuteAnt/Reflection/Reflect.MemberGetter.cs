@@ -32,8 +32,8 @@ namespace CuteAnt.Reflection
 
     #region -- GetValueGetter for PropertyInfo --
 
-    private static readonly DictionaryCache<PropertyInfo, MemberGetter> s_propertiesValueGetterCache =
-        new DictionaryCache<PropertyInfo, MemberGetter>();
+    private static readonly CachedReadConcurrentDictionary<PropertyInfo, MemberGetter> s_propertiesValueGetterCache =
+        new CachedReadConcurrentDictionary<PropertyInfo, MemberGetter>();
     private static readonly Func<PropertyInfo, MemberGetter> s_propertyInfoGetValueGetterFunc = GetValueGetterInternal;
 
     /// <summary>GetValueGetter</summary>
@@ -43,7 +43,7 @@ namespace CuteAnt.Reflection
     {
       if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
 
-      return s_propertiesValueGetterCache.GetItem(propertyInfo, s_propertyInfoGetValueGetterFunc);
+      return s_propertiesValueGetterCache.GetOrAdd(propertyInfo, s_propertyInfoGetValueGetterFunc);
     }
 
     private static MemberGetter GetValueGetterInternal(PropertyInfo propertyInfo)
@@ -90,8 +90,8 @@ namespace CuteAnt.Reflection
 
     #region -- GetValueGetter for FieldInfo --
 
-    private static readonly DictionaryCache<FieldInfo, MemberGetter> s_fieldsValueGetterCache =
-        new DictionaryCache<FieldInfo, MemberGetter>();
+    private static readonly CachedReadConcurrentDictionary<FieldInfo, MemberGetter> s_fieldsValueGetterCache =
+        new CachedReadConcurrentDictionary<FieldInfo, MemberGetter>();
     private static readonly Func<FieldInfo, MemberGetter> s_fieldInfoGetValueGetterFunc = GetValueGetterInternal;
 
     /// <summary>GetValueGetter</summary>
@@ -101,7 +101,7 @@ namespace CuteAnt.Reflection
     {
       if (fieldInfo == null) { throw new ArgumentNullException(nameof(fieldInfo)); }
 
-      return s_fieldsValueGetterCache.GetItem(fieldInfo, s_fieldInfoGetValueGetterFunc);
+      return s_fieldsValueGetterCache.GetOrAdd(fieldInfo, s_fieldInfoGetValueGetterFunc);
     }
 
     private static MemberGetter GetValueGetterInternal(FieldInfo fieldInfo)

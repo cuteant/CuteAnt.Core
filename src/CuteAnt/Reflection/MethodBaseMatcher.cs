@@ -35,7 +35,7 @@ namespace CuteAnt.Reflection
       return true;
     }
 
-    public int Match(object[] givenParameters, out object[] parameterValues, out bool[] parameterValuesSet, out ParameterInfo[] paramInfos)
+    internal int Match(object[] givenParameters, out object[] parameterValues, out bool[] parameterValuesSet, out ParameterInfo[] paramInfos)
     {
       parameterValuesSet = new bool[Parameters.Length];
       parameterValues = new object[Parameters.Length];

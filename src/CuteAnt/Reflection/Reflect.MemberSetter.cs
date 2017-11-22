@@ -42,8 +42,8 @@ namespace CuteAnt.Reflection
 
     #region -- GetValueSetter for PropertyInfo --
 
-    private static readonly DictionaryCache<PropertyInfo, MemberSetter> s_propertiesValueSetterCache =
-        new DictionaryCache<PropertyInfo, MemberSetter>();
+    private static readonly CachedReadConcurrentDictionary<PropertyInfo, MemberSetter> s_propertiesValueSetterCache =
+        new CachedReadConcurrentDictionary<PropertyInfo, MemberSetter>();
     private static readonly Func<PropertyInfo, MemberSetter> s_propertyInfoGetValueSetterFunc = GetValueSetterInternal;
 
     /// <summary>GetValueGetter</summary>
@@ -53,7 +53,7 @@ namespace CuteAnt.Reflection
     {
       if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
 
-      return s_propertiesValueSetterCache.GetItem(propertyInfo, s_propertyInfoGetValueSetterFunc);
+      return s_propertiesValueSetterCache.GetOrAdd(propertyInfo, s_propertyInfoGetValueSetterFunc);
     }
 
     /// <summary>GetValueSetter</summary>
@@ -103,8 +103,8 @@ namespace CuteAnt.Reflection
 
     #region -- GetValueSetter for FieldInfo --
 
-    private static readonly DictionaryCache<FieldInfo, MemberSetter> s_fieldsValueSetterCache =
-        new DictionaryCache<FieldInfo, MemberSetter>();
+    private static readonly CachedReadConcurrentDictionary<FieldInfo, MemberSetter> s_fieldsValueSetterCache =
+        new CachedReadConcurrentDictionary<FieldInfo, MemberSetter>();
     private static readonly Func<FieldInfo, MemberSetter> s_fieldInfoGetValueSetterFunc = GetValueSetterInternal;
 
     /// <summary>GetValueSetter</summary>
@@ -114,7 +114,7 @@ namespace CuteAnt.Reflection
     {
       if (fieldInfo == null) { throw new ArgumentNullException(nameof(fieldInfo)); }
 
-      return s_fieldsValueSetterCache.GetItem(fieldInfo, s_fieldInfoGetValueSetterFunc);
+      return s_fieldsValueSetterCache.GetOrAdd(fieldInfo, s_fieldInfoGetValueSetterFunc);
     }
 
     private static MemberSetter GetValueSetterInternal(FieldInfo fieldInfo)
