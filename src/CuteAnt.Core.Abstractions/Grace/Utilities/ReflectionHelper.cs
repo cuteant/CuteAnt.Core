@@ -45,9 +45,7 @@ namespace Grace.Utilities
       return meets;
     }
 
-    /// <summary>
-    /// Creates a closed type using the requested type parameters. it will return null if it's not possible
-    /// </summary>
+    /// <summary>Creates a closed type using the requested type parameters. it will return null if it's not possible.</summary>
     /// <param name="exportedType"></param>
     /// <param name="requestedType"></param>
     /// <returns></returns>

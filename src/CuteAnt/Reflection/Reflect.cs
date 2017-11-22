@@ -77,7 +77,7 @@ namespace CuteAnt.Reflection
       do
       {
         snapshot = s_genericTypeCache;
-        newCache = new Dictionary<string, Type>(s_genericTypeCache)
+        newCache = new Dictionary<string, Type>(s_genericTypeCache, StringComparer.Ordinal)
         {
           [key] = genericType
         };

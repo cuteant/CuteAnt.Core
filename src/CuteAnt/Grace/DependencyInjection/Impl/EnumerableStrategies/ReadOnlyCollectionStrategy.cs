@@ -27,7 +27,7 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
     /// <returns></returns>
     public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
     {
-      var elementType = request.ActivationType.GetTypeGenericArguments()[0];
+      var elementType = request.ActivationType.GenericTypeArguments()[0];
 
       var closedType = typeof(ReadOnlyCollection<>).MakeGenericType(elementType);
 
@@ -81,7 +81,7 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
     /// <returns></returns>
     public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
     {
-      var elementType = request.ActivationType.GetTypeGenericArguments()[0];
+      var elementType = request.ActivationType.GenericTypeArguments()[0];
 
       var closedType = typeof(ReadOnlyCollectionX<>).MakeGenericType(elementType);
 

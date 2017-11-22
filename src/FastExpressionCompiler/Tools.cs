@@ -42,7 +42,7 @@ namespace FastExpressionCompiler
 #endif
 
 #if NET40
-    public static Type GetWrappedTypeFromNullable(this Type type) => type.GetTypeGenericArguments()[0];
+    public static Type GetWrappedTypeFromNullable(this Type type) => type.GenericTypeArguments()[0];
 #else
     public static Type GetWrappedTypeFromNullable(this Type type) => type.GetTypeInfo().GenericTypeArguments[0];
 #endif

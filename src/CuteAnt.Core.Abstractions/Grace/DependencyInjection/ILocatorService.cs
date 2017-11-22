@@ -20,6 +20,11 @@ namespace Grace.DependencyInjection
 
     /// <summary>Locate type or return default value</summary>
     /// <param name="type"></param>
+    /// <returns></returns>
+    object LocateOrDefault(Type type);
+
+    /// <summary>Locate type or return default value</summary>
+    /// <param name="type"></param>
     /// <param name="defaultValue"></param>
     /// <returns></returns>
     object LocateOrDefault(Type type, object defaultValue);

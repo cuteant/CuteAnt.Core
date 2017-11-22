@@ -39,7 +39,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     {
       var constructor = request.ActivationType.GetTypeInfo().DeclaredConstructors.First();
 
-      var wrappedType = request.ActivationType.GetTypeGenericArguments()[0];
+      var wrappedType = request.ActivationType.GenericTypeArguments()[0];
       var ownedParameter = Expression.Parameter(request.ActivationType);
 
       var assign = Expression.Assign(ownedParameter, Expression.New(constructor));

@@ -68,7 +68,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <returns></returns>
     public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
     {
-      var closedClass = typeof(LazyExpression<,>).MakeGenericType(request.ActivationType.GetTypeGenericArguments());
+      var closedClass = typeof(LazyExpression<,>).MakeGenericType(request.ActivationType.GenericTypeArguments());
 
       var closedMethod = closedClass.GetRuntimeMethod(CreateLazyMethodName, 
           new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
@@ -80,7 +80,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         throw new LocateException(request.GetStaticInjectionContext(), "Could not find strategy that is wrapped");
       }
 
-      var metadata = _strongMetadataInstanceProvider.GetMetadata(request.ActivationType.GetTypeGenericArguments()[1],
+      var metadata = _strongMetadataInstanceProvider.GetMetadata(request.ActivationType.GenericTypeArguments()[1],
           wrappedStrategy.Metadata);
 
       var instance = Activator.CreateInstance(closedClass, scope, request, this, metadata);
@@ -141,7 +141,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         {
           if (_delegate == null)
           {
-            var requestType = _request.ActivationType.GetTypeGenericArguments()[0];
+            var requestType = _request.ActivationType.GenericTypeArguments()[0];
 
             var newRequest = _request.NewRequest(requestType, _activationStrategy, typeof(Lazy<TResult>),
                 RequestType.Other, null, true, true);

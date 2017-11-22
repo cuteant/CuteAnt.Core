@@ -53,7 +53,7 @@ namespace Grace.DependencyInjection.Impl
 
       if (createDelegate == null)
       {
-        var elementType = type.GetTypeGenericArguments()[0];
+        var elementType = type.GenericTypeArguments()[0];
 
         var method = typeof(DynamicIEnumerableLocator)
             .GetRuntimeMethods().FirstOrDefault(m => string.Equals(_enumerableCreateMethodName, m.Name, StringComparison.Ordinal));

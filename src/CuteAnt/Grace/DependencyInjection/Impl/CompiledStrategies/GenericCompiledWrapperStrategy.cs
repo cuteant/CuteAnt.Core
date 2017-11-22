@@ -77,7 +77,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
     {
       if (type.IsConstructedGenericType())
       {
-        var args = type.GetTypeGenericArguments();
+        var args = type.GenericTypeArguments();
 
         if (args.Length > _wrappedGenericArgPosition)
         {

@@ -1666,7 +1666,7 @@ namespace FastExpressionCompiler
       private static MethodInfo GetCurryClosureMethod(object lambda, bool isAction)
       {
 #if NET40
-        var lambdaTypeArgs = lambda.GetType().GetTypeGenericArguments();
+        var lambdaTypeArgs = lambda.GetType().GenericTypeArguments();
 #else
         var lambdaTypeArgs = lambda.GetType().GetTypeInfo().GenericTypeArguments;
 #endif

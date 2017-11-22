@@ -66,7 +66,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
           _genericArgPosition >= 0 &&
           ActivationType.GetTypeInfo().IsGenericTypeDefinition)
       {
-        return type.GetTypeGenericArguments()[_genericArgPosition];
+        return type.GenericTypeArguments()[_genericArgPosition];
       }
 
       return _wrappedType;

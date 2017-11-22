@@ -19,7 +19,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     {
       if (type.IsConstructedGenericType())
       {
-        return type.GetTypeGenericArguments()[0];
+        return type.GenericTypeArguments()[0];
       }
 
       return null;
@@ -31,7 +31,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <returns></returns>
     public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
     {
-      var closedClass = typeof(FuncExpression<>).MakeGenericType(request.ActivationType.GetTypeGenericArguments());
+      var closedClass = typeof(FuncExpression<>).MakeGenericType(request.ActivationType.GenericTypeArguments());
 
       var closedMethod = closedClass.GetRuntimeMethod(CreateFuncMethodName,
           new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
@@ -57,7 +57,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
       /// <param name="activationStrategy"></param>
       public FuncExpression(IInjectionScope scope, IActivationExpressionRequest request, IActivationStrategy activationStrategy)
       {
-        var requestType = request.ActivationType.GetTypeGenericArguments()[0];
+        var requestType = request.ActivationType.GenericTypeArguments()[0];
 
         var newRequest = request.NewRequest(requestType, activationStrategy, typeof(Func<TResult>), RequestType.Other, null, true);
 

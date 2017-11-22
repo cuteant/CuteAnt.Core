@@ -16,7 +16,7 @@ namespace FastExpressionCompiler
     /// <summary>MSRuntimeLookup - from ReferenceSource\mscorlib\system\reflection\RuntimeReflectionExtensions.cs</summary>
     private const BindingFlags MSRuntimeLookup = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 
-    public static Type[] GetTypeGenericArguments(this Type type)
+    public static Type[] GenericTypeArguments(this Type type)
     {
       return type.IsGenericType && !type.IsGenericTypeDefinition ? type.GetGenericArguments() : Type.EmptyTypes;
     }

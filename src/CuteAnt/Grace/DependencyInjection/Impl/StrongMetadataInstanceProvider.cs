@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using CuteAnt;
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -60,7 +61,7 @@ namespace Grace.DependencyInjection.Impl
       {
         if (constructors[0].GetParameters().Length == 0)
         {
-          return new object[0];
+          return EmptyArray<object>.Instance; // new object[0];
         }
 
         constructorInfo = constructors[0];

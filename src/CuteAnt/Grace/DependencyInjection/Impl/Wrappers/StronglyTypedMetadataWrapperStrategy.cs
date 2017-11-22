@@ -61,7 +61,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
       var expressionResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 
-      var metadata = _strongMetadataInstanceProvider.GetMetadata(request.ActivationType.GetTypeGenericArguments()[1], strategy.Metadata);
+      var metadata = _strongMetadataInstanceProvider.GetMetadata(request.ActivationType.GenericTypeArguments()[1], strategy.Metadata);
 
       var newExpression =
           Expression.New(constructor, expressionResult.Expression, Expression.Constant(metadata));
