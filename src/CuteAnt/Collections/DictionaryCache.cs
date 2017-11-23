@@ -148,25 +148,32 @@ namespace CuteAnt.Collections
     /// <returns></returns>
     public virtual TValue GetItem(TKey key, Func<TKey, TValue> func)
     {
-      if (func == null) { throw new ArgumentNullException(nameof(func)); }
-
-      if (!_innerDictionary.TryGetValue(key, out TValue value))
+      if (CacheDefault)
       {
-        var addedValue = func(key);
-        if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
+        return _innerDictionary.GetOrAdd(key, func);
+      }
+      else
+      {
+        if (!_innerDictionary.TryGetValue(key, out TValue value))
         {
-          if (_innerDictionary.TryAdd(key, addedValue))
+          if (null == func) { throw new ArgumentNullException(nameof(func)); }
+
+          var addedValue = func(key);
+          if (!object.Equals(addedValue, s_defaultValue))
           {
-            value = addedValue;
-          }
-          else
-          {
-            _innerDictionary.TryGetValue(key, out value);
+            if (_innerDictionary.TryAdd(key, addedValue))
+            {
+              value = addedValue;
+            }
+            else
+            {
+              _innerDictionary.TryGetValue(key, out value);
+            }
           }
         }
-      }
 
-      return value;
+        return value;
+      }
     }
 
     /// <summary>扩展获取数据项，当数据项不存在时，通过调用委托获取数据项。线程安全。</summary>
@@ -177,10 +184,10 @@ namespace CuteAnt.Collections
     /// <returns></returns>
     public virtual TValue GetItem<TArg>(TKey key, TArg arg, Func<TKey, TArg, TValue> func)
     {
-      if (func == null) { throw new ArgumentNullException(nameof(func)); }
-
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
+        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+
         var addedValue = func(key, arg);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
@@ -208,10 +215,10 @@ namespace CuteAnt.Collections
     /// <returns></returns>
     public virtual TValue GetItem<TArg, TArg2>(TKey key, TArg arg, TArg2 arg2, Func<TKey, TArg, TArg2, TValue> func)
     {
-      if (func == null) { throw new ArgumentNullException(nameof(func)); }
-
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
+        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+
         var addedValue = func(key, arg, arg2);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
@@ -241,10 +248,10 @@ namespace CuteAnt.Collections
     /// <returns></returns>
     public virtual TValue GetItem<TArg, TArg2, TArg3>(TKey key, TArg arg, TArg2 arg2, TArg3 arg3, Func<TKey, TArg, TArg2, TArg3, TValue> func)
     {
-      if (func == null) { throw new ArgumentNullException(nameof(func)); }
-
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
+        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+
         var addedValue = func(key, arg, arg2, arg3);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
@@ -276,10 +283,10 @@ namespace CuteAnt.Collections
     /// <returns></returns>
     public virtual TValue GetItem<TArg, TArg2, TArg3, TArg4>(TKey key, TArg arg, TArg2 arg2, TArg3 arg3, TArg4 arg4, Func<TKey, TArg, TArg2, TArg3, TArg4, TValue> func)
     {
-      if (func == null) { throw new ArgumentNullException(nameof(func)); }
-
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
+        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+
         var addedValue = func(key, arg, arg2, arg3, arg4);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
@@ -314,10 +321,10 @@ namespace CuteAnt.Collections
     public virtual TValue GetItem<TArg, TArg2, TArg3, TArg4, TArg5>(TKey key, TArg arg, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5,
       Func<TKey, TArg, TArg2, TArg3, TArg4, TArg5, TValue> func)
     {
-      if (func == null) { throw new ArgumentNullException(nameof(func)); }
-
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
+        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
@@ -354,10 +361,10 @@ namespace CuteAnt.Collections
     public virtual TValue GetItem<TArg, TArg2, TArg3, TArg4, TArg5, TArg6>(TKey key, TArg arg, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6,
       Func<TKey, TArg, TArg2, TArg3, TArg4, TArg5, TArg6, TValue> func)
     {
-      if (func == null) { throw new ArgumentNullException(nameof(func)); }
-
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
+        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5, arg6);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
@@ -396,10 +403,10 @@ namespace CuteAnt.Collections
     public virtual TValue GetItem<TArg, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(TKey key, TArg arg, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7,
       Func<TKey, TArg, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TValue> func)
     {
-      if (func == null) { throw new ArgumentNullException(nameof(func)); }
-
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
+        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5, arg6, arg7);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
@@ -440,10 +447,10 @@ namespace CuteAnt.Collections
     public virtual TValue GetItem<TArg, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(TKey key, TArg arg, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8,
       Func<TKey, TArg, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TValue> func)
     {
-      if (func == null) { throw new ArgumentNullException(nameof(func)); }
-
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
+        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
@@ -486,10 +493,10 @@ namespace CuteAnt.Collections
     public virtual TValue GetItem<TArg, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9>(TKey key, TArg arg, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9,
       Func<TKey, TArg, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TValue> func)
     {
-      if (func == null) { throw new ArgumentNullException(nameof(func)); }
-
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
+        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {
@@ -534,10 +541,10 @@ namespace CuteAnt.Collections
     public virtual TValue GetItem<TArg, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10>(TKey key, TArg arg, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7, TArg8 arg8, TArg9 arg9, TArg10 arg10,
       Func<TKey, TArg, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8, TArg9, TArg10, TValue> func)
     {
-      if (func == null) { throw new ArgumentNullException(nameof(func)); }
-
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
+        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
         {

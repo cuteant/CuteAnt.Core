@@ -38,17 +38,12 @@ namespace CuteAnt.Collections
     private Dictionary<TKey, TValue> _readCache;
 
     /// <summary>Initializes a new instance of the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> class.</summary>
-    public CachedReadConcurrentDictionary()
-    {
-      _dictionary = new ConcurrentDictionary<TKey, TValue>();
-    }
+    public CachedReadConcurrentDictionary() => _dictionary = new ConcurrentDictionary<TKey, TValue>();
 
     /// <summary>Initializes a new instance of the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> class.</summary>
     /// <param name="capacity">The initial number of elements that the <see cref="ConcurrentDictionary{TKey,TValue}"/> can contain.</param>
     public CachedReadConcurrentDictionary(int capacity)
-    {
-      _dictionary = new ConcurrentDictionary<TKey, TValue>(DefaultConcurrencyLevel, capacity);
-    }
+        => _dictionary = new ConcurrentDictionary<TKey, TValue>(DefaultConcurrencyLevel, capacity);
 
     /// <summary>Initializes a new instance of the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> class
     /// that contains elements copied from the specified collection and uses the specified
@@ -73,9 +68,7 @@ namespace CuteAnt.Collections
     /// that contains elements copied from the specified collection.</summary>
     /// <param name="collection">The <see cref="T:IEnumerable{KeyValuePair{TKey,TValue}}"/> whose elements are copied to the new instance.</param>
     public CachedReadConcurrentDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection)
-    {
-      _dictionary = new ConcurrentDictionary<TKey, TValue>(collection);
-    }
+        => _dictionary = new ConcurrentDictionary<TKey, TValue>(collection);
 
     /// <summary>Initializes a new instance of the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/>
     /// class that contains elements copied from the specified collection and uses the specified
@@ -112,10 +105,7 @@ namespace CuteAnt.Collections
     public bool Contains(KeyValuePair<TKey, TValue> item) => GetReadDictionary().Contains(item);
 
     /// <inheritdoc />
-    public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-    {
-      GetReadDictionary().CopyTo(array, arrayIndex);
-    }
+    public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => GetReadDictionary().CopyTo(array, arrayIndex);
 
     /// <inheritdoc />
     public bool Remove(KeyValuePair<TKey, TValue> item)
@@ -138,16 +128,219 @@ namespace CuteAnt.Collections
       InvalidateCache();
     }
 
-    /// <summary>dds a key/value pair to the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> if the key does not exist.</summary>
+    /// <summary>Adds a key/value pair to the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> if the key does not exist.</summary>
     /// <param name="key">The key of the element to add.</param>
     /// <param name="valueFactory">The function used to generate a value for the key</param>
-    /// <returns>The value for the key. This will be either the existing value for the key if the key is already in the dictionary, or the new value if the key was not in the dictionary.</returns>
+    /// <returns>The value for the key.  This will be either the existing value for the key if the
+    /// key is already in the dictionary, or the new value for the key as returned by valueFactory
+    /// if the key was not in the dictionary.</returns>
     public TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory)
     {
       if (GetReadDictionary().TryGetValue(key, out TValue value)) { return value; }
 
       value = _dictionary.GetOrAdd(key, valueFactory);
       InvalidateCache();
+
+      return value;
+    }
+
+    /// <summary>Adds a key/value pair to the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> if the key does not already exist.</summary>
+    /// <param name="key">The key of the element to add.</param>
+    /// <param name="valueFactory">The function used to generate a value for the key</param>
+    /// <param name="factoryArgument">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <returns>The value for the key.  This will be either the existing value for the key if the
+    /// key is already in the dictionary, or the new value for the key as returned by valueFactory
+    /// if the key was not in the dictionary.</returns>
+    public TValue GetOrAdd<TArg>(TKey key, Func<TKey, TArg, TValue> valueFactory, TArg factoryArgument)
+    {
+      if (GetReadDictionary().TryGetValue(key, out TValue value)) { return value; }
+
+      var addedValue = valueFactory(key, factoryArgument);
+      if (_dictionary.TryAdd(key, addedValue))
+      {
+        value = addedValue;
+        InvalidateCache();
+      }
+      else
+      {
+        _dictionary.TryGetValue(key, out value);
+      }
+
+      return value;
+    }
+
+    /// <summary>Adds a key/value pair to the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> if the key does not already exist.</summary>
+    /// <param name="key">The key of the element to add.</param>
+    /// <param name="valueFactory">The function used to generate a value for the key</param>
+    /// <param name="factoryArg1">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg2">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <returns>The value for the key.  This will be either the existing value for the key if the
+    /// key is already in the dictionary, or the new value for the key as returned by valueFactory
+    /// if the key was not in the dictionary.</returns>
+    public TValue GetOrAdd<TArg1, TArg2>(TKey key, Func<TKey, TArg1, TArg2, TValue> valueFactory, TArg1 factoryArg1, TArg2 factoryArg2)
+    {
+      if (GetReadDictionary().TryGetValue(key, out TValue value)) { return value; }
+
+      var addedValue = valueFactory(key, factoryArg1, factoryArg2);
+      if (_dictionary.TryAdd(key, addedValue))
+      {
+        value = addedValue;
+        InvalidateCache();
+      }
+      else
+      {
+        _dictionary.TryGetValue(key, out value);
+      }
+
+      return value;
+    }
+
+    /// <summary>Adds a key/value pair to the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> if the key does not already exist.</summary>
+    /// <param name="key">The key of the element to add.</param>
+    /// <param name="valueFactory">The function used to generate a value for the key</param>
+    /// <param name="factoryArg1">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg2">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg3">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <returns>The value for the key.  This will be either the existing value for the key if the
+    /// key is already in the dictionary, or the new value for the key as returned by valueFactory
+    /// if the key was not in the dictionary.</returns>
+    public TValue GetOrAdd<TArg1, TArg2, TArg3>(TKey key, Func<TKey, TArg1, TArg2, TArg3, TValue> valueFactory,
+      TArg1 factoryArg1, TArg2 factoryArg2, TArg3 factoryArg3)
+    {
+      if (GetReadDictionary().TryGetValue(key, out TValue value)) { return value; }
+
+      var addedValue = valueFactory(key, factoryArg1, factoryArg2, factoryArg3);
+      if (_dictionary.TryAdd(key, addedValue))
+      {
+        value = addedValue;
+        InvalidateCache();
+      }
+      else
+      {
+        _dictionary.TryGetValue(key, out value);
+      }
+
+      return value;
+    }
+
+    /// <summary>Adds a key/value pair to the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> if the key does not already exist.</summary>
+    /// <param name="key">The key of the element to add.</param>
+    /// <param name="valueFactory">The function used to generate a value for the key</param>
+    /// <param name="factoryArg1">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg2">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg3">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg4">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <returns>The value for the key.  This will be either the existing value for the key if the
+    /// key is already in the dictionary, or the new value for the key as returned by valueFactory
+    /// if the key was not in the dictionary.</returns>
+    public TValue GetOrAdd<TArg1, TArg2, TArg3, TArg4>(TKey key, Func<TKey, TArg1, TArg2, TArg3, TArg4, TValue> valueFactory,
+      TArg1 factoryArg1, TArg2 factoryArg2, TArg3 factoryArg3, TArg4 factoryArg4)
+    {
+      if (GetReadDictionary().TryGetValue(key, out TValue value)) { return value; }
+
+      var addedValue = valueFactory(key, factoryArg1, factoryArg2, factoryArg3, factoryArg4);
+      if (_dictionary.TryAdd(key, addedValue))
+      {
+        value = addedValue;
+        InvalidateCache();
+      }
+      else
+      {
+        _dictionary.TryGetValue(key, out value);
+      }
+
+      return value;
+    }
+
+    /// <summary>Adds a key/value pair to the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> if the key does not already exist.</summary>
+    /// <param name="key">The key of the element to add.</param>
+    /// <param name="valueFactory">The function used to generate a value for the key</param>
+    /// <param name="factoryArg1">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg2">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg3">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg4">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg5">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <returns>The value for the key.  This will be either the existing value for the key if the
+    /// key is already in the dictionary, or the new value for the key as returned by valueFactory
+    /// if the key was not in the dictionary.</returns>
+    public TValue GetOrAdd<TArg1, TArg2, TArg3, TArg4, TArg5>(TKey key, Func<TKey, TArg1, TArg2, TArg3, TArg4, TArg5, TValue> valueFactory,
+      TArg1 factoryArg1, TArg2 factoryArg2, TArg3 factoryArg3, TArg4 factoryArg4, TArg5 factoryArg5)
+    {
+      if (GetReadDictionary().TryGetValue(key, out TValue value)) { return value; }
+
+      var addedValue = valueFactory(key, factoryArg1, factoryArg2, factoryArg3, factoryArg4, factoryArg5);
+      if (_dictionary.TryAdd(key, addedValue))
+      {
+        value = addedValue;
+        InvalidateCache();
+      }
+      else
+      {
+        _dictionary.TryGetValue(key, out value);
+      }
+
+      return value;
+    }
+
+    /// <summary>Adds a key/value pair to the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> if the key does not already exist.</summary>
+    /// <param name="key">The key of the element to add.</param>
+    /// <param name="valueFactory">The function used to generate a value for the key</param>
+    /// <param name="factoryArg1">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg2">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg3">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg4">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg5">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg6">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <returns>The value for the key.  This will be either the existing value for the key if the
+    /// key is already in the dictionary, or the new value for the key as returned by valueFactory
+    /// if the key was not in the dictionary.</returns>
+    public TValue GetOrAdd<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(TKey key, Func<TKey, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TValue> valueFactory,
+      TArg1 factoryArg1, TArg2 factoryArg2, TArg3 factoryArg3, TArg4 factoryArg4, TArg5 factoryArg5, TArg6 factoryArg6)
+    {
+      if (GetReadDictionary().TryGetValue(key, out TValue value)) { return value; }
+
+      var addedValue = valueFactory(key, factoryArg1, factoryArg2, factoryArg3, factoryArg4, factoryArg5, factoryArg6);
+      if (_dictionary.TryAdd(key, addedValue))
+      {
+        value = addedValue;
+        InvalidateCache();
+      }
+      else
+      {
+        _dictionary.TryGetValue(key, out value);
+      }
+
+      return value;
+    }
+
+    /// <summary>Adds a key/value pair to the <see cref="CachedReadConcurrentDictionary{TKey,TValue}"/> if the key does not already exist.</summary>
+    /// <param name="key">The key of the element to add.</param>
+    /// <param name="valueFactory">The function used to generate a value for the key</param>
+    /// <param name="factoryArg1">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg2">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg3">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg4">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg5">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg6">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <param name="factoryArg7">An argument value to pass into <paramref name="valueFactory"/>.</param>
+    /// <returns>The value for the key.  This will be either the existing value for the key if the
+    /// key is already in the dictionary, or the new value for the key as returned by valueFactory
+    /// if the key was not in the dictionary.</returns>
+    public TValue GetOrAdd<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(TKey key, Func<TKey, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TValue> valueFactory,
+      TArg1 factoryArg1, TArg2 factoryArg2, TArg3 factoryArg3, TArg4 factoryArg4, TArg5 factoryArg5, TArg6 factoryArg6, TArg7 factoryArg7)
+    {
+      if (GetReadDictionary().TryGetValue(key, out TValue value)) { return value; }
+
+      var addedValue = valueFactory(key, factoryArg1, factoryArg2, factoryArg3, factoryArg4, factoryArg5, factoryArg6, factoryArg7);
+      if (_dictionary.TryAdd(key, addedValue))
+      {
+        value = addedValue;
+        InvalidateCache();
+      }
+      else
+      {
+        _dictionary.TryGetValue(key, out value);
+      }
 
       return value;
     }
