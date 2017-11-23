@@ -119,6 +119,7 @@ namespace Grace.DependencyInjection.Impl
     /// <typeparam name="T"></typeparam>
     /// <param name="key"></param>
     /// <param name="dataProvider"></param>
+    /// <param name="tValue"></param>
     /// <returns></returns>
     protected virtual bool GetValueFromExtraDataProvider<T>(object key, IExtraDataContainer dataProvider, out object tValue)
     {

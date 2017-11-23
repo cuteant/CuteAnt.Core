@@ -1,24 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>CuteAnt.Tests</RootNamespace>
-    <AssemblyName>CuteAnt.Tests</AssemblyName>
+    <RootNamespace>Serilog.Extensions.Logging.Tests</RootNamespace>
+    <AssemblyName>Serilog.Extensions.Logging.Tests</AssemblyName>
     <TargetFrameworks>netcoreapp2.0;net471</TargetFrameworks>
     <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">2.0.3</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNetTestSdkPackageVersion)" />
-    <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsPackageVersion)" />
     <PackageReference Include="xunit" Version="$(xUnitPackageVersion)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(xUnitRunnerVsPackageVersion)" />
-    <PackageReference Include="Xunit.SkippableFact" Version="$(xUnitSkippableFactPackageVersion)" />
+    <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsPackageVersion)" />
+    <PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJsonPackageVersion)" />
+    <PackageReference Include="Moq" Version="$(MoqPackageVersion)" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\..\src\CuteAnt\CuteAnt.Core.csproj" />
+    <ProjectReference Include="..\..\src\Serilog.Extensions.Logging\Serilog.Extensions.Logging.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Update="xunit.runner.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+
 </Project>

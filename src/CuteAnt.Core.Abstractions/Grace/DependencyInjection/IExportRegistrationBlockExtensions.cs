@@ -131,7 +131,6 @@ namespace Grace.DependencyInjection
     }
 
     /// <summary>Import all members of a specific type and can be filtered</summary>
-    /// <typeparam name="T"></typeparam>
     /// <param name="registrationBlock"></param>
     /// <param name="filter"></param>
     /// <param name="injectMethods">should methods be injected, false by default</param>
