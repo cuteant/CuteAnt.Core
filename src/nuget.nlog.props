@@ -1,0 +1,17 @@
+<Project>
+  <!-- Set common properties regarding assembly information and nuget packages -->
+  <PropertyGroup>
+    <Authors>Microsoft;Julian Verdurmen;Seabiscuit</Authors>
+    <Company>Maksim Volkau</Company>
+    <Product>NLog</Product>
+    <Copyright>Copyright © 2017 Julian Verdurmen</Copyright>
+    <PackageIconUrl>http://nlog-project.org/NConfig.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/NLog/NLog.Extensions.Logging</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/NLog/NLog.Extensions.Logging/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>git://github.com/NLog/NLog.Extensions.Logging</RepositoryUrl>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <IncludeSymbols>false</IncludeSymbols>
+    <IncludeSource>false</IncludeSource>
+  </PropertyGroup>
+</Project>
