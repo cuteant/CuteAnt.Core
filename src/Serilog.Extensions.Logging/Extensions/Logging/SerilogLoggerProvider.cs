@@ -1,5 +1,5 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+﻿// Copyright (c) .NET Foundation. All rights reserved. Licensed under the Apache License, Version
+// 2.0. See License.txt in the project root for license information.
 
 using System;
 #if ASYNCLOCAL
@@ -18,18 +18,24 @@ using Serilog.Context;
 namespace Serilog.Extensions.Logging
 {
   /// <summary>An <see cref="ILoggerProvider"/> that pipes events through Serilog.</summary>
+  [ProviderAlias("Serilog")]
   public class SerilogLoggerProvider : ILoggerProvider, ILogEventEnricher
   {
     internal const string OriginalFormatPropertyName = "{OriginalFormat}";
     internal const string ScopePropertyName = "Scope";
 
     // May be null; if it is, Log.Logger will be lazily used
-    readonly ILogger _logger;
-    readonly Action _dispose;
+    private readonly ILogger _logger;
+
+    private readonly Action _dispose;
 
     /// <summary>Construct a <see cref="SerilogLoggerProvider"/>.</summary>
-    /// <param name="logger">A Serilog logger to pipe events through; if null, the static <see cref="Log"/> class will be used.</param>
-    /// <param name="dispose">If true, the provided logger or static log class will be disposed/closed when the provider is disposed.</param>
+    /// <param name="logger">
+    /// A Serilog logger to pipe events through; if null, the static <see cref="Log"/> class will be used.
+    /// </param>
+    /// <param name="dispose">
+    /// If true, the provided logger or static log class will be disposed/closed when the provider is disposed.
+    /// </param>
     public SerilogLoggerProvider(ILogger logger = null, bool dispose = false)
     {
       if (logger != null)
@@ -44,26 +50,25 @@ namespace Serilog.Extensions.Logging
       }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public FrameworkLogger CreateLogger(string name)
     {
       return new SerilogLogger(this, _logger, name);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public IDisposable BeginScope<T>(T state)
     {
       if (CurrentScope != null)
         return new SerilogLoggerScope(this, state);
 
-      // The outermost scope pushes and pops the Serilog `LogContext` - once
-      // this enricher is on the stack, the `CurrentScope` property takes care
-      // of the rest of the `BeginScope()` stack.
+      // The outermost scope pushes and pops the Serilog `LogContext` - once this enricher is on the
+      // stack, the `CurrentScope` property takes care of the rest of the `BeginScope()` stack.
       var popSerilogContext = LogContext.PushProperties(this);
       return new SerilogLoggerScope(this, state, popSerilogContext);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
       List<LogEventPropertyValue> scopeItems = null;
@@ -87,13 +92,20 @@ namespace Serilog.Extensions.Logging
     }
 
 #if ASYNCLOCAL
-    readonly AsyncLocal<SerilogLoggerScope> _value = new AsyncLocal<SerilogLoggerScope>();
+    private readonly AsyncLocal<SerilogLoggerScope> _value = new AsyncLocal<SerilogLoggerScope>();
 
     internal SerilogLoggerScope CurrentScope
     {
-      get { return _value.Value; }
-      set { _value.Value = value; }
+      get
+      {
+        return _value.Value;
+      }
+      set
+      {
+        _value.Value = value;
+      }
     }
+
 #else
     readonly string _currentScopeKey = nameof(SerilogLoggerScope) + "#" + Guid.NewGuid().ToString("n");
 
@@ -111,7 +123,7 @@ namespace Serilog.Extensions.Logging
     }
 #endif
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose()
     {
       _dispose?.Invoke();

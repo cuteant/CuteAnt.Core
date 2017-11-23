@@ -1,28 +1,25 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+﻿// Copyright (c) .NET Foundation. All rights reserved. Licensed under the Apache License, Version
+// 2.0. See License.txt in the project root for license information.
 
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Serilog.Core;
 using Serilog.Events;
-using FrameworkLogger = Microsoft.Extensions.Logging.ILogger;
-using System.Reflection;
 using Serilog.Parsing;
+using FrameworkLogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Serilog.Extensions.Logging
 {
-  class SerilogLogger : FrameworkLogger
+  internal class SerilogLogger : FrameworkLogger
   {
-    readonly SerilogLoggerProvider _provider;
-    readonly ILogger _logger;
+    private readonly SerilogLoggerProvider _provider;
+    private readonly ILogger _logger;
 
-    static readonly MessageTemplateParser _messageTemplateParser = new MessageTemplateParser();
+    private static readonly MessageTemplateParser _messageTemplateParser = new MessageTemplateParser();
 
-    public SerilogLogger(
-        SerilogLoggerProvider provider,
-        ILogger logger = null,
-        string name = null)
+    public SerilogLogger(SerilogLoggerProvider provider, ILogger logger = null, string name = null)
     {
       if (provider == null) throw new ArgumentNullException(nameof(provider));
       _provider = provider;
@@ -31,14 +28,11 @@ namespace Serilog.Extensions.Logging
       // If a logger was passed, the provider has already added itself as an enricher
       _logger = _logger ?? Serilog.Log.Logger.ForContext(new[] { provider });
 
-      Name = name;
       if (name != null)
       {
         _logger = _logger.ForContext(Constants.SourceContextPropertyName, name);
       }
     }
-
-    public string Name { get; }
 
     public bool IsEnabled(LogLevel logLevel)
     {
@@ -128,7 +122,7 @@ namespace Serilog.Extensions.Logging
       logger.Write(evt);
     }
 
-    static object AsLoggableValue<TState>(TState state, Func<TState, Exception, string> formatter)
+    private static object AsLoggableValue<TState>(TState state, Func<TState, Exception, string> formatter)
     {
       object sobj = state;
       if (formatter != null)
@@ -136,18 +130,22 @@ namespace Serilog.Extensions.Logging
       return sobj;
     }
 
-    static LogEventLevel ConvertLevel(LogLevel logLevel)
+    private static LogEventLevel ConvertLevel(LogLevel logLevel)
     {
       switch (logLevel)
       {
         case LogLevel.Critical:
           return LogEventLevel.Fatal;
+
         case LogLevel.Error:
           return LogEventLevel.Error;
+
         case LogLevel.Warning:
           return LogEventLevel.Warning;
+
         case LogLevel.Information:
           return LogEventLevel.Information;
+
         case LogLevel.Debug:
           return LogEventLevel.Debug;
         // ReSharper disable once RedundantCaseLabel
@@ -157,7 +155,7 @@ namespace Serilog.Extensions.Logging
       }
     }
 
-    static LogEventProperty CreateEventIdProperty(EventId eventId)
+    private static LogEventProperty CreateEventIdProperty(EventId eventId)
     {
       var properties = new List<LogEventProperty>(2);
 

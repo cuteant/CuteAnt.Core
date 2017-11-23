@@ -1,20 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\version.serilog.props" />
-  <Import Project="..\nuget.props" />
+  <Import Project="..\nuget.serilog.props" />
   
   <PropertyGroup>
     <TargetFrameworks>net471;net451;netstandard2.0</TargetFrameworks>
-    <AssemblyName>CuteAnt.Extensions.Logging.Serilog</AssemblyName>
-    <RootNamespace>CuteAnt.Extensions.Logging</RootNamespace>
+    <AssemblyName>Serilog.Extensions.Logging</AssemblyName>
+    <RootNamespace>Serilog</RootNamespace>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <PackageId>CuteAnt.Extensions.Logging.Serilog</PackageId>
-    <Title>CuteAnt.Extensions.Logging.Serilog</Title>
-    <Description>Serilog provider for Microsoft.Extensions.Logging</Description>
-    <PackageTags>Serilog, Microsoft.Extensions.Logging, log</PackageTags>
-    <Authors>Microsoft, Serilog Contributors, Seabiscuit</Authors>
+    <PackageId>Serilog.Extensions.Logging.Unofficial</PackageId>
+    <Title>Serilog.Extensions.Logging.Unofficial</Title>
+    <Description>Low-level Serilog provider for Microsoft.Extensions.Logging</Description>
+    <PackageTags>serilog;Microsoft.Extensions.Logging</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'net471' ">
@@ -27,7 +26,10 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
     <PackageReference Include="NetFx.Extensions.Logging" Version="$(NetFxExtensionsLoggingPackageVersion)" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="Serilog" Version="$(SerilogDevPackageVersion)" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net471' or '$(TargetFramework)' == 'net451' ">
     <PackageReference Include="Serilog" Version="$(SerilogPackageVersion)" />
   </ItemGroup>
 </Project>

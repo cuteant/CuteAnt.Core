@@ -1,5 +1,5 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+﻿// Copyright (c) .NET Foundation. All rights reserved. Licensed under the Apache License, Version
+// 2.0. See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -8,16 +8,16 @@ using Serilog.Events;
 
 namespace Serilog.Extensions.Logging
 {
-  class SerilogLoggerScope : IDisposable
+  internal class SerilogLoggerScope : IDisposable
   {
-    const string NoName = "None";
+    private const string NoName = "None";
 
-    readonly SerilogLoggerProvider _provider;
-    readonly object _state;
-    readonly IDisposable _chainedDisposable;
+    private readonly SerilogLoggerProvider _provider;
+    private readonly object _state;
+    private readonly IDisposable _chainedDisposable;
 
     // An optimization only, no problem if there are data races on this.
-    bool _disposed;
+    private bool _disposed;
 
     public SerilogLoggerScope(SerilogLoggerProvider provider, object state, IDisposable chainedDisposable = null)
     {
@@ -37,8 +37,8 @@ namespace Serilog.Extensions.Logging
       {
         _disposed = true;
 
-        // In case one of the parent scopes has been disposed out-of-order, don't
-        // just blindly reinstate our own parent.
+        // In case one of the parent scopes has been disposed out-of-order, don't just blindly
+        // reinstate our own parent.
         for (var scan = _provider.CurrentScope; scan != null; scan = scan.Parent)
         {
           if (ReferenceEquals(scan, this))
