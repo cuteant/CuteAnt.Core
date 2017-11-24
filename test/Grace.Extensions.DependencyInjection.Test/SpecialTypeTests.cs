@@ -17,6 +17,8 @@ namespace Grace.Extensions.DependencyInjection.Test
     public void MsDITest()
     {
       var services = new ServiceCollection().BuildServiceProvider();
+      var aa = services.GetService<AA>();
+      Assert.Null(aa);
       var ts = services.GetService(typeof(TimeSpan));
       Assert.Null(ts);
       var dtoffset = services.GetService(typeof(DateTimeOffset));
@@ -32,6 +34,8 @@ namespace Grace.Extensions.DependencyInjection.Test
     {
       var services = new DependencyInjectionContainer();
       var aa = services.Locate<AA>();
+      Assert.True(services.CanLocate(typeof(AA)));
+      
       Assert.NotNull(aa);
       var ts = services.LocateOrDefault(typeof(TimeSpan));
       Assert.Null(ts);

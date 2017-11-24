@@ -10,9 +10,7 @@ namespace Grace.Dynamic
   public class GraceDynamicMethod : InjectionScopeConfiguration
   {
     /// <summary>Default constructor</summary>
-    public GraceDynamicMethod() : base(DynamicImplementation.Clone())
-    {
-    }
+    public GraceDynamicMethod() : base(DynamicImplementation.Clone()) { }
 
     /// <summary>Creates a configuration object for using IL Generation instead of Linq Expressions</summary>
     /// <param name="configure">configuration delegate, can be null</param>
@@ -47,14 +45,15 @@ namespace Grace.Dynamic
       DynamicImplementation.ExportInstance<ILinqToDynamicMethodConverter>(f => new LinqToDynamicMethodConverter(f));
 
       DynamicImplementation.ExportInstance<IActivationStrategyCompiler>(
-          f => new DynamicMethodStrategyCompiler(f.InjectionScope.ScopeConfiguration,
-                                         f.Locate<IActivationExpressionBuilder>(),
-                                         f.Locate<IAttributeDiscoveryService>(),
-                                         f.Locate<IDefaultStrategyExpressionBuilder>(),
-                                         f.Locate<IInjectionContextCreator>(),
-                                         f.Locate<IExpressionConstants>(),
-                                         f.Locate<IInjectionStrategyDelegateCreator>(),
-                                         f.Locate<ILinqToDynamicMethodConverter>()));
+          f => new DynamicMethodStrategyCompiler(
+                    f.InjectionScope.ScopeConfiguration,
+                    f.Locate<IActivationExpressionBuilder>(),
+                    f.Locate<IAttributeDiscoveryService>(),
+                    f.Locate<IDefaultStrategyExpressionBuilder>(),
+                    f.Locate<IInjectionContextCreator>(),
+                    f.Locate<IExpressionConstants>(),
+                    f.Locate<IInjectionStrategyDelegateCreator>(),
+                    f.Locate<ILinqToDynamicMethodConverter>()));
     }
   }
 }
