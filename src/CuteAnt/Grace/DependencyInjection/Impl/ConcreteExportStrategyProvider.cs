@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using CuteAnt;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl.CompiledStrategies;
 using Grace.DependencyInjection.Impl.EnumerableStrategies;
@@ -53,6 +54,13 @@ namespace Grace.DependencyInjection.Impl
           typeof(ReadOnlyCollection<>)
 #endif
         });
+
+    private static readonly HashSet<Type> s_specialTypes = new HashSet<Type>(
+      new Type[]
+      {
+        typeof(string), typeof(DateTime), typeof(TimeSpan), typeof(DateTimeOffset),
+        typeof(Guid), typeof(CombGuid)
+      });
 
     private ImmutableLinkedList<Func<Type, bool>> _filters = ImmutableLinkedList<Func<Type, bool>>.Empty;
 
@@ -274,12 +282,15 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public virtual bool ShouldCreateConcreteStrategy(Type type)
     {
-      if (type == typeof(string) || type.GetTypeInfo().IsPrimitive || type == typeof(DateTime))
+      var typeInfo = type.GetTypeInfo();
+      // ## 苦竹 修改 ##
+      //if (type == typeof(string) || typeInfo.IsPrimitive || type == typeof(DateTime))
+      if (typeInfo.IsPrimitive || s_specialTypes.Contains(type))
       {
         return false;
       }
 
-      return type.GetTypeInfo().DeclaredConstructors.Any(c => c.IsPublic && !c.IsStatic) &&
+      return typeInfo.DeclaredConstructors.Any(c => c.IsPublic && !c.IsStatic) &&
              _filters.All(func => !func(type));
     }
   }
