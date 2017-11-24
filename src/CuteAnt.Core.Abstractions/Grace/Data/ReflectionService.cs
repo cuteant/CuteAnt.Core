@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using CuteAnt.Text;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection;
 
@@ -51,7 +52,7 @@ namespace Grace.Data
     {
       if (type.IsConstructedGenericType())
       {
-        var builder = new StringBuilder();
+        var builder = StringBuilderCache.Acquire();
 
         if (includeNamespace)
         {
@@ -61,7 +62,7 @@ namespace Grace.Data
 
         CreateFriendlyNameForType(type, builder);
 
-        return builder.ToString();
+        return StringBuilderCache.GetStringAndRelease(builder);
       }
 
       return includeNamespace ? type.Namespace + '.' + type.Name : type.Name;

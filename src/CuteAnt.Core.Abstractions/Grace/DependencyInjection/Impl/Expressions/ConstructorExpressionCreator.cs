@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
+using CuteAnt.Text;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Lifestyle;
 
@@ -245,19 +245,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// <returns></returns>
     protected virtual string CreateTraceMessageForConstructor(ConstructorInfo constructor, TypeActivationConfiguration activationConfiguration)
     {
-      StringBuilder builder = new StringBuilder();
+      var builder = StringBuilderCache.Acquire();
 
-      builder.Append(activationConfiguration.ActivationType.Name);
-      builder.Append('(');
+      builder.Append("Using ")
+             .Append(activationConfiguration.ActivationType.Name)
+             .Append('(');
 
       var parameters = constructor.GetParameters();
 
       for (int i = 0; i < parameters.Length; i++)
       {
-        if (i > 0)
-        {
-          builder.Append(',');
-        }
+        if (i > 0) { builder.Append(','); }
 
         builder.Append(parameters[i].ParameterType.Name);
         builder.Append(' ');
@@ -266,7 +264,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
       builder.Append(')');
 
-      return "Using " + builder;
+      // ## 苦竹 修改 ##
+      //return "Using " + builder;
+      return StringBuilderCache.GetStringAndRelease(builder);
     }
 
     /// <summary>Get a list of dependencies for a constructor</summary>

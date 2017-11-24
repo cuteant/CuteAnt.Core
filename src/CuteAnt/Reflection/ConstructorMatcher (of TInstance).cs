@@ -15,6 +15,7 @@ namespace CuteAnt.Reflection
     public static readonly ConstructorMatcher<TInstance> Default;
     public static readonly CtorInvoker<TInstance> DefaultInvocation;
 
+    internal static readonly ConstructorMatcher<TInstance>[] DIConstructorMatchers;
     #endregion
 
     #region @@ Constructors @@
@@ -22,30 +23,38 @@ namespace CuteAnt.Reflection
     static ConstructorMatcher()
     {
       var thisType = typeof(TInstance);
-      var typeInfo = thisType.GetTypeInfo();
-      if (typeInfo.IsAbstract) { ConstructorMatchers = EmptyArray<ConstructorMatcher<TInstance>>.Instance; return; }
-
-      Default = new ConstructorMatcher<TInstance>(typeInfo.AsType().MakeDelegateForCtor<TInstance>());
+      Default = new ConstructorMatcher<TInstance>(thisType.MakeDelegateForCtor<TInstance>());
       DefaultInvocation = Default.Invocation;
-      var defaultCtorMatchers = new ConstructorMatcher<TInstance>[] { Default };
 
-      if (typeInfo.AsType() == TypeConstants.StringType ||
-          typeInfo.IsArray || typeInfo.IsInterface || typeInfo.IsGenericTypeDefinition)
+      var typeInfo = thisType.GetTypeInfo();
+      if (typeInfo.IsAbstract)
       {
-        ConstructorMatchers = defaultCtorMatchers;
+        DIConstructorMatchers = ConstructorMatchers = EmptyArray<ConstructorMatcher<TInstance>>.Instance;
         return;
       }
+
+      if (typeInfo.AsType() == TypeConstants.StringType || typeInfo.IsArray)
+      {
+        ConstructorMatchers = new ConstructorMatcher<TInstance>[] { Default };
+        DIConstructorMatchers = EmptyArray<ConstructorMatcher<TInstance>>.Instance;
+        return;
+      }
+
       try
       {
-
-        ConstructorMatchers = typeInfo
+        var matchers = typeInfo
             .DeclaredConstructors
-            .Where(_ => !_.IsStatic)
+            .Where(_ => !_.IsStatic && _.IsPublic)
             .Select(_ => new ConstructorMatcher<TInstance>(_))
-            .ToArray();
-        if (ConstructorMatchers.Length == 0) { ConstructorMatchers = defaultCtorMatchers; }
+            .ToArray() ?? EmptyArray<ConstructorMatcher<TInstance>>.Instance;
+        DIConstructorMatchers = ConstructorMatchers = matchers;
+        if (ConstructorMatchers.Length == 0) { ConstructorMatchers = new ConstructorMatcher<TInstance>[] { Default }; }
       }
-      catch { ConstructorMatchers = defaultCtorMatchers; }
+      catch
+      {
+        ConstructorMatchers = new ConstructorMatcher<TInstance>[] { Default };
+        DIConstructorMatchers = EmptyArray<ConstructorMatcher<TInstance>>.Instance;
+      }
     }
 
     internal ConstructorMatcher(ConstructorInfo constructor)

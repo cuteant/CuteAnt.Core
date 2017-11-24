@@ -28,16 +28,16 @@ namespace CuteAnt.Pool
     #region -- Take --
 
     /// <summary>Gets a buffer of at least the specified size from the pool.</summary>
-    /// <returns>A <see cref="TPoolItem"/> object</returns>
-    /// <remarks>If successful, the system returns a <see cref="TPoolItem"/> object of at least the requested size.</remarks>
+    /// <returns>A pool item object</returns>
+    /// <remarks>If successful, the system returns a pool item object of at least the requested size.</remarks>
     TPoolItem Take();
 
     #endregion
 
     #region -- Return --
 
-    /// <summary>Returns a <see cref="TPoolItem"/> to the pool.</summary>
-    /// <remarks>The <see cref="TPoolItem"/> is returned to the pool and is available for re-use.</remarks>
+    /// <summary>Returns a pool item to the pool.</summary>
+    /// <remarks>The pool item is returned to the pool and is available for re-use.</remarks>
     void Return(TPoolItem item);
 
     #endregion
@@ -150,8 +150,8 @@ namespace CuteAnt.Pool
     #region -- Take --
 
     /// <summary>Gets a buffer of at least the specified size from the pool.</summary>
-    /// <returns>A <see cref="TPoolItem"/> object</returns>
-    /// <remarks>If successful, the system returns a <see cref="TPoolItem"/> object of at least the requested size.</remarks>
+    /// <returns>A pool item object</returns>
+    /// <remarks>If successful, the system returns a pool item object of at least the requested size.</remarks>
     public TPoolItem Take()
     {
       var item = Pool.Take();
@@ -167,8 +167,8 @@ namespace CuteAnt.Pool
 
     #region -- Return --
 
-    /// <summary>Returns a <see cref="TPoolItem"/> to the pool.</summary>
-    /// <remarks>The <see cref="TPoolItem"/> is returned to the pool and is available for re-use.</remarks>
+    /// <summary>Returns a pool item to the pool.</summary>
+    /// <remarks>The pool item is returned to the pool and is available for re-use.</remarks>
     public void Return(TPoolItem item)
     {
       var itemCleaner = m_itemCleaner;
@@ -265,8 +265,8 @@ namespace CuteAnt.Pool
     #region -- Take --
 
     /// <summary>Gets a buffer of at least the specified size from the pool.</summary>
-    /// <returns>A <see cref="TPoolItem"/> object</returns>
-    /// <remarks>If successful, the system returns a <see cref="TPoolItem"/> object of at least the requested size.</remarks>
+    /// <returns>A pool item object</returns>
+    /// <remarks>If successful, the system returns a pool item object of at least the requested size.</remarks>
     public TPoolItem Take()
     {
       TPoolItem item;
@@ -285,8 +285,8 @@ namespace CuteAnt.Pool
 
     #region -- Return --
 
-    /// <summary>Returns a <see cref="TPoolItem"/> to the pool.</summary>
-    /// <remarks>The <see cref="TPoolItem"/> is returned to the pool and is available for re-use.</remarks>
+    /// <summary>Returns a pool item to the pool.</summary>
+    /// <remarks>The pool item is returned to the pool and is available for re-use.</remarks>
     public void Return(TPoolItem item)
     {
       var itemCleaner = m_itemCleaner;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CuteAnt.Text;
 
 namespace Grace.DependencyInjection.Exceptions
 {
@@ -30,7 +31,7 @@ namespace Grace.DependencyInjection.Exceptions
       if (context == null) throw new ArgumentNullException(nameof(context));
 
       var infoStack = new List<InjectionTargetInfo>(context.InjectionStack.Reverse());
-      var builder = new StringBuilder();
+      var builder = StringBuilderCache.Acquire();
 
       builder.AppendLine(message ?? $"Could not locate Type {context.ActivationType}");
 
@@ -58,20 +59,16 @@ namespace Grace.DependencyInjection.Exceptions
         }
       }
 
-      return builder.ToString();
+      return StringBuilderCache.GetStringAndRelease(builder);
     }
 
     private static void CreateMessageForTargetInfo(StringBuilder builder, InjectionTargetInfo info, int stepIndex)
     {
       builder.AppendFormat("{0} Importing {1} ", stepIndex, info.LocateType);
 
-      var parameter = info.InjectionTarget as ParameterInfo;
-
-      if (parameter != null)
+      if (info.InjectionTarget is ParameterInfo parameter)
       {
-        var method = parameter.Member as MethodInfo;
-
-        if (method != null)
+        if (parameter.Member is MethodInfo method)
         {
           builder.AppendFormat(" for method {0} parameter {1}", method.Name, parameter.Name);
         }
@@ -80,9 +77,9 @@ namespace Grace.DependencyInjection.Exceptions
           builder.AppendFormat(" for constructor parameter {0}", parameter.Name);
         }
       }
-      else if (info.InjectionTarget is PropertyInfo)
+      else if (info.InjectionTarget is PropertyInfo propertyInfo)
       {
-        builder.AppendFormat(" for property {0}", ((PropertyInfo)info.InjectionTarget).Name);
+        builder.AppendFormat(" for property {0}", propertyInfo.Name);
       }
 
       builder.AppendLine();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using CuteAnt.Text;
 using Grace.DependencyInjection.Exceptions;
 using Grace.Utilities;
 
@@ -168,7 +169,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
     const string _createMissingErrorMessageMethodName = nameof(CreateMissingErrorMessage);
     private static string CreateMissingErrorMessage(bool[] found, string[] labels)
     {
-      var builder = new StringBuilder("Dynamic constructor could not find the following parameters ");
+      //var builder = new StringBuilder("Dynamic constructor could not find the following parameters ");
+      var builder = StringBuilderCache.Acquire();
+      builder.Append("Dynamic constructor could not find the following parameters ");
 
       for (int i = 0; i < found.Length; i++)
       {
@@ -179,7 +182,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         if (i < found.Length - 1) { builder.Append(", "); }
       }
 
-      return builder.ToString();
+      return StringBuilderCache.GetStringAndRelease(builder);
     }
 
     private static ConstructorInfo[] GetConstructors(Type activationType)

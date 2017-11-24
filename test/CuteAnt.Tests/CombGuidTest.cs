@@ -9,7 +9,11 @@ namespace CuteAnt.Tests
 {
   public class CombGuidTest
   {
+#if DESKTOPCLR
     [Fact]
+#else
+    [Fact(Skip ="net core")]
+#endif
     public void CombGuidGetHashCodeTest()
     {
       for (int idx = 0; idx < 100; idx++)

@@ -111,6 +111,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yaml.Extensions.Configurati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grace.Extensions.DependencyInjection", "src\Grace.Extensions.DependencyInjection\Grace.Extensions.DependencyInjection.csproj", "{22BC7DE7-1568-4092-904B-DEA00DE32EC6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Autofac.Extensions.DependencyInjection", "src\Autofac.Extensions.DependencyInjection\Autofac.Extensions.DependencyInjection.csproj", "{F8D03595-D85A-4A99-940C-AE57CE1F9173}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grace.Extensions.DependencyInjection.Test", "test\Grace.Extensions.DependencyInjection.Test\Grace.Extensions.DependencyInjection.Test.csproj", "{A4350CB9-AF70-4024-9A00-2FA3F6202144}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.ValidationHelper.Sources\CuteAnt.Extensions.ValidationHelper.Sources.projitems*{3b59b888-7a45-4322-b5dd-3fadc4e74420}*SharedItemsImports = 13
@@ -238,6 +242,14 @@ Global
 		{22BC7DE7-1568-4092-904B-DEA00DE32EC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22BC7DE7-1568-4092-904B-DEA00DE32EC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22BC7DE7-1568-4092-904B-DEA00DE32EC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8D03595-D85A-4A99-940C-AE57CE1F9173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8D03595-D85A-4A99-940C-AE57CE1F9173}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8D03595-D85A-4A99-940C-AE57CE1F9173}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8D03595-D85A-4A99-940C-AE57CE1F9173}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4350CB9-AF70-4024-9A00-2FA3F6202144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4350CB9-AF70-4024-9A00-2FA3F6202144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4350CB9-AF70-4024-9A00-2FA3F6202144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4350CB9-AF70-4024-9A00-2FA3F6202144}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -290,6 +302,8 @@ Global
 		{1BDAAEC7-8481-4235-A3B0-4D21A728884D} = {1F97D5A4-285F-4962-8F8C-BCEF8278143B}
 		{A36325EA-A65B-4B1D-83CE-B02B7A273F76} = {1BDAAEC7-8481-4235-A3B0-4D21A728884D}
 		{22BC7DE7-1568-4092-904B-DEA00DE32EC6} = {1BDAAEC7-8481-4235-A3B0-4D21A728884D}
+		{F8D03595-D85A-4A99-940C-AE57CE1F9173} = {AD164A5C-9587-445D-8C2F-BD490AC92724}
+		{A4350CB9-AF70-4024-9A00-2FA3F6202144} = {4515424F-A0DE-43AB-A9B6-C6000145B7EC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {93230366-D5C3-4397-83D3-ED46E43B8121}
