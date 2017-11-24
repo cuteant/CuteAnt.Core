@@ -87,10 +87,9 @@ namespace Grace.DependencyInjection
     /// <returns></returns>
     public static IFluentExportInstanceConfiguration<T> ExportNamedValue<T>(this IExportRegistrationBlock registrationBlock, Expression<Func<T>> valueExpression)
     {
-      var memberExpression = valueExpression.Body as MemberExpression;
       string exportName = null;
 
-      if (memberExpression != null)
+      if (valueExpression.Body is MemberExpression memberExpression)
       {
         exportName = memberExpression.Member.Name;
       }

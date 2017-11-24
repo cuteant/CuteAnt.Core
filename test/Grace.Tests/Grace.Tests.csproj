@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\CuteAnt\CuteAnt.Core.csproj" />
+    <ProjectReference Include="..\..\src\Grace.Extensions.DependencyInjection\Grace.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
 
   <ItemGroup>
