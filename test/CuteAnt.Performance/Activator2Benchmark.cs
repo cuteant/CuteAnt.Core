@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
 using CuteAnt.Reflection;
+using Grace.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CuteAnt.Performance
@@ -13,10 +14,18 @@ namespace CuteAnt.Performance
 
     private IServiceProvider _transientSp;
     private CtorInvoker<AA> _ctorInvoker;
+    private DependencyInjectionContainer _container;
 
     [GlobalSetup]
     public void GlobalSetup()
     {
+      _container = new DependencyInjectionContainer();
+      _container.Configure(c =>
+      {
+        c.Export<AA>();
+        c.Export<BB>();
+        c.Export<CC>();
+      });
       var services = new ServiceCollection();
       services.AddTransient<AA>();
       services.AddTransient<BB>();
@@ -40,6 +49,15 @@ namespace CuteAnt.Performance
       for (int i = 0; i < OperationsPerInvoke; i++)
       {
         var aa = _transientSp.GetService<AA>();
+      }
+    }
+
+    [Benchmark(OperationsPerInvoke = OperationsPerInvoke)]
+    public void GraceTransient()
+    {
+      for (int i = 0; i < OperationsPerInvoke; i++)
+      {
+        var aa = _container.Locate<AA>();
       }
     }
 

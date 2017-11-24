@@ -31,6 +31,8 @@ namespace Grace.Extensions.DependencyInjection.Test
     public void GraceTest()
     {
       var services = new DependencyInjectionContainer();
+      var aa = services.Locate<AA>();
+      Assert.NotNull(aa);
       var ts = services.LocateOrDefault(typeof(TimeSpan));
       Assert.Null(ts);
       var dtoffset = services.LocateOrDefault(typeof(DateTimeOffset));
