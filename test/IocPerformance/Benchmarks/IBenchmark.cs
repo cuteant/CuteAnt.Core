@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using IocPerformance.Adapters;
 
 namespace IocPerformance.Benchmarks

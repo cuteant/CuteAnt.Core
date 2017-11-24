@@ -1,4 +1,4 @@
-namespace IocPerformance.Benchmarks
+﻿namespace IocPerformance.Benchmarks
 {
     public interface IBenchmarkMeasurer
     {
