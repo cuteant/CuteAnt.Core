@@ -104,7 +104,7 @@ namespace CuteAnt.Serialization.Core.Binary
 		/// <param name = "writer"></param>
 		public static void WriteString(String text, BinaryWriter writer)
 		{
-			if (text.IsNullOrWhiteSpace())
+			if (string.IsNullOrWhiteSpace(text))
 			{
 				// no exception if the text is null
 				writer.Write(false);

@@ -96,7 +96,7 @@ namespace CuteAnt.Serialization.Advanced
 				String name = ReadElement();
 
 				// read further elements
-				while (!name.IsNullOrWhiteSpace())
+				while (!string.IsNullOrWhiteSpace(name))
 				{
 					yield return name;
 					name = ReadElement();
@@ -237,7 +237,7 @@ namespace CuteAnt.Serialization.Advanced
 		/// <returns>null if no items are recognized or the text is null or empty</returns>
 		private static Int32[] getArrayOfIntFromText(String text)
 		{
-			if (text.IsNullOrWhiteSpace()) { return null; }
+			if (string.IsNullOrWhiteSpace(text)) { return null; }
 			String[] splittedString = text.Split(new[] { ',' });
 			if (splittedString.Length == 0) { return null; }
 			var result = new List<Int32>();

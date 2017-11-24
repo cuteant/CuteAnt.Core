@@ -45,7 +45,7 @@ namespace CuteAnt.Serialization.Core
 	[Serializable]
 #endif
 
-	public class CreatingInstanceException : HmExceptionBase
+	public class CreatingInstanceException : Exception
 	{
 		///<summary>
 		///</summary>

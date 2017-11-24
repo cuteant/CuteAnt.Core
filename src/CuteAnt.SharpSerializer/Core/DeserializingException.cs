@@ -45,7 +45,7 @@ namespace CuteAnt.Serialization.Core
 	[Serializable]
 #endif
 
-	public class DeserializingException : HmExceptionBase
+	public class DeserializingException : Exception
 	{
 		//
 		// For guidelines regarding the creation of new exception types, see

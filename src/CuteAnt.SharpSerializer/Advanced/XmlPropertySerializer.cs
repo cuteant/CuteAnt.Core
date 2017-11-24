@@ -87,7 +87,7 @@ namespace CuteAnt.Serialization.Advanced
 			_writer.WriteStartElement(elementId);
 
 			// Name
-			if (!propertyName.IsNullOrWhiteSpace())
+			if (!string.IsNullOrWhiteSpace(propertyName))
 			{
 				_writer.WriteAttribute(Attributes.Name, propertyName);
 			}

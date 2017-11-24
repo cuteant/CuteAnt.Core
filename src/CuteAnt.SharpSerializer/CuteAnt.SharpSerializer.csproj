@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\version.props" />
+  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.ValidationHelper.Sources\CuteAnt.Extensions.ValidationHelper.Sources.projitems" Label="Shared" />
   <Import Project="..\nuget.props" />
   
   <PropertyGroup>
@@ -7,8 +8,6 @@
     <PlatformTarget>anycpu</PlatformTarget>
     <AssemblyName>CuteAnt.SharpSerializer</AssemblyName>
     <RootNamespace>CuteAnt.SharpSerializer</RootNamespace>
-    <DefineConstants>$(DefineConstants);NET_3_5_GREATER</DefineConstants>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
 

@@ -404,7 +404,7 @@ namespace CuteAnt.Serialization.Advanced
 				{
 					// check if the property with the name exists
 					String subPropertyName = _reader.GetAttributeAsString(Attributes.Name);
-					if (subPropertyName.IsNullOrWhiteSpace()) { continue; }
+					if (string.IsNullOrWhiteSpace(subPropertyName)) { continue; }
 
 					// estimating the propertyInfo
 					PropertyInfo subPropertyInfo = ownerType.GetProperty(subPropertyName);
