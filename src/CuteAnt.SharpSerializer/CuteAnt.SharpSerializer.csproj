@@ -17,8 +17,4 @@
     <Description>CuteAnt.SharpSerializer</Description>
     <PackageTags>csharpserializer</PackageTags>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\CuteAnt\CuteAnt.Core.csproj" />
-  </ItemGroup>
 </Project>

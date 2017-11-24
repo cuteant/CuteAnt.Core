@@ -199,11 +199,7 @@ namespace CuteAnt.Serialization.Advanced
 		/// <summary>Stream can be further used</summary>
 		public void Close()
 		{
-#if PORTABLE
-			_currentReader.Dispose();
-#else
 			_currentReader.Close();
-#endif
 		}
 
 		#endregion
