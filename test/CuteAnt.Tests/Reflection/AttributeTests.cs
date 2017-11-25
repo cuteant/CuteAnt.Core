@@ -19,7 +19,7 @@ namespace CuteAnt.Tests
       attrs = userType.GetAllAttributes().ToArray();
       Assert.Equal(3, attrs.Length);
 
-      Assert.Equal(1, userType.GetCustomAttributesX<AAttribute>().Count());
+      Assert.Single(userType.GetCustomAttributesX<AAttribute>());
     }
 
     [A, B]

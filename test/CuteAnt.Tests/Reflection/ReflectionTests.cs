@@ -54,12 +54,12 @@ namespace CuteAnt.Reflection.Tests
       var userProperties = typeof(IUser1).GetTypeDeclaredProperties();
       var myuserProperties = typeof(IMyUser).GetTypeDeclaredProperties();
 
-      Assert.Equal(typeof(IUser1).GetProperties().Length, 1);
-      Assert.Equal(typeof(IUser2).GetProperties().Length, 1);
-      Assert.Equal(typeof(IMyUser).GetProperties().Length, 1);
+      Assert.Single(typeof(IUser1).GetProperties());
+      Assert.Single(typeof(IUser2).GetProperties());
+      Assert.Single(typeof(IMyUser).GetProperties());
 
-      Assert.Equal(userProperties.Length, 1);
-      Assert.Equal(myuserProperties.Length, 3);
+      Assert.Single(userProperties);
+      Assert.Equal(3, myuserProperties.Length);
 
       var idx = 0;
       foreach (var item in userProperties)
