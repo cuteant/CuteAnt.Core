@@ -41,7 +41,7 @@ namespace Grace.Tests.Data.Immutable
 
             list = list.Add(5);
 
-            Assert.Equal(1, list.Count);
+            Assert.Single(list);
         }
 
         [Fact]
@@ -56,9 +56,9 @@ namespace Grace.Tests.Data.Immutable
             var newList = new List<int>(list);
 
             Assert.Equal(3, newList.Count);
-            Assert.True(newList.Contains(5));
-            Assert.True(newList.Contains(10));
-            Assert.True(newList.Contains(15));
+            Assert.Contains(5, newList);
+            Assert.Contains(10, newList);
+            Assert.Contains(15, newList);
         }
 
         [Fact]
@@ -69,9 +69,9 @@ namespace Grace.Tests.Data.Immutable
             var newList = new List<int>(list);
 
             Assert.Equal(3, newList.Count);
-            Assert.True(newList.Contains(5));
-            Assert.True(newList.Contains(10));
-            Assert.True(newList.Contains(15));
+            Assert.Contains(5, newList);
+            Assert.Contains(10, newList);
+            Assert.Contains(15, newList);
         }
 
         [Fact]
@@ -82,9 +82,9 @@ namespace Grace.Tests.Data.Immutable
             var newList = new List<int>(list);
 
             Assert.Equal(3, newList.Count);
-            Assert.True(newList.Contains(5));
-            Assert.True(newList.Contains(10));
-            Assert.True(newList.Contains(15));
+            Assert.Contains(5, newList);
+            Assert.Contains(10, newList);
+            Assert.Contains(15, newList);
         }
 
         [Fact]
@@ -110,9 +110,9 @@ namespace Grace.Tests.Data.Immutable
             var newList = new List<int>(list);
 
             Assert.Equal(3, newList.Count);
-            Assert.True(newList.Contains(5));
-            Assert.True(newList.Contains(10));
-            Assert.True(newList.Contains(15));
+            Assert.Contains(5, newList);
+            Assert.Contains(10, newList);
+            Assert.Contains(15, newList);
         }
         
         [Fact]
@@ -123,15 +123,15 @@ namespace Grace.Tests.Data.Immutable
             var newList = new List<int>(list);
 
             Assert.Equal(3, newList.Count);
-            Assert.True(newList.Contains(5));
-            Assert.True(newList.Contains(10));
-            Assert.True(newList.Contains(15));
+            Assert.Contains(5, newList);
+            Assert.Contains(10, newList);
+            Assert.Contains(15, newList);
 
             ImmutableLinkedList.ThreadSafeEmpty(ref list);
 
             newList = new List<int>(list);
 
-            Assert.Equal(0, newList.Count);
+            Assert.Empty(newList);
         }
 
         [Fact]

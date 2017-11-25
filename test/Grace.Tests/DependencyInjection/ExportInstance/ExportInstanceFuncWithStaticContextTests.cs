@@ -13,7 +13,9 @@ namespace Grace.Tests.DependencyInjection.ExportInstance
 
             container.Configure(c =>
             {
+#pragma warning disable 0618
                 c.ExportInstance((scope, staticContext) => new BasicService { Count = 5 }).As<IBasicService>();
+#pragma warning restore 0618
                 c.Export<ConstructorImportService>().As<IConstructorImportService>();
             });
 

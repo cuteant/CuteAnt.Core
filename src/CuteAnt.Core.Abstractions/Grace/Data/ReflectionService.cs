@@ -271,9 +271,9 @@ namespace Grace.Data
       foreach (var property in objectType.GetTypeInfo().DeclaredProperties)
       {
         if (property.CanRead &&
-          !property.GetMethod().IsStatic &&
-           property.GetMethod().IsPublic &&
-           property.GetMethod().GetParameters().Length == 0)
+            !property.GetMethod().IsStatic &&
+            property.GetMethod().IsPublic &&
+            property.GetMethod().GetParameters().Length == 0)
         {
           var propertyAccess = Expression.Property(tVariable, property.GetMethod());
 
@@ -309,8 +309,8 @@ namespace Grace.Data
     /// <param name="injectionContext"></param>
     /// <param name="delegate"></param>
     /// <returns></returns>
-    public static object InjectAndExecuteDelegate(IExportLocatorScope scope, StaticInjectionContext context,
-        IInjectionContext injectionContext, Delegate @delegate)
+    public static object InjectAndExecuteDelegate(IExportLocatorScope scope,
+      StaticInjectionContext context, IInjectionContext injectionContext, Delegate @delegate)
     {
       var executeFunc = _executeDelegateWithInjections.GetValueOrDefault(@delegate.GetType());
 
@@ -380,7 +380,7 @@ namespace Grace.Data
               injectionParameter, delegateParameter).Compile();
     }
 
-    private static readonly MethodInfo _locateMethod = typeof(ILocatorService).GetRuntimeMethod("Locate",
+    private static readonly MethodInfo _locateMethod = typeof(ILocatorService).GetRuntimeMethod(nameof(ILocatorService.Locate),
         new[] { typeof(Type), typeof(object), typeof(ActivationStrategyFilter), typeof(object), typeof(bool) });
   }
 }

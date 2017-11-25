@@ -10,115 +10,115 @@ using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Wrappers
 {
-    public class FuncOneArgWrapperTests
+  public class FuncOneArgWrapperTests
+  {
+    public interface ITest
     {
-        public interface ITest
-        {
-            int Value { get; }
-        }
+      int Value { get; }
+    }
 
-        public class Test1 : ITest
-        {
-            public Test1(int value)
-            {
-                Value = value;
-            }
+    public class Test1 : ITest
+    {
+      public Test1(int value)
+      {
+        Value = value;
+      }
 
-            public int Value { get; }
-        }
+      public int Value { get; }
+    }
 
-        public class Test2 : ITest
-        {
-            public Test2(int value)
-            {
-                Value = value;
-            }
+    public class Test2 : ITest
+    {
+      public Test2(int value)
+      {
+        Value = value;
+      }
 
-            public int Value { get; }
-        }
+      public int Value { get; }
+    }
 
-        [Fact]
-        public void FuncArg_Test()
-        {
-            var container = new DependencyInjectionContainer();
+    [Fact]
+    public void FuncArg_Test()
+    {
+      var container = new DependencyInjectionContainer();
 
-            container.Configure(c =>
-            {
-                c.ExportFactory<int, ITest>(i => new Test1(i));
-                c.ExportFactory<int, ITest>(i => new Test2(i));
-            });
+      container.Configure(c =>
+      {
+        c.ExportFactory<int, ITest>(i => new Test1(i));
+        c.ExportFactory<int, ITest>(i => new Test2(i));
+      });
 
-            var valueFunc = container.Locate<IEnumerable<Func<int, ITest>>>().ToArray();
+      var valueFunc = container.Locate<IEnumerable<Func<int, ITest>>>().ToArray();
 
-            var value1 = valueFunc[0](5);
-            var value2 = valueFunc[1](10);
-        }
+      var value1 = valueFunc[0](5);
+      var value2 = valueFunc[1](10);
+    }
 
-        [Fact]
-        public void FuncOneArg_Create_Instance()
-        {
-            var container = new DependencyInjectionContainer();
+    [Fact]
+    public void FuncOneArg_Create_Instance()
+    {
+      var container = new DependencyInjectionContainer();
 
-            container.Configure(c =>
-            {
-                c.Export<BasicService>().As<IBasicService>();
-                c.Export(typeof(TwoDependencyService<,>)).As(typeof(ITwoDependencyService<,>));
-                c.Export(typeof(DependsOnOneArgFunc<,>)).As(typeof(IDependsOnOneArgFunc<,>));
-            });
+      container.Configure(c =>
+      {
+        c.Export<BasicService>().As<IBasicService>();
+        c.Export(typeof(TwoDependencyService<,>)).As(typeof(ITwoDependencyService<,>));
+        c.Export(typeof(DependsOnOneArgFunc<,>)).As(typeof(IDependsOnOneArgFunc<,>));
+      });
 
-            var instance = container.Locate<IDependsOnOneArgFunc<IBasicService, int>>();
+      var instance = container.Locate<IDependsOnOneArgFunc<IBasicService, int>>();
 
-            var twoService = instance.CreateWithT2(5);
+      var twoService = instance.CreateWithT2(5);
 
-            Assert.NotNull(twoService);
-            Assert.NotNull(twoService.Dependency1);
-            Assert.IsType<BasicService>(twoService.Dependency1);
-            Assert.Equal(5, twoService.Dependency2);
-        }
+      Assert.NotNull(twoService);
+      Assert.NotNull(twoService.Dependency1);
+      Assert.IsType<BasicService>(twoService.Dependency1);
+      Assert.Equal(5, twoService.Dependency2);
+    }
 
-        [Theory]
-        [AutoData]
-        [SubFixtureInitialize]
-        public void FuncOneArg_GetWrappedType(FuncOneArgWrapperStrategy strategy)
-        {
-            Assert.Equal(typeof(IBasicService),
-                strategy.GetWrappedType(typeof(Func<int, IBasicService>)));
-        }
+    [Theory]
+    [AutoData]
+    [SubFixtureInitialize]
+    public void FuncOneArg_GetWrappedType(FuncOneArgWrapperStrategy strategy)
+    {
+      Assert.Equal(typeof(IBasicService),
+          strategy.GetWrappedType(typeof(Func<int, IBasicService>)));
+    }
 
-        [Theory]
-        [AutoData]
-        [SubFixtureInitialize]
-        public void FuncOneArg_GetWrappedType_NonGeneric(FuncOneArgWrapperStrategy strategy)
-        {
-            Assert.Equal(null, strategy.GetWrappedType(typeof(BasicService)));
-        }
+    [Theory]
+    [AutoData]
+    [SubFixtureInitialize]
+    public void FuncOneArg_GetWrappedType_NonGeneric(FuncOneArgWrapperStrategy strategy)
+    {
+      Assert.Null(strategy.GetWrappedType(typeof(BasicService)));
+    }
 
-        public class SomeClass
-        {
-            private SomeOtherClass _otherClass;
-            private IBasicService _basicService;
-        }
+    public class SomeClass
+    {
+      private SomeOtherClass _otherClass;
+      private IBasicService _basicService;
+    }
 
-        public class SomeOtherClass
-        {
-
-        }
-
-        [Fact]
-        public void FuncOneArg_Locate()
-        {
-            var container = new DependencyInjectionContainer();
-
-            container.Configure(c =>
-            {
-                c.Export<SomeOtherClass>();
-                c.Export<SomeClass>();
-            });
-
-            var func = container.Locate<Func<IBasicService, SomeClass>>();
-
-            func(new BasicService());
-        }
+    public class SomeOtherClass
+    {
 
     }
+
+    [Fact]
+    public void FuncOneArg_Locate()
+    {
+      var container = new DependencyInjectionContainer();
+
+      container.Configure(c =>
+      {
+        c.Export<SomeOtherClass>();
+        c.Export<SomeClass>();
+      });
+
+      var func = container.Locate<Func<IBasicService, SomeClass>>();
+
+      func(new BasicService());
+    }
+
+  }
 }

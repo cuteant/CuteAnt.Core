@@ -27,7 +27,7 @@ namespace Grace.Tests.DependencyInjection.Generics
             var instances = container.LocateAll<IGenericConstraintService<IMultipleService>>();
 
             Assert.NotNull(instances);
-            Assert.Equal(1, instances.Count);
+            Assert.Single(instances);
         }
 
         [Fact]
@@ -67,7 +67,7 @@ namespace Grace.Tests.DependencyInjection.Generics
 
             Assert.NotNull(instance);
             Assert.NotNull(instance.Value);
-            Assert.Equal(1, instance.Value.Count());
+            Assert.Single(instance.Value);
         }
 
         [Fact]

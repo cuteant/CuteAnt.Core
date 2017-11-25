@@ -121,7 +121,9 @@ namespace CuteAnt.Reflection
 
         var realizedType = instanceType.MakeGenericType(typeArgs);
 
+#pragma warning disable 0618
         return realizedType.CreateInstance;
+#pragma warning restore 0618
       }
 
       var emptyCtor = instanceType.GetEmptyConstructor();

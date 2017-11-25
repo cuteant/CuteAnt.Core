@@ -69,7 +69,9 @@ namespace Grace.Tests.DependencyInjection.Decorator
 
         [Theory]
         [AutoData]
+#pragma warning disable xUnit1026 // Theory methods should use all of their parameters
         public void FluentDecoratorWithCtor_When([Freeze] ConstructorParameterInfo constructorParameterInfo,
+#pragma warning restore xUnit1026 // Theory methods should use all of their parameters
             [Freeze]IFluentDecoratorStrategyConfiguration strategyConfiguration,
             FluentDecoratorWithCtorConfiguration<int> configuration)
         {

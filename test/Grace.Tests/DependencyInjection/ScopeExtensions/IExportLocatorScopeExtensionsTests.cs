@@ -43,8 +43,8 @@ namespace Grace.Tests.DependencyInjection.ScopeExtensions
 
                 Assert.False(string.IsNullOrEmpty(whatDoIHave));
 
-                Assert.True(whatDoIHave.Contains("Singleton"));
-                Assert.True(whatDoIHave.Contains("Member Name"));
+                Assert.Contains("Singleton", whatDoIHave);
+                Assert.Contains("Member Name", whatDoIHave);
             }
         }
     }

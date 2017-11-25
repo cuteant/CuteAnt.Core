@@ -1637,7 +1637,7 @@ namespace CuteAnt.Reflection
       else
       {
         // 如果原始值是null，要转为值类型，则new一个空白的返回
-        if (conversionType.IsValueType) value = conversionType.CreateInstance();
+        if (conversionType.IsValueType) value = ActivatorUtils.FastCreateInstance(conversionType);
       }
 
       if (conversionType.IsAssignableFrom(vtype)) return value;

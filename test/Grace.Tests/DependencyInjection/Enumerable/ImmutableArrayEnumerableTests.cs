@@ -37,9 +37,11 @@ namespace Grace.Tests.DependencyInjection.Enumerable
 
             var array = container.Locate<ImmutableArray<IMultipleService>>();
 
+#pragma warning disable xUnit2002 // Do not use null check on value type
             Assert.NotNull(array);
-            
+
             Assert.NotNull(array);
+#pragma warning restore xUnit2002 // Do not use null check on value type
             Assert.Equal(5, array.Length);
             Assert.IsType<MultipleService1>(array[0]);
             Assert.IsType<MultipleService2>(array[1]);
@@ -75,7 +77,9 @@ namespace Grace.Tests.DependencyInjection.Enumerable
             var instance = container.Locate<ImportImmutableArray>();
 
             Assert.NotNull(instance);
+#pragma warning disable xUnit2002 // Do not use null check on value type
             Assert.NotNull(instance.List);
+#pragma warning restore xUnit2002 // Do not use null check on value type
             var array = instance.List.ToArray();
 
             Assert.NotNull(array);

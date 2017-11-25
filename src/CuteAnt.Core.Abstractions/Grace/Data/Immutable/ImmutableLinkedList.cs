@@ -130,10 +130,7 @@ namespace Grace.Data.Immutable
     /// <summary>Add value to list</summary>
     /// <param name="value">value to add to list</param>
     /// <returns>new linked list</returns>
-    public ImmutableLinkedList<T> Add(T value)
-    {
-      return new ImmutableLinkedList<T>(value, this, Count + 1);
-    }
+    public ImmutableLinkedList<T> Add(T value) => new ImmutableLinkedList<T>(value, this, Count + 1);
 
     /// <summary>Add range to linked list</summary>
     /// <param name="range">range to add</param>

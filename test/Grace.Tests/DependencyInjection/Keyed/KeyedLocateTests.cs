@@ -77,8 +77,10 @@ namespace Grace.Tests.DependencyInjection.Keyed
 
             container.Configure(c =>
             {
+#pragma warning disable 0618
                 c.ExportInstance((scope, context) => "Hello");
                 c.ExportInstance((scope, context) => "HelloAgain").AsKeyed<string>("Key");
+#pragma warning restore 0618
             });
 
             Assert.Equal("Hello", container.Locate<string>());
@@ -104,7 +106,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
                 var simpleObject = container.Locate<ISimpleObject>(withKey: locateChar);
 
                 Assert.NotNull(simpleObject);
-                Assert.True(simpleObject.GetType().FullName.EndsWith(locateChar.ToString()));
+                Assert.EndsWith(locateChar.ToString(), simpleObject.GetType().FullName);
             }
         }
 
@@ -169,7 +171,7 @@ namespace Grace.Tests.DependencyInjection.Keyed
             Assert.NotNull(instance);
             var array = instance.Services.ToArray();
 
-            Assert.Equal(1, array.Length);
+            Assert.Single(array);
             Assert.IsType<DependentService<IBasicService>>(array[0]);
         }
 

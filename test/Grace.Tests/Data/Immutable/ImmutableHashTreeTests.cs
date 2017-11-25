@@ -97,17 +97,17 @@ namespace Grace.Tests.Data.Immutable
 
             Assert.Equal(5, ImmutableHashTree.ThreadSafeAdd(ref tree, "Hello", 5));
 
-            Assert.Equal(1, tree.Count);
+            Assert.Single(tree);
             Assert.Equal(5, tree["Hello"]);
 
             Assert.Equal(5, ImmutableHashTree.ThreadSafeAdd(ref tree, "Hello", 10));
 
-            Assert.Equal(1, tree.Count);
+            Assert.Single(tree);
             Assert.Equal(5, tree["Hello"]);
 
             Assert.Equal(10, ImmutableHashTree.ThreadSafeAdd(ref tree, "Hello", 10, updateIfExists: true));
 
-            Assert.Equal(1, tree.Count);
+            Assert.Single(tree);
             Assert.Equal(10, tree["Hello"]);
 
         }

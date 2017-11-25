@@ -19,7 +19,7 @@ namespace Grace.Tests.Diagnostics
             Assert.Equal(2, debugger.StrategiesByType.Length);
             Assert.Equal(typeof(IBasicService).FullName, debugger.StrategiesByType[0].TypeName);
             Assert.Equal(typeof(IBasicService), debugger.StrategiesByType[0].Type);
-            Assert.Equal(1, debugger.StrategiesByType[0].Items.Count());
+            Assert.Single(debugger.StrategiesByType[0].Items);
         }
 
         [Fact]

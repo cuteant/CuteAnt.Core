@@ -11,54 +11,58 @@ using Xunit;
 
 namespace Grace.Tests.Diagnostics
 {
-    [SubFixtureInitialize]
-    public class ActivationStrategyMetadataDebuggerViewTests
+  [SubFixtureInitialize]
+  public class ActivationStrategyMetadataDebuggerViewTests
+  {
+    [Theory]
+    [AutoData]
+    public void ActivationStrategyMetadataDebuggerView_ActivationType(ActivationStrategyMetadataDebuggerView debugger,
+                                                                IActivationStrategyMetadata metadata)
     {
-        [Theory]
-        [AutoData]
-        public void ActivationStrategyMetadataDebuggerView_ActivationType(ActivationStrategyMetadataDebuggerView debugger,
-                                                                    IActivationStrategyMetadata metadata)
-        {
-            metadata.ActivationType.Returns(typeof(BasicService));
+      metadata.ActivationType.Returns(typeof(BasicService));
 
-            Assert.Equal(typeof(BasicService), debugger.ActivationType);
-        }
-        [Theory]
-        [AutoData]
-        public void ActivationStrategyMetadataDebuggerView_ExportAs(ActivationStrategyMetadataDebuggerView debugger,
-                                                                    IActivationStrategyMetadata metadata)
-        {
-            metadata.ExportAs.Returns(new[] { typeof(IBasicService) });
-
-            Assert.Equal(1, metadata.ExportAs.Count());
-        }
-
-        [Theory]
-        [AutoData]
-        public void ActivationStrategyMetadataDebuggerView_ExportAsKeyed(ActivationStrategyMetadataDebuggerView debugger,
-                                                                    IActivationStrategyMetadata metadata)
-        {
-            metadata.ExportAsKeyed.Returns(new[] { new KeyValuePair<Type, object>(typeof(IBasicService), "Blah") });
-
-            Assert.Equal(1, metadata.ExportAsKeyed.Count());
-        }
-
-        [Theory]
-        [AutoData]
-        public void ActivationStrategyMetadataDebuggerView_Data(ActivationStrategyMetadataDebuggerView debugger,
-                                                                    IActivationStrategyMetadata metadata)
-        {
-            var list = new List<KeyValuePair<object,object>> { new KeyValuePair<object, object>(typeof(IBasicService), "Blah") };
-
-            var enumerator = list.GetEnumerator();
-            metadata.GetEnumerator().Returns(enumerator);
-
-            var metaList = debugger.Data.ToArray();
-
-            Assert.Equal(1, metaList.Length);
-            Assert.Equal(typeof(IBasicService), metaList[0].Key);
-            Assert.Equal("Blah", metaList[0].Value);
-
-        }
+      Assert.Equal(typeof(BasicService), debugger.ActivationType);
     }
+    [Theory]
+    [AutoData]
+#pragma warning disable xUnit1026 // Theory methods should use all of their parameters
+    public void ActivationStrategyMetadataDebuggerView_ExportAs(ActivationStrategyMetadataDebuggerView debugger,
+#pragma warning restore xUnit1026 // Theory methods should use all of their parameters
+                                                                IActivationStrategyMetadata metadata)
+    {
+      metadata.ExportAs.Returns(new[] { typeof(IBasicService) });
+
+      Assert.Single(metadata.ExportAs);
+    }
+
+    [Theory]
+    [AutoData]
+#pragma warning disable xUnit1026 // Theory methods should use all of their parameters
+    public void ActivationStrategyMetadataDebuggerView_ExportAsKeyed(ActivationStrategyMetadataDebuggerView debugger,
+#pragma warning restore xUnit1026 // Theory methods should use all of their parameters
+                                                                IActivationStrategyMetadata metadata)
+    {
+      metadata.ExportAsKeyed.Returns(new[] { new KeyValuePair<Type, object>(typeof(IBasicService), "Blah") });
+
+      Assert.Single(metadata.ExportAsKeyed);
+    }
+
+    [Theory]
+    [AutoData]
+    public void ActivationStrategyMetadataDebuggerView_Data(ActivationStrategyMetadataDebuggerView debugger,
+                                                                IActivationStrategyMetadata metadata)
+    {
+      var list = new List<KeyValuePair<object, object>> { new KeyValuePair<object, object>(typeof(IBasicService), "Blah") };
+
+      var enumerator = list.GetEnumerator();
+      metadata.GetEnumerator().Returns(enumerator);
+
+      var metaList = debugger.Data.ToArray();
+
+      Assert.Single(metaList);
+      Assert.Equal(typeof(IBasicService), metaList[0].Key);
+      Assert.Equal("Blah", metaList[0].Value);
+
+    }
+  }
 }

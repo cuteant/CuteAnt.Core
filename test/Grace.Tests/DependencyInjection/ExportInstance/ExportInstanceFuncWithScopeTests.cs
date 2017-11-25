@@ -14,7 +14,9 @@ namespace Grace.Tests.DependencyInjection.ExportInstance
 
             container.Configure(c =>
             {
+#pragma warning disable 0618
                 c.ExportInstance(scope => new BasicService { Count = 5 }).As<IBasicService>();
+#pragma warning restore 0618
                 c.Export<ConstructorImportService>().As<IConstructorImportService>();
             });
 
@@ -33,13 +35,15 @@ namespace Grace.Tests.DependencyInjection.ExportInstance
 
             container.Configure(c =>
             {
-                c.ExportInstance(scope =>
+#pragma warning disable 0618
+              c.ExportInstance(scope =>
                 {
-                    currentId = scope.ScopeId;
+                  currentId = scope.ScopeId;
 
-                    return new BasicService();
+                  return new BasicService();
                 }).As<IBasicService>();
-                c.Export<ConstructorImportService>().As<IConstructorImportService>();
+              c.Export<ConstructorImportService>().As<IConstructorImportService>();
+#pragma warning restore 0618
             });
 
             using (var childScope = container.BeginLifetimeScope())

@@ -621,8 +621,7 @@ namespace CuteAnt.Reflection
         }
       }
 
-      //return Activator.CreateInstance(type);
-      return type.CreateInstance();
+      return ActivatorUtils.FastCreateInstance(type);
     }
 
     public static bool IsNullableValueType(Type type)

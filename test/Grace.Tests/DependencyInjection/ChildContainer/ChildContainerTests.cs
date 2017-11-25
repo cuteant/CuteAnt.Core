@@ -87,11 +87,13 @@ namespace Grace.Tests.DependencyInjection.ChildContainer
             {
                 child.Configure(c =>
                 {
-                    c.ExportInstance<IBasicService>(() => new BasicService {Count = 10});
+#pragma warning disable 0618
+                  c.ExportInstance<IBasicService>(() => new BasicService {Count = 10});
                     c.ExportInstance(scope =>
                     {
                         return new DependentService<IBasicService>(scope.Locate<IBasicService>());
                     });
+#pragma warning restore 0618
                 });
 
                 var instance = child.Locate<DependentService<IBasicService>>();

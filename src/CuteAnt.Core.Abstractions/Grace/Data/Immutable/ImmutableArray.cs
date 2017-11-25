@@ -68,29 +68,17 @@ namespace Grace.Data.Immutable
     /// <summary>Empty list</summary>
     public static readonly ImmutableArray<T> Empty;
 
-    static ImmutableArray()
-    {
-      Empty = new ImmutableArray<T>(new T[0]);
-    }
+    static ImmutableArray() => Empty = new ImmutableArray<T>(new T[0]);
 
-    internal ImmutableArray(T[] list)
-    {
-      _list = list;
-    }
+    internal ImmutableArray(T[] list) => _list = list;
 
     /// <summary>Get an enumerator for this list</summary>
     /// <returns>enumerator</returns>
-    public IEnumerator<T> GetEnumerator()
-    {
-      return new ImmutableArrayEnumerator<T>(_list);
-    }
+    public IEnumerator<T> GetEnumerator() => new ImmutableArrayEnumerator<T>(_list);
 
     /// <summary>Get an enumerator for this list</summary>
     /// <returns>enumerator</returns>
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     /// <summary>Contains specified value</summary>
     /// <param name="item"></param>
@@ -109,10 +97,7 @@ namespace Grace.Data.Immutable
     /// <summary>Copy to array</summary>
     /// <param name="array"></param>
     /// <param name="arrayIndex"></param>
-    public void CopyTo(T[] array, int arrayIndex)
-    {
-      Array.Copy(_list, 0, array, arrayIndex, _list.Length);
-    }
+    public void CopyTo(T[] array, int arrayIndex) => Array.Copy(_list, 0, array, arrayIndex, _list.Length);
 
     /// <summary>Length of the array</summary>
     public int Count => _list.Length;

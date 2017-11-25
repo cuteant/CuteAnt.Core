@@ -55,8 +55,8 @@ namespace Grace.Tests.Factory
 
             var func = new ActivationStrategyDelegate((s, d, c) =>
             {
-                Assert.True(c.Keys.Any(key => key.ToString().StartsWith(UniqueStringId.Prefix) &&
-                                              Equals(c.GetExtraData(key), value)));
+                Assert.Contains(c.Keys, key => key.ToString().StartsWith(UniqueStringId.Prefix) &&
+                                              Equals(c.GetExtraData(key), value));
                 return service = new DependentService<int>(value);
             });
 
@@ -79,8 +79,8 @@ namespace Grace.Tests.Factory
 
             var func = new ActivationStrategyDelegate((s, d, c) =>
             {
-                Assert.True(c.Keys.Any(key => key.ToString().StartsWith(UniqueStringId.Prefix) &&
-                                              Equals(c.GetExtraData(key), value)));
+                Assert.Contains(c.Keys, key => key.ToString().StartsWith(UniqueStringId.Prefix) &&
+                                              Equals(c.GetExtraData(key), value));
                 return service = new DependentService<string>(value);
             });
 
