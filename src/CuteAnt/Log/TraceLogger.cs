@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using CuteAnt.Text;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -15,7 +14,8 @@ namespace Microsoft.Extensions.Logging
   /// It provides more flexible configuration than the Trace class.</summary>
   public sealed class TraceLogger
   {
-    private static readonly ConcurrentDictionary<Type, Func<Exception, string>> s_exceptionDecoders = new ConcurrentDictionary<Type, Func<Exception, string>>();
+    private static readonly ConcurrentDictionary<Type, Func<Exception, string>> s_exceptionDecoders = 
+        new ConcurrentDictionary<Type, Func<Exception, string>>();
 
     // http://www.csharp-examples.net/string-format-datetime/
     // http://msdn.microsoft.com/en-us/library/system.globalization.datetimeformatinfo.aspx
@@ -172,9 +172,7 @@ namespace Microsoft.Extensions.Logging
 
     #region -- Dump --
 
-    /// <summary>
-    /// Create a mini-dump file for the current state of this process
-    /// </summary>
+    /// <summary>Create a mini-dump file for the current state of this process</summary>
     /// <param name="dumpType">Type of mini-dump to create</param>
     /// <returns><c>FileInfo</c> for the location of the newly created mini-dump file</returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2001:AvoidCallingProblematicMethods", MessageId = "System.Runtime.InteropServices.SafeHandle.DangerousGetHandle")]
