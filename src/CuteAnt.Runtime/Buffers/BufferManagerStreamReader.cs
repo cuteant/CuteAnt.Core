@@ -556,7 +556,7 @@ namespace CuteAnt.Buffers
 
     #region - Numbers -
 
-    [CLSCompliant(false)]
+    //[CLSCompliant(false)]
     public sbyte ReadSByte()
     {
       FillBuffer(1);
@@ -583,7 +583,7 @@ namespace CuteAnt.Buffers
       }
     }
 
-    [CLSCompliant(false)]
+    //[CLSCompliant(false)]
     public ushort ReadUShort(Boolean bigEndian = true)
     {
       FillBuffer(2);
@@ -610,7 +610,7 @@ namespace CuteAnt.Buffers
       }
     }
 
-    [CLSCompliant(false)]
+    //[CLSCompliant(false)]
     public uint ReadUInt(Boolean bigEndian = true)
     {
       FillBuffer(4);
@@ -641,7 +641,7 @@ namespace CuteAnt.Buffers
       }
     }
 
-    [CLSCompliant(false)]
+    //[CLSCompliant(false)]
     public ulong ReadULong(Boolean bigEndian = true)
     {
       FillBuffer(8);

@@ -22,8 +22,8 @@ namespace CuteAnt.ServiceModel.Diagnostics
   {
     const string ExceptionStackAsStringKey = "CuteAnt.ServiceModel.Diagnostics.ExceptionUtility.ExceptionStackAsString";
 
-    // This field should be only used for debug build.
-    internal static ExceptionUtility mainInstance;
+    //// This field should be only used for debug build.
+    //internal static ExceptionUtility mainInstance;
 
     LegacyDiagnosticTrace diagnosticTrace;
     ExceptionTrace exceptionTrace;

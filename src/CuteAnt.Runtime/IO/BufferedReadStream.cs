@@ -341,7 +341,7 @@ namespace CuteAnt.IO
           {
             return (error == null)
                         ? LastSyncCompletedReadTask(bytesFromBuffer)
-                        : TaskConstants.FromError<int>(error);
+                        : AsyncUtils.FromException<int>(error);
           }
         }
         finally

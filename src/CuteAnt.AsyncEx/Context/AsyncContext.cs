@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 namespace CuteAnt.AsyncEx
 {
   /// <summary>Provides a context for asynchronous operations. This class is threadsafe.</summary>
-  /// <remarks><para><see cref="Execute()"/> may only be called once. After <see cref="Execute()"/> returns, the async context should be disposed.</para></remarks>
+  /// <remarks><para><see cref="Execute()"/> may only be called once. 
+  /// After <see cref="Execute()"/> returns, the async context should be disposed.</para></remarks>
   [DebuggerDisplay("Id = {Id}, OperationCount = {_outstandingOperations}")]
   [DebuggerTypeProxy(typeof(DebugView))]
   public sealed partial class AsyncContext : IDisposable
@@ -26,7 +27,8 @@ namespace CuteAnt.AsyncEx
     /// <summary>The number of outstanding operations, including actions in the queue.</summary>
     private int _outstandingOperations;
 
-    /// <summary>Initializes a new instance of the <see cref="AsyncContext"/> class. This is an advanced operation; most people should use one of the static <c>Run</c> methods instead.</summary>
+    /// <summary>Initializes a new instance of the <see cref="AsyncContext"/> class. 
+    /// This is an advanced operation; most people should use one of the static <c>Run</c> methods instead.</summary>
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public AsyncContext()
     {
@@ -40,7 +42,8 @@ namespace CuteAnt.AsyncEx
 #endif
     }
 
-    /// <summary>Gets a semi-unique identifier for this asynchronous context. This is the same identifier as the context's <see cref="TaskScheduler"/>.</summary>
+    /// <summary>Gets a semi-unique identifier for this asynchronous context. 
+    /// This is the same identifier as the context's <see cref="TaskScheduler"/>.</summary>
     public int Id => _taskScheduler.Id;
 
     /// <summary>Increments the outstanding asynchronous operation count.</summary>
@@ -56,10 +59,12 @@ namespace CuteAnt.AsyncEx
       if (newCount == 0) { _queue.CompleteAdding(); }
     }
 
-    /// <summary>Queues a task for execution by <see cref="Execute"/>. If all tasks have been completed and the outstanding asynchronous operation count is zero, 
+    /// <summary>Queues a task for execution by <see cref="Execute"/>. 
+    /// If all tasks have been completed and the outstanding asynchronous operation count is zero, 
     /// then this method has undefined behavior.</summary>
     /// <param name="task">The task to queue. May not be <c>null</c>.</param>
-    /// <param name="propagateExceptions">A value indicating whether exceptions on this task should be propagated out of the main loop.</param>
+    /// <param name="propagateExceptions">A value indicating whether exceptions on 
+    /// this task should be propagated out of the main loop.</param>
     private void Enqueue(Task task, bool propagateExceptions)
     {
       OperationStarted();
@@ -69,10 +74,13 @@ namespace CuteAnt.AsyncEx
       // If we fail to add to the queue, just drop the Task. This is the same behavior as the TaskScheduler.FromCurrentSynchronizationContext(WinFormsSynchronizationContext).
     }
 
-    /// <summary>Disposes all resources used by this class. This method should NOT be called while <see cref="Execute"/> is executing.</summary>
+    /// <summary>Disposes all resources used by this class. 
+    /// This method should NOT be called while <see cref="Execute"/> is executing.</summary>
     public void Dispose() => _queue.Dispose();
 
-    /// <summary>Executes all queued actions. This method returns when all tasks have been completed and the outstanding asynchronous operation count is zero. This method will unwrap and propagate errors from tasks that are supposed to propagate errors.</summary>
+    /// <summary>Executes all queued actions. 
+    /// This method returns when all tasks have been completed and the outstanding asynchronous operation count is zero. 
+    /// This method will unwrap and propagate errors from tasks that are supposed to propagate errors.</summary>
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public void Execute()
     {
@@ -89,7 +97,8 @@ namespace CuteAnt.AsyncEx
       }
     }
 
-    /// <summary>Gets the current <see cref="AsyncContext"/> for this thread, or <c>null</c> if this thread is not currently running in an <see cref="AsyncContext"/>.</summary>
+    /// <summary>Gets the current <see cref="AsyncContext"/> for this thread, 
+    /// or <c>null</c> if this thread is not currently running in an <see cref="AsyncContext"/>.</summary>
     public static AsyncContext Current
     {
       get
@@ -101,15 +110,23 @@ namespace CuteAnt.AsyncEx
       }
     }
 
-    /// <summary>Gets the <see cref="SynchronizationContext"/> for this <see cref="AsyncContext"/>. From inside <see cref="Execute"/>, this value is always equal to <see cref="System.Threading.SynchronizationContext.Current"/>.</summary>
+    /// <summary>Gets the <see cref="SynchronizationContext"/> for this <see cref="AsyncContext"/>. 
+    /// From inside <see cref="Execute"/>, this value is always equal to
+    /// <see cref="System.Threading.SynchronizationContext.Current"/>.</summary>
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public SynchronizationContext SynchronizationContext => _synchronizationContext;
 
-    /// <summary>Gets the <see cref="TaskScheduler"/> for this <see cref="AsyncContext"/>. From inside <see cref="Execute"/>, this value is always equal to <see cref="TaskScheduler.Current"/>.</summary>
+    /// <summary>Gets the <see cref="TaskScheduler"/> for this <see cref="AsyncContext"/>. 
+    /// From inside <see cref="Execute"/>, this value is always equal to <see cref="TaskScheduler.Current"/>.</summary>
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public TaskScheduler Scheduler => _taskScheduler;
 
-    /// <summary>Gets the <see cref="TaskFactory"/> for this <see cref="AsyncContext"/>. Note that this factory has the <see cref="TaskCreationOptions.HideScheduler"/> option set. Be careful with async delegates; you may need to call <see cref="M:System.Threading.SynchronizationContext.OperationStarted"/> and <see cref="M:System.Threading.SynchronizationContext.OperationCompleted"/> to prevent early termination of this <see cref="AsyncContext"/>.</summary>
+    /// <summary>Gets the <see cref="TaskFactory"/> for this <see cref="AsyncContext"/>. 
+    /// Note that this factory has the <c>TaskCreationOptions.HideScheduler</c> option set. 
+    /// Be careful with async delegates; you may need to call 
+    /// <see cref="M:System.Threading.SynchronizationContext.OperationStarted"/> and 
+    /// <see cref="M:System.Threading.SynchronizationContext.OperationCompleted"/> 
+    /// to prevent early termination of this <see cref="AsyncContext"/>.</summary>
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public TaskFactory Factory => _taskFactory;
 

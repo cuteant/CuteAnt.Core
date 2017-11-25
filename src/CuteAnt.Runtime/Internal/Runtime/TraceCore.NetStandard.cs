@@ -17,9 +17,9 @@ namespace CuteAnt.Diagnostics
   internal partial class TraceCore
   {
 
-    static System.Resources.ResourceManager resourceManager;
+    //static System.Resources.ResourceManager resourceManager;
 
-    static System.Globalization.CultureInfo resourceCulture;
+    //static System.Globalization.CultureInfo resourceCulture;
 
 
     static object syncLock = new object();

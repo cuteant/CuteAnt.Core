@@ -383,12 +383,6 @@ namespace CuteAnt.Diagnostics
     /// <summary>
     /// WriteMessageEvent, method to write a string with level and Keyword
     /// </summary>
-    /// <param name="level">
-    /// Level  to test  
-    /// </param>
-    /// <param name="Keyword">
-    /// Keyword  to test 
-    /// </param>        
     [Fx.Tag.SecurityNote(Critical = "Calling Unsafe code; usage of EventDescriptor, which is protected by a LinkDemand")]
     [SecurityCritical]
     public bool WriteMessageEvent(EventTraceActivity eventTraceActivity, string eventMessage, byte eventLevel, long eventKeywords)
@@ -432,6 +426,7 @@ namespace CuteAnt.Diagnostics
     /// <summary>
     /// WriteMessageEvent, method to write a string with level=0 and Keyword=0
     /// </summary>
+    /// <param name="eventTraceActivity"></param> 
     /// <param name="eventMessage">
     /// Message to log  
     /// </param> 
@@ -451,6 +446,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="eventTraceActivity">
     /// Event TraceActivity for this event. 
     /// </param>        
+    /// <param name="eventPayload"></param> 
     [SuppressMessage(FxCop.Category.Maintainability, FxCop.Rule.AvoidExcessiveComplexity, Justification = "Performance-critical code")]
     [Fx.Tag.SecurityNote(Critical = "Calling Unsafe code; usage of EventDescriptor, which is protected by a LinkDemand")]
     [SecurityCritical]
@@ -639,9 +635,10 @@ namespace CuteAnt.Diagnostics
     /// <summary>
     /// WriteEvent, method to write a string with event schema properties
     /// </summary>
-    /// <param name="EventDescriptor">
+    /// <param name="eventDescriptor">
     /// Event Descriptor for this event. 
     /// </param>
+    /// <param name="eventTraceActivity"></param> 
     /// <param name="data">
     /// string to log. 
     /// </param> 
@@ -727,12 +724,12 @@ namespace CuteAnt.Diagnostics
       return true;
     }
 
-    /// <summary>
-    /// WriteTransferEvent, method to write a parameters with event schema properties
-    /// </summary>
+    /// <summary>WriteTransferEvent, method to write a parameters with event schema properties</summary>
     /// <param name="eventDescriptor">
-    /// Event Descriptor for this event. 
-    /// </param>        
+    /// Event Descriptor for this event. </param>
+    /// <param name="eventTraceActivity"></param>
+    /// <param name="relatedActivityId"></param>
+    /// <param name="eventPayload"></param>
     [SuppressMessage(FxCop.Category.Maintainability, FxCop.Rule.AvoidExcessiveComplexity, Justification = "Performance-critical code")]
     [Fx.Tag.SecurityNote(Critical = "Calling Unsafe code; usage of EventDescriptor, which is protected by a LinkDemand")]
     [SecurityCritical]

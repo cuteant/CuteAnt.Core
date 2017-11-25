@@ -382,7 +382,7 @@ namespace CuteAnt.Buffers
       {
         //return AsyncUtils.CreateTaskFromException<VoidTaskResult>(ex2);
         //tcs.TrySetException(ex2);
-        return TaskConstants.FromError<Int32>(ex2);
+        return AsyncUtils.FromException<Int32>(ex2);
       }
     }
 #endif

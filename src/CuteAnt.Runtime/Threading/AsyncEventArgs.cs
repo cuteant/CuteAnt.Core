@@ -5,18 +5,18 @@
 
 #if DESKTOPCLR
 using System;
-using System.Diagnostics;
-using CuteAnt.Diagnostics;
+//using System.Diagnostics;
+//using CuteAnt.Diagnostics;
 
 namespace CuteAnt.Runtime
 {
   [Fx.Tag.SynchronizationPrimitive(Fx.Tag.BlocksUsing.NonBlocking, SupportsAsync = true, ReleaseMethod = "Complete")]
   public abstract class AsyncEventArgs : IAsyncEventArgs
   {
-#if DEBUG
-    StackTrace startStack;
-    StackTrace completeStack;
-#endif
+//#if DEBUG
+//    StackTrace startStack;
+//    StackTrace completeStack;
+//#endif
     OperationState state;
     object asyncState;
     AsyncEventArgsCallback callback;

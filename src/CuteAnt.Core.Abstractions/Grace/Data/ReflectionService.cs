@@ -11,7 +11,7 @@ using Grace.DependencyInjection;
 namespace Grace.Data
 {
   /// <summary>Helper class for accessing values using reflection</summary>
-  public class ReflectionService
+  public sealed class ReflectionService
   {
     private static readonly MethodInfo ImmutableTreeAdd =
         typeof(ImmutableHashTree<string, object>).GetRuntimeMethods().First(m => m.Name == "Add");

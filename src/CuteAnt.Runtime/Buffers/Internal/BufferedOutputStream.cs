@@ -293,7 +293,7 @@ namespace CuteAnt.Buffers
       catch (Exception ex2)
       {
         //return AsyncUtils.CreateTaskFromException<VoidTaskResult>(ex2);
-        return TaskConstants.FromError(ex2);
+        return AsyncUtils.FromException(ex2);
       }
     }
 #endif
@@ -439,7 +439,7 @@ namespace CuteAnt.Buffers
 
     /// <summary>Writes a signed byte to the current stream and advances the stream position by one byte.</summary>
     /// <param name="value">The signed byte to write.</param>
-    [CLSCompliant(false)]
+    //[CLSCompliant(false)]
     public void WriteValue(SByte value)
     {
       WriteByte(unchecked((byte)value));
@@ -471,7 +471,7 @@ namespace CuteAnt.Buffers
     /// <summary>Writes a two-byte unsigned integer to the current stream and advances the stream position by two bytes.</summary>
     /// <param name="value">The two-byte unsigned integer to write.</param>
     /// <param name="bigEndian">if set to <c>true</c> [big-endian].</param>
-    [CLSCompliant(false)]
+    //[CLSCompliant(false)]
     public void WriteValue(UInt16 value, Boolean bigEndian = true)
     {
       GetBytes(value, _buffer, bigEndian);
@@ -522,7 +522,7 @@ namespace CuteAnt.Buffers
     /// <summary>Writes a four-byte unsigned integer to the current stream and advances the stream position by four bytes.</summary>
     /// <param name="value">The four-byte unsigned integer to write.</param>
     /// <param name="bigEndian">if set to <c>true</c> [big-endian].</param>
-    [CLSCompliant(false)]
+    //[CLSCompliant(false)]
     public void WriteValue(UInt32 value, Boolean bigEndian = true)
     {
       GetBytes(value, _buffer, bigEndian);
@@ -585,7 +585,7 @@ namespace CuteAnt.Buffers
     /// <summary>Writes an eight-byte unsigned integer to the current stream and advances the stream position by eight bytes.</summary>
     /// <param name="value">The eight-byte unsigned integer to write.</param>
     /// <param name="bigEndian">if set to <c>true</c> [big-endian].</param>
-    [CLSCompliant(false)]
+    //[CLSCompliant(false)]
     public void WriteValue(UInt64 value, Boolean bigEndian = true)
     {
       GetBytes(value, _buffer, bigEndian);
@@ -1051,7 +1051,7 @@ namespace CuteAnt.Buffers
       catch (Exception ex2)
       {
         //return AsyncUtils.CreateTaskFromException<VoidTaskResult>(ex2);
-        return TaskConstants.FromError(ex2);
+        return AsyncUtils.FromException(ex2);
       }
     }
 #endif
