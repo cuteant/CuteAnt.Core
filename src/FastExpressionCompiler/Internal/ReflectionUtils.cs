@@ -24,7 +24,12 @@ namespace FastExpressionCompiler
     public static bool HasDefaultValue(this ParameterInfo pi)
     {
       const string _DBNullType = "System.DBNull";
-      return pi.DefaultValue == null || pi.DefaultValue.GetType().FullName != _DBNullType;
+      var defaultValue = pi.DefaultValue;
+      if (null == defaultValue && pi.ParameterType.IsValueType)
+      {
+        defaultValue = Activator.CreateInstance(pi.ParameterType);
+      }
+      return null == defaultValue || !string.Equals(_DBNullType, defaultValue.GetType().FullName, StringComparison.Ordinal);
     }
 
     private static readonly FieldInfo[] _emptyFields = new FieldInfo[0];

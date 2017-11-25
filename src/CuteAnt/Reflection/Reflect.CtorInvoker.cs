@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -21,6 +22,7 @@ namespace CuteAnt.Reflection
     #region -- CreateInstance --
 
     /// <summary>Creates a new instance from the default constructor of type</summary>
+    [Obsolete("=> ActivatorUtils.FastCreateInstance")]
     public static object CreateInstance(this Type instanceType)
     {
       if (instanceType == null) { return null; }
@@ -32,6 +34,7 @@ namespace CuteAnt.Reflection
     /// <typeparam name="T"></typeparam>
     /// <param name="instanceType"></param>
     /// <returns></returns>
+    [Obsolete("=> ActivatorUtils.FastCreateInstance")]
     public static T CreateInstance<T>(this Type instanceType)
     {
       if (instanceType == null) { return default(T); }
@@ -42,6 +45,7 @@ namespace CuteAnt.Reflection
     /// <summary>Creates a new instance from the default constructor of type</summary>
     /// <param name="typeName"></param>
     /// <returns></returns>
+    [Obsolete("=> ActivatorUtils.FastCreateInstance")]
     public static object CreateInstance(this string typeName)
     {
       if (string.IsNullOrWhiteSpace(typeName)) { return null; }

@@ -136,12 +136,13 @@ namespace CuteAnt.Reflection
     // 这里不采用 Json.Net 的代码
     //private static readonly Func<Type, string> _getSimpleTypeNameFunc = GetSimpleTypeNameInternal;
     private static readonly Func<Type, string> _getSimpleTypeNameFunc = RuntimeTypeNameFormatter.Format;
-    private static readonly DictionaryCache<Type, string> _simpleTypeNameCache = new DictionaryCache<Type, string>(DictionaryCacheConstants.SIZE_MEDIUM);
+    private static readonly CachedReadConcurrentDictionary<Type, string> _simpleTypeNameCache = 
+        new CachedReadConcurrentDictionary<Type, string>(DictionaryCacheConstants.SIZE_MEDIUM);
 
     public static string GetSimpleTypeName(Type type)
     {
       if (null == type) { throw new ArgumentNullException(nameof(type)); }
-      return _simpleTypeNameCache.GetItem(type, _getSimpleTypeNameFunc);
+      return _simpleTypeNameCache.GetOrAdd(type, _getSimpleTypeNameFunc);
     }
 
     //private static string GetSimpleTypeNameInternal(Type type)
@@ -201,14 +202,15 @@ namespace CuteAnt.Reflection
     #region -- SerializeTypeName --
 
     private const char c_keyDelimiter = ':';
-    private static readonly DictionaryCache<Type, string> _typeNameSerializerCache = new DictionaryCache<Type, string>(DictionaryCacheConstants.SIZE_MEDIUM);
+    private static readonly CachedReadConcurrentDictionary<Type, string> _typeNameSerializerCache = 
+        new CachedReadConcurrentDictionary<Type, string>(DictionaryCacheConstants.SIZE_MEDIUM);
     private static readonly Func<Type, string> _serializeTypeNameFunc = SerializeTypeNameInternal;
 
     public static string SerializeTypeName(Type type)
     {
       if (null == type) { throw new ArgumentNullException(nameof(type)); }
 
-      return _typeNameSerializerCache.GetItem(type, _serializeTypeNameFunc);
+      return _typeNameSerializerCache.GetOrAdd(type, _serializeTypeNameFunc);
     }
 
     private static string SerializeTypeNameInternal(Type t)

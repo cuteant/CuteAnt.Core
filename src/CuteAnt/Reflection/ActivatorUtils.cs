@@ -129,10 +129,12 @@ namespace CuteAnt.Reflection
     public static object FastCreateInstance(Type instanceType)
     {
       if (instanceType == null) { throw new ArgumentNullException(nameof(instanceType)); }
-      var typeInfo = instanceType.GetTypeInfo();
-      if (typeInfo.IsAbstract) { throw new TypeAccessException($"Type '{instanceType}' is an abstract class and cannot be instantiated"); }
+      if (instanceType.GetTypeInfo().IsAbstract)
+      {
+        throw new TypeAccessException($"Type '{instanceType}' is an abstract class and cannot be instantiated");
+      }
 
-      return s_typeEmptyConstructorCache.GetOrAdd(typeInfo.AsType(), s_makeDelegateForCtorFunc).Invoke(s_emptyObjects);
+      return s_typeEmptyConstructorCache.GetOrAdd(instanceType, s_makeDelegateForCtorFunc).Invoke(s_emptyObjects);
     }
 
     /// <summary>Creates a new instance from the default constructor of type</summary>
