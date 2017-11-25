@@ -4,7 +4,7 @@
     <RootNamespace>Grace.Extensions.DependencyInjection.Test</RootNamespace>
     <AssemblyName>Grace.Extensions.DependencyInjection.Test</AssemblyName>
     <TargetFrameworks>netcoreapp2.0;net471</TargetFrameworks>
-    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">2.0.3</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">$(NETCoreApp2RuntimeFrameworkVersion)</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>

@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net471;netcoreapp2.0</TargetFrameworks>
+    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">$(NETCoreApp2RuntimeFrameworkVersion)</RuntimeFrameworkVersion>
     <AssemblyName>FastExpressionCompiler.IssueTests</AssemblyName>
     <RootNamespace>FastExpressionCompiler.IssueTests</RootNamespace>
   </PropertyGroup>
