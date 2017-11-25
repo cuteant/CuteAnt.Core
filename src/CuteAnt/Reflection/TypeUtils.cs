@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -136,7 +137,7 @@ namespace CuteAnt.Reflection
     // 这里不采用 Json.Net 的代码
     //private static readonly Func<Type, string> _getSimpleTypeNameFunc = GetSimpleTypeNameInternal;
     private static readonly Func<Type, string> _getSimpleTypeNameFunc = RuntimeTypeNameFormatter.Format;
-    private static readonly CachedReadConcurrentDictionary<Type, string> _simpleTypeNameCache = 
+    private static readonly CachedReadConcurrentDictionary<Type, string> _simpleTypeNameCache =
         new CachedReadConcurrentDictionary<Type, string>(DictionaryCacheConstants.SIZE_MEDIUM);
 
     public static string GetSimpleTypeName(Type type)
@@ -202,7 +203,7 @@ namespace CuteAnt.Reflection
     #region -- SerializeTypeName --
 
     private const char c_keyDelimiter = ':';
-    private static readonly CachedReadConcurrentDictionary<Type, string> _typeNameSerializerCache = 
+    private static readonly CachedReadConcurrentDictionary<Type, string> _typeNameSerializerCache =
         new CachedReadConcurrentDictionary<Type, string>(DictionaryCacheConstants.SIZE_MEDIUM);
     private static readonly Func<Type, string> _serializeTypeNameFunc = SerializeTypeNameInternal;
 
@@ -2112,11 +2113,11 @@ namespace CuteAnt.Reflection
 
     private static readonly CachedReadConcurrentDictionary<Type, string> s_typeIdentifierCache =
         new CachedReadConcurrentDictionary<Type, string>(DictionaryCacheConstants.SIZE_MEDIUM);
-    private static long _typeIdentifier;
-    public static string GetTypeIdentifier(Type type)
+    private static int _typeIdentifier;
+    public static string GetTypeIdentifier(this Type type)
     {
       if (null == type) { throw new ArgumentNullException(nameof(type)); }
-      return s_typeIdentifierCache.GetOrAdd(type, t => Utils.GenerateStringId(Interlocked.Increment(ref _typeIdentifier)));
+      return s_typeIdentifierCache.GetOrAdd(type, t => Interlocked.Increment(ref _typeIdentifier).ToString(CultureInfo.InvariantCulture));
     }
 
     #endregion

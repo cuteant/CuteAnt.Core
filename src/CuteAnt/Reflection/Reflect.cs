@@ -53,7 +53,7 @@ namespace CuteAnt.Reflection
     {
       if (type == null) { throw new ArgumentNullException(nameof(type)); }
 
-      if (!type.IsGenericTypeDefinition)
+      if (!type.GetTypeInfo().IsGenericTypeDefinition)
       {
         throw new ArgumentException($"{type.FullName} is not a Generic Type Definition", nameof(type));
       }
