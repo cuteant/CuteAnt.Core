@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using CuteAnt.Collections;
 using CuteAnt.Text;
 
 namespace CuteAnt.Reflection
@@ -43,7 +44,10 @@ namespace CuteAnt.Reflection
       return defaultValue;
     }
 
-    private static Dictionary<string, Type> s_genericTypeCache = new Dictionary<string, Type>(StringComparer.Ordinal);
+    private static CachedReadConcurrentDictionary<string, Type> s_genericTypeCache =
+        new CachedReadConcurrentDictionary<string, Type>(DictionaryCacheConstants.SIZE_MEDIUM, StringComparer.Ordinal);
+    private static Func<string, Type, Type[], Type> s_makeGenericTypeFunc = MakeGenericTypeInternal;
+
     /// <summary>GetCachedGenericType</summary>
     /// <param name="type"></param>
     /// <param name="argTypes"></param>
@@ -61,30 +65,16 @@ namespace CuteAnt.Reflection
       if (argTypes == null) { argTypes = Type.EmptyTypes; }
 
       var sb = StringBuilderCache.Acquire().Append(TypeUtils.GetTypeIdentifier(type));
-
       foreach (var argType in argTypes)
       {
         sb.Append('|').Append(TypeUtils.GetTypeIdentifier(argType));
       }
+      var typeKey = StringBuilderCache.GetStringAndRelease(sb);
 
-      var key = StringBuilderCache.GetStringAndRelease(sb);
-
-      if (s_genericTypeCache.TryGetValue(key, out Type genericType)) { return genericType; }
-
-      genericType = type.MakeGenericType(argTypes);
-
-      Dictionary<string, Type> snapshot, newCache;
-      do
-      {
-        snapshot = s_genericTypeCache;
-        newCache = new Dictionary<string, Type>(s_genericTypeCache, StringComparer.Ordinal)
-        {
-          [key] = genericType
-        };
-      } while (!ReferenceEquals(Interlocked.CompareExchange(ref s_genericTypeCache, newCache, snapshot), snapshot));
-
-      return genericType;
+      return s_genericTypeCache.GetOrAdd(typeKey, s_makeGenericTypeFunc, type, argTypes);
     }
+
+    private static Type MakeGenericTypeInternal(string typeKey, Type type, Type[] argTypes) => type.MakeGenericType(argTypes);
 
     #endregion
 
