@@ -17,43 +17,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\FastExpressionCompiler\ExpressionCompiler.Closures.cs" Link="ExpressionCompiler.Closures.cs" />
-    <Compile Include="..\FastExpressionCompiler\ExpressionCompiler.CollectBoundConstants.cs" Link="ExpressionCompiler.CollectBoundConstants.cs" />
-    <Compile Include="..\FastExpressionCompiler\ExpressionCompiler.ConstantInfo.cs" Link="ExpressionCompiler.ConstantInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\ExpressionCompiler.cs" Link="ExpressionCompiler.cs" />
-    <Compile Include="..\FastExpressionCompiler\ExpressionCompiler.EmittingVisitor.cs" Link="ExpressionCompiler.EmittingVisitor.cs" />
-    <Compile Include="..\FastExpressionCompiler\ExpressionCompiler.NestedLambdas.cs" Link="ExpressionCompiler.NestedLambdas.cs" />
-    <Compile Include="..\FastExpressionCompiler\ExpressionCompiler.Obsolete.cs" Link="ExpressionCompiler.Obsolete.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\ArgumentsExpressionInfo.cs" Link="Expressions\ArgumentsExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\ArrayIndexExpressionInfo.cs" Link="Expressions\ArrayIndexExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\AssignBinaryExpressionInfo.cs" Link="Expressions\AssignBinaryExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\BinaryExpressionInfo.cs" Link="Expressions\BinaryExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\ConstantExpressionInfo.cs" Link="Expressions\ConstantExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\ExpressionInfo (or TDelegate).cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\ExpressionInfo.cs" Link="Expressions\ExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\FieldExpressionInfo.cs" Link="Expressions\FieldExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\InvocationExpressionInfo.cs" Link="Expressions\InvocationExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\LambdaExpressionInfo.cs" Link="Expressions\LambdaExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\MemberAssignmentInfo.cs" Link="Expressions\MemberAssignmentInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\MemberExpressionInfo.cs" Link="Expressions\MemberExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\MemberInitExpressionInfo.cs" Link="Expressions\MemberInitExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\MethodCallExpressionInfo.cs" Link="Expressions\MethodCallExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\NewArrayExpressionInfo.cs" Link="Expressions\NewArrayExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\NewExpressionInfo.cs" Link="Expressions\NewExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\ParameterExpressionInfo.cs" Link="Expressions\ParameterExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\PropertyExpressionInfo.cs" Link="Expressions\PropertyExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Expressions\UnaryExpressionInfo.cs" Link="Expressions\UnaryExpressionInfo.cs" />
-    <Compile Include="..\FastExpressionCompiler\Internal\ReflectionUtils.cs" Link="Internal\ReflectionUtils.cs" />
-    <Compile Include="..\FastExpressionCompiler\Tools.cs" Link="Tools.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Expressions\" />
-    <Folder Include="Internal\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="..\FastExpressionCompiler\Expressions\ExpressionInfo %28or TDelegate%29.cs" Link="Expressions\ExpressionInfo %28or TDelegate%29.cs" />
+    <Compile Include="..\FastExpressionCompiler\**\*.cs" Exclude="..\FastExpressionCompiler\bin\**;..\FastExpressionCompiler\obj\**" />
+    <EmbeddedResource Include="..\FastExpressionCompiler\**\*.resx" Exclude="..\FastExpressionCompiler\bin\**;..\FastExpressionCompiler\obj\**;@(EmbeddedResource)" />
   </ItemGroup>
 
 </Project>

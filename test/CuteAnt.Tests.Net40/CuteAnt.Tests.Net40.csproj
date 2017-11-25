@@ -4,16 +4,10 @@
     <AssemblyName>CuteAnt.Tests</AssemblyName>
     <TargetFramework>net461</TargetFramework>
   </PropertyGroup>
+
   <ItemGroup>
-    <Compile Include="..\CuteAnt.Tests\AsyncLocalShimTest.cs" Link="AsyncLocalShimTest.cs" />
-    <Compile Include="..\CuteAnt.Tests\AttributeTests.cs" Link="AttributeTests.cs" />
-    <Compile Include="..\CuteAnt.Tests\CombGuidTest.cs" Link="CombGuidTest.cs" />
-    <Compile Include="..\CuteAnt.Tests\ReflectionMethodTests.cs" Link="ReflectionMethodTests.cs" />
-    <Compile Include="..\CuteAnt.Tests\ReflectionPerformanceTests.cs" Link="ReflectionPerformanceTests.cs" />
-    <Compile Include="..\CuteAnt.Tests\ReflectionTests.cs" Link="ReflectionTests.cs" />
-    <Compile Include="..\CuteAnt.Tests\RuntimeTypeNameFormatterTests.cs" Link="RuntimeTypeNameFormatterTests.cs" />
-    <Compile Include="..\CuteAnt.Tests\SingleDisposableUnitTests.cs" Link="SingleDisposableUnitTests.cs" />
-    <Compile Include="..\CuteAnt.Tests\SingleNonblockingDisposableUnitTests.cs" Link="SingleNonblockingDisposableUnitTests.cs" />
+    <Compile Include="..\CuteAnt.Tests\**\*.cs" Exclude="..\CuteAnt.Tests\bin\**;..\CuteAnt.Tests\obj\**" />
+    <EmbeddedResource Include="..\CuteAnt.Tests\**\*.resx" Exclude="..\CuteAnt.Tests\bin\**;..\CuteAnt.Tests\obj\**;@(EmbeddedResource)" />
   </ItemGroup>
 
   <ItemGroup>

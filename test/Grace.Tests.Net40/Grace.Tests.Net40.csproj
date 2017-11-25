@@ -22,6 +22,10 @@
     <PackageReference Include="SimpleFixture.xUnit" Version="$(SimpleFixturexUnitPackageVersion)" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="..\Grace.Tests\**\*.cs" Exclude="..\Grace.Tests\bin\**;..\Grace.Tests\obj\**" />
+    <EmbeddedResource Include="..\Grace.Tests\**\*.resx" Exclude="..\Grace.Tests\bin\**;..\Grace.Tests\obj\**;@(EmbeddedResource)" />
+  </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net451' or '$(TargetFramework)' == 'net471' ">
     <Reference Include="System.ComponentModel.Composition" />

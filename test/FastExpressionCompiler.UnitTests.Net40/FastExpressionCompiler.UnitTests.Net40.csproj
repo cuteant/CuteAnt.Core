@@ -9,21 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\FastExpressionCompiler.UnitTests\ArithmeticOperationsTests.cs" Link="ArithmeticOperationsTests.cs" />
-    <Compile Include="..\FastExpressionCompiler.UnitTests\AssignTests.cs" Link="AssignTests.cs" />
-    <Compile Include="..\FastExpressionCompiler.UnitTests\BlockTests.cs" Link="BlockTests.cs" />
-    <Compile Include="..\FastExpressionCompiler.UnitTests\CoalesceTests.cs" Link="CoalesceTests.cs" />
-    <Compile Include="..\FastExpressionCompiler.UnitTests\ConditionalOperatorsTests.cs" Link="ConditionalOperatorsTests.cs" />
-    <Compile Include="..\FastExpressionCompiler.UnitTests\ConstantAndConversionTests.cs" Link="ConstantAndConversionTests.cs" />
-    <Compile Include="..\FastExpressionCompiler.UnitTests\DefaultTests.cs" Link="DefaultTests.cs" />
-    <Compile Include="..\FastExpressionCompiler.UnitTests\EqualityOperatorsTests.cs" Link="EqualityOperatorsTests.cs" />
-    <Compile Include="..\FastExpressionCompiler.UnitTests\ExpressionInfoTests.cs" Link="ExpressionInfoTests.cs" />
-    <Compile Include="..\FastExpressionCompiler.UnitTests\HoistedLambdaExprTests.cs" Link="HoistedLambdaExprTests.cs" />
-    <Compile Include="..\FastExpressionCompiler.UnitTests\ManuallyComposedExprTests.cs" Link="ManuallyComposedExprTests.cs" />
-    <Compile Include="..\FastExpressionCompiler.UnitTests\MemberInitExpressionInfoTests.cs" Link="MemberInitExpressionInfoTests.cs" />
-    <Compile Include="..\FastExpressionCompiler.UnitTests\NestedLambdaTests.cs" Link="NestedLambdaTests.cs" />
-    <Compile Include="..\FastExpressionCompiler.UnitTests\TryCatchTests.cs" Link="TryCatchTests.cs" />
-    <Compile Include="..\FastExpressionCompiler.UnitTests\ValueTypeTests.cs" Link="ValueTypeTests.cs" />
+    <Compile Include="..\FastExpressionCompiler.UnitTests\**\*.cs" Exclude="..\FastExpressionCompiler.UnitTests\bin\**;..\FastExpressionCompiler.UnitTests\obj\**" />
+    <EmbeddedResource Include="..\FastExpressionCompiler.UnitTests\**\*.resx" Exclude="..\FastExpressionCompiler.UnitTests\bin\**;..\FastExpressionCompiler.UnitTests\obj\**;@(EmbeddedResource)" />
   </ItemGroup>
 
   <ItemGroup>

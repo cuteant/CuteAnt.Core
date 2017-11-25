@@ -35,7 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{3CB819D1-4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DryIoc", "DryIoc", "{1BCCEE0F-E09A-4F45-A21F-18B0AAE46920}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grace.Tests.Net40", "test\Grace.Tests\Grace.Tests.Net40.csproj", "{376A421B-8459-4006-BEDF-1B93089C58DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grace.Tests.Net40", "test\Grace.Tests.Net40\Grace.Tests.Net40.csproj", "{376A421B-8459-4006-BEDF-1B93089C58DA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Grace", "Grace", "{ADD46BA3-CE80-4255-88E8-B625990E9060}"
 EndProject
@@ -50,6 +50,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastExpressionCompiler.Net40", "src\FastExpressionCompiler.Net40\FastExpressionCompiler.Net40.csproj", "{46F38388-3172-4E45-99E3-BC1A7DA09EE4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastExpressionCompiler.UnitTests.Net40", "test\FastExpressionCompiler.UnitTests.Net40\FastExpressionCompiler.UnitTests.Net40.csproj", "{153AD949-D41B-4570-B5D4-3856BE12C472}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.AsyncEx", "src\CuteAnt.AsyncEx\CuteAnt.AsyncEx.csproj", "{3C87BFF6-2F11-4C86-B9AF-2EE47E8B0CA0}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -100,6 +102,10 @@ Global
 		{153AD949-D41B-4570-B5D4-3856BE12C472}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{153AD949-D41B-4570-B5D4-3856BE12C472}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{153AD949-D41B-4570-B5D4-3856BE12C472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C87BFF6-2F11-4C86-B9AF-2EE47E8B0CA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C87BFF6-2F11-4C86-B9AF-2EE47E8B0CA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C87BFF6-2F11-4C86-B9AF-2EE47E8B0CA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C87BFF6-2F11-4C86-B9AF-2EE47E8B0CA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +129,7 @@ Global
 		{249CC63B-E3F7-4C40-8C89-3E507004FD8E} = {3CB819D1-4AEB-4BA6-A6A0-78D11D9A39EA}
 		{46F38388-3172-4E45-99E3-BC1A7DA09EE4} = {E82A056E-FD11-4803-9AE1-C8AC93CB876E}
 		{153AD949-D41B-4570-B5D4-3856BE12C472} = {1BCCEE0F-E09A-4F45-A21F-18B0AAE46920}
+		{3C87BFF6-2F11-4C86-B9AF-2EE47E8B0CA0} = {E71289A9-31F5-4016-8BEC-A2EF2221D34D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {93230366-D5C3-4397-83D3-ED46E43B8121}
