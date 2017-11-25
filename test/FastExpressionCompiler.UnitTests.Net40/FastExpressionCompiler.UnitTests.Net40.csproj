@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net471</TargetFrameworks>
+    <TargetFrameworks>net40</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,15 +27,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNetTestSdkPackageVersion)" />
     <PackageReference Include="NUnit" Version="$(NUnitPackageVersion)" />
+    <PackageReference Include="NUnit3TestAdapter" Version="$(NUnit3TestAdapterPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="FastExpressionCompiler">
-      <HintPath>..\..\src\FastExpressionCompiler\bin\Debug\net40\FastExpressionCompiler.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\src\FastExpressionCompiler.Net40\FastExpressionCompiler.Net40.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
 
 </Project>
