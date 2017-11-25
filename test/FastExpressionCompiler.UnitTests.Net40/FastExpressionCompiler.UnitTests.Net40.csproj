@@ -16,6 +16,7 @@
     <Compile Include="..\FastExpressionCompiler.UnitTests\ConditionalOperatorsTests.cs" Link="ConditionalOperatorsTests.cs" />
     <Compile Include="..\FastExpressionCompiler.UnitTests\ConstantAndConversionTests.cs" Link="ConstantAndConversionTests.cs" />
     <Compile Include="..\FastExpressionCompiler.UnitTests\DefaultTests.cs" Link="DefaultTests.cs" />
+    <Compile Include="..\FastExpressionCompiler.UnitTests\EqualityOperatorsTests.cs" Link="EqualityOperatorsTests.cs" />
     <Compile Include="..\FastExpressionCompiler.UnitTests\ExpressionInfoTests.cs" Link="ExpressionInfoTests.cs" />
     <Compile Include="..\FastExpressionCompiler.UnitTests\HoistedLambdaExprTests.cs" Link="HoistedLambdaExprTests.cs" />
     <Compile Include="..\FastExpressionCompiler.UnitTests\ManuallyComposedExprTests.cs" Link="ManuallyComposedExprTests.cs" />

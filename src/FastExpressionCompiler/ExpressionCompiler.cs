@@ -195,14 +195,9 @@ namespace FastExpressionCompiler
     /// <typeparam name="TDelegate">The compatible delegate type, otherwise it will throw.</typeparam>
     /// <param name="lambdaExpr">Lambda expression to compile.</param>
     /// <returns>Compiled delegate.</returns>
-    public static TDelegate TryCompile<TDelegate>(this LambdaExpression lambdaExpr)
-      where TDelegate : class
-    {
-      var paramExprs = lambdaExpr.Parameters;
-      var paramTypes = Tools.GetParamExprTypes(paramExprs);
-      var expr = lambdaExpr.Body;
-      return TryCompile<TDelegate>(expr, paramExprs, paramTypes, expr.Type);
-    }
+    public static TDelegate TryCompile<TDelegate>(this LambdaExpression lambdaExpr) where TDelegate : class =>
+        TryCompile<TDelegate>(lambdaExpr.Body, lambdaExpr.Parameters,
+            Tools.GetParamExprTypes(lambdaExpr.Parameters), lambdaExpr.Body.Type);
 
     /// <summary>Compiles expression to delegate by emitting the IL. 
     /// If sub-expressions are not supported by emitter, then the method returns null.
@@ -215,61 +210,65 @@ namespace FastExpressionCompiler
     public static TDelegate TryCompile<TDelegate>(Expression bodyExpr, IList<ParameterExpression> paramExprs, Type[] paramTypes, Type returnType)
       where TDelegate : class
     {
+      var paramArray = paramExprs as ParameterExpression[] ?? paramExprs.ToArray(); // todo: Improve, better remove
       ClosureInfo ignored = null;
-      return (TDelegate)TryCompile(ref ignored,
-          typeof(TDelegate), paramTypes, returnType,
-          bodyExpr, bodyExpr.NodeType, bodyExpr.Type, paramExprs);
+      return (TDelegate)TryCompile(ref ignored, typeof(TDelegate),
+          paramTypes, returnType, bodyExpr, bodyExpr.NodeType, bodyExpr.Type, paramArray);
     }
 
     /// <summary>Tries to compile lambda expression info.</summary>
     /// <typeparam name="TDelegate">The compatible delegate type, otherwise case will throw.</typeparam>
     /// <param name="lambdaExpr">Lambda expression to compile.</param>
     /// <returns>Compiled delegate or null.</returns>
-    public static TDelegate TryCompile<TDelegate>(this LambdaExpressionInfo lambdaExpr)
-      where TDelegate : class
-    {
-      var paramExprs = lambdaExpr.Parameters;
-      var paramTypes = Tools.GetParamExprTypes(paramExprs);
-      var body = lambdaExpr.Body;
-      var bodyExpr = body as Expression;
-      return bodyExpr != null
-          ? TryCompile<TDelegate>(bodyExpr, paramExprs, paramTypes, bodyExpr.Type)
-          : TryCompile<TDelegate>((ExpressionInfo)body, paramExprs, paramTypes, body.GetResultType());
-    }
+    public static TDelegate TryCompile<TDelegate>(this LambdaExpressionInfo lambdaExpr) where TDelegate : class =>
+        TryCompile<TDelegate>(lambdaExpr.Body, lambdaExpr.Parameters,
+            Tools.GetParamExprTypes(lambdaExpr.Parameters), lambdaExpr.Body.GetResultType());
 
     /// <summary>Tries to compile lambda expression info.</summary>
-    /// <param name="lambdaExpr">Lambda expression to compile.</param>
-    /// <returns>Compiled delegate or null.</returns>
     public static Delegate TryCompile(this LambdaExpressionInfo lambdaExpr) => TryCompile<Delegate>(lambdaExpr);
 
     /// <summary>Tries to compile lambda expression info.</summary>
-    /// <typeparam name="TDelegate">The compatible delegate type, otherwise case will throw.</typeparam>
-    /// <param name="lambdaExpr">Lambda expression to compile.</param>
-    /// <returns>Compiled delegate or null.</returns>
-    public static TDelegate TryCompile<TDelegate>(this ExpressionInfo<TDelegate> lambdaExpr) where TDelegate : class
-        => TryCompile<TDelegate>((LambdaExpressionInfo)lambdaExpr);
+    public static TDelegate TryCompile<TDelegate>(this ExpressionInfo<TDelegate> lambdaExpr) where TDelegate : class =>
+        TryCompile<TDelegate>((LambdaExpressionInfo)lambdaExpr);
 
     /// <summary>Compiles expression to delegate by emitting the IL. 
     /// If sub-expressions are not supported by emitter, then the method returns null.
     /// The usage should be calling the method, if result is null then calling the Expression.Compile.</summary>
-    /// <param name="bodyExpr">Lambda body.</param>
-    /// <param name="paramExprs">Lambda parameter expressions.</param>
-    /// <param name="paramTypes">The types of parameters.</param>
-    /// <param name="returnType">The return type.</param>
-    /// <returns>Result delegate or null, if unable to compile.</returns>
     public static TDelegate TryCompile<TDelegate>(ExpressionInfo bodyExpr, IList<ParameterExpression> paramExprs, Type[] paramTypes, Type returnType)
       where TDelegate : class
     {
+      var paramArray = paramExprs as ParameterExpression[] ?? paramExprs.ToArray();
       ClosureInfo ignored = null;
-      return (TDelegate)TryCompile(ref ignored,
-          typeof(TDelegate), paramTypes, returnType,
-          bodyExpr, bodyExpr.NodeType, bodyExpr.Type, paramExprs);
+      return (TDelegate)TryCompile(ref ignored, typeof(TDelegate),
+          paramTypes, returnType, bodyExpr, bodyExpr.NodeType, returnType, paramArray);
+    }
+
+    /// <summary>Compiles expression to delegate by emitting the IL. 
+    /// If sub-expressions are not supported by emitter, then the method returns null.
+    /// The usage should be calling the method, if result is null then calling the Expression.Compile.</summary>
+    public static TDelegate TryCompile<TDelegate>(ExpressionInfo bodyExpr, IList<ParameterExpressionInfo> paramExprs, Type[] paramTypes, Type returnType)
+      where TDelegate : class
+    {
+      var paramArray = paramExprs as ParameterExpressionInfo[] ?? paramExprs.ToArray();
+      ClosureInfo ignored = null;
+      return (TDelegate)TryCompile(ref ignored, typeof(TDelegate),
+          paramTypes, returnType, bodyExpr, bodyExpr.NodeType, returnType, paramArray);
+    }
+
+    /// <summary>Compiles expression to delegate by emitting the IL. 
+    /// If sub-expressions are not supported by emitter, then the method returns null.
+    /// The usage should be calling the method, if result is null then calling the Expression.Compile.</summary>
+    public static TDelegate TryCompile<TDelegate>(object bodyExpr, object[] paramExprs, Type[] paramTypes, Type returnType)
+      where TDelegate : class
+    {
+      ClosureInfo ignored = null;
+      return (TDelegate)TryCompile(ref ignored, typeof(TDelegate),
+          paramTypes, returnType, bodyExpr, bodyExpr.GetNodeType(), returnType, paramExprs);
     }
 
     private static object TryCompile(ref ClosureInfo closureInfo,
       Type delegateType, Type[] paramTypes, Type returnType,
-      object exprObj, ExpressionType exprNodeType, Type exprType,
-      IList<ParameterExpression> paramExprs,
+      object exprObj, ExpressionType exprNodeType, Type exprType, object[] paramExprs,
       bool isNestedLambda = false)
     {
       if (!TryCollectBoundConstants(ref closureInfo, exprObj, exprNodeType, exprType, paramExprs)) { return null; }
@@ -306,7 +305,7 @@ namespace FastExpressionCompiler
     }
 
     private static object TryCompileStaticDelegate(Type delegateType, Type[] paramTypes, Type returnType, object exprObj,
-      ExpressionType exprNodeType, Type exprType, IList<ParameterExpression> paramExprs)
+      ExpressionType exprNodeType, Type exprType, object[] paramExprs)
     {
       var method = new DynamicMethod(string.Empty, returnType, paramTypes,
           typeof(ExpressionCompiler), skipVisibility: true);
@@ -322,8 +321,7 @@ namespace FastExpressionCompiler
       return method.CreateDelegate(delegateType);
     }
 
-    private static bool TryEmit(DynamicMethod method, object exprObj, ExpressionType exprNodeType,
-      Type exprType, IList<ParameterExpression> paramExprs, ClosureInfo closureInfo)
+    private static bool TryEmit(DynamicMethod method, object exprObj, ExpressionType exprNodeType, Type exprType, object[] paramExprs, ClosureInfo closureInfo)
     {
       var il = method.GetILGenerator();
       if (!EmittingVisitor.TryEmit(exprObj, exprNodeType, exprType, paramExprs, il, closureInfo)) { return false; }
@@ -344,27 +342,5 @@ namespace FastExpressionCompiler
       Array.Copy(paramTypes, 0, closureAndParamTypes, 1, paramCount);
       return closureAndParamTypes;
     }
-
-
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

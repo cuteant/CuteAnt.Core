@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -48,7 +49,8 @@ namespace FastExpressionCompiler
     }
 
     // @paramExprs is required for nested lambda compilation
-    private static bool TryCollectBoundConstants(ref ClosureInfo closure, object exprObj, ExpressionType exprNodeType, Type exprType, IList<ParameterExpression> paramExprs)
+    private static bool TryCollectBoundConstants(ref ClosureInfo closure,
+      object exprObj, ExpressionType exprNodeType, Type exprType, object[] paramExprs)
     {
       if (exprObj == null) { return false; }
 
@@ -66,12 +68,12 @@ namespace FastExpressionCompiler
         case ExpressionType.Parameter:
           // if parameter is used BUT is not in passed parameters and not in local variables,
           // it means parameter is provided by outer lambda and should be put in closure for current lambda
-          var exprInfo = exprObj as ParameterExpressionInfo;
-          var paramExpr = exprInfo ?? (ParameterExpression)exprObj;
-          if (paramExprs.IndexOf(paramExpr) == -1 && (closure == null || !closure.IsLocalVar(paramExpr)))
+          if (paramExprs.GetFirstIndex(exprObj) == -1 &&
+              (closure == null || !closure.IsLocalVar(exprObj)))
           {
-            (closure ?? (closure = new ClosureInfo())).AddNonPassedParam(paramExpr);
+            (closure ?? (closure = new ClosureInfo())).AddNonPassedParam(exprObj);
           }
+
           return true;
 
         case ExpressionType.Call:
@@ -122,7 +124,7 @@ namespace FastExpressionCompiler
           else
           {
             var invokeInfo = (InvocationExpressionInfo)exprObj;
-            var lambda = invokeInfo.LambdaExprInfo;
+            var lambda = invokeInfo.ExprToInvoke;
             return TryCollectBoundConstants(ref closure, lambda, lambda.NodeType, lambda.Type, paramExprs)
                    && TryCollectBoundConstants(ref closure, invokeInfo.Arguments, paramExprs);
           }
@@ -159,7 +161,7 @@ namespace FastExpressionCompiler
       }
     }
 
-    private static bool TryCollectBoundConstants(ref ClosureInfo closure, object[] exprObjects, IList<ParameterExpression> paramExprs)
+    private static bool TryCollectBoundConstants(ref ClosureInfo closure, object[] exprObjects, object[] paramExprs)
     {
       for (var i = 0; i < exprObjects.Length; i++)
       {
@@ -173,7 +175,7 @@ namespace FastExpressionCompiler
       return true;
     }
 
-    private static bool TryCompileNestedLambda(ref ClosureInfo closure, object exprObj, IList<ParameterExpression> paramExprs)
+    private static bool TryCompileNestedLambda(ref ClosureInfo closure, object exprObj, object[] paramExprs)
     {
       // 1. Try to compile nested lambda in place
       // 2. Check that parameters used in compiled lambda are passed or closed by outer lambda
@@ -196,7 +198,7 @@ namespace FastExpressionCompiler
       else
       {
         var lambdaExpr = (LambdaExpression)exprObj;
-        var lambdaParamExprs = lambdaExpr.Parameters;
+        object[] lambdaParamExprs = lambdaExpr.Parameters.ToArray();
         var bodyExpr = lambdaExpr.Body;
         bodyType = bodyExpr.Type;
         compiledLambda = TryCompile(ref nestedClosure,
@@ -225,8 +227,8 @@ namespace FastExpressionCompiler
         for (var i = 0; i < nestedNonPassedParams.Length; i++)
         {
           var nestedNonPassedParam = nestedNonPassedParams[i];
-          if (paramExprs.Count == 0 ||
-              paramExprs.IndexOf(nestedNonPassedParam) == -1)
+          if (paramExprs.Length == 0 ||
+              paramExprs.GetFirstIndex(nestedNonPassedParam) == -1)
           {
             closure.AddNonPassedParam(nestedNonPassedParam);
           }
@@ -256,7 +258,7 @@ namespace FastExpressionCompiler
 
     }
 
-    private static bool TryCollectMemberInitExprConstants(ref ClosureInfo closure, object exprObj, IList<ParameterExpression> paramExprs)
+    private static bool TryCollectMemberInitExprConstants(ref ClosureInfo closure, object exprObj, object[] paramExprs)
     {
       if (exprObj is MemberInitExpressionInfo memberInitExprInfo)
       {
@@ -302,7 +304,7 @@ namespace FastExpressionCompiler
 
     }
 
-    private static bool TryCollectTryExprConstants(ref ClosureInfo closure, object exprObj, IList<ParameterExpression> paramExprs)
+    private static bool TryCollectTryExprConstants(ref ClosureInfo closure, object exprObj, object[] paramExprs)
     {
       var tryExpr = (TryExpression)exprObj;
       if (!TryCollectBoundConstants(ref closure, tryExpr.Body, tryExpr.Body.NodeType, tryExpr.Type, paramExprs))
@@ -349,7 +351,7 @@ namespace FastExpressionCompiler
       return true;
     }
 
-    private static bool TryCollectUnaryOrBinaryExprConstants(ref ClosureInfo closure, object exprObj, IList<ParameterExpression> paramExprs)
+    private static bool TryCollectUnaryOrBinaryExprConstants(ref ClosureInfo closure, object exprObj, object[] paramExprs)
     {
       if (exprObj is ExpressionInfo)
       {
@@ -364,7 +366,7 @@ namespace FastExpressionCompiler
           var left = binInfo.Left;
           var right = binInfo.Right;
           return TryCollectBoundConstants(ref closure, left, left.GetNodeType(), left.GetResultType(), paramExprs)
-                 && TryCollectBoundConstants(ref closure, right, right.GetNodeType(), right.GetResultType(), paramExprs);
+              && TryCollectBoundConstants(ref closure, right, right.GetNodeType(), right.GetResultType(), paramExprs);
         }
 
         return false;
@@ -381,27 +383,25 @@ namespace FastExpressionCompiler
         var leftExpr = binaryExpr.Left;
         var rightExpr = binaryExpr.Right;
         return TryCollectBoundConstants(ref closure, leftExpr, leftExpr.NodeType, leftExpr.Type, paramExprs)
-               && TryCollectBoundConstants(ref closure, rightExpr, rightExpr.NodeType, rightExpr.Type, paramExprs);
+            && TryCollectBoundConstants(ref closure, rightExpr, rightExpr.NodeType, rightExpr.Type, paramExprs);
       }
 
       return false;
     }
 
-    private static bool TryCollectCallExprConstants(ref ClosureInfo closure, object exprObj, IList<ParameterExpression> paramExprs)
+    private static bool TryCollectCallExprConstants(ref ClosureInfo closure, object exprObj, object[] paramExprs)
     {
       if (exprObj is MethodCallExpressionInfo callInfo)
       {
         var objInfo = callInfo.Object;
-        return (objInfo == null
-                || TryCollectBoundConstants(ref closure, objInfo, objInfo.NodeType, objInfo.Type, paramExprs))
-               && TryCollectBoundConstants(ref closure, callInfo.Arguments, paramExprs);
+        return (objInfo == null || TryCollectBoundConstants(ref closure, objInfo, objInfo.NodeType, objInfo.Type, paramExprs))
+            && TryCollectBoundConstants(ref closure, callInfo.Arguments, paramExprs);
       }
 
       var callExpr = (MethodCallExpression)exprObj;
       var objExpr = callExpr.Object;
-      return (objExpr == null
-              || TryCollectBoundConstants(ref closure, objExpr, objExpr.NodeType, objExpr.Type, paramExprs))
-             && TryCollectBoundConstants(ref closure, callExpr.Arguments, paramExprs);
+      return (objExpr == null || TryCollectBoundConstants(ref closure, objExpr, objExpr.NodeType, objExpr.Type, paramExprs))
+          && TryCollectBoundConstants(ref closure, callExpr.Arguments, paramExprs);
     }
 
     private static KeyValuePair<ExpressionType, Type> GetExpressionMeta(object exprObj)
@@ -415,7 +415,7 @@ namespace FastExpressionCompiler
       return new KeyValuePair<ExpressionType, Type>(exprInfo.NodeType, exprInfo.Type);
     }
 
-    private static bool TryCollectBoundConstants(ref ClosureInfo closure, IList<Expression> exprs, IList<ParameterExpression> paramExprs)
+    private static bool TryCollectBoundConstants(ref ClosureInfo closure, IList<Expression> exprs, object[] paramExprs)
     {
       for (var i = 0; i < exprs.Count; i++)
       {

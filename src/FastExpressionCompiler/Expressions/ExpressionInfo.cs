@@ -42,8 +42,8 @@ namespace FastExpressionCompiler
 
     /// <summary>Analog of Expression.Parameter</summary>
     /// <remarks>For now it is return just an `Expression.Parameter`</remarks>
-    public static ParameterExpression Parameter(Type type, string name = null) =>
-        Expression.Parameter(type, name);
+    public static ParameterExpressionInfo Parameter(Type type, string name = null) =>
+        new ParameterExpressionInfo(type, name);
 
     /// <summary>Analog of Expression.Constant</summary>
     public static ConstantExpressionInfo Constant(object value, Type type = null) =>
@@ -96,19 +96,19 @@ namespace FastExpressionCompiler
         new FieldExpressionInfo(null, field);
 
     /// <summary>Instance field</summary>
-    public static FieldExpressionInfo Property(ExpressionInfo instance, FieldInfo field) =>
+    public static FieldExpressionInfo Field(ExpressionInfo instance, FieldInfo field) =>
         new FieldExpressionInfo(instance, field);
 
     /// <summary>Analog of Expression.Lambda</summary>
     public static LambdaExpressionInfo Lambda(ExpressionInfo body) =>
-        new LambdaExpressionInfo(body, Tools.Empty<ParameterExpression>());
+        new LambdaExpressionInfo(body, Tools.Empty<object>());
 
     /// <summary>Analog of Expression.Lambda</summary>
     public static LambdaExpressionInfo Lambda(ExpressionInfo body, params ParameterExpression[] parameters) =>
         new LambdaExpressionInfo(body, parameters);
 
     /// <summary>Analog of Expression.Lambda</summary>
-    public static LambdaExpressionInfo Lambda(object body, params ParameterExpression[] parameters) =>
+    public static LambdaExpressionInfo Lambda(object body, params object[] parameters) =>
         new LambdaExpressionInfo(body, parameters);
 
     /// <summary>Analog of Expression.Convert</summary>
@@ -120,7 +120,13 @@ namespace FastExpressionCompiler
         new ExpressionInfo<TDelegate>(body, Tools.Empty<ParameterExpression>());
 
     /// <summary>Analog of Expression.Lambda</summary>
-    public static ExpressionInfo<TDelegate> Lambda<TDelegate>(ExpressionInfo body, params ParameterExpression[] parameters) =>
+    public static ExpressionInfo<TDelegate> Lambda<TDelegate>(ExpressionInfo body,
+        params ParameterExpression[] parameters) =>
+        new ExpressionInfo<TDelegate>(body, parameters);
+
+    /// <summary>Analog of Expression.Lambda</summary>
+    public static ExpressionInfo<TDelegate> Lambda<TDelegate>(ExpressionInfo body,
+        params ParameterExpressionInfo[] parameters) =>
         new ExpressionInfo<TDelegate>(body, parameters);
 
     /// <summary>Analog of Expression.ArrayIndex</summary>
@@ -162,7 +168,7 @@ namespace FastExpressionCompiler
         new AssignBinaryExpressionInfo(left, right, left.GetResultType());
 
     /// <summary>Invoke</summary>
-    public static ExpressionInfo Invoke(LambdaExpressionInfo lambda, params object[] args) =>
+    public static ExpressionInfo Invoke(ExpressionInfo lambda, params object[] args) =>
         new InvocationExpressionInfo(lambda, args, lambda.Type);
   }
 }

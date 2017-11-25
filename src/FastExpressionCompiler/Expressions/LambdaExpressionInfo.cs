@@ -25,11 +25,10 @@ THE SOFTWARE.
 using System;
 using System.Linq.Expressions;
 
-// ReSharper disable CoVariantArrayConversion
 namespace FastExpressionCompiler
 {
   /// <summary>LambdaExpression</summary>
-  public class LambdaExpressionInfo : ExpressionInfo
+  public class LambdaExpressionInfo : ArgumentsExpressionInfo
   {
     /// <inheritdoc />
     public override ExpressionType NodeType => ExpressionType.Lambda;
@@ -41,19 +40,20 @@ namespace FastExpressionCompiler
     public readonly object Body;
 
     /// <summary>List of parameters.</summary>
-    public readonly ParameterExpression[] Parameters;
+    public object[] Parameters => Arguments;
 
     /// <inheritdoc />
     public override Expression ToExpression() => ToLambdaExpression();
 
     /// <summary>subject</summary>
-    public LambdaExpression ToLambdaExpression() => Expression.Lambda(Body.ToExpression(), Parameters);
+    public LambdaExpression ToLambdaExpression()
+        => Expression.Lambda(Body.ToExpression(), Parameters.Project(p => (ParameterExpression)p.ToExpression()));
 
     /// <summary>Constructor</summary>
-    public LambdaExpressionInfo(object body, ParameterExpression[] parameters)
+    public LambdaExpressionInfo(object body, object[] parameters) 
+      : base(parameters)
     {
       Body = body;
-      Parameters = parameters;
       var bodyType = body.GetResultType();
       Type = Tools.GetFuncOrActionType(Tools.GetParamExprTypes(parameters), bodyType);
     }

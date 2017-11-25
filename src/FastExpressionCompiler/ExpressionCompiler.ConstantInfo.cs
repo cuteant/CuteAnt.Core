@@ -79,7 +79,7 @@ namespace FastExpressionCompiler
 
       // Parameters not passed through lambda parameter list But used inside lambda body.
       // The top expression should not! contain non passed parameters. 
-      public ParameterExpression[] NonPassedParameters = Tools.Empty<ParameterExpression>();
+      public object[] NonPassedParameters = Tools.Empty<object>();
 
       // All nested lambdas recursively nested in expression
       public NestedLambdaInfo[] NestedLambdas = Tools.Empty<NestedLambdaInfo>();
@@ -120,13 +120,11 @@ namespace FastExpressionCompiler
         }
       }
 
-      public void AddNonPassedParam(ParameterExpression expr)
+      public void AddNonPassedParam(object exprObj)
       {
         if (NonPassedParameters.Length == 0 ||
-            NonPassedParameters.GetFirstIndex(expr) == -1)
-        {
-          NonPassedParameters = NonPassedParameters.WithLast(expr);
-        }
+            NonPassedParameters.GetFirstIndex(exprObj) == -1)
+          NonPassedParameters = NonPassedParameters.WithLast(exprObj);
       }
 
       public void AddNestedLambda(object lambdaExpr, object lambda, ClosureInfo closureInfo, bool isAction)
@@ -207,7 +205,7 @@ namespace FastExpressionCompiler
           {
             for (var i = 0; i < nonPassedParams.Length; i++)
             {
-              fieldTypes[constants.Length + i] = nonPassedParams[i].Type;
+              fieldTypes[constants.Length + i] = nonPassedParams[i].GetResultType();
             }
           }
 
@@ -237,7 +235,7 @@ namespace FastExpressionCompiler
           {
             for (var i = 0; i < nonPassedParams.Length; i++)
             {
-              fieldTypes[constants.Length + i] = nonPassedParams[i].Type;
+              fieldTypes[constants.Length + i] = nonPassedParams[i].GetResultType();
             }
           }
 

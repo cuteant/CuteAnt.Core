@@ -25,7 +25,6 @@ THE SOFTWARE.
 using System;
 using System.Linq.Expressions;
 
-// ReSharper disable CoVariantArrayConversion
 namespace FastExpressionCompiler
 {
   /// <summary>Analog of InvocationExpression.</summary>
@@ -38,16 +37,17 @@ namespace FastExpressionCompiler
     public override Type Type { get; }
 
     /// <summary>Delegate to invoke.</summary>
-    public readonly LambdaExpressionInfo LambdaExprInfo;
+    public readonly ExpressionInfo ExprToInvoke;
 
     /// <inheritdoc />
-    public override Expression ToExpression() => Expression.Invoke(LambdaExprInfo.ToExpression(), ArgumentsToExpressions());
+    public override Expression ToExpression()
+        => Expression.Invoke(ExprToInvoke.ToExpression(), ArgumentsToExpressions());
 
     /// <summary>Constructs</summary>
-    public InvocationExpressionInfo(LambdaExpressionInfo lambda, object[] arguments, Type type) 
+    public InvocationExpressionInfo(ExpressionInfo exprToInvoke, object[] arguments, Type type)
       : base(arguments)
     {
-      LambdaExprInfo = lambda;
+      ExprToInvoke = exprToInvoke;
       Type = type;
     }
   }

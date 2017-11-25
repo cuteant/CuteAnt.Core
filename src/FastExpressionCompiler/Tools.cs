@@ -97,6 +97,22 @@ namespace FastExpressionCompiler
       return paramTypes;
     }
 
+    public static Type[] GetParamExprTypes(IList<object> paramExprs)
+    {
+      var paramsCount = paramExprs.Count;
+      if (paramsCount == 0) { return Empty<Type>(); }
+
+      if (paramsCount == 1) { return new[] { paramExprs[0].GetResultType() }; }
+
+      var paramTypes = new Type[paramsCount];
+      for (var i = 0; i < paramTypes.Length; i++)
+      {
+        paramTypes[i] = paramExprs[i].GetResultType();
+      }
+
+      return paramTypes;
+    }
+
     public static Type GetFuncOrActionType(Type[] paramTypes, Type returnType)
     {
       if (returnType == typeof(void))
@@ -131,16 +147,16 @@ namespace FastExpressionCompiler
           throw new NotSupportedException($"Func with so many ({paramTypes.Length}) parameters is not supported!");
       }
     }
-
-    public static int GetFirstIndex(this IList<ParameterExpression> ps, object p)
+    public static int GetFirstIndex<T>(this IList<T> source, object item)
     {
-      if (ps == null || ps.Count == 0) { return -1; }
-      var count = ps.Count;
-      if (count == 1) { return ps[0] == p ? 0 : -1; }
+      if (source == null || source.Count == 0)
+        return -1;
+      var count = source.Count;
+      if (count == 1)
+        return ReferenceEquals(source[0], item) ? 0 : -1;
       for (var i = 0; i < count; ++i)
-      {
-        if (ps[i] == p) { return i; }
-      }
+        if (ReferenceEquals(source[i], item))
+          return i;
       return -1;
     }
 
@@ -165,12 +181,11 @@ namespace FastExpressionCompiler
 
     public static T GetFirst<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
-      if (source is T[] arr)
-      {
-        var index = arr.GetFirstIndex(predicate);
-        return index == -1 ? default(T) : arr[index];
-      }
-      return source.FirstOrDefault(predicate);
+      var arr = source as T[];
+      if (arr == null) { return source.FirstOrDefault(predicate); }
+
+      var index = arr.GetFirstIndex(predicate);
+      return index == -1 ? default(T) : arr[index];
     }
 
     public static R[] Project<T, R>(this T[] source, Func<T, R> project)

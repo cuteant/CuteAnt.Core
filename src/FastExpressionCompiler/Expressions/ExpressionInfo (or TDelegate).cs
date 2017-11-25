@@ -37,9 +37,10 @@ namespace FastExpressionCompiler
     public override Expression ToExpression() => ToLambdaExpression();
 
     /// <summary>subject</summary>
-    public new Expression<TDelegate> ToLambdaExpression() => Expression.Lambda<TDelegate>(Body.ToExpression(), Parameters);
+    public new Expression<TDelegate> ToLambdaExpression() 
+        => Expression.Lambda<TDelegate>(Body.ToExpression(), Parameters.Project(p => (ParameterExpression)p.ToExpression()));
 
     /// <summary>Constructor</summary>
-    public ExpressionInfo(ExpressionInfo body, ParameterExpression[] parameters) : base(body, parameters) { }
+    public ExpressionInfo(ExpressionInfo body, object[] parameters) : base(body, parameters) { }
   }
 }

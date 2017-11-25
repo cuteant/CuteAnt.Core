@@ -12,13 +12,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNetTestSdkPackageVersion)" />
     <PackageReference Include="NUnit" Version="$(NUnitPackageVersion)" />
+    <PackageReference Include="NUnit3TestAdapter" Version="$(NUnit3TestAdapterPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\FastExpressionCompiler\FastExpressionCompiler.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net471' or  '$(TargetFramework)' == 'net451' or  '$(TargetFramework)' == 'net40' ">
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
