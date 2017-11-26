@@ -4,12 +4,12 @@
     <Authors>Seabiscuit</Authors>
     <Company>CuteAnt Development Team(cuteant@outlook.com)</Company>
     <Product>CuteAnt</Product>
-    <Copyright>Copyright © CuteAnt Development Team</Copyright>
-    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
-    <PackageProjectUrl>http://git.oschina.net/cuteant</PackageProjectUrl>
+    <Copyright>Copyright © 2017 CuteAnt Development Team</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/cuteant/CuteAnt.Core/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/cuteant/CuteAnt.Core</PackageProjectUrl>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</PackageIconUrl>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>http://git.oschina.net/cuteant</RepositoryUrl>
+    <RepositoryUrl>https://github.com/cuteant/CuteAnt.Core.git</RepositoryUrl>
     <NeutralLanguage>en-US</NeutralLanguage>
     <IncludeSymbols>false</IncludeSymbols>
     <IncludeSource>false</IncludeSource>
