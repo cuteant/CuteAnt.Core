@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl;
 
@@ -28,10 +29,14 @@ namespace Grace.DependencyInjection
         return _singleton;
       }
     }
-    public static void Initializate(Action<InjectionScopeConfiguration> configuration = null)
-        => _singleton = new DependencyInjectionContainer(configuration);
-    public static void Initializate(IInjectionScopeConfiguration configuration)
-        => _singleton = new DependencyInjectionContainer(configuration);
+    /// <summary>ConfigureSingleton</summary>
+    /// <param name="configuration"></param>
+    public static void ConfigureSingleton(Action<IInjectionScopeConfiguration> configuration = null)
+        => Interlocked.CompareExchange(ref _singleton, new DependencyInjectionContainer(configuration), null);
+    /// <summary>ConfigureSingleton</summary>
+    /// <param name="configuration"></param>
+    public static void ConfigureSingleton(IInjectionScopeConfiguration configuration)
+        => Interlocked.CompareExchange(ref _singleton, new DependencyInjectionContainer(configuration), null);
 
     #endregion
 
