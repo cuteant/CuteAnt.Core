@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\version.props" />
+  <Import Project="..\version.yaml.props" />
   <Import Project="..\nuget.props" />
   
   <PropertyGroup>
