@@ -97,6 +97,15 @@ namespace Grace.Tests.DependencyInjection.Wrappers
     {
       private SomeOtherClass _otherClass;
       private IBasicService _basicService;
+
+      public SomeClass() { }
+
+      // 消除编译警告，无其他作用
+      public void Run()
+      {
+        _otherClass = _otherClass ?? new SomeOtherClass();
+        _basicService = _basicService ?? new BasicService();
+      }
     }
 
     public class SomeOtherClass
