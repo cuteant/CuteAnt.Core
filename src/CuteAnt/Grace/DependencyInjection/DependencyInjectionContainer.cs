@@ -10,6 +10,31 @@ namespace Grace.DependencyInjection
   /// <summary>Dependancy injection container, this is the main class to instantiate</summary>
   public class DependencyInjectionContainer : InjectionScope, IEnumerable<object>
   {
+    #region -- Singleton --
+
+    private static readonly object s_lock = new object();
+    private static DependencyInjectionContainer _singleton = null;
+
+    /// <summary>Singleton</summary>
+    public static DependencyInjectionContainer Singleton
+    {
+      get
+      {
+        if (_singleton != null) { return _singleton; }
+        lock (s_lock)
+        {
+          if (null == _singleton) { _singleton = new DependencyInjectionContainer(); }
+        }
+        return _singleton;
+      }
+    }
+    public static void Initializate(Action<InjectionScopeConfiguration> configuration = null)
+        => _singleton = new DependencyInjectionContainer(configuration);
+    public static void Initializate(IInjectionScopeConfiguration configuration)
+        => _singleton = new DependencyInjectionContainer(configuration);
+
+    #endregion
+
     /// <summary>Default constructor</summary>
     /// <param name="configuration">provide method to configure container behavior</param>
     public DependencyInjectionContainer(Action<InjectionScopeConfiguration> configuration = null)

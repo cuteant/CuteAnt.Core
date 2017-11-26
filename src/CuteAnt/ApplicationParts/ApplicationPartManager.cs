@@ -10,6 +10,7 @@ namespace CuteAnt.ApplicationParts
     private readonly List<IApplicationPart> _applicationParts = new List<IApplicationPart>();
     private readonly List<IApplicationFeatureProvider> _featureProviders = new List<IApplicationFeatureProvider>();
 
+    /// <summary>Singleton</summary>
     public static ApplicationPartManager Singleton { get; } = new ApplicationPartManager();
 
     /// <summary>Gets the list of <see cref="IApplicationFeatureProvider"/>s.</summary>
