@@ -10,7 +10,9 @@ namespace Grace.DependencyInjection
   public class InjectionScopeConfiguration : IInjectionScopeConfiguration
   {
     /// <summary>default constructor</summary>
-    public InjectionScopeConfiguration(ImplementationFactory implementationFactory = null)
+    public InjectionScopeConfiguration() : this(null) { }
+    /// <summary>constructor</summary>
+    public InjectionScopeConfiguration(ImplementationFactory implementationFactory)
     {
       Implementation = implementationFactory ?? DefaultImplementation.Clone();
       Behaviors = new ExportCompilationBehavior();
