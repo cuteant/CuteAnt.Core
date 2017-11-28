@@ -23,7 +23,10 @@ namespace CuteAnt.Reflection
     static ConstructorMatcher()
     {
       var thisType = typeof(TInstance);
-      Default = new ConstructorMatcher<TInstance>(thisType.MakeDelegateForCtor<TInstance>());
+      var emtpyConstructor = thisType.GetEmptyConstructor();
+      Default = emtpyConstructor != null
+              ? new ConstructorMatcher<TInstance>(emtpyConstructor)
+              : new ConstructorMatcher<TInstance>(thisType.MakeDelegateForCtor<TInstance>());
       DefaultInvocation = Default.Invocation;
 
       var typeInfo = thisType.GetTypeInfo();
@@ -48,7 +51,15 @@ namespace CuteAnt.Reflection
             .Select(_ => new ConstructorMatcher<TInstance>(_))
             .ToArray() ?? EmptyArray<ConstructorMatcher<TInstance>>.Instance;
         DIConstructorMatchers = ConstructorMatchers = matchers;
-        if (ConstructorMatchers.Length == 0) { ConstructorMatchers = new ConstructorMatcher<TInstance>[] { Default }; }
+
+        if (ConstructorMatchers.Length == 0)
+        {
+          ConstructorMatchers = new ConstructorMatcher<TInstance>[] { Default };
+        }
+        else if (null == emtpyConstructor)
+        {
+          ConstructorMatchers = ConstructorMatchers.Concat(new ConstructorMatcher<TInstance>[] { Default }).ToArray();
+        }
       }
       catch
       {

@@ -43,6 +43,10 @@ namespace CuteAnt.Reflection
           {
             matchers = new ConstructorMatcher[] { new ConstructorMatcher(instanceType, instanceType.MakeDelegateForCtor()) };
           }
+          else if (null == instanceType.GetEmptyConstructor())
+          {
+            matchers = matchers.Concat(new ConstructorMatcher[] { new ConstructorMatcher(instanceType, instanceType.MakeDelegateForCtor()) }).ToArray();
+          }
         }
         catch { }
       }

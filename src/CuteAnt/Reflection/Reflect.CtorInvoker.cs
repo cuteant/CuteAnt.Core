@@ -178,7 +178,8 @@ namespace CuteAnt.Reflection
       {
         try
         {
-          ctor = instanceType.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, paramTypes, null);
+          ctor = instanceType.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly,
+              null, paramTypes ?? Type.EmptyTypes, null);
         }
         catch { }
       }
