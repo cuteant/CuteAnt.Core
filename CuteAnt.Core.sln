@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1F97D5A4-285F-4962-8F8C-BCEF8278143B}"
 EndProject
@@ -114,6 +114,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grace.Extensions.DependencyInjection.Test", "test\Grace.Extensions.DependencyInjection.Test\Grace.Extensions.DependencyInjection.Test.csproj", "{A4350CB9-AF70-4024-9A00-2FA3F6202144}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.AsyncEx.Tests", "test\CuteAnt.AsyncEx.Tests\CuteAnt.AsyncEx.Tests.csproj", "{F5EBF205-531E-4B5D-8178-AD037A406B84}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.Runtime.Test", "test\CuteAnt.Runtime.Test\CuteAnt.Runtime.Test.csproj", "{A457D323-4CC8-4561-A4A2-6E8C4FBD1210}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.IO.RecyclableMemoryStream.Tests", "test\Microsoft.IO.RecyclableMemoryStream.Tests\Microsoft.IO.RecyclableMemoryStream.Tests.csproj", "{E471B018-5731-4CAC-B7D6-A5F82BB935FC}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -250,6 +254,14 @@ Global
 		{F5EBF205-531E-4B5D-8178-AD037A406B84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5EBF205-531E-4B5D-8178-AD037A406B84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5EBF205-531E-4B5D-8178-AD037A406B84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A457D323-4CC8-4561-A4A2-6E8C4FBD1210}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A457D323-4CC8-4561-A4A2-6E8C4FBD1210}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A457D323-4CC8-4561-A4A2-6E8C4FBD1210}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A457D323-4CC8-4561-A4A2-6E8C4FBD1210}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E471B018-5731-4CAC-B7D6-A5F82BB935FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E471B018-5731-4CAC-B7D6-A5F82BB935FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E471B018-5731-4CAC-B7D6-A5F82BB935FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E471B018-5731-4CAC-B7D6-A5F82BB935FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -304,6 +316,8 @@ Global
 		{F8D03595-D85A-4A99-940C-AE57CE1F9173} = {AD164A5C-9587-445D-8C2F-BD490AC92724}
 		{A4350CB9-AF70-4024-9A00-2FA3F6202144} = {4515424F-A0DE-43AB-A9B6-C6000145B7EC}
 		{F5EBF205-531E-4B5D-8178-AD037A406B84} = {DD4188B4-D72A-4D3E-B5A6-3168231C6301}
+		{A457D323-4CC8-4561-A4A2-6E8C4FBD1210} = {DD4188B4-D72A-4D3E-B5A6-3168231C6301}
+		{E471B018-5731-4CAC-B7D6-A5F82BB935FC} = {DD4188B4-D72A-4D3E-B5A6-3168231C6301}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {93230366-D5C3-4397-83D3-ED46E43B8121}
