@@ -177,13 +177,13 @@ namespace CuteAnt.Reflection
       if (name.IsNullOrWhiteSpace()) { return false; }
 
       var type = GetTypeInternal(ref target);
-      var pi = GetTypeProperty(type, name);
+      var pi = type.LookupTypeProperty(name);
       if (pi != null)
       {
         return TryGetPropertyInfoValue(target, pi, out value);
       }
 
-      var fi = GetTypeField(type, name);
+      var fi = type.LookupTypeField(name);
       if (fi != null)
       {
         value = GetFieldInfoValue(target, fi);

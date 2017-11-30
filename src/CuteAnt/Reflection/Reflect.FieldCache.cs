@@ -31,48 +31,6 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-    /// <summary>返回表示当前类型声明的指定公共字段的对象</summary>
-    /// <param name="type">类型</param>
-    /// <param name="name">名称</param>
-    /// <returns></returns>
-    [Obsolete("=> GetFieldEx")]
-    public static FieldInfo GetDeclaredFieldEx(this Type type, String name)
-    {
-#if !NET40
-      return type.GetTypeInfo().GetDeclaredField(name);
-#else
-      return type.GetField(name, BindingFlagsHelper.MSDeclaredOnlyLookup);
-#endif
-    }
-
-    /// <summary>获取当前类型定义的字段的集合</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
-    public static IEnumerable<FieldInfo> GetDeclaredFieldsEx(this Type type)
-    {
-      //#if !NET40
-      //      return type.GetTypeInfo().DeclaredFields;
-      //#else
-      //      return type.GetFields(BindingFlagsHelper.MSDeclaredOnlyLookup);
-      //#endif
-      return GetFieldsInternal(type, ReflectMembersTokenType.TypeDeclaredOnlyMembers);
-    }
-
-    /// <summary>获取指定类型定义的属性的集合</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
-    public static FieldInfo[] GetFieldsEx(this Type type) =>
-        GetFieldsInternal(type, ReflectMembersTokenType.TypePublicOnlyMembers);
-
-    /// <summary>获取指定类型定义的属性的集合</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
-    public static IEnumerable<FieldInfo> GetRuntimeFieldsEx(this Type type) =>
-        GetFieldsInternal(type, ReflectMembersTokenType.TypeMembers);
-
     #region * Fields Cache *
 
     private static readonly ConcurrentDictionary<Type, DictionaryCache<ReflectMembersTokenType, FieldInfo[]>> s_fieldsCache =
@@ -137,6 +95,7 @@ namespace CuteAnt.Reflection
              .GetFields(bindingFlags);
     }
 
+    [MethodImpl(InlineMethod.Value)]
     private static FieldInfo[] GetFieldsInternal(Type type, ReflectMembersTokenType reflectFieldsToken)
     {
       if (type == null) { return EmptyArray<FieldInfo>.Instance; }
@@ -151,88 +110,71 @@ namespace CuteAnt.Reflection
     /// <summary>GetInstanceDeclaredPublicFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetInstanceDeclaredPublicFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.InstanceDeclaredAndPublicOnlyMembers);
 
     /// <summary>GetInstanceDeclaredFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetInstanceDeclaredFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.InstanceDeclaredOnlyMembers);
 
     /// <summary>GetInstancePublicFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetInstancePublicFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.InstancePublicOnlyMembers);
 
     /// <summary>GetInstanceFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetInstanceFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.InstanceMembers);
 
     /// <summary>GetTypeDeclaredPublicFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetTypeDeclaredPublicFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.TypeDeclaredAndPublicOnlyMembers);
 
     /// <summary>GetTypeDeclaredFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetTypeDeclaredFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.TypeDeclaredOnlyMembers);
 
     /// <summary>GetTypePublicFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetTypePublicFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.TypePublicOnlyMembers);
 
     /// <summary>GetTypeFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetTypeFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.TypeMembers);
 
     /// <summary>GetTypeFlattenHierarchyPublicFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetTypeFlattenHierarchyPublicFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.TypeFlattenHierarchyPublicOnlyMembers);
 
     /// <summary>GetTypeFlattenHierarchyFields</summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static FieldInfo[] GetTypeFlattenHierarchyFields(this Type type) =>
       GetFieldsInternal(type, ReflectMembersTokenType.TypeFlattenHierarchyMembers);
 
-    #region - GetTypeField -
+    #region - LookupTypeField -
 
     /// <summary>获取字段。</summary>
     /// <param name="type">类型</param>
     /// <param name="name">名称</param>
     /// <param name="declaredOnly"></param>
     /// <returns></returns>
-    public static FieldInfo GetFieldEx(this Type type, string name, bool declaredOnly = false) => GetTypeField(type, name, declaredOnly);
-
-    /// <summary>获取字段。</summary>
-    /// <param name="type">类型</param>
-    /// <param name="name">名称</param>
-    /// <param name="declaredOnly"></param>
-    /// <returns></returns>
-    public static FieldInfo GetTypeField(this Type type, string name, bool declaredOnly = false)
+    public static FieldInfo LookupTypeField(this Type type, string name, bool declaredOnly = false)
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
@@ -271,14 +213,14 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-    #region - GetInstanceField -
+    #region - LookupInstanceField -
 
     /// <summary>获取字段。</summary>
     /// <param name="type">类型</param>
     /// <param name="name">名称</param>
     /// <param name="declaredOnly"></param>
     /// <returns></returns>
-    public static FieldInfo GetInstanceField(this Type type, string name, bool declaredOnly = false)
+    public static FieldInfo LookupInstanceField(this Type type, string name, bool declaredOnly = false)
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 

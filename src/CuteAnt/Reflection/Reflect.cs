@@ -88,10 +88,10 @@ namespace CuteAnt.Reflection
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
-      var property = GetPropertyEx(type, name);
+      var property = type.GetTypeProperty(name);
       if (property != null) { return property; }
 
-      var field = GetFieldEx(type, name);
+      var field = type.GetTypeField(name);
       if (field != null) { return field; }
 
       // 通过反射获取

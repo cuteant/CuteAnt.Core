@@ -29,48 +29,6 @@ namespace CuteAnt.Reflection
 
   partial class ReflectUtils
   {
-    /// <summary>返回表示当前类型声明的公共属性的对象</summary>
-    /// <param name="type">类型</param>
-    /// <param name="name">名称</param>
-    /// <returns></returns>
-    [Obsolete("=> GetPropertyEx")]
-    public static PropertyInfo GetDeclaredPropertyEx(this Type type, String name)
-    {
-#if !NET40
-      return type.GetTypeInfo().GetDeclaredProperty(name);
-#else
-      return type.GetProperty(name, BindingFlagsHelper.MSDeclaredOnlyLookup);
-#endif
-    }
-
-    /// <summary>获取指定类型定义的属性的集合</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
-    public static IEnumerable<PropertyInfo> GetDeclaredPropertiesEx(this Type type)
-    {
-      //#if !NET40
-      //      return type.GetTypeInfo().DeclaredProperties;
-      //#else
-      //      return type.GetProperties(BindingFlagsHelper.MSDeclaredOnlyLookup);
-      //#endif
-      return GetPropertiesInternal(type, false, ReflectMembersTokenType.TypeDeclaredOnlyMembers);
-    }
-
-    /// <summary>获取指定类型定义的属性的集合</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
-    public static PropertyInfo[] GetPropertiesEx(this Type type) =>
-        GetPropertiesInternal(type, false, ReflectMembersTokenType.TypePublicOnlyMembers);
-
-    /// <summary>获取指定类型定义的属性的集合</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
-    public static IEnumerable<PropertyInfo> GetRuntimePropertiesEx(this Type type) =>
-        GetPropertiesInternal(type, false, ReflectMembersTokenType.TypeMembers);
-
     #region * PropertiesCache *
 
     private static readonly DictionaryCache<Type, PropertyInfo[]> s_ignoreIndexedPublicPropertiesCache =
@@ -250,6 +208,7 @@ namespace CuteAnt.Reflection
             : pis;
     }
 
+    [MethodImpl(InlineMethod.Value)]
     private static PropertyInfo[] GetPropertiesInternal(Type type, bool ignoreIndexedProperties, ReflectMembersTokenType reflectPropertiesToken)
     {
       if (type == null) { return EmptyArray<PropertyInfo>.Instance; }
@@ -305,7 +264,6 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetInstanceDeclaredPublicProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.InstanceDeclaredAndPublicOnlyMembers);
 
@@ -313,7 +271,6 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetInstanceDeclaredProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.InstanceDeclaredOnlyMembers);
 
@@ -321,7 +278,6 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetInstanceProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.InstanceMembers);
 
@@ -329,7 +285,6 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetTypeDeclaredPublicProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeDeclaredAndPublicOnlyMembers);
 
@@ -337,7 +292,6 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetTypeDeclaredProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeDeclaredOnlyMembers);
 
@@ -345,7 +299,6 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetTypePublicProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypePublicOnlyMembers);
 
@@ -353,7 +306,6 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetTypeProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeMembers);
 
@@ -361,7 +313,6 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetTypeFlattenHierarchyPublicProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeFlattenHierarchyPublicOnlyMembers);
 
@@ -369,25 +320,17 @@ namespace CuteAnt.Reflection
     /// <param name="type"></param>
     /// <param name="ignoreIndexedProperties"></param>
     /// <returns></returns>
-    [MethodImpl(InlineMethod.Value)]
     public static PropertyInfo[] GetTypeFlattenHierarchyProperties(this Type type, bool ignoreIndexedProperties = false) =>
         GetPropertiesInternal(type, ignoreIndexedProperties, ReflectMembersTokenType.TypeFlattenHierarchyMembers);
 
-    #region - GetTypeProperty -
+    #region - LookupTypeProperty -
 
     /// <summary>获取属性。</summary>
     /// <param name="type">类型</param>
     /// <param name="name">名称</param>
     /// <param name="declaredOnly"></param>
     /// <returns></returns>
-    public static PropertyInfo GetPropertyEx(this Type type, string name, bool declaredOnly = false) => GetTypeProperty(type, name, declaredOnly);
-
-    /// <summary>获取属性。</summary>
-    /// <param name="type">类型</param>
-    /// <param name="name">名称</param>
-    /// <param name="declaredOnly"></param>
-    /// <returns></returns>
-    public static PropertyInfo GetTypeProperty(this Type type, string name, bool declaredOnly = false)
+    public static PropertyInfo LookupTypeProperty(this Type type, string name, bool declaredOnly = false)
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
@@ -430,7 +373,7 @@ namespace CuteAnt.Reflection
     /// <param name="returnType"></param>
     /// <param name="declaredOnly"></param>
     /// <returns></returns>
-    public static PropertyInfo GetTypeProperty(this Type type, string name, Type returnType, bool declaredOnly = false)
+    public static PropertyInfo LookupTypeProperty(this Type type, string name, Type returnType, bool declaredOnly = false)
     {
       if (name == null) throw new ArgumentNullException(nameof(name));
       if (returnType == null) throw new ArgumentNullException(nameof(returnType));
@@ -461,7 +404,7 @@ namespace CuteAnt.Reflection
     /// <param name="parameterTypes"></param>
     /// <param name="declaredOnly"></param>
     /// <returns></returns>
-    public static PropertyInfo GetTypeProperty(this Type type, string name, Type[] parameterTypes, bool declaredOnly = false)
+    public static PropertyInfo LookupTypeProperty(this Type type, string name, Type[] parameterTypes, bool declaredOnly = false)
     {
       if (name == null) throw new ArgumentNullException(nameof(name));
       if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
@@ -493,7 +436,7 @@ namespace CuteAnt.Reflection
     /// <param name="parameterTypes"></param>
     /// <param name="declaredOnly"></param>
     /// <returns></returns>
-    public static PropertyInfo GetTypeProperty(this Type type, string name, Type returnType, Type[] parameterTypes, bool declaredOnly = false)
+    public static PropertyInfo LookupTypeProperty(this Type type, string name, Type returnType, Type[] parameterTypes, bool declaredOnly = false)
     {
       if (name == null) throw new ArgumentNullException(nameof(name));
       if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
@@ -521,14 +464,14 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-    #region - GetInstanceProperty -
+    #region - LookupInstanceProperty -
 
     /// <summary>获取属性。</summary>
     /// <param name="type">类型</param>
     /// <param name="name">名称</param>
     /// <param name="declaredOnly"></param>
     /// <returns></returns>
-    public static PropertyInfo GetInstanceProperty(this Type type, string name, bool declaredOnly = false)
+    public static PropertyInfo LookupInstanceProperty(this Type type, string name, bool declaredOnly = false)
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
@@ -571,7 +514,7 @@ namespace CuteAnt.Reflection
     /// <param name="returnType"></param>
     /// <param name="declaredOnly"></param>
     /// <returns></returns>
-    public static PropertyInfo GetInstanceProperty(this Type type, string name, Type returnType, bool declaredOnly = false)
+    public static PropertyInfo LookupInstanceProperty(this Type type, string name, Type returnType, bool declaredOnly = false)
     {
       if (name == null) throw new ArgumentNullException(nameof(name));
       if (returnType == null) throw new ArgumentNullException(nameof(returnType));
@@ -602,7 +545,7 @@ namespace CuteAnt.Reflection
     /// <param name="parameterTypes"></param>
     /// <param name="declaredOnly"></param>
     /// <returns></returns>
-    public static PropertyInfo GetInstanceProperty(this Type type, string name, Type[] parameterTypes, bool declaredOnly = false)
+    public static PropertyInfo LookupInstanceProperty(this Type type, string name, Type[] parameterTypes, bool declaredOnly = false)
     {
       if (name == null) throw new ArgumentNullException(nameof(name));
       if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
@@ -634,7 +577,7 @@ namespace CuteAnt.Reflection
     /// <param name="parameterTypes"></param>
     /// <param name="declaredOnly"></param>
     /// <returns></returns>
-    public static PropertyInfo GetInstanceProperty(this Type type, string name, Type returnType, Type[] parameterTypes, bool declaredOnly = false)
+    public static PropertyInfo LookupInstanceProperty(this Type type, string name, Type returnType, Type[] parameterTypes, bool declaredOnly = false)
     {
       if (name == null) throw new ArgumentNullException(nameof(name));
       if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));

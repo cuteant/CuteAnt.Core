@@ -183,10 +183,10 @@ namespace CuteAnt.Reflection
       if (name.IsNullOrWhiteSpace()) { return false; }
 
       var type = GetTypeInternal(ref target);
-      var pi = GetTypeProperty(type, name);
+      var pi = type.LookupTypeProperty(name);
       if (pi != null) { SetPropertyInfoValue(target, pi, value); return true; }
 
-      var fi = GetTypeField(type, name);
+      var fi = type.LookupTypeField(name);
       if (fi != null) { SetFieldInfoValue(target, fi, value); return true; }
 
       return false;

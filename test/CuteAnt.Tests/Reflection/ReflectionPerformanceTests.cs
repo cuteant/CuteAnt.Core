@@ -28,19 +28,19 @@ namespace CuteAnt.Reflection.Tests
       var userType = typeof(User);
       var myuserType = typeof(MyUser);
 
-      var field = userType.GetTypeField("PublicField");
+      var field = userType.GetField("PublicField");
       PublicFieldGetter = field.GetValueGetter<User>();
       PublicFieldSetter = field.GetValueSetter<User>();
 
-      field = userType.GetTypeField("PublicStaticField");
+      field = userType.GetField("PublicStaticField");
       PublicStaticFieldGetter = field.GetValueGetter<User>();
       PublicStaticFieldSetter = field.GetValueSetter<User>();
 
-      var property = userType.GetTypeProperty("PublicProperty");
+      var property = userType.GetProperty("PublicProperty");
       PublicPropertyGetter = property.GetValueGetter<User>();
       PublicPropertySetter = property.GetValueSetter<User>();
 
-      property = userType.GetTypeProperty("PublicStaticProperty");
+      property = userType.GetProperty("PublicStaticProperty");
       PublicStaticPropertyGetter = property.GetValueGetter<User>();
       PublicStaticPropertySetter = property.GetValueSetter<User>();
 

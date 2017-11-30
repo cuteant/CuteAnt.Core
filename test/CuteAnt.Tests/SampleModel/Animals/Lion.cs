@@ -46,7 +46,7 @@ namespace CuteAnt.SampleModel.Animals
 #pragma warning restore 0169, 0649
 
     #region Constructors
-    public Lion() : this(typeof(Lion).GetTypeProperty("Name").GetCustomAttributeX<DefaultValueAttribute>().Value.ToString())
+    public Lion() : this(typeof(Lion).GetProperty("Name").GetCustomAttributeX<DefaultValueAttribute>().Value.ToString())
     {
       ConstructorInstanceUsed = 1;
     }
@@ -57,7 +57,7 @@ namespace CuteAnt.SampleModel.Animals
       ConstructorInstanceUsed = 2;
     }
 
-    public Lion(int id) : this(id, typeof(Lion).GetTypeProperty("Name").GetCustomAttributeX<DefaultValueAttribute>().Value.ToString())
+    public Lion(int id) : this(id, typeof(Lion).GetProperty("Name").GetCustomAttributeX<DefaultValueAttribute>().Value.ToString())
     {
       ConstructorInstanceUsed = 3;
     }
