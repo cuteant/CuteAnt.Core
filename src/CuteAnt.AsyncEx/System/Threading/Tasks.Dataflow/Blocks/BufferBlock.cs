@@ -86,7 +86,7 @@ namespace System.Threading.Tasks.Dataflow
       // In those cases we need to fault the target half to drop its buffered messages and to release its
       // reservations. This should not create an infinite loop, because all our implementations are designed
       // to handle multiple completion requests and to carry over only one.
-#if NET_4_0_GREATER
+#if !NET40
       _source.Completion.ContinueWith((completed, state) =>
       {
         var thisBlock = ((BufferBlock<T>)state) as IDataflowBlock;

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+#if NET40
+using System.Threading;
+#endif
 
 namespace CuteAnt.AsyncEx
 {
@@ -106,14 +109,102 @@ namespace CuteAnt.AsyncEx
     /// <exception cref="InvalidOperationException">The underlying <see cref="Task"/> has already been completed.</exception>
     public void SetResult()
     {
+#if NET40
+      FakeSynchronizationContext.Execute(() => _tcs.SetResult(null));
+#else
       _tcs.SetResult(null);
+#endif
     }
 
     /// <summary>Attempts to transition the underlying <see cref="Task"/> into the <see cref="TaskStatus.RanToCompletion"/> state.</summary>
     /// <returns><c>true</c> if the operation was successful; otherwise, <c>false</c>.</returns>
     public Boolean TrySetResult()
     {
+#if NET40
+      FakeSynchronizationContext.Execute(() => _tcs.SetResult(null));
+      return true;
+#else
       return _tcs.TrySetResult(null);
+#endif
+    }
+
+    public bool TryComplete()
+    {
+#if NET40
+      FakeSynchronizationContext.Execute(() => _tcs.SetResult(null));
+      return true;
+#else
+      return _tcs.TrySetResult(null);
+#endif
     }
   }
+
+#if NET40
+  /// <summary>FakeSynchronizationContext: http://stackoverflow.com/questions/21845495/synchronous-or-asynchronous-continuation-upon-taskcompletionsource-trysetresult </summary>
+  public sealed class FakeSynchronizationContext : SynchronizationContext
+  {
+    private static readonly ThreadLocal<FakeSynchronizationContext> s_context =
+        new ThreadLocal<FakeSynchronizationContext>(() => new FakeSynchronizationContext());
+
+    private FakeSynchronizationContext() { }
+
+    public static FakeSynchronizationContext Instance { get { return s_context.Value; } }
+
+    public static T Execute<T>(Func<T> func)
+    {
+      var savedContext = SynchronizationContext.Current;
+      SynchronizationContext.SetSynchronizationContext(FakeSynchronizationContext.Instance);
+      try
+      {
+        return func();
+      }
+      catch { return default(T); }
+      finally
+      {
+        SynchronizationContext.SetSynchronizationContext(savedContext);
+      }
+    }
+    public static void Execute(Action action)
+    {
+      var savedContext = SynchronizationContext.Current;
+      SynchronizationContext.SetSynchronizationContext(FakeSynchronizationContext.Instance);
+      try
+      {
+        action();
+      }
+      catch { }
+      finally
+      {
+        SynchronizationContext.SetSynchronizationContext(savedContext);
+      }
+    }
+
+    // SynchronizationContext methods
+
+    public override SynchronizationContext CreateCopy()
+    {
+      return this;
+    }
+
+    public override void OperationStarted()
+    {
+      throw new NotImplementedException("OperationStarted");
+    }
+
+    public override void OperationCompleted()
+    {
+      throw new NotImplementedException("OperationCompleted");
+    }
+
+    public override void Post(SendOrPostCallback d, object state)
+    {
+      throw new NotImplementedException("Post");
+    }
+
+    public override void Send(SendOrPostCallback d, object state)
+    {
+      throw new NotImplementedException("Send");
+    }
+  }
+#endif
 }

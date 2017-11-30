@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET40
+using System;
 using System.Threading.Tasks;
 
 namespace CuteAnt.AsyncEx
@@ -91,3 +92,4 @@ namespace CuteAnt.AsyncEx
     }
   }
 }
+#endif

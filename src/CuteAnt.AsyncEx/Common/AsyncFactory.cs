@@ -59,7 +59,7 @@ namespace CuteAnt.AsyncEx
     public static IAsyncResult ToBegin(Task task, AsyncCallback callback, Object state)
     {
       var tcs = new TaskCompletionSource(state);
-#if NET_4_0_GREATER
+#if !NET40
       task.ContinueWith((t, s) =>
       {
         var tuple = (Tuple<TaskCompletionSource, AsyncCallback>)s;

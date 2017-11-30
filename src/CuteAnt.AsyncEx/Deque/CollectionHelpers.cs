@@ -16,7 +16,7 @@ namespace CuteAnt.AsyncEx
       var nongenericCollection = source as ICollection;
       if (nongenericCollection != null) { return new NongenericCollectionWrapper<T>(nongenericCollection); }
 
-#if NET_4_0_GREATER
+#if !NET40
       return new List<T>(source);
 #else
       return System.Collections.Immutable.ImmutableList.CreateRange(source);

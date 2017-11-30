@@ -1,6 +1,6 @@
 ﻿#if NET40
 using System;
-//#if NET_4_0_GREATER
+//#if !NET40
 //using System.Runtime.CompilerServices;
 //using System.Runtime.ExceptionServices;
 //#else
@@ -12,7 +12,7 @@ namespace CuteAnt.AsyncEx.Internal.PlatformEnlightenment
 {
   internal static class ExceptionEnlightenment
   {
-//#if NET_4_0_GREATER
+//#if !NET40
 //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
 //    internal static Exception PrepareForRethrow(Exception exception)
 //    {

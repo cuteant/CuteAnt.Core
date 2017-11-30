@@ -485,7 +485,7 @@ namespace System.Threading.Tasks.Dataflow.Internal
       if (_decliningPermanently) { return; }
       _messages.Enqueue(item);
 
-#if NET_4_0_GREATER
+#if !NET40
       Interlocked.MemoryBarrier(); // ensure the read of _taskForOutputProcessing doesn't move up before the writes in Enqueue
 #else
       Thread.MemoryBarrier(); // ensure the read of _taskForOutputProcessing doesn't move up before the writes in Enqueue
@@ -542,7 +542,7 @@ namespace System.Threading.Tasks.Dataflow.Internal
         }
       }
 
-#if NET_4_0_GREATER
+#if !NET40
       Interlocked.MemoryBarrier(); // ensure the read of _taskForOutputProcessing doesn't move up before the writes in Enqueue
 #else
       Thread.MemoryBarrier(); // ensure the read of _taskForOutputProcessing doesn't move up before the writes in Enqueue
@@ -981,7 +981,7 @@ namespace System.Threading.Tasks.Dataflow.Internal
             Debug.Assert(_taskForOutputProcessing != null && _taskForOutputProcessing.Id == Task.CurrentId,
                 "Must be part of the current processing task.");
             _taskForOutputProcessing = null;
-#if NET_4_0_GREATER
+#if !NET40
             Interlocked.MemoryBarrier(); // synchronize with AddMessage(s) and its read of _taskForOutputProcessing
 #else
             Thread.MemoryBarrier(); // synchronize with AddMessage(s) and its read of _taskForOutputProcessing

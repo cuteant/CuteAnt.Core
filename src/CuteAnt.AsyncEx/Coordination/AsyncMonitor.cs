@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET40
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,3 +71,4 @@ namespace CuteAnt.AsyncEx
     public void PulseAll() => _conditionVariable.NotifyAll();
   }
 }
+#endif

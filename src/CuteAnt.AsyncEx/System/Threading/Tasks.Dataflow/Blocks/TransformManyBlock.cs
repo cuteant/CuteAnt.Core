@@ -180,7 +180,7 @@ namespace System.Threading.Tasks.Dataflow
       // As the target has completed, and as the target synchronously pushes work
       // through the reordering buffer when async processing completes,
       // we know for certain that no more messages will need to be sent to the source.
-#if NET_4_0_GREATER
+#if !NET40
       _target.Completion.ContinueWith((completed, state) =>
       {
         var sourceCore = (SourceCore<TOutput>)state;
@@ -200,7 +200,7 @@ namespace System.Threading.Tasks.Dataflow
       // In those cases we need to fault the target half to drop its buffered messages and to release its
       // reservations. This should not create an infinite loop, because all our implementations are designed
       // to handle multiple completion requests and to carry over only one.
-#if NET_4_0_GREATER
+#if !NET40
       _source.Completion.ContinueWith((completed, state) =>
       {
         var thisBlock = ((TransformManyBlock<TInput, TOutput>)state) as IDataflowBlock;
@@ -316,7 +316,7 @@ namespace System.Threading.Tasks.Dataflow
       // We got back a task.  Now wait for it to complete and store its results.
       // Unlike with TransformBlock and ActionBlock, We run the continuation on the user-provided
       // scheduler as we'll be running user code through enumerating the returned enumerable.
-#if NET_4_0_GREATER
+#if !NET40
       task.ContinueWith((completed, state) =>
       {
         var tuple = (Tuple<TransformManyBlock<TInput, TOutput>, KeyValuePair<TInput, Int64>>)state;

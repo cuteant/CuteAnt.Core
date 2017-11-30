@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET40
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -161,3 +162,4 @@ namespace CuteAnt.AsyncEx
     }
   }
 }
+#endif

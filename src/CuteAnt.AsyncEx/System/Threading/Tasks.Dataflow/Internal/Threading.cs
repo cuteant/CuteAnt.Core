@@ -8,7 +8,7 @@ namespace System.Threading.Tasks.Dataflow.Internal.Threading
 {
 	internal delegate void TimerCallback(Object state);
 
-#if NET_4_0_GREATER
+#if !NET40
 
 	internal sealed class Timer : CancellationTokenSource, IDisposable
 	{

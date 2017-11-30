@@ -133,7 +133,7 @@ namespace System.Threading.Tasks.Dataflow.Internal
       // Store the offered message into the queue.
       _messages.Enqueue(messageValue);
 
-#if NET_4_0_GREATER
+#if !NET40
       Interlocked.MemoryBarrier(); // ensure the read of _activeConsumer doesn't move up before the writes in Enqueue
 #else
       Thread.MemoryBarrier(); // ensure the read of _activeConsumer doesn't move up before the writes in Enqueue
@@ -196,7 +196,7 @@ namespace System.Threading.Tasks.Dataflow.Internal
 
       // See the "fast path" comments in Post
       _messages.Enqueue(messageValue);
-#if NET_4_0_GREATER
+#if !NET40
       Interlocked.MemoryBarrier(); // ensure the read of _activeConsumer doesn't move up before the writes in Enqueue
 #else
       Thread.MemoryBarrier(); // ensure the read of _activeConsumer doesn't move up before the writes in Enqueue

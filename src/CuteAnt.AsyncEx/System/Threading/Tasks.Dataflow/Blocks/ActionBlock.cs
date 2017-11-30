@@ -212,7 +212,7 @@ namespace System.Threading.Tasks.Dataflow
       }
       else
       {
-#if NET_4_0_GREATER
+#if !NET40
         // Otherwise, join with the asynchronous operation when it completes.
         task.ContinueWith((completed, state) =>
         {
@@ -308,7 +308,7 @@ namespace System.Threading.Tasks.Dataflow
     /// which will return immediately and will enable the target to postpone the posted message and later consume it
     /// after SendAsync returns.
     /// </remarks>
-#if NET_4_0_GREATER
+#if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     public Boolean Post(TInput item)

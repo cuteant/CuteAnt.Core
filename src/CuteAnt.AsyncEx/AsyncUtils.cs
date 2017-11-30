@@ -98,12 +98,12 @@ namespace CuteAnt.AsyncEx
     /// <summary>Gets the options to use for creation tasks.</summary>
     /// <param name="toInclude">Any options to include in the result.</param>
     /// <returns>The options to use.</returns>
-#if NET_4_0_GREATER
+#if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     public static TaskCreationOptions GetCreationOptions(TaskCreationOptions toInclude = TaskCreationOptions.None)
     {
-#if NET_4_0_GREATER
+#if !NET40
       return toInclude | TaskCreationOptions.DenyChildAttach;
 #else
       return toInclude | _CreationDenyChildAttach;
@@ -117,12 +117,12 @@ namespace CuteAnt.AsyncEx
     /// <summary>Gets the options to use for continuation tasks.</summary>
     /// <param name="toInclude">Any options to include in the result.</param>
     /// <returns>The options to use.</returns>
-#if NET_4_0_GREATER
+#if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     public static TaskContinuationOptions GetContinuationOptions(TaskContinuationOptions toInclude = TaskContinuationOptions.None)
     {
-#if NET_4_0_GREATER
+#if !NET40
       return toInclude | TaskContinuationOptions.DenyChildAttach;
 #else
       return toInclude | _ContinuationDenyChildAttach;
@@ -192,7 +192,7 @@ namespace CuteAnt.AsyncEx
     /// <summary>Creates a task we can cache for the desired {TResult} result.</summary>
     /// <param name="value">The value of the {TResult}.</param>
     /// <returns>A task that may be cached.</returns>
-#if NET_4_0_GREATER
+#if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     public static Task<TResult> CreateCachedTaskFromResult<TResult>(TResult value)
@@ -212,7 +212,7 @@ namespace CuteAnt.AsyncEx
 
     /// <summary>Creates a TaskCompletionSource{T} completed with a value of default(T) that we can cache.</summary>
     /// <returns>Completed TaskCompletionSource{T} that may be cached.</returns>
-#if NET_4_0_GREATER
+#if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     public static TaskCompletionSource<T> CreateCachedTaskCompletionSource<T>()
@@ -230,7 +230,7 @@ namespace CuteAnt.AsyncEx
     /// <typeparam name="TResult">Specifies the type of the result for this task.</typeparam>
     /// <param name="exception">The exception with which to complete the task.</param>
     /// <returns>The faulted task.</returns>
-#if NET_4_0_GREATER
+#if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     public static Task<TResult> CreateTaskFromException<TResult>(Exception exception)

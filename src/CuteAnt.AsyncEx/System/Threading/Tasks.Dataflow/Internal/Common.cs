@@ -116,7 +116,7 @@ namespace System.Threading.Tasks.Dataflow.Internal
 		/// <returns>The T instance.</returns>
 		internal static T UnwrapWeakReference<T>(object state) where T : class
 		{
-#if NET_4_0_GREATER
+#if !NET40
 			var wr = state as WeakReference<T>;
 			Debug.Assert(wr != null, "Expected a WeakReference<T> as the state argument");
 			T item;
@@ -220,7 +220,7 @@ namespace System.Threading.Tasks.Dataflow.Internal
 			// leak into a long-living cancellation token.
 			else if (cancellationToken.CanBeCanceled)
 			{
-#if NET_4_0_GREATER
+#if !NET40
 				CancellationTokenRegistration reg = cancellationToken.Register(completeAction, completeState);
 				completionTask.ContinueWith((completed, state) => ((CancellationTokenRegistration)state).Dispose(),
 						reg, cancellationToken, Common.GetContinuationOptions(), TaskScheduler.Default);
@@ -328,7 +328,7 @@ namespace System.Threading.Tasks.Dataflow.Internal
 		/// </remarks>
 		internal static void ThrowAsync(Exception error)
 		{
-#if NET_4_0_GREATER
+#if !NET40
 			ExceptionDispatchInfo edi = ExceptionDispatchInfo.Capture(error);
 			ThreadPool.QueueUserWorkItem(state => { ((ExceptionDispatchInfo)state).Throw(); }, edi);
 #else
@@ -475,7 +475,7 @@ namespace System.Threading.Tasks.Dataflow.Internal
 		/// <returns>The options to use.</returns>
 		internal static TaskCreationOptions GetCreationOptionsForTask(Boolean isReplacementReplica = false)
 		{
-#if NET_4_0_GREATER
+#if !NET40
 			TaskCreationOptions options = TaskCreationOptions.DenyChildAttach;
 #else
 			TaskCreationOptions options = AsyncUtils._CreationDenyChildAttach;
@@ -608,7 +608,7 @@ namespace System.Threading.Tasks.Dataflow.Internal
 		{
 			Debug.Assert(sourceCompletionTask != null, "sourceCompletionTask may not be null.");
 			Debug.Assert(target != null, "The target where completion is to be propagated may not be null.");
-#if NET_4_0_GREATER
+#if !NET40
 			sourceCompletionTask.ContinueWith((task, state) => Common.PropagateCompletion(task, (IDataflowBlock)state, AsyncExceptionHandler),
 					target, CancellationToken.None, Common.GetContinuationOptions(), TaskScheduler.Default);
 #else

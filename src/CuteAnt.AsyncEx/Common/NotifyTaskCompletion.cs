@@ -112,7 +112,7 @@ namespace CuteAnt.AsyncEx
 				}
 
 				var scheduler = (SynchronizationContext.Current == null) ? TaskScheduler.Current : TaskScheduler.FromCurrentSynchronizationContext();
-#if NET_4_0_GREATER
+#if !NET40
 				TaskCompleted = task.ContinueWith((t, state) =>
 				{
 					var propertyChanged = (PropertyChangedEventHandler)state;
@@ -141,7 +141,7 @@ namespace CuteAnt.AsyncEx
 					{
 						propertyChanged(this, new PropertyChangedEventArgs("IsSuccessfullyCompleted"));
 					}
-#if NET_4_0_GREATER
+#if !NET40
 				}, PropertyChanged,
 #else
 				},

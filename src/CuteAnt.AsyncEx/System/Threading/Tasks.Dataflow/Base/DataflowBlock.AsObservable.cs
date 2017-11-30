@@ -311,7 +311,7 @@ namespace System.Threading.Tasks.Dataflow
 
           // If the target block fails due to an unexpected exception (e.g. it calls back to the source and the source throws an error),
           // we fault currently registered observers and reset the observable.
-#if NET_4_0_GREATER
+#if !NET40
           Target.Completion.ContinueWith(
               (t, state) => ((ObserversState)state).NotifyObserversOfCompletion(t.Exception), this,
               CancellationToken.None,
@@ -329,7 +329,7 @@ namespace System.Threading.Tasks.Dataflow
           Task sourceCompletionTask = Common.GetPotentiallyNotSupportedCompletionTask(Observable._source);
           if (sourceCompletionTask != null)
           {
-#if NET_4_0_GREATER
+#if !NET40
             sourceCompletionTask.ContinueWith((_1, state1) =>
             {
               var ti = (ObserversState)state1;

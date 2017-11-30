@@ -47,8 +47,12 @@ namespace CuteAnt.AsyncEx
     /// <summary>Asynchronously waits until the pause token is not paused.</summary>
     public Task WaitWhilePausedAsync()
     {
+#if NET40
+      return WaitWhilePausedAsync(CancellationToken.None);
+#else
       if (_mre == null) { return TaskConstants.Completed; }
       return _mre.WaitAsync();
+#endif
     }
 
     /// <summary>Asynchronously waits until the pause token is not paused, or until this wait is canceled by the cancellation token.</summary>
@@ -56,8 +60,25 @@ namespace CuteAnt.AsyncEx
     public Task WaitWhilePausedAsync(CancellationToken token)
     {
       if (_mre == null) { return TaskConstants.Completed; }
+#if NET40
+      var waitTask = _mre.WaitAsync();
+      if (!token.CanBeCanceled || waitTask.IsCompleted) { return waitTask; }
+      return DoWaitWhilePausedAsync(waitTask, token);
+#else
       return _mre.WaitAsync(token);
+#endif
     }
+
+#if NET40
+    private static async Task DoWaitWhilePausedAsync(Task waitTask, CancellationToken token)
+    {
+      using (var taskSource = token.ToCancellationTokenTaskSource())
+      {
+        var completedTask = await TaskShim.WhenAny(waitTask, taskSource.Task).ConfigureAwait(false);
+        await completedTask.ConfigureAwait(false);
+      }
+    }
+#endif
 
     /// <summary>Synchronously waits until the pause token is not paused.</summary>
     public void WaitWhilePaused()

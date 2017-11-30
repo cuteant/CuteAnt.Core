@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET40
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -166,3 +167,4 @@ namespace CuteAnt.AsyncEx
     // ReSharper restore UnusedMember.Local
   }
 }
+#endif

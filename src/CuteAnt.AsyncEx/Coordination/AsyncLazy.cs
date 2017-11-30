@@ -1,11 +1,8 @@
-﻿using System;
+﻿#if !NET40
+using System;
 using System.Threading.Tasks;
 using System.Diagnostics;
-#if NET40
-using Microsoft.Runtime.CompilerServices;
-#else
 using System.Runtime.CompilerServices;
-#endif
 
 namespace CuteAnt.AsyncEx
 {
@@ -167,3 +164,4 @@ namespace CuteAnt.AsyncEx
     }
   }
 }
+#endif

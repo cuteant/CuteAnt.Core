@@ -15,7 +15,11 @@ namespace CuteAnt.AsyncEx
     private readonly object _mutex;
 
     /// <summary>The current state of the event.</summary>
+#if NET40
+    private TaskCompletionSource _tcs;
+#else
     private TaskCompletionSource<object> _tcs;
+#endif
 
     /// <summary>The semi-unique identifier for this instance. This is 0 if the id has not yet been created.</summary>
     private int _id;
@@ -28,12 +32,21 @@ namespace CuteAnt.AsyncEx
     public AsyncManualResetEvent(bool set)
     {
       _mutex = new object();
-#if NET_4_5_GREATER
+#if NET40
+      _tcs = new TaskCompletionSource();
+#elif NET_4_5_GREATER
       _tcs = TaskCompletionSourceExtensions.CreateAsyncTaskSource<object>();
 #else
       _tcs = new TaskCompletionSource<object>();
 #endif
-      if (set) { _tcs.TrySetResult(null); }
+      if (set)
+      {
+#if NET40
+        _tcs.SetResult();
+#else
+        _tcs.TrySetResult(null);
+#endif
+      }
     }
 
     /// <summary>Creates an async-compatible manual-reset event that is initially unset.</summary>
@@ -57,6 +70,7 @@ namespace CuteAnt.AsyncEx
       lock (_mutex) { return _tcs.Task; }
     }
 
+#if !NET40
     /// <summary>Asynchronously waits for this event to be set or for the wait to be canceled.</summary>
     /// <param name="cancellationToken">The cancellation token used to cancel the wait. If this token is already canceled, this method will first check whether the event is set.</param>
     public Task WaitAsync(CancellationToken cancellationToken)
@@ -65,11 +79,16 @@ namespace CuteAnt.AsyncEx
       if (waitTask.IsCompleted) { return waitTask; }
       return waitTask.WaitAsync(cancellationToken);
     }
+#endif
 
     /// <summary>Synchronously waits for this event to be set. This method may block the calling thread.</summary>
     public void Wait()
     {
+#if NET40
+      WaitAsync().Wait();
+#else
       WaitAsync().WaitAndUnwrapException();
+#endif
     }
 
     /// <summary>Synchronously waits for this event to be set. This method may block the calling thread.</summary>
@@ -78,7 +97,11 @@ namespace CuteAnt.AsyncEx
     {
       var ret = WaitAsync();
       if (ret.IsCompleted) { return; }
+#if NET40
+      ret.Wait(cancellationToken);
+#else
       ret.WaitAndUnwrapException(cancellationToken);
+#endif
     }
 
     /// <summary>Sets the event, atomically completing every task returned by <see cref="O:Nito.AsyncEx.AsyncManualResetEvent.WaitAsync"/>. If the event is already set, this method does nothing.</summary>
@@ -86,7 +109,11 @@ namespace CuteAnt.AsyncEx
     {
       lock (_mutex)
       {
+#if NET40
+        _tcs.TrySetResultWithBackgroundContinuations();
+#else
         _tcs.TrySetResult(null);
+#endif
       }
     }
 
@@ -97,7 +124,9 @@ namespace CuteAnt.AsyncEx
       {
         if (_tcs.Task.IsCompleted)
         {
-#if NET_4_5_GREATER
+#if NET40
+          _tcs = new TaskCompletionSource();
+#elif NET_4_5_GREATER
           _tcs = TaskCompletionSourceExtensions.CreateAsyncTaskSource<object>();
 #else
           _tcs = new TaskCompletionSource<object>();

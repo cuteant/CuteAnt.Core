@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET40
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,11 +28,7 @@ namespace CuteAnt.AsyncEx
       : base(context)
     {
       Context = context;
-#if NET40
-      _thread = Task.Factory.StartNew(Execute, CancellationToken.None, AsyncUtils.GetCreationOptions(TaskCreationOptions.LongRunning), TaskScheduler.Default);
-#else
       _thread = Task.Factory.StartNew(Execute, CancellationToken.None, TaskCreationOptions.LongRunning | TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
-#endif
     }
 
     /// <summary>Initializes a new instance of the <see cref="AsyncContextThread"/> class, creating a child thread waiting for commands.</summary>
@@ -86,3 +83,4 @@ namespace CuteAnt.AsyncEx
     }
   }
 }
+#endif

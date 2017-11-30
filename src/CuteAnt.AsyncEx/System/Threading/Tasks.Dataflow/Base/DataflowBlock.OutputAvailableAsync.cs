@@ -100,7 +100,7 @@ namespace System.Threading.Tasks.Dataflow
 				// about cancellation, as we've coded cancellation to complete the task asynchronously, and with the continuation
 				// set as NotOnCanceled, so the continuation will be canceled immediately when the antecedent is canceled, which
 				// will thus be asynchronously from the cancellation token source's cancellation call.
-#if NET_4_0_GREATER
+#if !NET40
 				return target.Task.ContinueWith(
 						OutputAvailableAsyncTarget<TOutput>.s_handleCompletion, target,
 						CancellationToken.None, Common.GetContinuationOptions() | TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);

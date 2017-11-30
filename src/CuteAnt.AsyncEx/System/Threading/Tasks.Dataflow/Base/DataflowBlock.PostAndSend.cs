@@ -236,7 +236,7 @@ namespace System.Threading.Tasks.Dataflow
 
 					try
 					{
-#if NET_4_0_GREATER
+#if !NET40
 						_cancellationRegistration = cancellationToken.Register(
 								_cancellationCallback, new WeakReference<SendAsyncSource<TOutput>>(this));
 #else
@@ -579,7 +579,7 @@ namespace System.Threading.Tasks.Dataflow
 					}
 					if (_cancellationToken.IsCancellationRequested)
 					{
-#if NET_4_0_GREATER
+#if !NET40
 						CancellationHandler(new WeakReference<SendAsyncSource<TOutput>>(this)); // same code as registered with the CancellationToken
 #else
 						CancellationHandler(Common.WrapWeakReference<SendAsyncSource<TOutput>>(this)); // same code as registered with the CancellationToken

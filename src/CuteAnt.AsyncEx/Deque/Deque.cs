@@ -546,7 +546,7 @@ namespace CuteAnt.AsyncEx
     /// <summary>Inserts a range of elements into the view.</summary>
     /// <param name="index">The index into the view at which the elements are to be inserted.</param>
     /// <param name="collection">The elements to insert. The sum of <c>collection.Count</c> and <see cref="Count"/> must be less than or equal to <see cref="Capacity"/>.</param>
-#if NET_4_0_GREATER
+#if !NET40
     private void DoInsertRange(int index, IReadOnlyCollection<T> collection)
     {
       var collectionCount = collection.Count;
