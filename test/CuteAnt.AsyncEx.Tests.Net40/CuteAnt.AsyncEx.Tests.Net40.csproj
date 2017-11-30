@@ -1,46 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net471</TargetFramework>
+    <TargetFramework>net40</TargetFramework>
     <RootNamespace>CuteAnt.AsyncEx.Tests</RootNamespace>
     <AssemblyName>CuteAnt.AsyncEx.Tests</AssemblyName>
     <DefineConstants>$(DefineConstants);TEST40</DefineConstants>
   </PropertyGroup>
-
+  
   <ItemGroup>
-    <Compile Include="..\CuteAnt.AsyncEx.Tests\**\*.cs" Exclude="..\CuteAnt.AsyncEx.Tests\bin\**;..\CuteAnt.AsyncEx.Tests\obj\**" />
-    <EmbeddedResource Include="..\CuteAnt.AsyncEx.Tests\**\*.resx" Exclude="..\CuteAnt.AsyncEx.Tests\bin\**;..\CuteAnt.AsyncEx.Tests\obj\**;@(EmbeddedResource)" />
+    <PackageReference Include="NUnit" Version="$(NUnit2PackageVersion)" />
+    <PackageReference Include="NUnitTestAdapter" Version="$(NUnit2TestAdapterPackageVersion)" />
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsPackageVersion)" />
-    <PackageReference Include="xunit" Version="$(xUnitPackageVersion)" />
-    <PackageReference Include="xunit.analyzers" Version="$(xUnitAnalyzersPackageVersion)" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="$(xUnitRunnerVsPackageVersion)" />
-    <PackageReference Include="Xunit.SkippableFact" Version="$(xUnitSkippableFactPackageVersion)" />
     <PackageReference Include="Microsoft.Bcl" Version="$(MicrosoftBclPackageVersion)" />
     <PackageReference Include="Microsoft.Bcl.Async" Version="$(MicrosoftBclAsyncPackageVersion)" />
     <PackageReference Include="Microsoft.Bcl.Build" Version="$(MicrosoftBclBuildPackageVersion)" />
   </ItemGroup>
   
   <ItemGroup>
-    <Reference Include="CuteAnt.AsyncEx">
-      <HintPath>..\..\src\CuteAnt.AsyncEx\bin\Debug\net40\CuteAnt.AsyncEx.dll</HintPath>
-    </Reference>
-    <Reference Include="CuteAnt.Core">
-      <HintPath>..\..\src\CuteAnt.AsyncEx\bin\Debug\net40\CuteAnt.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="CuteAnt.Core.Abstractions">
-      <HintPath>..\..\src\CuteAnt.AsyncEx\bin\Debug\net40\CuteAnt.Core.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Primitives">
-      <HintPath>..\..\src\CuteAnt.AsyncEx\bin\Debug\net40\Microsoft.Extensions.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Collections.Immutable">
-      <HintPath>..\..\src\CuteAnt.AsyncEx\bin\Debug\net40\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reflection.Metadata">
-      <HintPath>..\..\src\CuteAnt.AsyncEx\bin\Debug\net40\System.Reflection.Metadata.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\src\CuteAnt.AsyncEx\CuteAnt.AsyncEx.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
   
 </Project>
