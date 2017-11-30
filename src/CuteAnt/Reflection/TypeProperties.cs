@@ -9,7 +9,7 @@ namespace CuteAnt.Reflection
   {
     #region @@ Fields @@
 
-    private static readonly Type s_objectType = TypeUtils._.Object;
+    private static readonly Type s_objectType = TypeConstants.ObjectType;
 
     #endregion
 
@@ -45,7 +45,7 @@ namespace CuteAnt.Reflection
       const string _oInstanceParameterName = "oInstanceParam";
 
       var oInstanceParam = Expression.Parameter(s_objectType, _oInstanceParameterName);
-      var instanceParam = Expression.Convert(oInstanceParam, propertyInfo.GetDeclaringType()); // ReflectedType() //propertyInfo.DeclaringType doesn't work on Proxy types
+      var instanceParam = Expression.Convert(oInstanceParam, propertyInfo.ReflectedType); //propertyInfo.DeclaringType doesn't work on Proxy types
 
       var exprCallPropertyGetFn = Expression.Call(instanceParam, getMethodInfo);
       var oExprCallPropertyGetFn = Expression.Convert(exprCallPropertyGetFn, s_objectType);
@@ -68,7 +68,7 @@ namespace CuteAnt.Reflection
         var instance = Expression.Parameter(s_objectType, TypeAccessorHelper.InstanceParameterName);
         var argument = Expression.Parameter(s_objectType, TypeAccessorHelper.ArgumentParameterName);
 
-        var instanceParam = Expression.Convert(instance, propertyInfo.GetDeclaringType()); // ReflectedType()
+        var instanceParam = Expression.Convert(instance, propertyInfo.ReflectedType);
         //var valueParam = Expression.Convert(argument, propertyInfo.PropertyType);
         var valueParam = TypeAccessorHelper.GetCastOrConvertExpression(argument, propertyInfo.PropertyType);
 
@@ -99,7 +99,7 @@ namespace CuteAnt.Reflection
       if (!isStatic)
       {
         gen.Emit(OpCodes.Ldarg_0);
-        var declaringType = propertyInfo.GetDeclaringType();
+        var declaringType = propertyInfo.DeclaringType;
         if (declaringType.IsValueType)
         {
           gen.Emit(OpCodes.Unbox, declaringType);
@@ -142,7 +142,7 @@ namespace CuteAnt.Reflection
       {
         gen.Emit(OpCodes.Ldarg_0);
 
-        var declaringType = propertyInfo.GetDeclaringType();
+        var declaringType = propertyInfo.DeclaringType;
         if (declaringType.IsValueType)
         {
           gen.Emit(OpCodes.Unbox, declaringType);
@@ -179,7 +179,7 @@ namespace CuteAnt.Reflection
   {
     #region @@ Fields @@
 
-    private static readonly Type s_objectType = TypeUtils._.Object;
+    private static readonly Type s_objectType = TypeConstants.ObjectType;
 
     #endregion
 
@@ -210,7 +210,7 @@ namespace CuteAnt.Reflection
     {
       //if (!propertyInfo.CanRead) { return TypeAccessorHelper<T>.EmptyMemberGetter; }
       var thisType = TypeAccessorHelper<T>.ThisType;
-      var propertyDeclaringType = propertyInfo.GetDeclaringType();
+      var propertyDeclaringType = propertyInfo.DeclaringType;
 
       var instance = Expression.Parameter(thisType, TypeAccessorHelper.InstanceParameterName);
       var property = thisType != propertyDeclaringType
@@ -231,7 +231,7 @@ namespace CuteAnt.Reflection
       if (mi == null) return TypeAccessorHelper<T>.EmptyMemberSetter;
 
       var thisType = TypeAccessorHelper<T>.ThisType;
-      var propertyDeclaringType = propertyInfo.GetDeclaringType();
+      var propertyDeclaringType = propertyInfo.DeclaringType;
 
       var instance = Expression.Parameter(thisType, TypeAccessorHelper.InstanceParameterName);
       var argument = Expression.Parameter(s_objectType, TypeAccessorHelper.ArgumentParameterName);
@@ -266,7 +266,7 @@ namespace CuteAnt.Reflection
       if (!isStatic)
       {
         var thisType = TypeAccessorHelper<T>.ThisType;
-        var declaringType = propertyInfo.GetDeclaringType();
+        var declaringType = propertyInfo.DeclaringType;
         if (thisType.IsValueType)
         {
           gen.Emit(OpCodes.Ldarga_S, 0);
@@ -321,7 +321,7 @@ namespace CuteAnt.Reflection
         var thisType = TypeAccessorHelper<T>.ThisType;
         gen.Emit(OpCodes.Ldarg_0);
 
-        var declaringType = propertyInfo.GetDeclaringType();
+        var declaringType = propertyInfo.DeclaringType;
         if (declaringType.IsValueType)
         {
           if (thisType != declaringType) { gen.Emit(OpCodes.Unbox, declaringType); }

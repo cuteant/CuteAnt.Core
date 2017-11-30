@@ -132,7 +132,7 @@ namespace Grace.DependencyInjection.Impl
       {
         var method = requestedTypeInfo.GetDeclaredMethod(InvokeMethodName);
 
-        if (method.ReturnType != typeof(void) &&
+        if (method.ReturnType != TypeConstants.VoidType &&
             scope.CanLocate(method.ReturnType))
         {
           return method.GetParameters().Length <= 5;
@@ -234,7 +234,7 @@ namespace Grace.DependencyInjection.Impl
       {
         var method = requestedTypeInfo.GetDeclaredMethod(InvokeMethodName);
 
-        if (method.ReturnType != typeof(void) && scope.CanLocate(method.ReturnType))
+        if (method.ReturnType != TypeConstants.VoidType && scope.CanLocate(method.ReturnType))
         {
           var parameterCount = method.GetParameters().Length;
 

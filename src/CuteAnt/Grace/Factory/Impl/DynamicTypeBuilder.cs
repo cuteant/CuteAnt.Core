@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using CuteAnt;
 using Grace.Data;
 using Grace.DependencyInjection;
 using Grace.Utilities;
@@ -227,7 +228,7 @@ namespace Grace.Factory.Impl
 
       ilGenerator.Emit(OpCodes.Callvirt, DelegateInvoke);
 
-      if (method.ReturnType != null || method.ReturnType != typeof(void))
+      if (method.ReturnType != null || method.ReturnType != TypeConstants.VoidType)
       {
 #if NET40
         ilGenerator.Emit(method.ReturnType.IsValueType ?

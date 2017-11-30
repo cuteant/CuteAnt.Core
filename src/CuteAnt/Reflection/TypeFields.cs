@@ -9,7 +9,7 @@ namespace CuteAnt.Reflection
   {
     #region @@ Fields @@
 
-    private static readonly Type s_objectType = TypeUtils._.Object;
+    private static readonly Type s_objectType = TypeConstants.ObjectType;
 
     #endregion
 
@@ -24,7 +24,7 @@ namespace CuteAnt.Reflection
 
     public static MemberGetter CreateExpressionGetter(FieldInfo fieldInfo)
     {
-      var fieldDeclaringType = fieldInfo.GetDeclaringType();
+      var fieldDeclaringType = fieldInfo.DeclaringType;
 
       var oInstanceParam = Expression.Parameter(s_objectType, TypeAccessorHelper.SourceParameterName);
       var instanceParam = TypeAccessorHelper.GetCastOrConvertExpression(oInstanceParam, fieldDeclaringType);
@@ -72,7 +72,7 @@ namespace CuteAnt.Reflection
 
       gen.Emit(OpCodes.Ldarg_0);
 
-      var declaringType = fieldInfo.GetDeclaringType();
+      var declaringType = fieldInfo.DeclaringType;
       if (declaringType.IsValueType)
       {
         gen.Emit(OpCodes.Unbox, declaringType);
@@ -106,7 +106,7 @@ namespace CuteAnt.Reflection
       var gen = setter.GetILGenerator();
       gen.Emit(OpCodes.Ldarg_0);
 
-      var declaringType = fieldInfo.GetDeclaringType();
+      var declaringType = fieldInfo.DeclaringType;
       if (declaringType.IsValueType)
       {
         gen.Emit(OpCodes.Unbox, declaringType);
@@ -159,7 +159,7 @@ namespace CuteAnt.Reflection
   {
     #region @@ Fields @@
 
-    private static readonly Type s_objectType = TypeUtils._.Object;
+    private static readonly Type s_objectType = TypeConstants.ObjectType;
 
     #endregion
 
@@ -174,7 +174,7 @@ namespace CuteAnt.Reflection
 
     public static MemberGetter<T> CreateExpressionGetter(FieldInfo fieldInfo)
     {
-      var fieldDeclaringType = fieldInfo.GetDeclaringType();
+      var fieldDeclaringType = fieldInfo.DeclaringType;
       var thisType = TypeAccessorHelper<T>.ThisType;
       var instance = Expression.Parameter(thisType, TypeAccessorHelper.InstanceParameterName);
       var field = thisType != fieldDeclaringType
@@ -194,7 +194,7 @@ namespace CuteAnt.Reflection
       var instance = Expression.Parameter(thisType, TypeAccessorHelper.InstanceParameterName);
       var argument = Expression.Parameter(s_objectType, TypeAccessorHelper.ArgumentParameterName);
 
-      var declaringType = fieldInfo.GetDeclaringType();
+      var declaringType = fieldInfo.DeclaringType;
       var field = thisType != declaringType
           ? Expression.Field(Expression.TypeAs(instance, declaringType), fieldInfo)
           : Expression.Field(instance, fieldInfo);
@@ -264,7 +264,7 @@ namespace CuteAnt.Reflection
       gen.Emit(OpCodes.Ldarg_0);
 
       var thisType = TypeAccessorHelper<T>.ThisType;
-      var declaringType = fieldInfo.GetDeclaringType();
+      var declaringType = fieldInfo.DeclaringType;
       if (declaringType.IsValueType)
       {
         if (thisType != declaringType) { gen.Emit(OpCodes.Unbox, declaringType); }

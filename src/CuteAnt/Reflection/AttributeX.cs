@@ -28,12 +28,9 @@ namespace System
       if (memberInfo == null) { throw new ArgumentNullException(nameof(memberInfo)); }
       if (attributeType == null) { throw new ArgumentNullException(nameof(attributeType)); }
 
-      var typeInfo = memberInfo as Type;
-      if (typeInfo != null) { return HasAttribute(typeInfo, attributeType, inherit); }
-      var propertyInfo = memberInfo as PropertyInfo;
-      if (propertyInfo != null) { return HasAttribute(propertyInfo, attributeType, inherit); }
-      var fieldInfo = memberInfo as FieldInfo;
-      if (fieldInfo != null) { return HasAttribute(fieldInfo, attributeType, inherit); }
+      if (memberInfo is Type typeInfo) { return HasAttribute(typeInfo, attributeType, inherit); }
+      if (memberInfo is PropertyInfo propertyInfo) { return HasAttribute(propertyInfo, attributeType, inherit); }
+      if (memberInfo is FieldInfo fieldInfo) { return HasAttribute(fieldInfo, attributeType, inherit); }
 
       return GetCustomAttributesX(memberInfo, null, inherit).Any(_ => _.GetType() == attributeType);
     }
@@ -45,7 +42,7 @@ namespace System
     /// <returns></returns>
     public static bool HasAttribute<TAttribute>(this MemberInfo memberInfo, bool inherit = true)
       where TAttribute : Attribute
-      => HasAttribute(memberInfo, typeof(TAttribute), inherit);
+        => HasAttribute(memberInfo, typeof(TAttribute), inherit);
 
     #endregion
 
@@ -61,12 +58,9 @@ namespace System
       if (memberInfo == null) { throw new ArgumentNullException(nameof(memberInfo)); }
       if (string.IsNullOrWhiteSpace(name)) { throw new ArgumentNullException(nameof(name)); }
 
-      var typeInfo = memberInfo as Type;
-      if (typeInfo != null) { return HasAttributeNamed(typeInfo, name, inherit); }
-      var propertyInfo = memberInfo as PropertyInfo;
-      if (propertyInfo != null) { return HasAttributeNamed(propertyInfo, name, inherit); }
-      var fieldInfo = memberInfo as FieldInfo;
-      if (fieldInfo != null) { return HasAttributeNamed(fieldInfo, name, inherit); }
+      if (memberInfo is Type typeInfo) { return HasAttributeNamed(typeInfo, name, inherit); }
+      if (memberInfo is PropertyInfo propertyInfo) { return HasAttributeNamed(propertyInfo, name, inherit); }
+      if (memberInfo is FieldInfo fieldInfo) { return HasAttributeNamed(fieldInfo, name, inherit); }
 
       var normalizedAttr = name.Replace("Attribute", "");
       return GetCustomAttributesX(memberInfo, null, inherit).Any(_ =>
@@ -84,12 +78,9 @@ namespace System
     /// <returns></returns>
     public static Attribute FirstAttribute(this MemberInfo memberInfo, Type attributeType, bool inherit = true)
     {
-      var typeInfo = memberInfo as Type;
-      if (typeInfo != null) { return FirstAttribute(typeInfo, attributeType, inherit); }
-      var propertyInfo = memberInfo as PropertyInfo;
-      if (propertyInfo != null) { return FirstAttribute(propertyInfo, attributeType, inherit); }
-      var fieldInfo = memberInfo as FieldInfo;
-      if (fieldInfo != null) { return FirstAttribute(fieldInfo, attributeType, inherit); }
+      if (memberInfo is Type typeInfo) { return FirstAttribute(typeInfo, attributeType, inherit); }
+      if (memberInfo is PropertyInfo propertyInfo) { return FirstAttribute(propertyInfo, attributeType, inherit); }
+      if (memberInfo is FieldInfo fieldInfo) { return FirstAttribute(fieldInfo, attributeType, inherit); }
 
       return GetCustomAttributeX(memberInfo, attributeType, inherit);
     }
@@ -102,12 +93,9 @@ namespace System
     public static TAttribute FirstAttribute<TAttribute>(this MemberInfo memberInfo, bool inherit = true)
       where TAttribute : Attribute
     {
-      var typeInfo = memberInfo as Type;
-      if (typeInfo != null) { return FirstAttribute<TAttribute>(typeInfo, inherit); }
-      var propertyInfo = memberInfo as PropertyInfo;
-      if (propertyInfo != null) { return FirstAttribute<TAttribute>(propertyInfo, inherit); }
-      var fieldInfo = memberInfo as FieldInfo;
-      if (fieldInfo != null) { return FirstAttribute<TAttribute>(fieldInfo, inherit); }
+      if (memberInfo is Type typeInfo) { return FirstAttribute<TAttribute>(typeInfo, inherit); }
+      if (memberInfo is PropertyInfo propertyInfo) { return FirstAttribute<TAttribute>(propertyInfo, inherit); }
+      if (memberInfo is FieldInfo fieldInfo) { return FirstAttribute<TAttribute>(fieldInfo, inherit); }
 
       return GetCustomAttributeX<TAttribute>(memberInfo, inherit);
     }
@@ -123,12 +111,9 @@ namespace System
     /// <returns></returns>
     public static IEnumerable<Attribute> GetCustomAttributesX(this MemberInfo memberInfo, Type attributeType = null, bool inherit = true)
     {
-      var typeInfo = memberInfo as Type;
-      if (typeInfo != null) { return GetCustomAttributesX(typeInfo, attributeType, inherit); }
-      var propertyInfo = memberInfo as PropertyInfo;
-      if (propertyInfo != null) { return GetCustomAttributesX(propertyInfo, attributeType, inherit); }
-      var fieldInfo = memberInfo as FieldInfo;
-      if (fieldInfo != null) { return GetCustomAttributesX(fieldInfo, attributeType, inherit); }
+      if (memberInfo is Type typeInfo) { return GetCustomAttributesX(typeInfo, attributeType, inherit); }
+      if (memberInfo is PropertyInfo propertyInfo) { return GetCustomAttributesX(propertyInfo, attributeType, inherit); }
+      if (memberInfo is FieldInfo fieldInfo) { return GetCustomAttributesX(fieldInfo, attributeType, inherit); }
 
       return GetCustomAttributesInternal(memberInfo, attributeType, inherit);
     }
@@ -141,12 +126,9 @@ namespace System
     public static IEnumerable<TAttribute> GetCustomAttributesX<TAttribute>(this MemberInfo memberInfo, bool inherit = true)
       where TAttribute : Attribute
     {
-      var typeInfo = memberInfo as Type;
-      if (typeInfo != null) { return GetCustomAttributesX<TAttribute>(typeInfo, inherit); }
-      var propertyInfo = memberInfo as PropertyInfo;
-      if (propertyInfo != null) { return GetCustomAttributesX<TAttribute>(propertyInfo, inherit); }
-      var fieldInfo = memberInfo as FieldInfo;
-      if (fieldInfo != null) { return GetCustomAttributesX<TAttribute>(fieldInfo, inherit); }
+      if (memberInfo is Type typeInfo) { return GetCustomAttributesX<TAttribute>(typeInfo, inherit); }
+      if (memberInfo is PropertyInfo propertyInfo) { return GetCustomAttributesX<TAttribute>(propertyInfo, inherit); }
+      if (memberInfo is FieldInfo fieldInfo) { return GetCustomAttributesX<TAttribute>(fieldInfo, inherit); }
 
       var attrs = GetCustomAttributesInternal(memberInfo, typeof(TAttribute), inherit);
 
@@ -167,7 +149,7 @@ namespace System
       return cache.GetItem(attributeType, memberInfo, inherit, (t, m, inh) =>
       {
         var attrs = Attribute.GetCustomAttributes(m, t, inh);
-        return attrs != null ? attrs : EmptyArray<Attribute>.Instance;
+        return attrs ?? EmptyArray<Attribute>.Instance;
       });
     }
 
@@ -182,12 +164,9 @@ namespace System
     /// <returns></returns>
     public static IEnumerable<Attribute> GetAllAttributes(this MemberInfo memberInfo, Type attributeType = null, bool inherit = true)
     {
-      var typeInfo = memberInfo as Type;
-      if (typeInfo != null) { return GetAllAttributes(typeInfo, attributeType, inherit); }
-      var propertyInfo = memberInfo as PropertyInfo;
-      if (propertyInfo != null) { return GetAllAttributes(propertyInfo, attributeType, inherit); }
-      var fieldInfo = memberInfo as FieldInfo;
-      if (fieldInfo != null) { return GetAllAttributes(fieldInfo, attributeType, inherit); }
+      if (memberInfo is Type typeInfo) { return GetAllAttributes(typeInfo, attributeType, inherit); }
+      if (memberInfo is PropertyInfo propertyInfo) { return GetAllAttributes(propertyInfo, attributeType, inherit); }
+      if (memberInfo is FieldInfo fieldInfo) { return GetAllAttributes(fieldInfo, attributeType, inherit); }
 
       return GetCustomAttributesInternal(memberInfo, attributeType, inherit);
     }
@@ -200,12 +179,9 @@ namespace System
     public static IEnumerable<TAttribute> GetAllAttributes<TAttribute>(this MemberInfo memberInfo, bool inherit = true)
       where TAttribute : Attribute
     {
-      var typeInfo = memberInfo as Type;
-      if (typeInfo != null) { return GetAllAttributes<TAttribute>(typeInfo, inherit); }
-      var propertyInfo = memberInfo as PropertyInfo;
-      if (propertyInfo != null) { return GetAllAttributes<TAttribute>(propertyInfo, inherit); }
-      var fieldInfo = memberInfo as FieldInfo;
-      if (fieldInfo != null) { return GetAllAttributes<TAttribute>(fieldInfo, inherit); }
+      if (memberInfo is Type typeInfo) { return GetAllAttributes<TAttribute>(typeInfo, inherit); }
+      if (memberInfo is PropertyInfo propertyInfo) { return GetAllAttributes<TAttribute>(propertyInfo, inherit); }
+      if (memberInfo is FieldInfo fieldInfo) { return GetAllAttributes<TAttribute>(fieldInfo, inherit); }
 
       var attrs = GetCustomAttributesInternal(memberInfo, typeof(TAttribute), inherit);
 
@@ -223,12 +199,9 @@ namespace System
     /// <returns></returns>
     public static Attribute GetCustomAttributeX(this MemberInfo memberInfo, Type attributeType = null, bool inherit = true)
     {
-      var typeInfo = memberInfo as Type;
-      if (typeInfo != null) { return GetCustomAttributeX(typeInfo, attributeType, inherit); }
-      var propertyInfo = memberInfo as PropertyInfo;
-      if (propertyInfo != null) { return GetCustomAttributeX(propertyInfo, attributeType, inherit); }
-      var fieldInfo = memberInfo as FieldInfo;
-      if (fieldInfo != null) { return GetCustomAttributeX(fieldInfo, attributeType, inherit); }
+      if (memberInfo is Type typeInfo) { return GetCustomAttributeX(typeInfo, attributeType, inherit); }
+      if (memberInfo is PropertyInfo propertyInfo) { return GetCustomAttributeX(propertyInfo, attributeType, inherit); }
+      if (memberInfo is FieldInfo fieldInfo) { return GetCustomAttributeX(fieldInfo, attributeType, inherit); }
 
       var attrs = GetCustomAttributesX(memberInfo, attributeType, false);
       if (attrs.Any()) return attrs.First();
@@ -250,12 +223,9 @@ namespace System
     public static TAttribute GetCustomAttributeX<TAttribute>(this MemberInfo memberInfo, bool inherit = true)
       where TAttribute : Attribute
     {
-      var typeInfo = memberInfo as Type;
-      if (typeInfo != null) { return GetCustomAttributeX<TAttribute>(typeInfo, inherit); }
-      var propertyInfo = memberInfo as PropertyInfo;
-      if (propertyInfo != null) { return GetCustomAttributeX<TAttribute>(propertyInfo, inherit); }
-      var fieldInfo = memberInfo as FieldInfo;
-      if (fieldInfo != null) { return GetCustomAttributeX<TAttribute>(fieldInfo, inherit); }
+      if (memberInfo is Type typeInfo) { return GetCustomAttributeX<TAttribute>(typeInfo, inherit); }
+      if (memberInfo is PropertyInfo propertyInfo) { return GetCustomAttributeX<TAttribute>(propertyInfo, inherit); }
+      if (memberInfo is FieldInfo fieldInfo) { return GetCustomAttributeX<TAttribute>(fieldInfo, inherit); }
 
       var attr = GetCustomAttributeX(memberInfo, typeof(TAttribute), inherit);
       return attr as TAttribute;
@@ -469,7 +439,7 @@ namespace System
       return cache.GetItem(attributeType, type, inherit, (at, t, inh) =>
       {
         var attrs = Attribute.GetCustomAttributes(t, at, inh);
-        return attrs != null ? attrs : EmptyArray<Attribute>.Instance;
+        return attrs ?? EmptyArray<Attribute>.Instance;
       });
     }
 
@@ -749,7 +719,7 @@ namespace System
       return cache.GetItem(attributeType, propertyInfo, inherit, (at, pi, inh) =>
       {
         var attrs = Attribute.GetCustomAttributes(pi, at, inh);
-        return attrs != null ? attrs : EmptyArray<Attribute>.Instance;
+        return attrs ?? EmptyArray<Attribute>.Instance;
       });
     }
 
@@ -834,10 +804,14 @@ namespace System
 
     #region * UniqueKey *
 
+    private static readonly CachedReadConcurrentDictionary<PropertyInfo, string> s_propertyUniqueKeyCache =
+        new CachedReadConcurrentDictionary<PropertyInfo, string>(DictionaryCacheConstants.SIZE_MEDIUM);
+    private static Func<PropertyInfo, string> s_propertyUniqueKeyFunc = UniqueKeyInternal;
     [MethodImpl(InlineMethod.Value)]
-    private static string UniqueKey(PropertyInfo pi)
+    private static string UniqueKey(PropertyInfo pi) => s_propertyUniqueKeyCache.GetOrAdd(pi, s_propertyUniqueKeyFunc);
+    private static string UniqueKeyInternal(PropertyInfo pi)
     {
-      if (pi.DeclaringType == null) throw new ArgumentException($"Property '{pi.Name}' has no DeclaringType");
+      if (null == pi.DeclaringType) { throw new ArgumentException($"Property '{pi.Name}' has no DeclaringType"); }
 
       //return $"{pi.DeclaringType.Namespace}.{pi.DeclaringType.Name}.{pi.Name}";
       return $"{TypeUtils.GetTypeIdentifier(pi.DeclaringType)}.{pi.Name}";
@@ -1042,7 +1016,7 @@ namespace System
       return cache.GetItem(attributeType, fieldInfo, inherit, (at, fi, inh) =>
       {
         var attrs = Attribute.GetCustomAttributes(fi, at, inh);
-        return attrs != null ? attrs : EmptyArray<Attribute>.Instance;
+        return attrs ?? EmptyArray<Attribute>.Instance;
       });
     }
 
@@ -1127,8 +1101,12 @@ namespace System
 
     #region * UniqueKey *
 
+    private static readonly CachedReadConcurrentDictionary<FieldInfo, string> s_fieldUniqueKeyCache =
+        new CachedReadConcurrentDictionary<FieldInfo, string>(DictionaryCacheConstants.SIZE_MEDIUM);
+    private static Func<FieldInfo, string> s_fieldUniqueKeyFunc = UniqueKeyInternal;
     [MethodImpl(InlineMethod.Value)]
-    private static string UniqueKey(FieldInfo fi)
+    private static string UniqueKey(FieldInfo fi) => s_fieldUniqueKeyCache.GetOrAdd(fi, s_fieldUniqueKeyFunc);
+    private static string UniqueKeyInternal(FieldInfo fi)
     {
       if (fi.DeclaringType == null) throw new ArgumentException($"Property '{fi.Name}' has no DeclaringType");
 
@@ -1176,7 +1154,7 @@ namespace System
       return cache.GetItem(attributeType, parameterInfo, inherit, (at, pi, inh) =>
       {
         var attrs = Attribute.GetCustomAttributes(pi, at, inh);
-        return attrs != null ? attrs : EmptyArray<Attribute>.Instance;
+        return attrs ?? EmptyArray<Attribute>.Instance;
       });
     }
 
@@ -1249,7 +1227,7 @@ namespace System
       return asmCache.GetItem(key, assembly, attributeType, inherit, (k, m, at, inh) =>
       {
         var atts = Attribute.GetCustomAttributes(m, at, inh);
-        return atts == null ? EmptyArray<Attribute>.Instance : atts;
+        return atts ?? EmptyArray<Attribute>.Instance;
       });
     }
 

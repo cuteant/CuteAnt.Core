@@ -78,20 +78,20 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-    #region - GetMemberEx -
+    #region - LookupMember -
 
     /// <summary>获取成员。搜索私有、静态、基类，优先返回大小写精确匹配成员</summary>
     /// <param name="type">类型</param>
     /// <param name="name">名称</param>
     /// <returns></returns>
-    public static MemberInfo GetMemberEx(this Type type, String name)
+    public static MemberInfo LookupMember(this Type type, String name)
     {
       if (name.IsNullOrWhiteSpace()) { return null; }
 
-      var property = type.GetTypeProperty(name);
+      var property = type.LookupTypeProperty(name);
       if (property != null) { return property; }
 
-      var field = type.GetTypeField(name);
+      var field = type.LookupTypeField(name);
       if (field != null) { return field; }
 
       // 通过反射获取

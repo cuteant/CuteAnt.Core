@@ -26,7 +26,7 @@ namespace CuteAnt.Reflection
       Action<MethodInfo, ILGenerator> generator, Type returnType, params Type[] paramTypes)
       where TDelegate : class
     {
-      var declaringType = method.GetDeclaringType();
+      var declaringType = method.DeclaringType;
       var dynMethod= !declaringType.IsInterface
           ? new DynamicMethod(dynMethodName,
                 MethodAttributes.Static | MethodAttributes.Public,

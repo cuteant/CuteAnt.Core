@@ -225,7 +225,7 @@ namespace CuteAnt.Reflection
       if (name.IsNullOrWhiteSpace()) { return null; }
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeUtils._.Object)
+      while (type != null && type != TypeConstants.ObjectType)
       {
         var fields = s_instanceDeclaredFieldsCache.GetItem(type, s_getInstanceDeclaredFieldsFunc);
         if (fields.TryGetValue(name, out FieldInfo field)) { return field; };
