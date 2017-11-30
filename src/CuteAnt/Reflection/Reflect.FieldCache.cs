@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -6,24 +7,6 @@ using CuteAnt.Collections;
 
 namespace CuteAnt.Reflection
 {
-  #region -- enum IgnorePropertiesTokenType --
-
-  /// <summary>IgnorePropertiesTokenType</summary>
-  [Flags]
-  public enum IgnorePropertiesTokenType
-  {
-    /// <summary>None</summary>
-    None = 0x00000000,
-
-    /// <summary>Ignore indexed properties</summary>
-    IgnoreIndexedProperties = 0x00000001,
-
-    /// <summary>Ignore non serialized properties</summary>
-    IgnoreNonSerializedProperties = 0x00000002
-  }
-
-  #endregion
-
   partial class ReflectUtils
   {
     #region ** enum ReflectMembersTokenType **
@@ -92,8 +75,8 @@ namespace CuteAnt.Reflection
 
     #region * Fields Cache *
 
-    private static readonly DictionaryCache<Type, DictionaryCache<ReflectMembersTokenType, FieldInfo[]>> s_fieldsCache =
-        new DictionaryCache<Type, DictionaryCache<ReflectMembersTokenType, FieldInfo[]>>();
+    private static readonly ConcurrentDictionary<Type, DictionaryCache<ReflectMembersTokenType, FieldInfo[]>> s_fieldsCache =
+        new ConcurrentDictionary<Type, DictionaryCache<ReflectMembersTokenType, FieldInfo[]>>();
 
     #endregion
 
@@ -159,7 +142,7 @@ namespace CuteAnt.Reflection
       if (type == null) { return EmptyArray<FieldInfo>.Instance; }
 
       // 二级字典缓存
-      var cache = s_fieldsCache.GetItem(type, k => new DictionaryCache<ReflectMembersTokenType, FieldInfo[]>());
+      var cache = s_fieldsCache.GetOrAdd(type, k => new DictionaryCache<ReflectMembersTokenType, FieldInfo[]>());
       return cache.GetItem(reflectFieldsToken, type, s_getTypeFieldsFunc);
     }
 

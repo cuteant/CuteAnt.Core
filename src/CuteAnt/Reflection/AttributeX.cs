@@ -839,7 +839,8 @@ namespace System
     {
       if (pi.DeclaringType == null) throw new ArgumentException($"Property '{pi.Name}' has no DeclaringType");
 
-      return $"{pi.DeclaringType.Namespace}.{pi.DeclaringType.Name}.{pi.Name}";
+      //return $"{pi.DeclaringType.Namespace}.{pi.DeclaringType.Name}.{pi.Name}";
+      return $"{TypeUtils.GetTypeIdentifier(pi.DeclaringType)}.{pi.Name}";
     }
 
     #endregion
@@ -1131,7 +1132,8 @@ namespace System
     {
       if (fi.DeclaringType == null) throw new ArgumentException($"Property '{fi.Name}' has no DeclaringType");
 
-      return $"{fi.DeclaringType.Namespace}.{fi.DeclaringType.Name}.{fi.Name}";
+      //return $"{fi.DeclaringType.Namespace}.{fi.DeclaringType.Name}.{fi.Name}";
+      return $"{TypeUtils.GetTypeIdentifier(fi.DeclaringType)}.{fi.Name}";
     }
 
     #endregion

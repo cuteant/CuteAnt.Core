@@ -226,6 +226,8 @@ namespace CuteAnt.Reflection.Tests
       var pi = typeof(MyUser).GetTypeProperty("PublicProperty");
       Assert.NotNull(pi);
       pi = typeof(MyUser).GetTypeProperty("PublicProperty6");
+      Assert.Equal(typeof(MyUser), pi.DeclaringType);
+      Assert.Equal(typeof(MyUser), pi.ReflectedType);
       Assert.NotNull(pi);
       pi = typeof(MyUser).GetTypeProperty("Good");
       Assert.NotNull(pi);

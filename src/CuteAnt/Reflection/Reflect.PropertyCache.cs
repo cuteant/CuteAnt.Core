@@ -9,6 +9,24 @@ using CuteAnt.Collections;
 
 namespace CuteAnt.Reflection
 {
+  #region -- enum IgnorePropertiesTokenType --
+
+  /// <summary>IgnorePropertiesTokenType</summary>
+  [Flags]
+  public enum IgnorePropertiesTokenType
+  {
+    /// <summary>None</summary>
+    None = 0x00000000,
+
+    /// <summary>Ignore indexed properties</summary>
+    IgnoreIndexedProperties = 0x00000001,
+
+    /// <summary>Ignore non serialized properties</summary>
+    IgnoreNonSerializedProperties = 0x00000002
+  }
+
+  #endregion
+
   partial class ReflectUtils
   {
     /// <summary>返回表示当前类型声明的公共属性的对象</summary>
