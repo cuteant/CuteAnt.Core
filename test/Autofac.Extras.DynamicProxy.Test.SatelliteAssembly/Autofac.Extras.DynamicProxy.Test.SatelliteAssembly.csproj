@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net471;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net451;netstandard2.0</TargetFrameworks>
     <AssemblyName>Autofac.Extras.DynamicProxy.Test.SatelliteAssembly</AssemblyName>
     <RootNamespace>Autofac.Extras.DynamicProxy.Test.SatelliteAssembly</RootNamespace>
     <CodeAnalysisRuleSet>../../build/Analyzers.ruleset</CodeAnalysisRuleSet>

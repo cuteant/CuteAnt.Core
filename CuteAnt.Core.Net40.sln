@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1F97D5A4-285F-4962-8F8C-BCEF8278143B}"
 EndProject
@@ -45,16 +45,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.Core", "src\CuteAnt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.Tests.Net40", "test\CuteAnt.Tests.Net40\CuteAnt.Tests.Net40.csproj", "{B5571554-EB26-42F3-9AEA-A996E0C5F07C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.AsyncEx.Tests.Net40", "test\CuteAnt.AsyncEx.Tests.Net40\CuteAnt.AsyncEx.Tests.Net40.csproj", "{249CC63B-E3F7-4C40-8C89-3E507004FD8E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastExpressionCompiler.Net40", "src\FastExpressionCompiler.Net40\FastExpressionCompiler.Net40.csproj", "{46F38388-3172-4E45-99E3-BC1A7DA09EE4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastExpressionCompiler.UnitTests.Net40", "test\FastExpressionCompiler.UnitTests.Net40\FastExpressionCompiler.UnitTests.Net40.csproj", "{153AD949-D41B-4570-B5D4-3856BE12C472}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.AsyncEx", "src\CuteAnt.AsyncEx\CuteAnt.AsyncEx.csproj", "{3C87BFF6-2F11-4C86-B9AF-2EE47E8B0CA0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.AsyncEx.Tests.Net40", "test\CuteAnt.AsyncEx.Tests.Net40\CuteAnt.AsyncEx.Tests.Net40.csproj", "{7597B8E3-A0A8-4ACA-8B0A-1FE3D0072BF0}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Nito.AsyncEx.Tasks.Sources", "..\CuteAnt.Extensions.Common\src\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.shproj", "{90BCC560-AA2B-4146-858A-9E524B696F75}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\CuteAnt.Extensions.Common\src\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.projitems*{90bcc560-aa2b-4146-858a-9e524b696f75}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{c7f8dbe6-77b7-494d-af00-018f7579548c}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,10 +93,6 @@ Global
 		{B5571554-EB26-42F3-9AEA-A996E0C5F07C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5571554-EB26-42F3-9AEA-A996E0C5F07C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5571554-EB26-42F3-9AEA-A996E0C5F07C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{249CC63B-E3F7-4C40-8C89-3E507004FD8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{249CC63B-E3F7-4C40-8C89-3E507004FD8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{249CC63B-E3F7-4C40-8C89-3E507004FD8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{249CC63B-E3F7-4C40-8C89-3E507004FD8E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{46F38388-3172-4E45-99E3-BC1A7DA09EE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{46F38388-3172-4E45-99E3-BC1A7DA09EE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46F38388-3172-4E45-99E3-BC1A7DA09EE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -106,6 +105,10 @@ Global
 		{3C87BFF6-2F11-4C86-B9AF-2EE47E8B0CA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C87BFF6-2F11-4C86-B9AF-2EE47E8B0CA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C87BFF6-2F11-4C86-B9AF-2EE47E8B0CA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7597B8E3-A0A8-4ACA-8B0A-1FE3D0072BF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7597B8E3-A0A8-4ACA-8B0A-1FE3D0072BF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7597B8E3-A0A8-4ACA-8B0A-1FE3D0072BF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7597B8E3-A0A8-4ACA-8B0A-1FE3D0072BF0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -126,10 +129,11 @@ Global
 		{DEB6D75B-E452-48E1-8B80-973FFD77CD50} = {E71289A9-31F5-4016-8BEC-A2EF2221D34D}
 		{F1BA8CCD-7E4B-483F-95D1-3C04FDB112EA} = {E71289A9-31F5-4016-8BEC-A2EF2221D34D}
 		{B5571554-EB26-42F3-9AEA-A996E0C5F07C} = {3CB819D1-4AEB-4BA6-A6A0-78D11D9A39EA}
-		{249CC63B-E3F7-4C40-8C89-3E507004FD8E} = {3CB819D1-4AEB-4BA6-A6A0-78D11D9A39EA}
 		{46F38388-3172-4E45-99E3-BC1A7DA09EE4} = {E82A056E-FD11-4803-9AE1-C8AC93CB876E}
 		{153AD949-D41B-4570-B5D4-3856BE12C472} = {1BCCEE0F-E09A-4F45-A21F-18B0AAE46920}
 		{3C87BFF6-2F11-4C86-B9AF-2EE47E8B0CA0} = {E71289A9-31F5-4016-8BEC-A2EF2221D34D}
+		{7597B8E3-A0A8-4ACA-8B0A-1FE3D0072BF0} = {3CB819D1-4AEB-4BA6-A6A0-78D11D9A39EA}
+		{90BCC560-AA2B-4146-858A-9E524B696F75} = {4744CD6C-82C3-4D38-A708-3D301A74397F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {93230366-D5C3-4397-83D3-ED46E43B8121}

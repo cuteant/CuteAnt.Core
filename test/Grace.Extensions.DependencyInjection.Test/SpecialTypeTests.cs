@@ -5,7 +5,7 @@ using Xunit;
 using Microsoft.Extensions.DependencyInjection;
 using CuteAnt;
 using Grace.DependencyInjection;
-using Autofac;
+//using Autofac;
 
 namespace Grace.Extensions.DependencyInjection.Test
 {
@@ -47,20 +47,20 @@ namespace Grace.Extensions.DependencyInjection.Test
       Assert.Null(combguid);
     }
 
-    [Fact]
-    public void AutofacTest()
-    {
-      var services = new ContainerBuilder().Build();
-      var aa = services.ResolveOptional<AA>(); ;
-      Assert.Null(aa);
-      services.TryResolve(typeof(TimeSpan), out var ts);
-      Assert.Null(ts);
-      services.TryResolve(typeof(DateTimeOffset), out var dtoffset);
-      Assert.Null(dtoffset);
-      services.TryResolve(typeof(Guid), out var guid);
-      Assert.Null(guid);
-      services.TryResolve(typeof(CombGuid), out var combguid);
-      Assert.Null(combguid);
-    }
+    //[Fact]
+    //public void AutofacTest()
+    //{
+    //  var services = new ContainerBuilder().Build();
+    //  var aa = services.ResolveOptional<AA>(); ;
+    //  Assert.Null(aa);
+    //  services.TryResolve(typeof(TimeSpan), out var ts);
+    //  Assert.Null(ts);
+    //  services.TryResolve(typeof(DateTimeOffset), out var dtoffset);
+    //  Assert.Null(dtoffset);
+    //  services.TryResolve(typeof(Guid), out var guid);
+    //  Assert.Null(guid);
+    //  services.TryResolve(typeof(CombGuid), out var combguid);
+    //  Assert.Null(combguid);
+    //}
   }
 }

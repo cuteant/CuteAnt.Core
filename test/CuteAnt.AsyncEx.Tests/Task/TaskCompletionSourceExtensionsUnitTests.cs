@@ -72,7 +72,7 @@ namespace CuteAnt.AsyncEx.Tests
 #if NET_4_5_GREATER
       tcs.TryCompleteFromCompletedTask(Task.FromException(new NotImplementedException()), () => -1);
 #else
-      tcs.TryCompleteFromCompletedTask(TaskConstants.FromError(new NotImplementedException()), () => -1);
+      tcs.TryCompleteFromCompletedTask(AsyncUtils.FromException(new NotImplementedException()), () => -1);
 #endif
       await AsyncAssert.ThrowsAsync<NotImplementedException>(() => tcs.Task);
     }

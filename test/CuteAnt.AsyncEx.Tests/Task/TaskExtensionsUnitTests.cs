@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
-using CuteAnt.AsyncEx;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +25,9 @@ namespace CuteAnt.AsyncEx.Tests
       var task = tcs.Task.WaitAsync(token);
 
       Assert.True(task.IsCanceled);
+#if NET_4_5_GREATER
       Assert.Equal(token, GetCancellationTokenFromTask(task));
+#endif
     }
 
     [Fact]
@@ -41,7 +41,9 @@ namespace CuteAnt.AsyncEx.Tests
       cts.Cancel();
 
       await AsyncAssert.ThrowsAsync<OperationCanceledException>(task);
+#if NET_4_5_GREATER
       Assert.Equal(cts.Token, GetCancellationTokenFromTask(task));
+#endif
     }
 
     [Fact]
@@ -61,7 +63,9 @@ namespace CuteAnt.AsyncEx.Tests
       var task = ((Task)tcs.Task).WaitAsync(token);
 
       Assert.True(task.IsCanceled);
+#if NET_4_5_GREATER
       Assert.Equal(token, GetCancellationTokenFromTask(task));
+#endif
     }
 
     [Fact]
@@ -75,7 +79,9 @@ namespace CuteAnt.AsyncEx.Tests
       cts.Cancel();
 
       await AsyncAssert.ThrowsAsync<OperationCanceledException>(task);
+#if NET_4_5_GREATER
       Assert.Equal(cts.Token, GetCancellationTokenFromTask(task));
+#endif
     }
 
 #if !TEST40
@@ -87,7 +93,9 @@ namespace CuteAnt.AsyncEx.Tests
       var task = TaskShim.WhenAny(new[] { tcs.Task }, token);
 
       Assert.True(task.IsCanceled);
+#if NET_4_5_GREATER
       Assert.Equal(token, GetCancellationTokenFromTask(task));
+#endif
     }
 
     [Fact]
@@ -115,7 +123,9 @@ namespace CuteAnt.AsyncEx.Tests
       cts.Cancel();
 
       await AsyncAssert.ThrowsAsync<OperationCanceledException>(task);
+#if NET_4_5_GREATER
       Assert.Equal(cts.Token, GetCancellationTokenFromTask(task));
+#endif
     }
 
     [Fact]
@@ -126,7 +136,9 @@ namespace CuteAnt.AsyncEx.Tests
       var task = TaskShim.WhenAny(new Task[] { tcs.Task }, token);
 
       Assert.True(task.IsCanceled);
+#if NET_4_5_GREATER
       Assert.Equal(token, GetCancellationTokenFromTask(task));
+#endif
     }
 
     [Fact]
@@ -154,7 +166,9 @@ namespace CuteAnt.AsyncEx.Tests
       cts.Cancel();
 
       await AsyncAssert.ThrowsAsync<OperationCanceledException>(task);
+#if NET_4_5_GREATER
       Assert.Equal(cts.Token, GetCancellationTokenFromTask(task));
+#endif
     }
 #endif
 

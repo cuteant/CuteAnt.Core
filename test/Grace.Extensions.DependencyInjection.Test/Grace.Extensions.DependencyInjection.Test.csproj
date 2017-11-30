@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>Grace.Extensions.DependencyInjection.Test</RootNamespace>
     <AssemblyName>Grace.Extensions.DependencyInjection.Test</AssemblyName>
-    <TargetFrameworks>netcoreapp2.0;net471</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;net452</TargetFrameworks>
     <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">$(NETCoreApp2RuntimeFrameworkVersion)</RuntimeFrameworkVersion>
   </PropertyGroup>
 
@@ -12,12 +12,18 @@
     <PackageReference Include="xunit" Version="$(xUnitPackageVersion)" />
     <PackageReference Include="xunit.analyzers" Version="$(xUnitAnalyzersPackageVersion)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(xUnitRunnerVsPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net471' or '$(TargetFramework)' == 'netcoreapp2.0' ">
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsDependencyInjectionPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="$(MicrosoftExtensionsOptionsPackageVersion)" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <PackageReference Include="NetFx.Extensions.DependencyInjection" Version="$(NetFxExtensionsDependencyInjectionPackageVersion)" />
+    <PackageReference Include="NetFx.Extensions.Options" Version="$(NetFxExtensionsOptionsPackageVersion)" />
+  </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Autofac\Autofac.csproj" />
     <ProjectReference Include="..\..\src\CuteAnt.Core.Abstractions\CuteAnt.Core.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\CuteAnt\CuteAnt.Core.csproj" />
     <ProjectReference Include="..\..\src\Grace.Extensions.DependencyInjection\Grace.Extensions.DependencyInjection.csproj" />

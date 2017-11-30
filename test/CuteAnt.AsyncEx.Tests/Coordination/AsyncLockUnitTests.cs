@@ -221,7 +221,8 @@ namespace CuteAnt.AsyncEx.Tests
             Assert.NotEqual(0, mutex.Id);
         }
 
-        [Fact]
+#if NET_4_5_GREATER
+    [Fact]
         public async Task AsyncLock_SupportsMultipleAsynchronousLocks()
         {
             // This test deadlocks with the old AsyncEx: https://github.com/StephenCleary/AsyncEx/issues/57
@@ -256,5 +257,6 @@ namespace CuteAnt.AsyncEx.Tests
                 task1.Wait();
             });
         }
-    }
+#endif
+  }
 }
