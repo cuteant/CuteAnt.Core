@@ -32,10 +32,10 @@ namespace FastExpressionCompiler
     /// <summary>List of arguments</summary>
     public readonly object[] Arguments;
 
-    /// <summary>Convert to expressions</summary>
+    /// <summary>Converts arguments to expressions</summary>
     protected Expression[] ArgumentsToExpressions() => Arguments.Project(Tools.ToExpression);
 
     /// <summary>Constructor</summary>
-    protected ArgumentsExpressionInfo(object[] arguments) { Arguments = arguments; }
+    protected ArgumentsExpressionInfo(object[] arguments) => Arguments = arguments ?? Tools.Empty<object>();
   }
 }

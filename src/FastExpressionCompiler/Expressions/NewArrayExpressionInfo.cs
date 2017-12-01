@@ -37,12 +37,16 @@ namespace FastExpressionCompiler
     public override Type Type { get; }
 
     /// <inheritdoc />
-    public override Expression ToExpression() => Expression.NewArrayInit(Type, ArgumentsToExpressions());
+    public override Expression ToExpression() =>
+        Expression.NewArrayInit(_elementType, ArgumentsToExpressions());
 
     /// <summary>Array type and initializer</summary>
-    public NewArrayExpressionInfo(Type type, object[] initializers) : base(initializers)
+    public NewArrayExpressionInfo(Type elementType, object[] elements) : base(elements)
     {
-      Type = type;
+      Type = elementType.MakeArrayType();
+      _elementType = elementType;
     }
+
+    private readonly Type _elementType;
   }
 }

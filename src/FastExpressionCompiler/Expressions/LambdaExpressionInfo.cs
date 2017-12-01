@@ -50,12 +50,14 @@ namespace FastExpressionCompiler
         => Expression.Lambda(Body.ToExpression(), Parameters.Project(p => (ParameterExpression)p.ToExpression()));
 
     /// <summary>Constructor</summary>
-    public LambdaExpressionInfo(object body, object[] parameters) 
+    public LambdaExpressionInfo(Type delegateType, object body, object[] parameters)
       : base(parameters)
     {
       Body = body;
       var bodyType = body.GetResultType();
-      Type = Tools.GetFuncOrActionType(Tools.GetParamExprTypes(parameters), bodyType);
+      Type = delegateType != null && delegateType != typeof(Delegate)
+          ? delegateType
+          : Tools.GetFuncOrActionType(Tools.GetParamExprTypes(parameters), bodyType);
     }
   }
 }

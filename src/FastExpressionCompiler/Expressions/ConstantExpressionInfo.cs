@@ -46,7 +46,7 @@ namespace FastExpressionCompiler
     public ConstantExpressionInfo(object value, Type type = null)
     {
       Value = value;
-      Type = type ?? value?.GetType() ?? typeof(object);
+      Type = type ?? Value?.GetType() ?? typeof(object);
     }
   }
 }

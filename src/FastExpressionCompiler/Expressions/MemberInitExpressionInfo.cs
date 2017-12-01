@@ -46,8 +46,8 @@ namespace FastExpressionCompiler
     public readonly MemberAssignmentInfo[] Bindings;
 
     /// <inheritdoc />
-    public override Expression ToExpression() =>
-        Expression.MemberInit(NewExpressionInfo.ToNewExpression(), Bindings.Project(b => b.ToMemberAssignment()));
+    public override Expression ToExpression()
+        => Expression.MemberInit(NewExpressionInfo.ToNewExpression(), Bindings.Project(b => b.ToMemberAssignment()));
 
     /// <summary>Constructs from the new expression and member initialization list.</summary>
     public MemberInitExpressionInfo(NewExpressionInfo newExpressionInfo, MemberAssignmentInfo[] bindings)
@@ -57,7 +57,7 @@ namespace FastExpressionCompiler
     public MemberInitExpressionInfo(ExpressionInfo expressionInfo, MemberAssignmentInfo[] bindings)
     {
       ExpressionInfo = expressionInfo;
-      Bindings = bindings;
+      Bindings = bindings ?? Tools.Empty<MemberAssignmentInfo>();
     }
   }
 }

@@ -53,7 +53,7 @@ namespace FastExpressionCompiler
     public static ConstructorInfo GetConstructorByArgs(this Type type, params Type[] args) => type.GetTypeInfo().DeclaredConstructors.GetFirst(c => c.GetParameters().Project(p => p.ParameterType).SequenceEqual(args));
 #endif
 
-    public static Expression ToExpression(this object exprObj) => exprObj as Expression ?? ((ExpressionInfo)exprObj).ToExpression();
+    public static Expression ToExpression(this object exprObj) => exprObj == null ? null : exprObj as Expression ?? ((ExpressionInfo)exprObj).ToExpression();
 
     public static ExpressionType GetNodeType(this object exprObj) => (exprObj as Expression)?.NodeType ?? ((ExpressionInfo)exprObj).NodeType;
 
@@ -84,32 +84,29 @@ namespace FastExpressionCompiler
 
     public static Type[] GetParamExprTypes(IList<ParameterExpression> paramExprs)
     {
-      var paramsCount = paramExprs.Count;
-      if (paramsCount == 0) { return Empty<Type>(); }
+      if (paramExprs == null || paramExprs.Count == 0) { return Empty<Type>(); }
 
-      if (paramsCount == 1) { return new[] { paramExprs[0].Type }; }
+      if (paramExprs.Count == 1) { return new[] { paramExprs[0].GetResultType() }; }
 
-      var paramTypes = new Type[paramsCount];
+      var paramTypes = new Type[paramExprs.Count];
       for (var i = 0; i < paramTypes.Length; i++)
       {
-        paramTypes[i] = paramExprs[i].Type;
+        paramTypes[i] = paramExprs[i].GetResultType();
       }
       return paramTypes;
     }
 
     public static Type[] GetParamExprTypes(IList<object> paramExprs)
     {
-      var paramsCount = paramExprs.Count;
-      if (paramsCount == 0) { return Empty<Type>(); }
+      if (paramExprs == null || paramExprs.Count == 0) { return Empty<Type>(); }
 
-      if (paramsCount == 1) { return new[] { paramExprs[0].GetResultType() }; }
+      if (paramExprs.Count == 1) { return new[] { paramExprs[0].GetResultType() }; }
 
-      var paramTypes = new Type[paramsCount];
+      var paramTypes = new Type[paramExprs.Count];
       for (var i = 0; i < paramTypes.Length; i++)
       {
         paramTypes[i] = paramExprs[i].GetResultType();
       }
-
       return paramTypes;
     }
 

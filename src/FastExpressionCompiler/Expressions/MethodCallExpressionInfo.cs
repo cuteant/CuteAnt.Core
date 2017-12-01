@@ -45,7 +45,7 @@ namespace FastExpressionCompiler
 
     /// <inheritdoc />
     public override Expression ToExpression() =>
-        Expression.Call(Object.ToExpression(), Method, ArgumentsToExpressions());
+        Expression.Call(Object?.ToExpression(), Method, ArgumentsToExpressions());
 
     /// <summary>Construct from method info and argument expressions</summary>
     public MethodCallExpressionInfo(ExpressionInfo @object, MethodInfo method, params object[] arguments)

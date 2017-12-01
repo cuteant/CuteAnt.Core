@@ -101,15 +101,20 @@ namespace FastExpressionCompiler
 
     /// <summary>Analog of Expression.Lambda</summary>
     public static LambdaExpressionInfo Lambda(ExpressionInfo body) =>
-        new LambdaExpressionInfo(body, Tools.Empty<object>());
+        new LambdaExpressionInfo(null, body, Tools.Empty<object>());
 
     /// <summary>Analog of Expression.Lambda</summary>
-    public static LambdaExpressionInfo Lambda(ExpressionInfo body, params ParameterExpression[] parameters) =>
-        new LambdaExpressionInfo(body, parameters);
+    public static LambdaExpressionInfo Lambda(ExpressionInfo body,
+        params ParameterExpression[] parameters) =>
+        new LambdaExpressionInfo(null, body, parameters);
 
     /// <summary>Analog of Expression.Lambda</summary>
     public static LambdaExpressionInfo Lambda(object body, params object[] parameters) =>
-        new LambdaExpressionInfo(body, parameters);
+        new LambdaExpressionInfo(null, body, parameters);
+
+    /// <summary>Analog of Expression.Lambda with lambda type specified</summary>
+    public static LambdaExpressionInfo Lambda(Type delegateType, object body, params object[] parameters) =>
+        new LambdaExpressionInfo(delegateType, body, parameters);
 
     /// <summary>Analog of Expression.Convert</summary>
     public static UnaryExpressionInfo Convert(ExpressionInfo operand, Type targetType) =>
