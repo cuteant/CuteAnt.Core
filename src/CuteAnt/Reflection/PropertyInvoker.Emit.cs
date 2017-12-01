@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection;
-using System.Linq.Expressions;
+﻿using System.Reflection;
 using System.Reflection.Emit;
 
 namespace CuteAnt.Reflection
