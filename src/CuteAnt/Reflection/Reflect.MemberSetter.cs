@@ -155,7 +155,7 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-    #region -- SetValue --
+    #region -- SetMemberValue --
 
     /// <summary>设置目标对象指定名称的属性/字段值，若不存在返回false</summary>
     /// <param name="target">目标对象</param>
@@ -163,12 +163,12 @@ namespace CuteAnt.Reflection
     /// <param name="value">数值</param>
     /// <remarks>反射调用是否成功</remarks>
     [DebuggerHidden]
-    public static void SetMemberInfoValue(this object target, string name, object value)
+    public static void SetMemberValue(this object target, string name, object value)
     {
-      if (!TrySetMemberInfoValue(target, name, value))
+      if (!TrySetMemberValue(target, name, value))
       {
         var type = GetTypeInternal(ref target);
-        throw new ArgumentException("类[" + type.FullName + "]中不存在[" + name + "]属性或字段。");
+        throw new ArgumentException($"类 [{type.FullName}] 中不存在 [{name}] 属性或字段。");
       }
     }
 
@@ -178,16 +178,16 @@ namespace CuteAnt.Reflection
     /// <param name="value">数值</param>
     /// <remarks>反射调用是否成功</remarks>
     [DebuggerHidden]
-    public static bool TrySetMemberInfoValue(this object target, string name, object value)
+    public static bool TrySetMemberValue(this object target, string name, object value)
     {
       if (name.IsNullOrWhiteSpace()) { return false; }
 
       var type = GetTypeInternal(ref target);
       var pi = type.LookupTypeProperty(name);
-      if (pi != null) { SetPropertyInfoValue(target, pi, value); return true; }
+      if (pi != null) { SetPropertyValue(target, pi, value); return true; }
 
       var fi = type.LookupTypeField(name);
-      if (fi != null) { SetFieldInfoValue(target, fi, value); return true; }
+      if (fi != null) { SetFieldValue(target, fi, value); return true; }
 
       return false;
     }
@@ -197,10 +197,10 @@ namespace CuteAnt.Reflection
     /// <param name="member">成员</param>
     /// <param name="value">数值</param>
     [DebuggerHidden]
-    public static void SetMemberInfoValue(this object target, MemberInfo member, object value)
+    public static void SetMemberValue(this object target, MemberInfo member, object value)
     {
-      if (member is PropertyInfo property) { SetPropertyInfoValue(target, property, value); return; }
-      if (member is FieldInfo field) { SetFieldInfoValue(target, field, value); return; }
+      if (member is PropertyInfo property) { SetPropertyValue(target, property, value); return; }
+      if (member is FieldInfo field) { SetFieldValue(target, field, value); return; }
 
       throw new ArgumentOutOfRangeException(nameof(member));
     }
@@ -210,10 +210,10 @@ namespace CuteAnt.Reflection
     /// <param name="member">成员</param>
     /// <param name="value">数值</param>
     [DebuggerHidden]
-    public static bool TrySetMemberInfoValue(this object target, MemberInfo member, object value)
+    public static bool TrySetMemberValue(this object target, MemberInfo member, object value)
     {
-      if (member is PropertyInfo property) { SetPropertyInfoValue(target, property, value); return true; }
-      if (member is FieldInfo field) { SetFieldInfoValue(target, field, value); return true; }
+      if (member is PropertyInfo property) { return TrySetPropertyValue(target, property, value); }
+      if (member is FieldInfo field) { return TrySetFieldValue(target, field, value); }
 
       return false;
     }
@@ -222,19 +222,16 @@ namespace CuteAnt.Reflection
     /// <param name="target">目标对象</param>
     /// <param name="property">属性</param>
     /// <param name="value">数值</param>
-    public static void SetPropertyInfoValue(this object target, PropertyInfo property, object value)
-    {
-      GetValueSetter(property).Invoke(target, value);
-    }
+    public static void SetPropertyValue(this object target, PropertyInfo property, object value) => GetValueSetter(property).Invoke(target, value);
 
     /// <summary>设置目标对象的属性值</summary>
     /// <param name="target">目标对象</param>
     /// <param name="property">属性</param>
     /// <param name="value">数值</param>
-    public static bool TrySetPropertyInfoValue(this object target, PropertyInfo property, object value)
+    public static bool TrySetPropertyValue(this object target, PropertyInfo property, object value)
     {
       var setter = GetValueSetter(property);
-      if (null == setter || setter.IsEmpty()) { return false; }
+      if (setter.IsNullOrEmpty()) { return false; }
       setter(target, value);
       return true;
     }
@@ -243,9 +240,18 @@ namespace CuteAnt.Reflection
     /// <param name="target">目标对象</param>
     /// <param name="field">字段</param>
     /// <param name="value">数值</param>
-    public static void SetFieldInfoValue(this object target, FieldInfo field, object value)
+    public static void SetFieldValue(this object target, FieldInfo field, object value) => GetValueSetter(field).Invoke(target, value);
+
+    /// <summary>设置目标对象的字段值</summary>
+    /// <param name="target">目标对象</param>
+    /// <param name="field">字段</param>
+    /// <param name="value">数值</param>
+    public static bool TrySetFieldValue(this object target, FieldInfo field, object value)
     {
-      GetValueSetter(field).Invoke(target, value);
+      var setter = GetValueSetter(field);
+      if (setter.IsNullOrEmpty()) { return false; }
+      setter(target, value);
+      return true;
     }
 
     #endregion

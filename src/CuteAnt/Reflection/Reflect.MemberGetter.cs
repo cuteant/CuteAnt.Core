@@ -142,7 +142,7 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-    #region -- GetValue --
+    #region -- GetMemberValue --
 
     /// <summary>获取目标对象指定名称的属性/字段值</summary>
     /// <param name="target">目标对象</param>
@@ -150,17 +150,17 @@ namespace CuteAnt.Reflection
     /// <param name="throwOnError">出错时是否抛出异常</param>
     /// <returns></returns>
     [DebuggerHidden]
-    public static object GetMemberInfoValue(this object target, string name, bool throwOnError = true)
+    public static object GetMemberValue(this object target, string name, bool throwOnError = true)
     {
       if (target == null) { throw new ArgumentNullException(nameof(target)); }
       ValidationHelper.ArgumentNullOrEmpty(name, nameof(name));
 
-      if (TryGetMemberInfoValue(target, name, out object value)) { return value; }
+      if (TryGetMemberValue(target, name, out object value)) { return value; }
 
       if (!throwOnError) { return null; }
 
       var type = GetTypeInternal(ref target);
-      throw new ArgumentException("类[" + type.FullName + "]中不存在[" + name + "]属性或字段。");
+      throw new ArgumentException($"类 [{type.FullName}] 中不存在 [{name}] 属性或字段。");
     }
 
     /// <summary>获取目标对象指定名称的属性/字段值</summary>
@@ -168,7 +168,7 @@ namespace CuteAnt.Reflection
     /// <param name="name">名称</param>
     /// <param name="value">数值</param>
     /// <returns>是否成功获取数值</returns>
-    public static bool TryGetMemberInfoValue(this object target, string name, out object value)
+    public static bool TryGetMemberValue(this object target, string name, out object value)
     {
       if (target == null) { throw new ArgumentNullException(nameof(target)); }
 
@@ -180,13 +180,13 @@ namespace CuteAnt.Reflection
       var pi = type.LookupTypeProperty(name);
       if (pi != null)
       {
-        return TryGetPropertyInfoValue(target, pi, out value);
+        return TryGetPropertyValue(target, pi, out value);
       }
 
       var fi = type.LookupTypeField(name);
       if (fi != null)
       {
-        value = GetFieldInfoValue(target, fi);
+        value = GetFieldValue(target, fi);
         return true;
       }
 
@@ -197,10 +197,10 @@ namespace CuteAnt.Reflection
     /// <param name="target">目标对象</param>
     /// <param name="member">成员</param>
     /// <returns></returns>
-    public static object GetMemberInfoValue(this object target, MemberInfo member)
+    public static object GetMemberValue(this object target, MemberInfo member)
     {
-      if (member is PropertyInfo property) { return GetPropertyInfoValue(target, property); }
-      if (member is FieldInfo field) { return GetFieldInfoValue(target, field); }
+      if (member is PropertyInfo property) { return GetPropertyValue(target, property); }
+      if (member is FieldInfo field) { return GetFieldValue(target, field); }
 
       throw new ArgumentOutOfRangeException(nameof(member));
     }
@@ -210,49 +210,42 @@ namespace CuteAnt.Reflection
     /// <param name="member">成员</param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static bool TryGetMemberInfoValue(this object target, MemberInfo member, out object value)
+    public static bool TryGetMemberValue(this object target, MemberInfo member, out object value)
     {
       if (member is PropertyInfo property)
       {
-        return TryGetPropertyInfoValue(target, property, out value);
+        return TryGetPropertyValue(target, property, out value);
       }
       if (member is FieldInfo field)
       {
-        value = GetFieldInfoValue(target, field);
-        return true;
+        return TryGetFieldValue(target, field, out value);
       }
 
-      value = null;
-      return false;
+      value = null; return false;
     }
 
     /// <summary>获取目标对象的属性值</summary>
     /// <param name="target">目标对象</param>
     /// <param name="property">属性</param>
     /// <returns></returns>
-    public static object GetPropertyInfoValue(this object target, PropertyInfo property)
-    {
-      return GetValueGetter(property).Invoke(target);
-    }
+    public static object GetPropertyValue(this object target, PropertyInfo property) => GetValueGetter(property).Invoke(target);
 
     /// <summary>获取目标对象的属性值</summary>
     /// <param name="target">目标对象</param>
     /// <param name="property">属性</param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static bool TryGetPropertyInfoValue(this object target, PropertyInfo property, out object value)
+    public static bool TryGetPropertyValue(this object target, PropertyInfo property, out object value)
     {
       var getter = GetValueGetter(property);
 
-      if (null == getter || getter.IsEmpty())
+      if (getter.IsNullOrEmpty())
       {
-        value = null;
-        return false;
+        value = null; return false;
       }
       else
       {
-        value = getter(target);
-        return true;
+        value = getter(target); return true;
       }
     }
 
@@ -260,10 +253,22 @@ namespace CuteAnt.Reflection
     /// <param name="target">目标对象</param>
     /// <param name="field">字段</param>
     /// <returns></returns>
-    public static object GetFieldInfoValue(this object target, FieldInfo field)
+    public static object GetFieldValue(this object target, FieldInfo field) => GetValueGetter(field).Invoke(target);
+
+    public static bool TryGetFieldValue(this object target, FieldInfo field, out object value)
     {
-      return GetValueGetter(field).Invoke(target);
+      var getter = GetValueGetter(field);
+
+      if (getter.IsNullOrEmpty())
+      {
+        value = null; return false;
+      }
+      else
+      {
+        value = getter(target); return true;
+      }
     }
+
 
     #endregion
   }

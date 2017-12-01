@@ -238,34 +238,34 @@ namespace CuteAnt.Reflection.Tests
       foreach (var item in userFields)
       {
         idx++;
-        user.SetFieldInfoValue(item, idx);
-        Assert.Equal(idx, user.GetFieldInfoValue(item));
-        Assert.Equal(idx, user.GetMemberInfoValue(item.Name));
-        Assert.Equal(idx, user.GetMemberInfoValue(item));
+        user.SetFieldValue(item, idx);
+        Assert.Equal(idx, user.GetFieldValue(item));
+        Assert.Equal(idx, user.GetMemberValue(item.Name));
+        Assert.Equal(idx, user.GetMemberValue(item));
       }
       foreach (var item in myuserFields)
       {
         idx++;
-        myuser.SetFieldInfoValue(item, idx);
-        Assert.Equal(idx, myuser.GetFieldInfoValue(item));
-        Assert.Equal(idx, myuser.GetMemberInfoValue(item.Name));
-        Assert.Equal(idx, myuser.GetMemberInfoValue(item));
+        myuser.SetFieldValue(item, idx);
+        Assert.Equal(idx, myuser.GetFieldValue(item));
+        Assert.Equal(idx, myuser.GetMemberValue(item.Name));
+        Assert.Equal(idx, myuser.GetMemberValue(item));
       }
       foreach (var item in userProperties)
       {
         idx++;
-        user.SetPropertyInfoValue(item, idx);
-        Assert.Equal(idx, user.GetPropertyInfoValue(item));
-        Assert.Equal(idx, user.GetMemberInfoValue(item.Name));
-        Assert.Equal(idx, user.GetMemberInfoValue(item));
+        user.SetPropertyValue(item, idx);
+        Assert.Equal(idx, user.GetPropertyValue(item));
+        Assert.Equal(idx, user.GetMemberValue(item.Name));
+        Assert.Equal(idx, user.GetMemberValue(item));
       }
       foreach (var item in myuserProperties)
       {
         idx++;
-        myuser.SetPropertyInfoValue(item, idx);
-        Assert.Equal(idx, myuser.GetPropertyInfoValue(item));
-        Assert.Equal(idx, myuser.GetMemberInfoValue(item.Name));
-        Assert.Equal(idx, myuser.GetMemberInfoValue(item));
+        myuser.SetPropertyValue(item, idx);
+        Assert.Equal(idx, myuser.GetPropertyValue(item));
+        Assert.Equal(idx, myuser.GetMemberValue(item.Name));
+        Assert.Equal(idx, myuser.GetMemberValue(item));
       }
     }
 
@@ -284,36 +284,36 @@ namespace CuteAnt.Reflection.Tests
       foreach (var item in userFields)
       {
         idx++;
-        user.SetFieldInfoValue(item, idx);
-        Assert.Equal(idx, user.GetFieldInfoValue(item));
-        Assert.Equal(idx, user.GetMemberInfoValue(item.Name));
-        Assert.Equal(idx, user.GetMemberInfoValue(item));
+        user.SetFieldValue(item, idx);
+        Assert.Equal(idx, user.GetFieldValue(item));
+        Assert.Equal(idx, user.GetMemberValue(item.Name));
+        Assert.Equal(idx, user.GetMemberValue(item));
       }
       foreach (var item in myuserFields)
       {
         idx++;
-        myuser.SetFieldInfoValue(item, idx);
-        Assert.Equal(idx, myuser.GetFieldInfoValue(item));
-        Assert.Equal(idx, myuser.GetMemberInfoValue(item.Name));
-        Assert.Equal(idx, myuser.GetMemberInfoValue(item));
+        myuser.SetFieldValue(item, idx);
+        Assert.Equal(idx, myuser.GetFieldValue(item));
+        Assert.Equal(idx, myuser.GetMemberValue(item.Name));
+        Assert.Equal(idx, myuser.GetMemberValue(item));
       }
       foreach (var item in userProperties)
       {
         idx++;
         if (!item.CanWrite) { continue; }
-        user.SetPropertyInfoValue(item, idx);
-        if (item.CanRead) Assert.Equal(idx, user.GetPropertyInfoValue(item));
-        Assert.Equal(idx, user.GetMemberInfoValue(item.Name));
-        Assert.Equal(idx, user.GetMemberInfoValue(item));
+        user.SetPropertyValue(item, idx);
+        if (item.CanRead) Assert.Equal(idx, user.GetPropertyValue(item));
+        Assert.Equal(idx, user.GetMemberValue(item.Name));
+        Assert.Equal(idx, user.GetMemberValue(item));
       }
       foreach (var item in myuserProperties)
       {
         idx++;
         if (!item.CanWrite) { continue; }
-        myuser.SetPropertyInfoValue(item, idx);
-        if (item.CanRead) Assert.Equal(idx, myuser.GetPropertyInfoValue(item));
-        Assert.Equal(idx, myuser.GetMemberInfoValue(item.Name));
-        if (item.CanRead) Assert.Equal(idx, myuser.GetMemberInfoValue(item));
+        myuser.SetPropertyValue(item, idx);
+        if (item.CanRead) Assert.Equal(idx, myuser.GetPropertyValue(item));
+        Assert.Equal(idx, myuser.GetMemberValue(item.Name));
+        if (item.CanRead) Assert.Equal(idx, myuser.GetMemberValue(item));
       }
     }
   }
