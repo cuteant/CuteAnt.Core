@@ -30,6 +30,8 @@ namespace CuteAnt.Reflection.Tests
     {
       var obj = new Elephant();
       var miCat = TypeUtils.Method((IElephant e) => e.Roar(default(int)));
+      Assert.Equal(typeof(IElephantBase), miCat.DeclaringType);
+      Assert.Equal(typeof(IElephantBase), miCat.ReflectedType);
       var mcCat = miCat.MakeDelegateForCall<IElephant, object>();
       mcCat(obj, new object[] { 0 });
       Assert.Equal(10, obj.MethodInvoked);

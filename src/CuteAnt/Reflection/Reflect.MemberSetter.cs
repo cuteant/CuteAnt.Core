@@ -5,7 +5,20 @@ using CuteAnt.Collections;
 
 namespace CuteAnt.Reflection
 {
-  #region -- MemberGetter / MemberSetter --
+  #region -- MemberSetter --
+
+  ///// <summary>SetMemberAction</summary>
+  ///// <typeparam name="TTarget"></typeparam>
+  ///// <typeparam name="TValue"></typeparam>
+  ///// <param name="target"></param>
+  ///// <param name="value"></param>
+  //public delegate void MemberSetter<TTarget, TValue>(TTarget target, TValue value);
+  ///// <summary>SetMemberRefAction</summary>
+  ///// <typeparam name="TTarget"></typeparam>
+  ///// <typeparam name="TValue"></typeparam>
+  ///// <param name="target"></param>
+  ///// <param name="value"></param>
+  //public delegate void MemberRefSetter<TTarget, TValue>(ref TTarget target, TValue value);
 
   /// <summary>SetMemberAction</summary>
   /// <param name="instance"></param>

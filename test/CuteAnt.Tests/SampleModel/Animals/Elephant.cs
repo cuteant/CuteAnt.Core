@@ -23,10 +23,13 @@ using CuteAnt.SampleModel.Animals.Enumerations;
 
 namespace CuteAnt.SampleModel.Animals
 {
-  internal interface IElephant
+  internal interface IElephantBase
   {
     void Roar(int count);
     void Roar(int count, int volume);
+  }
+  internal interface IElephant : IElephantBase
+  {
     void Accept(char c);
     void AcceptParams(params string[] args);
   }

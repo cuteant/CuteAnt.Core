@@ -27,7 +27,7 @@ namespace CuteAnt.Reflection
       where TDelegate : class
     {
       var declaringType = method.DeclaringType;
-      var dynMethod= !declaringType.IsInterface
+      var dynMethod = !declaringType.IsInterface
           ? new DynamicMethod(dynMethodName,
                 MethodAttributes.Static | MethodAttributes.Public,
                 CallingConventions.Standard,
