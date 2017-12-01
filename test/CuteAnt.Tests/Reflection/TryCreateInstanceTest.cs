@@ -185,18 +185,49 @@ namespace CuteAnt.Reflection.Tests
         Assert.Null(animal.BirthDay);
     }
 
-    //[Fact]
-    //[ExpectedException(typeof(ArgumentException))]
-    //public void TestTryCreateInstanceWithInvalidArgumentTypeShouldThrow()
-    //{
-    //  typeof(Lion).TryCreateInstance(new { Id = "Incompatible Argument Type" });
-    //}
+    [Fact]
+    public void Can_create_instances_of_common_collections()
+    {
+      Assert.NotNull(ActivatorUtils.FastCreateInstance(typeof(IEnumerable<MyUser>)));
+      Assert.NotNull(ActivatorUtils.FastCreateInstance(typeof(ICollection<MyUser>)));
+      Assert.NotNull(ActivatorUtils.FastCreateInstance(typeof(IList<MyUser>)));
+      Assert.NotNull(ActivatorUtils.FastCreateInstance(typeof(IDictionary<string, MyUser>)));
+      Assert.NotNull(ActivatorUtils.FastCreateInstance(typeof(IDictionary<int, MyUser>)));
+      Assert.NotNull(ActivatorUtils.FastCreateInstance(typeof(MyUser[])));
+      Assert.NotNull(ActivatorUtils.FastCreateInstance<IEnumerable<MyUser>>());
+      Assert.NotNull(ActivatorUtils.FastCreateInstance<ICollection<MyUser>>());
+      Assert.NotNull(ActivatorUtils.FastCreateInstance<IList<MyUser>>());
+      Assert.NotNull(ActivatorUtils.FastCreateInstance<IDictionary<string, MyUser>>());
+      Assert.NotNull(ActivatorUtils.FastCreateInstance<IDictionary<int, MyUser>>());
+      Assert.NotNull(ActivatorUtils.FastCreateInstance<MyUser[]>());
+    }
 
-    //[Fact]
-    //[ExpectedException(typeof(MissingMethodException))]
-    //public void TestTryCreateInstanceWithoutMatchShouldThrow()
-    //{
-    //  typeof(Giraffe).TryCreateInstance(new { Id = 42 });
-    //}
+    [Fact]
+    public void Can_create_intances_of_generic_types()
+    {
+      Assert.NotNull(ActivatorUtils.FastCreateInstance(typeof(GenericType<>)));
+      Assert.NotNull(ActivatorUtils.FastCreateInstance(typeof(GenericType<,>)));
+      Assert.NotNull(ActivatorUtils.FastCreateInstance(typeof(GenericType<,,>)));
+      Assert.NotNull(ActivatorUtils.FastCreateInstance(typeof(GenericType<GenericType<object>>)));
+    }
+
+    [Fact]
+    public void Does_GetCollectionType()
+    {
+      Assert.Equal(typeof(MyUser), GetCollectionType(new[] { new MyUser() }.GetType()));
+      Assert.Equal(typeof(MyUser), GetCollectionType(new[] { new MyUser() }.ToList().GetType()));
+      Assert.Equal(typeof(MyUser), GetCollectionType(new[] { new MyUser() }.Select(x => x).GetType()));
+      Assert.Equal(typeof(MyUser), GetCollectionType(new[] { "" }.Select(x => new MyUser()).GetType()));
+    }
+
+    private static Type GetCollectionType(Type type)
+    {
+      return type.GetElementType()
+          ?? type.GetGenericArguments().LastOrDefault(); //new[] { str }.Select(x => new Type()) => WhereSelectArrayIterator<string,Type>
+    }
   }
+
+  public class GenericType<T> { }
+  public class GenericType<T1, T2> { }
+  public class GenericType<T1, T2, T3> { }
 }

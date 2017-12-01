@@ -23,10 +23,10 @@ namespace CuteAnt.Reflection
       var typeInfo = instanceType.GetTypeInfo();
       if (typeInfo.IsAbstract)
       {
-        matchers = EmptyArray<ConstructorMatcher>.Instance;
+        matchers = new ConstructorMatcher[] { new ConstructorMatcher(instanceType, instanceType.MakeDelegateForCtor()) };
         s_typeConstructorMatcherCache.TryAdd(instanceType, matchers);
-        s_typeConstructorMatcherDICache.TryAdd(instanceType, matchers);
-        return matchers;
+        s_typeConstructorMatcherDICache.TryAdd(instanceType, EmptyArray<ConstructorMatcher>.Instance);
+        return forDI ? EmptyArray<ConstructorMatcher>.Instance : matchers;
       }
 
       ConstructorMatcher[] diMatchers = matchers = null;
@@ -132,7 +132,7 @@ namespace CuteAnt.Reflection
     /// <summary>Creates a new instance from the default constructor of type</summary>
     public static object FastCreateInstance(Type instanceType)
     {
-      if ( null == instanceType) { throw new ArgumentNullException(nameof(instanceType)); }
+      if (null == instanceType) { throw new ArgumentNullException(nameof(instanceType)); }
       //if (instanceType.GetTypeInfo().IsAbstract)
       //{
       //  throw new TypeAccessException($"Type '{instanceType}' is an interface or abstract class and cannot be instantiated");

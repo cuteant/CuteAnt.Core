@@ -32,7 +32,8 @@ namespace CuteAnt.Reflection
       var typeInfo = thisType.GetTypeInfo();
       if (typeInfo.IsAbstract)
       {
-        DIConstructorMatchers = ConstructorMatchers = EmptyArray<ConstructorMatcher<TInstance>>.Instance;
+        ConstructorMatchers = new ConstructorMatcher<TInstance>[] { Default };
+        DIConstructorMatchers = EmptyArray<ConstructorMatcher<TInstance>>.Instance;
         return;
       }
 
