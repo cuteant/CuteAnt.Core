@@ -81,7 +81,16 @@ namespace CuteAnt.Reflection
       gen.Emit(OpCodes.Ldarg_1);
 
       var propertyType = propertyInfo.PropertyType;
-      gen.Emit(propertyType.IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass, propertyType);
+      var method = TypeAccessorHelper.GetFieldValueConvertMethod(propertyType);
+      // 字符串 null 赋值会被替换为 ""
+      if (method != null && propertyType != TypeConstants.StringType)
+      {
+        gen.Emit(method.IsStatic || method.IsFinal ? OpCodes.Call : OpCodes.Callvirt, method);
+      }
+      else
+      {
+        gen.Emit(propertyType.IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass, propertyType);
+      }
 
       gen.EmitCall(isStatic || mi.IsFinal ? OpCodes.Call : OpCodes.Callvirt, mi, null);
 
@@ -182,20 +191,22 @@ namespace CuteAnt.Reflection
         gen.Emit(OpCodes.Ldarg_0);
 
         var declaringType = propertyInfo.DeclaringType;
-        if (declaringType.IsValueType)
-        {
-          if (thisType != declaringType) { gen.Emit(OpCodes.Unbox, declaringType); }
-        }
-        else
-        {
-          if (thisType != declaringType) { gen.Emit(OpCodes.Castclass, declaringType); }
-        }
+        if (thisType != declaringType) { gen.Emit(declaringType.IsValueType ? OpCodes.Unbox : OpCodes.Castclass, declaringType); }
       }
 
       gen.Emit(OpCodes.Ldarg_1);
 
       var propertyType = propertyInfo.PropertyType;
-      gen.Emit(propertyType.IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass, propertyType);
+      var method = TypeAccessorHelper.GetFieldValueConvertMethod(propertyType);
+      // 字符串 null 赋值会被替换为 ""
+      if (method != null && propertyType != TypeConstants.StringType)
+      {
+        gen.Emit(method.IsStatic || method.IsFinal ? OpCodes.Call : OpCodes.Callvirt, method);
+      }
+      else
+      {
+        gen.Emit(propertyType.IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass, propertyType);
+      }
 
       gen.EmitCall(isStatic || mi.IsFinal ? OpCodes.Call : OpCodes.Callvirt, mi, null);
 

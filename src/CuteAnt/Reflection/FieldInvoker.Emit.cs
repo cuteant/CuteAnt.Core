@@ -53,13 +53,14 @@ namespace CuteAnt.Reflection
 
       var fieldType = fieldInfo.FieldType;
       var method = TypeAccessorHelper.GetFieldValueConvertMethod(fieldType);
-      if (method != null)
+      // 字符串 null 赋值会被替换为 ""
+      if (method != null && fieldType != TypeConstants.StringType)
       {
         gen.Emit(method.IsStatic || method.IsFinal ? OpCodes.Call : OpCodes.Callvirt, method);
       }
       else
       {
-        gen.Emit(fieldType.IsClass ? OpCodes.Castclass : OpCodes.Unbox_Any, fieldType);
+        gen.Emit(fieldType.IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass, fieldType);
       }
 
       gen.Emit(OpCodes.Stfld, fieldInfo);
@@ -113,26 +114,22 @@ namespace CuteAnt.Reflection
 
       var thisType = TypeAccessorHelper<T>.ThisType;
       var declaringType = fieldInfo.DeclaringType;
-      if (declaringType.IsValueType)
-      {
-        if (thisType != declaringType) { gen.Emit(OpCodes.Unbox, declaringType); }
-      }
-      else
-      {
-        if (thisType != declaringType) { gen.Emit(OpCodes.Castclass, declaringType); }
-      }
+      if (thisType != declaringType) { gen.Emit(declaringType.IsValueType ? OpCodes.Unbox : OpCodes.Castclass, declaringType); }
 
       gen.Emit(OpCodes.Ldarg_1);
 
       var fieldType = fieldInfo.FieldType;
+      var r = fieldType.IsValueType;
+
       var method = TypeAccessorHelper.GetFieldValueConvertMethod(fieldType);
-      if (method != null)
+      // 字符串 null 赋值会被替换为 ""
+      if (method != null && fieldType != TypeConstants.StringType)
       {
         gen.Emit(method.IsStatic || method.IsFinal ? OpCodes.Call : OpCodes.Callvirt, method);
       }
       else
       {
-        gen.Emit(fieldType.IsClass ? OpCodes.Castclass : OpCodes.Unbox_Any, fieldType);
+        gen.Emit(fieldType.IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass, fieldType);
       }
 
       gen.Emit(OpCodes.Stfld, fieldInfo);
