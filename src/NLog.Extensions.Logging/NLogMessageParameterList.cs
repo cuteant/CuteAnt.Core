@@ -5,23 +5,35 @@ using System.Linq;
 
 namespace NLog.Extensions.Logging
 {
-#if NETSTANDARD2_0
   /// <summary>Converts Microsoft Extension Logging ParameterList into NLog MessageTemplate ParameterList</summary>
   internal class NLogMessageParameterList : IList<NLog.MessageTemplates.MessageTemplateParameter>
   {
-    private IReadOnlyList<KeyValuePair<string, object>> _parameterList;
+    private
+#if NET40
+        IList
+#else
+        IReadOnlyList
+#endif
+        <KeyValuePair<string, object>> _parameterList;
 
-    public NLogMessageParameterList(IReadOnlyList<KeyValuePair<string, object>> parameterList, bool includesOriginalMessage)
+    public NLogMessageParameterList(
+#if NET40
+      IList
+#else
+      IReadOnlyList
+#endif
+      <KeyValuePair<string, object>> parameterList, bool includesOriginalMessage)
     {
-      List<KeyValuePair<string, object>> validParameterList = includesOriginalMessage ? null : new List<KeyValuePair<string, object>>();
+      var validParameterList = includesOriginalMessage ? null : new List<KeyValuePair<string, object>>();
       for (int i = 0; i < parameterList.Count; ++i)
       {
-        if (!string.IsNullOrEmpty(parameterList[i].Key) && (parameterList[i].Key != NLogLogger.OriginalFormatPropertyName || i == parameterList.Count - 1))
+        var paramPair = parameterList[i];
+        bool isNonOriginalFormatName;
+        if (!string.IsNullOrEmpty(paramPair.Key) && ((isNonOriginalFormatName = paramPair.Key != NLogLogger.OriginalFormatPropertyName) || i == parameterList.Count - 1))
         {
-          if (validParameterList != null)
+          if (validParameterList != null && isNonOriginalFormatName)
           {
-            if (parameterList[i].Key != NLogLogger.OriginalFormatPropertyName)
-              validParameterList.Add(parameterList[i]);
+            validParameterList.Add(paramPair);
           }
         }
         else
@@ -34,10 +46,7 @@ namespace NLog.Extensions.Logging
           }
         }
       }
-      if (validParameterList != null)
-      {
-        validParameterList.Add(new KeyValuePair<string, object>());
-      }
+      validParameterList?.Add(new KeyValuePair<string, object>());
       _parameterList = validParameterList ?? parameterList;
     }
 
@@ -47,22 +56,27 @@ namespace NLog.Extensions.Logging
       {
         var parameter = _parameterList[index];
         var parameterName = parameter.Key;
-        NLog.MessageTemplates.CaptureType captureType = NLog.MessageTemplates.CaptureType.Normal;
-        switch (parameterName[0])
-        {
-          case '@':
-            parameterName = parameterName.Substring(1);
-            captureType = NLog.MessageTemplates.CaptureType.Serialize;
-            break;
-
-          case '$':
-            parameterName = parameterName.Substring(1);
-            captureType = NLog.MessageTemplates.CaptureType.Stringify;
-            break;
-        }
-        return new NLog.MessageTemplates.MessageTemplateParameter(parameter.Key, parameter.Value, null, captureType);
+        var capture = GetCaptureType(parameterName);
+        parameterName = NLogLogger.RemoveMarkerFromName(parameterName);
+        return new NLog.MessageTemplates.MessageTemplateParameter(parameterName, parameter.Value, null, capture);
       }
-      set => throw new NotImplementedException();
+      set => throw new NotSupportedException();
+    }
+
+    private static NLog.MessageTemplates.CaptureType GetCaptureType(string parameterName)
+    {
+      var captureType = NLog.MessageTemplates.CaptureType.Normal;
+
+      switch (parameterName[0])
+      {
+        case '@':
+          captureType = NLog.MessageTemplates.CaptureType.Serialize;
+          break;
+        case '$':
+          captureType = NLog.MessageTemplates.CaptureType.Stringify;
+          break;
+      }
+      return captureType;
     }
 
     public int Count => _parameterList.Count - 1;
@@ -71,22 +85,22 @@ namespace NLog.Extensions.Logging
 
     public void Add(NLog.MessageTemplates.MessageTemplateParameter item)
     {
-      throw new NotImplementedException();
+      throw new NotSupportedException();
     }
 
     public void Clear()
     {
-      throw new NotImplementedException();
+      throw new NotSupportedException();
     }
 
     public bool Contains(NLog.MessageTemplates.MessageTemplateParameter item)
     {
-      throw new NotImplementedException();
+      throw new NotSupportedException();
     }
 
     public void CopyTo(NLog.MessageTemplates.MessageTemplateParameter[] array, int arrayIndex)
     {
-      throw new NotImplementedException();
+      throw new NotSupportedException();
     }
 
     public IEnumerator<NLog.MessageTemplates.MessageTemplateParameter> GetEnumerator()
@@ -96,22 +110,22 @@ namespace NLog.Extensions.Logging
 
     public int IndexOf(NLog.MessageTemplates.MessageTemplateParameter item)
     {
-      throw new NotImplementedException();
+      throw new NotSupportedException();
     }
 
     public void Insert(int index, NLog.MessageTemplates.MessageTemplateParameter item)
     {
-      throw new NotImplementedException();
+      throw new NotSupportedException();
     }
 
     public bool Remove(NLog.MessageTemplates.MessageTemplateParameter item)
     {
-      throw new NotImplementedException();
+      throw new NotSupportedException();
     }
 
     public void RemoveAt(int index)
     {
-      throw new NotImplementedException();
+      throw new NotSupportedException();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -119,5 +133,4 @@ namespace NLog.Extensions.Logging
       return GetEnumerator();
     }
   }
-#endif
 }

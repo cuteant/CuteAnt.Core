@@ -28,7 +28,7 @@ For ASP.NET Core, use NLog.Web.AspNetCore: https://www.nuget.org/packages/NLog.W
     <PackageReference Include="NLog" Version="$(NLogDevPackageVersion)" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net471' or '$(TargetFramework)' == 'net451' or '$(TargetFramework)' == 'net40' ">
-    <PackageReference Include="NLog" Version="$(NLogPackageVersion)" />
+    <PackageReference Include="NLog" Version="$(NLogDevPackageVersion)" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
     <PackageReference Include="NetFx.Extensions.Primitives" Version="$(NetFxExtensionsPrimitivesPackageVersion)" />
