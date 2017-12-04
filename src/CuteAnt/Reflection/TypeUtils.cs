@@ -134,70 +134,6 @@ namespace CuteAnt.Reflection
       return typeName;
     }
 
-    // 这里不采用 Json.Net 的代码
-    //private static readonly Func<Type, string> _getSimpleTypeNameFunc = GetSimpleTypeNameInternal;
-    private static readonly Func<Type, string> _getSimpleTypeNameFunc = RuntimeTypeNameFormatter.Format;
-    private static readonly CachedReadConcurrentDictionary<Type, string> _simpleTypeNameCache =
-        new CachedReadConcurrentDictionary<Type, string>(DictionaryCacheConstants.SIZE_MEDIUM);
-
-    public static string GetSimpleTypeName(Type type)
-    {
-      if (null == type) { throw new ArgumentNullException(nameof(type)); }
-      return _simpleTypeNameCache.GetOrAdd(type, _getSimpleTypeNameFunc);
-    }
-
-    //private static string GetSimpleTypeNameInternal(Type type)
-    //{
-    //  string fullyQualifiedTypeName = type.AssemblyQualifiedName;
-
-    //  return RemoveAssemblyDetails(fullyQualifiedTypeName);
-    //}
-
-    //private static string RemoveAssemblyDetails(string fullyQualifiedTypeName)
-    //{
-    //  var builder = new StringBuilder();
-
-    //  // loop through the type name and filter out qualified assembly details from nested type names
-    //  bool writingAssemblyName = false;
-    //  bool skippingAssemblyDetails = false;
-    //  for (int i = 0; i < fullyQualifiedTypeName.Length; i++)
-    //  {
-    //    char current = fullyQualifiedTypeName[i];
-    //    switch (current)
-    //    {
-    //      case '[':
-    //        writingAssemblyName = false;
-    //        skippingAssemblyDetails = false;
-    //        builder.Append(current);
-    //        break;
-    //      case ']':
-    //        writingAssemblyName = false;
-    //        skippingAssemblyDetails = false;
-    //        builder.Append(current);
-    //        break;
-    //      case ',':
-    //        if (!writingAssemblyName)
-    //        {
-    //          writingAssemblyName = true;
-    //          builder.Append(current);
-    //        }
-    //        else
-    //        {
-    //          skippingAssemblyDetails = true;
-    //        }
-    //        break;
-    //      default:
-    //        if (!skippingAssemblyDetails)
-    //        {
-    //          builder.Append(current);
-    //        }
-    //        break;
-    //    }
-    //  }
-
-    //  return builder.ToString();
-    //}
-
     #endregion
 
     #region -- SerializeTypeName --
@@ -216,7 +152,7 @@ namespace CuteAnt.Reflection
 
     private static string SerializeTypeNameInternal(Type t)
     {
-      var typeName = GetSimpleTypeName(t);
+      var typeName = RuntimeTypeNameFormatter.Format(t);
       return typeName.Replace(", ", ":");
     }
 

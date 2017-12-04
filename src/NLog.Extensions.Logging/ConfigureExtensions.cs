@@ -56,31 +56,31 @@ namespace NLog.Extensions.Logging
       return factory;
     }
 
+    /// <summary>Ignore assemblies for ${callsite}</summary>
     private static void ConfigureHiddenAssemblies()
     {
       try
       {
-        //ignore these assemblies for ${callsite}
-#if NET40
-        LogManager.AddHiddenAssembly(typeof(Microsoft.Extensions.Logging.LoggerFactory).Assembly); //Microsoft.Extensions.Logging
-        LogManager.AddHiddenAssembly(typeof(Microsoft.Extensions.Logging.ILogger).Assembly); // Microsoft.Extensions.Logging.Abstractions
-        LogManager.AddHiddenAssembly(typeof(NLog.Extensions.Logging.ConfigureExtensions).Assembly); //NLog.Extensions.Logging
-#else
-        LogManager.AddHiddenAssembly(typeof(Microsoft.Extensions.Logging.LoggerFactory).GetTypeInfo().Assembly); //Microsoft.Extensions.Logging
-        LogManager.AddHiddenAssembly(typeof(Microsoft.Extensions.Logging.ILogger).GetTypeInfo().Assembly); // Microsoft.Extensions.Logging.Abstractions
-        LogManager.AddHiddenAssembly(typeof(NLog.Extensions.Logging.ConfigureExtensions).GetTypeInfo().Assembly); //NLog.Extensions.Logging
-#endif
+        InternalLogger.Trace("Hide assemblies for callsite");
+
+        LogManager.AddHiddenAssembly(Assembly.Load(new AssemblyName("Microsoft.Extensions.Logging")));
+        LogManager.AddHiddenAssembly(Assembly.Load(new AssemblyName("Microsoft.Extensions.Logging.Abstractions")));
+        LogManager.AddHiddenAssembly(Assembly.Load(new AssemblyName("NLog.Extensions.Logging")));
 
         //try
         //{
         //  //try the Filter ext
+        //  InternalLogger.Trace("Try hide Microsoft.Extensions.Logging.Filter assembly for callsite");
         //  var filterAssembly = Assembly.Load(new AssemblyName("Microsoft.Extensions.Logging.Filter"));
         //  LogManager.AddHiddenAssembly(filterAssembly);
+        //  InternalLogger.Trace("Hide Microsoft.Extensions.Logging.Filter assembly for callsite done");
         //}
         //catch (Exception ex)
         //{
         //  InternalLogger.Trace(ex, "filtering Microsoft.Extensions.Logging.Filter failed. Not an issue probably");
         //}
+
+        InternalLogger.Trace("Hide assemblies for callsite - done");
       }
       catch (Exception ex)
       {

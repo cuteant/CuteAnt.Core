@@ -79,7 +79,7 @@ namespace CuteAnt.Reflection
 
     internal static DynamicMethod CreateDynamicGetMethod(MemberInfo memberInfo)
     {
-      var memberType = memberInfo is FieldInfo ? c_field : c_property;
+      var memberType = memberInfo.MemberType == MemberTypes.Field ? c_field : c_property;
       var name = $"_Get{memberType}_{memberInfo.Name}_";
 
       var declaringType = memberInfo.DeclaringType;
@@ -94,7 +94,7 @@ namespace CuteAnt.Reflection
 
     internal static DynamicMethod CreateDynamicSetMethod(MemberInfo memberInfo)
     {
-      var memberType = memberInfo is FieldInfo ? c_field : c_property;
+      var memberType = memberInfo.MemberType == MemberTypes.Field ? c_field : c_property;
       var name = $"_Set{memberType}_{memberInfo.Name}_";
 
       var declaringType = memberInfo.DeclaringType;

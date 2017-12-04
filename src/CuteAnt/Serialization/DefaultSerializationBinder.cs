@@ -31,14 +31,9 @@ namespace CuteAnt.Serialization
     /// <param name="typeName">Specifies the <see cref="System.Type"/> name of the serialized object.</param>
     public override void BindToName(Type serializedType, out string assemblyName, out string typeName)
     {
-#if NET40
-      assemblyName = serializedType.Assembly.FullName;
-      typeName = serializedType.FullName;
-#else
-      var typeInfo = serializedType.GetTypeInfo();
-      assemblyName = typeInfo.Assembly.FullName;
-      typeName = typeInfo.FullName;
-#endif
+      var typeDef = RuntimeTypeNameFormatter.GetTypeDefinition(serializedType);
+      assemblyName = typeDef.AssemblyName;
+      typeName = typeDef.TypeName;
     }
   }
 }
