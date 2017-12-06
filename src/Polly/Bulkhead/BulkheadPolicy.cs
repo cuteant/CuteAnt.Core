@@ -37,20 +37,12 @@ namespace Polly.Bulkhead
     /// <summary>
     /// Gets the number of slots currently available for executing actions through the bulkhead.
     /// </summary>
-#if NET40
-    public long BulkheadAvailableCount => _maxParallelizationSemaphore.CurrentCount;
-#else
     public int BulkheadAvailableCount => _maxParallelizationSemaphore.CurrentCount;
-#endif
 
     /// <summary>
     /// Gets the number of slots currently available for queuing actions for execution through the bulkhead.
     /// </summary>
-#if NET40
-    public long QueueAvailableCount => Math.Min(_maxQueuedActionsSemaphore.CurrentCount, _maxQueueingActions);
-#else
     public int QueueAvailableCount => Math.Min(_maxQueuedActionsSemaphore.CurrentCount, _maxQueueingActions);
-#endif
 
     /// <summary>
     /// Disposes of the <see cref="BulkheadPolicy"/>, allowing it to dispose its internal resources.  
@@ -91,20 +83,12 @@ namespace Polly.Bulkhead
     /// <summary>
     /// Gets the number of slots currently available for executing actions through the bulkhead.
     /// </summary>
-#if NET40
-    public long BulkheadAvailableCount => _maxParallelizationSemaphore.CurrentCount;
-#else
     public int BulkheadAvailableCount => _maxParallelizationSemaphore.CurrentCount;
-#endif
 
     /// <summary>
     /// Gets the number of slots currently available for queuing actions for execution through the bulkhead.
     /// </summary>
-#if NET40
-    public long QueueAvailableCount => Math.Min(_maxQueuedActionsSemaphore.CurrentCount, _maxQueueingActions);
-#else
     public int QueueAvailableCount => Math.Min(_maxQueuedActionsSemaphore.CurrentCount, _maxQueueingActions);
-#endif
 
     /// <summary>
     /// Disposes of the <see cref="BulkheadPolicy"/>, allowing it to dispose its internal resources.  

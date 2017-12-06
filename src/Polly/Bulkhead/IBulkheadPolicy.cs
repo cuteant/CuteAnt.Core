@@ -11,20 +11,12 @@ namespace Polly.Bulkhead
     /// <summary>
     /// Gets the number of slots currently available for executing actions through the bulkhead.
     /// </summary>
-#if NET40
-    long BulkheadAvailableCount { get; }
-#else
     int BulkheadAvailableCount { get; }
-#endif
 
     /// <summary>
     /// Gets the number of slots currently available for queuing actions for execution through the bulkhead.
     /// </summary>
-#if NET40
-    long QueueAvailableCount { get; }
-#else
     int QueueAvailableCount { get; }
-#endif
   }
 
   /// <summary>
