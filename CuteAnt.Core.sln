@@ -119,6 +119,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.Runtime.Test", "tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.IO.RecyclableMemoryStream.Tests", "test\Microsoft.IO.RecyclableMemoryStream.Tests\Microsoft.IO.RecyclableMemoryStream.Tests.csproj", "{E471B018-5731-4CAC-B7D6-A5F82BB935FC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Polly", "Polly", "{F11A0F07-5AEE-4EBF-89F4-FE8C3739D4C4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polly", "src\Polly\Polly.csproj", "{8A5165F8-6495-46F9-874D-A61967E00FED}"
+	ProjectSection(ProjectDependencies) = postProject
+		{19E712F4-AE7C-4AC2-B726-91A0238D57D8} = {19E712F4-AE7C-4AC2-B726-91A0238D57D8}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.ValidationHelper.Sources\CuteAnt.Extensions.ValidationHelper.Sources.projitems*{3b59b888-7a45-4322-b5dd-3fadc4e74420}*SharedItemsImports = 13
@@ -262,6 +269,10 @@ Global
 		{E471B018-5731-4CAC-B7D6-A5F82BB935FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E471B018-5731-4CAC-B7D6-A5F82BB935FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E471B018-5731-4CAC-B7D6-A5F82BB935FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A5165F8-6495-46F9-874D-A61967E00FED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A5165F8-6495-46F9-874D-A61967E00FED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A5165F8-6495-46F9-874D-A61967E00FED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A5165F8-6495-46F9-874D-A61967E00FED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -318,6 +329,8 @@ Global
 		{F5EBF205-531E-4B5D-8178-AD037A406B84} = {DD4188B4-D72A-4D3E-B5A6-3168231C6301}
 		{A457D323-4CC8-4561-A4A2-6E8C4FBD1210} = {DD4188B4-D72A-4D3E-B5A6-3168231C6301}
 		{E471B018-5731-4CAC-B7D6-A5F82BB935FC} = {DD4188B4-D72A-4D3E-B5A6-3168231C6301}
+		{F11A0F07-5AEE-4EBF-89F4-FE8C3739D4C4} = {1F97D5A4-285F-4962-8F8C-BCEF8278143B}
+		{8A5165F8-6495-46F9-874D-A61967E00FED} = {F11A0F07-5AEE-4EBF-89F4-FE8C3739D4C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {93230366-D5C3-4397-83D3-ED46E43B8121}

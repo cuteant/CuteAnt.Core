@@ -1,0 +1,19 @@
+<Project>
+  <!-- Set common properties regarding assembly information and nuget packages -->
+  <PropertyGroup>
+    <Authors>Michael Wolfenden,  App vNext</Authors>
+    <Company>Maksim Volkau</Company>
+    <Product>Polly</Product>
+    <Copyright>Copyright © 2016, App vNext</Copyright>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <PackageIconUrl>https://raw.github.com/App-vNext/Polly/master/Polly.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/App-vNext/Polly</RepositoryUrl>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <IncludeSymbols>false</IncludeSymbols>
+    <IncludeSource>false</IncludeSource>
+  </PropertyGroup>
+</Project>
