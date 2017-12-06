@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading;
+
+#if NET40
+using ExceptionDispatchInfo = Polly.Utilities.ExceptionDispatchInfo;
+#endif
 
 namespace Polly.Fallback
 {
@@ -14,7 +19,7 @@ namespace Polly.Fallback
             IEnumerable<ExceptionPredicate> shouldHandleExceptionPredicates,
             IEnumerable<ResultPredicate<TResult>> shouldHandleResultPredicates,
             Action<DelegateResult<TResult>, Context> onFallback,
-            Func<Context, CancellationToken, TResult> fallbackAction)
+            Func<DelegateResult<TResult>, Context, CancellationToken, TResult> fallbackAction)
         {
             DelegateResult<TResult> delegateOutcome;
 
@@ -33,17 +38,20 @@ namespace Polly.Fallback
             }
             catch (Exception ex)
             {
-                if (!shouldHandleExceptionPredicates.Any(predicate => predicate(ex)))
+                Exception handledException = shouldHandleExceptionPredicates
+                    .Select(predicate => predicate(ex))
+                    .FirstOrDefault(e => e != null);
+                if (handledException == null)
                 {
                     throw;
                 }
 
-                delegateOutcome = new DelegateResult<TResult>(ex);
+                delegateOutcome = new DelegateResult<TResult>(handledException);
             }
 
             onFallback(delegateOutcome, context);
 
-            return fallbackAction(context, cancellationToken);
+            return fallbackAction(delegateOutcome, context, cancellationToken);
         }
     }
 }

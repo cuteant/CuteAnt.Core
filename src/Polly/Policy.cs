@@ -20,9 +20,7 @@ namespace Polly
             Action<Action<Context, CancellationToken>, Context, CancellationToken> exceptionPolicy,
             IEnumerable<ExceptionPredicate> exceptionPredicates)
         {
-            if (exceptionPolicy == null) throw new ArgumentNullException(nameof(exceptionPolicy));
-
-            _exceptionPolicy = exceptionPolicy;
+            _exceptionPolicy = exceptionPolicy ?? throw new ArgumentNullException(nameof(exceptionPolicy));
             ExceptionPredicates = exceptionPredicates ?? PredicateHelper.EmptyExceptionPredicates;
         }
 
@@ -298,16 +296,32 @@ namespace Polly
         [DebuggerStepThrough]
         public TResult Execute<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
         {
-            if (_exceptionPolicy == null) throw new InvalidOperationException(
-                "Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
             if (context == null) throw new ArgumentNullException(nameof(context));
 
             SetPolicyContext(context);
+
+            return ExecuteInternal(action, context, cancellationToken);
+        }
+
+        /// <summary>
+        /// Executes the specified action within the policy and returns the result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="action">The action to perform.</param>
+        /// <param name="context">Context data that is passed to the exception policy.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The value returned by the action</returns>
+        [DebuggerStepThrough]
+        public virtual TResult ExecuteInternal<TResult>(Func<Context, CancellationToken, TResult> action, Context context, CancellationToken cancellationToken)
+        {
+            if (_exceptionPolicy == null) throw new InvalidOperationException(
+                "Please use the synchronous-defined policies when calling the synchronous Execute (and similar) methods.");
 
             var result = default(TResult);
             _exceptionPolicy((ctx, ct) => { result = action(ctx, ct); }, context, cancellationToken);
             return result;
         }
+
         #endregion
 
         #endregion
@@ -603,7 +617,7 @@ namespace Polly
 
         internal static ExceptionType GetExceptionType(IEnumerable<ExceptionPredicate> exceptionPredicates, Exception exception)
         {
-            var isExceptionTypeHandledByThisPolicy = exceptionPredicates.Any(predicate => predicate(exception));
+            var isExceptionTypeHandledByThisPolicy = exceptionPredicates.Any(predicate => predicate(exception) != null);
 
             return isExceptionTypeHandledByThisPolicy
                 ? ExceptionType.HandledByThisPolicy
