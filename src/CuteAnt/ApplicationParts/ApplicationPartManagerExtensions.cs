@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CuteAnt.ApplicationParts
 {
-  /// <summary>Extensions for working with <see cref="ApplicationPartManager"/>.</summary>
+  /// <summary>Extensions for working with <see cref="IApplicationPartManager"/>.</summary>
   public static class ApplicationPartManagerExtensions
   {
     private static readonly ILogger s_logger = TraceLogger.GetLogger(typeof(ApplicationPartManagerExtensions));
@@ -24,17 +24,148 @@ namespace CuteAnt.ApplicationParts
     /// <typeparam name="TFeature">The feature.</typeparam>
     /// <param name="applicationPartManager">The application part manager.</param>
     /// <returns>The populated feature.</returns>
-    public static TFeature CreateAndPopulateFeature<TFeature>(this ApplicationPartManager applicationPartManager) where TFeature : new()
+    public static TFeature CreateAndPopulateFeature<TFeature>(this IApplicationPartManager applicationPartManager) where TFeature : new()
     {
       var result = new TFeature();
       applicationPartManager.PopulateFeature(result);
       return result;
     }
 
+    /// <summary>Adds the provided assembly to the builder.</summary>
+    /// <param name="manager">The builder.</param>
+    /// <param name="assembly">The assembly.</param>
+    /// <returns>The builder with the additionally added assembly.</returns>
+    public static IApplicationPartManagerWithAssemblies AddApplicationPart(this IApplicationPartManager manager, Assembly assembly)
+    {
+      if (manager == null) { throw new ArgumentNullException(nameof(manager)); }
+      if (assembly == null) { throw new ArgumentNullException(nameof(assembly)); }
+
+      return new ApplicationPartManagerWithAssemblies(manager.AddApplicationPart(new AssemblyPart(assembly)), new[] { assembly });
+    }
+
+    /// <summary>Adds assemblies from the current <see cref="AppDomain.BaseDirectory"/> to the builder.</summary>
+    /// <param name="manager">The builder.</param>
+    /// <returns>The builder with the additionally added assemblies.</returns>
+    public static IApplicationPartManagerWithAssemblies AddFromApplicationBaseDirectory(this IApplicationPartManager manager)
+    {
+      if (manager == null) { throw new ArgumentNullException(nameof(manager)); }
+
+      var appDomainBase = AppDomain.CurrentDomain.BaseDirectory;
+      if (string.IsNullOrWhiteSpace(appDomainBase) || !Directory.Exists(appDomainBase)) return new ApplicationPartManagerWithAssemblies(manager, Enumerable.Empty<Assembly>());
+
+      return manager.AddFromProbingPath(appDomainBase);
+    }
+
+    /// <summary>Attempts to load and add assemblies from the specified directories as application parts.</summary>
+    /// <param name="manager">The application part manager.</param>
+    /// <param name="directories">The directories to search.</param>
+    public static IApplicationPartManagerWithAssemblies AddFromProbingPath(this IApplicationPartManager manager, params string[] directories)
+    {
+      if (manager == null) { throw new ArgumentNullException(nameof(manager)); }
+      if (directories == null) throw new ArgumentNullException(nameof(directories));
+
+      var dirs = new Dictionary<string, SearchOption>();
+      foreach (var dir in directories)
+      {
+        dirs[dir] = SearchOption.TopDirectoryOnly;
+      }
+
+      var loadedAssemblies = AssemblyLoader.LoadAssemblies(dirs, s_logger);
+      foreach (var assembly in loadedAssemblies)
+      {
+        manager.AddApplicationPart(new AssemblyPart(assembly));
+      }
+
+      return new ApplicationPartManagerWithAssemblies(manager, loadedAssemblies);
+    }
+
+    /// <summary>Attempts to load and add assemblies from the specified directories as application parts.</summary>
+    /// <param name="manager">The application part manager.</param>
+    /// <param name="dirEnumArgs"></param>
+    /// <param name="pathNameCriteria"></param>
+    /// <param name="reflectionCriteria"></param>
+    public static IApplicationPartManagerWithAssemblies AddFromProbingPath(this IApplicationPartManager manager, Dictionary<string, SearchOption> dirEnumArgs,
+      IEnumerable<AssemblyLoaderPathNameCriterion> pathNameCriteria, IEnumerable<AssemblyLoaderReflectionCriterion> reflectionCriteria)
+    {
+      if (manager == null) { throw new ArgumentNullException(nameof(manager)); }
+      if (dirEnumArgs == null) throw new ArgumentNullException(nameof(dirEnumArgs));
+
+      var excludeCriteria = (pathNameCriteria != null && pathNameCriteria.Any())
+          ? pathNameCriteria.ToArray() : new AssemblyLoaderPathNameCriterion[] { AssemblyLoaderCriteria.ExcludeResourceAssemblies };
+
+      var loadCriteria = (reflectionCriteria != null && reflectionCriteria.Any())
+          ? reflectionCriteria.ToArray() : new AssemblyLoaderReflectionCriterion[] { AssemblyLoaderCriteria.DefaultAssemblyPredicate };
+
+      var loadedAssemblies = AssemblyLoader.LoadAssemblies(dirEnumArgs, excludeCriteria, loadCriteria, s_logger);
+      foreach (var assembly in loadedAssemblies)
+      {
+        manager.AddApplicationPart(new AssemblyPart(assembly));
+      }
+
+      return new ApplicationPartManagerWithAssemblies(manager, loadedAssemblies);
+    }
+
+    /// <summary>Adds assemblies from the current <see cref="AppDomain"/> to the builder.</summary>
+    /// <param name="manager">The builder.</param>
+    /// <returns>The builder with the added assemblies.</returns>
+    public static IApplicationPartManagerWithAssemblies AddFromAppDomain(this IApplicationPartManager manager)
+    {
+      if (manager == null) { throw new ArgumentNullException(nameof(manager)); }
+
+      var processedAssemblies = new HashSet<Assembly>(AppDomain.CurrentDomain.GetAssemblies());
+      foreach (var assembly in processedAssemblies)
+      {
+        manager.AddApplicationPart(new AssemblyPart(assembly));
+      }
+
+      return new ApplicationPartManagerWithAssemblies(manager, processedAssemblies);
+    }
+
+    /// <summary>Adds all assemblies referenced by the assemblies in the builder's <see cref="IApplicationPartManagerWithAssemblies.Assemblies"/> property.</summary>
+    /// <param name="manager">The builder.</param>
+    /// <returns>The builder with the additionally included assemblies.</returns>
+    public static IApplicationPartManagerWithAssemblies WithReferences(this IApplicationPartManagerWithAssemblies manager)
+    {
+      if (manager == null) { throw new ArgumentNullException(nameof(manager)); }
+
+      var referencedAssemblies = new HashSet<Assembly>(manager.Assemblies);
+      foreach (var scopedAssembly in manager.Assemblies)
+      {
+        LoadReferencedAssemblies(scopedAssembly, referencedAssemblies);
+      }
+
+      foreach (var includedAsm in referencedAssemblies)
+      {
+        manager.AddApplicationPart(new AssemblyPart(includedAsm));
+      }
+
+      return new ApplicationPartManagerWithAssemblies(manager, referencedAssemblies);
+
+      void LoadReferencedAssemblies(Assembly asm, HashSet<Assembly> includedAssemblies)
+      {
+        if (asm == null) { throw new ArgumentNullException(nameof(asm)); }
+        if (includedAssemblies == null) { throw new ArgumentNullException(nameof(includedAssemblies)); }
+
+        var referenced = asm.GetReferencedAssemblies();
+        foreach (var asmName in referenced)
+        {
+          try
+          {
+            var refAsm = Assembly.Load(asmName);
+            if (includedAssemblies.Add(refAsm)) { LoadReferencedAssemblies(refAsm, includedAssemblies); }
+          }
+          catch
+          {
+            // Ignore loading exceptions.
+          }
+        }
+      }
+    }
+
     /// <summary>Returns the <see cref="ApplicationPartManager"/> for the provided properties.</summary>
     /// <param name="properties">The properties.</param>
     /// <returns>The <see cref="ApplicationPartManager"/> belonging to the provided properties.</returns>
-    internal static ApplicationPartManager GetApplicationPartManager(IDictionary<object, object> properties)
+    public static ApplicationPartManager GetApplicationPartManager(IDictionary<object, object> properties)
     {
       ApplicationPartManager result;
       if (properties.TryGetValue(ApplicationPartsKey, out var value))
@@ -50,129 +181,59 @@ namespace CuteAnt.ApplicationParts
       return result;
     }
 
-    /// <summary>Adds the provided <paramref name="assembly"/> as an application part.</summary>
-    /// <param name="applicationPartManager">The application part manager.</param>
-    /// <param name="assembly">The assembly.</param>
-    public static void AddApplicationPart(this ApplicationPartManager applicationPartManager, Assembly assembly)
+    #region ** class ApplicationPartManagerWithAssemblies **
+
+    private class ApplicationPartManagerWithAssemblies : IApplicationPartManagerWithAssemblies
     {
-      if (applicationPartManager == null) { throw new ArgumentNullException(nameof(applicationPartManager)); }
-      if (assembly == null) { throw new ArgumentNullException(nameof(assembly)); }
+      private readonly IApplicationPartManager _manager;
 
-      applicationPartManager.AddApplicationPart(new AssemblyPart(assembly));
-    }
-
-    /// <summary>Adds all assemblies in the current <see cref="AppDomain"/> as application parts.</summary>
-    /// <param name="applicationPartManager">The application part manager.</param>
-    /// <param name="loadReferencedAssemblies">Whether or not try to load all referenced assemblies.</param>
-    public static void AddApplicationPartsFromAppDomain(this ApplicationPartManager applicationPartManager, bool loadReferencedAssemblies = true)
-    {
-      if (applicationPartManager == null) { throw new ArgumentNullException(nameof(applicationPartManager)); }
-
-      var processedAssemblies = new HashSet<Assembly>();
-      foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+      public ApplicationPartManagerWithAssemblies(IApplicationPartManager manager, IEnumerable<Assembly> additionalAssemblies)
       {
-        if (processedAssemblies.Add(assembly) && loadReferencedAssemblies)
+        if (manager is ApplicationPartManagerWithAssemblies builderWithAssemblies)
         {
-          LoadReferencedAssemblies(assembly, processedAssemblies);
+          _manager = builderWithAssemblies._manager;
+          Assemblies = builderWithAssemblies.Assemblies.Concat(additionalAssemblies).ToList();
+        }
+        else
+        {
+          _manager = manager;
+          Assemblies = additionalAssemblies;
         }
       }
 
-      foreach (var assembly in processedAssemblies)
+      public IEnumerable<Assembly> Assemblies { get; }
+
+      public
+#if NET40
+        IList
+#else
+        IReadOnlyList
+#endif
+        <IApplicationFeatureProvider> FeatureProviders => _manager.FeatureProviders;
+
+      public
+#if NET40
+        IList
+#else
+        IReadOnlyList
+#endif
+        <IApplicationPart> ApplicationParts => _manager.ApplicationParts;
+
+      public IApplicationPartManager AddApplicationPart(IApplicationPart part)
       {
-        applicationPartManager.AddApplicationPart(assembly);
+        _manager.AddApplicationPart(part);
+        return this;
       }
+
+      public IApplicationPartManager AddFeatureProvider(IApplicationFeatureProvider featureProvider)
+      {
+        _manager.AddFeatureProvider(featureProvider);
+        return this;
+      }
+
+      public void PopulateFeature<TFeature>(TFeature feature) => _manager.PopulateFeature(feature);
     }
 
-    /// <summary>Adds all assemblies referenced by the provided <paramref name="assembly"/> as application parts.</summary>
-    /// <param name="applicationPartManager">The application part manager.</param>
-    /// <param name="assembly">The assembly</param>
-    public static void AddApplicationPartsFromReferences(this ApplicationPartManager applicationPartManager, Assembly assembly)
-    {
-      if (applicationPartManager == null) { throw new ArgumentNullException(nameof(applicationPartManager)); }
-      if (assembly == null) { throw new ArgumentNullException(nameof(assembly)); }
-
-      var processedAssemblies = new HashSet<Assembly>();
-      processedAssemblies.Add(assembly);
-      LoadReferencedAssemblies(assembly, processedAssemblies);
-
-      foreach (var asm in processedAssemblies)
-      {
-        applicationPartManager.AddApplicationPart(asm);
-      }
-    }
-
-    /// <summary>Attempts to load all assemblies in the application base path and add them as application parts.</summary>
-    /// <param name="applicationPartManager">The application part manager.</param>
-    public static void AddApplicationPartsFromBasePath(this ApplicationPartManager applicationPartManager)
-    {
-      var appDomainBase = AppDomain.CurrentDomain.BaseDirectory;
-      if (!string.IsNullOrWhiteSpace(appDomainBase) && Directory.Exists(appDomainBase))
-      {
-        applicationPartManager.AddApplicationPartsFromProbingPath(appDomainBase);
-      }
-    }
-
-    /// <summary>Attempts to load and add assemblies from the specified directories as application parts.</summary>
-    /// <param name="applicationPartManager">The application part manager.</param>
-    /// <param name="directories">The directories to search.</param>
-    public static void AddApplicationPartsFromProbingPath(this ApplicationPartManager applicationPartManager, params string[] directories)
-    {
-      if (directories == null) throw new ArgumentNullException(nameof(directories));
-
-      var dirs = new Dictionary<string, SearchOption>();
-      foreach (var dir in directories)
-      {
-        dirs[dir] = SearchOption.TopDirectoryOnly;
-      }
-
-      var loadedAssemblies = AssemblyLoader.LoadAssemblies(dirs, s_logger);
-      foreach (var assembly in loadedAssemblies)
-      {
-        applicationPartManager.AddApplicationPart(assembly);
-      }
-    }
-
-    /// <summary>Attempts to load and add assemblies from the specified directories as application parts.</summary>
-    /// <param name="applicationPartManager">The application part manager.</param>
-    /// <param name="dirEnumArgs"></param>
-    /// <param name="pathNameCriteria"></param>
-    /// <param name="reflectionCriteria"></param>
-    public static void AddApplicationPartsFromProbingPath(this ApplicationPartManager applicationPartManager, Dictionary<string, SearchOption> dirEnumArgs,
-      IEnumerable<AssemblyLoaderPathNameCriterion> pathNameCriteria, IEnumerable<AssemblyLoaderReflectionCriterion> reflectionCriteria)
-    {
-      if (dirEnumArgs == null) throw new ArgumentNullException(nameof(dirEnumArgs));
-
-      var pathCriteria = (pathNameCriteria != null && pathNameCriteria.Any())
-          ? pathNameCriteria.ToArray() : new AssemblyLoaderPathNameCriterion[] { AssemblyLoaderCriteria.ExcludeResourceAssemblies };
-
-      var loadCriteria = (reflectionCriteria != null && reflectionCriteria.Any())
-          ? reflectionCriteria.ToArray() : new AssemblyLoaderReflectionCriterion[] { AssemblyLoaderCriteria.DefaultAssemblyPredicate };
-
-      var loadedAssemblies = AssemblyLoader.LoadAssemblies(dirEnumArgs, pathCriteria, loadCriteria, s_logger);
-      foreach (var assembly in loadedAssemblies)
-      {
-        applicationPartManager.AddApplicationPart(assembly);
-      }
-    }
-
-    private static void LoadReferencedAssemblies(Assembly asm, HashSet<Assembly> loadedAssemblies)
-    {
-      if (asm == null) { throw new ArgumentNullException(nameof(asm)); }
-      if (loadedAssemblies == null) { throw new ArgumentNullException(nameof(loadedAssemblies)); }
-
-      var referenced = asm.GetReferencedAssemblies();
-      foreach (var asmName in referenced)
-      {
-        try
-        {
-          var refAsm = Assembly.Load(asmName);
-          if (loadedAssemblies.Add(refAsm)) LoadReferencedAssemblies(refAsm, loadedAssemblies);
-        }
-        catch
-        {
-          // Ignore loading exceptions.
-        }
-      }
-    }
+    #endregion
   }
 }

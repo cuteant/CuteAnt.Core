@@ -5,7 +5,7 @@ using System.Linq;
 namespace CuteAnt.ApplicationParts
 {
   /// <summary>Manages the parts and features of an application.</summary>
-  public class ApplicationPartManager
+  public class ApplicationPartManager : IApplicationPartManager
   {
     private readonly List<IApplicationPart> _applicationParts = new List<IApplicationPart>();
     private readonly List<IApplicationFeatureProvider> _featureProviders = new List<IApplicationFeatureProvider>();
@@ -16,33 +16,35 @@ namespace CuteAnt.ApplicationParts
     /// <summary>Gets the list of <see cref="IApplicationFeatureProvider"/>s.</summary>
     public
 #if NET40
-      IList<IApplicationFeatureProvider> 
+      IList
 #else
-      IReadOnlyList<IApplicationFeatureProvider>
+      IReadOnlyList
 #endif
-      FeatureProviders => _featureProviders;
+      <IApplicationFeatureProvider> FeatureProviders => _featureProviders;
 
     /// <summary>Gets the list of <see cref="IApplicationPart"/>s.</summary>
     public
 #if NET40
-      IList<IApplicationPart> 
+      IList
 #else
-      IReadOnlyList<IApplicationPart>
+      IReadOnlyList
 #endif
-      ApplicationParts => _applicationParts;
+      <IApplicationPart> ApplicationParts => _applicationParts;
 
     /// <summary>Adds an application part.</summary>
     /// <param name="part">The application part.</param>
-    public void AddApplicationPart(IApplicationPart part)
+    public IApplicationPartManager AddApplicationPart(IApplicationPart part)
     {
       if (!_applicationParts.Contains(part)) { _applicationParts.Add(part); }
+      return this;
     }
 
     /// <summary>Adds a feature provider.</summary>
     /// <param name="featureProvider">The feature provider.</param>
-    public void AddFeatureProvider(IApplicationFeatureProvider featureProvider)
+    public IApplicationPartManager AddFeatureProvider(IApplicationFeatureProvider featureProvider)
     {
       if (!_featureProviders.Contains(featureProvider)) { _featureProviders.Add(featureProvider); }
+      return this;
     }
 
     /// <summary>Populates the given <paramref name="feature"/> using the list of
