@@ -3,7 +3,7 @@
   <Import Project="..\nuget.fast.props" />
   
   <PropertyGroup>
-    <TargetFramework>net40</TargetFramework>
+    <TargetFrameworks>net40</TargetFrameworks>
     <AssemblyName>FastExpressionCompiler</AssemblyName>
     <RootNamespace>FastExpressionCompiler</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -12,8 +12,47 @@
   <PropertyGroup Label="NuGet">
     <PackageId>FastExpressionCompiler.Net40</PackageId>
     <Title>FastExpressionCompiler.Net40</Title>
-    <Description>FastExpressionCompiler is up to ~20 times faster than Expression.Compile().</Description>
+    <Description>
+      The complete port of the FastExpressionCompiler assembly to support .NET Framework 4.0. 
+      You can refer (https://github.com/dadhi/FastExpressionCompiler) for more details.
+    </Description>
     <PackageTags>Performance Expression ExpressionTree Compile DynamicMethod IL ILEmit DryIoc ExpressionToCodeLib</PackageTags>
+    <PackageReleaseNotes>
+      v1.6.0
+      - added: ExpressionInfo.ToString()
+      - added: Overload to compile most generic ExpressionInfo to lambda
+      - fixed: #49 Why the result is incorrect?
+      - fixed: ExpressionInfo to Expression conversion in cirtain cases
+      v1.5.0
+      - added: #10 TryExpression support
+      - added: #18 Support Expression.Block
+      - added: #30 Expression.Assign for array indexer
+      - added: #32 Support Expression.Condition
+      - added: #35 Coalescence operator ??
+      - added: #34 Arithmetic operations
+      - added: #42 Add conversion from ExpressionInfo to Expression
+      - added: FastCompile methods for ExpressionInfo
+      - fixed: #44 Conversion to Nullable{T} throws InvalidProgramException
+      - fixed: Creation of dynamic method for un-typed delegate
+      v1.4.0:
+      - added: NetStandard 2.0 target
+      - added: #17: Expression(Info).Assign support for parameters, fields and members
+      - added: Support for ExpressionInfo.Invoke
+      v1.3.0:
+      - added: #20 Allow ExpressionInfo.MemberInit for non-New expressions
+      - fixed: #19 Nested CallExpression causes System.AccessViolationException
+      - fixed: ValueType member access
+      - fixed: False positive in TryCollectBoundConstants for not yet supported expression types
+      v1.2.2:
+      - fixed: #16: FastCompile with fallback could return null
+      v1.2.1:
+      - Lowering full .NET support to .NET 4.5
+      v1.2.0:
+      - fixed: #14, #15: Support general equality mechanism, e.g. Equals and equality operator
+      - added: #11: Support for ExpressionInfo NewArray, MemberInit, ArrayIndex, Convert, MemberAccess
+      - added: #12: Add extension method CompileFast to simplify migration from Compile
+      - added: #13: Allow Expression as child of multi-child ExpressionInfo
+    </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
