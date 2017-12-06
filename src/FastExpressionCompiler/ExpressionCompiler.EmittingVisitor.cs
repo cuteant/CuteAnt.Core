@@ -852,17 +852,17 @@ namespace FastExpressionCompiler
         var elemType = arrayType.GetElementType();
         if (elemType == null) { return false; }
 
-        var arrVar = il.DeclareLocal(arrayType);
-
-        EmitLoadConstantInt(il, elemExprObjects.Length);
-        il.Emit(OpCodes.Newarr, elemType);
-        il.Emit(OpCodes.Stloc, arrVar);
-
 #if NET40
         var isElemOfValueType = elemType.IsValueType;
 #else
         var isElemOfValueType = elemType.GetTypeInfo().IsValueType;
 #endif
+
+        var arrVar = il.DeclareLocal(arrayType);
+
+        EmitLoadConstantInt(il, elemExprObjects.Length);
+        il.Emit(OpCodes.Newarr, elemType);
+        il.Emit(OpCodes.Stloc, arrVar);
 
         for (var i = 0; i < elemExprObjects.Length; i++)
         {
