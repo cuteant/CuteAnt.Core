@@ -559,7 +559,7 @@ namespace Tests
       });
     }
 
-    [Test,Ignore]
+    [Test]
     public void LoadTest()
     {
       Test.Async(async () =>
