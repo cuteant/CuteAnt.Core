@@ -608,6 +608,12 @@ namespace CuteAnt.Collections
     /// <returns></returns>
     public Boolean TryGetValue(TKey key, out TValue value) => _innerDictionary.TryGetValue(key, out value);
 
+    /// <summary>TryRemove</summary>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public Boolean TryRemove(TKey key, out TValue value) => _innerDictionary.TryRemove(key, out value);
+
     /// <summary></summary>
     public ICollection<TValue> Values => _innerDictionary.Values;
 

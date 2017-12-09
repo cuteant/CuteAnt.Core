@@ -23,7 +23,7 @@ namespace Microsoft.Extensions.Logging
     private const string DATE_FORMAT = "yyyy-MM-dd " + TIME_FORMAT; // Example: 2010-09-02 09:50:43.341 GMT - Variant of UniversalSorta­bleDateTimePat­tern
 
     private static ILoggerFactory s_logFactory = NullLoggerFactory.Instance;
-    public static ILoggerFactory LoggerFactory { get { return s_logFactory; } }
+    public static ILoggerFactory LoggerFactory => s_logFactory;
 
     public static void Initialize(ILoggerFactory logFactory)
     {

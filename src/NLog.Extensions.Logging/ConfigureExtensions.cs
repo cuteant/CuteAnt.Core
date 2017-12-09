@@ -59,32 +59,27 @@ namespace NLog.Extensions.Logging
     /// <summary>Ignore assemblies for ${callsite}</summary>
     private static void ConfigureHiddenAssemblies()
     {
+      InternalLogger.Trace("Hide assemblies for callsite");
+
+      SafeAddHiddenAssembly("Microsoft.Extensions.Logging");
+      SafeAddHiddenAssembly("Microsoft.Extensions.Logging.Abstractions");
+      SafeAddHiddenAssembly("NLog.Extensions.Logging");
+    }
+
+    private static void SafeAddHiddenAssembly(string assemblyName, bool logOnException = true)
+    {
       try
       {
-        InternalLogger.Trace("Hide assemblies for callsite");
-
-        LogManager.AddHiddenAssembly(Assembly.Load(new AssemblyName("Microsoft.Extensions.Logging")));
-        LogManager.AddHiddenAssembly(Assembly.Load(new AssemblyName("Microsoft.Extensions.Logging.Abstractions")));
-        LogManager.AddHiddenAssembly(Assembly.Load(new AssemblyName("NLog.Extensions.Logging")));
-
-        //try
-        //{
-        //  //try the Filter ext
-        //  InternalLogger.Trace("Try hide Microsoft.Extensions.Logging.Filter assembly for callsite");
-        //  var filterAssembly = Assembly.Load(new AssemblyName("Microsoft.Extensions.Logging.Filter"));
-        //  LogManager.AddHiddenAssembly(filterAssembly);
-        //  InternalLogger.Trace("Hide Microsoft.Extensions.Logging.Filter assembly for callsite done");
-        //}
-        //catch (Exception ex)
-        //{
-        //  InternalLogger.Trace(ex, "filtering Microsoft.Extensions.Logging.Filter failed. Not an issue probably");
-        //}
-
-        InternalLogger.Trace("Hide assemblies for callsite - done");
+        InternalLogger.Trace("Hide {0}", assemblyName);
+        var assembly = Assembly.Load(new AssemblyName(assemblyName));
+        LogManager.AddHiddenAssembly(assembly);
       }
       catch (Exception ex)
       {
-        InternalLogger.Debug(ex, "failure in ignoring assemblies. This could influence the ${callsite}");
+        if (logOnException)
+        {
+          InternalLogger.Debug(ex, "Hiding assembly {0} failed. This could influence the ${callsite}", assemblyName);
+        }
       }
     }
 

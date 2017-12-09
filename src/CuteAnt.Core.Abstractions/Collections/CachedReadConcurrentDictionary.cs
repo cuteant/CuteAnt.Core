@@ -367,7 +367,21 @@ namespace CuteAnt.Collections
     /// <inheritdoc />
     public bool Remove(TKey key)
     {
-      var result = ((IDictionary<TKey, TValue>)_dictionary).Remove(key);
+      //var result = ((IDictionary<TKey, TValue>)_dictionary).Remove(key);
+      //if (result) { InvalidateCache(); }
+      //return result;
+      var result = _dictionary.TryRemove(key, out var value);
+      if (result) { InvalidateCache(); }
+      return result;
+    }
+
+    /// <summary>TryRemove</summary>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public bool TryRemove(TKey key, out TValue value)
+    {
+      var result = _dictionary.TryRemove(key, out value);
       if (result) { InvalidateCache(); }
       return result;
     }

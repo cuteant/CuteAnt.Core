@@ -1,53 +1,82 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace NLog.Extensions.Logging
 {
   /// <summary>Converts Microsoft Extension Logging ParameterList into NLog MessageTemplate ParameterList</summary>
   internal class NLogMessageParameterList : IList<NLog.MessageTemplates.MessageTemplateParameter>
   {
-    private
 #if NET40
-        IList
-#else
-        IReadOnlyList
-#endif
-        <KeyValuePair<string, object>> _parameterList;
+    private readonly IList<KeyValuePair<string, object>> _parameterList;
 
-    public NLogMessageParameterList(
-#if NET40
-      IList
+    public NLogMessageParameterList(IList<KeyValuePair<string, object>> parameterList, bool includesOriginalMessage)
 #else
-      IReadOnlyList
+    private readonly IReadOnlyList<KeyValuePair<string, object>> _parameterList;
+
+    public NLogMessageParameterList(IReadOnlyList<KeyValuePair<string, object>> parameterList, bool includesOriginalMessage)
 #endif
-      <KeyValuePair<string, object>> parameterList, bool includesOriginalMessage)
     {
-      var validParameterList = includesOriginalMessage ? null : new List<KeyValuePair<string, object>>();
+      if (!includesOriginalMessage || !IsValidParameterList(parameterList))
+      {
+        _parameterList = CreateValidParameterList(parameterList);
+      }
+      else
+      {
+        _parameterList = parameterList;
+      }
+    }
+
+    /// <summary>Verify that the input parameterList contains non-empty key-values and the orignal-format-property at the end</summary>
+#if NET40
+    private bool IsValidParameterList(IList<KeyValuePair<string, object>> parameterList)
+#else
+    private bool IsValidParameterList(IReadOnlyList<KeyValuePair<string, object>> parameterList)
+#endif
+    {
+      int parameterCount = parameterList.Count - 1;
+      for (int i = 0; i <= parameterCount; ++i)
+      {
+        var paramPair = parameterList[i];
+        if (!ValidParameterKey(paramPair.Key, i == parameterCount))
+          return false;
+      }
+
+      return true;
+    }
+
+    /// <summary>Extract all valid properties from the input parameterList, and return them in a newly allocated list</summary>
+#if NET40
+    private IList<KeyValuePair<string, object>> CreateValidParameterList(IList<KeyValuePair<string, object>> parameterList)
+#else
+    private IReadOnlyList<KeyValuePair<string, object>> CreateValidParameterList(IReadOnlyList<KeyValuePair<string, object>> parameterList)
+#endif
+    {
+      var validParameterList = new List<KeyValuePair<string, object>>(parameterList.Count + 1);
       for (int i = 0; i < parameterList.Count; ++i)
       {
         var paramPair = parameterList[i];
-        bool isNonOriginalFormatName;
-        if (!string.IsNullOrEmpty(paramPair.Key) && ((isNonOriginalFormatName = paramPair.Key != NLogLogger.OriginalFormatPropertyName) || i == parameterList.Count - 1))
-        {
-          if (validParameterList != null && isNonOriginalFormatName)
-          {
-            validParameterList.Add(paramPair);
-          }
-        }
-        else
-        {
-          if (validParameterList == null)
-          {
-            validParameterList = new List<KeyValuePair<string, object>>();
-            for (int j = 0; j < i; ++i)
-              validParameterList.Add(parameterList[j]);
-          }
-        }
+        if (!ValidParameterKey(paramPair.Key, false))
+          continue;
+
+        validParameterList.Add(parameterList[i]);
       }
-      validParameterList?.Add(new KeyValuePair<string, object>());
-      _parameterList = validParameterList ?? parameterList;
+      validParameterList.Add(new KeyValuePair<string, object>()); // Simulate NLogLogger.OriginalFormatPropertyName
+      return validParameterList;
+    }
+
+    private bool ValidParameterKey(string keyValue, bool lastKey)
+    {
+      if (string.IsNullOrEmpty(keyValue))
+        return false;   // Non-empty string not allowed
+
+      if (keyValue == NLogLogger.OriginalFormatPropertyName)
+        return lastKey; // Original format message, must be last parameter
+
+      if (lastKey)
+        return false;   // Original format message, must be last parameter
+
+      return true;
     }
 
     public NLog.MessageTemplates.MessageTemplateParameter this[int index]
@@ -100,12 +129,14 @@ namespace NLog.Extensions.Logging
 
     public void CopyTo(NLog.MessageTemplates.MessageTemplateParameter[] array, int arrayIndex)
     {
-      throw new NotSupportedException();
+      for (int i = 0; i < Count; ++i)
+        array[i + arrayIndex] = this[i];
     }
 
     public IEnumerator<NLog.MessageTemplates.MessageTemplateParameter> GetEnumerator()
     {
-      return _parameterList.Take(_parameterList.Count - 1).Select(p => new NLog.MessageTemplates.MessageTemplateParameter(p.Key, p.Value, null)).GetEnumerator();
+      for (int i = 0; i < Count; ++i)
+        yield return this[i];
     }
 
     public int IndexOf(NLog.MessageTemplates.MessageTemplateParameter item)
