@@ -1232,20 +1232,19 @@ namespace CuteAnt.Buffers
     private static BufferManagerStreamReaderPooledObjectPolicy _defaultPolicy = new BufferManagerStreamReaderPooledObjectPolicy();
     public static BufferManagerStreamReaderPooledObjectPolicy DefaultPolicy { get => _defaultPolicy; set => _defaultPolicy = value; }
 
-    private static volatile ObjectPool<BufferManagerStreamReader> _innerPool;
+    private static ObjectPool<BufferManagerStreamReader> _innerPool;
     private static ObjectPool<BufferManagerStreamReader> InnerPool
     {
       get
       {
-        if (null == _innerPool)
+        var pool = Volatile.Read(ref _innerPool);
+        if (pool == null)
         {
-          // No need for double lock - we just want to avoid extra
-          // allocations in the common case.
-          var innerPool = SynchronizedObjectPoolProvider.Default.Create(DefaultPolicy);
-          Thread.MemoryBarrier();
-          _innerPool = innerPool;
+          pool = SynchronizedObjectPoolProvider.Default.Create(DefaultPolicy);
+          var current = Interlocked.CompareExchange(ref _innerPool, pool, null);
+          if (current != null) { return current; }
         }
-        return _innerPool;
+        return pool;
       }
     }
 

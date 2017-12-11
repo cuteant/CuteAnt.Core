@@ -343,10 +343,7 @@ namespace CuteAnt.Pool
 #if DESKTOPCLR
       [EnvironmentPermission(SecurityAction.Assert, Read = "NUMBER_OF_PROCESSORS")]
 #endif
-      private static int GetProcessorCount()
-      {
-        return PlatformHelper.ProcessorCount;// Environment.ProcessorCount;
-      }
+      private static int GetProcessorCount() => Environment.ProcessorCount;
     }
 
     [Fx.Tag.SynchronizationObject(Blocking = false)]

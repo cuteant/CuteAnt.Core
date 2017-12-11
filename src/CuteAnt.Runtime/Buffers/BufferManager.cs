@@ -5,9 +5,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using CuteAnt.Pool;
 //using Nessos.LinqOptimizer.CSharp;
@@ -126,22 +127,26 @@ namespace CuteAnt.Buffers
     }
 
     private static BufferManager s_instance;
-    private static readonly Object s_lock = new Object();
 
     /// <summary>Singleton</summary>
-    public static BufferManager GlobalManager { get { return CreateSingleInstance(); } }
+    public static BufferManager GlobalManager
+    {
+      get
+      {
+        var manager = Volatile.Read(ref s_instance);
+        if (manager == null)
+        {
+          manager = CreateBufferManager(MaxBufferPoolSize, MaxIndividualBufferSize);
+          var current = Interlocked.CompareExchange(ref s_instance, manager, null);
+          if (current != null) { return current; }
+        }
+        return manager;
+      }
+    }
 
     /// <summary>Creates a new <see cref="BufferManager" /> with a specified maximum buffer pool size and a maximum size for each individual buffer in the pool.</summary>
     /// <returns>Returns a <see cref="BufferManager" /> object with the specified parameters</returns>
-    public static BufferManager CreateSingleInstance()
-    {
-      if (s_instance != null) { return s_instance; }
-      lock (s_lock)
-      {
-        if (null == s_instance) { s_instance = CreateBufferManager(MaxBufferPoolSize, MaxIndividualBufferSize); }
-      }
-      return s_instance;
-    }
+    public static BufferManager CreateSingleInstance() => GlobalManager;
 
     #endregion
 

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
 using System.Threading;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl;
@@ -13,21 +14,28 @@ namespace Grace.DependencyInjection
   {
     #region -- Singleton --
 
-    private static readonly object s_lock = new object();
-    private static DependencyInjectionContainer _singleton = null;
+    private static DependencyInjectionContainer _singleton;
 
     /// <summary>Singleton</summary>
     public static DependencyInjectionContainer Singleton
     {
       get
       {
-        if (_singleton != null) { return _singleton; }
-        lock (s_lock)
+        var container = Volatile.Read(ref _singleton);
+        if (container == null)
         {
-          if (null == _singleton) { _singleton = new DependencyInjectionContainer(); }
+          container = new DependencyInjectionContainer();
+          var current = Interlocked.CompareExchange(ref _singleton, container, null);
+          if (current != null) { return current; }
         }
-        return _singleton;
+        return container;
       }
+      //set
+      //{
+      //  Contract.Requires(value != null);
+
+      //  Volatile.Write(ref _singleton, value);
+      //}
     }
     /// <summary>ConfigureSingleton</summary>
     /// <param name="configuration"></param>
