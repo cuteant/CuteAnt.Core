@@ -37,9 +37,7 @@ namespace CuteAnt.Pool
 
     public override void Return(TPoolItem item)
     {
-      if (!_policy.Return(item)) { return; }
-
-      _innerPool.Return(item);
+      if (_policy.Return(item)) { _innerPool.Return(item); }
     }
 
     public override void Clear() => _innerPool.Clear();

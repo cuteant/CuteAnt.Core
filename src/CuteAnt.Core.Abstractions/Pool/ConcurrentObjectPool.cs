@@ -44,9 +44,7 @@ namespace CuteAnt.Pool
 
     public override void Return(TPoolItem item)
     {
-      if (!_policy.Return(item)) { return; }
-
-      if (_innerPool.Count < _maximumRetained) { _innerPool.Push(item); }
+      if (_policy.Return(item) && _innerPool.Count < _maximumRetained) { _innerPool.Push(item); }
     }
 
     public override void Clear() => _innerPool.Clear();
