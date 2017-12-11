@@ -56,6 +56,8 @@ namespace CuteAnt.Pool
     private const int maxPromotionFailures = 64;
     private const int maxReturnsBeforePromotion = 64;
     private const int maxThreadItemsPerProcessor = 16;
+    private const int zeroThreadID = 0;
+
     private Entry[] _entries;
     private GlobalPool _globalPool;
     private int _maxCount;
@@ -64,25 +66,17 @@ namespace CuteAnt.Pool
 
     internal SynchronizedPool(int maxCount)
     {
-      int threadCount = maxCount;
+      var threadCount = maxCount;
       int maxThreadCount = maxThreadItemsPerProcessor + SynchronizedPoolHelper.ProcessorCount;
-      if (threadCount > maxThreadCount)
-      {
-        threadCount = maxThreadCount;
-      }
+      if (threadCount > maxThreadCount) { threadCount = maxThreadCount; }
+
       _maxCount = maxCount;
       _entries = new Entry[threadCount];
       _pending = new PendingEntry[4];
       _globalPool = new GlobalPool(maxCount);
     }
 
-    private object ThisLock
-    {
-      get
-      {
-        return this;
-      }
-    }
+    private object ThisLock => this;
 
     public void Clear()
     {
@@ -129,7 +123,7 @@ namespace CuteAnt.Pool
           {
             return true;
           }
-          else if (threadID == 0)
+          else if (zeroThreadID == threadID)
           {
             _globalPool.DecrementMaxCount();
             _entries[i].threadID = thisThreadID;
@@ -168,7 +162,7 @@ namespace CuteAnt.Pool
           }
           break;
         }
-        else if (threadID == 0)
+        else if (zeroThreadID == threadID)
         {
           break;
         }
@@ -187,11 +181,11 @@ namespace CuteAnt.Pool
         {
           return;
         }
-        else if (threadID == 0)
+        else if (zeroThreadID == threadID)
         {
           lock (localPending)
           {
-            if (localPending[i].threadID == 0)
+            if (zeroThreadID == localPending[i].threadID)
             {
               localPending[i].threadID = thisThreadID;
               return;
@@ -216,15 +210,9 @@ namespace CuteAnt.Pool
     {
       int thisThreadID = Thread.CurrentThread.ManagedThreadId;
 
-      if (thisThreadID == 0)
-      {
-        return false;
-      }
+      if (zeroThreadID == thisThreadID) { return false; }
 
-      if (ReturnToPerThreadPool(thisThreadID, value))
-      {
-        return true;
-      }
+      if (ReturnToPerThreadPool(thisThreadID, value)) { return true; }
 
       return ReturnToGlobalPool(thisThreadID, value);
     }
@@ -249,7 +237,7 @@ namespace CuteAnt.Pool
             return false;
           }
         }
-        else if (threadID == 0)
+        else if (zeroThreadID == threadID)
         {
           break;
         }
@@ -269,17 +257,11 @@ namespace CuteAnt.Pool
     {
       int thisThreadID = Thread.CurrentThread.ManagedThreadId;
 
-      if (thisThreadID == 0)
-      {
-        return null;
-      }
+      if (zeroThreadID == thisThreadID) { return null; }
 
       T value = TakeFromPerThreadPool(thisThreadID);
 
-      if (value != null)
-      {
-        return value;
-      }
+      if (value != null) { return value; }
 
       return TakeFromGlobalPool(thisThreadID);
     }
@@ -306,7 +288,7 @@ namespace CuteAnt.Pool
             return null;
           }
         }
-        else if (threadID == 0)
+        else if (zeroThreadID == threadID)
         {
           break;
         }
@@ -361,10 +343,7 @@ namespace CuteAnt.Pool
 
       internal int MaxCount
       {
-        get
-        {
-          return _maxCount;
-        }
+        get => _maxCount;
         set
         {
           lock (ThisLock)
@@ -378,13 +357,7 @@ namespace CuteAnt.Pool
         }
       }
 
-      private object ThisLock
-      {
-        get
-        {
-          return this;
-        }
-      }
+      private object ThisLock => this;
 
       internal void DecrementMaxCount()
       {
