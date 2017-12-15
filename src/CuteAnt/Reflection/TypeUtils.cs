@@ -671,46 +671,6 @@ namespace CuteAnt.Reflection
         return Enumerable.Empty<Type>();
       }
     }
-
-    //public static IEnumerable<Type> GetDefinedTypes(Assembly assembly, ILogger logger)
-    //{
-    //  try
-    //  {
-    //    return assembly.GetTypes();
-    //  }
-    //  catch (Exception exception)
-    //  {
-    //    if (exception is ReflectionTypeLoadException typeLoadException)
-    //    {
-    //      if (typeLoadException.LoaderExceptions != null)
-    //      {
-    //        //
-    //        // If we've only BadImageFormatExceptions in LoaderExceptions, then it's ok to not to log, otherwise log
-    //        // as a warning.
-    //        //
-
-    //        if (logger.IsWarningLevelEnabled())
-    //        {
-    //          if (typeLoadException.LoaderExceptions.Any(ex => !(ex is BadImageFormatException)))
-    //          {
-    //            var message = $"Exception loading types from assembly '{assembly.FullName}': {TraceLogger.PrintException(exception)}.";
-    //            logger.LogWarning(exception, message);
-    //          }
-    //        }
-    //      }
-
-    //      return typeLoadException.Types?.Where(type => type != null) ?? Enumerable.Empty<Type>();
-    //    }
-
-    //    if (logger.IsWarningLevelEnabled())
-    //    {
-    //      var message = $"Exception loading types from assembly '{assembly.FullName}': {TraceLogger.PrintException(exception)}.";
-    //      logger.LogWarning(exception, message);
-    //    }
-
-    //    return Enumerable.Empty<Type>();
-    //  }
-    //}
 #else
     public static IEnumerable<Type> GetTypes(Assembly assembly, Predicate<Type> whereFunc, ILogger logger = null)
     {
@@ -741,47 +701,6 @@ namespace CuteAnt.Reflection
         return Enumerable.Empty<TypeInfo>();
       }
     }
-
-    //public static IEnumerable<TypeInfo> GetDefinedTypes(Assembly assembly, ILogger logger)
-    //{
-    //  try
-    //  {
-    //    return assembly.DefinedTypes;
-    //  }
-    //  catch (Exception exception)
-    //  {
-    //    if (exception is ReflectionTypeLoadException typeLoadException)
-    //    {
-    //      if (typeLoadException.LoaderExceptions != null)
-    //      {
-    //        //
-    //        // If we've only BadImageFormatExceptions in LoaderExceptions, then it's ok to not to log, otherwise log
-    //        // as a warning.
-    //        //
-
-    //        if (logger.IsWarningLevelEnabled())
-    //        {
-    //          if (typeLoadException.LoaderExceptions.Any(ex => !(ex is BadImageFormatException)))
-    //          {
-    //            var message = $"Exception loading types from assembly '{assembly.FullName}': {TraceLogger.PrintException(exception)}.";
-    //            logger.LogWarning(exception, message);
-    //          }
-    //        }
-    //      }
-
-    //      return typeLoadException.Types?.Where(type => type != null).Select(type => type.GetTypeInfo()) ??
-    //             Enumerable.Empty<TypeInfo>();
-    //    }
-
-    //    if (logger.IsWarningLevelEnabled())
-    //    {
-    //      var message = $"Exception loading types from assembly '{assembly.FullName}': {TraceLogger.PrintException(exception)}.";
-    //      logger.LogWarning(exception, message);
-    //    }
-
-    //    return Enumerable.Empty<TypeInfo>();
-    //  }
-    //}
 #endif
 
     #endregion
