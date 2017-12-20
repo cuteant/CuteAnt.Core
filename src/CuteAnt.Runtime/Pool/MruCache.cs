@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace CuteAnt.Pool
 {
-  internal class MruCache<TKey, TValue> : IDisposable
+  public class MruCache<TKey, TValue> : IDisposable
       where TKey : class
       where TValue : class
   {

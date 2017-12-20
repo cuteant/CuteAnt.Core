@@ -4,12 +4,14 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+#if !NET40
+using System.Threading.Tasks;
+#endif
 #if DESKTOPCLR
 using System.Diagnostics;
 using System.ServiceModel;
 using CuteAnt.Runtime.Interop;
 #else
-using System.Threading.Tasks;
 using CuteAnt.Runtime;
 #endif
 
@@ -38,7 +40,7 @@ namespace CuteAnt.Pool
             {
               try
               {
-#if DESKTOPCLR
+#if NET40
                 s_machineName = Dns.GetHostEntry(String.Empty).HostName;
 #else
                 s_machineName = Dns.GetHostEntryAsync(String.Empty).GetAwaiter().GetResult().HostName;
@@ -62,10 +64,11 @@ namespace CuteAnt.Pool
       }
     }
 
-#if DESKTOPCLR
-    public static IPHostEntry Resolve(Uri uri)
+#if NET40
+    public static IPHostEntry Resolve(Uri uri) => Resolve(uri.DnsSafeHost);
+
+    public static IPHostEntry Resolve(string hostName)
     {
-      string hostName = uri.DnsSafeHost;
       IPHostEntry hostEntry = null;
       DateTime now = DateTime.UtcNow;
 
@@ -135,9 +138,10 @@ namespace CuteAnt.Pool
       public DateTime TimeStamp => _timeStamp;
     }
 #else
-    public static async Task<IPAddress[]> ResolveAsync(Uri uri)
+    public static Task<IPAddress[]> ResolveAsync(Uri uri) => ResolveAsync(uri.DnsSafeHost);
+
+    public static async Task<IPAddress[]> ResolveAsync(string hostName)
     {
-      string hostName = uri.DnsSafeHost;
       IPAddress[] hostAddresses = null;
       DateTime now = DateTime.UtcNow;
 

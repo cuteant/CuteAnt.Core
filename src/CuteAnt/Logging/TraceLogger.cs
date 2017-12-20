@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using CuteAnt.Text;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -27,7 +28,7 @@ namespace Microsoft.Extensions.Logging
 
     public static void Initialize(ILoggerFactory logFactory)
     {
-      s_logFactory = logFactory;
+      Interlocked.Exchange(ref s_logFactory, logFactory);
     }
 
     #region -- GetLogger --
