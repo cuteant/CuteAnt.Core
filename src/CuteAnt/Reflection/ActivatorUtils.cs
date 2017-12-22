@@ -327,7 +327,7 @@ namespace CuteAnt.Reflection
       return bestMatcher.Invocation.Invoke(parameterValues);
     }
 
-    public static object CreateInstance<TInstance>(IServiceProvider serviceProvider, params object[] parameters)
+    public static TInstance CreateInstance<TInstance>(IServiceProvider serviceProvider, params object[] parameters)
     {
       int bestLength = -1;
       ConstructorMatcher<TInstance> bestMatcher = null;
