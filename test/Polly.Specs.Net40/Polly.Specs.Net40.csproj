@@ -34,27 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="CuteAnt.AsyncEx">
-      <HintPath>..\..\src\Polly\bin\Debug\net40\CuteAnt.AsyncEx.dll</HintPath>
-    </Reference>
-    <Reference Include="CuteAnt.Core">
-      <HintPath>..\..\src\Polly\bin\Debug\net40\CuteAnt.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="CuteAnt.Core.Abstractions">
-      <HintPath>..\..\src\Polly\bin\Debug\net40\CuteAnt.Core.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Primitives">
-      <HintPath>..\..\src\Polly\bin\Debug\net40\Microsoft.Extensions.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="Polly">
-      <HintPath>..\..\src\Polly\bin\Debug\net40\Polly.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Collections.Immutable">
-      <HintPath>..\..\src\Polly\bin\Debug\net40\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reflection.Metadata">
-      <HintPath>..\..\src\Polly\bin\Debug\net40\System.Reflection.Metadata.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\src\Polly\Polly.csproj" />
   </ItemGroup>
 
   <ItemGroup>

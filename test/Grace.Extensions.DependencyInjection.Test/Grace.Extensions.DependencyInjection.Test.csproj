@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>Grace.Extensions.DependencyInjection.Test</RootNamespace>
     <AssemblyName>Grace.Extensions.DependencyInjection.Test</AssemblyName>
-    <TargetFrameworks>netcoreapp2.0;net452</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;net452</TargetFrameworks>
     <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">$(NETCoreApp2RuntimeFrameworkVersion)</RuntimeFrameworkVersion>
   </PropertyGroup>
 
@@ -14,7 +14,7 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="$(xUnitRunnerVsPackageVersion)" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net471' or '$(TargetFramework)' == 'netcoreapp2.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net471' or '$(TargetFramework)' == 'netcoreapp2.1' ">
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsDependencyInjectionPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="$(MicrosoftExtensionsOptionsPackageVersion)" />
   </ItemGroup>

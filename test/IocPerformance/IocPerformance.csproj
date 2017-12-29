@@ -169,14 +169,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Autofac.Extras.DynamicProxy\Autofac.Extras.DynamicProxy.csproj">
-      <Project>{b0042da4-b2ff-431a-b324-a42758200b5f}</Project>
-      <Name>Autofac.Extras.DynamicProxy</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Autofac\Autofac.csproj">
-      <Project>{c9fdffae-4858-4077-be92-541a1972a073}</Project>
-      <Name>Autofac</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\CuteAnt.Core.Abstractions\CuteAnt.Core.Abstractions.csproj">
       <Project>{088742ee-16d9-440d-b142-86acc4815be7}</Project>
       <Name>CuteAnt.Core.Abstractions</Name>
@@ -187,6 +179,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Autofac">
+      <Version>4.6.2</Version>
+    </PackageReference>
     <PackageReference Include="Catel.Core">
       <Version>5.2.0</Version>
     </PackageReference>

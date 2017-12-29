@@ -24,7 +24,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
-    <ProjectReference Include="..\CuteAnt.AsyncEx\CuteAnt.AsyncEx.csproj" />
+    <PackageReference Include="CuteAnt.AsyncEx" Version="$(CuteAntAsyncExPackageVersion)" />
   </ItemGroup>
   
 </Project>

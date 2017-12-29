@@ -2,7 +2,7 @@
   <PropertyGroup>
     <RootNamespace>CuteAnt.Tests</RootNamespace>
     <AssemblyName>CuteAnt.Tests</AssemblyName>
-    <TargetFramework>net452</TargetFramework>
+    <TargetFramework>net45</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,31 +11,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsPackageVersion)" />
-    <PackageReference Include="xunit" Version="$(xUnitPackageVersion)" />
-    <PackageReference Include="xunit.analyzers" Version="$(xUnitAnalyzersPackageVersion)" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="$(xUnitRunnerVsPackageVersion)" />
-    <PackageReference Include="Xunit.SkippableFact" Version="$(xUnitSkippableFactPackageVersion)" />
-    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTuplePackageVersion)" />
+    <Content Include="..\CuteAnt.Tests\xunit.runner.json" Link="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="CuteAnt.Core">
-      <HintPath>..\..\src\CuteAnt\bin\Debug\net40\CuteAnt.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="CuteAnt.Core.Abstractions">
-      <HintPath>..\..\src\CuteAnt\bin\Debug\net40\CuteAnt.Core.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Primitives">
-      <HintPath>..\..\src\CuteAnt\bin\Debug\net40\Microsoft.Extensions.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Collections.Immutable">
-      <HintPath>..\..\src\CuteAnt\bin\Debug\net40\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reflection.Metadata">
-      <HintPath>..\..\src\CuteAnt\bin\Debug\net40\System.Reflection.Metadata.dll</HintPath>
-    </Reference>
+    <PackageReference Include="xunit" Version="2.1.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.1.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\CuteAnt.Core.Abstractions\CuteAnt.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\CuteAnt\CuteAnt.Core.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <None Update="xunit.runner.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
