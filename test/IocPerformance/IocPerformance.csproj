@@ -179,7 +179,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac">
+    <PackageReference Include="Autofac.Unofficial">
+      <Version>4.6.2</Version>
+    </PackageReference>
+    <PackageReference Include="Autofac.Extras.DynamicProxy.Unofficial">
       <Version>4.6.2</Version>
     </PackageReference>
     <PackageReference Include="Catel.Core">

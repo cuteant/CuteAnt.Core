@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>netcoreapp2.0;net471</TargetFrameworks>
+    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">$(NETCoreApp2RuntimeFrameworkVersion)</RuntimeFrameworkVersion>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac.Unofficial" Version="$(AutofacUnofficialPackageVersion)" />
+    <PackageReference Include="BenchmarkDotNet" Version="$(BenchmarkDotNetPackageVersion)" />
+    <PackageReference Include="Castle.Windsor" Version="4.1.0" />
+    <PackageReference Include="DryIoc.dll" Version="2.12.6" />
+    <PackageReference Include="LightInject" Version="5.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsDependencyInjectionPackageVersion)" />
+    <PackageReference Include="Ninject" Version="4.0.0-beta-0134" />
+    <PackageReference Include="SimpleInjector" Version="4.0.12" />
+    <PackageReference Include="StructureMap" Version="4.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Benchmarks\Generic\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\CuteAnt\CuteAnt.Core.csproj" />
+  </ItemGroup>
+
+</Project>
