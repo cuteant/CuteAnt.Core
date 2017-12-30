@@ -59,11 +59,11 @@ namespace FastExpressionCompiler
     }
 
     [DebuggerDisplay("Expression={ConstantExpr}")]
-    private struct ConstantInfo
+    private readonly struct ConstantInfo
     {
-      public object ConstantExpr;
-      public Type Type;
-      public object Value;
+      public readonly object ConstantExpr;
+      public readonly Type Type;
+      public readonly object Value;
       public ConstantInfo(object constantExpr, object value, Type type)
       {
         ConstantExpr = constantExpr;

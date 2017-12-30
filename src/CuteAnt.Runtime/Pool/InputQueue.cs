@@ -62,7 +62,7 @@ namespace CuteAnt.Pool
 
     public IAsyncResult BeginDequeue(TimeSpan timeout, AsyncCallback callback, object state)
     {
-      Item item = default(Item);
+      Item item = default;
 
       lock (ThisLock)
       {
@@ -441,7 +441,7 @@ namespace CuteAnt.Pool
         while (_readerQueue.Count > 0)
         {
           IQueueReader reader = _readerQueue.Dequeue();
-          reader.Set(default(Item));
+          reader.Set(default);
         }
 
         while (_itemQueue.HasAnyItem)
@@ -453,7 +453,7 @@ namespace CuteAnt.Pool
       }
     }
 
-    private void DisposeItem(Item item)
+    private void DisposeItem(in Item item)
     {
       T value = item.Value;
       if (value != null)
@@ -476,7 +476,7 @@ namespace CuteAnt.Pool
 
       for (int i = 0; i < outstandingReaders.Length; i++)
       {
-        outstandingReaders[i].Set(default(Item));
+        outstandingReaders[i].Set(default);
       }
     }
 
@@ -551,7 +551,7 @@ namespace CuteAnt.Pool
       dequeuedCallback();
     }
 
-    private void EnqueueAndDispatch(Item item, bool canDispatchOnThisThread)
+    private void EnqueueAndDispatch(in Item item, bool canDispatchOnThisThread)
     {
       bool disposeItem = false;
       IQueueReader reader = null;
@@ -632,7 +632,7 @@ namespace CuteAnt.Pool
 
     // This will not block, however, Dispatch() must be called later if this function
     // returns true.
-    private bool EnqueueWithoutDispatch(Item item)
+    private bool EnqueueWithoutDispatch(in Item item)
     {
       lock (ThisLock)
       {
@@ -711,7 +711,7 @@ namespace CuteAnt.Pool
 
     private interface IQueueReader
     {
-      void Set(Item item);
+      void Set(in Item item);
     }
 
     private interface IQueueWaiter
@@ -719,11 +719,11 @@ namespace CuteAnt.Pool
       void Set(bool itemAvailable);
     }
 
-    private struct Item
+    private readonly struct Item
     {
-      private Action _dequeuedCallback;
-      private Exception _exception;
-      private T _value;
+      private readonly Action _dequeuedCallback;
+      private readonly Exception _exception;
+      private readonly T _value;
 
       public Item(T value, Action dequeuedCallback)
           : this(value, null, dequeuedCallback)
@@ -828,7 +828,7 @@ namespace CuteAnt.Pool
         }
       }
 
-      public void Set(Item item)
+      public void Set(in Item item)
       {
         _item = item.Value;
         if (_timer != null)
@@ -961,12 +961,12 @@ namespace CuteAnt.Pool
         return DequeueItemCore();
       }
 
-      public void EnqueueAvailableItem(Item item)
+      public void EnqueueAvailableItem(in Item item)
       {
         EnqueueItemCore(item);
       }
 
-      public void EnqueuePendingItem(Item item)
+      public void EnqueuePendingItem(in Item item)
       {
         EnqueueItemCore(item);
         _pendingCount++;
@@ -988,7 +988,7 @@ namespace CuteAnt.Pool
         return item;
       }
 
-      private void EnqueueItemCore(Item item)
+      private void EnqueueItemCore(in Item item)
       {
         if (_totalCount == _items.Length)
         {
@@ -1022,7 +1022,7 @@ namespace CuteAnt.Pool
         _waitEvent = new ManualResetEvent(false);
       }
 
-      public void Set(Item item)
+      public void Set(in Item item)
       {
         lock (this)
         {

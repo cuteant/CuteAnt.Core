@@ -3,7 +3,7 @@
 namespace CuteAnt.Pool
 {
   /// <summary>this is RAII object to automatically release pooled object when its owning pool.</summary>
-  public struct PooledObject<T> : IDisposable where T : class
+  public readonly struct PooledObject<T> : IDisposable where T : class
   {
     private readonly ObjectPool<T> _pool;
     private readonly T _pooledObject;

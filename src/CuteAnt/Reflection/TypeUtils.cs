@@ -1716,7 +1716,7 @@ namespace CuteAnt.Reflection
       return TryPerformUncachedTypeResolution(typeNameKey, out type);
     }
 
-    internal static Type ResolveType(TypeNameKey typeNameKey)
+    internal static Type ResolveType(in TypeNameKey typeNameKey)
     {
       if (TryResolveType(typeNameKey, out var result)) { return result; }
 
@@ -1724,7 +1724,7 @@ namespace CuteAnt.Reflection
     }
 
     /// <inheritdoc />
-    internal static bool TryResolveType(TypeNameKey typeNameKey, out Type type)
+    internal static bool TryResolveType(in TypeNameKey typeNameKey, out Type type)
     {
       if (_typeNameKeyCache.TryGetValue(typeNameKey, out type)) { return true; }
 
@@ -1735,13 +1735,13 @@ namespace CuteAnt.Reflection
     }
 
     [MethodImpl(InlineMethod.Value)]
-    private static void AddTypeToCache(TypeNameKey typeNameKey, Type type)
+    private static void AddTypeToCache(in TypeNameKey typeNameKey, Type type)
     {
       var entry = _typeNameKeyCache.GetOrAdd(typeNameKey, _ => type);
       if (!ReferenceEquals(entry, type)) { throw new InvalidOperationException("inconsistent type name association"); }
     }
 
-    internal static bool TryPerformUncachedTypeResolution(TypeNameKey typeNameKey, out Type type)
+    internal static bool TryPerformUncachedTypeResolution(in TypeNameKey typeNameKey, out Type type)
     {
       string assemblyName = typeNameKey.AssemblyName;
       string typeName = typeNameKey.TypeName;

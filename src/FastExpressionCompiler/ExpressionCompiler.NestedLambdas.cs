@@ -31,13 +31,13 @@ namespace FastExpressionCompiler
 {
   partial class ExpressionCompiler
   {
-    private struct NestedLambdaInfo
+    private readonly struct NestedLambdaInfo
     {
-      public ClosureInfo ClosureInfo;
+      public readonly ClosureInfo ClosureInfo;
 
-      public object LambdaExpr; // to find the lambda in bigger parent expression
-      public object Lambda;
-      public bool IsAction;
+      public readonly object LambdaExpr; // to find the lambda in bigger parent expression
+      public readonly object Lambda;
+      public readonly bool IsAction;
 
       public NestedLambdaInfo(ClosureInfo closureInfo, object lambdaExpr, object lambda, bool isAction)
       {

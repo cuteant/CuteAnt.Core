@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace CuteAnt.Reflection
 {
   // 这儿的 TypeName 存储的是 Type.AssemblyQualifiedName, 与 Newtonsoft.Json 不同需要注意
-  internal struct TypeNameKey : IEquatable<TypeNameKey>
+  internal readonly struct TypeNameKey : IEquatable<TypeNameKey>
   {
     internal readonly string AssemblyName;
     internal readonly string TypeName;
@@ -97,9 +97,9 @@ namespace CuteAnt.Reflection
       if (x == y) return true;
       if (x == null || y == null) return false;
 
-      if (x is TypeNameKey)
+      if (x is TypeNameKey key)
       {
-        return ((TypeNameKey)x).Equals(y);
+        return key.Equals(y);
       }
       return x.Equals(y);
     }

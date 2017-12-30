@@ -28,13 +28,13 @@ using System.Reflection;
 namespace FastExpressionCompiler
 {
   /// <summary>MemberAssignment analog.</summary>
-  public struct MemberAssignmentInfo
+  public readonly struct MemberAssignmentInfo
   {
     /// <summary>Member to assign to.</summary>
-    public MemberInfo Member;
+    public readonly MemberInfo Member;
 
     /// <summary>Expression to assign</summary>
-    public ExpressionInfo Expression;
+    public readonly ExpressionInfo Expression;
 
     /// <summary>Converts back to MemberAssignment</summary>
     public MemberBinding ToMemberAssignment() => System.Linq.Expressions.Expression.Bind(Member, Expression.ToExpression());
