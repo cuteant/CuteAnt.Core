@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;net452</TargetFrameworks>
-    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">$(NETCoreApp2RuntimeFrameworkVersion)</RuntimeFrameworkVersion>
+    <TargetFrameworks>netcoreapp2.0;net452</TargetFrameworks>
     <AssemblyName>Grace.Tests</AssemblyName>
     <RootNamespace>Grace.Test</RootNamespace>
     <SignAssembly>false</SignAssembly>
