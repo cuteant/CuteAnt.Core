@@ -2,7 +2,7 @@
   <PropertyGroup>
     <RootNamespace>CuteAnt.Tests</RootNamespace>
     <AssemblyName>CuteAnt.Tests</AssemblyName>
-    <TargetFrameworks>netcoreapp2.1;net452</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net452</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

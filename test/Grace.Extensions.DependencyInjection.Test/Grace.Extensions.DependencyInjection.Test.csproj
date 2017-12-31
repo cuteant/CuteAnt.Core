@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>Grace.Extensions.DependencyInjection.Test</RootNamespace>
     <AssemblyName>Grace.Extensions.DependencyInjection.Test</AssemblyName>
-    <TargetFrameworks>netcoreapp2.1;net452</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net452</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +13,7 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="$(xUnitRunnerVsPackageVersion)" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net471' or '$(TargetFramework)' == 'netcoreapp2.1' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net471' or '$(TargetFramework)' == 'netcoreapp2.1' or '$(TargetFramework)' == 'netcoreapp2.0' ">
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsDependencyInjectionPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="$(MicrosoftExtensionsOptionsPackageVersion)" />
   </ItemGroup>
@@ -25,7 +25,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\CuteAnt.Core.Abstractions\CuteAnt.Core.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\CuteAnt\CuteAnt.Core.csproj" />
-    <ProjectReference Include="..\..\src\Grace.Extensions.DependencyInjection\Grace.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
 
 </Project>
