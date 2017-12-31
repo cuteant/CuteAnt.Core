@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' != 'net40' ">
-    <PackageReference Include="CoreFxLab.Buffers.Experimental" Version="$(CoreFxLabBuffersExperimentalPackageVersion)" />
+    <PackageReference Include="System.Buffers.Experimental" Version="$(SystemBuffersExperimentalPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>
