@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace CuteAnt.Buffers
   /// when the buffer pool is reclaimed by garbage collection. Every time you need to use a buffer, you take one from the pool, use it, 
   /// and return it to the pool when done. This process is much faster than creating and destroying a buffer every time you need to use one.
   /// </summary>
-  public abstract class BufferManager
+  public abstract partial class BufferManager
   {
     /// <summary>Gets a buffer of at least the specified size from the pool.</summary>
     /// <param name="bufferSize">The size, in bytes, of the requested buffer.</param>
@@ -131,6 +132,7 @@ namespace CuteAnt.Buffers
     /// <summary>Singleton</summary>
     public static BufferManager GlobalManager
     {
+      [MethodImpl(InlineMethod.Value)]
       get
       {
         var manager = Volatile.Read(ref s_instance);
@@ -154,8 +156,7 @@ namespace CuteAnt.Buffers
 
     internal static InternalBufferManager GetInternalBufferManager(BufferManager bufferManager)
     {
-      var wrappingBufferManager = bufferManager as WrappingBufferManager;
-      if (wrappingBufferManager != null)
+      if (bufferManager is WrappingBufferManager wrappingBufferManager)
       {
         return wrappingBufferManager.InternalBufferManager;
       }
@@ -173,16 +174,11 @@ namespace CuteAnt.Buffers
     {
       private InternalBufferManager _innerBufferManager;
 
-      public WrappingBufferManager(InternalBufferManager innerBufferManager)
-      {
-        _innerBufferManager = innerBufferManager;
-      }
+      public WrappingBufferManager(InternalBufferManager innerBufferManager) => _innerBufferManager = innerBufferManager;
 
-      public InternalBufferManager InternalBufferManager
-      {
-        get { return _innerBufferManager; }
-      }
+      public InternalBufferManager InternalBufferManager => _innerBufferManager;
 
+      [MethodImpl(InlineMethod.Value)]
       public override byte[] TakeBuffer(int bufferSize)
       {
         if (bufferSize < 0)
@@ -195,6 +191,7 @@ namespace CuteAnt.Buffers
         return _innerBufferManager.TakeBuffer(bufferSize);
       }
 
+      [MethodImpl(InlineMethod.Value)]
       public override void ReturnBuffer(byte[] buffer)
       {
         if (buffer == null)
@@ -205,10 +202,8 @@ namespace CuteAnt.Buffers
         _innerBufferManager.ReturnBuffer(buffer);
       }
 
-      public override void Clear()
-      {
-        _innerBufferManager.Clear();
-      }
+      [MethodImpl(InlineMethod.Value)]
+      public override void Clear() => _innerBufferManager.Clear();
     }
 
     #endregion
@@ -219,25 +214,16 @@ namespace CuteAnt.Buffers
     {
       private BufferManager _innerBufferManager;
 
-      internal WrappingInternalBufferManager(BufferManager innerBufferManager)
-      {
-        _innerBufferManager = innerBufferManager;
-      }
+      internal WrappingInternalBufferManager(BufferManager innerBufferManager) => _innerBufferManager = innerBufferManager;
 
-      internal override void Clear()
-      {
-        _innerBufferManager.Clear();
-      }
+      [MethodImpl(InlineMethod.Value)]
+      internal override void Clear() => _innerBufferManager.Clear();
 
-      internal override void ReturnBuffer(byte[] buffer)
-      {
-        _innerBufferManager.ReturnBuffer(buffer);
-      }
+      [MethodImpl(InlineMethod.Value)]
+      internal override void ReturnBuffer(byte[] buffer) => _innerBufferManager.ReturnBuffer(buffer);
 
-      internal override byte[] TakeBuffer(int bufferSize)
-      {
-        return _innerBufferManager.TakeBuffer(bufferSize);
-      }
+      [MethodImpl(InlineMethod.Value)]
+      internal override byte[] TakeBuffer(int bufferSize) => _innerBufferManager.TakeBuffer(bufferSize);
     }
 
     #endregion

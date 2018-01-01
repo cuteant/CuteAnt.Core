@@ -1,10 +1,6 @@
 ﻿namespace CuteAnt.IO
 {
   using System;
-  using System.Collections.Generic;
-  using System.Diagnostics.CodeAnalysis;
-  using System.IO;
-  using System.Threading;
 
   public partial class RecyclableMemoryStream
   {

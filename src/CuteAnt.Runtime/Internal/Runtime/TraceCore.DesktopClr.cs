@@ -9,6 +9,7 @@
 #if DESKTOPCLR
 using CuteAnt.Diagnostics;
 using System.Security;
+using System.Runtime.CompilerServices;
 
 namespace CuteAnt.Diagnostics
 {
@@ -89,6 +90,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57393, Level=informational, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool AppDomainUnloadIsEnabled(EtwDiagnosticTrace trace)
     {
       return (trace.ShouldTrace(TraceEventLevel.Informational) || TraceCore.IsEtwEventEnabled(trace, 0));
@@ -102,6 +104,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="appdomainName">Parameter 0 for event: AppDomain unloading. AppDomain.FriendlyName {0}, ProcessName {1}, ProcessId {2}.</param>
     /// <param name="processName">Parameter 1 for event: AppDomain unloading. AppDomain.FriendlyName {0}, ProcessName {1}, ProcessId {2}.</param>
     /// <param name="processId">Parameter 2 for event: AppDomain unloading. AppDomain.FriendlyName {0}, ProcessName {1}, ProcessId {2}.</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void AppDomainUnload(EtwDiagnosticTrace trace, string appdomainName, string processName, string processId)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, null);
@@ -121,6 +124,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57394, Level=informational, Channel=Analytic
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool HandledExceptionIsEnabled(EtwDiagnosticTrace trace)
     {
       return (trace.ShouldTrace(TraceEventLevel.Informational) || TraceCore.IsEtwEventEnabled(trace, 1));
@@ -133,6 +137,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="trace">The trace provider</param>
     /// <param name="param0">Parameter 0 for event: Handling an exception.  Exception details: {0}</param>
     /// <param name="exception">Exception associated with the event</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void HandledException(EtwDiagnosticTrace trace, string param0, System.Exception exception)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, exception);
@@ -152,6 +157,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57395, Level=error, Channel=Analytic
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool ShipAssertExceptionMessageIsEnabled(EtwDiagnosticTrace trace)
     {
       return (trace.ShouldTrace(TraceEventLevel.Error) || TraceCore.IsEtwEventEnabled(trace, 2));
@@ -163,6 +169,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="param0">Parameter 0 for event: An unexpected failure occurred. Applications should not attempt to handle this error. For diagnostic purposes, this English message is associated with the failure: {0}.</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void ShipAssertExceptionMessage(EtwDiagnosticTrace trace, string param0)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, null);
@@ -182,6 +189,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57396, Level=warning, Channel=Analytic
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool ThrowingExceptionIsEnabled(EtwDiagnosticTrace trace)
     {
       return (trace.ShouldTrace(TraceEventLevel.Warning) || TraceCore.IsEtwEventEnabled(trace, 3));
@@ -195,6 +203,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="param0">Parameter 0 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="param1">Parameter 1 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="exception">Exception associated with the event</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void ThrowingException(EtwDiagnosticTrace trace, string param0, string param1, System.Exception exception)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, exception);
@@ -214,6 +223,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57397, Level=critical, Channel=Operational
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool UnhandledExceptionIsEnabled(EtwDiagnosticTrace trace)
     {
       return (trace.ShouldTrace(TraceEventLevel.Critical) || TraceCore.IsEtwEventEnabled(trace, 4));
@@ -226,6 +236,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="trace">The trace provider</param>
     /// <param name="param0">Parameter 0 for event: Unhandled exception.  Exception details: {0}</param>
     /// <param name="exception">Exception associated with the event</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void UnhandledException(EtwDiagnosticTrace trace, string param0, System.Exception exception)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, exception);
@@ -245,6 +256,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57399, Level=critical, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool TraceCodeEventLogCriticalIsEnabled(EtwDiagnosticTrace trace)
     {
       return (trace.ShouldTrace(TraceEventLevel.Critical) || TraceCore.IsEtwEventEnabled(trace, 5));
@@ -256,6 +268,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="traceRecord">Extended data (TraceRecord) for the event</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void TraceCodeEventLogCritical(EtwDiagnosticTrace trace, TraceRecord traceRecord)
     {
       TracePayload payload = trace.GetSerializedPayload(null, traceRecord, null);
@@ -275,6 +288,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57400, Level=error, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool TraceCodeEventLogErrorIsEnabled(EtwDiagnosticTrace trace)
     {
       return (trace.ShouldTrace(TraceEventLevel.Error) || TraceCore.IsEtwEventEnabled(trace, 6));
@@ -286,6 +300,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="traceRecord">Extended data (TraceRecord) for the event</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void TraceCodeEventLogError(EtwDiagnosticTrace trace, TraceRecord traceRecord)
     {
       TracePayload payload = trace.GetSerializedPayload(null, traceRecord, null);
@@ -305,6 +320,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57401, Level=informational, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool TraceCodeEventLogInfoIsEnabled(EtwDiagnosticTrace trace)
     {
       return (trace.ShouldTrace(TraceEventLevel.Informational) || TraceCore.IsEtwEventEnabled(trace, 7));
@@ -316,6 +332,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="traceRecord">Extended data (TraceRecord) for the event</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void TraceCodeEventLogInfo(EtwDiagnosticTrace trace, TraceRecord traceRecord)
     {
       TracePayload payload = trace.GetSerializedPayload(null, traceRecord, null);
@@ -335,6 +352,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57402, Level=verbose, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool TraceCodeEventLogVerboseIsEnabled(EtwDiagnosticTrace trace)
     {
       return (trace.ShouldTrace(TraceEventLevel.Verbose) || TraceCore.IsEtwEventEnabled(trace, 8));
@@ -346,6 +364,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="traceRecord">Extended data (TraceRecord) for the event</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void TraceCodeEventLogVerbose(EtwDiagnosticTrace trace, TraceRecord traceRecord)
     {
       TracePayload payload = trace.GetSerializedPayload(null, traceRecord, null);
@@ -365,6 +384,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57403, Level=warning, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool TraceCodeEventLogWarningIsEnabled(EtwDiagnosticTrace trace)
     {
       return (trace.ShouldTrace(TraceEventLevel.Warning) || TraceCore.IsEtwEventEnabled(trace, 9));
@@ -376,6 +396,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="traceRecord">Extended data (TraceRecord) for the event</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void TraceCodeEventLogWarning(EtwDiagnosticTrace trace, TraceRecord traceRecord)
     {
       TracePayload payload = trace.GetSerializedPayload(null, traceRecord, null);
@@ -395,6 +416,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57404, Level=warning, Channel=Analytic
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool HandledExceptionWarningIsEnabled(EtwDiagnosticTrace trace)
     {
       return (trace.ShouldTrace(TraceEventLevel.Warning) || TraceCore.IsEtwEventEnabled(trace, 10));
@@ -407,6 +429,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="trace">The trace provider</param>
     /// <param name="param0">Parameter 0 for event: Handling an exception. Exception details: {0}</param>
     /// <param name="exception">Exception associated with the event</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void HandledExceptionWarning(EtwDiagnosticTrace trace, string param0, System.Exception exception)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, exception);
@@ -426,6 +449,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=131, Level=verbose, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool BufferPoolAllocationIsEnabled(EtwDiagnosticTrace trace)
     {
       return TraceCore.IsEtwEventEnabled(trace, 11);
@@ -437,6 +461,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="Size">Parameter 0 for event: Pool allocating {0} Bytes.</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void BufferPoolAllocation(EtwDiagnosticTrace trace, int Size)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, null);
@@ -451,6 +476,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=132, Level=verbose, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool BufferPoolChangeQuotaIsEnabled(EtwDiagnosticTrace trace)
     {
       return TraceCore.IsEtwEventEnabled(trace, 12);
@@ -463,6 +489,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="trace">The trace provider</param>
     /// <param name="PoolSize">Parameter 0 for event: BufferPool of size {0}, changing quota by {1}.</param>
     /// <param name="Delta">Parameter 1 for event: BufferPool of size {0}, changing quota by {1}.</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void BufferPoolChangeQuota(EtwDiagnosticTrace trace, int PoolSize, int Delta)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, null);
@@ -477,6 +504,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=133, Level=verbose, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool ActionItemScheduledIsEnabled(EtwDiagnosticTrace trace)
     {
       return TraceCore.IsEtwEventEnabled(trace, 13);
@@ -488,6 +516,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="eventTraceActivity">The event trace activity</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void ActionItemScheduled(EtwDiagnosticTrace trace, CuteAnt.Diagnostics.EventTraceActivity eventTraceActivity)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, null);
@@ -502,6 +531,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=134, Level=verbose, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool ActionItemCallbackInvokedIsEnabled(EtwDiagnosticTrace trace)
     {
       return TraceCore.IsEtwEventEnabled(trace, 14);
@@ -513,6 +543,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="eventTraceActivity">The event trace activity</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void ActionItemCallbackInvoked(EtwDiagnosticTrace trace, CuteAnt.Diagnostics.EventTraceActivity eventTraceActivity)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, null);
@@ -527,6 +558,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57405, Level=error, Channel=Operational
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool HandledExceptionErrorIsEnabled(EtwDiagnosticTrace trace)
     {
       return (trace.ShouldTrace(TraceEventLevel.Error) || TraceCore.IsEtwEventEnabled(trace, 15));
@@ -539,6 +571,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="trace">The trace provider</param>
     /// <param name="param0">Parameter 0 for event: Handling an exception. Exception details: {0}</param>
     /// <param name="exception">Exception associated with the event</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void HandledExceptionError(EtwDiagnosticTrace trace, string param0, System.Exception exception)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, exception);
@@ -558,6 +591,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57406, Level=verbose, Channel=Analytic
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool HandledExceptionVerboseIsEnabled(EtwDiagnosticTrace trace)
     {
       return (trace.ShouldTrace(TraceEventLevel.Verbose) || TraceCore.IsEtwEventEnabled(trace, 16));
@@ -570,6 +604,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="trace">The trace provider</param>
     /// <param name="param0">Parameter 0 for event: Handling an exception  Exception details: {0}</param>
     /// <param name="exception">Exception associated with the event</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void HandledExceptionVerbose(EtwDiagnosticTrace trace, string param0, System.Exception exception)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, exception);
@@ -589,6 +624,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57408, Level=critical, Channel=Operational
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool EtwUnhandledExceptionIsEnabled(EtwDiagnosticTrace trace)
     {
       return TraceCore.IsEtwEventEnabled(trace, 17);
@@ -601,6 +637,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="trace">The trace provider</param>
     /// <param name="param0">Parameter 0 for event: Unhandled exception. Exception details: {0}</param>
     /// <param name="exception">Exception associated with the event</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void EtwUnhandledException(EtwDiagnosticTrace trace, string param0, System.Exception exception)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, exception);
@@ -615,6 +652,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57410, Level=warning, Channel=Analytic
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool ThrowingEtwExceptionIsEnabled(EtwDiagnosticTrace trace)
     {
       return TraceCore.IsEtwEventEnabled(trace, 18);
@@ -628,6 +666,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="param0">Parameter 0 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="param1">Parameter 1 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="exception">Exception associated with the event</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void ThrowingEtwException(EtwDiagnosticTrace trace, string param0, string param1, System.Exception exception)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, exception);
@@ -642,6 +681,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57409, Level=verbose, Channel=Analytic
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool ThrowingEtwExceptionVerboseIsEnabled(EtwDiagnosticTrace trace)
     {
       return TraceCore.IsEtwEventEnabled(trace, 19);
@@ -655,6 +695,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="param0">Parameter 0 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="param1">Parameter 1 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="exception">Exception associated with the event</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void ThrowingEtwExceptionVerbose(EtwDiagnosticTrace trace, string param0, string param1, System.Exception exception)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, exception);
@@ -669,6 +710,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57407, Level=verbose, Channel=Analytic
     /// </summary>
     /// <param name="trace">The trace provider</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static bool ThrowingExceptionVerboseIsEnabled(EtwDiagnosticTrace trace)
     {
       return (trace.ShouldTrace(TraceEventLevel.Verbose) || TraceCore.IsEtwEventEnabled(trace, 20));
@@ -682,6 +724,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="param0">Parameter 0 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="param1">Parameter 1 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="exception">Exception associated with the event</param>
+    [MethodImpl(InlineMethod.Value)]
     internal static void ThrowingExceptionVerbose(EtwDiagnosticTrace trace, string param0, string param1, System.Exception exception)
     {
       TracePayload payload = trace.GetSerializedPayload(null, null, exception);
@@ -731,6 +774,7 @@ namespace CuteAnt.Diagnostics
     /// <summary>
     /// Ensures that the event descriptors array is initialized
     /// </summary>
+    [MethodImpl(InlineMethod.Value)]
     static void EnsureEventDescriptors()
     {
       if (eventDescriptorsCreated)
@@ -761,6 +805,7 @@ namespace CuteAnt.Diagnostics
     // Critical = Accesses SecurityCritical member eventDescriptors
     // Safe = eventDescriptors is not changed
     [System.Security.SecuritySafeCriticalAttribute()]
+    [MethodImpl(InlineMethod.Value)]
     static bool IsEtwEventEnabled(EtwDiagnosticTrace trace, int eventIndex)
     {
       if (trace.IsEtwProviderEnabled)
@@ -784,6 +829,7 @@ namespace CuteAnt.Diagnostics
     // Critical = Calls SecurityCritical method EtwProvider.WriteEvent
     // Safe = We only allow setting of provider id from SecurityCritical code, access to EventDescriptors is SecurityCritical, and ETW limits buffer sizes.
     [System.Security.SecuritySafeCriticalAttribute()]
+    [MethodImpl(InlineMethod.Value)]
     static bool WriteEtwEvent(EtwDiagnosticTrace trace, int eventIndex, CuteAnt.Diagnostics.EventTraceActivity eventParam0, string eventParam1, string eventParam2, string eventParam3, string eventParam4)
     {
       EnsureEventDescriptors();
@@ -802,6 +848,7 @@ namespace CuteAnt.Diagnostics
     // Critical = Calls SecurityCritical method EtwProvider.WriteEvent
     // Safe = We only allow setting of provider id from SecurityCritical code, access to EventDescriptors is SecurityCritical, and ETW limits buffer sizes.
     [System.Security.SecuritySafeCriticalAttribute()]
+    [MethodImpl(InlineMethod.Value)]
     static bool WriteEtwEvent(EtwDiagnosticTrace trace, int eventIndex, CuteAnt.Diagnostics.EventTraceActivity eventParam0, string eventParam1, string eventParam2, string eventParam3)
     {
       EnsureEventDescriptors();
@@ -819,6 +866,7 @@ namespace CuteAnt.Diagnostics
     // Critical = Calls SecurityCritical method EtwProvider.WriteEvent
     // Safe = We only allow setting of provider id from SecurityCritical code, access to EventDescriptors is SecurityCritical, and ETW limits buffer sizes.
     [System.Security.SecuritySafeCriticalAttribute()]
+    [MethodImpl(InlineMethod.Value)]
     static bool WriteEtwEvent(EtwDiagnosticTrace trace, int eventIndex, CuteAnt.Diagnostics.EventTraceActivity eventParam0, string eventParam1, string eventParam2)
     {
       EnsureEventDescriptors();
@@ -836,6 +884,7 @@ namespace CuteAnt.Diagnostics
     // Critical = Calls SecurityCritical method EtwProvider.WriteEvent
     // Safe = We only allow setting of provider id from SecurityCritical code, access to EventDescriptors is SecurityCritical, and ETW limits buffer sizes.
     [System.Security.SecuritySafeCriticalAttribute()]
+    [MethodImpl(InlineMethod.Value)]
     static bool WriteEtwEvent(EtwDiagnosticTrace trace, int eventIndex, CuteAnt.Diagnostics.EventTraceActivity eventParam0, int eventParam1, string eventParam2)
     {
       EnsureEventDescriptors();
@@ -854,6 +903,7 @@ namespace CuteAnt.Diagnostics
     // Critical = Calls SecurityCritical method EtwProvider.WriteEvent
     // Safe = We only allow setting of provider id from SecurityCritical code, access to EventDescriptors is SecurityCritical, and ETW limits buffer sizes.
     [System.Security.SecuritySafeCriticalAttribute()]
+    [MethodImpl(InlineMethod.Value)]
     static bool WriteEtwEvent(EtwDiagnosticTrace trace, int eventIndex, CuteAnt.Diagnostics.EventTraceActivity eventParam0, int eventParam1, int eventParam2, string eventParam3)
     {
       EnsureEventDescriptors();
@@ -870,6 +920,7 @@ namespace CuteAnt.Diagnostics
     // Critical = Calls SecurityCritical method EtwProvider.WriteEvent
     // Safe = We only allow setting of provider id from SecurityCritical code, access to EventDescriptors is SecurityCritical, and ETW limits buffer sizes.
     [System.Security.SecuritySafeCriticalAttribute()]
+    [MethodImpl(InlineMethod.Value)]
     static bool WriteEtwEvent(EtwDiagnosticTrace trace, int eventIndex, CuteAnt.Diagnostics.EventTraceActivity eventParam0, string eventParam1)
     {
       EnsureEventDescriptors();
@@ -886,6 +937,7 @@ namespace CuteAnt.Diagnostics
     // Critical = Calls SecurityCritical method EtwDiagnosticTrace.WriteTraceSource
     // Safe = We only allow setting of provider id from SecurityCritical code
     [System.Security.SecuritySafeCriticalAttribute()]
+    [MethodImpl(InlineMethod.Value)]
     static void WriteTraceSource(EtwDiagnosticTrace trace, int eventIndex, string description, TracePayload payload)
     {
       EnsureEventDescriptors();

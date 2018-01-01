@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime;
+using System.Runtime.CompilerServices;
 using System.Security;
 using CuteAnt.Diagnostics;
 
@@ -28,6 +28,7 @@ namespace CuteAnt
 
     public static ExceptionTrace Exception
     {
+      [MethodImpl(InlineMethod.Value)]
       get
       {
         if (s_exceptionTrace == null)
@@ -44,6 +45,7 @@ namespace CuteAnt
         Justification = "This template is shared across all assemblies, some of which use this accessor.")]
     public static EtwDiagnosticTrace Trace
     {
+      [MethodImpl(InlineMethod.Value)]
       get
       {
         EnsureEtwProviderInitialized();
@@ -54,6 +56,7 @@ namespace CuteAnt
 
     private static string EventSourceName
     {
+      [MethodImpl(InlineMethod.Value)]
       get
       {
         if (s_eventSourceName == null)
@@ -67,6 +70,7 @@ namespace CuteAnt
 
     [SuppressMessage(FxCop.Category.ReliabilityBasic, FxCop.Rule.UseNewGuidHelperRule,
         Justification = "This is a method that creates ETW provider passing Guid Provider ID.")]
+    [MethodImpl(InlineMethod.Value)]
     private static EtwDiagnosticTrace InitializeTracing()
     {
       //Etw tracing is switched off by not enabling the session
@@ -78,6 +82,7 @@ namespace CuteAnt
     }
 
 
+    [MethodImpl(InlineMethod.Value)]
     private static void EnsureEtwProviderInitialized()
     {
       if (null == FxTrace.s_diagnosticTrace)

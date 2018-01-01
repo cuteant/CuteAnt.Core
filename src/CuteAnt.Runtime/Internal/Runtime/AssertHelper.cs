@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Security;
+using System.Runtime.CompilerServices;
 #if DESKTOPCLR
 using CuteAnt.Runtime.Interop;
 #endif
@@ -14,6 +15,7 @@ namespace CuteAnt.Diagnostics
   internal static class AssertHelper
   {
     [SuppressMessage(FxCop.Category.ReliabilityBasic, FxCop.Rule.InvariantAssertRule, Justification = "Assert implementation")]
+    [MethodImpl(InlineMethod.Value)]
     internal static void FireAssert(string message)
     {
       try

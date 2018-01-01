@@ -33,6 +33,9 @@
   <ItemGroup Condition=" '$(TargetFramework)' != 'net40' ">
     <PackageReference Include="System.Buffers.Experimental" Version="$(SystemBuffersExperimentalPackageVersion)" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <PackageReference Include="Net40.Buffers" Version="$(SystemBuffersNet40PackageVersion)" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CuteAnt.AsyncEx\CuteAnt.AsyncEx.csproj" />

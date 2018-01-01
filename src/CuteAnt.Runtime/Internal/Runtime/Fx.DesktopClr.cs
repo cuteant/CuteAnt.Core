@@ -41,6 +41,7 @@ namespace CuteAnt
 
     public static ExceptionTrace Exception
     {
+      [MethodImpl(InlineMethod.Value)]
       get
       {
         if (s_exceptionTrace == null)
@@ -54,6 +55,7 @@ namespace CuteAnt
     }
     public static EtwDiagnosticTrace Trace
     {
+      [MethodImpl(InlineMethod.Value)]
       get
       {
         if (s_diagnosticTrace == null)

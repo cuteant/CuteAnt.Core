@@ -35,6 +35,7 @@ namespace CuteAnt
 
     public static ExceptionUtility ExceptionUtility
     {
+      [MethodImpl(InlineMethod.Value)]
       get
       {
         return DiagnosticUtility.s_exceptionUtility ?? GetExceptionUtility();
@@ -57,6 +58,7 @@ namespace CuteAnt
 
     static internal bool ShouldUseActivity
     {
+      [MethodImpl(InlineMethod.Value)]
       get { return DiagnosticUtility.s_shouldUseActivity; }
     }
 

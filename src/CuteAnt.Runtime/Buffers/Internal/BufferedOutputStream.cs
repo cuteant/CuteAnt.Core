@@ -135,6 +135,10 @@ namespace CuteAnt.Buffers
 
     internal void Reinitialize(int initialSize, int maxSizeQuota, int effectiveMaxSize, InternalBufferManager bufferManager)
     {
+      if (initialSize < 0)
+      {
+        throw new ArgumentOutOfRangeException(nameof(initialSize), initialSize, "Value must be non-negative.");
+      }
       Fx.Assert(!Initialized, "Clear must be called before re-initializing stream");
       if (bufferManager == null) { throw Fx.Exception.ArgumentNull(nameof(bufferManager)); }
 
