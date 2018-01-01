@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Text;
 
 namespace CuteAnt.Pool
@@ -33,8 +35,9 @@ namespace CuteAnt.Pool
     public static StringBuilderPooledObjectPolicy DefaultPolicy { get => _defaultPolicy; set => _defaultPolicy = value; }
 
     private static ObjectPool<StringBuilder> _innerPool;
-    private static ObjectPool<StringBuilder> InnerPool
+    public static ObjectPool<StringBuilder> InnerPool
     {
+      [MethodImpl(InlineMethod.Value)]
       get
       {
         var pool = Volatile.Read(ref _innerPool);
@@ -45,6 +48,11 @@ namespace CuteAnt.Pool
           if (current != null) { return current; }
         }
         return pool;
+      }
+      set
+      {
+        if (null == value) { throw new ArgumentNullException(nameof(value)); }
+        Interlocked.CompareExchange(ref _innerPool, value, null);
       }
     }
 
