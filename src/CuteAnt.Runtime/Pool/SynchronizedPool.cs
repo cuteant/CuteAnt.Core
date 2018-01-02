@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Security;
+using System.Runtime.CompilerServices;
 using System.Threading;
 #if DESKTOPCLR
 using System.Security.Permissions;
@@ -343,6 +344,7 @@ namespace CuteAnt.Pool
 
       internal int MaxCount
       {
+        [MethodImpl(InlineMethod.Value)]
         get => _maxCount;
         set
         {

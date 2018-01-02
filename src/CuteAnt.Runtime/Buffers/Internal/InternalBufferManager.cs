@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 #if DEBUG
 using System.Collections.Concurrent;
@@ -190,6 +191,7 @@ namespace CuteAnt.Buffers
         }
       }
 
+      [MethodImpl(InlineMethod.Value)]
       private void ChangeQuota(ref BufferPool bufferPool, int delta)
       {
         if (TraceCore.BufferPoolChangeQuotaIsEnabled(Fx.Trace))
@@ -267,6 +269,7 @@ namespace CuteAnt.Buffers
         return index;
       }
 
+      [MethodImpl(InlineMethod.Value)]
       private BufferPool FindPool(int desiredBufferSize)
       {
         for (int i = 0; i < _bufferSizes.Length; i++)
@@ -464,22 +467,26 @@ namespace CuteAnt.Buffers
 
         public int BufferSize
         {
+          [MethodImpl(InlineMethod.Value)]
           get { return _bufferSize; }
         }
 
         public int Limit
         {
+          [MethodImpl(InlineMethod.Value)]
           get { return _limit; }
         }
 
         public int Misses
         {
+          [MethodImpl(InlineMethod.Value)]
           get { return _misses; }
           set { _misses = value; }
         }
 
         public int Peak
         {
+          [MethodImpl(InlineMethod.Value)]
           get { return _peak; }
         }
 
@@ -537,25 +544,13 @@ namespace CuteAnt.Buffers
           private SynchronizedPool<byte[]> _innerPool;
 
           internal SynchronizedBufferPool(int bufferSize, int limit)
-              : base(bufferSize, limit)
-          {
-            _innerPool = new SynchronizedPool<byte[]>(limit);
-          }
+              : base(bufferSize, limit) => _innerPool = new SynchronizedPool<byte[]>(limit);
 
-          internal override void OnClear()
-          {
-            _innerPool.Clear();
-          }
+          internal override void OnClear() => _innerPool.Clear();
 
-          internal override byte[] Take()
-          {
-            return _innerPool.Take();
-          }
+          internal override byte[] Take() => _innerPool.Take();
 
-          internal override bool Return(byte[] buffer)
-          {
-            return _innerPool.Return(buffer);
-          }
+          internal override bool Return(byte[] buffer) => _innerPool.Return(buffer);
         }
 
         class LargeBufferPool : BufferPool
@@ -563,18 +558,9 @@ namespace CuteAnt.Buffers
           private Stack<byte[]> _items;
 
           internal LargeBufferPool(int bufferSize, int limit)
-              : base(bufferSize, limit)
-          {
-            _items = new Stack<byte[]>(limit);
-          }
+              : base(bufferSize, limit) => _items = new Stack<byte[]>(limit);
 
-          private object ThisLock
-          {
-            get
-            {
-              return _items;
-            }
-          }
+          private object ThisLock => _items;
 
           internal override void OnClear()
           {
@@ -622,19 +608,13 @@ namespace CuteAnt.Buffers
       {
       }
 
-      internal static GCBufferManager Value
-      {
-        get { return s_value; }
-      }
+      internal static GCBufferManager Value => s_value;
 
       internal override void Clear()
       {
       }
 
-      internal override byte[] TakeBuffer(int bufferSize)
-      {
-        return Fx.AllocateByteArray(bufferSize);
-      }
+      internal override byte[] TakeBuffer(int bufferSize) => Fx.AllocateByteArray(bufferSize);
 
       internal override void ReturnBuffer(byte[] buffer)
       {
