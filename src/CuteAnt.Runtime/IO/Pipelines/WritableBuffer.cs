@@ -5,6 +5,8 @@
 using System;
 using System.Buffers;
 using System.Threading;
+using System.Threading.Tasks;
+using CuteAnt.AsyncEx;
 using CuteAnt.IO.Pipelines.Threading;
 
 namespace CuteAnt.IO.Pipelines
@@ -82,6 +84,19 @@ namespace CuteAnt.IO.Pipelines
     void IOutput.Enlarge(int desiredBufferLength) => Pipe.Ensure(desiredBufferLength);
 
     Span<byte> IOutput.GetSpan() => Buffer.Span;
+
+    public Task WrapFlushAsync(CancellationToken cancellationToken = default)
+    {
+      var awaitable = FlushAsync(cancellationToken);
+      if (awaitable.IsCompleted)
+      {
+        awaitable.GetResult();
+        return TaskConstants.Completed; // _completedTask;
+      }
+
+      return FlushAsyncAwaited(awaitable);
+    }
+    private static async Task FlushAsyncAwaited(ValueAwaiter<FlushResult> awaitable) => await awaitable;
   }
 }
 #endif

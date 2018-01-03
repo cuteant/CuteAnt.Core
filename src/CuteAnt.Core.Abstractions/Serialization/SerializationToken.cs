@@ -29,6 +29,15 @@
     /// <summary>Using <c>protobuf-net</c> serialization and the <c>LZ4</c> loseless compression.</summary>
     Lz4Protobuf,
 
+    /// <summary>Using <c>MessagePack</c> serialization.</summary>
+    MessagePack,
+
+    /// <summary>Using <c>MessagePack</c> serialization and the <c>GZip</c> loseless compression.</summary>
+    GzMessagePack,
+
+    /// <summary>Using <c>MessagePack</c> serialization and the <c>LZ4</c> loseless compression.</summary>
+    Lz4MessagePack,
+
     /// <summary>Using external serialization.</summary>
     External
   }
