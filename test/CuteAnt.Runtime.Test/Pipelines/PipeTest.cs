@@ -16,7 +16,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
         protected PipeTest()
         {
-            _pool = BufferManager.SharedMemoryPool;
+            _pool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Create());
             Pipe = new Pipe(new PipeOptions(_pool,
                 maximumSizeHigh: 65,
                 maximumSizeLow: 6
