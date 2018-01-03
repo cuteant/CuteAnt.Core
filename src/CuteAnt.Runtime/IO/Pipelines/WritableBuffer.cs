@@ -14,10 +14,7 @@ namespace CuteAnt.IO.Pipelines
   {
     internal Pipe Pipe { get; }
 
-    internal WritableBuffer(Pipe pipe)
-    {
-      Pipe = pipe;
-    }
+    internal WritableBuffer(Pipe pipe) => Pipe = pipe;
 
     /// <summary>Available memory.</summary>
     public Memory<byte> Buffer => Pipe.Buffer;
@@ -27,46 +24,32 @@ namespace CuteAnt.IO.Pipelines
     /// <param name="count">number of bytes</param>
     /// <remarks>Used when writing to <see cref="Buffer"/> directly.</remarks>
     /// <exception cref="ArgumentOutOfRangeException">More requested than underlying <see cref="WritableBuffer"/> can allocate in a contiguous block.</exception>
-    public void Ensure(int count = 1)
-    {
-      Pipe.Ensure(count);
-    }
+    public void Ensure(int count = 0) => Pipe.Ensure(count);
 
     /// <summary>Moves forward the underlying <see cref="IPipeWriter"/>'s write cursor but does not commit the data.</summary>
     /// <param name="bytesWritten">number of bytes to be marked as written.</param>
     /// <remarks>Forwards the start of available <see cref="Buffer"/> by <paramref name="bytesWritten"/>.</remarks>
     /// <exception cref="ArgumentException"><paramref name="bytesWritten"/> is larger than the current data available data.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="bytesWritten"/> is negative.</exception>
-    public void Advance(int bytesWritten)
-    {
-      Pipe.Advance(bytesWritten);
-    }
+    public void Advance(int bytesWritten) => Pipe.Advance(bytesWritten);
 
 
     /// <summary>Commits all outstanding written data to the underlying <see cref="IPipeWriter"/> so they can be read
     /// and seals the <see cref="WritableBuffer"/> so no more data can be committed.</summary>
     /// <remarks>While an on-going concurrent read may pick up the data, <see cref="FlushAsync"/> should be called to signal the reader.</remarks>
-    public void Commit()
-    {
-      Pipe.Commit();
-    }
+    public void Commit() => Pipe.Commit();
 
     /// <summary>Signals the <see cref="IPipeReader"/> data is available.
     /// Will <see cref="Commit"/> if necessary.</summary>
     /// <returns>A task that completes when the data is fully flushed.</returns>
     public ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken = default)
-    {
-      return Pipe.FlushAsync(cancellationToken);
-    }
+        => Pipe.FlushAsync(cancellationToken);
 
     /// <summary>Writes the source <see cref="ReadOnlySpan{Byte}"/> to the <see cref="WritableBuffer"/>.</summary>
     /// <param name="source">The <see cref="ReadOnlySpan{Byte}"/> to write</param>
     public void Write(ReadOnlySpan<byte> source)
     {
-      if (Buffer.IsEmpty)
-      {
-        Ensure();
-      }
+      if (Buffer.IsEmpty) { Ensure(); }
 
       // Fast path, try copying to the available memory directly
       if (source.Length <= Buffer.Length)
@@ -85,10 +68,7 @@ namespace CuteAnt.IO.Pipelines
 
         Ensure(writable);
 
-        if (writable == 0)
-        {
-          continue;
-        }
+        if (writable == 0) { continue; }
 
         source.Slice(offset, writable).CopyTo(Buffer.Span);
 

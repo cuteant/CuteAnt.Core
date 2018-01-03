@@ -4,18 +4,19 @@
 
 #if !NET40
 using System.Buffers;
+using CuteAnt.Buffers;
 using CuteAnt.IO.Pipelines.Threading;
 
 namespace CuteAnt.IO.Pipelines
 {
   public class PipeOptions
   {
-    public PipeOptions(
-        MemoryPool<byte> pool,
-        Scheduler readerScheduler = null,
-        Scheduler writerScheduler = null,
-        long maximumSizeHigh = 0,
-        long maximumSizeLow = 0)
+    /// <summary>Default</summary>
+    public static readonly PipeOptions Default = new PipeOptions(BufferManager.SharedMemoryPool);
+
+    public PipeOptions(MemoryPool<byte> pool,
+      Scheduler readerScheduler = null, Scheduler writerScheduler = null,
+      long maximumSizeHigh = 0, long maximumSizeLow = 0)
     {
       Pool = pool;
       ReaderScheduler = readerScheduler;

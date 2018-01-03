@@ -36,7 +36,8 @@ namespace CuteAnt.Buffers
 
     sealed class BufferManagerMemoryPool : MemoryPool<byte>
     {
-      const int DefaultSize = 4096;
+      const int DefaultSize = 2048; //4096
+      const int ZeroSize = 0;
 
       private readonly ArrayPool<byte> _arrayPool;
 
@@ -51,8 +52,10 @@ namespace CuteAnt.Buffers
 
       public override OwnedMemory<byte> Rent(int minimumBufferSize = AnySize)
       {
-        if (minimumBufferSize == AnySize) minimumBufferSize = DefaultSize;
+        //if (minimumBufferSize == AnySize) minimumBufferSize = DefaultSize;
+        if (minimumBufferSize <= ZeroSize) minimumBufferSize = DefaultSize;
         else if (minimumBufferSize > MaxBufferSize || minimumBufferSize < 1) throw new ArgumentOutOfRangeException(nameof(minimumBufferSize));
+
         return new BufferManagerMemory(_arrayPool, minimumBufferSize);
       }
 

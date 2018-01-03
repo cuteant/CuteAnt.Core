@@ -79,10 +79,7 @@ namespace CuteAnt.IO.Pipelines
 
       while (remaining > 0)
       {
-        if (_span.Length == 0)
-        {
-          Ensure();
-        }
+        if (_span.Length == 0) { Ensure(remaining); }
 
         var writable = Math.Min(remaining, _span.Length);
 
@@ -98,8 +95,9 @@ namespace CuteAnt.IO.Pipelines
       }
     }
 
+    /// <summary>count == 0 means "i don't care"</summary>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public void Ensure(int count = 1)
+    public void Ensure(int count = 0)
     {
       _writableBuffer.Ensure(count);
       _span = _writableBuffer.Buffer.Span;

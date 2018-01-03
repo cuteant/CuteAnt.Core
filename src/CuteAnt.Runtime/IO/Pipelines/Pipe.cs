@@ -15,10 +15,15 @@ namespace CuteAnt.IO.Pipelines
   /// <summary>Default <see cref="IPipeWriter"/> and <see cref="IPipeReader"/> implementation.</summary>
   public class Pipe : IPipe, IPipeReader, IPipeWriter, IAwaiter<ReadResult>, IAwaiter<FlushResult>
   {
+    #region @@ Fields @@
+
+    // 确保 MemoryPool 返回非空数组，MemoryPool.Rent(0) 的实现策略是未知的
+    private const int c_defaultBufferSize = 2048; //4096
+    private const int c_minBufferSize = 256;
+    private const int c_zeroBufferSize = 0;
+
     private const int SegmentPoolSize = 16;
 
-    private static readonly Action<object> _signalReaderAwaitable = state => ((Pipe)state).ReaderCancellationRequested();
-    private static readonly Action<object> _signalWriterAwaitable = state => ((Pipe)state).WriterCancellationRequested();
     private static readonly Action<object> _invokeCompletionCallbacks = state => ((PipeCompletionCallbacks)state).Execute();
     private static readonly Action<object> _scheduleContinuation = o => ((Action)o)();
 
@@ -63,9 +68,25 @@ namespace CuteAnt.IO.Pipelines
 
     private bool _disposed;
 
+    #endregion
+
+    #region @@ Properties @@
+
+    internal Memory<byte> Buffer => _writingHead?.AvailableMemory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
+
     internal long Length => _length;
 
-    /// <summary>Initializes the <see cref="Pipe"/> with the specifed <see cref="MemoryPool{T}"/>.</summary>
+    public IPipeReader Reader => this;
+    public IPipeWriter Writer => this;
+
+    #endregion
+
+    #region @@ Constructors @@
+
+    /// <summary>Initializes the <see cref="Pipe"/> with the specifed <see cref="T:System.Buffers.MemoryPool{byte}"/>.</summary>
+    public Pipe() : this(PipeOptions.Default) { }
+
+    /// <summary>Initializes the <see cref="Pipe"/> with the specifed <see cref="T:System.Buffers.MemoryPool{byte}"/>.</summary>
     /// <param name="options"></param>
     public Pipe(PipeOptions options)
     {
@@ -88,6 +109,24 @@ namespace CuteAnt.IO.Pipelines
       _writerAwaitable = new PipeAwaitable(completed: true);
     }
 
+    #endregion
+
+    #region -- Reset --
+
+    public void Reset()
+    {
+      lock (_sync)
+      {
+        if (!_disposed)
+        {
+          throw new InvalidOperationException("Both reader and writer need to be completed to be able to reset ");
+        }
+
+        _disposed = false;
+        ResetState();
+      }
+    }
+
     private void ResetState()
     {
       _readerCompletion.Reset();
@@ -97,47 +136,9 @@ namespace CuteAnt.IO.Pipelines
       _length = 0;
     }
 
-    internal Memory<byte> Buffer => _writingHead?.AvailableMemory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
+    #endregion
 
-    /// <summary>Allocates memory from the pipeline to write into.</summary>
-    /// <param name="minimumSize">The minimum size buffer to allocate</param>
-    /// <returns>A <see cref="WritableBuffer"/> that can be written to.</returns>
-    WritableBuffer IPipeWriter.Alloc(int minimumSize)
-    {
-      if (_writerCompletion.IsCompleted)
-      {
-        PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoWritingAllowed, _writerCompletion.Location);
-      }
-
-      if (minimumSize < 0)
-      {
-        PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.minimumSize);
-      }
-
-      lock (_sync)
-      {
-        // CompareExchange not required as its setting to current value if test fails
-        _writingState.Begin(ExceptionResource.AlreadyWriting);
-
-        if (minimumSize > 0)
-        {
-          try
-          {
-            AllocateWriteHeadUnsynchronized(minimumSize);
-          }
-          catch (Exception)
-          {
-            // Reset producing state if allocation failed
-            _writingState.End(ExceptionResource.NoWriteToComplete);
-            throw;
-          }
-        }
-
-        _currentWriteLength = 0;
-      }
-
-      return new WritableBuffer(this);
-    }
+    #region == Ensure ==
 
     internal void Ensure(int count)
     {
@@ -164,13 +165,17 @@ namespace CuteAnt.IO.Pipelines
           nextSegment = CreateSegmentUnsynchronized();
         }
 
-        nextSegment.SetMemory(_pool.Rent(count));
+        nextSegment.SetMemory(_pool.Rent(ComputeActualSize(count, segment)));
 
         segment.SetNext(nextSegment);
 
         _writingHead = nextSegment;
       }
     }
+
+    #endregion
+
+    #region ** AllocateWriteHeadUnsynchronized **
 
     private BufferSegment AllocateWriteHeadUnsynchronized(int count)
     {
@@ -192,7 +197,7 @@ namespace CuteAnt.IO.Pipelines
       {
         // No free tail space, allocate a new segment
         segment = CreateSegmentUnsynchronized();
-        segment.SetMemory(_pool.Rent(count));
+        segment.SetMemory(_pool.Rent(ComputeActualSize(count, _commitHead)));
       }
 
       if (_commitHead == null)
@@ -213,6 +218,10 @@ namespace CuteAnt.IO.Pipelines
       return segment;
     }
 
+    #endregion
+
+    #region ** CreateSegmentUnsynchronized **
+
     private BufferSegment CreateSegmentUnsynchronized()
     {
       if (_pooledSegmentCount > 0)
@@ -224,6 +233,10 @@ namespace CuteAnt.IO.Pipelines
       return new BufferSegment();
     }
 
+    #endregion
+
+    #region ** ReturnSegmentUnsynchronized **
+
     private void ReturnSegmentUnsynchronized(BufferSegment segment)
     {
       if (_pooledSegmentCount < _bufferSegmentPool.Length)
@@ -233,6 +246,10 @@ namespace CuteAnt.IO.Pipelines
       }
     }
 
+    #endregion
+
+    #region ** EnsureAlloc **
+
     private void EnsureAlloc()
     {
       if (!_writingState.IsActive)
@@ -240,6 +257,45 @@ namespace CuteAnt.IO.Pipelines
         PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotWritingNoAlloc);
       }
     }
+
+    #endregion
+
+    #region == Advance ==
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal void Advance(int bytesWritten)
+    {
+      EnsureAlloc();
+      if (bytesWritten > 0)
+      {
+        if (_writingHead == null)
+        {
+          PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingWithNoBuffer);
+        }
+
+        Debug.Assert(!_writingHead.ReadOnly);
+        Debug.Assert(_writingHead.Next == null);
+
+        var buffer = _writingHead.AvailableMemory;
+        var bufferIndex = _writingHead.End + bytesWritten;
+
+        if (bufferIndex > buffer.Length)
+        {
+          PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingPastBufferSize);
+        }
+
+        _writingHead.End = bufferIndex;
+        _currentWriteLength += bytesWritten;
+      }
+      else if (bytesWritten < 0)
+      {
+        PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.bytesWritten);
+      } // and if zero, just do nothing; don't need to validate tail etc
+    }
+
+    #endregion
+
+    #region == Commit ==
 
     internal void Commit()
     {
@@ -250,7 +306,12 @@ namespace CuteAnt.IO.Pipelines
       }
     }
 
-    internal void CommitUnsynchronized()
+    #endregion
+
+    #region ** CommitUnsynchronized **
+
+    // CommitUnsynchronized 不应交由外部调用
+    private void CommitUnsynchronized()
     {
       _writingState.End(ExceptionResource.NoWriteToComplete);
 
@@ -284,36 +345,11 @@ namespace CuteAnt.IO.Pipelines
       _writingHead = null;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal void Advance(int bytesWritten)
-    {
-      EnsureAlloc();
-      if (bytesWritten > 0)
-      {
-        if (_writingHead == null)
-        {
-          PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingWithNoBuffer);
-        }
+    #endregion
 
-        Debug.Assert(!_writingHead.ReadOnly);
-        Debug.Assert(_writingHead.Next == null);
+    #region == FlushAsync ==
 
-        var buffer = _writingHead.AvailableMemory;
-        var bufferIndex = _writingHead.End + bytesWritten;
-
-        if (bufferIndex > buffer.Length)
-        {
-          PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingPastBufferSize);
-        }
-
-        _writingHead.End = bufferIndex;
-        _currentWriteLength += bytesWritten;
-      }
-      else if (bytesWritten < 0)
-      {
-        PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.bytesWritten);
-      } // and if zero, just do nothing; don't need to validate tail etc
-    }
+    private static readonly Action<object> _signalWriterAwaitable = state => ((Pipe)state).WriterCancellationRequested();
 
     internal ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken)
     {
@@ -339,42 +375,20 @@ namespace CuteAnt.IO.Pipelines
       return new ValueAwaiter<FlushResult>(this);
     }
 
-    /// <summary>
-    /// Marks the pipeline as being complete, meaning no more items will be written to it.
-    /// </summary>
-    /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
-    void IPipeWriter.Complete(Exception exception)
+    private void WriterCancellationRequested()
     {
-      if (_writingState.IsActive)
-      {
-        PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveWriter, _writingState.Location);
-      }
-
-      Action awaitable;
-      PipeCompletionCallbacks completionCallbacks;
-      bool readerCompleted;
-
+      Action action;
       lock (_sync)
       {
-        completionCallbacks = _writerCompletion.TryComplete(exception);
-        awaitable = _readerAwaitable.Complete();
-        readerCompleted = _readerCompletion.IsCompleted;
+        action = _writerAwaitable.Cancel();
       }
-
-      if (completionCallbacks != null)
-      {
-        TrySchedule(_readerScheduler, _invokeCompletionCallbacks, completionCallbacks);
-      }
-
-      TrySchedule(_readerScheduler, awaitable);
-
-      if (readerCompleted)
-      {
-        CompletePipe();
-      }
+      TrySchedule(_writerScheduler, action);
     }
 
-    // Reading
+    #endregion
+
+    #region -- IPipeReader Members --
+
     void IPipeReader.Advance(Position consumed)
     {
       ((IPipeReader)this).Advance(consumed, consumed);
@@ -532,51 +546,6 @@ namespace CuteAnt.IO.Pipelines
       TrySchedule(_readerScheduler, awaitable);
     }
 
-    /// <summary>Cancel to currently pending call to <see cref="WritableBuffer.FlushAsync"/> without completing the <see cref="IPipeWriter"/>.</summary>
-    void IPipeWriter.CancelPendingFlush()
-    {
-      Action awaitable;
-      lock (_sync)
-      {
-        awaitable = _writerAwaitable.Cancel();
-      }
-      TrySchedule(_writerScheduler, awaitable);
-    }
-
-    void IPipeWriter.OnReaderCompleted(Action<Exception, object> callback, object state)
-    {
-      if (callback == null)
-      {
-        throw new ArgumentNullException(nameof(callback));
-      }
-
-      PipeCompletionCallbacks completionCallbacks;
-      lock (_sync)
-      {
-        completionCallbacks = _readerCompletion.AddCallback(callback, state);
-      }
-
-      if (completionCallbacks != null)
-      {
-        TrySchedule(_writerScheduler, _invokeCompletionCallbacks, completionCallbacks);
-      }
-    }
-
-    ValueAwaiter<ReadResult> IPipeReader.ReadAsync(CancellationToken token)
-    {
-      CancellationTokenRegistration cancellationTokenRegistration;
-      if (_readerCompletion.IsCompleted)
-      {
-        PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed, _readerCompletion.Location);
-      }
-      lock (_sync)
-      {
-        cancellationTokenRegistration = _readerAwaitable.AttachToken(token, _signalReaderAwaitable, this);
-      }
-      cancellationTokenRegistration.Dispose();
-      return new ValueAwaiter<ReadResult>(this);
-    }
-
     bool IPipeReader.TryRead(out ReadResult result)
     {
       lock (_sync)
@@ -601,48 +570,37 @@ namespace CuteAnt.IO.Pipelines
       }
     }
 
-    private static void TrySchedule(Scheduler scheduler, Action action)
-    {
-      if (action != null)
-      {
-        scheduler.Schedule(_scheduleContinuation, action);
-      }
-    }
 
-    private static void TrySchedule(Scheduler scheduler, Action<object> action, object state)
-    {
-      if (action != null)
-      {
-        scheduler.Schedule(action, state);
-      }
-    }
+    private static readonly Action<object> _signalReaderAwaitable = state => ((Pipe)state).ReaderCancellationRequested();
 
-    private void CompletePipe()
+    ValueAwaiter<ReadResult> IPipeReader.ReadAsync(CancellationToken token)
     {
+      CancellationTokenRegistration cancellationTokenRegistration;
+      if (_readerCompletion.IsCompleted)
+      {
+        PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed, _readerCompletion.Location);
+      }
       lock (_sync)
       {
-        if (_disposed)
-        {
-          return;
-        }
-
-        _disposed = true;
-        // Return all segments
-        var segment = _readHead;
-        while (segment != null)
-        {
-          var returnSegment = segment;
-          segment = segment.NextSegment;
-
-          returnSegment.ResetMemory();
-        }
-
-        _readHead = null;
-        _commitHead = null;
+        cancellationTokenRegistration = _readerAwaitable.AttachToken(token, _signalReaderAwaitable, this);
       }
+      cancellationTokenRegistration.Dispose();
+      return new ValueAwaiter<ReadResult>(this);
     }
 
-    // IReadableBufferAwaiter members
+    private void ReaderCancellationRequested()
+    {
+      Action action;
+      lock (_sync)
+      {
+        action = _readerAwaitable.Cancel();
+      }
+      TrySchedule(_readerScheduler, action);
+    }
+
+    #endregion
+
+    #region -- IAwaiter<ReadResult> Members --
 
     bool IAwaiter<ReadResult>.IsCompleted => _readerAwaitable.IsCompleted;
 
@@ -676,39 +634,116 @@ namespace CuteAnt.IO.Pipelines
       return result;
     }
 
-    private void GetResult(ref ReadResult result)
+    #endregion
+
+    #region -- IPipeWriter Members --
+
+    /// <summary>Allocates memory from the pipeline to write into.</summary>
+    /// <param name="minimumSize">The minimum size buffer to allocate</param>
+    /// <returns>A <see cref="WritableBuffer"/> that can be written to.</returns>
+    WritableBuffer IPipeWriter.Alloc(int minimumSize)
     {
-      if (_writerCompletion.IsCompletedOrThrow())
+      if (_writerCompletion.IsCompleted)
       {
-        result.ResultFlags |= ResultFlags.Completed;
+        PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoWritingAllowed, _writerCompletion.Location);
       }
 
-      var isCancelled = _readerAwaitable.ObserveCancelation();
-      if (isCancelled)
+      if (minimumSize < 0)
       {
-        result.ResultFlags |= ResultFlags.Cancelled;
+        PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.minimumSize);
       }
 
-      // No need to read end if there is no head
-      var head = _readHead;
-
-      if (head != null)
+      lock (_sync)
       {
-        // Reading commit head shared with writer
-        result.ResultBuffer = new ReadOnlyBuffer(head, _readHeadIndex, _commitHead, _commitHeadIndex - _commitHead.Start);
+        // CompareExchange not required as its setting to current value if test fails
+        _writingState.Begin(ExceptionResource.AlreadyWriting);
+
+        if (minimumSize > 0)
+        {
+          try
+          {
+            AllocateWriteHeadUnsynchronized(minimumSize);
+          }
+          catch (Exception)
+          {
+            // Reset producing state if allocation failed
+            _writingState.End(ExceptionResource.NoWriteToComplete);
+            throw;
+          }
+        }
+
+        _currentWriteLength = 0;
       }
 
-      if (isCancelled)
+      return new WritableBuffer(this);
+    }
+
+    /// <summary>Marks the pipeline as being complete, meaning no more items will be written to it.</summary>
+    /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
+    void IPipeWriter.Complete(Exception exception)
+    {
+      if (_writingState.IsActive)
       {
-        _readingState.BeginTentative(ExceptionResource.AlreadyReading);
+        PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveWriter, _writingState.Location);
       }
-      else
+
+      Action awaitable;
+      PipeCompletionCallbacks completionCallbacks;
+      bool readerCompleted;
+
+      lock (_sync)
       {
-        _readingState.Begin(ExceptionResource.AlreadyReading);
+        completionCallbacks = _writerCompletion.TryComplete(exception);
+        awaitable = _readerAwaitable.Complete();
+        readerCompleted = _readerCompletion.IsCompleted;
+      }
+
+      if (completionCallbacks != null)
+      {
+        TrySchedule(_readerScheduler, _invokeCompletionCallbacks, completionCallbacks);
+      }
+
+      TrySchedule(_readerScheduler, awaitable);
+
+      if (readerCompleted)
+      {
+        CompletePipe();
       }
     }
 
-    // IWritableBufferAwaiter members
+    /// <summary>Cancel to currently pending call to <see cref="WritableBuffer.FlushAsync"/> without completing the <see cref="IPipeWriter"/>.</summary>
+    void IPipeWriter.CancelPendingFlush()
+    {
+      Action awaitable;
+      lock (_sync)
+      {
+        awaitable = _writerAwaitable.Cancel();
+      }
+      TrySchedule(_writerScheduler, awaitable);
+    }
+
+    void IPipeWriter.OnReaderCompleted(Action<Exception, object> callback, object state)
+    {
+      if (callback == null)
+      {
+        throw new ArgumentNullException(nameof(callback));
+      }
+
+      PipeCompletionCallbacks completionCallbacks;
+      lock (_sync)
+      {
+        completionCallbacks = _readerCompletion.AddCallback(callback, state);
+      }
+
+      if (completionCallbacks != null)
+      {
+        TrySchedule(_writerScheduler, _invokeCompletionCallbacks, completionCallbacks);
+      }
+    }
+
+    #endregion
+
+    #region -- IAwaiter<FlushResult> Members --
 
     bool IAwaiter<FlushResult>.IsCompleted => _writerAwaitable.IsCompleted;
 
@@ -751,42 +786,114 @@ namespace CuteAnt.IO.Pipelines
       TrySchedule(_writerScheduler, awaitable);
     }
 
-    private void ReaderCancellationRequested()
+    #endregion
+
+    #region ** GetResult **
+
+    private void GetResult(ref ReadResult result)
     {
-      Action action;
-      lock (_sync)
+      if (_writerCompletion.IsCompletedOrThrow())
       {
-        action = _readerAwaitable.Cancel();
+        result.ResultFlags |= ResultFlags.Completed;
       }
-      TrySchedule(_readerScheduler, action);
+
+      var isCancelled = _readerAwaitable.ObserveCancelation();
+      if (isCancelled)
+      {
+        result.ResultFlags |= ResultFlags.Cancelled;
+      }
+
+      // No need to read end if there is no head
+      var head = _readHead;
+
+      if (head != null)
+      {
+        // Reading commit head shared with writer
+        result.ResultBuffer = new ReadOnlyBuffer(head, _readHeadIndex, _commitHead, _commitHeadIndex - _commitHead.Start);
+      }
+
+      if (isCancelled)
+      {
+        _readingState.BeginTentative(ExceptionResource.AlreadyReading);
+      }
+      else
+      {
+        _readingState.Begin(ExceptionResource.AlreadyReading);
+      }
     }
 
-    private void WriterCancellationRequested()
-    {
-      Action action;
-      lock (_sync)
-      {
-        action = _writerAwaitable.Cancel();
-      }
-      TrySchedule(_writerScheduler, action);
-    }
+    #endregion
 
-    public IPipeReader Reader => this;
-    public IPipeWriter Writer => this;
+    #region ** CompletePipe **
 
-    public void Reset()
+    private void CompletePipe()
     {
       lock (_sync)
       {
-        if (!_disposed)
+        if (_disposed) { return; }
+
+        _disposed = true;
+        // Return all segments
+        var segment = _readHead;
+        while (segment != null)
         {
-          throw new InvalidOperationException("Both reader and writer need to be completed to be able to reset ");
+          var returnSegment = segment;
+          segment = segment.NextSegment;
+
+          returnSegment.ResetMemory();
         }
 
-        _disposed = false;
-        ResetState();
+        _readHead = null;
+        _commitHead = null;
       }
     }
+
+    #endregion
+
+    #region **& TrySchedule &**
+
+    private static void TrySchedule(Scheduler scheduler, Action action)
+    {
+      if (action != null)
+      {
+        scheduler.Schedule(_scheduleContinuation, action);
+      }
+    }
+
+    private static void TrySchedule(Scheduler scheduler, Action<object> action, object state)
+    {
+      if (action != null)
+      {
+        scheduler.Schedule(action, state);
+      }
+    }
+
+    #endregion
+
+    #region **& ComputeActualSize &**
+
+    private static int ComputeActualSize(int desiredBufferLength, BufferSegment preBuffer)
+    {
+      if (preBuffer != null)
+      {
+        var length = preBuffer.AvailableMemory.Length;
+        if (desiredBufferLength < length) { desiredBufferLength = length * 2; }
+      }
+      else
+      {
+        if (desiredBufferLength > c_zeroBufferSize)
+        {
+          if (desiredBufferLength < c_minBufferSize) { desiredBufferLength = c_minBufferSize; }
+        }
+        else
+        {
+          desiredBufferLength = c_defaultBufferSize;
+        }
+      }
+      return desiredBufferLength;
+    }
+
+    #endregion
   }
 }
 #endif
