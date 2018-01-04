@@ -14,26 +14,17 @@ namespace CuteAnt.IO.Pipelines
 
     public Pipe Create() => new Pipe(Options);
 
-    public Pipe PreGetting(Pipe pipe) => pipe;
+    public Pipe PreGetting(Pipe pipe)
+    {
+      pipe.Reinitialize(Options);
+      return pipe;
+    }
 
     public bool Return(Pipe pipe)
     {
       if (null == pipe) { return false; }
-#if DEBUG
-      try
-      {
-#endif
-        pipe.Reader.Complete();
-        pipe.Writer.Complete();
-        pipe.Reset();
-        return true;
-#if DEBUG
-      }
-      catch
-      {
-        return false;
-      }
-#endif
+
+      return pipe.TryClose();
     }
   }
 
@@ -51,7 +42,7 @@ namespace CuteAnt.IO.Pipelines
         var pool = Volatile.Read(ref _innerPool);
         if (pool == null)
         {
-          pool = SynchronizedObjectPoolProvider.Default.Create(DefaultPolicy);
+          pool = ConcurrentObjectPoolProvider.Default.Create(DefaultPolicy);
           var current = Interlocked.CompareExchange(ref _innerPool, pool, null);
           if (current != null) { return current; }
         }
@@ -66,7 +57,14 @@ namespace CuteAnt.IO.Pipelines
 
     public static PooledObject<Pipe> Create() => new PooledObject<Pipe>(InnerPool, true);
 
-    public static Pipe Take() => InnerPool.Take();
+    public static Pipe Allocate() => InnerPool.Get();
+
+    public static Pipe Allocate(PipeOptions options)
+    {
+      var pipe = InnerPool.Take();
+      pipe.Reinitialize(options);
+      return pipe;
+    }
 
     public static void Free(Pipe pipe) => InnerPool.Return(pipe);
 

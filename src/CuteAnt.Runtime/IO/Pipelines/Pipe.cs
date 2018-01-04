@@ -33,12 +33,12 @@ namespace CuteAnt.IO.Pipelines
     // 3. _readerAwaitable & _writerAwaitable
     private readonly object _sync = new object();
 
-    private readonly MemoryPool<byte> _pool;
-    private readonly long _maximumSizeHigh;
-    private readonly long _maximumSizeLow;
+    private /*readonly*/ MemoryPool<byte> _pool;
+    private /*readonly*/ long _maximumSizeHigh;
+    private /*readonly*/ long _maximumSizeLow;
 
-    private readonly Scheduler _readerScheduler;
-    private readonly Scheduler _writerScheduler;
+    private /*readonly*/ Scheduler _readerScheduler;
+    private /*readonly*/ Scheduler _writerScheduler;
 
     private long _length;
     private long _currentWriteLength;
@@ -90,6 +90,12 @@ namespace CuteAnt.IO.Pipelines
     /// <param name="options"></param>
     public Pipe(PipeOptions options)
     {
+      Reinitialize(options);
+      _bufferSegmentPool = new BufferSegment[SegmentPoolSize];
+    }
+
+    internal void Reinitialize(PipeOptions options)
+    {
       if (options == null) { throw new ArgumentNullException(nameof(options)); }
       if (options.MaximumSizeLow < 0) { throw new ArgumentOutOfRangeException(nameof(options.MaximumSizeLow)); }
       if (options.MaximumSizeHigh < 0) { throw new ArgumentOutOfRangeException(nameof(options.MaximumSizeHigh)); }
@@ -98,15 +104,36 @@ namespace CuteAnt.IO.Pipelines
         throw new ArgumentException(nameof(options.MaximumSizeHigh) + " should be greater or equal to " + nameof(options.MaximumSizeLow), nameof(options.MaximumSizeHigh));
       }
 
-      _bufferSegmentPool = new BufferSegment[SegmentPoolSize];
+      lock (_sync)
+      {
+        _pool = options.Pool;
+        _maximumSizeHigh = options.MaximumSizeHigh;
+        _maximumSizeLow = options.MaximumSizeLow;
+        _readerScheduler = options.ReaderScheduler ?? Scheduler.Inline;
+        _writerScheduler = options.WriterScheduler ?? Scheduler.Inline;
+        _readerAwaitable = new PipeAwaitable(completed: false);
+        _writerAwaitable = new PipeAwaitable(completed: true);
+      }
+    }
 
-      _pool = options.Pool;
-      _maximumSizeHigh = options.MaximumSizeHigh;
-      _maximumSizeLow = options.MaximumSizeLow;
-      _readerScheduler = options.ReaderScheduler ?? Scheduler.Inline;
-      _writerScheduler = options.WriterScheduler ?? Scheduler.Inline;
-      _readerAwaitable = new PipeAwaitable(completed: false);
-      _writerAwaitable = new PipeAwaitable(completed: true);
+    #endregion
+
+    #region == TryClose ==
+
+    internal bool TryClose()
+    {
+      try
+      {
+        this.Reader.Complete();
+        this.Writer.Complete();
+        Reset();
+        return true;
+      }
+      catch
+      {
+        CompletePipe();
+        return false;
+      }
     }
 
     #endregion
@@ -134,6 +161,9 @@ namespace CuteAnt.IO.Pipelines
       _commitHeadIndex = 0;
       _currentWriteLength = 0;
       _length = 0;
+
+      _readingState = _writingState = default;
+      _readHeadIndex = 0;
     }
 
     #endregion
@@ -834,7 +864,7 @@ namespace CuteAnt.IO.Pipelines
 
         _disposed = true;
         // Return all segments
-        var segment = _readHead;
+        var segment = _readHead ?? _commitHead; // 这里要判断 _commitHead，防止未走正常流程
         while (segment != null)
         {
           var returnSegment = segment;
