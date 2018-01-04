@@ -28,7 +28,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool, writerScheduler: scheduler));
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool, writerScheduler: scheduler));
             pipe.Reader.Complete();
 
             pipe.Writer.OnReaderCompleted((exception, state) =>
@@ -39,6 +39,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             Assert.True(callbackRan);
             Assert.Equal(1, scheduler.CallCount);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -46,7 +47,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool, readerScheduler: scheduler));
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool, readerScheduler: scheduler));
             pipe.Writer.Complete();
 
             pipe.Reader.OnWriterCompleted((exception, state) =>
@@ -57,22 +58,25 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             Assert.True(callbackRan);
             Assert.Equal(1, scheduler.CallCount);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
         public void OnReaderCompletedThrowsWithNullCallback()
         {
-            var pipe = new Pipe(new PipeOptions(_pool));
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool));
 
             Assert.Throws<ArgumentNullException>(() => pipe.Writer.OnReaderCompleted(null, null));
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
         public void OnWriterCompletedThrowsWithNullCallback()
         {
-            var pipe = new Pipe(new PipeOptions(_pool));
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool));
 
             Assert.Throws<ArgumentNullException>(() => pipe.Reader.OnWriterCompleted(null, null));
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -80,7 +84,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool, writerScheduler: scheduler));
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool, writerScheduler: scheduler));
             pipe.Writer.OnReaderCompleted((exception, state) =>
             {
                 callbackRan = true;
@@ -89,6 +93,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             Assert.True(callbackRan);
             Assert.Equal(1, scheduler.CallCount);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -96,7 +101,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool, readerScheduler: scheduler));
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool, readerScheduler: scheduler));
             pipe.Reader.OnWriterCompleted((exception, state) =>
             {
                 callbackRan = true;
@@ -105,6 +110,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             Assert.True(callbackRan);
             Assert.Equal(1, scheduler.CallCount);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -112,13 +118,14 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             var exception = new Exception();
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool, writerScheduler: scheduler));
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool, writerScheduler: scheduler));
             pipe.Writer.OnReaderCompleted((e, state) => throw exception, null);
             pipe.Reader.Complete();
 
             Assert.Equal(1, scheduler.CallCount);
             var aggregateException = Assert.IsType<AggregateException>(scheduler.LastException);
             Assert.Equal(aggregateException.InnerExceptions[0], exception);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -126,13 +133,14 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             var exception = new Exception();
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool, readerScheduler: scheduler));
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool, readerScheduler: scheduler));
             pipe.Reader.OnWriterCompleted((e, state) => throw exception, null);
             pipe.Writer.Complete();
 
             Assert.Equal(1, scheduler.CallCount);
             var aggregateException = Assert.IsType<AggregateException>(scheduler.LastException);
             Assert.Equal(aggregateException.InnerExceptions[0], exception);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -140,7 +148,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool, writerScheduler: scheduler));
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool, writerScheduler: scheduler));
             pipe.Writer.OnReaderCompleted((exception, state) =>
             {
                 callbackRan = true;
@@ -158,6 +166,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             Assert.Equal(1, scheduler.CallCount);
             Assert.False(callbackRan);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -165,7 +174,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool, readerScheduler: scheduler));
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool, readerScheduler: scheduler));
             pipe.Reader.OnWriterCompleted((exception, state) =>
             {
                 callbackRan = true;
@@ -182,6 +191,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             Assert.Equal(1, scheduler.CallCount);
             Assert.False(callbackRan);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -189,7 +199,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var callbackState = new object();
-            var pipe = new Pipe(new PipeOptions(_pool) );
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool) );
             pipe.Writer.OnReaderCompleted((exception, state) =>
             {
                 Assert.Equal(callbackState, state);
@@ -198,6 +208,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             pipe.Reader.Complete();
 
             Assert.True(callbackRan);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -205,7 +216,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var callbackState = new object();
-            var pipe = new Pipe(new PipeOptions(_pool) );
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool) );
             pipe.Reader.OnWriterCompleted((exception, state) =>
             {
                 Assert.Equal(callbackState, state);
@@ -214,6 +225,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             pipe.Writer.Complete();
 
             Assert.True(callbackRan);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -224,7 +236,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             var callbackState3 = new object();
             var counter = 0;
 
-            var pipe = new Pipe(new PipeOptions(_pool) );
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool) );
             pipe.Writer.OnReaderCompleted((exception, state) =>
             {
                 Assert.Equal(callbackState1, state);
@@ -249,6 +261,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             pipe.Reader.Complete();
 
             Assert.Equal(3, counter);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -259,7 +272,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             var callbackState3 = new object();
             var counter = 0;
 
-            var pipe = new Pipe(new PipeOptions(_pool) );
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool) );
             pipe.Reader.OnWriterCompleted((exception, state) =>
             {
                 Assert.Equal(callbackState1, state);
@@ -284,6 +297,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             pipe.Writer.Complete();
 
             Assert.Equal(3, counter);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -296,7 +310,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             var counter = 0;
 
-            var pipe = new Pipe(new PipeOptions(_pool) );
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool) );
             pipe.Writer.OnReaderCompleted((exception, state) =>
             {
                 Assert.Equal(callbackState1, state);
@@ -317,6 +331,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             Assert.Equal(exception1, aggregateException.InnerExceptions[0]);
             Assert.Equal(exception2, aggregateException.InnerExceptions[1]);
             Assert.Equal(2, counter);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -329,7 +344,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             var counter = 0;
 
-            var pipe = new Pipe(new PipeOptions(_pool) );
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool) );
             pipe.Reader.OnWriterCompleted((exception, state) =>
             {
                 Assert.Equal(callbackState1, state);
@@ -350,13 +365,14 @@ namespace CuteAnt.IO.Pipelines.Tests
             Assert.Equal(exception1, aggregateException.InnerExceptions[0]);
             Assert.Equal(exception2, aggregateException.InnerExceptions[1]);
             Assert.Equal(2, counter);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
         public void OnWriterCompletedPassesException()
         {
             var callbackRan = false;
-            var pipe = new Pipe(new PipeOptions(_pool) );
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool) );
             var readerException = new Exception();
 
             pipe.Reader.OnWriterCompleted((exception, state) =>
@@ -367,13 +383,14 @@ namespace CuteAnt.IO.Pipelines.Tests
             pipe.Writer.Complete(readerException);
 
             Assert.True(callbackRan);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
         public void OnReaderCompletedPassesException()
         {
             var callbackRan = false;
-            var pipe = new Pipe(new PipeOptions(_pool) );
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool) );
             var readerException = new Exception();
 
             pipe.Writer.OnReaderCompleted((exception, state) =>
@@ -384,6 +401,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             pipe.Reader.Complete(readerException);
 
             Assert.True(callbackRan);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -391,7 +409,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var continuationRan = false;
-            var pipe = new Pipe(new PipeOptions(_pool) );
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool) );
 
             pipe.Reader.OnWriterCompleted((exception, state) =>
             {
@@ -408,6 +426,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             pipe.Writer.Complete();
 
             Assert.True(callbackRan);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -415,7 +434,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var continuationRan = false;
-            var pipe = new Pipe(new PipeOptions(_pool, maximumSizeHigh: 5));
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool, maximumSizeHigh: 5));
 
             pipe.Writer.OnReaderCompleted((exception, state) =>
             {
@@ -436,13 +455,14 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             Assert.True(callbackRan);
             pipe.Writer.Complete();
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
         public void CompletingReaderFromWriterCallbackWorks()
         {
             var callbackRan = false;
-            var pipe = new Pipe(new PipeOptions(_pool, maximumSizeHigh: 5));
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool, maximumSizeHigh: 5));
 
             pipe.Writer.OnReaderCompleted((exception, state) =>
             {
@@ -456,13 +476,14 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             pipe.Reader.Complete();
             Assert.True(callbackRan);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
         public void CompletingWriterFromReaderCallbackWorks()
         {
             var callbackRan = false;
-            var pipe = new Pipe(new PipeOptions(_pool, maximumSizeHigh: 5));
+            var pipe = PipelineManager.Allocate(new PipeOptions(_pool, maximumSizeHigh: 5));
 
             pipe.Reader.OnWriterCompleted((exception, state) =>
             {
@@ -476,6 +497,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             pipe.Writer.Complete();
             Assert.True(callbackRan);
+            PipelineManager.Free(pipe);
         }
 
         private class TestScheduler : Scheduler

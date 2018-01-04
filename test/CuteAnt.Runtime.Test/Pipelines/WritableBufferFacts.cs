@@ -17,10 +17,11 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             using (var memoryPool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
             {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
+                var pipe = PipelineManager.Allocate(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer.Alloc();
                 buffer.Advance(0); // doing nothing, the hard way
                 await buffer.FlushAsync();
+                PipelineManager.Free(pipe);
             }
         }
 
@@ -29,10 +30,11 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             using (var memoryPool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
             {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
+                var pipe = PipelineManager.Allocate(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer.Alloc();
                 var exception = Assert.Throws<InvalidOperationException>(() => buffer.Advance(1));
                 Assert.Equal("Can't advance without buffer allocated", exception.Message);
+                PipelineManager.Free(pipe);
             }
         }
 
@@ -41,10 +43,11 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             using (var memoryPool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
             {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
+                var pipe = PipelineManager.Allocate(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer.Alloc(1);
                 var exception = Assert.Throws<InvalidOperationException>(() => buffer.Advance(buffer.Buffer.Length + 1));
                 Assert.Equal("Can't advance past buffer size", exception.Message);
+                PipelineManager.Free(pipe);
             }
         }
 
@@ -60,7 +63,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             new Random(length).NextBytes(data);
             using (var memoryPool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
             {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
+                var pipe = PipelineManager.Allocate(new PipeOptions(memoryPool));
 
                 var output = pipe.Writer.Alloc();
                 output.Write(data);
@@ -80,6 +83,7 @@ namespace CuteAnt.IO.Pipelines.Tests
                     pipe.Reader.Advance(input.End);
                 }
                 Assert.Equal(data.Length, offset);
+                PipelineManager.Free(pipe);
             }
         }
 
@@ -88,7 +92,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         //{
         //    using (var pool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
         //    {
-        //        var pipe = new Pipe(new PipeOptions(pool));
+        //        var pipe = PipelineManager.Allocate(new PipeOptions(pool));
         //        var buffer = pipe.Writer.Alloc();
         //        Assert.Throws<ArgumentOutOfRangeException>(() => buffer.Ensure(8192));
         //    }
@@ -99,9 +103,10 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             using (var pool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
             {
-                var pipe = new Pipe(new PipeOptions(pool));
+                var pipe = PipelineManager.Allocate(new PipeOptions(pool));
                 var buffer = pipe.Writer.Alloc();
                 buffer.Write(new byte[0]);
+                PipelineManager.Free(pipe);
             }
         }
     }

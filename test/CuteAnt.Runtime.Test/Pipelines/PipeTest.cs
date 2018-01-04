@@ -11,13 +11,13 @@ namespace CuteAnt.IO.Pipelines.Tests
     {
         protected const int MaximumSizeHigh = 65;
 
-        protected IPipe Pipe;
+        protected Pipe Pipe;
         private readonly MemoryPool<byte> _pool;
 
         protected PipeTest()
         {
             _pool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Create());
-            Pipe = new Pipe(new PipeOptions(_pool,
+            Pipe = PipelineManager.Allocate(new PipeOptions(_pool,
                 maximumSizeHigh: 65,
                 maximumSizeLow: 6
             ));
@@ -25,8 +25,9 @@ namespace CuteAnt.IO.Pipelines.Tests
 
         public void Dispose()
         {
-            Pipe.Writer.Complete();
-            Pipe.Reader.Complete();
+            //Pipe.Writer.Complete();
+            //Pipe.Reader.Complete();
+            PipelineManager.Free(Pipe);
             _pool.Dispose();
         }
     }

@@ -23,7 +23,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             {
                 using (var scheduler = new ThreadScheduler())
                 {
-                    var pipe = new Pipe(new PipeOptions(pool, readerScheduler: scheduler));
+                    var pipe = PipelineManager.Allocate(new PipeOptions(pool, readerScheduler: scheduler));
 
                     Func<Task> doRead = async () =>
                     {
@@ -47,6 +47,7 @@ namespace CuteAnt.IO.Pipelines.Tests
                     await buffer.FlushAsync();
 
                     await reading;
+                    PipelineManager.Free(pipe);
                 }
             }
         }
@@ -58,7 +59,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             {
                 using (var scheduler = new ThreadScheduler())
                 {
-                    var pipe = new Pipe(new PipeOptions(pool,
+                    var pipe = PipelineManager.Allocate(new PipeOptions(pool,
                         maximumSizeLow: 32,
                         maximumSizeHigh: 64,
                         writerScheduler: scheduler));
@@ -91,6 +92,7 @@ namespace CuteAnt.IO.Pipelines.Tests
                     pipe.Reader.Complete();
 
                     await writing;
+                    PipelineManager.Free(pipe);
                 }
             }
         }
@@ -100,7 +102,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             using (var pool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
             {
-                var pipe = new Pipe(new PipeOptions(pool));
+                var pipe = PipelineManager.Allocate(new PipeOptions(pool));
 
                 var id = 0;
 
@@ -126,6 +128,7 @@ namespace CuteAnt.IO.Pipelines.Tests
                 pipe.Writer.Complete();
 
                 await reading;
+                PipelineManager.Free(pipe);
             }
         }
 
@@ -134,7 +137,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             using (var pool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
             {
-                var pipe = new Pipe(new PipeOptions(pool,
+                var pipe = PipelineManager.Allocate(new PipeOptions(pool,
                     maximumSizeLow: 32,
                     maximumSizeHigh: 64
                 ));
@@ -167,6 +170,7 @@ namespace CuteAnt.IO.Pipelines.Tests
                 pipe.Reader.Complete();
 
                 await writing;
+                PipelineManager.Free(pipe);
             }
         }
 

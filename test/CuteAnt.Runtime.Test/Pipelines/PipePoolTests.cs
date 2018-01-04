@@ -16,7 +16,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             var pool = new DisposeTrackingBufferPool();
 
-            var readerWriter = new Pipe(new PipeOptions(pool));
+            var readerWriter = PipelineManager.Allocate(new PipeOptions(pool));
             await readerWriter.Writer.WriteAsync(new byte[] {1});
 
             readerWriter.Writer.Complete();
@@ -26,6 +26,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             readerWriter.Writer.Complete();
             readerWriter.Reader.Complete();
             Assert.Equal(1, pool.ReturnedBlocks);
+            PipelineManager.Free(readerWriter);
         }
 
         [Fact]
@@ -35,7 +36,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             var writeSize = 512;
 
-            var pipe = new Pipe(new PipeOptions(pool));
+            var pipe = PipelineManager.Allocate(new PipeOptions(pool));
             while (pool.CurrentlyRentedBlocks != 3)
             {
                 var writableBuffer = pipe.Writer.Alloc(writeSize);
@@ -47,6 +48,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             pipe.Reader.Advance(readResult.Buffer.End);
 
             Assert.Equal(0, pool.CurrentlyRentedBlocks);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -56,7 +58,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             var writeSize = 512;
 
-            var pipe = new Pipe(new PipeOptions(pool));
+            var pipe = PipelineManager.Allocate(new PipeOptions(pool));
             await pipe.Writer.WriteAsync(new byte[writeSize]);
 
             var buffer = pipe.Writer.Alloc(writeSize);
@@ -66,6 +68,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             buffer.Commit();
 
             Assert.Equal(1, pool.CurrentlyRentedBlocks);
+            PipelineManager.Free(pipe);
         }
 
         [Fact]
@@ -75,7 +78,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             var writeSize = 512;
 
-            var pipe = new Pipe(new PipeOptions(pool));
+            var pipe = PipelineManager.Allocate(new PipeOptions(pool));
 
             // Write two blocks
             var buffer = pipe.Writer.Alloc(writeSize);
@@ -92,6 +95,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             // Try writing more
             await pipe.Writer.WriteAsync(new byte[writeSize]);
+            PipelineManager.Free(pipe);
         }
 
         private class DisposeTrackingBufferPool : MemoryPool<byte>
