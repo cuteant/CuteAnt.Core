@@ -17,15 +17,52 @@ namespace CuteAnt.Runtime
 
     private static readonly Lazy<ILogger> s_logger = new Lazy<ILogger>(() => TraceLogger.GetLogger("CuteAnt.Runtime.StreamToStreamCopy"));
 
-    //public static Task CopyAsync(Stream source, Stream destination, Boolean disposeSource)
-    //{
-    //  return CopyAsync(source, destination, DefaultBufferSize, disposeSource, null);
-    //}
+    public static void Copy(Stream source, Stream destination, Boolean disposeSource)
+    {
+      Copy(source, destination, DefaultBufferSize, disposeSource);
+    }
 
-    //public static Task CopyAsync(Stream source, Stream destination, Int32 bufferSize, Boolean disposeSource)
-    //{
-    //  return CopyAsync(source, destination, bufferSize, disposeSource, null);
-    //}
+    public static void Copy(Stream source, Stream destination, Int32 bufferSize, Boolean disposeSource)
+    {
+      Contract.Requires(source != null);
+      Contract.Requires(destination != null);
+      Contract.Requires(bufferSize > 0);
+
+      if (source is IBufferedStream bufferedStream)
+      {
+        bufferedStream.CopyToSync(destination);
+      }
+      else
+      {
+        var bufferPool = BufferManager.Shared;
+        var buffer = bufferPool.Rent(bufferSize);
+        try
+        {
+          while (true)
+          {
+            int bytesRead = source.Read(buffer, 0, bufferSize);
+            if (bytesRead == 0) { break; }
+            destination.Write(buffer, 0, bytesRead);
+          }
+        }
+        finally
+        {
+          bufferPool.Return(buffer);
+        }
+      }
+
+      try
+      {
+        if (disposeSource)
+        {
+          source.Dispose();
+        }
+      }
+      catch (Exception e)
+      {
+        s_logger.Value.LogError(TraceLogger.PrintException(e));
+      }
+    }
 
     public static Task CopyAsync(Stream source, Stream destination, Boolean disposeSource)
     {
