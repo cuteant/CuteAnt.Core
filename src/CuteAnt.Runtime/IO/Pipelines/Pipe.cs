@@ -8,6 +8,8 @@ using System.Collections.Sequences;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
+using CuteAnt.AsyncEx;
 using CuteAnt.IO.Pipelines.Threading;
 
 namespace CuteAnt.IO.Pipelines
@@ -25,7 +27,6 @@ namespace CuteAnt.IO.Pipelines
     private const int SegmentPoolSize = 16;
 
     private static readonly Action<object> _invokeCompletionCallbacks = state => ((PipeCompletionCallbacks)state).Execute();
-    private static readonly Action<object> _scheduleContinuation = o => ((Action)o)();
 
     // This sync objects protects the following state:
     // 1. _commitHead & _commitHeadIndex
@@ -325,9 +326,9 @@ namespace CuteAnt.IO.Pipelines
 
     #endregion
 
-    #region == Commit ==
+    #region -- Commit --
 
-    internal void Commit()
+    public void Commit()
     {
       // Changing commit head shared with Reader
       lock (_sync)
@@ -377,11 +378,14 @@ namespace CuteAnt.IO.Pipelines
 
     #endregion
 
-    #region == FlushAsync ==
+    #region -- FlushAsync --
 
     private static readonly Action<object> _signalWriterAwaitable = state => ((Pipe)state).WriterCancellationRequested();
 
-    internal ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken)
+    /// <summary>Signals the <see cref="IPipeReader"/> data is available.
+    /// Will <see cref="Commit"/> if necessary.</summary>
+    /// <returns>A task that completes when the data is fully flushed.</returns>
+    public ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken = default)
     {
       Action awaitable;
       CancellationTokenRegistration cancellationTokenRegistration;
@@ -414,6 +418,23 @@ namespace CuteAnt.IO.Pipelines
       }
       TrySchedule(_writerScheduler, action);
     }
+
+    /// <summary>Signals the <see cref="IPipeReader"/> data is available.
+    /// Will <see cref="Commit"/> if necessary.</summary>
+    /// <remarks>注意：不要再同步方法中使用</remarks>
+    /// <returns>A task that completes when the data is fully flushed.</returns>
+    public Task FlushAsyncAwaited(CancellationToken cancellationToken = default)
+    {
+      var awaitable = FlushAsync(cancellationToken);
+      if (awaitable.IsCompleted)
+      {
+        awaitable.GetResult();
+        return TaskConstants.Completed;
+      }
+
+      return InternalFlushAsyncAwaited(awaitable);
+    }
+    private static async Task InternalFlushAsyncAwaited(ValueAwaiter<FlushResult> awaitable) => await awaitable;
 
     #endregion
 
@@ -886,7 +907,7 @@ namespace CuteAnt.IO.Pipelines
     {
       if (action != null)
       {
-        scheduler.Schedule(_scheduleContinuation, action);
+        scheduler.Schedule(action);
       }
     }
 

@@ -14,6 +14,7 @@ namespace CuteAnt.Pool
 
     public StringBuilder Create() => new StringBuilder(InitialCapacity);
 
+    [MethodImpl(InlineMethod.Value)]
     public StringBuilder PreGetting(StringBuilder sb) => sb;
 
     public bool Return(StringBuilder sb)

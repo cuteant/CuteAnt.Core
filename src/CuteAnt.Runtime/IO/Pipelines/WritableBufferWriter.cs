@@ -11,10 +11,10 @@ namespace CuteAnt.IO.Pipelines
 {
   public ref struct WritableBufferWriter
   {
-    private WritableBuffer _writableBuffer;
+    private readonly WritableBuffer _writableBuffer;
     private Span<byte> _span;
 
-    public WritableBufferWriter(WritableBuffer writableBuffer)
+    public WritableBufferWriter(in WritableBuffer writableBuffer)
     {
       _writableBuffer = writableBuffer;
       _span = writableBuffer.Buffer.Span;

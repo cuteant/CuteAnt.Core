@@ -506,6 +506,11 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             public Exception LastException { get; set; }
 
+            public override void Schedule(Action action)
+            {
+                Schedule(o => ((Action)o)(), action);
+            }
+
             public override void Schedule(Action<object> action, object state)
             {
                 CallCount++;

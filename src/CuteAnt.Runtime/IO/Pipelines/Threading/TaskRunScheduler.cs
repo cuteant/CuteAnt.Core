@@ -10,6 +10,11 @@ namespace CuteAnt.IO.Pipelines.Threading
 {
   internal class TaskRunScheduler : Scheduler
   {
+    public override void Schedule(Action action)
+    {
+      Task.Factory.StartNew(action);
+    }
+
     public override void Schedule(Action<object> action, object state)
     {
       Task.Factory.StartNew(action, state);

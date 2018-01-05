@@ -13,26 +13,26 @@ namespace CuteAnt.Runtime
   // read/write is used on the MemoryStream to avoid context switches.
   public static class StreamToStreamCopy
   {
-    internal const Int32 DefaultBufferSize = 1024 * 32;
+    internal const Int32 DefaultBufferSize = 1024 * 80;
 
     private static readonly Lazy<ILogger> s_logger = new Lazy<ILogger>(() => TraceLogger.GetLogger("CuteAnt.Runtime.StreamToStreamCopy"));
 
+    //public static Task CopyAsync(Stream source, Stream destination, Boolean disposeSource)
+    //{
+    //  return CopyAsync(source, destination, DefaultBufferSize, disposeSource, null);
+    //}
+
+    //public static Task CopyAsync(Stream source, Stream destination, Int32 bufferSize, Boolean disposeSource)
+    //{
+    //  return CopyAsync(source, destination, bufferSize, disposeSource, null);
+    //}
+
     public static Task CopyAsync(Stream source, Stream destination, Boolean disposeSource)
     {
-      return CopyAsync(source, destination, DefaultBufferSize, disposeSource, null);
+      return CopyAsync(source, destination, DefaultBufferSize, disposeSource);
     }
 
-    public static Task CopyAsync(Stream source, Stream destination, Int32 bufferSize, Boolean disposeSource)
-    {
-      return CopyAsync(source, destination, bufferSize, disposeSource, null);
-    }
-
-    public static Task CopyAsync(Stream source, Stream destination, Boolean disposeSource, BufferManager bufferManager)
-    {
-      return CopyAsync(source, destination, DefaultBufferSize, disposeSource, bufferManager);
-    }
-
-    public static async Task CopyAsync(Stream source, Stream destination, Int32 bufferSize, Boolean disposeSource, BufferManager bufferManager)
+    public static async Task CopyAsync(Stream source, Stream destination, Int32 bufferSize, Boolean disposeSource)
     {
       Contract.Requires(source != null);
       Contract.Requires(destination != null);
@@ -51,10 +51,8 @@ namespace CuteAnt.Runtime
       }
       else
       {
-        //byte[] buffer = new byte[bufferSize];
-        if (null == bufferManager) { bufferManager = BufferManager.GlobalManager; }
-        var buffer = bufferManager.TakeBuffer(bufferSize);
-
+        var bufferPool = BufferManager.Shared;
+        var buffer = bufferPool.Rent(bufferSize);
         try
         {
           // If both streams are MemoryStreams, just copy the whole content at once to avoid context switches.
@@ -80,7 +78,7 @@ namespace CuteAnt.Runtime
         }
         finally
         {
-          bufferManager.ReturnBuffer(buffer);
+          bufferPool.Return(buffer);
         }
       }
 
@@ -93,8 +91,6 @@ namespace CuteAnt.Runtime
       }
       catch (Exception e)
       {
-        // Dispose() should never throw, but since we're on an async codepath, make sure to catch the exception.
-        //if (Logging.On) Logging.Exception(Logging.Http, null, "CopyAsync", e);
         s_logger.Value.LogError(TraceLogger.PrintException(e));
       }
     }

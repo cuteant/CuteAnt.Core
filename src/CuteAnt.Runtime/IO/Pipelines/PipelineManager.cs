@@ -14,6 +14,7 @@ namespace CuteAnt.IO.Pipelines
 
     public Pipe Create() => new Pipe(Options);
 
+    [MethodImpl(InlineMethod.Value)]
     public Pipe PreGetting(Pipe pipe)
     {
       pipe.Reinitialize(Options);

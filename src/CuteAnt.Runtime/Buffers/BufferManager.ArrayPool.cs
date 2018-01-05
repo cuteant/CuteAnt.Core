@@ -27,7 +27,25 @@ namespace CuteAnt.Buffers
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static ArrayPool<byte> EnsureSharedCreated()
     {
-      Interlocked.CompareExchange(ref s_sharedInstance, CreateArrayPool(GlobalManager), null);
+      var poolType = SystemPropertyUtil.Get("cuteant.io.bufferpool.type", "default");
+      poolType = poolType.Trim();
+
+      ArrayPool<byte> pool = null;
+      if (string.Equals("default", poolType, StringComparison.OrdinalIgnoreCase) ||
+          string.Equals("wcf", poolType, StringComparison.OrdinalIgnoreCase))
+      {
+        pool = CreateArrayPool(GlobalManager);
+      }
+      else if (string.Equals("netcore", poolType, StringComparison.OrdinalIgnoreCase))
+      {
+        pool = ArrayPool<byte>.Shared;
+      }
+      else
+      {
+        pool = CreateArrayPool(GlobalManager);
+      }
+
+      Interlocked.CompareExchange(ref s_sharedInstance, pool, null);
       return s_sharedInstance;
     }
 

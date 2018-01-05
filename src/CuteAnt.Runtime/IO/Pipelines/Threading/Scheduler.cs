@@ -11,6 +11,7 @@ namespace CuteAnt.IO.Pipelines.Threading
     public static Scheduler TaskRun { get; } = new TaskRunScheduler();
     public static Scheduler Inline { get; } = new InlineScheduler();
 
+    public abstract void Schedule(Action action);
     public abstract void Schedule(Action<object> action, object state);
   }
 }

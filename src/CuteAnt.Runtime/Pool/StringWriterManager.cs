@@ -12,6 +12,7 @@ namespace CuteAnt.Pool
 
     public StringWriterX Create() => new StringWriterX();
 
+    [MethodImpl(InlineMethod.Value)]
     public StringWriterX PreGetting(StringWriterX sw) => sw.Reinitialize(StringBuilderManager.Allocate());
 
     public bool Return(StringWriterX sw)

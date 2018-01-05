@@ -186,6 +186,11 @@ namespace CuteAnt.IO.Pipelines.Tests
                 Thread.Start();
             }
 
+            public override void Schedule(Action action)
+            {
+                Schedule(o => ((Action)o)(), action);
+            }
+
             public override void Schedule(Action<object> action, object state)
             {
                 _work.Add(() => action(state));
