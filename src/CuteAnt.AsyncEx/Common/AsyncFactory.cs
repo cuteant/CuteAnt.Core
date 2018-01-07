@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 #if NET40
@@ -58,28 +59,39 @@ namespace CuteAnt.AsyncEx
     /// <returns>The asynchronous operation, to be returned by the Begin method of the APM pattern.</returns>
     public static IAsyncResult ToBegin(Task task, AsyncCallback callback, Object state)
     {
-      var tcs = new TaskCompletionSource(state);
 #if !NET40
-      task.ContinueWith((t, s) =>
+      Debug.Assert(task != null);
+
+      // If the task has already completed, then since the Task's CompletedSynchronously==false
+      // and we want it to be true, we need to create a new IAsyncResult. (We also need the AsyncState to match.)
+      IAsyncResult asyncResult;
+      if (task.IsCompleted)
       {
-        var tuple = (Tuple<TaskCompletionSource, AsyncCallback>)s;
-        var tcs1 = tuple.Item1;
-        var callback1 = tuple.Item2;
-
-        tcs1.TryCompleteFromCompletedTask(t);
-
-        if (callback1 != null) { callback1(tcs1.Task); }
-      }, Tuple.Create(tcs, callback), CancellationToken.None, AsyncUtils.GetContinuationOptions(), TaskScheduler.Default);
+        // Synchronous completion.
+        asyncResult = new TaskWrapperAsyncResult(task, state, completedSynchronously: true);
+        callback?.Invoke(asyncResult);
+      }
+      else
+      {
+        // For asynchronous completion we need to schedule a callback.  Whether we can use the Task as the IAsyncResult
+        // depends on whether the Task's AsyncState has reference equality with the requested state.
+        asyncResult = task.AsyncState == state ? (IAsyncResult)task : new TaskWrapperAsyncResult(task, state, completedSynchronously: false);
+        if (callback != null)
+        {
+          InvokeCallbackWhenTaskCompletes(task, callback, asyncResult);
+        }
+      }
+      return asyncResult;
 #else
+      var tcs = new TaskCompletionSource(state);
       task.ContinueWith(t =>
       {
         tcs.TryCompleteFromCompletedTask(t);
 
         if (callback != null) { callback(tcs.Task); }
       }, CancellationToken.None, AsyncUtils.GetContinuationOptions(), TaskScheduler.Default);
-#endif
-
       return tcs.Task;
+#endif
     }
 
     #endregion
@@ -91,8 +103,72 @@ namespace CuteAnt.AsyncEx
     /// <returns>The result of the asynchronous operation, to be returned by the End method of the APM pattern.</returns>
     public static void ToEnd(IAsyncResult asyncResult)
     {
+#if NET40
       ((Task)asyncResult).WaitAndUnwrapException();
+#else
+      Task task;
+
+      // If the IAsyncResult is our task-wrapping IAsyncResult, extract the Task.
+      if (asyncResult as TaskWrapperAsyncResult != null)
+      {
+        task = (asyncResult as TaskWrapperAsyncResult).Task;
+        Debug.Assert(task != null, "TaskWrapperAsyncResult should never wrap a null Task.");
+      }
+      else
+      {
+        // Otherwise, the IAsyncResult should be a Task.
+        task = asyncResult as Task;
+      }
+
+      // Make sure we actually got a task, then complete the operation by waiting on it.
+      if (task == null)
+      {
+        throw new ArgumentNullException();
+      }
+
+      task.GetAwaiter().GetResult();
+#endif
     }
+
+    #endregion
+
+    #region ** InvokeCallbackWhenTaskCompletes **
+
+#if !NET40
+    /// <summary>Invokes the callback asynchronously when the task has completed.</summary>
+    /// <param name="antecedent">The Task to await.</param>
+    /// <param name="callback">The callback to invoke when the Task completes.</param>
+    /// <param name="asyncResult">The Task used as the IAsyncResult.</param>
+    private static void InvokeCallbackWhenTaskCompletes(Task antecedent, AsyncCallback callback, IAsyncResult asyncResult)
+    {
+      Debug.Assert(antecedent != null);
+      Debug.Assert(callback != null);
+      Debug.Assert(asyncResult != null);
+
+      // We use OnCompleted rather than ContinueWith in order to avoid running synchronously
+      // if the task has already completed by the time we get here.  This is separated out into
+      // its own method currently so that we only pay for the closure if necessary.
+      antecedent.ConfigureAwait(continueOnCapturedContext: false)
+                .GetAwaiter()
+                .OnCompleted(() => callback(asyncResult));
+
+      // PERFORMANCE NOTE:
+      // Assuming we're in the default ExecutionContext, the "slow path" of an incomplete
+      // task will result in four allocations: the new IAsyncResult,  the delegate+closure
+      // in this method, and the continuation object inside of OnCompleted (necessary
+      // to capture both the Action delegate and the ExecutionContext in a single object).  
+      // In the future, if performance requirements drove a need, those four 
+      // allocations could be reduced to one.  This would be achieved by having TaskWrapperAsyncResult
+      // also implement ITaskCompletionAction (and optionally IThreadPoolWorkItem).  It would need
+      // additional fields to store the AsyncCallback and an ExecutionContext.  Once configured, 
+      // it would be set into the Task as a continuation.  Its Invoke method would then be run when 
+      // the antecedent completed, and, doing all of the necessary work to flow ExecutionContext, 
+      // it would invoke the AsyncCallback.  It could also have a field on it for the antecedent, 
+      // so that the End method would have access to the completed antecedent. For related examples, 
+      // see other implementations of ITaskCompletionAction, and in particular ReadWriteTask 
+      // used in Stream.Begin/EndXx's implementation.
+    }
+#endif
 
     #endregion
 
@@ -211,4 +287,47 @@ namespace CuteAnt.AsyncEx
 
     #endregion
   }
+
+  #region ** class TaskWrapperAsyncResult **
+
+#if !NET40
+  /// <summary>
+  /// Provides a simple IAsyncResult that wraps a Task.  This, in effect, allows
+  /// for overriding what's seen for the CompletedSynchronously and AsyncState values.
+  /// </summary>
+  internal sealed class TaskWrapperAsyncResult : IAsyncResult
+  {
+    /// <summary>The wrapped Task.</summary>
+    internal readonly Task Task;
+    /// <summary>The new AsyncState value.</summary>
+    private readonly object _state;
+    /// <summary>The new CompletedSynchronously value.</summary>
+    private readonly bool _completedSynchronously;
+
+    /// <summary>Initializes the IAsyncResult with the Task to wrap and the overriding AsyncState and CompletedSynchronously values.</summary>
+    /// <param name="task">The Task to wrap.</param>
+    /// <param name="state">The new AsyncState value</param>
+    /// <param name="completedSynchronously">The new CompletedSynchronously value.</param>
+    internal TaskWrapperAsyncResult(Task task, object state, bool completedSynchronously)
+    {
+      Debug.Assert(task != null);
+      Debug.Assert(!completedSynchronously || task.IsCompleted, "If completedSynchronously is true, the task must be completed.");
+
+      this.Task = task;
+      _state = state;
+      _completedSynchronously = completedSynchronously;
+    }
+
+    // The IAsyncResult implementation.  
+    // - IsCompleted and AsyncWaitHandle just pass through to the Task.
+    // - AsyncState and CompletedSynchronously return the corresponding values stored in this object.
+
+    object IAsyncResult.AsyncState { get { return _state; } }
+    bool IAsyncResult.CompletedSynchronously { get { return _completedSynchronously; } }
+    bool IAsyncResult.IsCompleted { get { return this.Task.IsCompleted; } }
+    WaitHandle IAsyncResult.AsyncWaitHandle { get { return ((IAsyncResult)this.Task).AsyncWaitHandle; } }
+  }
+#endif
+
+  #endregion
 }

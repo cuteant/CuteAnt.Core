@@ -47,9 +47,7 @@ namespace CuteAnt.AsyncEx
     public static Task<TResult> FromError<TResult>(Exception exception) => AsyncUtils.FromException<TResult>(exception);
 
     /// <summary>Used as the T in a "conversion" of a Task into a Task{T}</summary>
-    internal struct AsyncVoid
-    {
-    }
+    private struct AsyncVoid { }
   }
 
   /// <summary>Provides completed task constants.</summary>

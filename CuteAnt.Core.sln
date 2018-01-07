@@ -69,19 +69,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.IO.RecyclableMemo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.DependencyInjectionBenchmarks", "test\DotNet.DependencyInjectionBenchmarks\DotNet.DependencyInjectionBenchmarks.csproj", "{C31254B4-5E5D-4219-83A1-A24D37194B79}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "System.IO.PipelineReader.Extensions", "..\CuteAnt.Extensions.Common\src\System.IO.PipelineReader.Extensions\System.IO.PipelineReader.Extensions.shproj", "{8E021F14-3983-4C47-BBB5-FA4870E3A38C}"
-EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "System.IO.Pipelines.Extensions", "..\CuteAnt.Extensions.Common\src\System.IO.Pipelines.Extensions\System.IO.Pipelines.Extensions.shproj", "{1FA24735-F7F1-4187-A5BB-CEA4BB2969D2}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "System.IO.Stream.Extensions", "..\CuteAnt.Extensions.Common\src\System.IO.Stream.Extensions\System.IO.Stream.Extensions.shproj", "{2208BF33-D4BE-4E32-846E-320FF307C0A4}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\CuteAnt.Extensions.Common\src\System.IO.Pipelines.Extensions\System.IO.Pipelines.Extensions.projitems*{1fa24735-f7f1-4187-a5bb-cea4bb2969d2}*SharedItemsImports = 13
+		..\CuteAnt.Extensions.Common\src\System.IO.Stream.Extensions\System.IO.Stream.Extensions.projitems*{2208bf33-d4be-4e32-846e-320ff307c0a4}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.ValidationHelper.Sources\CuteAnt.Extensions.ValidationHelper.Sources.projitems*{3b59b888-7a45-4322-b5dd-3fadc4e74420}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\Microsoft.Extensions.ParameterDefaultValue.Sources\Microsoft.Extensions.ParameterDefaultValue.Sources.projitems*{4d92b029-ed5d-4ecb-8a74-5e8c1aaf74ef}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.ReaderWriterLockSlim.Sources\CuteAnt.Extensions.ReaderWriterLockSlim.Sources.projitems*{65e9ed9b-9545-47d8-a39c-da22c323abb2}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.ActivatorUtilities.Sources\CuteAnt.Extensions.ActivatorUtilities.Sources.projitems*{7d02563f-82aa-4322-acfd-04e3c7319e30}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Logging.Sources\CuteAnt.Extensions.Logging.Sources.projitems*{8dbb7dc8-2b90-4a8c-a60d-d41466174bde}*SharedItemsImports = 13
-		..\CuteAnt.Extensions.Common\src\System.IO.PipelineReader.Extensions\System.IO.PipelineReader.Extensions.projitems*{8e021f14-3983-4c47-bbb5-fa4870e3a38c}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{c7f8dbe6-77b7-494d-af00-018f7579548c}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\Nito.AsyncEx.ExceptionEnlightenment.Sources\Nito.AsyncEx.ExceptionEnlightenment.Sources.projitems*{d90e9b82-6317-4055-82e3-fe8625c143e9}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.DateTimeUtilities.Sources\CuteAnt.Extensions.DateTimeUtilities.Sources.projitems*{f0dcba0c-1ee9-403c-931c-555776f6c680}*SharedItemsImports = 13
@@ -177,8 +177,8 @@ Global
 		{A457D323-4CC8-4561-A4A2-6E8C4FBD1210} = {DD4188B4-D72A-4D3E-B5A6-3168231C6301}
 		{E471B018-5731-4CAC-B7D6-A5F82BB935FC} = {DD4188B4-D72A-4D3E-B5A6-3168231C6301}
 		{C31254B4-5E5D-4219-83A1-A24D37194B79} = {96E98A2F-3EBF-483C-A63E-4245C0D4F625}
-		{8E021F14-3983-4C47-BBB5-FA4870E3A38C} = {4744CD6C-82C3-4D38-A708-3D301A74397F}
 		{1FA24735-F7F1-4187-A5BB-CEA4BB2969D2} = {4744CD6C-82C3-4D38-A708-3D301A74397F}
+		{2208BF33-D4BE-4E32-846E-320FF307C0A4} = {4744CD6C-82C3-4D38-A708-3D301A74397F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {93230366-D5C3-4397-83D3-ED46E43B8121}

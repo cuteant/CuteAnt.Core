@@ -130,5 +130,44 @@ namespace CuteAnt.IO.Pipelines.Tests
       Assert.Equal(_helloWorldBytes, bytes);
       Assert.Equal(_helloWorld, Encoding.ASCII.GetString(bytes));
     }
+
+
+    [Fact]
+    public void PipeStreamTest()
+    {
+      using (var pooledPipe = PipelineManager.Create())
+      {
+        var pipeStream = new PipelineStream(pooledPipe.Object);
+        pipeStream.Write(_helloWorldBytes, 0, _helloWorldBytes.Length);
+        pipeStream.Flush();
+        var bytes = new byte[_helloWorldBytes.Length];
+        pipeStream.Read(bytes, 0, bytes.Length);
+        Assert.Equal(_helloWorldBytes, bytes);
+        Assert.Equal(_helloWorld, Encoding.ASCII.GetString(bytes));
+      }
+      //var ms = new MemoryStream();
+      //ms.Write(_helloWorldBytes, 0, _helloWorldBytes.Length);
+      //ms.Seek(0, SeekOrigin.Begin);
+      //ms.CopyTo(_pipe, true);
+      //var result = _pipe.Reader.ReadAsync().GetResult();
+      //var bytes = result.Buffer.ToArray();
+      //Assert.Equal(_helloWorldBytes, bytes);
+      //Assert.Equal(_helloWorld, Encoding.ASCII.GetString(bytes));
+    }
+
+    [Fact]
+    public async Task PipeStreamTestAsync()
+    {
+      using (var pooledPipe = PipelineManager.Create())
+      {
+        var pipeStream = new PipelineStream(pooledPipe.Object);
+        await pipeStream.WriteAsync(_helloWorldBytes, 0, _helloWorldBytes.Length);
+        await pipeStream.FlushAsync();
+        var bytes = new byte[_helloWorldBytes.Length];
+        await pipeStream.ReadAsync(bytes, 0, bytes.Length);
+        Assert.Equal(_helloWorldBytes, bytes);
+        Assert.Equal(_helloWorld, Encoding.ASCII.GetString(bytes));
+      }
+    }
   }
 }

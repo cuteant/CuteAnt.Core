@@ -15,6 +15,8 @@ namespace CuteAnt.AsyncEx
   /// <summary>AsyncUtils</summary>
   public static class AsyncUtils
   {
+    private struct VoidTaskResult { }
+
     #region @@ Constructors @@
 
 #if NET40
@@ -40,7 +42,7 @@ namespace CuteAnt.AsyncEx
 #if NET_4_5_GREATER
       return Task.FromException(exception);
 #else
-      return FromException<TaskConstants.AsyncVoid>(exception);
+      return FromException<VoidTaskResult>(exception);
 #endif
     }
 
