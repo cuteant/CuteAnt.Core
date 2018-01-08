@@ -87,6 +87,7 @@ namespace CuteAnt.Buffers
       public override unsafe void Return(byte[] array, bool clearArray = false)
       {
         if (array == null) { throw new ArgumentNullException(nameof(array)); }
+        if (array.Length == 0) { return; } // Ignore empty arrays.
 
         if (clearArray)
         {

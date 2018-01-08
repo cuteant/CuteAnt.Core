@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Buffers;
 using System.Text;
 using System.Threading;
 using CuteAnt.Diagnostics;
@@ -23,14 +24,14 @@ namespace CuteAnt.Buffers
     /// <summary>Initializes a new instance of the <see cref="BufferManagerOutputStream"/> class.</summary>
     /// <param name="initialSize"></param>
     public BufferManagerOutputStream(Int32 initialSize)
-      : this(initialSize, BufferManager.GlobalManager)
+      : this(initialSize, BufferManager.Shared)
     {
     }
 
     /// <summary>Initializes a new instance of the <see cref="BufferManagerOutputStream"/> class.</summary>
     /// <param name="initialSize"></param>
     /// <param name="bufferManager"></param>
-    public BufferManagerOutputStream(Int32 initialSize, BufferManager bufferManager)
+    public BufferManagerOutputStream(Int32 initialSize, ArrayPool<byte> bufferManager)
       : this(initialSize, int.MaxValue, bufferManager)
     {
     }
@@ -39,8 +40,8 @@ namespace CuteAnt.Buffers
     /// <param name="initialSize"></param>
     /// <param name="maxSize"></param>
     /// <param name="bufferManager"></param>
-    public BufferManagerOutputStream(int initialSize, int maxSize, BufferManager bufferManager)
-      : base(initialSize, maxSize, BufferManager.GetInternalBufferManager(bufferManager))
+    public BufferManagerOutputStream(int initialSize, int maxSize, ArrayPool<byte> bufferManager)
+      : base(initialSize, maxSize, bufferManager)
     {
     }
 
@@ -49,7 +50,7 @@ namespace CuteAnt.Buffers
     /// <param name="maxSize"></param>
     /// <param name="bufferManager"></param>
     /// <param name="quotaExceededString"></param>
-    public BufferManagerOutputStream(int initialSize, int maxSize, BufferManager bufferManager, string quotaExceededString)
+    public BufferManagerOutputStream(int initialSize, int maxSize, ArrayPool<byte> bufferManager, string quotaExceededString)
       : this(initialSize, maxSize, bufferManager)
     {
       m_quotaExceededString = quotaExceededString;
@@ -57,33 +58,22 @@ namespace CuteAnt.Buffers
 
     public void Reinitialize()
     {
-      Reinitialize(DefaultBufferSize, Int32.MaxValue, Int32.MaxValue, BufferManager.GlobalManager);
+      Reinitialize(DefaultBufferSize, Int32.MaxValue, Int32.MaxValue, BufferManager.Shared);
     }
 
     public void Reinitialize(Int32 initialSize)
     {
-      Reinitialize(initialSize, Int32.MaxValue, Int32.MaxValue, BufferManager.GlobalManager);
+      Reinitialize(initialSize, Int32.MaxValue, Int32.MaxValue, BufferManager.Shared);
     }
 
-    public void Reinitialize(Int32 initialSize, BufferManager bufferManager)
+    public void Reinitialize(Int32 initialSize, ArrayPool<byte> bufferManager)
     {
       Reinitialize(initialSize, Int32.MaxValue, Int32.MaxValue, bufferManager);
     }
 
-    public void Reinitialize(int initialSize, int maxSizeQuota, BufferManager bufferManager)
+    public void Reinitialize(int initialSize, int maxSizeQuota, ArrayPool<byte> bufferManager)
     {
       Reinitialize(initialSize, maxSizeQuota, maxSizeQuota, bufferManager);
-    }
-
-
-    internal void Reinitialize(int initialSize, int maxSizeQuota, int effectiveMaxSize, BufferManager bufferManager)
-    {
-      base.Reinitialize(initialSize, maxSizeQuota, effectiveMaxSize, BufferManager.GetInternalBufferManager(bufferManager));
-    }
-
-    public void Reinitialize(int initialSize, int maxSizeQuota, int effectiveMaxSize, Encoding encoding, BufferManager bufferManager)
-    {
-      base.Reinitialize(initialSize, maxSizeQuota, effectiveMaxSize, encoding, BufferManager.GetInternalBufferManager(bufferManager));
     }
 
     protected override Exception CreateQuotaExceededException(int maxSizeQuota)

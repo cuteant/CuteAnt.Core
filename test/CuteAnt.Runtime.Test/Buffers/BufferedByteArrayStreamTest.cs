@@ -139,7 +139,7 @@ namespace CuteAnt.Buffers.Test
 
       var sut = new BufferedByteArrayStream(new[] { segment });
 
-      var bufferManager = BufferManager.CreateSingleInstance();
+      var bufferManager = BufferManager.Shared;
       // act
       var actual = await encoding.GetStringAsync(sut, bufferManager);
       Assert.Equal(expected, actual);
@@ -200,7 +200,7 @@ namespace CuteAnt.Buffers.Test
     {
       var expected = "The quick brown fox jumps over the lazy dog";
 
-      var bm = BufferManager.CreateSingleInstance();
+      var bm = BufferManager.Shared;
       var srcSegment = Encoding.ASCII.GetBufferSegment(expected, bm);
 
       var sut = new BufferManagerMemoryStream(srcSegment.Array, srcSegment.Offset, srcSegment.Count, false, bm);
@@ -278,13 +278,13 @@ namespace CuteAnt.Buffers.Test
       // pre-condition
       Assert.Equal(expected.Length, sut.Length);
 
-      String actual = encoding.GetStringAsync(sut, BufferManager.CreateSingleInstance()).Result;
+      String actual = encoding.GetStringAsync(sut, BufferManager.Shared).Result;
 
       Assert.Equal(expected, actual);
       Assert.Equal(expected.Length, sut.Position);
 
       sut.Position = 0;
-      actual = BufferManagerExtensions.ReadFromBuffer(encoding, sut, BufferManager.CreateSingleInstance());
+      actual = BufferManagerExtensions.ReadFromBuffer(encoding, sut, BufferManager.Shared);
 
       Assert.Equal(expected, actual);
       Assert.Equal(expected.Length, sut.Position);

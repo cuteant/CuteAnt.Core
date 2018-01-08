@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
@@ -16,7 +17,7 @@ namespace CuteAnt.Buffers
   {
     #region @@ Fields @@
 
-    private BufferManager m_bufferManager;
+    private ArrayPool<byte> m_bufferManager;
     private bool m_leaveOpen;
     private Stream m_inputStream;
     private const Int32 c_off = 0;
@@ -35,7 +36,7 @@ namespace CuteAnt.Buffers
     /// <param name="inputStream"></param>
     /// <param name="leaveOpen"></param>
     /// <param name="bufferManager"></param>
-    public BufferManagerStreamReader(Stream inputStream, bool leaveOpen, BufferManager bufferManager)
+    public BufferManagerStreamReader(Stream inputStream, bool leaveOpen, ArrayPool<byte> bufferManager)
       : this()
     {
       if (null == inputStream) { throw new ArgumentNullException(nameof(inputStream)); }
@@ -51,7 +52,7 @@ namespace CuteAnt.Buffers
     /// <param name="encoding"></param>
     /// <param name="leaveOpen"></param>
     /// <param name="bufferManager"></param>
-    public BufferManagerStreamReader(Stream inputStream, Encoding encoding, bool leaveOpen, BufferManager bufferManager)
+    public BufferManagerStreamReader(Stream inputStream, Encoding encoding, bool leaveOpen, ArrayPool<byte> bufferManager)
       : this()
     {
       if (null == inputStream) { throw new ArgumentNullException(nameof(inputStream)); }
@@ -95,10 +96,10 @@ namespace CuteAnt.Buffers
 
     public void Reinitialize(IList<ArraySegment<byte>> segments)
     {
-      Reinitialize(segments, BufferManager.GlobalManager);
+      Reinitialize(segments, CuteAnt.Buffers.BufferManager.Shared);
     }
 
-    public void Reinitialize(IList<ArraySegment<byte>> segments, BufferManager bufferManager)
+    public void Reinitialize(IList<ArraySegment<byte>> segments, ArrayPool<byte> bufferManager)
     {
       if (null == segments) { throw new ArgumentNullException(nameof(segments)); }
 
@@ -116,10 +117,10 @@ namespace CuteAnt.Buffers
 
     public void Reinitialize(IList<ArraySegment<byte>> segments, Encoding encoding)
     {
-      Reinitialize(segments, encoding, BufferManager.GlobalManager);
+      Reinitialize(segments, encoding, CuteAnt.Buffers.BufferManager.Shared);
     }
 
-    public void Reinitialize(IList<ArraySegment<byte>> segments, Encoding encoding, BufferManager bufferManager)
+    public void Reinitialize(IList<ArraySegment<byte>> segments, Encoding encoding, ArrayPool<byte> bufferManager)
     {
       if (null == segments) { throw new ArgumentNullException(nameof(segments)); }
 
@@ -141,9 +142,9 @@ namespace CuteAnt.Buffers
 
     public void Reinitialize(byte[] buffer)
     {
-      Reinitialize(buffer, BufferManager.GlobalManager);
+      Reinitialize(buffer, CuteAnt.Buffers.BufferManager.Shared);
     }
-    public void Reinitialize(byte[] buffer, BufferManager bufferManager)
+    public void Reinitialize(byte[] buffer, ArrayPool<byte> bufferManager)
     {
       if (null == buffer) { throw new ArgumentNullException(nameof(buffer)); }
 
@@ -153,9 +154,9 @@ namespace CuteAnt.Buffers
 
     public void Reinitialize(byte[] buffer, int offset, int count)
     {
-      Reinitialize(buffer, offset, count, BufferManager.GlobalManager);
+      Reinitialize(buffer, offset, count, CuteAnt.Buffers.BufferManager.Shared);
     }
-    public void Reinitialize(byte[] buffer, int offset, int count, BufferManager bufferManager)
+    public void Reinitialize(byte[] buffer, int offset, int count, ArrayPool<byte> bufferManager)
     {
       if (null == buffer) { throw new ArgumentNullException(nameof(buffer)); }
 
@@ -165,9 +166,9 @@ namespace CuteAnt.Buffers
 
     public void Reinitialize(byte[] buffer, Encoding encoding)
     {
-      Reinitialize(buffer, encoding, BufferManager.GlobalManager);
+      Reinitialize(buffer, encoding, CuteAnt.Buffers.BufferManager.Shared);
     }
-    public void Reinitialize(byte[] buffer, Encoding encoding, BufferManager bufferManager)
+    public void Reinitialize(byte[] buffer, Encoding encoding, ArrayPool<byte> bufferManager)
     {
       if (null == buffer) { throw new ArgumentNullException(nameof(buffer)); }
 
@@ -177,9 +178,9 @@ namespace CuteAnt.Buffers
 
     public void Reinitialize(byte[] buffer, int offset, int count, Encoding encoding)
     {
-      Reinitialize(buffer, offset, count, encoding, BufferManager.GlobalManager);
+      Reinitialize(buffer, offset, count, encoding, CuteAnt.Buffers.BufferManager.Shared);
     }
-    public void Reinitialize(byte[] buffer, int offset, int count, Encoding encoding, BufferManager bufferManager)
+    public void Reinitialize(byte[] buffer, int offset, int count, Encoding encoding, ArrayPool<byte> bufferManager)
     {
       if (null == buffer) { throw new ArgumentNullException(nameof(buffer)); }
 
@@ -193,10 +194,10 @@ namespace CuteAnt.Buffers
 
     public void Reinitialize(ArraySegment<byte> segment)
     {
-      Reinitialize(segment, BufferManager.GlobalManager);
+      Reinitialize(segment, CuteAnt.Buffers.BufferManager.Shared);
     }
 
-    public void Reinitialize(ArraySegment<byte> segment, BufferManager bufferManager)
+    public void Reinitialize(ArraySegment<byte> segment, ArrayPool<byte> bufferManager)
     {
       var stream = new BufferedMemoryStream(segment.Array, segment.Offset, segment.Count, false);
       Reinitialize(stream, false, bufferManager);
@@ -204,36 +205,10 @@ namespace CuteAnt.Buffers
 
     public void Reinitialize(ArraySegment<byte> segment, Encoding encoding)
     {
-      Reinitialize(segment, encoding, BufferManager.GlobalManager);
+      Reinitialize(segment, encoding, CuteAnt.Buffers.BufferManager.Shared);
     }
 
-    public void Reinitialize(ArraySegment<byte> segment, Encoding encoding, BufferManager bufferManager)
-    {
-      var stream = new BufferedMemoryStream(segment.Array, segment.Offset, segment.Count, false);
-      Reinitialize(stream, encoding, false, bufferManager);
-    }
-
-    #endregion
-
-    #region - ArraySegmentWrapper<Byte> -
-
-    public void Reinitialize(ArraySegmentWrapper<byte> segment)
-    {
-      Reinitialize(segment, BufferManager.GlobalManager);
-    }
-
-    public void Reinitialize(ArraySegmentWrapper<byte> segment, BufferManager bufferManager)
-    {
-      var stream = new BufferedMemoryStream(segment.Array, segment.Offset, segment.Count, false);
-      Reinitialize(stream, false, bufferManager);
-    }
-
-    public void Reinitialize(ArraySegmentWrapper<byte> segment, Encoding encoding)
-    {
-      Reinitialize(segment, encoding, BufferManager.GlobalManager);
-    }
-
-    public void Reinitialize(ArraySegmentWrapper<byte> segment, Encoding encoding, BufferManager bufferManager)
+    public void Reinitialize(ArraySegment<byte> segment, Encoding encoding, ArrayPool<byte> bufferManager)
     {
       var stream = new BufferedMemoryStream(segment.Array, segment.Offset, segment.Count, false);
       Reinitialize(stream, encoding, false, bufferManager);
@@ -245,10 +220,10 @@ namespace CuteAnt.Buffers
 
     public void Reinitialize(Stream inputStream, bool leaveOpen)
     {
-      Reinitialize(inputStream, leaveOpen, BufferManager.GlobalManager);
+      Reinitialize(inputStream, leaveOpen, CuteAnt.Buffers.BufferManager.Shared);
     }
 
-    public void Reinitialize(Stream inputStream, bool leaveOpen, BufferManager bufferManager)
+    public void Reinitialize(Stream inputStream, bool leaveOpen, ArrayPool<byte> bufferManager)
     {
       if (null == inputStream) { throw new ArgumentNullException(nameof(inputStream)); }
       if (null == bufferManager) { throw new ArgumentNullException(nameof(bufferManager)); }
@@ -260,10 +235,10 @@ namespace CuteAnt.Buffers
 
     public void Reinitialize(Stream inputStream, Encoding encoding, bool leaveOpen)
     {
-      Reinitialize(inputStream, encoding, leaveOpen, BufferManager.GlobalManager);
+      Reinitialize(inputStream, encoding, leaveOpen, CuteAnt.Buffers.BufferManager.Shared);
     }
 
-    public void Reinitialize(Stream inputStream, Encoding encoding, bool leaveOpen, BufferManager bufferManager)
+    public void Reinitialize(Stream inputStream, Encoding encoding, bool leaveOpen, ArrayPool<byte> bufferManager)
     {
       if (null == inputStream) { throw new ArgumentNullException(nameof(inputStream)); }
       if (null == encoding) { throw new ArgumentNullException(nameof(encoding)); }
@@ -297,10 +272,12 @@ namespace CuteAnt.Buffers
         if (inputStream != null) { inputStream.Dispose(); }
       }
 
+      var charBytes = Interlocked.Exchange(ref m_charBytes, null);
+      if (charBytes != null) { m_bufferManager.Return(charBytes); }
+
       m_bufferManager = null;
       m_singleChar = null;
       m_buffer = null;
-      m_charBytes = null;
 
       m_encoding = null;
       m_decoder = null;
@@ -313,8 +290,8 @@ namespace CuteAnt.Buffers
 
     #region -- Properties --
 
-    /// <summary>BufferManager</summary>
-    public BufferManager BufferManager { get { return m_bufferManager; } }
+    /// <summary>BufferPool</summary>
+    public ArrayPool<byte> BufferPool { get { return m_bufferManager; } }
 
     /// <summary>When overridden in a derived class, gets a value indicating whether the current stream supports reading.</summary>
     /// <returns>true if the stream supports reading; otherwise, false.</returns>
@@ -875,7 +852,7 @@ namespace CuteAnt.Buffers
       {
         // ## 苦竹 修改 ##
         //m_charBytes = new byte[MaxCharBytesSize];
-        m_charBytes = m_bufferManager.TakeBuffer(MaxCharBytesSize);
+        m_charBytes = m_bufferManager.Rent(MaxCharBytesSize);
       }
       if (null == m_singleChar)
       {
@@ -937,17 +914,17 @@ namespace CuteAnt.Buffers
 
     #region - Primitive arrays -
 
-    public ArraySegmentWrapper<byte> ReadBytes(int count, bool canReuseBuffer = true)
+    public ArraySegment<byte> ReadBytes(int count, bool canReuseBuffer = true)
     {
       if (count < 0) throw new ArgumentOutOfRangeException(nameof(count), "ArgumentOutOfRange_NeedNonNegNum");
       Contract.Ensures(Contract.Result<byte[]>() != null);
       Contract.Ensures(Contract.Result<byte[]>().Length <= Contract.OldValue(count));
       Contract.EndContractBlock();
 
-      if (count == 0) { return ArraySegmentWrapper<byte>.Empty; }
+      if (count == 0) { return BufferManager.Empty; }
 
       //byte[] result = new byte[count];
-      byte[] result = canReuseBuffer ? m_bufferManager.TakeBuffer(count) : new byte[count];
+      byte[] result = canReuseBuffer ? m_bufferManager.Rent(count) : new byte[count];
       var bytesRemaining = count;
       int numRead = 0;
 
@@ -960,7 +937,7 @@ namespace CuteAnt.Buffers
         bytesRemaining -= n;
       } while (bytesRemaining > 0);
 
-      return new ArraySegmentWrapper<byte>(result, 0, numRead, canReuseBuffer);
+      return new ArraySegment<byte>(result, 0, numRead);
       //if (numRead == count)
       //{
       //return new ArraySegmentWrapper<byte>(result, 0, count);
@@ -982,7 +959,7 @@ namespace CuteAnt.Buffers
     /// <param name="count">Number of bytes to read.</param>
     public void ReadBlockInto(Array array, int count)
     {
-      var result = m_bufferManager.TakeBuffer(count);
+      var result = m_bufferManager.Rent(count);
       var bytesRemaining = count;
       int numRead = 0;
 
@@ -996,7 +973,7 @@ namespace CuteAnt.Buffers
       } while (bytesRemaining > 0);
 
       Buffer.BlockCopy(result, 0, array, 0, count);
-      m_bufferManager.ReturnBuffer(result);
+      m_bufferManager.Return(result);
     }
 
     #endregion
@@ -1069,15 +1046,6 @@ namespace CuteAnt.Buffers
     }
 
     public void CopyToSync(ArraySegment<Byte> destination)
-    {
-      var bufferedStream = m_inputStream as IBufferedStream;
-      if (bufferedStream != null)
-      {
-        bufferedStream.CopyToSync(destination);
-      }
-    }
-
-    public void CopyToSync(ArraySegmentWrapper<Byte> destination)
     {
       var bufferedStream = m_inputStream as IBufferedStream;
       if (bufferedStream != null)

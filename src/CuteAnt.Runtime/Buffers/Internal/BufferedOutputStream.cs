@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
@@ -24,7 +25,7 @@ namespace CuteAnt.Buffers
 
     [Fx.Tag.Cache(typeof(byte), Fx.Tag.CacheAttrition.None, Scope = Fx.Tag.Strings.ExternallyManaged,
                 SizeLimit = Fx.Tag.Strings.ExternallyManaged)]
-    private InternalBufferManager _bufferManager;
+    private ArrayPool<byte> _bufferManager;
     [Fx.Tag.Queue(typeof(byte), SizeLimit = "BufferedOutputStream(maxSize)",
                 StaleElementsRemovedImmediately = true, EnqueueThrowsIfFull = true)]
     private byte[][] _chunks;
@@ -103,7 +104,7 @@ namespace CuteAnt.Buffers
     /// <param name="initialSize"></param>
     /// <param name="maxSize"></param>
     /// <param name="bufferManager"></param>
-    internal BufferedOutputStream(int initialSize, int maxSize, InternalBufferManager bufferManager)
+    internal BufferedOutputStream(int initialSize, int maxSize, ArrayPool<byte> bufferManager)
       : this()
     {
       Reinitialize(initialSize, maxSize, maxSize, bufferManager);
@@ -133,7 +134,7 @@ namespace CuteAnt.Buffers
 
     #region -- Reinitialize --
 
-    internal void Reinitialize(int initialSize, int maxSizeQuota, int effectiveMaxSize, InternalBufferManager bufferManager)
+    public void Reinitialize(int initialSize, int maxSizeQuota, int effectiveMaxSize, ArrayPool<byte> bufferManager)
     {
       if (initialSize < 0)
       {
@@ -145,7 +146,7 @@ namespace CuteAnt.Buffers
       _maxSizeQuota = maxSizeQuota;
       _maxSize = effectiveMaxSize;
       _bufferManager = bufferManager;
-      _currentChunk = bufferManager.TakeBuffer(initialSize);
+      _currentChunk = bufferManager.Rent(initialSize);
       _currentChunkSize = 0;
       _totalSize = 0;
       _chunkCount = 1;
@@ -156,7 +157,7 @@ namespace CuteAnt.Buffers
       Interlocked.Exchange(ref m_initialized, c_on);
     }
 
-    internal void Reinitialize(int initialSize, int maxSizeQuota, int effectiveMaxSize, Encoding encoding, InternalBufferManager bufferManager)
+    public void Reinitialize(int initialSize, int maxSizeQuota, int effectiveMaxSize, Encoding encoding, ArrayPool<byte> bufferManager)
     {
       _encoding = encoding;
       if (encoding != null)
@@ -190,7 +191,7 @@ namespace CuteAnt.Buffers
       {
         newChunkSize = minimumChunkSize;
       }
-      byte[] newChunk = _bufferManager.TakeBuffer(newChunkSize);
+      byte[] newChunk = _bufferManager.Rent(newChunkSize);
       if (_chunkCount == _chunks.Length)
       {
         byte[][] newChunks = new byte[_chunks.Length * 2][];
@@ -747,7 +748,7 @@ namespace CuteAnt.Buffers
       //Write(bytes, 0, bytes.Length);
       var bytes = InternalEncoding.GetBufferSegment(chars, 0, chars.Length, _bufferManager);
       Write(bytes.Array, bytes.Offset, bytes.Count);
-      _bufferManager.ReturnBuffer(bytes.Array);
+      _bufferManager.Return(bytes.Array);
     }
 
     /// <summary>Writes a section of a character array to the current stream, and advances the current position of the stream 
@@ -761,7 +762,7 @@ namespace CuteAnt.Buffers
       //Write(bytes, 0, bytes.Length);
       var bytes = InternalEncoding.GetBufferSegment(chars, index, count, _bufferManager);
       Write(bytes.Array, bytes.Offset, bytes.Count);
-      _bufferManager.ReturnBuffer(bytes.Array);
+      _bufferManager.Return(bytes.Array);
     }
 
     #endregion
@@ -892,7 +893,7 @@ namespace CuteAnt.Buffers
     {
       var bts = ConvertArrayToBytes(array, _bufferManager);
       Write(bts.Array, bts.Offset, bts.Count);
-      _bufferManager.ReturnBuffer(bts.Array);
+      _bufferManager.Return(bts.Array);
     }
 
     /// <summary>Write a <c>int</c> array to the stream. </summary>
@@ -902,7 +903,7 @@ namespace CuteAnt.Buffers
     {
       var bts = ConvertArrayToBytes(array, _bufferManager);
       Write(bts.Array, bts.Offset, bts.Count);
-      _bufferManager.ReturnBuffer(bts.Array);
+      _bufferManager.Return(bts.Array);
     }
 
     /// <summary>Write a <c>long</c> array to the stream. </summary>
@@ -912,7 +913,7 @@ namespace CuteAnt.Buffers
     {
       var bts = ConvertArrayToBytes(array, _bufferManager);
       Write(bts.Array, bts.Offset, bts.Count);
-      _bufferManager.ReturnBuffer(bts.Array);
+      _bufferManager.Return(bts.Array);
     }
 
     /// <summary>Write a <c>ushort</c> array to the stream. </summary>
@@ -922,7 +923,7 @@ namespace CuteAnt.Buffers
     {
       var bts = ConvertArrayToBytes(array, _bufferManager);
       Write(bts.Array, bts.Offset, bts.Count);
-      _bufferManager.ReturnBuffer(bts.Array);
+      _bufferManager.Return(bts.Array);
     }
 
     /// <summary>Write a <c>uint</c> array to the stream. </summary>
@@ -932,7 +933,7 @@ namespace CuteAnt.Buffers
     {
       var bts = ConvertArrayToBytes(array, _bufferManager);
       Write(bts.Array, bts.Offset, bts.Count);
-      _bufferManager.ReturnBuffer(bts.Array);
+      _bufferManager.Return(bts.Array);
     }
 
     /// <summary>Write a <c>ulong</c> array to the stream. </summary>
@@ -942,7 +943,7 @@ namespace CuteAnt.Buffers
     {
       var bts = ConvertArrayToBytes(array, _bufferManager);
       Write(bts.Array, bts.Offset, bts.Count);
-      _bufferManager.ReturnBuffer(bts.Array);
+      _bufferManager.Return(bts.Array);
     }
 
     /// <summary>Write a <c>sbyte</c> array to the stream. </summary>
@@ -952,7 +953,7 @@ namespace CuteAnt.Buffers
     {
       var bts = ConvertArrayToBytes(array, _bufferManager);
       Write(bts.Array, bts.Offset, bts.Count);
-      _bufferManager.ReturnBuffer(bts.Array);
+      _bufferManager.Return(bts.Array);
     }
 
     /// <summary>Write a <c>bool</c> array to the stream. </summary>
@@ -962,7 +963,7 @@ namespace CuteAnt.Buffers
     {
       var bts = ConvertArrayToBytes(array, _bufferManager);
       Write(bts.Array, bts.Offset, bts.Count);
-      _bufferManager.ReturnBuffer(bts.Array);
+      _bufferManager.Return(bts.Array);
     }
 
     /// <summary>Write a <c>float</c> array to the stream. </summary>
@@ -972,7 +973,7 @@ namespace CuteAnt.Buffers
     {
       var bts = ConvertArrayToBytes(array, _bufferManager);
       Write(bts.Array, bts.Offset, bts.Count);
-      _bufferManager.ReturnBuffer(bts.Array);
+      _bufferManager.Return(bts.Array);
     }
 
     /// <summary>Write a <c>double</c> array to the stream. </summary>
@@ -982,16 +983,16 @@ namespace CuteAnt.Buffers
     {
       var bts = ConvertArrayToBytes(array, _bufferManager);
       Write(bts.Array, bts.Offset, bts.Count);
-      _bufferManager.ReturnBuffer(bts.Array);
+      _bufferManager.Return(bts.Array);
     }
 
 #if !NET40
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    private static ArraySegment<byte> ConvertArrayToBytes(Array array, InternalBufferManager bufferManager)
+    private static ArraySegment<byte> ConvertArrayToBytes(Array array, ArrayPool<byte> bufferManager)
     {
       var num = Buffer.ByteLength(array);
-      var buffer = bufferManager.TakeBuffer(num);
+      var buffer = bufferManager.Rent(num);
       Buffer.BlockCopy(array, 0, buffer, 0, num);
       return new ArraySegment<byte>(buffer, 0, num);
     }
@@ -1010,7 +1011,7 @@ namespace CuteAnt.Buffers
       {
         for (int i = 0; i < _chunkCount; i++)
         {
-          _bufferManager.ReturnBuffer(_chunks[i]);
+          _bufferManager.Return(_chunks[i]);
           _chunks[i] = null;
         }
       }
@@ -1132,7 +1133,7 @@ namespace CuteAnt.Buffers
       }
       else
       {
-        buffer = _bufferManager.TakeBuffer(_totalSize);
+        buffer = _bufferManager.Rent(_totalSize);
         int offset = 0;
         int count = _chunkCount - 1;
         for (int i = 0; i < count; i++)
@@ -1149,11 +1150,10 @@ namespace CuteAnt.Buffers
       return buffer;
     }
 
-    public ArraySegmentWrapper<byte> ToArraySegment()
+    public ArraySegment<byte> ToArraySegment()
     {
-      Int32 bufferSize;
-      var buffer = ToArray(out bufferSize);
-      return new ArraySegmentWrapper<byte>(buffer, 0, bufferSize);
+      var buffer = ToArray(out int bufferSize);
+      return new ArraySegment<byte>(buffer, 0, bufferSize);
     }
 
     public IList<ArraySegment<byte>> ToArraySegments()
@@ -1171,24 +1171,6 @@ namespace CuteAnt.Buffers
         }
       }
       list.Add(new ArraySegment<byte>(_currentChunk, 0, _currentChunkSize));
-      return list;
-    }
-
-    public ArraySegmentWrapperList ToArraySegmentList()
-    {
-      _callerReturnsBuffer = true;
-
-      var list = new ArraySegmentWrapperList(_chunkCount);
-      if (_chunkCount > 1)
-      {
-        var count = _chunkCount - 1;
-        for (int i = 0; i < count; i++)
-        {
-          var chunk = _chunks[i];
-          list.Add(new ArraySegmentWrapper<byte>(chunk, 0, chunk.Length));
-        }
-      }
-      list.Add(new ArraySegmentWrapper<byte>(_currentChunk, 0, _currentChunkSize));
       return list;
     }
 

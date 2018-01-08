@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace CuteAnt.Buffers
     private Byte[] m_bufferedBytes;
     private Int32 m_bufferOrigin;
     private Int32 m_bufferSize;
-    private InternalBufferManager m_bufferManager;
+    private ArrayPool<byte> m_bufferManager;
 
     private const Int32 c_off = 0;
     private const Int32 c_on = 1;
@@ -50,12 +51,12 @@ namespace CuteAnt.Buffers
     {
     }
 
-    internal BufferedMemoryStream(int capacity, InternalBufferManager bufferManager)
-      : this(bufferManager.TakeBuffer(capacity), 0, capacity, true, bufferManager)
+    internal BufferedMemoryStream(int capacity, ArrayPool<byte> bufferManager)
+      : this(bufferManager.Rent(capacity), 0, capacity, true, bufferManager)
     {
     }
 
-    internal BufferedMemoryStream(byte[] buffer, bool writable, InternalBufferManager bufferManager)
+    internal BufferedMemoryStream(byte[] buffer, bool writable, ArrayPool<byte> bufferManager)
       : base(buffer, writable)
     {
       m_bufferedBytes = buffer;
@@ -64,7 +65,7 @@ namespace CuteAnt.Buffers
       m_bufferManager = bufferManager;
     }
 
-    internal BufferedMemoryStream(byte[] buffer, int index, int count, bool writable, InternalBufferManager bufferManager)
+    internal BufferedMemoryStream(byte[] buffer, int index, int count, bool writable, ArrayPool<byte> bufferManager)
       : base(buffer, index, count, writable)
     {
       m_bufferedBytes = buffer;
@@ -87,7 +88,7 @@ namespace CuteAnt.Buffers
         if (disposing && bufferManager != null)
         {
           var bufferedBytes = Interlocked.Exchange(ref m_bufferedBytes, null);
-          if (!m_callerReturnsBuffer && bufferedBytes != null) { bufferManager.ReturnBuffer(bufferedBytes); }
+          if (!m_callerReturnsBuffer && bufferedBytes != null) { bufferManager.Return(bufferedBytes); }
           m_callerReturnsBuffer = false;
         }
       }
@@ -104,12 +105,12 @@ namespace CuteAnt.Buffers
 
     /// <summary>ToArraySegment</summary>
     /// <returns></returns>
-    public ArraySegmentWrapper<byte> ToArraySegment()
+    public ArraySegment<byte> ToArraySegment()
     {
-      if (m_bufferedBytes == null || m_bufferedBytes.Length == 0) { return ArraySegmentWrapper<byte>.Empty; }
+      if (m_bufferedBytes == null || m_bufferedBytes.Length == 0) { return BufferManager.Empty; }
 
       m_callerReturnsBuffer = true;
-      return new ArraySegmentWrapper<byte>(m_bufferedBytes, m_bufferOrigin, m_bufferSize);
+      return new ArraySegment<byte>(m_bufferedBytes, m_bufferOrigin, m_bufferSize);
     }
 
     #endregion
@@ -147,18 +148,6 @@ namespace CuteAnt.Buffers
     public void CopyToSync(Stream destination, int bufferSize) => CopyToSync(destination);
 
     public void CopyToSync(ArraySegment<Byte> destination)
-    {
-      var position = (int)this.Position;
-      var count = Math.Min(m_bufferSize - position, destination.Count);
-
-      if (count > 0)
-      {
-        System.Buffer.BlockCopy(m_bufferedBytes, position + m_bufferOrigin, destination.Array, destination.Offset, count);
-        this.Position = position + count;
-      }
-    }
-
-    public void CopyToSync(ArraySegmentWrapper<Byte> destination)
     {
       var position = (int)this.Position;
       var count = Math.Min(m_bufferSize - position, destination.Count);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace CuteAnt.Buffers
     private Int64 m_currentSegmentPosition;
     private Int64 m_length;
 
-    private InternalBufferManager m_bufferManager;
+    private ArrayPool<byte> m_bufferManager;
 
     private const Int32 c_off = 0;
     private const Int32 c_on = 1;
@@ -40,7 +41,7 @@ namespace CuteAnt.Buffers
     {
     }
 
-    internal BufferedByteArrayStream(IList<ArraySegment<Byte>> segments, InternalBufferManager bufferManager)
+    internal BufferedByteArrayStream(IList<ArraySegment<Byte>> segments, ArrayPool<byte> bufferManager)
     {
       if (null == segments) { throw new ArgumentNullException(nameof(segments)); }
       if (segments.Count <= 0) { throw new ArgumentException("The length of segments must be greater than zero."); }
@@ -95,23 +96,6 @@ namespace CuteAnt.Buffers
     public void CopyToSync(Stream destination, int bufferSize) => CopyToSync(destination);
 
     public void CopyToSync(ArraySegment<Byte> destination)
-    {
-      var count = Math.Min((int)(m_length - m_position), destination.Count);
-      var offset = destination.Offset;
-
-      while (count > 0)
-      {
-        var readAmount = Math.Min(m_currentSegment.Count - m_currentSegmentOffset, count);
-
-        System.Buffer.BlockCopy(m_currentSegment.Array, m_currentSegment.Offset + m_currentSegmentOffset, destination.Array, offset, readAmount);
-
-        offset += readAmount;
-        count -= readAmount;
-        this.Position = m_position + readAmount;
-      }
-    }
-
-    public void CopyToSync(ArraySegmentWrapper<Byte> destination)
     {
       var count = Math.Min((int)(m_length - m_position), destination.Count);
       var offset = destination.Offset;
@@ -188,7 +172,7 @@ namespace CuteAnt.Buffers
         {
           foreach (var item in m_segments)
           {
-            m_bufferManager.ReturnBuffer(item.Array);
+            m_bufferManager.Return(item.Array);
           }
         }
         // 直接赋空值，不能调用 clear 方法

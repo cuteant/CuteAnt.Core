@@ -17,8 +17,6 @@ namespace CuteAnt.Buffers
 
     void CopyToSync(ArraySegment<Byte> destination);
 
-    void CopyToSync(ArraySegmentWrapper<Byte> destination);
-
     Task CopyToAsync(Stream destination);
 
     Task CopyToAsync(Stream destination, int bufferSize);

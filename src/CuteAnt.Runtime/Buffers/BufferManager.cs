@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -23,6 +24,8 @@ namespace CuteAnt.Buffers
   /// </summary>
   public abstract partial class BufferManager
   {
+    public static readonly ArraySegment<byte> Empty = new ArraySegment<byte>(EmptyArray<byte>.Instance);
+
     /// <summary>Gets a buffer of at least the specified size from the pool.</summary>
     /// <param name="bufferSize">The size, in bytes, of the requested buffer.</param>
     /// <returns>A byte array that is the requested size of the buffer.</returns>
@@ -36,19 +39,6 @@ namespace CuteAnt.Buffers
 
     /// <summary>Releases the buffers currently cached in the manager.</summary>
     public abstract void Clear();
-
-    public void ReturnBuffer(ArraySegmentWrapper<byte> segment)
-    {
-      if (segment.CanReturn) { ReturnBuffer(segment.Array); }
-    }
-
-    public void ReturnBuffer(IList<ArraySegmentWrapper<byte>> segments)
-    {
-      foreach (var item in segments)
-      {
-        if (item.CanReturn) { ReturnBuffer(item.Array); }
-      }
-    }
 
     public void ReturnBuffer(ArraySegment<byte> segment)
     {
@@ -198,6 +188,7 @@ namespace CuteAnt.Buffers
         {
           throw DiagnosticUtility.ExceptionUtility.ThrowHelperArgumentNull(nameof(buffer));
         }
+        if (buffer.Length == 0) { return; } // Ignore empty arrays.
 
         _innerBufferManager.ReturnBuffer(buffer);
       }
@@ -237,7 +228,7 @@ namespace CuteAnt.Buffers
 
     private const int MAX_BUFFER_SIZE = 1024 * 2;
 
-    public static String GetStringWithBuffer(this Encoding encoding, byte[] bytes, BufferManager bufferManager = null)
+    public static String GetStringWithBuffer(this Encoding encoding, byte[] bytes, ArrayPool<byte> bufferManager = null)
     {
       if (bytes == null) { throw new ArgumentNullException(nameof(bytes)); }
 
@@ -252,7 +243,7 @@ namespace CuteAnt.Buffers
       }
     }
 
-    public static String GetStringWithBuffer(this Encoding encoding, byte[] bytes, int index, int count, BufferManager bufferManager = null)
+    public static String GetStringWithBuffer(this Encoding encoding, byte[] bytes, int index, int count, ArrayPool<byte> bufferManager = null)
     {
       if (count <= MAX_BUFFER_SIZE)
       {
@@ -265,19 +256,19 @@ namespace CuteAnt.Buffers
       }
     }
 
-    public static String GetStringWithBuffer(this Encoding encoding, Stream stream, BufferManager bufferManager = null)
+    public static String GetStringWithBuffer(this Encoding encoding, Stream stream, ArrayPool<byte> bufferManager = null)
     {
       if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
 
       // If stream size is small, read in a single operation.
       if (stream.Length <= MAX_BUFFER_SIZE)
       {
-        if (bufferManager == null) { bufferManager = BufferManager.GlobalManager; }
+        if (bufferManager == null) { bufferManager = BufferManager.Shared; }
 
-        var bytes = bufferManager.TakeBuffer(MAX_BUFFER_SIZE);
+        var bytes = bufferManager.Rent(MAX_BUFFER_SIZE);
         int bytesRead = stream.Read(bytes, 0, bytes.Length);
         var contents = encoding.GetString(bytes, 0, bytesRead);
-        bufferManager.ReturnBuffer(bytes);
+        bufferManager.Return(bytes);
         return contents;
       }
       else
@@ -286,9 +277,9 @@ namespace CuteAnt.Buffers
       }
     }
 
-    internal static String ReadFromBuffer(Encoding encoding, Stream stream, BufferManager bufferManager = null)
+    internal static String ReadFromBuffer(Encoding encoding, Stream stream, ArrayPool<byte> bufferManager = null)
     {
-      if (bufferManager == null) { bufferManager = BufferManager.GlobalManager; }
+      if (bufferManager == null) { bufferManager = BufferManager.Shared; }
 
       var sw = StringWriterManager.Allocate();
 
@@ -304,7 +295,7 @@ namespace CuteAnt.Buffers
       // conversion loop executes more than one cycle. 
       //var bytes = new Byte[UseBufferSize * 4];
       var bufferSize = UseBufferSize * 4;
-      var bytes = bufferManager.TakeBuffer(bufferSize);
+      var bytes = bufferManager.Rent(bufferSize);
 
       Int32 bytesRead;
       do
@@ -334,7 +325,7 @@ namespace CuteAnt.Buffers
       }
       while (bytesRead != 0);
 
-      bufferManager.ReturnBuffer(bytes);
+      bufferManager.Return(bytes);
 
       return StringWriterManager.ReturnAndFree(sw);
     }
@@ -348,7 +339,7 @@ namespace CuteAnt.Buffers
     /// <param name="stream">stream</param>
     /// <param name="bufferManager">bufferManager</param>
     /// <returns>the decoded String</returns>
-    public static async Task<String> GetStringAsync(this Encoding encoding, Stream stream, BufferManager bufferManager)
+    public static async Task<String> GetStringAsync(this Encoding encoding, Stream stream, ArrayPool<byte> bufferManager)
     {
       if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
       if (bufferManager == null) { throw new ArgumentNullException(nameof(bufferManager)); }
@@ -356,10 +347,10 @@ namespace CuteAnt.Buffers
       // If stream size is small, read in a single operation.
       if (stream.Length <= MAX_BUFFER_SIZE)
       {
-        var bytes = bufferManager.TakeBuffer(MAX_BUFFER_SIZE);
+        var bytes = bufferManager.Rent(MAX_BUFFER_SIZE);
         int bytesRead = stream.Read(bytes, 0, bytes.Length);
         var contents = encoding.GetString(bytes, 0, bytesRead);
-        bufferManager.ReturnBuffer(bytes);
+        bufferManager.Return(bytes);
         return contents;
       }
       else
@@ -378,7 +369,7 @@ namespace CuteAnt.Buffers
         // conversion loop executes more than one cycle. 
         //var bytes = new Byte[UseBufferSize * 4];
         var bufferSize = UseBufferSize * 4;
-        var bytes = bufferManager.TakeBuffer(bufferSize);
+        var bytes = bufferManager.Rent(bufferSize);
 
         Int32 bytesRead;
         do
@@ -408,7 +399,7 @@ namespace CuteAnt.Buffers
         }
         while (bytesRead != 0);
 
-        bufferManager.ReturnBuffer(bytes);
+        bufferManager.Return(bytes);
 
         return StringWriterManager.ReturnAndFree(sw);
       }
@@ -421,7 +412,7 @@ namespace CuteAnt.Buffers
     /// <param name="count"></param>
     /// <param name="bufferManager">bufferManager</param>
     /// <returns>the decoded String</returns>
-    public static async Task<String> GetStringAsync(this Encoding encoding, Stream stream, Int64 offset, Int64 count, BufferManager bufferManager)
+    public static async Task<String> GetStringAsync(this Encoding encoding, Stream stream, Int64 offset, Int64 count, ArrayPool<byte> bufferManager)
     {
       if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
       if (bufferManager == null) { throw new ArgumentNullException(nameof(bufferManager)); }
@@ -431,11 +422,11 @@ namespace CuteAnt.Buffers
       // If stream size is small, read in a single operation.
       if (count <= MAX_BUFFER_SIZE)
       {
-        var bytes = bufferManager.TakeBuffer(MAX_BUFFER_SIZE);
+        var bytes = bufferManager.Rent(MAX_BUFFER_SIZE);
         stream.Position = offset;
         var bytesRead = stream.Read(bytes, 0, (int)count);
         var contents = encoding.GetString(bytes, 0, bytesRead);
-        bufferManager.ReturnBuffer(bytes);
+        bufferManager.Return(bytes);
         return contents;
       }
       else
@@ -459,7 +450,7 @@ namespace CuteAnt.Buffers
         // conversion loop executes more than one cycle. 
         var bufferSize = UseBufferSize * 4;
         //var bytes = new Byte[bufferSize];
-        var bytes = bufferManager.TakeBuffer(bufferSize);
+        var bytes = bufferManager.Rent(bufferSize);
         var total = offset;
 
         while (true)
@@ -496,7 +487,7 @@ namespace CuteAnt.Buffers
           }
         }
 
-        bufferManager.ReturnBuffer(bytes);
+        bufferManager.Return(bytes);
 
         return StringWriterManager.ReturnAndFree(sw);
       }
@@ -513,7 +504,7 @@ namespace CuteAnt.Buffers
     /// <param name="chars">The character array containing the set of characters to encode.</param>
     /// <param name="bufferManager">The buffer manager.</param>
     /// <returns>A byte array containing the results of encoding the specified set of characters.</returns>
-    public static ArraySegmentWrapper<Byte> GetBufferSegment(this Encoding encoding, Char[] chars, BufferManager bufferManager)
+    public static ArraySegment<Byte> GetBufferSegment(this Encoding encoding, Char[] chars, ArrayPool<byte> bufferManager)
     {
       return GetBufferSegment(encoding, chars, 0, chars.Length, bufferManager);
     }
@@ -525,55 +516,25 @@ namespace CuteAnt.Buffers
     /// <param name="charCount">The number of characters to encode.</param>
     /// <param name="bufferManager">The buffer manager.</param>
     /// <returns>A byte array containing the results of encoding the specified set of characters.</returns>
-    internal static ArraySegmentWrapper<Byte> GetBufferSegment(this Encoding encoding, Char[] chars, Int32 charIndex, Int32 charCount, InternalBufferManager bufferManager)
+    public static ArraySegment<Byte> GetBufferSegment(this Encoding encoding, Char[] chars, Int32 charIndex, Int32 charCount, ArrayPool<byte> bufferManager)
     {
       if (charCount < 0) { throw new ArgumentOutOfRangeException(nameof(charCount), "Value must be non-negative."); }
-      if (chars.IsNullOrEmpty() || encoding == null) { return ArraySegmentWrapper<Byte>.Empty; }
+      if (chars.IsNullOrEmpty() || encoding == null) { return BufferManager.Empty; }
 
       var bufferSize = encoding.GetMaxByteCount(charCount);
       if (bufferSize > c_maxCharBufferSize)
       {
         bufferSize = encoding.GetByteCount(chars, charIndex, charCount);
       }
-      var buffer = bufferManager.TakeBuffer(bufferSize);
+      var buffer = bufferManager.Rent(bufferSize);
       try
       {
         var bytesCount = encoding.GetBytes(chars, charIndex, charCount, buffer, 0);
-        return new ArraySegmentWrapper<Byte>(buffer, 0, bytesCount);
+        return new ArraySegment<Byte>(buffer, 0, bytesCount);
       }
       catch (Exception ex)
       {
-        bufferManager.ReturnBuffer(buffer);
-        throw ex;
-      }
-    }
-
-    /// <summary>Encodes a set of characters from the specified character array into the specified byte array</summary>
-    /// <param name="encoding">The text encoding.</param>
-    /// <param name="chars">The character array containing the set of characters to encode.</param>
-    /// <param name="charIndex">The index of the first character to encode.</param>
-    /// <param name="charCount">The number of characters to encode.</param>
-    /// <param name="bufferManager">The buffer manager.</param>
-    /// <returns>A byte array containing the results of encoding the specified set of characters.</returns>
-    public static ArraySegmentWrapper<Byte> GetBufferSegment(this Encoding encoding, Char[] chars, Int32 charIndex, Int32 charCount, BufferManager bufferManager)
-    {
-      if (charCount < 0) { throw new ArgumentOutOfRangeException(nameof(charCount), "Value must be non-negative."); }
-      if (chars.IsNullOrEmpty() || encoding == null) { return ArraySegmentWrapper<Byte>.Empty; }
-
-      var bufferSize = encoding.GetMaxByteCount(charCount);
-      if (bufferSize > c_maxCharBufferSize)
-      {
-        bufferSize = encoding.GetByteCount(chars, charIndex, charCount);
-      }
-      var buffer = bufferManager.TakeBuffer(bufferSize);
-      try
-      {
-        var bytesCount = encoding.GetBytes(chars, charIndex, charCount, buffer, 0);
-        return new ArraySegmentWrapper<Byte>(buffer, 0, bytesCount);
-      }
-      catch (Exception ex)
-      {
-        bufferManager.ReturnBuffer(buffer);
+        bufferManager.Return(buffer);
         throw ex;
       }
     }
@@ -583,7 +544,7 @@ namespace CuteAnt.Buffers
     /// <param name="s">The string containing the set of characters to encode.</param>
     /// <param name="bufferManager">The buffer manager.</param>
     /// <returns>A byte array containing the results of encoding the specified set of characters.</returns>
-    public static ArraySegmentWrapper<Byte> GetBufferSegment(this Encoding encoding, String s, BufferManager bufferManager)
+    public static ArraySegment<Byte> GetBufferSegment(this Encoding encoding, String s, ArrayPool<byte> bufferManager)
     {
       return GetBufferSegment(encoding, s, 0, s.Length, bufferManager);
     }
@@ -595,25 +556,25 @@ namespace CuteAnt.Buffers
     /// <param name="charCount">The number of characters to encode.</param>
     /// <param name="bufferManager">The buffer manager.</param>
     /// <returns>A byte array containing the results of encoding the specified set of characters.</returns>
-    public static ArraySegmentWrapper<Byte> GetBufferSegment(this Encoding encoding, String s, Int32 charIndex, Int32 charCount, BufferManager bufferManager)
+    public static ArraySegment<Byte> GetBufferSegment(this Encoding encoding, String s, Int32 charIndex, Int32 charCount, ArrayPool<byte> bufferManager)
     {
       if (charCount < 0) { throw new ArgumentOutOfRangeException(nameof(charCount), "Value must be non-negative."); }
-      if (String.IsNullOrEmpty(s) || encoding == null) { return ArraySegmentWrapper<Byte>.Empty; }
+      if (String.IsNullOrEmpty(s) || encoding == null) { return BufferManager.Empty; }
 
       var bufferSize = encoding.GetMaxByteCount(charCount);
       if (bufferSize > c_maxCharBufferSize)
       {
         bufferSize = encoding.GetByteCount(s.ToCharArray(), charIndex, charCount);
       }
-      var buffer = bufferManager.TakeBuffer(bufferSize);
+      var buffer = bufferManager.Rent(bufferSize);
       try
       {
         var bytesCount = encoding.GetBytes(s, charIndex, charCount, buffer, 0);
-        return new ArraySegmentWrapper<Byte>(buffer, 0, bytesCount);
+        return new ArraySegment<Byte>(buffer, 0, bytesCount);
       }
       catch (Exception ex)
       {
-        bufferManager.ReturnBuffer(buffer);
+        bufferManager.Return(buffer);
         throw ex;
       }
     }
