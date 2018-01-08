@@ -21,6 +21,8 @@ namespace CuteAnt.Buffers
   {
     #region @@ Fields @@
 
+    private const int c_zeroBufferSize = 0;
+
     public const Int32 DefaultBufferSize = 1024 * 8;
 
     [Fx.Tag.Cache(typeof(byte), Fx.Tag.CacheAttrition.None, Scope = Fx.Tag.Strings.ExternallyManaged,
@@ -1101,6 +1103,8 @@ namespace CuteAnt.Buffers
     /// <returns></returns>
     public byte[] ToByteArray()
     {
+      if (c_zeroBufferSize == _totalSize) { return EmptyArray<byte>.Instance; }
+
       var result = new byte[_totalSize];
 
       int offset = 0;
@@ -1123,6 +1127,7 @@ namespace CuteAnt.Buffers
     {
       Fx.Assert(Initialized, "No data to return from uninitialized stream");
       Fx.Assert(!_bufferReturned, "ToArray cannot be called more than once");
+      if (c_zeroBufferSize == _totalSize) { bufferSize = c_zeroBufferSize; return EmptyArray<byte>.Instance; }
 
       byte[] buffer;
       if (_chunkCount == 1)
@@ -1152,6 +1157,8 @@ namespace CuteAnt.Buffers
 
     public ArraySegment<byte> ToArraySegment()
     {
+      if (c_zeroBufferSize == _totalSize) { return BufferManager.Empty; }
+
       var buffer = ToArray(out int bufferSize);
       return new ArraySegment<byte>(buffer, 0, bufferSize);
     }
