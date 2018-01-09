@@ -12,7 +12,7 @@ namespace CuteAnt.IO.Pipelines
   public class PipeOptions
   {
     /// <summary>Default</summary>
-    public static readonly PipeOptions Default = new PipeOptions(BufferManager.SharedMemoryPool);
+    public static readonly PipeOptions Default = new PipeOptions(BufferMemoryPool.Shared);
 
     public PipeOptions(MemoryPool<byte> pool,
       Scheduler readerScheduler = null, Scheduler writerScheduler = null,

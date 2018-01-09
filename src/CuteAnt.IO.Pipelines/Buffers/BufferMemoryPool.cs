@@ -1,5 +1,4 @@
-﻿#if !NET40
-using System;
+﻿using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -7,19 +6,19 @@ using System.Threading;
 
 namespace CuteAnt.Buffers
 {
-  partial class BufferManager
+  public sealed class BufferMemoryPool
   {
     /// <summary>The lazily-initialized shared pool instance.</summary>
     private static MemoryPool<byte> s_sharedMemoryPool = null;
 
     /// <summary>Retrieves a shared <see cref="T:System.Buffers.MemoryPool{byte}"/> instance.</summary>
-    public static MemoryPool<byte> SharedMemoryPool
+    public static MemoryPool<byte> Shared
     {
       [MethodImpl(InlineMethod.Value)]
       get { return Volatile.Read(ref s_sharedMemoryPool) ?? EnsureSharedCreatedMemoryPool(); }
     }
 
-    /// <summary>Ensures that <see cref="s_sharedInstance"/> has been initialized to a pool and returns it.</summary>
+    /// <summary>Ensures that <see cref="s_sharedMemoryPool"/> has been initialized to a pool and returns it.</summary>
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static MemoryPool<byte> EnsureSharedCreatedMemoryPool()
     {
@@ -27,7 +26,7 @@ namespace CuteAnt.Buffers
       return s_sharedMemoryPool;
     }
 
-    public static MemoryPool<byte> CreateMemoryPool(ArrayPool<byte> arrayPool)
+    public static MemoryPool<byte> Create(ArrayPool<byte> arrayPool)
     {
       if (null == arrayPool) { throw new ArgumentNullException(nameof(arrayPool)); }
 
@@ -41,7 +40,7 @@ namespace CuteAnt.Buffers
 
       private readonly ArrayPool<byte> _arrayPool;
 
-      public BufferManagerMemoryPool() : this(Shared) { }
+      public BufferManagerMemoryPool() : this(BufferManager.Shared) { }
 
       public BufferManagerMemoryPool(ArrayPool<byte> arrayPool)
       {
@@ -143,4 +142,3 @@ namespace CuteAnt.Buffers
     }
   }
 }
-#endif

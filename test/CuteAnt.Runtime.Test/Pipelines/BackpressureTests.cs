@@ -17,7 +17,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
         public BackpressureTests()
         {
-            _pool = BufferManager.SharedMemoryPool;
+            _pool = BufferMemoryPool.Shared;
             _pipe = PipelineManager.Allocate(new PipeOptions(_pool, maximumSizeLow: 32, maximumSizeHigh: 64));
         }
 

@@ -16,7 +16,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
         public PipeLengthTests()
         {
-            //_pool = BufferManager.SharedMemoryPool;
+            //_pool = BufferMemoryPool.Shared;
             _pipe = PipelineManager.Allocate(); // new Pipe(new PipeOptions(_pool));
         }
 

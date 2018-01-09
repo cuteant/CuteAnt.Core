@@ -19,7 +19,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         [Fact]
         public async Task ReadAsyncCallbackRunsOnReaderScheduler()
         {
-            using (var pool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
+            using (var pool = BufferMemoryPool.Create(ArrayPool<byte>.Shared))
             {
                 using (var scheduler = new ThreadScheduler())
                 {
@@ -55,7 +55,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         [Fact]
         public async Task FlushCallbackRunsOnWriterScheduler()
         {
-            using (var pool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
+            using (var pool = BufferMemoryPool.Create(ArrayPool<byte>.Shared))
             {
                 using (var scheduler = new ThreadScheduler())
                 {
@@ -100,7 +100,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         [Fact]
         public async Task DefaultReaderSchedulerRunsInline()
         {
-            using (var pool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
+            using (var pool = BufferMemoryPool.Create(ArrayPool<byte>.Shared))
             {
                 var pipe = PipelineManager.Allocate(new PipeOptions(pool));
 
@@ -135,7 +135,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         [Fact]
         public async Task DefaultWriterSchedulerRunsInline()
         {
-            using (var pool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
+            using (var pool = BufferMemoryPool.Create(ArrayPool<byte>.Shared))
             {
                 var pipe = PipelineManager.Allocate(new PipeOptions(pool,
                     maximumSizeLow: 32,

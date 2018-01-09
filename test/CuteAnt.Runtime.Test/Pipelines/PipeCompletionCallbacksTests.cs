@@ -15,7 +15,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
         public PipeCompletionCallbacksTests()
         {
-            _pool = BufferManager.SharedMemoryPool;
+            _pool = BufferMemoryPool.Shared;
         }
 
         public void Dispose()

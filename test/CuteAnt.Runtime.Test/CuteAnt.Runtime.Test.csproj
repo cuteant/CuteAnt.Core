@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\CuteAnt.IO.Pipelines\CuteAnt.IO.Pipelines.csproj" />
     <ProjectReference Include="..\..\src\CuteAnt.Runtime\CuteAnt.Runtime.csproj" />
   </ItemGroup>
 

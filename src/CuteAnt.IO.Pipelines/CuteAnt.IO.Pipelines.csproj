@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\version.props" />
+  <Import Project="..\nuget.props" />
+
+  <PropertyGroup>
+    <TargetFrameworks>net471;net451;netstandard2.0</TargetFrameworks>
+    <RootNamespace>CuteAnt</RootNamespace>
+    <AssemblyName>CuteAnt.IO.Pipelines</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>$(DefineConstants);NOTSUPPORT_EMIT_ASSEMBLYBUILDER</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Label="NuGet">
+    <PackageId>CuteAnt.IO.Pipelines</PackageId>
+    <Title>CuteAnt.IO.Pipelines</Title>
+    <Description>An abstraction for doing efficient asynchronous IO.</Description>
+    <PackageTags>CuteAnt Core</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Buffers.Primitives" Version="$(SystemBuffersPrimitivesPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CuteAnt.Runtime\CuteAnt.Runtime.csproj" />
+  </ItemGroup>
+
+</Project>

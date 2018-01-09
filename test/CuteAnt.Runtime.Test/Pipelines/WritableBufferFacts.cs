@@ -15,7 +15,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         [Fact]
         public async Task CanWriteNothingToBuffer()
         {
-            using (var memoryPool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
+            using (var memoryPool = BufferMemoryPool.Create(ArrayPool<byte>.Shared))
             {
                 var pipe = PipelineManager.Allocate(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer.Alloc();
@@ -28,7 +28,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         [Fact]
         public void ThrowsOnAdvanceWithNoMemory()
         {
-            using (var memoryPool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
+            using (var memoryPool = BufferMemoryPool.Create(ArrayPool<byte>.Shared))
             {
                 var pipe = PipelineManager.Allocate(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer.Alloc();
@@ -41,7 +41,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         [Fact]
         public void ThrowsOnAdvanceOverMemorySize()
         {
-            using (var memoryPool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
+            using (var memoryPool = BufferMemoryPool.Create(ArrayPool<byte>.Shared))
             {
                 var pipe = PipelineManager.Allocate(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer.Alloc(1);
@@ -61,7 +61,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             byte[] data = new byte[length];
             new Random(length).NextBytes(data);
-            using (var memoryPool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
+            using (var memoryPool = BufferMemoryPool.Create(ArrayPool<byte>.Shared))
             {
                 var pipe = PipelineManager.Allocate(new PipeOptions(memoryPool));
 
@@ -90,7 +90,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         //[Fact]
         //public void EnsureMoreThanPoolBlockSizeThrows()
         //{
-        //    using (var pool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
+        //    using (var pool = BufferMemoryPool.Create(ArrayPool<byte>.Shared))
         //    {
         //        var pipe = PipelineManager.Allocate(new PipeOptions(pool));
         //        var buffer = pipe.Writer.Alloc();
@@ -101,7 +101,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         [Fact]
         public void EmptyWriteDoesNotThrow()
         {
-            using (var pool = BufferManager.CreateMemoryPool(ArrayPool<byte>.Shared))
+            using (var pool = BufferMemoryPool.Create(ArrayPool<byte>.Shared))
             {
                 var pipe = PipelineManager.Allocate(new PipeOptions(pool));
                 var buffer = pipe.Writer.Alloc();
