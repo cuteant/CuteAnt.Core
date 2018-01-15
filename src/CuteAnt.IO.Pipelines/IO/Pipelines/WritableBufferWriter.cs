@@ -1,107 +1,107 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+﻿//// Licensed to the .NET Foundation under one or more agreements.
+//// The .NET Foundation licenses this file to you under the MIT license.
+//// See the LICENSE file in the project root for more information.
 
-#if !NET40
-using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+//#if !NET40
+//using System;
+//using System.Runtime.CompilerServices;
+//using System.Runtime.InteropServices;
 
-namespace CuteAnt.IO.Pipelines
-{
-  public ref struct WritableBufferWriter
-  {
-    private readonly WritableBuffer _writableBuffer;
-    private Span<byte> _span;
+//namespace CuteAnt.IO.Pipelines
+//{
+//  public ref struct WritableBufferWriter
+//  {
+//    private readonly WritableBuffer _writableBuffer;
+//    private Span<byte> _span;
 
-    public WritableBufferWriter(in WritableBuffer writableBuffer)
-    {
-      _writableBuffer = writableBuffer;
-      _span = writableBuffer.Buffer.Span;
-    }
+//    public WritableBufferWriter(in WritableBuffer writableBuffer)
+//    {
+//      _writableBuffer = writableBuffer;
+//      _span = writableBuffer.Buffer.Span;
+//    }
 
-    public Span<byte> Span => _span;
+//    public Span<byte> Span => _span;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Advance(int count)
-    {
-      _span = _span.Slice(count);
-      _writableBuffer.Advance(count);
-    }
+//    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+//    public void Advance(int count)
+//    {
+//      _span = _span.Slice(count);
+//      _writableBuffer.Advance(count);
+//    }
 
-    public void Write(byte[] source)
-    {
-      if (source.Length > 0 && _span.Length >= source.Length)
-      {
-        ref byte pSource = ref source[0];
-        ref byte pDest = ref MemoryMarshal.GetReference(_span);
+//    public void Write(byte[] source)
+//    {
+//      if (source.Length > 0 && _span.Length >= source.Length)
+//      {
+//        ref byte pSource = ref source[0];
+//        ref byte pDest = ref MemoryMarshal.GetReference(_span);
 
-        Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)source.Length);
+//        Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)source.Length);
 
-        Advance(source.Length);
-      }
-      else
-      {
-        WriteMultiBuffer(source, 0, source.Length);
-      }
-    }
+//        Advance(source.Length);
+//      }
+//      else
+//      {
+//        WriteMultiBuffer(source, 0, source.Length);
+//      }
+//    }
 
-    public void Write(byte[] source, int offset, int length)
-    {
-      // If offset or length is negative the cast to uint will make them larger than int.MaxValue
-      // so each test both tests for negative values and greater than values. This pattern wil also
-      // elide the second bounds check that would occur at source[offset]; as is pre-checked
-      // https://github.com/dotnet/coreclr/pull/9773
-      if ((uint)offset > (uint)source.Length || (uint)length > (uint)(source.Length - offset))
-      {
-        // Only need to pass in array length and offset for ThrowHelper to determine which test failed
-        PipelinesThrowHelper.ThrowArgumentOutOfRangeException(source.Length, offset);
-      }
+//    public void Write(byte[] source, int offset, int length)
+//    {
+//      // If offset or length is negative the cast to uint will make them larger than int.MaxValue
+//      // so each test both tests for negative values and greater than values. This pattern wil also
+//      // elide the second bounds check that would occur at source[offset]; as is pre-checked
+//      // https://github.com/dotnet/coreclr/pull/9773
+//      if ((uint)offset > (uint)source.Length || (uint)length > (uint)(source.Length - offset))
+//      {
+//        // Only need to pass in array length and offset for ThrowHelper to determine which test failed
+//        PipelinesThrowHelper.ThrowArgumentOutOfRangeException(source.Length, offset);
+//      }
 
-      if (length > 0 && _span.Length >= length)
-      {
-        ref byte pSource = ref source[offset];
-        ref byte pDest = ref MemoryMarshal.GetReference(_span);
+//      if (length > 0 && _span.Length >= length)
+//      {
+//        ref byte pSource = ref source[offset];
+//        ref byte pDest = ref MemoryMarshal.GetReference(_span);
 
-        Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)length);
+//        Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)length);
 
-        Advance(length);
-      }
-      else
-      {
-        WriteMultiBuffer(source, offset, length);
-      }
-    }
+//        Advance(length);
+//      }
+//      else
+//      {
+//        WriteMultiBuffer(source, offset, length);
+//      }
+//    }
 
-    private void WriteMultiBuffer(byte[] source, int offset, int length)
-    {
-      var remaining = length;
+//    private void WriteMultiBuffer(byte[] source, int offset, int length)
+//    {
+//      var remaining = length;
 
-      while (remaining > 0)
-      {
-        if (_span.Length == 0) { Ensure(remaining); }
+//      while (remaining > 0)
+//      {
+//        if (_span.Length == 0) { Ensure(remaining); }
 
-        var writable = Math.Min(remaining, _span.Length);
+//        var writable = Math.Min(remaining, _span.Length);
 
-        ref byte pSource = ref source[offset];
-        ref byte pDest = ref MemoryMarshal.GetReference(_span);
+//        ref byte pSource = ref source[offset];
+//        ref byte pDest = ref MemoryMarshal.GetReference(_span);
 
-        Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)writable);
+//        Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)writable);
 
-        Advance(writable);
+//        Advance(writable);
 
-        remaining -= writable;
-        offset += writable;
-      }
-    }
+//        remaining -= writable;
+//        offset += writable;
+//      }
+//    }
 
-    /// <summary>count == 0 means "i don't care"</summary>
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public void Ensure(int count = 0)
-    {
-      _writableBuffer.Ensure(count);
-      _span = _writableBuffer.Buffer.Span;
-    }
-  }
-}
-#endif
+//    /// <summary>count == 0 means "i don't care"</summary>
+//    [MethodImpl(MethodImplOptions.NoInlining)]
+//    public void Ensure(int count = 0)
+//    {
+//      _writableBuffer.Ensure(count);
+//      _span = _writableBuffer.Buffer.Span;
+//    }
+//  }
+//}
+//#endif

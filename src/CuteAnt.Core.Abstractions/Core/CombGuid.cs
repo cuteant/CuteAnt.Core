@@ -608,7 +608,7 @@ namespace CuteAnt
     /// <summary>初始化 CombGuid 结构的新实例。</summary>
     /// <param name="timestamp">用于生成 CombGuid 日期时间</param>
     /// <returns>一个新的 CombGuid 对象。</returns>
-    public static CombGuid NewComb(DateTime timestamp)
+    public static CombGuid NewComb(in DateTime timestamp)
     {
       var guidArray = Guid.NewGuid().ToByteArray();
 

@@ -3,7 +3,7 @@
   <Import Project="..\nuget.props" />
 
   <PropertyGroup>
-    <TargetFrameworks>net471;net451;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netstandard2.0;net471;net451</TargetFrameworks>
     <RootNamespace>CuteAnt</RootNamespace>
     <AssemblyName>CuteAnt.IO.Pipelines</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

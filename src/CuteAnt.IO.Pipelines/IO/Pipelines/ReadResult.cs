@@ -9,10 +9,10 @@ namespace CuteAnt.IO.Pipelines
   /// <summary>The result of a <see cref="IPipeReader.ReadAsync"/> call.</summary>
   public struct ReadResult
   {
-    internal ReadOnlyBuffer ResultBuffer;
+    internal ReadOnlyBuffer<byte> ResultBuffer;
     internal ResultFlags ResultFlags;
 
-    public ReadResult(ReadOnlyBuffer buffer, bool isCancelled, bool isCompleted)
+    public ReadResult(ReadOnlyBuffer<byte> buffer, bool isCancelled, bool isCompleted)
     {
       ResultBuffer = buffer;
       ResultFlags = ResultFlags.None;
@@ -27,8 +27,8 @@ namespace CuteAnt.IO.Pipelines
       }
     }
 
-    /// <summary>The <see cref="ReadOnlyBuffer"/> that was read</summary>
-    public ReadOnlyBuffer Buffer => ResultBuffer;
+    /// <summary>The <see cref="T:System.Buffers.ReadOnlyBuffer{byte}"/> that was read</summary>
+    public ReadOnlyBuffer<byte> Buffer => ResultBuffer;
 
     /// <summary>True if the currrent read was cancelled</summary>
     public bool IsCancelled => (ResultFlags & ResultFlags.Cancelled) != 0;

@@ -19,7 +19,7 @@ namespace CuteAnt.Runtime
       safeTimerBase = new SafeTimerBase(logger, asynTaskCallback, state, dueTime, period);
     }
 
-    public void Start(TimeSpan dueTime, TimeSpan period)
+    public void Start(in TimeSpan dueTime, in TimeSpan period)
     {
       safeTimerBase.Start(dueTime, period);
     }
@@ -44,7 +44,7 @@ namespace CuteAnt.Runtime
 
     #endregion
 
-    public bool CheckTimerFreeze(DateTime lastCheckTime, Func<string> callerName)
+    public bool CheckTimerFreeze(in DateTime lastCheckTime, Func<string> callerName)
     {
       return safeTimerBase.CheckTimerFreeze(lastCheckTime, callerName);
     }

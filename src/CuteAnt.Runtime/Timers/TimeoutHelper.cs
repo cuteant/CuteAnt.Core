@@ -66,7 +66,7 @@ namespace CuteAnt.Runtime
       get { return _originalTimeout; }
     }
 
-    public static bool IsTooLarge(TimeSpan timeout)
+    public static bool IsTooLarge(in TimeSpan timeout)
     {
       return (timeout > TimeoutHelper.MaxWait) && (timeout != TimeSpan.MaxValue);
     }
@@ -83,7 +83,7 @@ namespace CuteAnt.Runtime
       }
     }
 
-    public static int ToMilliseconds(TimeSpan timeout)
+    public static int ToMilliseconds(in TimeSpan timeout)
     {
       if (timeout == TimeSpan.MaxValue)
       {
@@ -100,7 +100,7 @@ namespace CuteAnt.Runtime
       }
     }
 
-    public static TimeSpan Min(TimeSpan val1, TimeSpan val2)
+    public static TimeSpan Min(in TimeSpan val1, in TimeSpan val2)
     {
       if (val1 > val2)
       {
@@ -112,12 +112,12 @@ namespace CuteAnt.Runtime
       }
     }
 
-    public static TimeSpan Add(TimeSpan timeout1, TimeSpan timeout2)
+    public static TimeSpan Add(in TimeSpan timeout1, in TimeSpan timeout2)
     {
       return Ticks.ToTimeSpan(Ticks.Add(Ticks.FromTimeSpan(timeout1), Ticks.FromTimeSpan(timeout2)));
     }
 
-    public static DateTime Add(DateTime time, TimeSpan timeout)
+    public static DateTime Add(in DateTime time, in TimeSpan timeout)
     {
       if (timeout >= TimeSpan.Zero && DateTime.MaxValue - time <= timeout)
       {
@@ -130,12 +130,12 @@ namespace CuteAnt.Runtime
       return time + timeout;
     }
 
-    public static DateTime Subtract(DateTime time, TimeSpan timeout)
+    public static DateTime Subtract(in DateTime time, in TimeSpan timeout)
     {
       return Add(time, TimeSpan.Zero - timeout);
     }
 
-    public static TimeSpan Divide(TimeSpan timeout, int factor)
+    public static TimeSpan Divide(in TimeSpan timeout, int factor)
     {
       if (timeout == TimeSpan.MaxValue)
       {
@@ -182,12 +182,12 @@ namespace CuteAnt.Runtime
       _deadlineSet = true;
     }
 
-    public static void ThrowIfNegativeArgument(TimeSpan timeout)
+    public static void ThrowIfNegativeArgument(in TimeSpan timeout)
     {
       ThrowIfNegativeArgument(timeout, "timeout");
     }
 
-    public static void ThrowIfNegativeArgument(TimeSpan timeout, string argumentName)
+    public static void ThrowIfNegativeArgument(in TimeSpan timeout, string argumentName)
     {
       if (timeout < TimeSpan.Zero)
       {
@@ -195,12 +195,12 @@ namespace CuteAnt.Runtime
       }
     }
 
-    public static void ThrowIfNonPositiveArgument(TimeSpan timeout)
+    public static void ThrowIfNonPositiveArgument(in TimeSpan timeout)
     {
       ThrowIfNonPositiveArgument(timeout, "timeout");
     }
 
-    public static void ThrowIfNonPositiveArgument(TimeSpan timeout, string argumentName)
+    public static void ThrowIfNonPositiveArgument(in TimeSpan timeout, string argumentName)
     {
       if (timeout <= TimeSpan.Zero)
       {
@@ -211,7 +211,7 @@ namespace CuteAnt.Runtime
 #if DESKTOPCLR
     [Fx.Tag.Blocking]
 #endif
-    public static bool WaitOne(WaitHandle waitHandle, TimeSpan timeout)
+    public static bool WaitOne(WaitHandle waitHandle, in TimeSpan timeout)
     {
       ThrowIfNegativeArgument(timeout);
       if (timeout == TimeSpan.MaxValue)
@@ -231,7 +231,7 @@ namespace CuteAnt.Runtime
       }
     }
 
-    internal static TimeoutException CreateEnterTimedOutException(TimeSpan timeout)
+    internal static TimeoutException CreateEnterTimedOutException(in TimeSpan timeout)
     {
       return new TimeoutException(string.Format("Cannot claim lock within the allotted timeout of { 0}. The time allotted to this operation may have been a portion of a longer timeout.", timeout));
     }

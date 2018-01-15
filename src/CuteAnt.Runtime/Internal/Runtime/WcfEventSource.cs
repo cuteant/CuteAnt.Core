@@ -291,7 +291,7 @@ namespace CuteAnt.Diagnostics
         }
 
         [NonEvent]
-        public void MessageReceivedByTransport(EventTraceActivity eventTraceActivity, string ListenAddress, Guid relatedActivityId)
+        public void MessageReceivedByTransport(EventTraceActivity eventTraceActivity, string ListenAddress, in Guid relatedActivityId)
         {
             TransferActivityId(eventTraceActivity);
             MessageReceivedByTransport(ListenAddress, "", "");
@@ -329,7 +329,7 @@ namespace CuteAnt.Diagnostics
         }
 
         [NonEvent]
-        public void ClientOperationPrepared(EventTraceActivity eventTraceActivity, string Action, string ContractName, string Destination, Guid relatedActivityId)
+        public void ClientOperationPrepared(EventTraceActivity eventTraceActivity, string Action, string ContractName, string Destination, in Guid relatedActivityId)
         {
             TransferActivityId(eventTraceActivity);
             ClientOperationPrepared(Action, ContractName, Destination, "", "");
@@ -385,7 +385,7 @@ namespace CuteAnt.Diagnostics
         }
 
         [NonEvent]
-        public void MessageSentToTransport(EventTraceActivity eventTraceActivity, Guid CorrelationId)
+        public void MessageSentToTransport(EventTraceActivity eventTraceActivity, in Guid CorrelationId)
         {
             SetActivityId(eventTraceActivity);
             MessageSentToTransport(CorrelationId, "", "");
@@ -404,7 +404,7 @@ namespace CuteAnt.Diagnostics
         }
 
         [NonEvent]
-        public void MessageReceivedFromTransport(EventTraceActivity eventTraceActivity, Guid CorrelationId, string HostReference)
+        public void MessageReceivedFromTransport(EventTraceActivity eventTraceActivity, in Guid CorrelationId, string HostReference)
         {
             SetActivityId(eventTraceActivity);
             MessageReceivedFromTransport(CorrelationId, HostReference, "");
@@ -1136,7 +1136,7 @@ namespace CuteAnt.Diagnostics
         }
 
         [NonEvent]
-        public void ListenerOpenStart(EventTraceActivity eventTraceActivity, string Uri, Guid relatedActivityId)
+        public void ListenerOpenStart(EventTraceActivity eventTraceActivity, string Uri, in Guid relatedActivityId)
         {
             TransferActivityId(eventTraceActivity);
             ListenerOpenStart(Uri, "");

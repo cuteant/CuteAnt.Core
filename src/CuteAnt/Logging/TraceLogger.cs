@@ -64,7 +64,7 @@ namespace Microsoft.Extensions.Logging
     /// <summary>Utility function to convert a <c>DateTime</c> object into printable data format used by the TraceLogger subsystem.</summary>
     /// <param name="date">The <c>DateTime</c> value to be printed.</param>
     /// <returns>Formatted string representation of the input data, in the printable format used by the TraceLogger subsystem.</returns>
-    public static string PrintDate(DateTime date)
+    public static string PrintDate(in DateTime date)
     {
       return date.ToString(DATE_FORMAT, CultureInfo.InvariantCulture);
     }
@@ -77,7 +77,7 @@ namespace Microsoft.Extensions.Logging
     /// <summary>Utility function to convert a <c>DateTime</c> object into printable time format used by the TraceLogger subsystem.</summary>
     /// <param name="date">The <c>DateTime</c> value to be printed.</param>
     /// <returns>Formatted string representation of the input data, in the printable format used by the TraceLogger subsystem.</returns>
-    public static string PrintTime(DateTime date)
+    public static string PrintTime(in DateTime date)
     {
       return date.ToString(TIME_FORMAT, CultureInfo.InvariantCulture);
     }

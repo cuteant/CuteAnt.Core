@@ -73,7 +73,7 @@ namespace CuteAnt.Runtime
       }
     }
 
-    public IAsyncResult BeginClose(TimeSpan timeout, AsyncCallback callback, object state)
+    public IAsyncResult BeginClose(in TimeSpan timeout, AsyncCallback callback, object state)
     {
       lock (ThisLock)
       {
@@ -87,7 +87,7 @@ namespace CuteAnt.Runtime
       return OnBeginClose(timeout, callback, state);
     }
 
-    public void Close(TimeSpan timeout)
+    public void Close(in TimeSpan timeout)
     {
       lock (ThisLock)
       {
@@ -102,7 +102,7 @@ namespace CuteAnt.Runtime
       _state = LifetimeState.Closed;
     }
 
-    private CommunicationWaitResult CloseCore(TimeSpan timeout, bool aborting)
+    private CommunicationWaitResult CloseCore(in TimeSpan timeout, bool aborting)
     {
       ICommunicationWaiter busyWaiter = null;
       CommunicationWaitResult result = CommunicationWaitResult.Succeeded;
@@ -200,7 +200,7 @@ namespace CuteAnt.Runtime
       CloseCore(TimeSpan.FromSeconds(1), true);
     }
 
-    protected virtual IAsyncResult OnBeginClose(TimeSpan timeout, AsyncCallback callback, object state)
+    protected virtual IAsyncResult OnBeginClose(in TimeSpan timeout, AsyncCallback callback, object state)
     {
       CloseCommunicationAsyncResult closeResult = null;
 
@@ -233,7 +233,7 @@ namespace CuteAnt.Runtime
       }
     }
 
-    protected virtual void OnClose(TimeSpan timeout)
+    protected virtual void OnClose(in TimeSpan timeout)
     {
       switch (CloseCore(timeout, false))
       {
@@ -278,7 +278,7 @@ namespace CuteAnt.Runtime
   {
     void Signal();
 
-    CommunicationWaitResult Wait(TimeSpan timeout, bool aborting);
+    CommunicationWaitResult Wait(in TimeSpan timeout, bool aborting);
   }
 
   public class CloseCommunicationAsyncResult : AsyncResult, ICommunicationWaiter
@@ -293,7 +293,7 @@ namespace CuteAnt.Runtime
     private TimeoutHelper _timeoutHelper;
     private TimeSpan _timeout;
 
-    public CloseCommunicationAsyncResult(TimeSpan timeout, AsyncCallback callback, object state, object mutex)
+    public CloseCommunicationAsyncResult(in TimeSpan timeout, AsyncCallback callback, object state, object mutex)
       : base(callback, state)
     {
       _timeout = timeout;
@@ -355,7 +355,7 @@ namespace CuteAnt.Runtime
       closeResult.Timeout();
     }
 
-    public CommunicationWaitResult Wait(TimeSpan timeout, bool aborting)
+    public CommunicationWaitResult Wait(in TimeSpan timeout, bool aborting)
     {
       if (timeout < TimeSpan.Zero)
       {
@@ -420,7 +420,7 @@ namespace CuteAnt.Runtime
       }
     }
 
-    public CommunicationWaitResult Wait(TimeSpan timeout, bool aborting)
+    public CommunicationWaitResult Wait(in TimeSpan timeout, bool aborting)
     {
       if (_closed)
       {

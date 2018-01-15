@@ -7,7 +7,7 @@ using System;
 
 namespace CuteAnt.IO.Pipelines.Threading
 {
-  internal class InlineScheduler : Scheduler
+  internal sealed class InlineScheduler : Scheduler
   {
     public override void Schedule(Action action)
     {

@@ -56,7 +56,7 @@ namespace CuteAnt.AsyncEx
     /// <summary>Creates a cancellation token that is canceled after the due time.</summary>
     /// <param name="dueTime">The due time after which to cancel the token.</param>
     /// <returns>A cancellation token that is canceled after the due time.</returns>
-    public static NormalizedCancellationToken Timeout(TimeSpan dueTime)
+    public static NormalizedCancellationToken Timeout(in TimeSpan dueTime)
     {
       var cts = new CancellationTokenSource();
       cts.CancelAfter(dueTime);

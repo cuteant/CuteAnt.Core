@@ -10,7 +10,7 @@ using CuteAnt.Pool;
 
 namespace CuteAnt.IO.Pipelines
 {
-  internal sealed class BufferSegment : IMemoryList<byte>
+  internal sealed class BufferSegment : IBufferList<byte>
   {
     /// <summary>The Start represents the offset into Array where the range of "active" bytes begins. At the point when the block is leased
     /// the Start is guaranteed to be equal to 0. The value of Start may be assigned anywhere between 0 and
@@ -78,7 +78,7 @@ namespace CuteAnt.IO.Pipelines
 
     public int Length => End - Start;
 
-    public IMemoryList<byte> Next => NextSegment;
+    public IBufferList<byte> Next => NextSegment;
 
     /// <summary>If true, data should not be written into the backing block after the End offset. Data between start and end should never be modified
     /// since this would break cloning.</summary>

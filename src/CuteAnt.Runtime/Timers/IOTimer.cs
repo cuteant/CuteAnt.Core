@@ -36,7 +36,7 @@ namespace CuteAnt.Runtime
             _enabled = false;
         }
 
-        public void ScheduleAfter(TimeSpan delay)
+        public void ScheduleAfter(in TimeSpan delay)
         {
             // In high request rate scenarios, the requested timer scheduled time will be very close in time
             // to the previous requested expiration. In those cases, the high cost of changing the timer 

@@ -136,7 +136,7 @@ namespace CuteAnt.Runtime
         m_thread.Abort(stateInfo);
     }
 
-    public void Join(TimeSpan timeout)
+    public void Join(in TimeSpan timeout)
     {
       try
       {

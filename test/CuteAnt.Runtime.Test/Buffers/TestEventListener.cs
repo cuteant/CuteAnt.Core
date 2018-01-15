@@ -26,7 +26,7 @@ namespace System.Diagnostics.Tracing
             LoadSourceList();
         }
 
-        public TestEventListener(Guid targetSourceGuid, EventLevel level)
+        public TestEventListener(in Guid targetSourceGuid, EventLevel level)
         {
             // Store the arguments
             _targetSourceGuid = targetSourceGuid;

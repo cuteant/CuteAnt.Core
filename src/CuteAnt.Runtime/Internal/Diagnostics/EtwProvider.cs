@@ -93,7 +93,7 @@ namespace CuteAnt.Diagnostics
 
     [Fx.Tag.SecurityNote(Critical = "Calling Unsafe code; usage of EventDescriptor, which is protected by a LinkDemand")]
     [SecurityCritical]
-    internal unsafe bool WriteTransferEvent(ref EventDescriptor eventDescriptor, EventTraceActivity eventTraceActivity, Guid relatedActivityId, string value1, string value2)
+    internal unsafe bool WriteTransferEvent(ref EventDescriptor eventDescriptor, EventTraceActivity eventTraceActivity, in Guid relatedActivityId, string value1, string value2)
     {
       const int argumentCount = 2;
       bool status = true;

@@ -120,7 +120,7 @@ namespace CuteAnt
     [MethodImpl(InlineMethod.Value)]
     public static DateTime ToDateTime(this Object value)
     {
-      return _Convert.ToDateTime(value, DateTime.MinValue);
+      return _Convert.ToDateTime(value, in DateTime.MinValue);
     }
 
     /// <summary>转为时间日期</summary>
@@ -128,7 +128,7 @@ namespace CuteAnt
     /// <param name="defaultValue">默认值。待转换对象无效时使用</param>
     /// <returns></returns>
     [MethodImpl(InlineMethod.Value)]
-    public static DateTime ToDateTime(this Object value, DateTime defaultValue)
+    public static DateTime ToDateTime(this Object value, in DateTime defaultValue)
     {
       return _Convert.ToDateTime(value, defaultValue);
     }
@@ -147,7 +147,7 @@ namespace CuteAnt
     /// <param name="defaultValue">默认值。待转换对象无效时使用</param>
     /// <returns>转换失败，返回 defaultValue 对象</returns>
     [MethodImpl(InlineMethod.Value)]
-    public static Guid ToGuid(this Object value, Guid defaultValue)
+    public static Guid ToGuid(this Object value, in Guid defaultValue)
     {
       return _Convert.ToGuid(value, defaultValue);
     }
@@ -449,7 +449,7 @@ namespace CuteAnt
     /// <param name="value">待转换对象</param>
     /// <param name="defaultValue">默认值。待转换对象无效时使用</param>
     /// <returns></returns>
-    public virtual DateTime ToDateTime(Object value, DateTime defaultValue)
+    public virtual DateTime ToDateTime(Object value, in DateTime defaultValue)
     {
       if (value == null) { return defaultValue; }
 
@@ -479,7 +479,7 @@ namespace CuteAnt
     /// <param name="value">待转换对象</param>
     /// <param name="defaultValue">默认值。待转换对象无效时使用</param>
     /// <returns></returns>
-    public virtual Guid ToGuid(Object value, Guid defaultValue)
+    public virtual Guid ToGuid(Object value, in Guid defaultValue)
     {
       if (value == null) { return defaultValue; }
 
@@ -542,7 +542,7 @@ namespace CuteAnt
     /// <param name="value">待转换对象</param>
     /// <param name="emptyValue">字符串空值时显示的字符串，null表示原样显示最小时间，String.Empty表示不显示</param>
     /// <returns></returns>
-    public virtual String ToFullString(DateTime value, String emptyValue = null)
+    public virtual String ToFullString(in DateTime value, String emptyValue = null)
     {
       if (emptyValue != null && value <= DateTime.MinValue) return emptyValue;
 
@@ -554,7 +554,7 @@ namespace CuteAnt
     /// <param name="format">格式化字符串</param>
     /// <param name="emptyValue">字符串空值时显示的字符串，null表示原样显示最小时间，String.Empty表示不显示</param>
     /// <returns></returns>
-    public virtual String ToString(DateTime value, String format, String emptyValue)
+    public virtual String ToString(in DateTime value, String format, String emptyValue)
     {
       if (emptyValue != null && value <= DateTime.MinValue) return emptyValue;
 

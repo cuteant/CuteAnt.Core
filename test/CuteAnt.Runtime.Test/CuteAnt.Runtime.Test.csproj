@@ -25,4 +25,6 @@
 
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\System.IO.Pipelines.Extensions\System.IO.Pipelines.Extensions.projitems" Label="Shared" />
 
+  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\System.IO.Stream.Extensions\System.IO.Stream.Extensions.projitems" Label="Shared" />
+
 </Project>

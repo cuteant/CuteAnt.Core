@@ -35,6 +35,7 @@ namespace CuteAnt.IO.Pipelines
     private readonly object _sync = new object();
 
     private /*readonly*/ MemoryPool<byte> _pool;
+    private /*readonly*/ int _minimumSegmentSize;
     private /*readonly*/ long _maximumSizeHigh;
     private /*readonly*/ long _maximumSizeLow;
 
@@ -108,6 +109,7 @@ namespace CuteAnt.IO.Pipelines
       lock (_sync)
       {
         _pool = options.Pool;
+        _minimumSegmentSize = options.MinimumSegmentSize;
         _maximumSizeHigh = options.MaximumSizeHigh;
         _maximumSizeLow = options.MaximumSizeLow;
         _readerScheduler = options.ReaderScheduler ?? Scheduler.Inline;
@@ -196,6 +198,8 @@ namespace CuteAnt.IO.Pipelines
           nextSegment = CreateSegmentUnsynchronized();
         }
 
+        // ## 苦竹 修改 ##
+        //nextSegment.SetMemory(_pool.Rent(Math.Max(_minimumSegmentSize, count)));
         nextSegment.SetMemory(_pool.Rent(ComputeActualSize(count, segment)));
 
         segment.SetNext(nextSegment);
@@ -228,6 +232,8 @@ namespace CuteAnt.IO.Pipelines
       {
         // No free tail space, allocate a new segment
         segment = CreateSegmentUnsynchronized();
+        // ## 苦竹 修改 ##
+        //segment.SetMemory(_pool.Rent(Math.Max(_minimumSegmentSize, count)));
         segment.SetMemory(_pool.Rent(ComputeActualSize(count, _commitHead)));
       }
 
@@ -468,13 +474,13 @@ namespace CuteAnt.IO.Pipelines
             return;
           }
 
-          var consumedSegment = consumed.GetSegment<BufferSegment>();
+          var consumedSegment = (BufferSegment)consumed.Segment;
 
           returnStart = _readHead;
           returnEnd = consumedSegment;
 
           // Check if we crossed _maximumSizeLow and complete backpressure
-          var consumedBytes = new ReadOnlyBuffer(returnStart, _readHeadIndex, consumedSegment, consumed.Index).Length;
+          var consumedBytes = new ReadOnlyBuffer<byte>(returnStart, _readHeadIndex, consumedSegment, consumed.Index).Length;
           var oldLength = _length;
           _length -= consumedBytes;
 
@@ -860,7 +866,7 @@ namespace CuteAnt.IO.Pipelines
       if (head != null)
       {
         // Reading commit head shared with writer
-        result.ResultBuffer = new ReadOnlyBuffer(head, _readHeadIndex, _commitHead, _commitHeadIndex - _commitHead.Start);
+        result.ResultBuffer = new ReadOnlyBuffer<byte>(head, _readHeadIndex, _commitHead, _commitHeadIndex - _commitHead.Start);
       }
 
       if (isCancelled)

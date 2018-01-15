@@ -73,7 +73,7 @@ namespace CuteAnt.Runtime
       }
     }
 
-    public bool EnterAsync(TimeSpan timeout, FastAsyncCallback callback, object state)
+    public bool EnterAsync(in TimeSpan timeout, FastAsyncCallback callback, object state)
     {
       Fx.Assert(callback != null, "must have a non-null call back for async purposes");
 
@@ -140,7 +140,7 @@ namespace CuteAnt.Runtime
     }
 
     [Fx.Tag.Blocking(CancelMethod = "Abort")]
-    public void Enter(TimeSpan timeout)
+    public void Enter(in TimeSpan timeout)
     {
       if (!TryEnter(timeout))
       {
@@ -149,7 +149,7 @@ namespace CuteAnt.Runtime
     }
 
     [Fx.Tag.Blocking(CancelMethod = "Abort")]
-    public bool TryEnter(TimeSpan timeout)
+    public bool TryEnter(in TimeSpan timeout)
     {
       AsyncWaitHandle waiter = EnterCore();
 
@@ -177,7 +177,7 @@ namespace CuteAnt.Runtime
       return true;
     }
 
-    internal static TimeoutException CreateEnterTimedOutException(TimeSpan timeout)
+    internal static TimeoutException CreateEnterTimedOutException(in TimeSpan timeout)
     {
       return new TimeoutException(InternalSR.LockTimeoutExceptionMessage(timeout));
     }

@@ -126,7 +126,7 @@ namespace CuteAnt.IO.Pipelines.Tests
                 buffer = result.Buffer;
 
                 Assert.Equal(11, buffer.Length);
-                Assert.True(buffer.IsSingleSpan);
+                Assert.True(buffer.IsSingleSegment);
                 Assert.False(result.IsCancelled);
                 var array = new byte[11];
                 buffer.First.Span.CopyTo(array);
@@ -162,7 +162,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             Assert.True(result.IsCancelled);
             Assert.False(buffer.IsEmpty);
             Assert.Equal(11, buffer.Length);
-            Assert.True(buffer.IsSingleSpan);
+            Assert.True(buffer.IsSingleSegment);
             var array = new byte[11];
             buffer.First.Span.CopyTo(array);
             Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
@@ -191,7 +191,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             Assert.Equal(11, buffer.Length);
             Assert.False(result.IsCancelled);
-            Assert.True(buffer.IsSingleSpan);
+            Assert.True(buffer.IsSingleSegment);
             var array = new byte[11];
             buffer.First.Span.CopyTo(array);
             Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
@@ -212,7 +212,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             Assert.Equal(11, buffer.Length);
             Assert.False(result.IsCancelled);
-            Assert.True(buffer.IsSingleSpan);
+            Assert.True(buffer.IsSingleSegment);
             var array = new byte[11];
             buffer.First.Span.CopyTo(array);
             Assert.Equal("Hello World", Encoding.ASCII.GetString(array));

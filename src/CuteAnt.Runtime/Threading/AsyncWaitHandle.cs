@@ -36,7 +36,7 @@ namespace CuteAnt.Runtime
       this.syncObject = new object();
     }
 
-    public bool WaitAsync(Action<object, TimeoutException> callback, object state, TimeSpan timeout)
+    public bool WaitAsync(Action<object, TimeoutException> callback, object state, in TimeSpan timeout)
     {
       if (!this.isSignaled || (this.isSignaled && this.resetMode == EventResetMode.AutoReset))
       {
@@ -98,7 +98,7 @@ namespace CuteAnt.Runtime
     }
 
     [Fx.Tag.Blocking]
-    public bool Wait(TimeSpan timeout)
+    public bool Wait(in TimeSpan timeout)
     {
       if (!this.isSignaled || (this.isSignaled && this.resetMode == EventResetMode.AutoReset))
       {
@@ -259,7 +259,7 @@ namespace CuteAnt.Runtime
             this.TimedOut ? new TimeoutException(InternalSR.TimeoutOnOperation(this.originalTimeout)) : null);
       }
 
-      public void SetTimer(Action<object> callback, object state, TimeSpan timeout)
+      public void SetTimer(Action<object> callback, object state, in TimeSpan timeout)
       {
         if (this.timer != null)
         {

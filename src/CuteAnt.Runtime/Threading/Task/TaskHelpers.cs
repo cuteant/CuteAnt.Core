@@ -220,7 +220,7 @@ namespace CuteAnt.Runtime
       return task.GetAwaiter().GetResult();
     }
 
-    public static bool WaitForCompletionNoSpin(this Task task, TimeSpan timeout)
+    public static bool WaitForCompletionNoSpin(this Task task, in TimeSpan timeout)
     {
       if (timeout >= TimeoutHelper.MaxWait)
       {
@@ -245,7 +245,7 @@ namespace CuteAnt.Runtime
 
     // Used by WebSocketTransportDuplexSessionChannel on the sync code path.
     // TODO: Try and switch as many code paths as possible which use this to async
-    public static void Wait(this Task task, TimeSpan timeout, Action<Exception, TimeSpan, string> exceptionConverter, string operationType)
+    public static void Wait(this Task task, in TimeSpan timeout, Action<Exception, TimeSpan, string> exceptionConverter, string operationType)
     {
       bool timedOut = false;
 

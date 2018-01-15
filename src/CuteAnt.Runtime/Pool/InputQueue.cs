@@ -60,7 +60,7 @@ namespace CuteAnt.Pool
 
     private object ThisLock => _itemQueue;
 
-    public IAsyncResult BeginDequeue(TimeSpan timeout, AsyncCallback callback, object state)
+    public IAsyncResult BeginDequeue(in TimeSpan timeout, AsyncCallback callback, object state)
     {
       Item item = default;
 
@@ -98,7 +98,7 @@ namespace CuteAnt.Pool
       return new CompletedAsyncResult<T>(item.GetValue(), callback, state);
     }
 
-    public IAsyncResult BeginWaitForItem(TimeSpan timeout, AsyncCallback callback, object state)
+    public IAsyncResult BeginWaitForItem(in TimeSpan timeout, AsyncCallback callback, object state)
     {
       lock (ThisLock)
       {
@@ -131,7 +131,7 @@ namespace CuteAnt.Pool
     }
 
     [Fx.Tag.Blocking(CancelMethod = "Close")]
-    public T Dequeue(TimeSpan timeout)
+    public T Dequeue(in TimeSpan timeout)
     {
       T value;
 
@@ -144,7 +144,7 @@ namespace CuteAnt.Pool
     }
 
     [Fx.Tag.Blocking(CancelMethod = "Close")]
-    public bool Dequeue(TimeSpan timeout, out T value)
+    public bool Dequeue(in TimeSpan timeout, out T value)
     {
       WaitQueueReader reader = null;
       Item item = new Item();
@@ -372,7 +372,7 @@ namespace CuteAnt.Pool
     }
 
     [Fx.Tag.Blocking(CancelMethod = "Dispatch")]
-    public bool WaitForItem(TimeSpan timeout)
+    public bool WaitForItem(in TimeSpan timeout)
     {
       WaitQueueWaiter waiter = null;
       bool itemAvailable = false;
@@ -779,7 +779,7 @@ namespace CuteAnt.Pool
 #if DESKTOPCLR
       private IOThreadTimer _timer;
 
-      public AsyncQueueReader(InputQueue<T> inputQueue, TimeSpan timeout, AsyncCallback callback, object state)
+      public AsyncQueueReader(InputQueue<T> inputQueue, in TimeSpan timeout, AsyncCallback callback, object state)
         : base(callback, state)
       {
         if (inputQueue.AsyncCallbackGenerator != null)
@@ -796,7 +796,7 @@ namespace CuteAnt.Pool
 #else
       private Timer _timer;
 
-      public AsyncQueueReader(InputQueue<T> inputQueue, TimeSpan timeout, AsyncCallback callback, object state)
+      public AsyncQueueReader(InputQueue<T> inputQueue, in TimeSpan timeout, AsyncCallback callback, object state)
         : base(callback, state)
       {
         if (inputQueue.AsyncCallbackGenerator != null)
@@ -863,7 +863,7 @@ namespace CuteAnt.Pool
 
 #if DESKTOPCLR
       private IOThreadTimer _timer;
-      public AsyncQueueWaiter(TimeSpan timeout, AsyncCallback callback, object state) : base(callback, state)
+      public AsyncQueueWaiter(in TimeSpan timeout, AsyncCallback callback, object state) : base(callback, state)
       {
         if (timeout != TimeSpan.MaxValue)
         {
@@ -874,7 +874,7 @@ namespace CuteAnt.Pool
 #else
       private Timer _timer;
 
-      public AsyncQueueWaiter(TimeSpan timeout, AsyncCallback callback, object state) : base(callback, state)
+      public AsyncQueueWaiter(in TimeSpan timeout, AsyncCallback callback, object state) : base(callback, state)
       {
         if (timeout != TimeSpan.MaxValue)
         {
@@ -1036,7 +1036,7 @@ namespace CuteAnt.Pool
       }
 
       [Fx.Tag.Blocking(CancelMethod = "Set")]
-      public bool Wait(TimeSpan timeout, out T value)
+      public bool Wait(in TimeSpan timeout, out T value)
       {
         bool isSafeToClose = false;
         try
@@ -1098,7 +1098,7 @@ namespace CuteAnt.Pool
       }
 
       [Fx.Tag.Blocking(CancelMethod = "Set")]
-      public bool Wait(TimeSpan timeout)
+      public bool Wait(in TimeSpan timeout)
       {
         if (!TimeoutHelper.WaitOne(_waitEvent, timeout))
         {

@@ -210,7 +210,7 @@ namespace CuteAnt.Pool
       list.Add(item);
     }
 
-    private bool ShouldPurgeItem(Item cacheItem, DateTime now)
+    private bool ShouldPurgeItem(Item cacheItem, in DateTime now)
     {
       // only prune items who aren't in use
       if (cacheItem.ReferenceCount > 0)

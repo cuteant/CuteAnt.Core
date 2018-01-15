@@ -103,7 +103,7 @@ namespace CuteAnt
       return StringBuilderCache.GetStringAndRelease(sb);
     }
 
-    public static string TimeSpanToString(TimeSpan timeSpan)
+    public static string TimeSpanToString(in TimeSpan timeSpan)
     {
       //00:03:32.8289777
       return String.Format("{0}h:{1}m:{2}s.{3}ms", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
@@ -300,7 +300,7 @@ namespace CuteAnt
       return s.Substring(Math.Max(0, s.Length - count));
     }
 
-    public static TimeSpan Since(DateTime start)
+    public static TimeSpan Since(in DateTime start)
     {
       return DateTime.UtcNow.Subtract(start);
     }

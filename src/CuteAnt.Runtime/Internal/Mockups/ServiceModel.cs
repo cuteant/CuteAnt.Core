@@ -55,7 +55,7 @@ namespace CuteAnt.Diagnostics
     internal static bool ClientMessageInspectorAfterReceiveInvokedIsEnabled() { /* INTENTIONAL */ return false; }
     internal static void ClientMessageInspectorBeforeSendInvoked(EventTraceActivity eventTraceActivity, string TypeName) { /* INTENTIONAL */ }
     internal static bool ClientMessageInspectorBeforeSendInvokedIsEnabled() { /* INTENTIONAL */ return false; }
-    internal static void ClientOperationPrepared(EventTraceActivity eventTraceActivity, string Action, string ContractName, string Destination, Guid relatedActivityId) { /* INTENTIONAL */ }
+    internal static void ClientOperationPrepared(EventTraceActivity eventTraceActivity, string Action, string ContractName, string Destination, in Guid relatedActivityId) { /* INTENTIONAL */ }
     internal static bool ClientOperationPreparedIsEnabled() { /* INTENTIONAL */ return false; }
     internal static void ClientParameterInspectorAfterCallInvoked(EventTraceActivity eventTraceActivity, string TypeName) { /* INTENTIONAL */ }
     internal static bool ClientParameterInspectorAfterCallInvokedIsEnabled() { /* INTENTIONAL */ return false; }
@@ -161,7 +161,7 @@ namespace CuteAnt.Diagnostics
     internal static bool IncomingMessageVerifiedIsEnabled() { /* INTENTIONAL */ return false; }
     internal static void LeaseTimeout(string msg, string key) { /* INTENTIONAL */ }
     internal static bool LeaseTimeoutIsEnabled() { /* INTENTIONAL */ return false; }
-    internal static void ListenerOpenStart(EventTraceActivity eventTraceActivity, string Uri, Guid relatedActivityId) { /* INTENTIONAL */ }
+    internal static void ListenerOpenStart(EventTraceActivity eventTraceActivity, string Uri, in Guid relatedActivityId) { /* INTENTIONAL */ }
     internal static bool ListenerOpenStartIsEnabled() { /* INTENTIONAL */ return false; }
     internal static void ListenerOpenStop(EventTraceActivity eventTraceActivity) { /* INTENTIONAL */ }
     internal static bool ListenerOpenStopIsEnabled() { /* INTENTIONAL */ return false; }
@@ -189,13 +189,13 @@ namespace CuteAnt.Diagnostics
     internal static bool MessageLogWarningIsEnabled() { /* INTENTIONAL */ return false; }
     internal static void MessageReadByEncoder(EventTraceActivity eventTraceActivity, int Size, object source) { /* INTENTIONAL */ }
     internal static bool MessageReadByEncoderIsEnabled() { /* INTENTIONAL */ return false; }
-    internal static void MessageReceivedByTransport(EventTraceActivity eventTraceActivity, string ListenAddress, Guid relatedActivityId) { /* INTENTIONAL */ }
+    internal static void MessageReceivedByTransport(EventTraceActivity eventTraceActivity, string ListenAddress, in Guid relatedActivityId) { /* INTENTIONAL */ }
     internal static bool MessageReceivedByTransportIsEnabled() { /* INTENTIONAL */ return false; }
-    internal static void MessageReceivedFromTransport(EventTraceActivity eventTraceActivity, Guid CorrelationId, string reference) { /* INTENTIONAL */ }
+    internal static void MessageReceivedFromTransport(EventTraceActivity eventTraceActivity, in Guid CorrelationId, string reference) { /* INTENTIONAL */ }
     internal static bool MessageReceivedFromTransportIsEnabled() { /* INTENTIONAL */ return false; }
     internal static void MessageSentByTransport(EventTraceActivity eventTraceActivity, string DestinationAddress) { /* INTENTIONAL */ }
     internal static bool MessageSentByTransportIsEnabled() { /* INTENTIONAL */ return false; }
-    internal static void MessageSentToTransport(EventTraceActivity eventTraceActivity, Guid CorrelationId) { /* INTENTIONAL */ }
+    internal static void MessageSentToTransport(EventTraceActivity eventTraceActivity, in Guid CorrelationId) { /* INTENTIONAL */ }
     internal static bool MessageSentToTransportIsEnabled() { /* INTENTIONAL */ return false; }
     internal static void MessageThrottleAtSeventyPercent(string ThrottleName, long Limit) { /* INTENTIONAL */ }
     internal static bool MessageThrottleAtSeventyPercentIsEnabled() { /* INTENTIONAL */ return false; }
@@ -361,7 +361,7 @@ namespace CuteAnt.Diagnostics
     internal static bool TextMessageDecodingStartIsEnabled() { /* INTENTIONAL */ return false; }
     internal static void TextMessageEncodingStart(EventTraceActivity eventTraceActivity) { /* INTENTIONAL */ }
     internal static bool TextMessageEncodingStartIsEnabled() { /* INTENTIONAL */ return false; }
-    internal static void TransactionScopeCreate(EventTraceActivity eventTraceActivity, string LocalId, Guid Distributed) { /* INTENTIONAL */ }
+    internal static void TransactionScopeCreate(EventTraceActivity eventTraceActivity, string LocalId, in Guid Distributed) { /* INTENTIONAL */ }
     internal static bool TransactionScopeCreateIsEnabled() { /* INTENTIONAL */ return false; }
     internal static void WebSocketAsyncReadStart(int websocketId) { /* INTENTIONAL */ }
     internal static bool WebSocketAsyncReadStartIsEnabled() { /* INTENTIONAL */ return false; }

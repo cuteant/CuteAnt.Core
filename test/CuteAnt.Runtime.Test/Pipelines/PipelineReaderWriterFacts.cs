@@ -140,7 +140,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             Assert.Equal("Hello World", Encoding.ASCII.GetString(result.Buffer.ToArray()));
 
-            _pipe.Reader.Advance(result.Buffer.Move(result.Buffer.Start, 6));
+            _pipe.Reader.Advance(result.Buffer.Seek(result.Buffer.Start, 6));
 
             result = await _pipe.Reader.ReadAsync();
 
@@ -253,7 +253,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             var buffer = result.Buffer;
 
             Assert.Equal(11, buffer.Length);
-            Assert.True(buffer.IsSingleSpan);
+            Assert.True(buffer.IsSingleSegment);
             var array = new byte[11];
             buffer.First.Span.CopyTo(array);
             Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
@@ -271,7 +271,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             var buffer = result.Buffer;
 
             Assert.Equal(11, buffer.Length);
-            Assert.True(buffer.IsSingleSpan);
+            Assert.True(buffer.IsSingleSegment);
             var array = new byte[11];
             buffer.First.Span.CopyTo(array);
             Assert.Equal("Hello World", Encoding.ASCII.GetString(array));

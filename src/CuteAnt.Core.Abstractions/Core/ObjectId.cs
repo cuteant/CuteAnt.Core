@@ -240,7 +240,7 @@ namespace CuteAnt.Runtime
     /// </summary>
     /// <param name="timestamp">The timestamp component (expressed as a DateTime).</param>
     /// <returns>An ObjectId.</returns>
-    public static ObjectId GenerateNewId(DateTime timestamp)
+    public static ObjectId GenerateNewId(in DateTime timestamp)
     {
       return GenerateNewId(GetTimestampFromDateTime(timestamp));
     }
@@ -362,7 +362,7 @@ namespace CuteAnt.Runtime
       return (hash[0] << 16) + (hash[1] << 8) + hash[2]; // use first 3 bytes of hash
     }
 
-    private static int GetTimestampFromDateTime(DateTime timestamp)
+    private static int GetTimestampFromDateTime(in DateTime timestamp)
     {
       return (int)Math.Floor((ToUniversalTime(timestamp) - __unixEpoch).TotalSeconds);
     }
@@ -498,7 +498,7 @@ namespace CuteAnt.Runtime
     /// </summary>
     /// <param name="dateTime">A DateTime.</param>
     /// <returns>Number of seconds since Unix epoch.</returns>
-    public static long ToMillisecondsSinceEpoch(DateTime dateTime)
+    public static long ToMillisecondsSinceEpoch(in DateTime dateTime)
     {
       var utcDateTime = ToUniversalTime(dateTime);
       return (utcDateTime - __unixEpoch).Ticks / 10000;
@@ -508,7 +508,7 @@ namespace CuteAnt.Runtime
     /// </summary>
     /// <param name="dateTime">A DateTime.</param>
     /// <returns>The DateTime in UTC.</returns>
-    public static DateTime ToUniversalTime(DateTime dateTime)
+    public static DateTime ToUniversalTime(in DateTime dateTime)
     {
       if (dateTime == DateTime.MinValue)
       {

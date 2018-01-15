@@ -16,7 +16,7 @@ namespace CuteAnt
     /// <param name="timespan"><see cref="TimeSpan"/> to add.</param>
     /// <returns></returns>
     [MethodImpl(InlineMethod.Value)]
-    public static DateTime Add(DateTime time, TimeSpan timespan)
+    public static DateTime Add(in DateTime time, in TimeSpan timespan)
     {
       if (timespan >= TimeSpan.Zero && DateTime.MaxValue - time <= timespan)
       {
@@ -38,7 +38,7 @@ namespace CuteAnt
     /// <param name="timespan"></param>
     /// <returns></returns>
     [MethodImpl(InlineMethod.Value)]
-    public static DateTime AddNonNegative(DateTime time, TimeSpan timespan)
+    public static DateTime AddNonNegative(in DateTime time, in TimeSpan timespan)
     {
       if (timespan <= TimeSpan.Zero)
       {
@@ -60,7 +60,7 @@ namespace CuteAnt
     }
 
     [MethodImpl(InlineMethod.Value)]
-    public static DateTime? ToUniversalTime(DateTime? value)
+    public static DateTime? ToUniversalTime(in DateTime? value)
     {
       if (null == value || value.Value.Kind == DateTimeKind.Utc)
       {
@@ -70,7 +70,7 @@ namespace CuteAnt
     }
 
     [MethodImpl(InlineMethod.Value)]
-    public static DateTime ToUniversalTime(DateTime value)
+    public static DateTime ToUniversalTime(in DateTime value)
     {
       if (value.Kind == DateTimeKind.Utc)
       {

@@ -52,7 +52,7 @@ namespace CuteAnt.Runtime
       Start(dueTime, period);
     }
 
-    public void Start(TimeSpan due, TimeSpan period)
+    public void Start(in TimeSpan due, in TimeSpan period)
     {
       if (timerStarted) throw new InvalidOperationException(String.Format("Calling start on timer {0} is not allowed, since it was already created in a started mode with specified due.", GetFullName()));
       if (period == TimeSpan.Zero) throw new ArgumentOutOfRangeException("period", period, "Cannot use TimeSpan.Zero for timer period");
@@ -64,7 +64,7 @@ namespace CuteAnt.Runtime
       timer.Change(due, INFINITE_TIMESPAN);
     }
 
-    private void Init(ILogger logger, Func<object, Task> asynCallback, TimerCallback synCallback, object state, TimeSpan due, TimeSpan period)
+    private void Init(ILogger logger, Func<object, Task> asynCallback, TimerCallback synCallback, object state, in TimeSpan due, in TimeSpan period)
     {
       if (synCallback == null && asynCallback == null) throw new ArgumentNullException("synCallback", "Cannot use null for both sync and asyncTask timer callbacks.");
       int numNonNulls = (asynCallback != null ? 1 : 0) + (synCallback != null ? 1 : 0);
@@ -137,14 +137,14 @@ namespace CuteAnt.Runtime
 #endif
     }
 
-    public bool CheckTimerFreeze(DateTime lastCheckTime, Func<string> callerName)
+    public bool CheckTimerFreeze(in DateTime lastCheckTime, Func<string> callerName)
     {
       return CheckTimerDelay(previousTickTime, totalNumTicks,
                   dueTime, timerFrequency, logger, () => String.Format("{0}.{1}", GetFullName(), callerName()), true);
     }
 
-    public static bool CheckTimerDelay(DateTime previousTickTime, int totalNumTicks,
-                    TimeSpan dueTime, TimeSpan timerFrequency, ILogger logger, Func<string> getName, bool freezeCheck)
+    public static bool CheckTimerDelay(in DateTime previousTickTime, int totalNumTicks,
+                    in TimeSpan dueTime, in TimeSpan timerFrequency, ILogger logger, Func<string> getName, bool freezeCheck)
     {
       TimeSpan timeSinceLastTick = DateTime.UtcNow - previousTickTime;
       TimeSpan exceptedTimeToNexTick = totalNumTicks == 0 ? dueTime : timerFrequency;
@@ -185,7 +185,7 @@ namespace CuteAnt.Runtime
     /// <param name="period">The time interval between invocations of the callback method specified when the Timer was constructed. Specify negative one (-1) milliseconds to disable periodic signaling.</param>
     /// <returns><c>true</c> if the timer was successfully updated; otherwise, <c>false</c>.</returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-    private bool Change(TimeSpan newDueTime, TimeSpan period)
+    private bool Change(in TimeSpan newDueTime, in TimeSpan period)
     {
       if (period == TimeSpan.Zero) throw new ArgumentOutOfRangeException("period", period, string.Format("Cannot use TimeSpan.Zero for timer {0} period", GetFullName()));
 

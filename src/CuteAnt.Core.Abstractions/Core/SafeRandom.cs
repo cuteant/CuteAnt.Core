@@ -54,7 +54,7 @@ namespace CuteAnt
 
     #region --& Extensions &--
 
-    public TimeSpan NextTimeSpan(TimeSpan timeSpan)
+    public TimeSpan NextTimeSpan(in TimeSpan timeSpan)
     {
       if (timeSpan <= TimeSpan.Zero)
       {
@@ -66,7 +66,7 @@ namespace CuteAnt
       return TimeSpan.FromTicks(ticks);
     }
 
-    public TimeSpan NextTimeSpan(TimeSpan minValue, TimeSpan maxValue)
+    public TimeSpan NextTimeSpan(in TimeSpan minValue, in TimeSpan maxValue)
     {
       if (minValue <= TimeSpan.Zero)
       {

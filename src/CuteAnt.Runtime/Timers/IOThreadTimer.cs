@@ -94,7 +94,7 @@ namespace CuteAnt.Runtime
       return TimerManager.Value.Cancel(this);
     }
 
-    public void Set(TimeSpan timeFromNow)
+    public void Set(in TimeSpan timeFromNow)
     {
       if (timeFromNow != TimeSpan.MaxValue)
       {

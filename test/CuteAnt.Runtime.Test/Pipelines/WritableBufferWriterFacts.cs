@@ -42,7 +42,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         public void ExposesSpan()
         {
             _buffer = _pipe.Writer.Alloc(1);
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = OutputWriter.Create(_buffer);
             Assert.Equal(_buffer.Buffer.Length, writer.Span.Length);
             Assert.Equal(new byte[] { }, Read());
         }
@@ -53,7 +53,7 @@ namespace CuteAnt.IO.Pipelines.Tests
             _buffer = _pipe.Writer.Alloc(1);
             var initialLength = _buffer.Buffer.Length;
 
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = OutputWriter.Create(_buffer);
 
             writer.Write(new byte[] { 1, 2, 3 });
 
@@ -74,19 +74,19 @@ namespace CuteAnt.IO.Pipelines.Tests
             _buffer = _pipe.Writer.Alloc(1);
             var initialLength = _buffer.Buffer.Length;
 
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = OutputWriter.Create(_buffer);
             var array = new byte[arrayLength];
             for (int i = 0; i < array.Length; i++)
             {
                 array[i] = (byte)(i + 1);
             }
 
-            writer.Write(array, 0, 0);
-            writer.Write(array, array.Length, 0);
+            writer.Write(new Span<byte>(array, 0, 0));
+            writer.Write(new Span<byte>(array, array.Length, 0));
 
             try
             {
-                writer.Write(array, offset, length);
+                writer.Write(new Span<byte>(array, offset, length));
                 Assert.True(false);
             }
             catch (Exception ex)
@@ -94,7 +94,7 @@ namespace CuteAnt.IO.Pipelines.Tests
                 Assert.True(ex is ArgumentOutOfRangeException);
             }
 
-            writer.Write(array, 0, array.Length);
+            writer.Write(new Span<byte>(array, 0, array.Length));
             Assert.Equal(array, Read());
         }
 
@@ -111,10 +111,10 @@ namespace CuteAnt.IO.Pipelines.Tests
         {
             _buffer = _pipe.Writer.Alloc(alloc);
 
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = OutputWriter.Create(_buffer);
             var array = new byte[] { 1, 2, 3 };
 
-            writer.Write(array, offset, length);
+            writer.Write(new Span<byte>(array, offset, length));
 
             Assert.Equal(array.Skip(offset).Take(length).ToArray(), Read());
         }
@@ -123,7 +123,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         public void CanWriteIntoHeadlessBuffer()
         {
             _buffer = _pipe.Writer.Alloc();
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = OutputWriter.Create(_buffer);
 
             writer.Write(new byte[] { 1, 2, 3 });
             Assert.Equal(new byte[] { 1, 2, 3 }, Read());
@@ -133,7 +133,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         public void CanWriteMultipleTimes()
         {
             _buffer = _pipe.Writer.Alloc();
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = OutputWriter.Create(_buffer);
 
             writer.Write(new byte[] { 1 });
             writer.Write(new byte[] { 2 });
@@ -146,11 +146,11 @@ namespace CuteAnt.IO.Pipelines.Tests
         public void CanWriteEmpty()
         {
             _buffer = _pipe.Writer.Alloc();
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = OutputWriter.Create(_buffer);
             var array = new byte[] { };
 
             writer.Write(array);
-            writer.Write(array, 0, array.Length);
+            writer.Write(new Span<byte>(array, 0, array.Length));
 
             Assert.Equal(array, Read());
         }
@@ -159,7 +159,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         public void CanWriteOverTheBlockLength()
         {
             _buffer = _pipe.Writer.Alloc(1);
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = OutputWriter.Create(_buffer);
 
             var source = Enumerable.Range(0, _buffer.Buffer.Length).Select(i => (byte)i);
             var expectedBytes = source.Concat(source).Concat(source).ToArray();
@@ -173,7 +173,7 @@ namespace CuteAnt.IO.Pipelines.Tests
         public void EnsureAllocatesSpan()
         {
             _buffer = _pipe.Writer.Alloc();
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = OutputWriter.Create(_buffer);
             writer.Ensure(10);
 
             Assert.True(writer.Span.Length > 10);

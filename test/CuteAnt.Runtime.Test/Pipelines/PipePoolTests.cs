@@ -98,11 +98,35 @@ namespace CuteAnt.IO.Pipelines.Tests
             PipelineManager.Free(pipe);
         }
 
+        [Fact]
+        public async Task RentsMinimumSegmentSize()
+        {
+            var pool = new DisposeTrackingBufferPool();
+            var writeSize = 512;
+
+            var pipe = new Pipe(new PipeOptions(pool, minimumSegmentSize: 2020));
+
+            var buffer = pipe.Writer.Alloc(writeSize);
+            var allocatedSize = buffer.Buffer.Length;
+            buffer.Advance(buffer.Buffer.Length);
+            buffer.Ensure(1);
+            var ensuredSize = buffer.Buffer.Length;
+            await buffer.FlushAsync();
+
+            pipe.Reader.Complete();
+            pipe.Writer.Complete();
+
+            //Assert.Equal(2020, ensuredSize);
+            //Assert.Equal(2020, allocatedSize);
+            Assert.Equal(1024, ensuredSize);
+            Assert.Equal(512, allocatedSize);
+        }
+
         private class DisposeTrackingBufferPool : MemoryPool<byte>
         {
             public override OwnedMemory<byte> Rent(int size)
             {
-                return new DisposeTrackingOwnedMemory(new byte[2048], this);
+                return new DisposeTrackingOwnedMemory(new byte[size], this);
             }
 
             public int ReturnedBlocks { get; set; }

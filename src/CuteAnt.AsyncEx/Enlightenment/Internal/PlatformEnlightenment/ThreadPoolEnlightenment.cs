@@ -8,7 +8,7 @@ namespace CuteAnt.AsyncEx.Internal.PlatformEnlightenment
 {
 	internal static class ThreadPoolEnlightenment
 	{
-		internal static IDisposable RegisterWaitForSingleObject(WaitHandle handle, Action<object, Boolean> callback, object state, TimeSpan timeout)
+		internal static IDisposable RegisterWaitForSingleObject(WaitHandle handle, Action<object, Boolean> callback, object state, in TimeSpan timeout)
 		{
 			var registration = ThreadPool.RegisterWaitForSingleObject(handle, (innerState, timedOut) => callback(innerState, timedOut), state, timeout, true);
 			return new WaitHandleRegistration(registration);
