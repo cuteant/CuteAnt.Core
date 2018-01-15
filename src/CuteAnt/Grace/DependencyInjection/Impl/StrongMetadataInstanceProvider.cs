@@ -132,7 +132,12 @@ namespace Grace.DependencyInjection.Impl
     {
       foreach (var propertyInfo in instance.GetType().GetRuntimeProperties())
       {
-        if (!propertyInfo.CanWrite || propertyInfo.SetMethod().IsStatic) { continue; }
+#if NET40
+        var setMethodInfo = propertyInfo.SetMethod();
+#else
+        var setMethodInfo = propertyInfo.SetMethod;
+#endif
+        if (!propertyInfo.CanWrite || setMethodInfo.IsStatic) { continue; }
 
         object setValue = null;
 
@@ -147,7 +152,7 @@ namespace Grace.DependencyInjection.Impl
             setValue = ConvertValue(propertyInfo.PropertyType, setValue);
           }
 
-          propertyInfo.SetMethod().Invoke(instance, new[] { setValue });
+          setMethodInfo.Invoke(instance, new[] { setValue });
         }
       }
     }

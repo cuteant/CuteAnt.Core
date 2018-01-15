@@ -36,7 +36,11 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
     /// <returns></returns>
     public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
     {
+#if NET40
       var elementType = request.ActivationType.GenericTypeArguments()[0];
+#else
+      var elementType = request.ActivationType.GenericTypeArguments[0];
+#endif
 
       var newRequest = request.NewRequest(elementType.MakeArrayType(), this, request.ActivationType, RequestType.Other, null, true, true);
 

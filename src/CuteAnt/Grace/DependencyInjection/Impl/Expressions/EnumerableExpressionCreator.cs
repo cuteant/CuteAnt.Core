@@ -29,7 +29,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
     protected virtual IActivationExpressionResult CreateEnumerableExpressionUsingArrayExpression(IInjectionScope scope,
       IActivationExpressionRequest request, IArrayExpressionCreator arrayExpressionCreator)
     {
+#if NET40
       var enumerableType = request.ActivationType.GenericTypeArguments()[0];
+#else
+      var enumerableType = request.ActivationType.GenericTypeArguments[0];
+#endif
 
       var arrayType = enumerableType.MakeArrayType();
 
@@ -54,7 +58,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
     protected virtual IActivationExpressionResult CreateEnumerableExpressionUsingCustomCreator(IInjectionScope scope,
       IActivationExpressionRequest request, IArrayExpressionCreator arrayExpressionCreator, IEnumerableCreator enumerableCreator)
     {
+#if NET40
       var enumerableType = request.ActivationType.GenericTypeArguments()[0];
+#else
+      var enumerableType = request.ActivationType.GenericTypeArguments[0];
+#endif
 
       var arrayType = enumerableType.MakeArrayType();
 

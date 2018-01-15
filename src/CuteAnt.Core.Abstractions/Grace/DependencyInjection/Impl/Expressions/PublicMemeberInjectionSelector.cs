@@ -45,7 +45,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
           if (declaredMember is PropertyInfo propertyInfo)
           {
-            if (propertyInfo.CanWrite && propertyInfo.SetMethod().IsPublic && !propertyInfo.SetMethod().IsStatic)
+#if NET40
+            var setMethodInfo = propertyInfo.SetMethod();
+#else
+            var setMethodInfo = propertyInfo.SetMethod;
+#endif
+            if (propertyInfo.CanWrite && setMethodInfo.IsPublic && !setMethodInfo.IsStatic)
             {
               importType = propertyInfo.PropertyType;
             }

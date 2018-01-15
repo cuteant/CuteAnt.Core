@@ -18,7 +18,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <returns>type that has been wrapped</returns>
     public override Type GetWrappedType(Type wrappedType)
     {
+#if NET40
       if (wrappedType.IsConstructedGenericType())
+#else
+      if (wrappedType.IsConstructedGenericType)
+#endif
       {
         var genericType = wrappedType.GetGenericTypeDefinition();
 
@@ -39,7 +43,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     {
       var constructor = request.ActivationType.GetTypeInfo().DeclaredConstructors.First();
 
+#if NET40
       var wrappedType = request.ActivationType.GenericTypeArguments()[0];
+#else
+      var wrappedType = request.ActivationType.GenericTypeArguments[0];
+#endif
       var ownedParameter = Expression.Parameter(request.ActivationType);
 
       var assign = Expression.Assign(ownedParameter, Expression.New(constructor));

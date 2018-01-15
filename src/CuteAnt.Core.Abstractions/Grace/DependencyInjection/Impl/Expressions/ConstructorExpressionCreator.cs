@@ -144,7 +144,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
       {
         newRequest.SetDefaultValue(new DefaultValueInformation { DefaultValue = parameterInfo.DefaultValue });
       }
+#if NET40
       else if (parameter.HasDefaultValue())
+#else
+      else if (parameter.HasDefaultValue)
+#endif
       {
         newRequest.SetDefaultValue(new DefaultValueInformation { DefaultValue = parameter.DefaultValue });
       }

@@ -50,7 +50,11 @@ namespace Grace.Data
     /// <returns></returns>
     public static string GetFriendlyNameForType(Type type, bool includeNamespace = false)
     {
+#if NET40
       if (type.IsConstructedGenericType())
+#else
+      if (type.IsConstructedGenericType)
+#endif
       {
         var builder = StringBuilderCache.Acquire();
 
@@ -70,13 +74,21 @@ namespace Grace.Data
 
     private static void CreateFriendlyNameForType(Type currentType, StringBuilder builder)
     {
+#if NET40
       if (currentType.IsConstructedGenericType())
+#else
+      if (currentType.IsConstructedGenericType)
+#endif
       {
         var tickIndex = currentType.Name.LastIndexOf('`');
         builder.Append(currentType.Name.Substring(0, tickIndex));
         builder.Append('<');
 
+#if NET40
         var types = currentType.GenericTypeArguments();
+#else
+        var types = currentType.GenericTypeArguments;
+#endif
 
         for (var i = 0; i < types.Length; i++)
         {
@@ -110,8 +122,13 @@ namespace Grace.Data
         {
           foreach (var implementedInterface in checkType.GetTypeInfo().ImplementedInterfaces)
           {
+#if NET40
             if (implementedInterface.IsConstructedGenericType() &&
                 implementedInterface.GetTypeInfo().GetGenericTypeDefinition() == baseType)
+#else
+            if (implementedInterface.IsConstructedGenericType &&
+                implementedInterface.GetTypeInfo().GetGenericTypeDefinition() == baseType)
+#endif
             {
               return true;
             }
@@ -134,8 +151,13 @@ namespace Grace.Data
 
           while (currentBaseType != null)
           {
+#if NET40
             if (currentBaseType.IsConstructedGenericType() &&
                 currentBaseType.GetGenericTypeDefinition() == baseType)
+#else
+            if (currentBaseType.IsConstructedGenericType &&
+                currentBaseType.GetGenericTypeDefinition() == baseType)
+#endif
             {
               return true;
             }
@@ -270,12 +292,17 @@ namespace Grace.Data
 
       foreach (var property in objectType.GetTypeInfo().DeclaredProperties)
       {
+#if NET40
+        var getMethodInfo = property.GetMethod();
+#else
+        var getMethodInfo = property.GetMethod;
+#endif
         if (property.CanRead &&
-            !property.GetMethod().IsStatic &&
-            property.GetMethod().IsPublic &&
-            property.GetMethod().GetParameters().Length == 0)
+            !getMethodInfo.IsStatic &&
+            getMethodInfo.IsPublic &&
+            getMethodInfo.GetParameters().Length == 0)
         {
-          var propertyAccess = Expression.Property(tVariable, property.GetMethod());
+          var propertyAccess = Expression.Property(tVariable, getMethodInfo);
 
           var propertyCast = Expression.Convert(propertyAccess, typeof(object));
 

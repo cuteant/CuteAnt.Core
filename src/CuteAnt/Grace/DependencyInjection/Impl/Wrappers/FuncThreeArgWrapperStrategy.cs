@@ -19,7 +19,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <returns>wrapped type</returns>
     public override Type GetWrappedType(Type type)
     {
+#if NET40
       if (!type.IsConstructedGenericType()) { return null; }
+#else
+      if (!type.IsConstructedGenericType) { return null; }
+#endif
 
       var genericType = type.GetGenericTypeDefinition();
 
@@ -34,7 +38,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     {
       // ## 苦竹 修改 ##
       //var closedClass = typeof(FuncExpression<,,,>).MakeGenericType(request.ActivationType.GenericTypeArguments());
+#if NET40
       var closedClass = typeof(FuncExpression<,,,>).GetCachedGenericType(request.ActivationType.GenericTypeArguments());
+#else
+      var closedClass = typeof(FuncExpression<,,,>).GetCachedGenericType(request.ActivationType.GenericTypeArguments);
+#endif
 
       var closedMethod = closedClass.GetRuntimeMethod(CreateFuncMethodName,
           new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });

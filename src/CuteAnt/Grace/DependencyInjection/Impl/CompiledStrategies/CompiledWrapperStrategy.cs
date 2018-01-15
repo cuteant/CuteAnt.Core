@@ -62,12 +62,21 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
     /// <returns>type that has been wrapped</returns>
     public Type GetWrappedType(Type type)
     {
+#if NET40
       if (type.IsConstructedGenericType() &&
           _genericArgPosition >= 0 &&
           ActivationType.GetTypeInfo().IsGenericTypeDefinition)
       {
         return type.GenericTypeArguments()[_genericArgPosition];
       }
+#else
+      if (type.IsConstructedGenericType &&
+          _genericArgPosition >= 0 &&
+          ActivationType.GetTypeInfo().IsGenericTypeDefinition)
+      {
+        return type.GenericTypeArguments[_genericArgPosition];
+      }
+#endif
 
       return _wrappedType;
     }

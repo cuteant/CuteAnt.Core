@@ -145,7 +145,11 @@ namespace Grace.DependencyInjection.Impl
     {
       var notValue = GetNotAndingValue();
 
+#if NET40
       Add(t => t.IsConstructedGenericType() == notValue);
+#else
+      Add(t => t.IsConstructedGenericType == notValue);
+#endif
 
       return this;
     }

@@ -29,7 +29,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <returns>type that has been wrapped</returns>
     public override Type GetWrappedType(Type type)
     {
+#if NET40
       if (!type.IsConstructedGenericType()) { return null; }
+#else
+      if (!type.IsConstructedGenericType) { return null; }
+#endif
 
       var genericType = type.GetGenericTypeDefinition();
 
@@ -71,9 +75,14 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     {
       // ## 苦竹 修改 ##
       //var closedClass = typeof(LazyExpression<,>).MakeGenericType(request.ActivationType.GenericTypeArguments());
-      var closedClass = typeof(LazyExpression<,>).GetCachedGenericType(request.ActivationType.GenericTypeArguments());
+#if NET40
+      var requestGenericTypeArguments = request.ActivationType.GenericTypeArguments();
+#else
+      var requestGenericTypeArguments = request.ActivationType.GenericTypeArguments;
+#endif
+      var closedClass = typeof(LazyExpression<,>).GetCachedGenericType(requestGenericTypeArguments);
 
-      var closedMethod = closedClass.GetRuntimeMethod(CreateLazyMethodName, 
+      var closedMethod = closedClass.GetRuntimeMethod(CreateLazyMethodName,
           new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
 
       var wrappedStrategy = request.GetWrappedStrategy();
@@ -83,8 +92,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         throw new LocateException(request.GetStaticInjectionContext(), "Could not find strategy that is wrapped");
       }
 
-      var metadata = _strongMetadataInstanceProvider.GetMetadata(request.ActivationType.GenericTypeArguments()[1],
-          wrappedStrategy.Metadata);
+      var metadata = _strongMetadataInstanceProvider.GetMetadata(requestGenericTypeArguments[1], wrappedStrategy.Metadata);
 
       // ## 苦竹 修改 ##
       //var instance = Activator.CreateInstance(closedClass, scope, request, this, metadata);
@@ -146,7 +154,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         {
           if (_delegate == null)
           {
+#if NET40
             var requestType = _request.ActivationType.GenericTypeArguments()[0];
+#else
+            var requestType = _request.ActivationType.GenericTypeArguments[0];
+#endif
 
             var newRequest = _request.NewRequest(requestType, _activationStrategy, typeof(Lazy<TResult>),
                 RequestType.Other, null, true, true);

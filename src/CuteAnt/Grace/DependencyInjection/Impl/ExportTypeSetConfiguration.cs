@@ -482,8 +482,13 @@ namespace Grace.DependencyInjection.Impl
 
         if (isGeneric)
         {
+#if NET40
           if (!implementedInterface.IsConstructedGenericType() ||
               implementedInterface.GenericTypeArguments().Length < type.GetTypeInfo().GenericTypeParameters.Length)
+#else
+          if (!implementedInterface.IsConstructedGenericType ||
+              implementedInterface.GenericTypeArguments.Length < type.GetTypeInfo().GenericTypeParameters.Length)
+#endif
           {
             continue;
           }

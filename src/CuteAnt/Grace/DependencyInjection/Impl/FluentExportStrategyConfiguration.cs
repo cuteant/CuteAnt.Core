@@ -81,7 +81,11 @@ namespace Grace.DependencyInjection.Impl
 
         if (_exportConfiguration.ActivationType.GetTypeInfo().IsGenericTypeDefinition)
         {
+#if NET40
           if (interfaceTypes.IsConstructedGenericType())
+#else
+          if (interfaceTypes.IsConstructedGenericType)
+#endif
           {
             _exportConfiguration.AddExportAs(interfaceTypes.GetGenericTypeDefinition());
           }

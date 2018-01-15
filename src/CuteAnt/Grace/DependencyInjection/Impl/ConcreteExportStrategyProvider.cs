@@ -82,7 +82,11 @@ namespace Grace.DependencyInjection.Impl
     {
       var requestedType = request.ActivationType;
 
+#if NET40
       if (requestedType.IsConstructedGenericType())
+#else
+      if (requestedType.IsConstructedGenericType)
+#endif
       {
         var genericType = requestedType.GetGenericTypeDefinition();
 
@@ -152,7 +156,11 @@ namespace Grace.DependencyInjection.Impl
     {
       var requestedType = request.ActivationType;
 
+#if NET40
       if (requestedType.IsConstructedGenericType())
+#else
+      if (requestedType.IsConstructedGenericType)
+#endif
       {
         var genericType = requestedType.GetGenericTypeDefinition();
 

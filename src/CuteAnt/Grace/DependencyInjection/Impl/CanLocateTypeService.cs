@@ -40,7 +40,11 @@ namespace Grace.DependencyInjection.Impl
 
       if (type.IsArray) { return true; }
 
+#if NET40
       if (type.IsConstructedGenericType())
+#else
+      if (type.IsConstructedGenericType)
+#endif
       {
         var generic = type.GetGenericTypeDefinition();
 

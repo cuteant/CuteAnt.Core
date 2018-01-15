@@ -27,7 +27,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <returns>wrapped type</returns>
     public override Type GetWrappedType(Type type)
     {
+#if NET40
       if (type.IsConstructedGenericType())
+#else
+      if (type.IsConstructedGenericType)
+#endif
       {
         var genericType = type.GetGenericTypeDefinition();
 
@@ -61,7 +65,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
       var expressionResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 
+#if NET40
       var metadata = _strongMetadataInstanceProvider.GetMetadata(request.ActivationType.GenericTypeArguments()[1], strategy.Metadata);
+#else
+      var metadata = _strongMetadataInstanceProvider.GetMetadata(request.ActivationType.GenericTypeArguments[1], strategy.Metadata);
+#endif
 
       var newExpression =
           Expression.New(constructor, expressionResult.Expression, Expression.Constant(metadata));

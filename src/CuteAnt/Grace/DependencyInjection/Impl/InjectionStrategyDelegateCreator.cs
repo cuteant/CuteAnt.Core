@@ -58,7 +58,12 @@ namespace Grace.DependencyInjection.Impl
 
       foreach (var property in locateType.GetRuntimeProperties())
       {
-        if (!property.CanWrite || !property.SetMethod().IsPublic || property.SetMethod().IsStatic)
+#if NET40
+        var setMethodInfo = property.SetMethod();
+#else
+        var setMethodInfo = property.SetMethod;
+#endif
+        if (!property.CanWrite || !setMethodInfo.IsPublic || setMethodInfo.IsStatic)
         {
           continue;
         }
@@ -119,8 +124,11 @@ namespace Grace.DependencyInjection.Impl
 
       var result = request.Services.ExpressionBuilder.GetActivationExpression(scope, propertyRequest);
 
-      var setExpression = Expression.Assign(Expression.Property(instanceValue, property.SetMethod()),
-          result.Expression);
+#if NET40
+      var setExpression = Expression.Assign(Expression.Property(instanceValue, property.SetMethod()), result.Expression);
+#else
+      var setExpression = Expression.Assign(Expression.Property(instanceValue, property.SetMethod), result.Expression);
+#endif
 
       result.AddExtraExpression(setExpression);
       result.Expression = null;

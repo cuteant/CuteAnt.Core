@@ -191,7 +191,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
       }
 
       // check for generic
+#if NET40
       if (arrayElementType.IsConstructedGenericType())
+#else
+      if (arrayElementType.IsConstructedGenericType)
+#endif
       {
         var genericType = arrayElementType.GetGenericTypeDefinition();
 
@@ -346,7 +350,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         GetExpressionFromCollection(scope, arrayElementType, request, expressions, collection, wrappedType, wrappers);
       }
 
+#if NET40
       var isGenericType = wrappedType.IsConstructedGenericType();
+#else
+      var isGenericType = wrappedType.IsConstructedGenericType;
+#endif
 
       if (isGenericType)
       {

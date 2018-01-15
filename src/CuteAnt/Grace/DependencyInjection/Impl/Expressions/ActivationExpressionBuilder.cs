@@ -70,8 +70,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
         return ArrayExpressionCreator.GetArrayExpression(scope, request);
       }
 
+#if NET40
       if (request.ActivationType.IsConstructedGenericType() &&
           request.ActivationType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+#else
+      if (request.ActivationType.IsConstructedGenericType &&
+          request.ActivationType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+#endif
       {
         return EnumerableExpressionCreator.GetEnumerableExpression(scope, request, ArrayExpressionCreator);
       }
@@ -440,7 +445,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// <returns></returns>
     protected virtual IActivationExpressionResult GetExpressionFromGenericStrategies(IInjectionScope scope, IActivationExpressionRequest request)
     {
+#if NET40
       if (request.ActivationType.IsConstructedGenericType())
+#else
+      if (request.ActivationType.IsConstructedGenericType)
+#endif
       {
         var genericType = request.ActivationType.GetGenericTypeDefinition();
 
@@ -607,7 +616,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         }
       }
 
+#if NET40
       if (type.IsConstructedGenericType())
+#else
+      if (type.IsConstructedGenericType)
+#endif
       {
         var generic = type.GetGenericTypeDefinition();
 

@@ -18,10 +18,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <returns>type that has been wrapped</returns>
     public override Type GetWrappedType(Type type)
     {
-      if (type.IsConstructedGenericType())
-      {
-        return type.GenericTypeArguments()[0];
-      }
+#if NET40
+      if (type.IsConstructedGenericType()) { return type.GenericTypeArguments()[0]; }
+#else
+      if (type.IsConstructedGenericType) { return type.GenericTypeArguments[0]; }
+#endif
 
       return null;
     }
@@ -34,7 +35,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     {
       // ## 苦竹 修改 ##
       //var closedClass = typeof(FuncExpression<>).MakeGenericType(request.ActivationType.GenericTypeArguments());
+#if NET40
       var closedClass = typeof(FuncExpression<>).GetCachedGenericType(request.ActivationType.GenericTypeArguments());
+#else
+      var closedClass = typeof(FuncExpression<>).GetCachedGenericType(request.ActivationType.GenericTypeArguments);
+#endif
 
       var closedMethod = closedClass.GetRuntimeMethod(CreateFuncMethodName,
           new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
@@ -62,7 +67,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
       /// <param name="activationStrategy"></param>
       public FuncExpression(IInjectionScope scope, IActivationExpressionRequest request, IActivationStrategy activationStrategy)
       {
+#if NET40
         var requestType = request.ActivationType.GenericTypeArguments()[0];
+#else
+        var requestType = request.ActivationType.GenericTypeArguments[0];
+#endif
 
         var newRequest = request.NewRequest(requestType, activationStrategy, typeof(Func<TResult>), RequestType.Other, null, true);
 

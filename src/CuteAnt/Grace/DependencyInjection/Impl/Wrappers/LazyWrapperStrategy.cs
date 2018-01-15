@@ -18,7 +18,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <returns>type that has been wrapped</returns>
     public override Type GetWrappedType(Type type)
     {
+#if NET40
       if (!type.IsConstructedGenericType()) { return null; }
+#else
+      if (!type.IsConstructedGenericType) { return null; }
+#endif
 
       var genericType = type.GetGenericTypeDefinition();
 
@@ -33,7 +37,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     {
       // ## 苦竹 修改 ##
       //var closedClass = typeof(LazyExpression<>).MakeGenericType(request.ActivationType.GenericTypeArguments());
+#if NET40
       var closedClass = typeof(LazyExpression<>).GetCachedGenericType(request.ActivationType.GenericTypeArguments());
+#else
+      var closedClass = typeof(LazyExpression<>).GetCachedGenericType(request.ActivationType.GenericTypeArguments);
+#endif
 
       var closedMethod = closedClass.GetRuntimeMethod(CreateLazyMethodName,
           new[] { typeof(IExportLocatorScope), typeof(IDisposalScope), typeof(IInjectionContext) });
@@ -93,7 +101,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
         {
           if (_delegate == null)
           {
+#if NET40
             var requestType = _request.ActivationType.GenericTypeArguments()[0];
+#else
+            var requestType = _request.ActivationType.GenericTypeArguments[0];
+#endif
 
             var newRequest = _request.NewRequest(requestType, _activationStrategy, typeof(Lazy<TResult>),
                 RequestType.Other, null, true);

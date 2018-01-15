@@ -43,9 +43,14 @@ namespace Grace.DependencyInjection.Impl
     {
       foreach (var propertyInfo in strategy.ActivationType.GetRuntimeProperties())
       {
+#if NET40
+        var setMethodInfo = propertyInfo.SetMethod();
+#else
+        var setMethodInfo = propertyInfo.SetMethod;
+#endif
         if (!propertyInfo.CanWrite ||
-            !propertyInfo.SetMethod().IsPublic ||
-             propertyInfo.SetMethod().IsStatic)
+            !setMethodInfo.IsPublic ||
+             setMethodInfo.IsStatic)
         {
           continue;
         }

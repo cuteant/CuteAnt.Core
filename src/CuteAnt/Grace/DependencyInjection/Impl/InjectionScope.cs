@@ -502,7 +502,11 @@ namespace Grace.DependencyInjection.Impl
         LocateEnumerablesFromStrategyCollection(collection, scope, disposalScope, type, context, consider, returnList);
       }
 
+#if NET40
       if (type.IsConstructedGenericType())
+#else
+      if (type.IsConstructedGenericType)
+#endif
       {
         var genericType = type.GetGenericTypeDefinition();
 
@@ -607,7 +611,11 @@ namespace Grace.DependencyInjection.Impl
           return DynamicArray(scope, disposalScope, type, consider, injectionContext);
         }
 
+#if NET40
         if (type.IsConstructedGenericType() && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+#else
+        if (type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+#endif
         {
           return DynamicIEnumerable(scope, disposalScope, type, consider, injectionContext);
         }

@@ -18,7 +18,11 @@ namespace Grace.DependencyInjection.Impl.Wrappers
     /// <returns>type that has been wrapped</returns>
     public override Type GetWrappedType(Type wrappedType)
     {
+#if NET40
       if (wrappedType.IsConstructedGenericType())
+#else
+      if (wrappedType.IsConstructedGenericType)
+#endif
       {
         var genericType = wrappedType.GetGenericTypeDefinition();
 

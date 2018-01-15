@@ -24,7 +24,11 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
     /// <returns></returns>
     public override IActivationExpressionResult GetActivationExpression(IInjectionScope scope, IActivationExpressionRequest request)
     {
+#if NET40
       var elementType = request.ActivationType.GenericTypeArguments()[0];
+#else
+      var elementType = request.ActivationType.GenericTypeArguments[0];
+#endif
 
       // ## 苦竹 修改 ##
       //var closedType = typeof(List<>).MakeGenericType(elementType);
@@ -44,8 +48,11 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
         if (parameters.Length == 1)
         {
           var parameterType = parameters[0].ParameterType;
-          return parameterType.IsConstructedGenericType() &&
-                       parameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+#if NET40
+          return parameterType.IsConstructedGenericType() && parameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+#else
+          return parameterType.IsConstructedGenericType && parameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+#endif
         }
 
         return false;

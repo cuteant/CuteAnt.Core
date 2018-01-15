@@ -207,8 +207,13 @@ namespace Grace.Utilities
     private static bool TypeMeetRequirements(Type exportedType, Type requestedType, Type @interface, out Dictionary<Type, Type> parameterTypeToRealTypeMap)
     {
       var returValue = true;
+#if NET40
       var interfaceTypes = @interface.GenericTypeArguments();
       var closedRequestedTypes = requestedType.GenericTypeArguments();
+#else
+      var interfaceTypes = @interface.GenericTypeArguments;
+      var closedRequestedTypes = requestedType.GenericTypeArguments;
+#endif
 
       parameterTypeToRealTypeMap = new Dictionary<Type, Type>();
 

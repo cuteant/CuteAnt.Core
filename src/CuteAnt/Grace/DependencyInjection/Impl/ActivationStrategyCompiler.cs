@@ -278,7 +278,11 @@ namespace Grace.DependencyInjection.Impl
         if (strategyDelegate != null) { return strategyDelegate; }
       }
 
+#if NET40
       var isGeneric = locateType.IsConstructedGenericType();
+#else
+      var isGeneric = locateType.IsConstructedGenericType;
+#endif
 
       if (isGeneric)
       {
@@ -352,7 +356,11 @@ namespace Grace.DependencyInjection.Impl
         return strategy.GetActivationStrategyDelegate(scope, this, locateType);
       }
 
+#if NET40
       if (locateType.IsConstructedGenericType())
+#else
+      if (locateType.IsConstructedGenericType)
+#endif
       {
         var openGeneric = locateType.GetGenericTypeDefinition();
 
@@ -424,9 +432,15 @@ namespace Grace.DependencyInjection.Impl
 
     private ActivationStrategyDelegate LocateEnumerableStrategy(IInjectionScope scope, Type locateType, ActivationStrategyFilter consider, object key)
     {
+#if NET40
       if (locateType.IsArray ||
           (locateType.IsConstructedGenericType() &&
               locateType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+#else
+      if (locateType.IsArray ||
+          (locateType.IsConstructedGenericType &&
+              locateType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+#endif
       {
         var result = _builder.GetActivationExpression(scope, CreateNewRequest(locateType, 1, scope));
 

@@ -35,7 +35,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
     {
       var wrapperCollection = scope.WrapperCollectionContainer.GetActivationStrategyCollection(type);
 
+#if NET40
       if (wrapperCollection == null && type.IsConstructedGenericType())
+#else
+      if (wrapperCollection == null && type.IsConstructedGenericType)
+#endif
       {
         var genericType = type.GetGenericTypeDefinition();
 
@@ -176,8 +180,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
               }
             }
           }
-          else if (!wrappedType.IsArray &&
-              (!wrappedType.IsConstructedGenericType() || wrappedType.GetGenericTypeDefinition() != typeof(IEnumerable<>)))
+#if NET40
+          else if (!wrappedType.IsArray && (!wrappedType.IsConstructedGenericType() || wrappedType.GetGenericTypeDefinition() != typeof(IEnumerable<>)))
+#else
+          else if (!wrappedType.IsArray && (!wrappedType.IsConstructedGenericType || wrappedType.GetGenericTypeDefinition() != typeof(IEnumerable<>)))
+#endif
           {
             return false;
           }
@@ -196,7 +203,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
     {
       var collection = scope.StrategyCollectionContainer.GetActivationStrategyCollection(wrappedType);
 
+#if NET40
       if (collection == null && wrappedType.IsConstructedGenericType())
+#else
+      if (collection == null && wrappedType.IsConstructedGenericType)
+#endif
       {
         var generic = wrappedType.GetGenericTypeDefinition();
 
