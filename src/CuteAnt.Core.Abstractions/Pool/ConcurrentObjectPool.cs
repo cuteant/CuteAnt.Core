@@ -3,10 +3,12 @@ using System.Collections.Concurrent;
 
 namespace CuteAnt.Pool
 {
+  // https://blogs.msdn.microsoft.com/pfxteam/2010/04/26/performance-of-concurrent-collections-in-net-4/
+  // 
   public class ConcurrentObjectPool<TPoolItem> : ObjectPool<TPoolItem>
     where TPoolItem : class
   {
-    private readonly ConcurrentStack<TPoolItem> _innerPool;
+    private readonly ConcurrentBag<TPoolItem> _innerPool;
     private readonly IPooledObjectPolicy<TPoolItem> _policy;
     private readonly int _maximumRetained;
 
@@ -18,13 +20,13 @@ namespace CuteAnt.Pool
     public ConcurrentObjectPool(IPooledObjectPolicy<TPoolItem> policy, int maximumRetained)
     {
       _policy = policy ?? throw new ArgumentNullException(nameof(policy));
-      _innerPool = new ConcurrentStack<TPoolItem>();
+      _innerPool = new ConcurrentBag<TPoolItem>();
       _maximumRetained = maximumRetained;
     }
 
     public override TPoolItem Take()
     {
-      if (!_innerPool.TryPop(out TPoolItem item))
+      if (!_innerPool.TryTake(out TPoolItem item))
       {
         item = _policy.Create();
       }
@@ -34,7 +36,7 @@ namespace CuteAnt.Pool
 
     public override TPoolItem Get()
     {
-      if (!_innerPool.TryPop(out TPoolItem item))
+      if (!_innerPool.TryTake(out TPoolItem item))
       {
         item = _policy.Create();
       }
@@ -44,9 +46,16 @@ namespace CuteAnt.Pool
 
     public override void Return(TPoolItem item)
     {
-      if (_policy.Return(item) && _innerPool.Count < _maximumRetained) { _innerPool.Push(item); }
+      if (_policy.Return(item) && _innerPool.Count < _maximumRetained) { _innerPool.Add(item); }
     }
 
-    public override void Clear() => _innerPool.Clear();
+    public override void Clear()
+    {
+#if NETCOREAPP // .NET Core 2.0+
+      _innerPool.Clear();
+#else
+      while (_innerPool.TryTake(out var item)) { }
+#endif
+    }
   }
 }
