@@ -140,7 +140,7 @@ namespace CuteAnt.IO.Pipelines.Tests
 
             Assert.Equal("Hello World", Encoding.ASCII.GetString(result.Buffer.ToArray()));
 
-            _pipe.Reader.Advance(result.Buffer.Seek(result.Buffer.Start, 6));
+            _pipe.Reader.Advance(result.Buffer.GetPosition(result.Buffer.Start, 6));
 
             result = await _pipe.Reader.ReadAsync();
 

@@ -13,7 +13,9 @@ namespace CuteAnt.Runtime
       IgnoreFault     // Allow the agent to stop if it faults, but take no other action (other than logging)
     }
 
+#if NET40
     private Thread m_thread;
+#endif
     private CancellationTokenSource _cts;
     protected CancellationTokenSource Cts => _cts;
     protected object Lockable;
@@ -21,13 +23,11 @@ namespace CuteAnt.Runtime
     private readonly string type;
     protected FaultBehavior OnFault;
 
-#if TRACK_DETAILED_STATS
-    internal protected ThreadTrackingStatistic threadTracking;
-#endif
-
     public ThreadState State { get; private set; }
     public string Name { get; protected set; }
+#if NET40
     public int ManagedThreadId { get { return m_thread == null ? -1 : m_thread.ManagedThreadId; } }
+#endif
 
     protected AsynchAgent()
       : this(null)
@@ -59,13 +59,9 @@ namespace CuteAnt.Runtime
       Log = TraceLogger.GetLogger(Name);//, TraceLogger.LoggerType.Runtime);
       AppDomain.CurrentDomain.DomainUnload += CurrentDomain_DomainUnload;
 
-#if TRACK_DETAILED_STATS
-      if (StatisticsCollector.CollectThreadTimeTrackingStats)
-      {
-        threadTracking = new ThreadTrackingStatistic(Name);
-      }
-#endif
+#if NET40
       m_thread = new Thread(AgentThreadProc) { IsBackground = true, Name = this.Name };
+#endif
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
@@ -81,7 +77,7 @@ namespace CuteAnt.Runtime
       catch (Exception exc)
       {
         // ignore. Just make sure DomainUnload handler does not throw.
-        if (Log.IsTraceLevelEnabled()) Log.LogTrace(exc, "Ignoring error during Stop: {0}");
+        if (Log.IsDebugLevelEnabled()) Log.LogDebug(exc, "Ignoring error during Stop: {0}");
       }
     }
 
@@ -97,13 +93,19 @@ namespace CuteAnt.Runtime
         if (State == ThreadState.Stopped)
         {
           _cts = new CancellationTokenSource();
+#if NET40
           m_thread = new Thread(AgentThreadProc) { IsBackground = true, Name = this.Name };
+#endif
         }
 
+#if NET40
         m_thread.Start(this);
+#else
+        ExecutorService.RunTask(new AsynchAgentTask(() => AgentThreadProc(this), Name));
+#endif
         State = ThreadState.Running;
       }
-      if (Log.IsTraceLevelEnabled()) Log.LogTrace("Started asynch agent " + this.Name);
+      if (Log.IsDebugLevelEnabled()) Log.LogDebug("Started asynch agent " + this.Name);
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
@@ -125,11 +127,12 @@ namespace CuteAnt.Runtime
       catch (Exception exc)
       {
         // ignore. Just make sure stop does not throw.
-        if (Log.IsTraceLevelEnabled()) Log.LogTrace(exc, "Ignoring error during Stop: {0}");
+        if (Log.IsDebugLevelEnabled()) Log.LogDebug(exc, "Ignoring error during Stop: {0}");
       }
-      if (Log.IsTraceLevelEnabled()) Log.LogTrace("Stopped agent");
+      if (Log.IsDebugLevelEnabled()) Log.LogDebug("Stopped agent");
     }
 
+#if NET40
     public void Abort(object stateInfo)
     {
       if (m_thread != null)
@@ -144,15 +147,16 @@ namespace CuteAnt.Runtime
         if (agentThread != null)
         {
           bool joined = agentThread.Join((int)timeout.TotalMilliseconds);
-          if (Log.IsTraceLevelEnabled()) Log.LogTrace("{0} the agent thread {1} after {2} time.", joined ? "Joined" : "Did not join", Name, timeout);
+          if (Log.IsDebugLevelEnabled()) Log.LogDebug("{0} the agent thread {1} after {2} time.", joined ? "Joined" : "Did not join", Name, timeout);
         }
       }
       catch (Exception exc)
       {
         // ignore. Just make sure Join does not throw.
-        if (Log.IsTraceLevelEnabled()) Log.LogTrace("Ignoring error during Join: {0}", exc);
+        if (Log.IsDebugLevelEnabled()) Log.LogDebug("Ignoring error during Join: {0}", exc);
       }
     }
+#endif
 
     protected abstract void Run();
 
@@ -166,13 +170,9 @@ namespace CuteAnt.Runtime
       }
 
       var agentLog = agent.Log;
-      var infoEnabled = agentLog.IsInformationLevelEnabled();
       try
       {
-        if (infoEnabled) agentLog.LogInformation("Starting AsyncAgent {0} on managed thread {1}", agent.Name, Thread.CurrentThread.ManagedThreadId);
-        //CounterStatistic.SetManagedThread(); // do it before using CounterStatistic.
-        //CounterStatistic.FindOrCreate(new StatisticName(StatisticNames.RUNTIME_THREADS_ASYNC_AGENT_PERAGENTTYPE, agent.type)).Increment();
-        //CounterStatistic.FindOrCreate(StatisticNames.RUNTIME_THREADS_ASYNC_AGENT_TOTAL_THREADS_CREATED).Increment();
+        LogStatus(agentLog, "Starting AsyncAgent {0} on managed thread {1}", agent.Name, Thread.CurrentThread.ManagedThreadId);
         agent.Run();
       }
       catch (Exception exc)
@@ -210,8 +210,7 @@ namespace CuteAnt.Runtime
       }
       finally
       {
-        //CounterStatistic.FindOrCreate(new StatisticName(StatisticNames.RUNTIME_THREADS_ASYNC_AGENT_PERAGENTTYPE, agent.type)).DecrementBy(1);
-        if (infoEnabled) agentLog.LogInformation("Stopping AsyncAgent {0} that runs on managed thread {1}", agent.Name, Thread.CurrentThread.ManagedThreadId);
+        if (agentLog.IsInformationLevelEnabled()) agentLog.LogInformation("Stopping AsyncAgent {0} that runs on managed thread {1}", agent.Name, Thread.CurrentThread.ManagedThreadId);
       }
     }
 
@@ -239,6 +238,22 @@ namespace CuteAnt.Runtime
     public override string ToString()
     {
       return Name;
+    }
+
+    public static bool IsStarting { get; set; }
+
+    private static void LogStatus(ILogger log, string msg, params object[] args)
+    {
+      if (IsStarting)
+      {
+        // Reduce log noise during app startup
+        if (log.IsDebugLevelEnabled()) log.LogDebug(msg, args);
+      }
+      else
+      {
+        // Changes in agent threads during all operations aside for initial creation are usually important diag events.
+        if (log.IsDebugLevelEnabled()) log.LogInformation(msg, args);
+      }
     }
   }
 }

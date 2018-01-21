@@ -1746,6 +1746,7 @@ namespace CuteAnt.Reflection
       string assemblyName = typeNameKey.AssemblyName;
       string typeName = typeNameKey.TypeName;
 
+      Assembly[] allAssemblies;
       if (assemblyName != null)
       {
         Assembly assembly = null;
@@ -1783,6 +1784,8 @@ namespace CuteAnt.Reflection
           if (type != null) { return true; }
         }
 
+        allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+
         // 这儿如果采用 Newtonsoft.Json 的代码，是无法通过 RuntimeTypeNameFormatterTests 测试的
         //// if generic type, try manually parsing the type arguments for the case of dynamically loaded assemblies
         //// example generic typeName format: System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]
@@ -1801,11 +1804,8 @@ namespace CuteAnt.Reflection
       }
       else
       {
-        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-        {
-          type = assembly.GetType(typeName, false);
-          if (type != null) { return true; }
-        }
+        allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+        if (TryResolveFromAllAssemblies(typeName, out type, allAssemblies)) { return true; }
       }
 
       type = Type.GetType(typeName, throwOnError: false)
@@ -1827,24 +1827,19 @@ namespace CuteAnt.Reflection
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
           var name = assembly.GetName();
-          if (!_assemblyCache.ContainsKey(name.FullName))
-          {
-            _assemblyCache[name.FullName] = assembly;
-            _assemblyCache[name.Name] = assembly;
-          }
+          _assemblyCache[name.FullName] = assembly;
+          _assemblyCache[name.Name] = assembly;
         }
         if (_assemblyCache.TryGetValue(fullAssemblyName, out result)) return result;
 
-        foreach (var assembly in AssemblyLoader.LoadAssemblies())
-        {
-          var name = assembly.GetName();
-          if (!_assemblyCache.ContainsKey(name.FullName))
-          {
-            _assemblyCache[name.FullName] = assembly;
-            _assemblyCache[name.Name] = assembly;
-          }
-        }
-        if (_assemblyCache.TryGetValue(fullAssemblyName, out result)) return result;
+        // 统一在应用程序启动时处理吧
+        //foreach (var assembly in AssemblyLoader.LoadAssemblies())
+        //{
+        //  var name = assembly.GetName();
+        //  _assemblyCache[name.FullName] = assembly;
+        //  _assemblyCache[name.Name] = assembly;
+        //}
+        //if (_assemblyCache.TryGetValue(fullAssemblyName, out result)) return result;
 
         result = Assembly.Load(asmName);
         var resultName = result.GetName();
@@ -1855,55 +1850,67 @@ namespace CuteAnt.Reflection
 
       Type ResolveType(Assembly asm, string name, bool ignoreCase)
       {
+        //if (TryResolveFromAllAssemblies(name, out var result, allAssemblies)) { return result; }
         return asm?.GetType(name, throwOnError: false, ignoreCase: ignoreCase) ?? Type.GetType(name, throwOnError: false, ignoreCase: ignoreCase);
       }
     }
-
-    private static Type GetGenericTypeFromTypeName(string typeName, Assembly assembly)
+    private static bool TryResolveFromAllAssemblies(string fullName, out Type type, Assembly[] assemblies)
     {
-      Type type = null;
-      int openBracketIndex = typeName.IndexOf('[');
-      if (openBracketIndex >= 0)
+      foreach (var assembly in assemblies)
       {
-        string genericTypeDefName = typeName.Substring(0, openBracketIndex);
-        Type genericTypeDef = assembly.GetType(genericTypeDefName);
-        if (genericTypeDef != null)
-        {
-          List<Type> genericTypeArguments = new List<Type>();
-          int scope = 0;
-          int typeArgStartIndex = 0;
-          int endIndex = typeName.Length - 1;
-          for (int i = openBracketIndex + 1; i < endIndex; ++i)
-          {
-            char current = typeName[i];
-            switch (current)
-            {
-              case '[':
-                if (scope == 0)
-                {
-                  typeArgStartIndex = i + 1;
-                }
-                ++scope;
-                break;
-              case ']':
-                --scope;
-                if (scope == 0)
-                {
-                  string typeArgAssemblyQualifiedName = typeName.Substring(typeArgStartIndex, i - typeArgStartIndex);
-
-                  TypeNameKey typeNameKey = SplitFullyQualifiedTypeName(typeArgAssemblyQualifiedName);
-                  genericTypeArguments.Add(ResolveType(typeNameKey));
-                }
-                break;
-            }
-          }
-
-          type = genericTypeDef.GetCachedGenericType(genericTypeArguments.ToArray());
-        }
+        type = assembly.GetType(fullName, false);
+        if (type != null) { return true; }
       }
 
-      return type;
+      type = null;
+      return false;
     }
+
+    //private static Type GetGenericTypeFromTypeName(string typeName, Assembly assembly)
+    //{
+    //  Type type = null;
+    //  int openBracketIndex = typeName.IndexOf('[');
+    //  if (openBracketIndex >= 0)
+    //  {
+    //    string genericTypeDefName = typeName.Substring(0, openBracketIndex);
+    //    Type genericTypeDef = assembly.GetType(genericTypeDefName);
+    //    if (genericTypeDef != null)
+    //    {
+    //      List<Type> genericTypeArguments = new List<Type>();
+    //      int scope = 0;
+    //      int typeArgStartIndex = 0;
+    //      int endIndex = typeName.Length - 1;
+    //      for (int i = openBracketIndex + 1; i < endIndex; ++i)
+    //      {
+    //        char current = typeName[i];
+    //        switch (current)
+    //        {
+    //          case '[':
+    //            if (scope == 0)
+    //            {
+    //              typeArgStartIndex = i + 1;
+    //            }
+    //            ++scope;
+    //            break;
+    //          case ']':
+    //            --scope;
+    //            if (scope == 0)
+    //            {
+    //              string typeArgAssemblyQualifiedName = typeName.Substring(typeArgStartIndex, i - typeArgStartIndex);
+
+    //              TypeNameKey typeNameKey = SplitFullyQualifiedTypeName(typeArgAssemblyQualifiedName);
+    //              genericTypeArguments.Add(ResolveType(typeNameKey));
+    //            }
+    //            break;
+    //        }
+    //      }
+
+    //      type = genericTypeDef.GetCachedGenericType(genericTypeArguments.ToArray());
+    //    }
+    //  }
+
+    //  return type;
+    //}
 
     #endregion
 

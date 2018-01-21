@@ -83,9 +83,13 @@ namespace CuteAnt.IO.Pipelines
       }
     }
 
-    void IOutput.Enlarge(int desiredBufferLength) => _pipe.Ensure(desiredBufferLength);
+    Memory<byte> IOutput.GetMemory(int minimumLength)
+    {
+      Pipe.Ensure(minimumLength);
+      return Buffer;
+    }
 
-    Span<byte> IOutput.GetSpan() => Buffer.Span;
+    Span<byte> IOutput.GetSpan(int minimumLength) => ((IOutput)this).GetMemory(minimumLength).Span;
   }
 }
 #endif

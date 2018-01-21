@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Buffers;
 using System.Collections.Generic;
 using CuteAnt.IO.Pipelines.Testing;
@@ -14,7 +15,7 @@ namespace CuteAnt.IO.Pipelines.Tests
     public abstract class ReadOnlyBufferFactory
     {
         public static ReadOnlyBufferFactory Array { get; } = new ArrayTestBufferFactory();
-        public static ReadOnlyBufferFactory OwnedMemory { get; } = new OwnedMemoryTestBufferFactory();
+        public static ReadOnlyBufferFactory OwnedMemory { get; } = new MemoryTestBufferFactory();
         public static ReadOnlyBufferFactory SingleSegment { get; } = new SingleSegmentTestBufferFactory();
         public static ReadOnlyBufferFactory SegmentPerByte { get; } = new BytePerSegmentTestBufferFactory();
 
@@ -41,18 +42,18 @@ namespace CuteAnt.IO.Pipelines.Tests
             }
         }
 
-        internal class OwnedMemoryTestBufferFactory : ReadOnlyBufferFactory
+        internal class MemoryTestBufferFactory : ReadOnlyBufferFactory
         {
             public override ReadOnlyBuffer<byte> CreateOfSize(int size)
             {
-                return new ReadOnlyBuffer<byte>(new OwnedArray<byte>(size + 20), 10, size);
+                return CreateWithContent(new byte[size]);
             }
 
             public override ReadOnlyBuffer<byte> CreateWithContent(byte[] data)
             {
                 var startSegment = new byte[data.Length + 20];
                 System.Array.Copy(data, 0, startSegment, 10, data.Length);
-                return new ReadOnlyBuffer<byte>(new OwnedArray<byte>(startSegment), 10, data.Length);
+                return new ReadOnlyBuffer<byte>(new Memory<byte>(startSegment, 10, data.Length));
             }
         }
  
