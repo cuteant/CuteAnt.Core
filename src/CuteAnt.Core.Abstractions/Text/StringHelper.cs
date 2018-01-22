@@ -11,29 +11,14 @@ namespace CuteAnt.Text
   {
     #region -- 属性 --
 
-    private static readonly UTF8Encoding _UTF8NoBOM = new UTF8Encoding(false);
-
     /// <summary>不提供 Unicode 字节顺序标记，检测到无效的编码时不引发异常</summary>
-    public static UTF8Encoding UTF8NoBOM
-    {
-      get { return _UTF8NoBOM; }
-    }
-
-    private static readonly UTF8Encoding _SecureUTF8NoBOM = new UTF8Encoding(false, true);
+    public static readonly UTF8Encoding UTF8NoBOM = new UTF8Encoding(false);
 
     /// <summary>不提供 Unicode 字节顺序标记，检测到无效的编码时引发异常</summary>
-    public static UTF8Encoding SecureUTF8NoBOM
-    {
-      get { return _SecureUTF8NoBOM; }
-    }
-
-    private static readonly UTF8Encoding _SecureUTF8 = new UTF8Encoding(true, true);
+    public static readonly UTF8Encoding SecureUTF8NoBOM = new UTF8Encoding(false, true);
 
     /// <summary>提供 Unicode 字节顺序标记，检测到无效的编码时引发异常</summary>
-    public static UTF8Encoding SecureUTF8
-    {
-      get { return _SecureUTF8; }
-    }
+    public static readonly UTF8Encoding SecureUTF8 = new UTF8Encoding(true, true);
 
     #endregion
 
