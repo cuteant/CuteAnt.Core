@@ -246,15 +246,13 @@ namespace Grace.Data
       switch (casing)
       {
         case PropertyCasing.Default:
-          _propertyDelegates = _propertyDelegates.Add(objectType, propertyDelegate);
+          ImmutableHashTree.ThreadSafeAdd(ref _propertyDelegates, objectType, propertyDelegate);
           break;
-
         case PropertyCasing.Lower:
-          _lowerCasePropertyDelegates = _lowerCasePropertyDelegates.Add(objectType, propertyDelegate);
+          ImmutableHashTree.ThreadSafeAdd(ref _lowerCasePropertyDelegates, objectType, propertyDelegate);
           break;
-
         case PropertyCasing.Upper:
-          _upperCasePropertyDelegates = _upperCasePropertyDelegates.Add(objectType, propertyDelegate);
+          ImmutableHashTree.ThreadSafeAdd(ref _upperCasePropertyDelegates, objectType, propertyDelegate);
           break;
       }
 
