@@ -374,6 +374,11 @@ namespace FastExpressionCompiler
 
       private static bool EmitParameter(object paramExprObj, Type paramType, object[] paramExprs, ILGenerator il, ClosureInfo closure)
       {
+        if ((paramExprObj as ParameterExpression)?.IsByRef == true) // ref, and out parameters are not supported yet
+        {
+          return false;
+        }
+
         var paramIndex = paramExprs.GetFirstIndex(paramExprObj);
 
         // if parameter is passed, then just load it on stack
