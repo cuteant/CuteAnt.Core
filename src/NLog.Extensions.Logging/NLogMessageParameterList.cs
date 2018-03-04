@@ -7,39 +7,56 @@ namespace NLog.Extensions.Logging
   /// <summary>Converts Microsoft Extension Logging ParameterList into NLog MessageTemplate ParameterList</summary>
   internal class NLogMessageParameterList : IList<NLog.MessageTemplates.MessageTemplateParameter>
   {
+    public object OriginalMessage => _originalMessageIndex.HasValue ? _parameterList[_originalMessageIndex.Value].Value : null;
+    public int? _originalMessageIndex;
+
 #if NET40
     private readonly IList<KeyValuePair<string, object>> _parameterList;
 
-    public NLogMessageParameterList(IList<KeyValuePair<string, object>> parameterList, bool includesOriginalMessage)
+    public NLogMessageParameterList(IList<KeyValuePair<string, object>> parameterList)
 #else
     private readonly IReadOnlyList<KeyValuePair<string, object>> _parameterList;
 
-    public NLogMessageParameterList(IReadOnlyList<KeyValuePair<string, object>> parameterList, bool includesOriginalMessage)
+    public NLogMessageParameterList(IReadOnlyList<KeyValuePair<string, object>> parameterList)
 #endif
     {
-      if (!includesOriginalMessage || !IsValidParameterList(parameterList))
+      if (IsValidParameterList(parameterList, out _originalMessageIndex))
       {
-        _parameterList = CreateValidParameterList(parameterList);
+        _parameterList = parameterList;
       }
       else
       {
-        _parameterList = parameterList;
+        _parameterList = CreateValidParameterList(parameterList);
       }
     }
 
     /// <summary>Verify that the input parameterList contains non-empty key-values and the orignal-format-property at the end</summary>
 #if NET40
-    private bool IsValidParameterList(IList<KeyValuePair<string, object>> parameterList)
+    private bool IsValidParameterList(IList<KeyValuePair<string, object>> parameterList, out int? originalMessageIndex)
 #else
-    private bool IsValidParameterList(IReadOnlyList<KeyValuePair<string, object>> parameterList)
+    private bool IsValidParameterList(IReadOnlyList<KeyValuePair<string, object>> parameterList, out int? originalMessageIndex)
 #endif
     {
-      int parameterCount = parameterList.Count - 1;
-      for (int i = 0; i <= parameterCount; ++i)
+      originalMessageIndex = null;
+      for (int i = 0; i < parameterList.Count; ++i)
       {
         var paramPair = parameterList[i];
-        if (!ValidParameterKey(paramPair.Key, i == parameterCount))
+        if (string.IsNullOrEmpty(paramPair.Key))
+        {
+          originalMessageIndex = null;
           return false;
+        }
+
+        if (paramPair.Key == NLogLogger.OriginalFormatPropertyName)
+        {
+          if (originalMessageIndex.HasValue)
+          {
+            originalMessageIndex = null;
+            return false;
+          }
+
+          originalMessageIndex = i;
+        }
       }
 
       return true;
@@ -52,44 +69,46 @@ namespace NLog.Extensions.Logging
     private IReadOnlyList<KeyValuePair<string, object>> CreateValidParameterList(IReadOnlyList<KeyValuePair<string, object>> parameterList)
 #endif
     {
-      var validParameterList = new List<KeyValuePair<string, object>>(parameterList.Count + 1);
+      var validParameterList = new List<KeyValuePair<string, object>>(parameterList.Count);
       for (int i = 0; i < parameterList.Count; ++i)
       {
         var paramPair = parameterList[i];
-        if (!ValidParameterKey(paramPair.Key, false))
+        if (string.IsNullOrEmpty(paramPair.Key))
+          continue;
+
+        if (paramPair.Key == NLogLogger.OriginalFormatPropertyName)
           continue;
 
         validParameterList.Add(parameterList[i]);
       }
-      validParameterList.Add(new KeyValuePair<string, object>()); // Simulate NLogLogger.OriginalFormatPropertyName
       return validParameterList;
-    }
-
-    private bool ValidParameterKey(string keyValue, bool lastKey)
-    {
-      if (string.IsNullOrEmpty(keyValue))
-        return false;   // Non-empty string not allowed
-
-      if (keyValue == NLogLogger.OriginalFormatPropertyName)
-        return lastKey; // Original format message, must be last parameter
-
-      if (lastKey)
-        return false;   // Original format message, must be last parameter
-
-      return true;
     }
 
     public NLog.MessageTemplates.MessageTemplateParameter this[int index]
     {
       get
       {
+        if (index >= _originalMessageIndex)
+          index += 1;
+
         var parameter = _parameterList[index];
         var parameterName = parameter.Key;
         var capture = GetCaptureType(parameterName);
-        parameterName = NLogLogger.RemoveMarkerFromName(parameterName);
+        if (capture != MessageTemplates.CaptureType.Normal)
+          parameterName = RemoveMarkerFromName(parameterName);
         return new NLog.MessageTemplates.MessageTemplateParameter(parameterName, parameter.Value, null, capture);
       }
       set => throw new NotSupportedException();
+    }
+
+    private static string RemoveMarkerFromName(string parameterName)
+    {
+      var firstChar = parameterName[0];
+      if (firstChar == '@' || firstChar == '$')
+      {
+        parameterName = parameterName.Substring(1);
+      }
+      return parameterName;
     }
 
     private static NLog.MessageTemplates.CaptureType GetCaptureType(string parameterName)
@@ -108,7 +127,7 @@ namespace NLog.Extensions.Logging
       return captureType;
     }
 
-    public int Count => _parameterList.Count - 1;
+    public int Count => _parameterList.Count - (_originalMessageIndex.HasValue ? 1 : 0);
 
     public bool IsReadOnly => true;
 

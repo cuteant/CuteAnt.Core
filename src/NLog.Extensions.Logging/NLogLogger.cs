@@ -33,21 +33,27 @@ namespace NLog.Extensions.Logging
       {
         throw new ArgumentNullException(nameof(formatter));
       }
-      var message = formatter(state, exception);
 
+      var message = formatter(state, exception);
       var messageTemplate = _options.CaptureMessageTemplates
 #if NET40
-        ? state as IList<KeyValuePair<string, object>> 
+          ? state as IList<KeyValuePair<string, object>>
 #else
-        ? state as IReadOnlyList<KeyValuePair<string, object>>
+          ? state as IReadOnlyList<KeyValuePair<string, object>>
 #endif
-        : null;
+          : null;
       LogEventInfo eventInfo = CreateLogEventInfo(nLogLogLevel, message, messageTemplate);
-      eventInfo.Exception = exception;
+      if (exception != null)
+      {
+        eventInfo.Exception = exception;
+      }
 
       CaptureEventId(eventInfo, eventId);
 
-      CaptureMessageProperties(eventInfo, state, messageTemplate);
+      if (messageTemplate == null)
+      {
+        CaptureMessageProperties(eventInfo, state);
+      }
 
       _logger.Log(eventInfo);
     }
@@ -60,7 +66,7 @@ namespace NLog.Extensions.Logging
 #endif
       <KeyValuePair<string, object>> parameterList)
     {
-      if (parameterList != null && parameterList.Count > 1 && IsNonDigitValue(parameterList[0].Key))
+      if (parameterList != null && parameterList.Count > 0 && IsNonDigitValue(parameterList[0].Key))
       {
         return CreateLogEventInfoWithMultipleParameters(nLogLogLevel, message, parameterList);
       }
@@ -81,30 +87,24 @@ namespace NLog.Extensions.Logging
 #endif
       <KeyValuePair<string, object>> parameterList)
     {
-      var originalFormat = parameterList[parameterList.Count - 1];
-      string originalMessage = null;
-      if (originalFormat.Key == OriginalFormatPropertyName)
-      {
-        // Attempt to capture original message with placeholders
-        originalMessage = originalFormat.Value as string;
-      }
-
-      var messageTemplateParameters = new NLogMessageParameterList(parameterList, originalMessage != null);
-      var eventInfo = new LogEventInfo(nLogLogLevel, _logger.Name, originalMessage ?? message, messageTemplateParameters);
+      var messageTemplateParameters = new NLogMessageParameterList(parameterList);
+      var originalMessage = messageTemplateParameters.OriginalMessage as string;
+      var logEvent = new LogEventInfo(nLogLogLevel, _logger.Name, originalMessage ?? message, messageTemplateParameters);
       if (originalMessage != null)
       {
-        SetEventInfoParameters(eventInfo, messageTemplateParameters);
-        eventInfo.Parameters[messageTemplateParameters.Count] = message;
-        eventInfo.MessageFormatter = (l) => (string)l.Parameters[l.Parameters.Length - 1];
+        SetLogEventMessageFormatter(logEvent, messageTemplateParameters, message);
       }
-      return eventInfo;
+      return logEvent;
     }
 
-    private static void SetEventInfoParameters(LogEventInfo eventInfo, NLogMessageParameterList messageTemplateParameters)
+    private static void SetLogEventMessageFormatter(LogEventInfo logEvent, NLogMessageParameterList messageTemplateParameters, string formattedMessage)
     {
-      eventInfo.Parameters = new object[messageTemplateParameters.Count + 1];
-      for (int i = 0; i < messageTemplateParameters.Count; ++i)
-        eventInfo.Parameters[i] = messageTemplateParameters[i].Value;
+      var parameters = new object[messageTemplateParameters.Count + 1];
+      for (int i = 0; i < parameters.Length - 1; ++i)
+        parameters[i] = messageTemplateParameters[i].Value;
+      parameters[parameters.Length - 1] = formattedMessage;
+      logEvent.Parameters = parameters;
+      logEvent.MessageFormatter = (l) => (string)l.Parameters[l.Parameters.Length - 1];
     }
 
     private void CaptureEventId(LogEventInfo eventInfo, EventId eventId)
@@ -137,15 +137,9 @@ namespace NLog.Extensions.Logging
       return eventIdPropertyNames;
     }
 
-    private void CaptureMessageProperties<TState>(LogEventInfo eventInfo, TState state,
-#if NET40
-      IList
-#else
-      IReadOnlyList
-#endif
-      <KeyValuePair<string, object>> messageTemplate)
+    private void CaptureMessageProperties<TState>(LogEventInfo eventInfo, TState state)
     {
-      if (_options.CaptureMessageProperties && messageTemplate == null && state is IEnumerable<KeyValuePair<string, object>> messageProperties)
+      if (_options.CaptureMessageProperties && state is IEnumerable<KeyValuePair<string, object>> messageProperties)
       {
         foreach (var property in messageProperties)
         {
@@ -307,16 +301,6 @@ namespace NLog.Extensions.Logging
       }
 
       return NestedDiagnosticsLogicalContext.Push(state);
-    }
-
-    internal static string RemoveMarkerFromName(string parameterName)
-    {
-      var firstChar = parameterName[0];
-      if (firstChar == '@' || firstChar == '$')
-      {
-        parameterName = parameterName.Substring(1);
-      }
-      return parameterName;
     }
   }
 }

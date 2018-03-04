@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using NLog.Common;
@@ -47,8 +46,6 @@ namespace NLog.Extensions.Logging
     /// <returns>ILoggerFactory for chaining</returns>
     public static ILoggingBuilder AddNLog(this ILoggingBuilder factory, NLogProviderOptions options)
     {
-      ConfigureHiddenAssemblies();
-
       using (var provider = new NLogLoggerProvider(options))
       {
         factory.AddProvider(provider);
@@ -89,10 +86,8 @@ namespace NLog.Extensions.Logging
     /// <returns>Current configuration for chaining.</returns>
     public static LoggingConfiguration ConfigureNLog(this ILoggerFactory loggerFactory, string configFileRelativePath)
     {
-      var rootPath = AppDomain.CurrentDomain.BaseDirectory;
-
-      var fileName = Path.Combine(rootPath, configFileRelativePath);
-      return ConfigureNLog(fileName);
+      ConfigureHiddenAssemblies();
+      return LogManager.LoadConfiguration(configFileRelativePath).Configuration;
     }
 
     /// <summary>Apply NLog configuration from config object.</summary>
@@ -101,17 +96,7 @@ namespace NLog.Extensions.Logging
     /// <returns>Current configuration for chaining.</returns>
     public static LoggingConfiguration ConfigureNLog(this ILoggerFactory loggerFactory, LoggingConfiguration config)
     {
-      LogManager.Configuration = config;
-
-      return config;
-    }
-
-    /// <summary>Apply NLog configuration from XML config.</summary>
-    /// <param name="fileName">absolute path NLog configuration file.</param>
-    /// <returns>Current configuration for chaining.</returns>
-    private static LoggingConfiguration ConfigureNLog(string fileName)
-    {
-      var config = new XmlLoggingConfiguration(fileName, true);
+      ConfigureHiddenAssemblies();
       LogManager.Configuration = config;
       return config;
     }
