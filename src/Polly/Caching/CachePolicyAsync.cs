@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,11 +44,12 @@ namespace Polly.Caching
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="continueOnCapturedContext">Whether to continue on a captured synchronization context.</param>
         /// <returns>The value returned by the action, or the cache.</returns>
+        [DebuggerStepThrough]
         public override Task<TResult> ExecuteAsyncInternal<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             return CacheEngine.ImplementationAsync<TResult>(
                 _asyncCacheProvider.AsyncFor<TResult>(), 
-                _ttlStrategy, 
+                _ttlStrategy.For<TResult>(), 
                 _cacheKeyStrategy, 
                 action, 
                 context, 
@@ -65,7 +67,7 @@ namespace Polly.Caching
     {
         internal CachePolicy(
             IAsyncCacheProvider<TResult> asyncCacheProvider, 
-            ITtlStrategy ttlStrategy,
+            ITtlStrategy<TResult> ttlStrategy,
             Func<Context, string> cacheKeyStrategy,
             Action<Context, string> onCacheGet,
             Action<Context, string> onCacheMiss,

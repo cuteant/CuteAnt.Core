@@ -1,4 +1,4 @@
-namespace Polly.Specs.Helpers.Caching
+﻿namespace Polly.Specs.Helpers.Caching
 {
     /// <summary>
     /// An intentionally naive class to be the simplest thing possible to support tests around serializing cache providers.  This serialization does nothing but wrap the object to be serialized!
