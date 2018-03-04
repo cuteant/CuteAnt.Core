@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <TargetFrameworks>$(StandardTestTfms)</TargetFrameworks>
     <RootNamespace>CuteAnt.Tests</RootNamespace>
     <AssemblyName>CuteAnt.Tests</AssemblyName>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net452</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

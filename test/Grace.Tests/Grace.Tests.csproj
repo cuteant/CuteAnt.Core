@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net452</TargetFrameworks>
+    <TargetFrameworks>$(StandardTestTfms)</TargetFrameworks>
     <AssemblyName>Grace.Tests</AssemblyName>
     <RootNamespace>Grace.Test</RootNamespace>
     <SignAssembly>false</SignAssembly>
@@ -20,7 +20,7 @@
     <PackageReference Include="SimpleFixture.xUnit" Version="$(SimpleFixturexUnitPackageVersion)" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+  <ItemGroup Condition=" '$(ImportLibs)' == 'netfx' ">
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
 

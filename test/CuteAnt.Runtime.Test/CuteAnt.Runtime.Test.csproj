@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <TargetFrameworks>$(StandardTestTfms)</TargetFrameworks>
     <RootNamespace>CuteAnt.Runtime.Test</RootNamespace>
     <AssemblyName>CuteAnt.Runtime.Test</AssemblyName>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net452</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
