@@ -5,13 +5,15 @@ using System;
 
 namespace CuteAnt.Pool
 {
-  public class DefaultPooledObjectPolicy<T> : IPooledObjectPolicy<T>
+  public class DefaultPooledObjectPolicy<T> : PooledObjectPolicy<T>
     where T : class, new()
   {
-    public T Create() => new T();
+    public override T Create() => new T();
 
-    public T PreGetting(T obj) => obj;
+    public override T PreGetting(T obj) => obj;
 
-    public bool Return(T obj) => obj != null;
+    // DefaultObjectPool<T> doesn't call 'Return' for the default policy.
+    // So take care adding any logic to this method, as it might require changes elsewhere.
+    public override bool Return(T obj) => obj != null;
   }
 }

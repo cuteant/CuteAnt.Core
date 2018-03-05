@@ -2,14 +2,21 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace CuteAnt.Pool
 {
   public class DefaultObjectPool<T> : ObjectPool<T> where T : class
   {
-    private readonly T[] _items;
+    private readonly ObjectWrapper[] _items;
     private readonly IPooledObjectPolicy<T> _policy;
+    private readonly bool _isDefaultPolicy;
+    private T _firstItem;
+
+    // This class was introduced in 2.1 to avoid the interface call where possible
+    private readonly PooledObjectPolicy<T> _fastPolicy;
 
     public DefaultObjectPool(IPooledObjectPolicy<T> policy)
       : this(policy, Environment.ProcessorCount * 2)
@@ -19,26 +26,30 @@ namespace CuteAnt.Pool
     public DefaultObjectPool(IPooledObjectPolicy<T> policy, int maximumRetained)
     {
       _policy = policy ?? throw new ArgumentNullException(nameof(policy));
-      _items = new T[maximumRetained];
+      _fastPolicy = policy as PooledObjectPolicy<T>;
+      _isDefaultPolicy = IsDefaultPolicy();
+
+      // -1 due to _firstItem
+      _items = new ObjectWrapper[maximumRetained - 1];
+
+      bool IsDefaultPolicy()
+      {
+        var type = policy.GetType();
+
+        return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(DefaultPooledObjectPolicy<>);
+      }
     }
 
     public override T Take()
     {
-      T poolItem = null;
+      T item = _firstItem;
 
-      for (var i = 0; i < _items.Length; i++)
+      if (item == null || Interlocked.CompareExchange(ref _firstItem, null, item) != item)
       {
-        var item = _items[i];
-        if (item != null && Interlocked.CompareExchange(ref _items[i], null, item) == item)
-        {
-          poolItem = item;
-          break;
-        }
+        item = GetViaScan();
       }
 
-      if (null == poolItem) { poolItem = _policy.Create(); }
-
-      return poolItem;
+      return item;
     }
 
     public override T Get()
@@ -48,25 +59,66 @@ namespace CuteAnt.Pool
       return _policy.PreGetting(poolItem);
     }
 
+    [MethodImpl(InlineMethod.Value)]
+    private T GetViaScan()
+    {
+      ObjectWrapper[] items = _items;
+      T item = null;
+
+      for (var i = 0; i < items.Length; i++)
+      {
+        item = items[i];
+
+        if (item != null && Interlocked.CompareExchange(ref items[i].Element, null, item) == item)
+        {
+          break;
+        }
+      }
+
+      return item ?? Create();
+    }
+
+    // Non-inline to improve its code quality as uncommon path
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private T Create() => _fastPolicy?.Create() ?? _policy.Create();
+
     public override void Return(T obj)
     {
-      if (!_policy.Return(obj)) { return; }
-
-      for (var i = 0; i < _items.Length; i++)
+      if (_isDefaultPolicy || (_fastPolicy?.Return(obj) ?? _policy.Return(obj)))
       {
-        if (Interlocked.CompareExchange(ref _items[i], obj, null) == null)
+        if (_firstItem != null || Interlocked.CompareExchange(ref _firstItem, obj, null) != null)
         {
-          return;
+          ReturnViaScan(obj);
         }
       }
     }
 
     public override void Clear()
     {
-      for (var i = 0; i < _items.Length; i++)
+      //for (var i = 0; i < _items.Length; i++)
+      //{
+      //  Interlocked.Exchange(ref _items[i], null);
+      //}
+    }
+
+    [MethodImpl(InlineMethod.Value)]
+    private void ReturnViaScan(T obj)
+    {
+      ObjectWrapper[] items = _items;
+
+      for (var i = 0; i < items.Length && Interlocked.CompareExchange(ref items[i].Element, obj, null) != null; ++i)
       {
-        Interlocked.Exchange(ref _items[i], null);
       }
+    }
+
+    [DebuggerDisplay("{Element}")]
+    private struct ObjectWrapper
+    {
+      public T Element;
+
+      public ObjectWrapper(T item) => Element = item;
+
+      public static implicit operator T(ObjectWrapper wrapper) => wrapper.Element;
     }
   }
 }
