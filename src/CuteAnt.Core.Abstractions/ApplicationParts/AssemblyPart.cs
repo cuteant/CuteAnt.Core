@@ -26,15 +26,19 @@ namespace CuteAnt.ApplicationParts
     /// <returns><see langword="true"/> if this instance is equivalent to the provided instance, <see langword="false"/> otherwise.</returns>
     protected bool Equals(AssemblyPart other)
     {
-      return Equals(this.Assembly, other.Assembly);
+      return Equals(this.Assembly, other?.Assembly);
     }
+
+    /// <inheritdoc />
+    public bool Equals(IApplicationPart other) => this.Equals(other as AssemblyPart);
 
     /// <inheritdoc />
     public override bool Equals(object obj)
     {
       if (ReferenceEquals(null, obj)) return false;
       if (ReferenceEquals(this, obj)) return true;
-      return obj.GetType() == this.GetType() && this.Equals((AssemblyPart)obj);
+      if (obj.GetType() != this.GetType()) return false;
+      return Equals((AssemblyPart)obj);
     }
 
     /// <inheritdoc />
