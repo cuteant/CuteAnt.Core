@@ -5,7 +5,6 @@
     <Company>Maksim Volkau</Company>
     <Product>Polly</Product>
     <Copyright>Copyright © 2016, App vNext</Copyright>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
