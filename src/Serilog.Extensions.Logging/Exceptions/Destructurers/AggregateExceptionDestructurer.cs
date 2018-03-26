@@ -1,23 +1,31 @@
 ﻿namespace Serilog.Exceptions.Destructurers
 {
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Serilog.Exceptions.Core;
 
-  public class AggregateExceptionDestructurer : ExceptionDestructurer
-  {
-    public override Type[] TargetTypes => new Type[] { typeof(AggregateException) };
-
-    public override void Destructure(Exception exception,
-      IDictionary<string, object> data, Func<Exception, IDictionary<string, object>> destructureException)
+    /// <summary>
+    /// Destructurer for <see cref="AggregateException"/>.
+    /// </summary>
+    public class AggregateExceptionDestructurer : ExceptionDestructurer
     {
-      base.Destructure(exception, data, destructureException);
+        /// <inheritdoc cref="IExceptionDestructurer.TargetTypes"/>
+        public override Type[] TargetTypes => new[] { typeof(AggregateException) };
 
-      var aggregateException = (AggregateException)exception;
+        /// <inheritdoc cref="IExceptionDestructurer.Destructure"/>
+        public override void Destructure(
+            Exception exception,
+            IExceptionPropertiesBag propertiesBag,
+            Func<Exception, IReadOnlyDictionary<string, object>> destructureException)
+        {
+            base.Destructure(exception, propertiesBag, destructureException);
 
-      data.Add(
-          nameof(AggregateException.InnerExceptions),
-          aggregateException.InnerExceptions.Select(destructureException).ToList());
+            var aggregateException = (AggregateException)exception;
+
+            propertiesBag.AddProperty(
+                nameof(AggregateException.InnerExceptions),
+                aggregateException.InnerExceptions.Select(destructureException).ToList());
+        }
     }
-  }
 }

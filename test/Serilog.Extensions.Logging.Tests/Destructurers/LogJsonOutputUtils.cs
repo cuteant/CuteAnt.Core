@@ -6,20 +6,24 @@
     using Newtonsoft.Json.Linq;
     using Serilog.Core;
     using Serilog.Events;
+    using Serilog.Exceptions.Core;
     using Serilog.Exceptions.Destructurers;
+    using Serilog.Exceptions.Filters;
     using Serilog.Formatting;
     using Serilog.Formatting.Json;
     using Xunit;
 
     public class LogJsonOutputUtils
     {
-        public static JObject LogAndDestructureException(Exception exception)
+        public static JObject LogAndDestructureException(
+            Exception exception,
+            IDestructuringOptions destructuringOptions = null)
         {
             // Arrange
             var jsonWriter = new StringWriter();
-
+            destructuringOptions = destructuringOptions ?? new DestructuringOptionsBuilder().WithDefaultDestructurers();
             ILogger logger = new LoggerConfiguration()
-                .Enrich.WithExceptionDetails()
+                .Enrich.WithExceptionDetails(destructuringOptions)
                 .WriteTo.Sink(new TestTextWriterSink(jsonWriter, new JsonFormatter()))
                 .CreateLogger();
 
@@ -49,12 +53,12 @@
             return innerExceptionsValue;
         }
 
-        public static JObject ExtractExceptionDetails(JObject jObject)
+        public static JObject ExtractExceptionDetails(JObject jObject, string rootName = "ExceptionDetail")
         {
             JProperty propertiesProperty = Assert.Single(jObject.Properties(), x => x.Name == "Properties");
             JObject propertiesObject = Assert.IsType<JObject>(propertiesProperty.Value);
 
-            JProperty exceptionDetailProperty = Assert.Single(propertiesObject.Properties(), x => x.Name == "ExceptionDetail");
+            JProperty exceptionDetailProperty = Assert.Single(propertiesObject.Properties(), x => x.Name == rootName);
             JObject exceptionDetailValue = Assert.IsType<JObject>(exceptionDetailProperty.Value);
 
             return exceptionDetailValue;

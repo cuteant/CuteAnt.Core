@@ -1,20 +1,31 @@
 ﻿namespace Serilog.Exceptions.Destructurers
 {
-  using System;
-  using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
+    using Serilog.Exceptions.Core;
 
-  public class ArgumentOutOfRangeExceptionDestructurer : ArgumentExceptionDestructurer
-  {
-    public override Type[] TargetTypes => new Type[] { typeof(ArgumentOutOfRangeException) };
-
-    public override void Destructure(Exception exception,
-      IDictionary<string, object> data, Func<Exception, IDictionary<string, object>> destructureException)
+    /// <summary>
+    /// Destructurer for <see cref="ArgumentOutOfRangeException"/>.
+    /// </summary>
+    public class ArgumentOutOfRangeExceptionDestructurer : ArgumentExceptionDestructurer
     {
-      base.Destructure(exception, data, destructureException);
+        /// <inheritdoc cref="IExceptionDestructurer.TargetTypes"/>
+        public override Type[] TargetTypes => new[]
+        {
+            typeof(ArgumentOutOfRangeException)
+        };
 
-      var argumentException = (ArgumentOutOfRangeException)exception;
+        /// <inheritdoc cref="IExceptionDestructurer.Destructure"/>
+        public override void Destructure(
+            Exception exception,
+            IExceptionPropertiesBag propertiesBag,
+            Func<Exception, IReadOnlyDictionary<string, object>> destructureException)
+        {
+            base.Destructure(exception, propertiesBag, destructureException);
 
-      data.Add(nameof(ArgumentOutOfRangeException.ActualValue), argumentException.ActualValue);
+            var argumentException = (ArgumentOutOfRangeException)exception;
+
+            propertiesBag.AddProperty(nameof(ArgumentOutOfRangeException.ActualValue), argumentException.ActualValue);
+        }
     }
-  }
 }

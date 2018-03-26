@@ -84,6 +84,7 @@ namespace NLog.Extensions.Logging
     /// <param name="loggerFactory"></param>
     /// <param name="configFileRelativePath">relative path to NLog configuration file.</param>
     /// <returns>Current configuration for chaining.</returns>
+    [Obsolete("Instead use NLog.LogManager.LoadConfiguration()")]
     public static LoggingConfiguration ConfigureNLog(this ILoggerFactory loggerFactory, string configFileRelativePath)
     {
       ConfigureHiddenAssemblies();
@@ -94,6 +95,7 @@ namespace NLog.Extensions.Logging
     /// <param name="loggerFactory"></param>
     /// <param name="config">New NLog config.</param>
     /// <returns>Current configuration for chaining.</returns>
+    [Obsolete("Instead assign property NLog.LogManager.Configuration")]
     public static LoggingConfiguration ConfigureNLog(this ILoggerFactory loggerFactory, LoggingConfiguration config)
     {
       ConfigureHiddenAssemblies();

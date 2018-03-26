@@ -1,30 +1,32 @@
 ﻿namespace Serilog.Exceptions.Destructurers
 {
-  using System;
-  using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
+    using Serilog.Exceptions.Core;
 
-  public class ArgumentExceptionDestructurer : ExceptionDestructurer
-  {
-    public override Type[] TargetTypes
+    /// <summary>
+    /// Destructurer for <see cref="ArgumentException"/>.
+    /// </summary>
+    public class ArgumentExceptionDestructurer : ExceptionDestructurer
     {
-      get
-      {
-        return new Type[]
+        /// <inheritdoc cref="IExceptionDestructurer.TargetTypes"/>
+        public override Type[] TargetTypes => new[]
         {
-          typeof(ArgumentException),
-          typeof(ArgumentNullException)
+            typeof(ArgumentException),
+            typeof(ArgumentNullException)
         };
-      }
+
+        /// <inheritdoc cref="IExceptionDestructurer.Destructure"/>
+        public override void Destructure(
+            Exception exception,
+            IExceptionPropertiesBag propertiesBag,
+            Func<Exception, IReadOnlyDictionary<string, object>> destructureException)
+        {
+            base.Destructure(exception, propertiesBag, destructureException);
+
+            var argumentException = (ArgumentException)exception;
+
+            propertiesBag.AddProperty(nameof(ArgumentException.ParamName), argumentException.ParamName);
+        }
     }
-
-    public override void Destructure(Exception exception,
-      IDictionary<string, object> data, Func<Exception, IDictionary<string, object>> destructureException)
-    {
-      base.Destructure(exception, data, destructureException);
-
-      var argumentException = (ArgumentException)exception;
-
-      data.Add(nameof(ArgumentException.ParamName), argumentException.ParamName);
-    }
-  }
 }

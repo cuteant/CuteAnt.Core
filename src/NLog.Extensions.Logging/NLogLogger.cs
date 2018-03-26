@@ -14,6 +14,7 @@ namespace NLog.Extensions.Logging
     internal const string OriginalFormatPropertyName = "{OriginalFormat}";
     private static readonly object EmptyEventId = default(EventId);    // Cache boxing of empty EventId-struct
     private static readonly object ZeroEventId = default(EventId).Id;  // Cache boxing of zero EventId-Value
+    private static readonly Type s_loggerType = typeof(Microsoft.Extensions.Logging.ILogger);
     private Tuple<string, string, string> _eventIdPropertyNames;
 
     public NLogLogger(Logger logger, NLogProviderOptions options)
@@ -55,7 +56,7 @@ namespace NLog.Extensions.Logging
         CaptureMessageProperties(eventInfo, state);
       }
 
-      _logger.Log(eventInfo);
+      _logger.Log(s_loggerType, eventInfo);
     }
 
     private LogEventInfo CreateLogEventInfo(LogLevel nLogLogLevel, string message,
