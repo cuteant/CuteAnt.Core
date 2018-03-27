@@ -212,6 +212,7 @@ namespace CuteAnt.ApplicationParts
 
     ///// <summary>Adds all assemblies referencing Orleans found in the provided assembly's <see cref="DependencyContext"/>.</summary>
     ///// <param name="manager">The builder.</param>
+    ///// <param name="entryAssembly">Assembly to start looking for application parts from.</param>
     ///// <returns>The builder with the additionally included assemblies.</returns>
     //public static IApplicationPartManagerWithAssemblies AddFromDependencyContext(this IApplicationPartManager manager, Assembly entryAssembly)
     //{

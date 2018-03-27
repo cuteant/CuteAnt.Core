@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using CuteAnt.Collections;
 using Grace.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
 
 namespace CuteAnt.Reflection
@@ -277,15 +278,31 @@ namespace CuteAnt.Reflection
     public static object CreateInstance(IServiceProvider serviceProvider, Type instanceType, params object[] parameters)
     {
       int bestLength = -1;
+      var seenPreferred = false;
+
       ConstructorMatcher bestMatcher = null;
       object[] parameterValues = null;
       bool[] parameterValuesSet = null;
       ParameterInfo[] paramInfos = null;
       foreach (var matcher in GetTypeDeclaredConstructors(instanceType, true))
       {
+        var isPreferred = matcher.Value != null ? matcher.Value.IsDefined(typeof(ActivatorUtilitiesConstructorAttribute), false) : false;
         var length = matcher.Match(parameters, out var pvs, out var pvSet, out var pis);
-        if (length == -1) { continue; }
-        if (bestLength < length)
+
+        if (isPreferred)
+        {
+          if (seenPreferred)
+          {
+            ThrowMultipleCtorsMarkedWithAttributeException();
+          }
+
+          if (length == -1)
+          {
+            ThrowMarkedCtorDoesNotTakeAllProvidedArguments();
+          }
+        }
+
+        if (isPreferred || bestLength < length)
         {
           bestLength = length;
           bestMatcher = matcher;
@@ -293,6 +310,8 @@ namespace CuteAnt.Reflection
           parameterValuesSet = pvSet;
           paramInfos = pis;
         }
+
+        seenPreferred |= isPreferred;
       }
 
       if (bestMatcher == null)
@@ -330,15 +349,31 @@ namespace CuteAnt.Reflection
     public static TInstance CreateInstance<TInstance>(IServiceProvider serviceProvider, params object[] parameters)
     {
       int bestLength = -1;
+      var seenPreferred = false;
+
       ConstructorMatcher<TInstance> bestMatcher = null;
       object[] parameterValues = null;
       bool[] parameterValuesSet = null;
       ParameterInfo[] paramInfos = null;
       foreach (var matcher in ConstructorMatcher<TInstance>.DIConstructorMatchers)
       {
+        var isPreferred = matcher.Value != null ? matcher.Value.IsDefined(typeof(ActivatorUtilitiesConstructorAttribute), false) : false;
         var length = matcher.Match(parameters, out var pvs, out var pvSet, out var pis);
-        if (length == -1) { continue; }
-        if (bestLength < length)
+
+        if (isPreferred)
+        {
+          if (seenPreferred)
+          {
+            ThrowMultipleCtorsMarkedWithAttributeException();
+          }
+
+          if (length == -1)
+          {
+            ThrowMarkedCtorDoesNotTakeAllProvidedArguments();
+          }
+        }
+
+        if (isPreferred || bestLength < length)
         {
           bestLength = length;
           bestMatcher = matcher;
@@ -346,6 +381,8 @@ namespace CuteAnt.Reflection
           parameterValuesSet = pvSet;
           paramInfos = pis;
         }
+
+        seenPreferred |= isPreferred;
       }
 
       if (bestMatcher == null)
@@ -382,6 +419,16 @@ namespace CuteAnt.Reflection
 
     public static TInstance CreateInstance<TInstance>(IServiceProvider serviceProvider, Type implementationType, params object[] parameters)
         => (TInstance)CreateInstance(serviceProvider, implementationType, parameters);
+
+    private static void ThrowMultipleCtorsMarkedWithAttributeException()
+    {
+      throw new InvalidOperationException($"Multiple constructors were marked with {nameof(ActivatorUtilitiesConstructorAttribute)}.");
+    }
+
+    private static void ThrowMarkedCtorDoesNotTakeAllProvidedArguments()
+    {
+      throw new InvalidOperationException($"Constructor marked with {nameof(ActivatorUtilitiesConstructorAttribute)} does not accept all given argument types.");
+    }
 
     #endregion
 

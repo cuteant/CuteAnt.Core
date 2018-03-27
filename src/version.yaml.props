@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyVersion>2.1.0.0</AssemblyVersion>
     <VersionPrefix Condition=" '$(VersionPrefix)'=='' ">2.1.0</VersionPrefix>
-    <VersionSuffix Condition=" '$(VersionSuffix)'=='' ">preview2</VersionSuffix>
+    <VersionSuffix Condition=" '$(VersionSuffix)'=='' ">preview3</VersionSuffix>
     <VersionDateSuffix Condition=" '$(VersionDateSuffix)'=='' ">180326-01</VersionDateSuffix>
     <VersionSuffix Condition=" '$(VersionDateSuffix)'!='' ">$(VersionSuffix)-$(VersionDateSuffix)</VersionSuffix>
   </PropertyGroup>
