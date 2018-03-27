@@ -1621,7 +1621,10 @@ namespace CuteAnt.Reflection
     #region -- ResolveType / TryResolveType --
 
     private static readonly CachedReadConcurrentDictionary<string, Type> _resolveTypeCache =
-        new CachedReadConcurrentDictionary<string, Type>(DictionaryCacheConstants.SIZE_MEDIUM, StringComparer.Ordinal);
+        new CachedReadConcurrentDictionary<string, Type>(DictionaryCacheConstants.SIZE_MEDIUM, StringComparer.Ordinal)
+        {
+          { "null", (Type)null }
+        };
     private static readonly List<Func<string, Type>> _resolvers = new List<Func<string, Type>>();
     private static readonly ReaderWriterLockSlim _resolverLock = new ReaderWriterLockSlim();
     private static readonly CachedReadConcurrentDictionary<string, Assembly> _assemblyCache =
