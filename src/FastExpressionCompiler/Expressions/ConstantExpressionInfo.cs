@@ -43,10 +43,10 @@ namespace FastExpressionCompiler
     public override Expression ToExpression() => Expression.Constant(Value, Type);
 
     /// <summary>Constructor</summary>
-    public ConstantExpressionInfo(object value, Type type = null)
+    public ConstantExpressionInfo(object value, Type type)
     {
       Value = value;
-      Type = type ?? Value?.GetType() ?? typeof(object);
+      Type = type;
     }
   }
 }

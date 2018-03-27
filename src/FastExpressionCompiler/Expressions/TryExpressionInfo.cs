@@ -27,28 +27,36 @@ using System.Linq.Expressions;
 
 namespace FastExpressionCompiler
 {
-  /// <summary>Analog of InvocationExpression.</summary>
-  public class InvocationExpressionInfo : ArgumentsExpressionInfo
+  public class TryExpressionInfo : ExpressionInfo
   {
-    /// <inheritdoc />
-    public override ExpressionType NodeType => ExpressionType.Invoke;
-
-    /// <inheritdoc />
+    public override ExpressionType NodeType => ExpressionType.Try;
     public override Type Type { get; }
 
-    /// <summary>Delegate to invoke.</summary>
-    public readonly ExpressionInfo ExprToInvoke;
+    public readonly object Body;
+    public readonly CatchBlockInfo[] Handlers;
+    public readonly ExpressionInfo Finally;
 
-    /// <inheritdoc />
-    public override Expression ToExpression()
-        => Expression.Invoke(ExprToInvoke.ToExpression(), ArgumentsToExpressions());
+    public override Expression ToExpression() =>
+        Finally == null ? Expression.TryCatch(Body.ToExpression(), ToCatchBlocks(Handlers)) :
+        Handlers == null ? Expression.TryFinally(Body.ToExpression(), Finally.ToExpression()) :
+        Expression.TryCatchFinally(Body.ToExpression(), Finally.ToExpression(), ToCatchBlocks(Handlers));
 
-    /// <summary>Constructs</summary>
-    public InvocationExpressionInfo(ExpressionInfo exprToInvoke, object[] arguments, Type type)
-      : base(arguments)
+    private static CatchBlock[] ToCatchBlocks(CatchBlockInfo[] hs)
     {
-      ExprToInvoke = exprToInvoke;
-      Type = type;
+      if (hs == null)
+        return Tools.Empty<CatchBlock>();
+      var catchBlocks = new CatchBlock[hs.Length];
+      for (var i = 0; i < hs.Length; ++i)
+        catchBlocks[i] = hs[i].ToCatchBlock();
+      return catchBlocks;
+    }
+
+    public TryExpressionInfo(object body, ExpressionInfo @finally, CatchBlockInfo[] handlers)
+    {
+      Type = body.GetResultType();
+      Body = body;
+      Handlers = handlers;
+      Finally = @finally;
     }
   }
 }

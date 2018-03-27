@@ -40,16 +40,13 @@ namespace FastExpressionCompiler
 
       public bool IsEmpty => Parent == null;
       public readonly BlockInfo Parent;
-      public readonly Expression ResultExpr;
-      public readonly IList<ParameterExpression> VarExprs;
+      public readonly object ResultExpr;
+      public readonly object[] VarExprs;
       public readonly LocalBuilder[] LocalVars;
-
-      public BlockInfo Push(Expression blockResult, IList<ParameterExpression> blockVars, LocalBuilder[] localVars)
-          => new BlockInfo(this, blockResult, blockVars, localVars);
 
       private BlockInfo() { }
 
-      private BlockInfo(BlockInfo parent, Expression resultExpr, IList<ParameterExpression> varExprs, LocalBuilder[] localVars)
+      internal BlockInfo(BlockInfo parent, object resultExpr, object[] varExprs, LocalBuilder[] localVars)
       {
         Parent = parent;
         ResultExpr = resultExpr;
@@ -61,9 +58,9 @@ namespace FastExpressionCompiler
     [DebuggerDisplay("Expression={ConstantExpr}")]
     private readonly struct ConstantInfo
     {
-      public readonly object ConstantExpr;
+      public readonly object ConstantExpr, Value;
       public readonly Type Type;
-      public readonly object Value;
+
       public ConstantInfo(object constantExpr, object value, Type type)
       {
         ConstantExpr = constantExpr;
@@ -72,6 +69,7 @@ namespace FastExpressionCompiler
       }
     }
 
+    // todo: Rename to Context in next major version, cause it is not only about closure anymore
     private sealed class ClosureInfo
     {
       // Closed values used by expression and by its nested lambdas
@@ -99,7 +97,7 @@ namespace FastExpressionCompiler
 
       // Tells that we should construct a bounded closure object for the compiled delegate,
       // also indicates that we have to shift when we are operating on arguments 
-      // because the first will be the closure
+      // because the first argument should be the closure
       public bool HasBoundClosure { get; private set; }
 
       public void AddConstant(object expr, object value, Type type)
@@ -267,35 +265,35 @@ namespace FastExpressionCompiler
 
       public void FinishAnalysis() => HasBoundClosure = Constants.Length != 0 || NestedLambdas.Length != 0 || NonPassedParameters.Length != 0;
 
-      public void PushBlock(Expression blockResult, IList<ParameterExpression> blockVars, LocalBuilder[] localVars)
-          => CurrentBlock = CurrentBlock.Push(blockResult, blockVars, localVars);
+      public void PushBlock(object blockResultExpr, object[] blockVarExprs, LocalBuilder[] localVars) =>
+          CurrentBlock = new BlockInfo(CurrentBlock, blockResultExpr, blockVarExprs, localVars);
 
-      public void PushBlockAndConstructLocalVars(BlockExpression block, ILGenerator il)
+      public void PushBlockAndConstructLocalVars(object blockResultExpr, object[] blockVarExprs, ILGenerator il)
       {
         var localVars = Tools.Empty<LocalBuilder>();
-        var blockVars = block.Variables;
-        if (blockVars.Count != 0)
+        if (blockVarExprs.Length != 0)
         {
-          localVars = new LocalBuilder[blockVars.Count];
+          localVars = new LocalBuilder[blockVarExprs.Length];
           for (var i = 0; i < localVars.Length; i++)
           {
-            localVars[i] = il.DeclareLocal(blockVars[i].Type);
+            localVars[i] = il.DeclareLocal(blockVarExprs[i].GetResultType());
           }
         }
 
-        CurrentBlock = CurrentBlock.Push(block.Result, blockVars, localVars);
+        CurrentBlock = new BlockInfo(CurrentBlock, blockResultExpr, blockVarExprs, localVars);
       }
 
       public void PopBlock() => CurrentBlock = CurrentBlock.Parent;
 
       public bool IsLocalVar(object varParamExpr)
       {
-        for (var block = CurrentBlock; !block.IsEmpty; block = block.Parent)
+        var i = -1;
+        for (var block = CurrentBlock; i == -1 && !block.IsEmpty; block = block.Parent)
         {
-          var varIndex = block.VarExprs.GetFirstIndex(varParamExpr);
-          if (varIndex != -1) { return true; }
+          i = block.VarExprs.GetFirstIndex(varParamExpr);
         }
-        return false;
+
+        return i != -1;
       }
 
       public LocalBuilder GetDefinedLocalVarOrDefault(object varParamExpr)

@@ -86,13 +86,17 @@ namespace FastExpressionCompiler
     {
       if (paramExprs == null || paramExprs.Count == 0) { return Empty<Type>(); }
 
-      if (paramExprs.Count == 1) { return new[] { paramExprs[0].GetResultType() }; }
+      if (paramExprs.Count == 1)
+      {
+        return new[] { paramExprs[0].IsByRef ? paramExprs[0].GetResultType().MakeByRefType() : paramExprs[0].GetResultType() };
+      }
 
       var paramTypes = new Type[paramExprs.Count];
       for (var i = 0; i < paramTypes.Length; i++)
       {
-        paramTypes[i] = paramExprs[i].GetResultType();
+        paramTypes[i] = paramExprs[i].IsByRef ? paramExprs[i].GetResultType().MakeByRefType() : paramExprs[i].GetResultType();
       }
+
       return paramTypes;
     }
 

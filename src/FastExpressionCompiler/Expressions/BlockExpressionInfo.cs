@@ -27,27 +27,24 @@ using System.Linq.Expressions;
 
 namespace FastExpressionCompiler
 {
-  /// <summary>Analog of InvocationExpression.</summary>
-  public class InvocationExpressionInfo : ArgumentsExpressionInfo
+  public class BlockExpressionInfo : ExpressionInfo
   {
-    /// <inheritdoc />
-    public override ExpressionType NodeType => ExpressionType.Invoke;
+    public override ExpressionType NodeType => ExpressionType.Block;
 
-    /// <inheritdoc />
     public override Type Type { get; }
 
-    /// <summary>Delegate to invoke.</summary>
-    public readonly ExpressionInfo ExprToInvoke;
+    public readonly ParameterExpressionInfo[] Variables;
+    public readonly object[] Expressions;
+    public readonly object Result;
 
-    /// <inheritdoc />
-    public override Expression ToExpression()
-        => Expression.Invoke(ExprToInvoke.ToExpression(), ArgumentsToExpressions());
+    public override Expression ToExpression() =>
+        Expression.Block(Expressions.Project(Tools.ToExpression));
 
-    /// <summary>Constructs</summary>
-    public InvocationExpressionInfo(ExpressionInfo exprToInvoke, object[] arguments, Type type)
-      : base(arguments)
+    public BlockExpressionInfo(Type type, ParameterExpressionInfo[] variables, object[] expressions)
     {
-      ExprToInvoke = exprToInvoke;
+      Variables = variables;
+      Expressions = expressions;
+      Result = expressions[expressions.Length - 1];
       Type = type;
     }
   }

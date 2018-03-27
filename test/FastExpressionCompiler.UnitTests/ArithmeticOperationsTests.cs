@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
+#if NETCORE || NET_4_5_GREATER
+using System.Numerics;
+#endif
 using NUnit.Framework;
 using static System.Linq.Expressions.Expression;
 
@@ -342,6 +345,20 @@ namespace FastExpressionCompiler.UnitTests
             var result = arithmeticFunc(new NonPrimitiveInt32ValueType(1), new NonPrimitiveInt32ValueType(2));
             Assert.AreEqual(result, new NonPrimitiveInt32ValueType(3));
         }
+
+#if NETCORE || NET_4_5_GREATER
+        [Test(Description = "Support all types and operations from System.Numerics ")]
+        public void Can_calculate_arithmetic_operation_with_vectors()
+        {
+            Expression<Func<Vector2>> expr = () => Vector2.One - new Vector2(2.0f, 2.0f);
+
+            var vectMethod = expr.CompileFast(true);
+
+            Assert.IsNotNull(vectMethod);
+            var result = vectMethod();
+            Assert.AreEqual(result, new Vector2(-1.0f, -1.0f));
+        }
+#endif
 
         private sealed class NonPrimitiveInt32Class
         {

@@ -27,28 +27,21 @@ using System.Linq.Expressions;
 
 namespace FastExpressionCompiler
 {
-  /// <summary>Analog of InvocationExpression.</summary>
-  public class InvocationExpressionInfo : ArgumentsExpressionInfo
+  public sealed class CatchBlockInfo
   {
-    /// <inheritdoc />
-    public override ExpressionType NodeType => ExpressionType.Invoke;
+    public readonly ParameterExpressionInfo Variable;
+    public readonly ExpressionInfo Body;
+    public readonly ExpressionInfo Filter;
+    public readonly Type Test;
 
-    /// <inheritdoc />
-    public override Type Type { get; }
-
-    /// <summary>Delegate to invoke.</summary>
-    public readonly ExpressionInfo ExprToInvoke;
-
-    /// <inheritdoc />
-    public override Expression ToExpression()
-        => Expression.Invoke(ExprToInvoke.ToExpression(), ArgumentsToExpressions());
-
-    /// <summary>Constructs</summary>
-    public InvocationExpressionInfo(ExpressionInfo exprToInvoke, object[] arguments, Type type)
-      : base(arguments)
+    public CatchBlockInfo(ParameterExpressionInfo variable, ExpressionInfo body, ExpressionInfo filter, Type test)
     {
-      ExprToInvoke = exprToInvoke;
-      Type = type;
+      Variable = variable;
+      Body = body;
+      Filter = filter;
+      Test = test;
     }
+
+    public CatchBlock ToCatchBlock() => Expression.Catch(Variable.ParamExpr, Body.ToExpression());
   }
 }

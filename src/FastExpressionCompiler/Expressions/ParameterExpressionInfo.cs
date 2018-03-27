@@ -36,6 +36,9 @@ namespace FastExpressionCompiler
     /// <inheritdoc />
     public override Type Type { get; }
 
+    /// <summary>Optional name.</summary>
+    public readonly string Name;
+
     /// <inheritdoc />
     public override Expression ToExpression() => ParamExpr;
 
@@ -45,9 +48,6 @@ namespace FastExpressionCompiler
 
     /// <summary>Allow to change parameter expression as info interchangeable.</summary>
     public static implicit operator ParameterExpression(ParameterExpressionInfo info) => info.ParamExpr;
-
-    /// <summary>Optional name.</summary>
-    public readonly string Name;
 
     /// <summary>Creates a thing.</summary>
     public ParameterExpressionInfo(Type type, string name)

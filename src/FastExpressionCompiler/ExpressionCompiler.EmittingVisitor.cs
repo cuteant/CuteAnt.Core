@@ -117,13 +117,19 @@ namespace FastExpressionCompiler
             return EmitAssign(exprObj, exprType, paramExprs, il, closure);
 
           case ExpressionType.Block:
-            return EmitBlock((BlockExpression)exprObj, paramExprs, il, closure);
+            return exprObj is BlockExpression blockExpr ?
+                EmitBlock(blockExpr, paramExprs, il, closure) :
+                EmitBlockInfo((BlockExpressionInfo)exprObj, paramExprs, il, closure);
 
           case ExpressionType.Try:
-            return EmitTryCatchFinallyBlock((TryExpression)exprObj, paramExprs, il, closure);
+            return exprObj is TryExpression tryExpr
+                ? EmitTryCatchFinallyBlock(tryExpr, exprType, paramExprs, il, closure)
+                : EmitTryCatchFinallyBlockInfo((TryExpressionInfo)exprObj, exprType, paramExprs, il, closure);
 
           case ExpressionType.Throw:
-            return EmitThrow((UnaryExpression)exprObj, paramExprs, il, closure);
+            return exprObj is UnaryExpression unaryExpr
+                ? EmitThrow(unaryExpr, paramExprs, il, closure)
+                : EmitThrowInfo((UnaryExpressionInfo)exprObj, paramExprs, il, closure);
 
           case ExpressionType.Default:
             return EmitDefault((DefaultExpression)exprObj, il);
@@ -261,92 +267,179 @@ namespace FastExpressionCompiler
 
       #region ** EmitBlock **
 
-      private static bool EmitBlock(BlockExpression exprObj, object[] paramExprs, ILGenerator il, ClosureInfo closure)
+      private static bool EmitBlock(BlockExpression blockExpr, object[] paramExprs, ILGenerator il, ClosureInfo closure)
       {
         closure = closure ?? new ClosureInfo();
-        closure.PushBlockAndConstructLocalVars(exprObj, il);
-        if (!EmitMany(exprObj.Expressions, paramExprs, il, closure)) { return false; }
+        closure.PushBlockAndConstructLocalVars(blockExpr.Result, blockExpr.Variables.ToArray(), il);
+        var ok = EmitMany(blockExpr.Expressions, paramExprs, il, closure);
         closure.PopBlock();
-        return true;
+        return ok;
+      }
+
+      #endregion
+
+      #region ** EmitBlockInfo **
+
+      private static bool EmitBlockInfo(BlockExpressionInfo blockExpr, object[] paramExprs, ILGenerator il, ClosureInfo closure)
+      {
+        closure = closure ?? new ClosureInfo();
+        closure.PushBlockAndConstructLocalVars(blockExpr.Result, blockExpr.Variables, il);
+        var ok = EmitMany(blockExpr.Expressions, paramExprs, il, closure);
+        closure.PopBlock();
+        return ok;
       }
 
       #endregion
 
       #region ** EmitTryCatchFinallyBlock **
 
-      private static bool EmitTryCatchFinallyBlock(TryExpression exprObj, object[] paramExprs, ILGenerator il, ClosureInfo closure)
+      private static bool EmitTryCatchFinallyBlock(TryExpression tryExpr, Type exprType, object[] paramExprs, ILGenerator il, ClosureInfo closure)
       {
         var returnLabel = default(Label);
         var returnResult = default(LocalBuilder);
-        var hasResult = exprObj.Type != typeof(void);
-        if (hasResult)
+        var isNonVoid = exprType != typeof(void);
+        if (isNonVoid)
         {
           returnLabel = il.DefineLabel();
-          returnResult = il.DeclareLocal(exprObj.Type);
+          returnResult = il.DeclareLocal(exprType);
         }
 
         il.BeginExceptionBlock();
+        if (!TryEmit(tryExpr.Body, tryExpr.Body.NodeType, tryExpr.Body.Type, paramExprs, il, closure))
+          return false;
 
-        if (!TryEmit(exprObj.Body, exprObj.Body.NodeType, exprObj.Body.Type, paramExprs, il, closure)) { return false; }
-
-        if (hasResult)
+        if (isNonVoid)
         {
           il.Emit(OpCodes.Stloc_S, returnResult);
           il.Emit(OpCodes.Leave_S, returnLabel);
         }
 
-        var catchBlocks = exprObj.Handlers;
+        var catchBlocks = tryExpr.Handlers;
         for (var i = 0; i < catchBlocks.Count; i++)
         {
           var catchBlock = catchBlocks[i];
-
           if (catchBlock.Filter != null)
-          {
             return false; // todo: Add support for filters on catch expression
-          }
 
           il.BeginCatchBlock(catchBlock.Test);
 
           // at the beginning of catch the Exception value is on the stack,
           // we will store into local variable.
-          var catchExpr = catchBlock.Body;
-          var exceptionVarExpr = catchBlock.Variable;
-          if (exceptionVarExpr != null)
+          var catchBodyExpr = catchBlock.Body;
+          var exVarExpr = catchBlock.Variable;
+          if (exVarExpr != null)
           {
-            var exceptionVar = il.DeclareLocal(exceptionVarExpr.Type);
-
+            var exVar = il.DeclareLocal(exVarExpr.Type);
             closure = closure ?? new ClosureInfo();
-            closure.PushBlock(catchBlock.Body, new[] { exceptionVarExpr }, new[] { exceptionVar });
-
-            // store the values of exception on stack into the variable
-            il.Emit(OpCodes.Stloc_S, exceptionVar);
+            closure.PushBlock(catchBodyExpr, new[] { exVarExpr }, new[] { exVar });
+            il.Emit(OpCodes.Stloc_S, exVar);
           }
 
-          if (!TryEmit(catchExpr, catchExpr.NodeType, catchExpr.Type, paramExprs, il, closure)) { return false; }
+          if (!TryEmit(catchBodyExpr, catchBodyExpr.NodeType, catchBodyExpr.Type, paramExprs, il, closure))
+            return false;
 
-          if (exceptionVarExpr != null) { closure.PopBlock(); }
+          if (exVarExpr != null)
+            closure.PopBlock();
 
-          if (hasResult)
+          if (isNonVoid)
           {
             il.Emit(OpCodes.Stloc_S, returnResult);
             il.Emit(OpCodes.Leave_S, returnLabel);
           }
           else
-          {
             il.Emit(OpCodes.Pop);
-          }
         }
 
-        if (exprObj.Finally != null)
+        var finallyExpr = tryExpr.Finally;
+        if (finallyExpr != null)
         {
           il.BeginFinallyBlock();
-
-          if (!TryEmit(exprObj.Finally, exprObj.Finally.NodeType, exprObj.Finally.Type, paramExprs, il, closure)) { return false; }
+          if (!TryEmit(finallyExpr, finallyExpr.NodeType, finallyExpr.Type, paramExprs, il, closure))
+            return false;
         }
 
         il.EndExceptionBlock();
+        if (isNonVoid)
+        {
+          il.MarkLabel(returnLabel);
+          il.Emit(OpCodes.Ldloc, returnResult);
+        }
 
-        if (hasResult)
+        return true;
+      }
+
+      #endregion
+
+      #region ** EmitTryCatchFinallyBlockInfo **
+
+      private static bool EmitTryCatchFinallyBlockInfo(TryExpressionInfo tryExpr, Type exprType, object[] paramExprs, ILGenerator il, ClosureInfo closure)
+      {
+        var returnLabel = default(Label);
+        var returnResult = default(LocalBuilder);
+        var isNonVoid = exprType != typeof(void);
+        if (isNonVoid)
+        {
+          returnLabel = il.DefineLabel();
+          returnResult = il.DeclareLocal(exprType);
+        }
+
+        il.BeginExceptionBlock();
+        var bodyExpr = tryExpr.Body;
+        if (!TryEmit(bodyExpr, bodyExpr.GetNodeType(), bodyExpr.GetResultType(), paramExprs, il, closure))
+          return false;
+
+        if (isNonVoid)
+        {
+          il.Emit(OpCodes.Stloc_S, returnResult);
+          il.Emit(OpCodes.Leave_S, returnLabel);
+        }
+
+        var catchBlocks = tryExpr.Handlers;
+        for (var i = 0; i < catchBlocks.Length; i++)
+        {
+          var catchBlock = catchBlocks[i];
+          if (catchBlock.Filter != null)
+            return false; // todo: Add support for filters on catch expression
+
+          il.BeginCatchBlock(catchBlock.Test);
+
+          // at the beginning of catch the Exception value is on the stack,
+          // we will store into local variable.
+          var catchBodyExpr = catchBlock.Body;
+          var exVarExpr = catchBlock.Variable;
+          if (exVarExpr != null)
+          {
+            var exVar = il.DeclareLocal(exVarExpr.Type);
+            closure = closure ?? new ClosureInfo();
+            closure.PushBlock(catchBodyExpr, new[] { exVarExpr }, new[] { exVar });
+            il.Emit(OpCodes.Stloc_S, exVar);
+          }
+
+          if (!TryEmit(catchBodyExpr, catchBodyExpr.NodeType, catchBodyExpr.Type, paramExprs, il, closure))
+            return false;
+
+          if (exVarExpr != null)
+            closure.PopBlock();
+
+          if (isNonVoid)
+          {
+            il.Emit(OpCodes.Stloc_S, returnResult);
+            il.Emit(OpCodes.Leave_S, returnLabel);
+          }
+          else
+            il.Emit(OpCodes.Pop);
+        }
+
+        var finallyExpr = tryExpr.Finally;
+        if (finallyExpr != null)
+        {
+          il.BeginFinallyBlock();
+          if (!TryEmit(finallyExpr, finallyExpr.NodeType, finallyExpr.Type, paramExprs, il, closure))
+            return false;
+        }
+
+        il.EndExceptionBlock();
+        if (isNonVoid)
         {
           il.MarkLabel(returnLabel);
           il.Emit(OpCodes.Ldloc, returnResult);
@@ -361,11 +454,22 @@ namespace FastExpressionCompiler
 
       private static bool EmitThrow(UnaryExpression exprObj, object[] paramExprs, ILGenerator il, ClosureInfo closure)
       {
-        var exceptionExpr = exprObj.Operand;
-        if (!TryEmit(exceptionExpr, exceptionExpr.NodeType, exceptionExpr.Type, paramExprs, il, closure)) { return false; }
+        var exExpr = exprObj.Operand;
+        var ok = TryEmit(exExpr, exExpr.NodeType, exExpr.Type, paramExprs, il, closure);
+        il.ThrowException(exExpr.Type);
+        return ok;
+      }
 
-        il.ThrowException(exceptionExpr.Type);
-        return true;
+      #endregion
+
+      #region ** EmitThrowInfo **
+
+      private static bool EmitThrowInfo(UnaryExpressionInfo exprObj, object[] paramExprs, ILGenerator il, ClosureInfo closure)
+      {
+        var exExpr = exprObj.Operand;
+        var ok = TryEmit(exExpr, exExpr.NodeType, exExpr.Type, paramExprs, il, closure);
+        il.ThrowException(exExpr.Type);
+        return ok;
       }
 
       #endregion
@@ -379,9 +483,8 @@ namespace FastExpressionCompiler
           return false;
         }
 
-        var paramIndex = paramExprs.GetFirstIndex(paramExprObj);
-
         // if parameter is passed, then just load it on stack
+        var paramIndex = paramExprs.GetFirstIndex(paramExprObj);
         if (paramIndex != -1)
         {
           if (closure != null && closure.HasBoundClosure)
@@ -532,30 +635,20 @@ namespace FastExpressionCompiler
           {
             il.Emit(OpCodes.Box, sourceType); // for value type to object, just box a value
           }
-          return true; // for reference type we don't need to convert
         }
-
-        // Just un-box type object to the target value type
 #if NET40
-        if (targetType.IsValueType && sourceType == typeof(object))
+        else if (sourceType == typeof(object) && targetType.IsValueType)
 #else
-        if (targetType.GetTypeInfo().IsValueType && sourceType == typeof(object))
+        else if (sourceType == typeof(object) && targetType.GetTypeInfo().IsValueType)
 #endif
         {
           il.Emit(OpCodes.Unbox_Any, targetType);
-          return true;
         }
-
-        // Conversion to nullable: new Nullable<T>(T val);
-        if (targetType.IsNullable())
+        else if (targetType.IsNullable()) // Conversion to Nullable: new Nullable<T>(T val);
         {
-          var wrappedType = targetType.GetWrappedTypeFromNullable();
-          var ctor = targetType.GetConstructorByArgs(wrappedType);
-          il.Emit(OpCodes.Newobj, ctor);
-          return true;
+          il.Emit(OpCodes.Newobj, targetType.GetConstructorByArgs(targetType.GetWrappedTypeFromNullable()));
         }
-
-        if (targetType == typeof(int)) { il.Emit(OpCodes.Conv_I4); }
+        else if (targetType == typeof(int)) { il.Emit(OpCodes.Conv_I4); }
         else if (targetType == typeof(float)) { il.Emit(OpCodes.Conv_R4); }
         else if (targetType == typeof(uint)) { il.Emit(OpCodes.Conv_U4); }
         else if (targetType == typeof(sbyte)) { il.Emit(OpCodes.Conv_I1); }
@@ -638,7 +731,7 @@ namespace FastExpressionCompiler
         }
         else if (constantActualType == typeof(float))
         {
-          il.Emit(OpCodes.Ldc_R8, (float)constantValue);
+          il.Emit(OpCodes.Ldc_R4, (float)constantValue);
         }
         else if (constantActualType == typeof(double))
         {

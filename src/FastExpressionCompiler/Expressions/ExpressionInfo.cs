@@ -50,7 +50,11 @@ namespace FastExpressionCompiler
 
     /// <summary>Analog of Expression.Constant</summary>
     public static ConstantExpressionInfo Constant(object value, Type type = null) =>
-        new ConstantExpressionInfo(value, type);
+        value == null && type == null ? _nullExprInfo
+            : new ConstantExpressionInfo(value, type ?? value.GetType());
+
+    private static readonly ConstantExpressionInfo
+        _nullExprInfo = new ConstantExpressionInfo(null, typeof(object));
 
     /// <summary>Analog of Expression.New</summary>
     public static NewExpressionInfo New(ConstructorInfo ctor) =>
@@ -194,5 +198,27 @@ namespace FastExpressionCompiler
     /// <summary>Binary divide</summary>
     public static ExpressionInfo Divide(ExpressionInfo left, ExpressionInfo right) =>
         new ArithmeticBinaryExpressionInfo(ExpressionType.Divide, left, right, left.Type);
+
+    public static BlockExpressionInfo Block(params object[] expressions) =>
+        new BlockExpressionInfo(expressions[expressions.Length - 1].GetResultType(),
+            Tools.Empty<ParameterExpressionInfo>(), expressions);
+
+    public static TryExpressionInfo TryCatch(object body, params CatchBlockInfo[] handlers) =>
+        new TryExpressionInfo(body, null, handlers);
+
+    public static TryExpressionInfo TryCatchFinally(object body, ExpressionInfo @finally, params CatchBlockInfo[] handlers) =>
+        new TryExpressionInfo(body, @finally, handlers);
+
+    public static TryExpressionInfo TryFinally(object body, ExpressionInfo @finally) =>
+        new TryExpressionInfo(body, @finally, null);
+
+    public static CatchBlockInfo Catch(ParameterExpressionInfo variable, ExpressionInfo body) =>
+        new CatchBlockInfo(variable, body, null, variable.Type);
+
+    public static CatchBlockInfo Catch(Type test, ExpressionInfo body) =>
+        new CatchBlockInfo(null, body, null, test);
+
+    public static UnaryExpressionInfo Throw(ExpressionInfo value) =>
+        new UnaryExpressionInfo(ExpressionType.Throw, value, typeof(void));
   }
 }
