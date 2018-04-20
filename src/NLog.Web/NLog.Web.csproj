@@ -1,0 +1,74 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\version.nlog.props" />
+  <Import Project="..\nuget.nlog.props" />
+  
+  <PropertyGroup>
+    <TargetFrameworks>net471;net451</TargetFrameworks>
+    <RootNamespace>NLog.Web</RootNamespace>
+    <AssemblyName>NLog.Web</AssemblyName>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Label="NuGet">
+    <PackageId>NLog.Web.Unofficial</PackageId>
+    <Title>NLog.Web.Unofficial</Title>
+    <Description>Extend NLog with targets and layout renderers for websites and web applications.</Description>
+    <PackageTags>nlog log target layoutrenderer web asp.net</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net471' ">
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="$(MicrosoftExtensionsLoggingPackageVersion)" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
+    <PackageReference Include="NetFx.Extensions.Logging" Version="$(NetFxExtensionsLoggingPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NLog.Extensions.Logging\NLog.Extensions.Logging.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\NLog.Web.AspNetCore\DefaultHttpContextAccessor.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\IHttpContextAccessor.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetApplicationValueLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetAppBasePathLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetItemValueLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetLayoutRendererBase.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetLayoutMultiValueRendererBase.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetMvcControllerRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetMvcActionRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetMvcLayoutRendererBase.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetRequestValueLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetRequestIpLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetSessionIdLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetSessionValueLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetUserAuthTypeLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetUserIdentityLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetWebRootPathLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AssemblyVersionLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetUserIsAuthenticatedLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\IISInstanceNameLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetRequestReferrerRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetRequestUrlRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetRequestUserAgent.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetRequestCookieLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetRequestHostLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetRequestQueryStringLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetRequestHttpMethodRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\Enums\AspNetRequestLayoutOutputFormat.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\Internal\PropertyReader.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\NLogHttpModule.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\Targets\AspNetTrace.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\Targets\Wrappers\AspNetBufferingTargetWrapper.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\Internal\RequestAccessorExtension.cs" />
+  </ItemGroup>
+
+</Project>

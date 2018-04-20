@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\version.nlog.props" />
+  <Import Project="..\nuget.nlog.props" />
+  
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net471</TargetFrameworks>
+    <RootNamespace>NLog.Web</RootNamespace>
+    <AssemblyName>NLog.Web.AspNetCore</AssemblyName>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <DefineConstants>$(DefineConstants);ASP_NET_CORE;ASP_NET_CORE2</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Label="NuGet">
+    <PackageId>NLog.Web.AspNetCore.Unofficial</PackageId>
+    <Title>NLog.Web.AspNetCore.Unofficial</Title>
+    <Description>Use NLog with the ASP.NET Core platform. Adds helpers and layout renderers for websites and webapplications.</Description>
+    <PackageTags>logging;log;session;NLog;web;aspnet;aspnetcore;MVC</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="$(MicrosoftAspNetCoreHttpPackageVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="$(MicrosoftAspNetCoreHttpExtensionsPackageVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="$(MicrosoftAspNetCoreHostingAbstractionsPackageVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="$(MicrosoftAspNetCoreRoutingAbstractionsPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NLog.Extensions.Logging\NLog.Extensions.Logging.csproj" />
+  </ItemGroup>
+
+</Project>
