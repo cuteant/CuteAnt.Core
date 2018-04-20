@@ -1,10 +1,14 @@
-﻿using System;
+﻿#if !NET40
+using System;
+using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using CuteAnt.Threading;
 
 namespace CuteAnt.Runtime
 {
-  public abstract class AsynchAgent : IDisposable
+  public abstract class AsynchAgent : IHealthCheckable, IDisposable
   {
     public enum FaultBehavior
     {
@@ -13,37 +17,28 @@ namespace CuteAnt.Runtime
       IgnoreFault     // Allow the agent to stop if it faults, but take no other action (other than logging)
     }
 
-#if NET40
-    private Thread m_thread;
-#endif
-    private CancellationTokenSource _cts;
-    protected CancellationTokenSource Cts => _cts;
+    private readonly ExecutorFaultHandler executorFaultHandler;
+
+    protected ThreadPoolExecutor executor;
+    protected CancellationTokenSource Cts;
     protected object Lockable;
     protected ILogger Log;
-    private readonly string type;
+    protected readonly string type;
     protected FaultBehavior OnFault;
+    protected bool disposed;
 
-    public ThreadState State { get; private set; }
-    public string Name { get; protected set; }
-#if NET40
-    public int ManagedThreadId { get { return m_thread == null ? -1 : m_thread.ManagedThreadId; } }
-#endif
+    public ThreadState State { get; protected set; }
 
-    protected AsynchAgent()
-      : this(null)
-    {
-    }
+    internal string Name { get; private set; }
+
+    protected AsynchAgent() : this(null) { }
 
     protected AsynchAgent(string nameSuffix)
     {
-      _cts = new CancellationTokenSource();
+      Cts = new CancellationTokenSource();
       var thisType = GetType();
 
       type = thisType.Namespace + "." + thisType.Name;
-      //if (type.StartsWith("CuteAnt.Wings.", StringComparison.Ordinal))
-      //{
-      //  type = type.Substring(8);
-      //}
       if (!string.IsNullOrEmpty(nameSuffix))
       {
         Name = type + "/" + nameSuffix;
@@ -56,12 +51,9 @@ namespace CuteAnt.Runtime
       Lockable = new object();
       State = ThreadState.Unstarted;
       OnFault = FaultBehavior.IgnoreFault;
-      Log = TraceLogger.GetLogger(Name);//, TraceLogger.LoggerType.Runtime);
-      AppDomain.CurrentDomain.DomainUnload += CurrentDomain_DomainUnload;
 
-#if NET40
-      m_thread = new Thread(AgentThreadProc) { IsBackground = true, Name = this.Name };
-#endif
+      this.Log = TraceLogger.GetLogger(Name);
+      this.executorFaultHandler = new ExecutorFaultHandler(this);
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
@@ -77,12 +69,13 @@ namespace CuteAnt.Runtime
       catch (Exception exc)
       {
         // ignore. Just make sure DomainUnload handler does not throw.
-        if (Log.IsDebugLevelEnabled()) Log.LogDebug(exc, "Ignoring error during Stop: {0}");
+        if (Log.IsDebugLevelEnabled()) Log.LogDebug(exc, "Ignoring error during Stop: ");
       }
     }
 
     public virtual void Start()
     {
+      ThrowIfDisposed();
       lock (Lockable)
       {
         if (State == ThreadState.Running)
@@ -92,126 +85,46 @@ namespace CuteAnt.Runtime
 
         if (State == ThreadState.Stopped)
         {
-          _cts = new CancellationTokenSource();
-#if NET40
-          m_thread = new Thread(AgentThreadProc) { IsBackground = true, Name = this.Name };
-#endif
+          Cts = new CancellationTokenSource();
         }
 
-#if NET40
-        m_thread.Start(this);
-#else
-        ExecutorService.RunTask(new AsynchAgentTask(() => AgentThreadProc(this), Name));
-#endif
+        AppDomain.CurrentDomain.DomainUnload += CurrentDomain_DomainUnload;
+        LogStatus(Log, "Starting AsyncAgent {0} on managed thread {1}", Name, Thread.CurrentThread.ManagedThreadId);
+        EnsureExecutorInitialized();
+        OnStart();
         State = ThreadState.Running;
       }
-      if (Log.IsDebugLevelEnabled()) Log.LogDebug("Started asynch agent " + this.Name);
+
+      if (Log.IsDebugLevelEnabled()) Log.LogDebug($"Started asynch agent {this.Name}");
     }
+
+    public virtual void OnStart() { }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     public virtual void Stop()
     {
       try
       {
+        ThrowIfDisposed();
         lock (Lockable)
         {
           if (State == ThreadState.Running)
           {
             State = ThreadState.StopRequested;
-            _cts.Cancel();
+            Cts.Cancel();
+            executor = null;
             State = ThreadState.Stopped;
           }
         }
+
         AppDomain.CurrentDomain.DomainUnload -= CurrentDomain_DomainUnload;
       }
       catch (Exception exc)
       {
         // ignore. Just make sure stop does not throw.
-        if (Log.IsDebugLevelEnabled()) Log.LogDebug(exc, "Ignoring error during Stop: {0}");
+        if (Log.IsDebugLevelEnabled()) Log.LogDebug(exc, "Ignoring error during Stop: ");
       }
       if (Log.IsDebugLevelEnabled()) Log.LogDebug("Stopped agent");
-    }
-
-#if NET40
-    public void Abort(object stateInfo)
-    {
-      if (m_thread != null)
-        m_thread.Abort(stateInfo);
-    }
-
-    public void Join(in TimeSpan timeout)
-    {
-      try
-      {
-        var agentThread = m_thread;
-        if (agentThread != null)
-        {
-          bool joined = agentThread.Join((int)timeout.TotalMilliseconds);
-          if (Log.IsDebugLevelEnabled()) Log.LogDebug("{0} the agent thread {1} after {2} time.", joined ? "Joined" : "Did not join", Name, timeout);
-        }
-      }
-      catch (Exception exc)
-      {
-        // ignore. Just make sure Join does not throw.
-        if (Log.IsDebugLevelEnabled()) Log.LogDebug("Ignoring error during Join: {0}", exc);
-      }
-    }
-#endif
-
-    protected abstract void Run();
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-    private static void AgentThreadProc(Object obj)
-    {
-      var agent = obj as AsynchAgent;
-      if (agent == null)
-      {
-        throw new InvalidOperationException("Agent thread started with incorrect parameter type");
-      }
-
-      var agentLog = agent.Log;
-      try
-      {
-        LogStatus(agentLog, "Starting AsyncAgent {0} on managed thread {1}", agent.Name, Thread.CurrentThread.ManagedThreadId);
-        agent.Run();
-      }
-      catch (Exception exc)
-      {
-        if (agent.State == ThreadState.Running) // If we're stopping, ignore exceptions
-        {
-          switch (agent.OnFault)
-          {
-            case FaultBehavior.CrashOnFault:
-              //Console.WriteLine(
-              //   "The {0} agent has thrown an unhandled exception, {1}. The process will be terminated.",
-              //   agent.Name, exc);
-              agentLog.LogError(exc, "AsynchAgent Run method has thrown an unhandled exception. The process will be terminated.");
-              agentLog.LogCritical("Terminating process because of an unhandled exception caught in AsynchAgent.Run.");
-              break;
-            case FaultBehavior.IgnoreFault:
-              agentLog.LogError(exc, "AsynchAgent Run method has thrown an unhandled exception. The agent will exit.");
-              agent.State = ThreadState.Stopped;
-              break;
-            case FaultBehavior.RestartOnFault:
-              agentLog.LogError(exc, "AsynchAgent Run method has thrown an unhandled exception. The agent will be restarted.");
-              agent.State = ThreadState.Stopped;
-              try
-              {
-                agent.Start();
-              }
-              catch (Exception ex)
-              {
-                agentLog.LogError(ex, "Unable to restart AsynchAgent");
-                agent.State = ThreadState.Stopped;
-              }
-              break;
-          }
-        }
-      }
-      finally
-      {
-        if (agentLog.IsInformationLevelEnabled()) agentLog.LogInformation("Stopping AsyncAgent {0} that runs on managed thread {1}", agent.Name, Thread.CurrentThread.ManagedThreadId);
-      }
     }
 
     #region IDisposable Members
@@ -224,13 +137,15 @@ namespace CuteAnt.Runtime
 
     protected virtual void Dispose(bool disposing)
     {
-      if (!disposing) return;
+      if (!disposing || disposed) return;
 
-      if (_cts != null)
+      if (Cts != null)
       {
-        _cts.Dispose();
-        _cts = null;
+        Cts.Dispose();
+        Cts = null;
       }
+
+      disposed = true;
     }
 
     #endregion
@@ -240,20 +155,107 @@ namespace CuteAnt.Runtime
       return Name;
     }
 
-    public static bool IsStarting { get; set; }
+    public bool CheckHealth(DateTime lastCheckTime)
+    {
+      return executor.CheckHealth(lastCheckTime);
+    }
+
+    internal static bool IsStarting { get; set; }
+
+    protected virtual ThreadPoolExecutorOptions.Builder ExecutorOptionsBuilder =>
+        new ThreadPoolExecutorOptions.Builder(Name, GetType(), Cts).WithExceptionFilters(executorFaultHandler);
+
+    private sealed class ExecutorFaultHandler : ExecutionExceptionFilter
+    {
+      private readonly AsynchAgent agent;
+
+      public ExecutorFaultHandler(AsynchAgent agent)
+      {
+        this.agent = agent;
+      }
+
+      public override bool ExceptionHandler(Exception ex, Threading.ExecutionContext context)
+      {
+        context.CancellationTokenSource.Cancel();
+        agent.HandleFault(ex);
+        return true;
+      }
+    }
+
+    protected void HandleFault(Exception ex)
+    {
+      State = ThreadState.Stopped;
+      if (ex is ThreadAbortException)
+      {
+        return;
+      }
+
+      LogExecutorError(ex);
+
+      if (OnFault == FaultBehavior.RestartOnFault && !Cts.IsCancellationRequested)
+      {
+        try
+        {
+          Start();
+        }
+        catch (Exception exc)
+        {
+          Log.LogError(exc, "Unable to restart AsynchAgent");
+          State = ThreadState.Stopped;
+        }
+      }
+    }
+
+    private void EnsureExecutorInitialized()
+    {
+      if (executor == null)
+      {
+        executor = ExecutorService.GetExecutor(ExecutorOptionsBuilder.Options);
+      }
+    }
+
+    private void LogExecutorError(Exception exc)
+    {
+      var logMessagePrefix = $"Asynch agent {Name} encountered unexpected exception";
+      switch (OnFault)
+      {
+        case FaultBehavior.CrashOnFault:
+          var logMessage = $"{logMessagePrefix} The process will be terminated.";
+          Log.LogError(exc, logMessage);
+          Log.LogCritical(logMessage);
+          break;
+        case FaultBehavior.IgnoreFault:
+          Log.LogError(exc, $"{logMessagePrefix} The executor will exit.");
+          break;
+        case FaultBehavior.RestartOnFault:
+          Log.LogError(exc, $"{logMessagePrefix} The Stage will be restarted.");
+          break;
+        default:
+          throw new NotImplementedException();
+      }
+    }
 
     private static void LogStatus(ILogger log, string msg, params object[] args)
     {
       if (IsStarting)
       {
-        // Reduce log noise during app startup
+        // Reduce log noise during silo startup
         if (log.IsDebugLevelEnabled()) log.LogDebug(msg, args);
       }
       else
       {
         // Changes in agent threads during all operations aside for initial creation are usually important diag events.
-        if (log.IsDebugLevelEnabled()) log.LogInformation(msg, args);
+        if (log.IsInformationLevelEnabled()) log.LogInformation(msg, args);
+      }
+    }
+
+    private void ThrowIfDisposed()
+    {
+      if (disposed)
+      {
+        throw new ObjectDisposedException("Cannot access disposed AsynchAgent");
       }
     }
   }
 }
+#endif
