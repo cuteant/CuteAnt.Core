@@ -159,7 +159,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         throw new LocateException(staticInjectionContext, $"Could not locate dynamic value for type {typeof(T).FullName}");
       }
 
-      return default(T);
+      return default;
     }
 
     /// <summary>Creates expression for calling method GetValueFromInjectionContext</summary>
@@ -236,9 +236,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         }
       }
 
-      var parent = scope.Parent as IInjectionScope;
-
-      return parent != null ? GetValueFromInjectionValueProviders(parent, request) : null;
+      return scope.Parent is IInjectionScope parent ? GetValueFromInjectionValueProviders(parent, request) : null;
     }
 
     /// <summary>Get expression result from request</summary>
@@ -317,7 +315,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
       {
         var configuration = request.WrapperPathNode.Strategy.GetActivationConfiguration(activationType);
 
-        if (activationType.GetTypeInfo().IsAssignableFrom(configuration.ActivationType.GetTypeInfo()))
+        if (configuration.ActivationType != null &&
+            activationType.GetTypeInfo().IsAssignableFrom(configuration.ActivationType.GetTypeInfo()))
         {
           var wrapper = request.PopWrapperPathNode();
 
@@ -328,7 +327,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
       {
         var configuration = request.DecoratorPathNode.Strategy.GetActivationConfiguration(activationType);
 
-        if (activationType.GetTypeInfo().IsAssignableFrom(configuration.ActivationType.GetTypeInfo()))
+        if (configuration.ActivationType != null &&
+            activationType.GetTypeInfo().IsAssignableFrom(configuration.ActivationType.GetTypeInfo()))
         {
           var decorator = request.PopDecoratorPathNode();
 
