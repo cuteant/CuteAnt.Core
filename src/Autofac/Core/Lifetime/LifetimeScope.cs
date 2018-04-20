@@ -29,6 +29,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using Autofac.Builder;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
 using Autofac.Util;
@@ -128,6 +129,19 @@ namespace Autofac.Core.Lifetime
         public ILifetimeScope BeginLifetimeScope(object tag)
         {
             CheckNotDisposed();
+
+            ISharingLifetimeScope parentScope = this;
+            while (parentScope != RootLifetimeScope)
+            {
+                if (parentScope.Tag.Equals(tag))
+                {
+                    throw new InvalidOperationException(
+                        string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.DuplicateTagDetected, tag));
+                }
+
+                parentScope = parentScope.ParentLifetimeScope;
+            }
+
             var registry = new CopyOnWriteRegistry(ComponentRegistry, () => CreateScopeRestrictedRegistry(tag, NoConfiguration));
             var scope = new LifetimeScope(registry, this, tag);
             scope.Disposer.AddInstanceForDisposal(registry);
@@ -171,7 +185,7 @@ namespace Autofac.Core.Lifetime
         /// </summary>
         /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
         /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
-        /// that adds component registations visible only in the new scope.</param>
+        /// that adds component registrations visible only in the new scope.</param>
         /// <returns>A new lifetime scope.</returns>
         /// <example>
         /// IContainer cr = // ...
@@ -191,6 +205,12 @@ namespace Autofac.Core.Lifetime
             var locals = CreateScopeRestrictedRegistry(tag, configurationAction);
             var scope = new LifetimeScope(locals, this, tag);
             scope.Disposer.AddInstanceForDisposal(locals);
+
+            if (locals.Properties.TryGetValue(MetadataKeys.ContainerBuildOptions, out var options) &&
+                !((ContainerBuildOptions)options).HasFlag(ContainerBuildOptions.IgnoreStartableComponents))
+            {
+                StartableManager.StartStartableComponents(scope);
+            }
 
             RaiseBeginning(scope);
 

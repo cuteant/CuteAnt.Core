@@ -240,7 +240,7 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Register the types in an assembly.
+        /// Register all types in an assembly.
         /// </summary>
         /// <param name="builder">Container builder.</param>
         /// <param name="assemblies">The assemblies from which to register types.</param>
@@ -449,12 +449,7 @@ namespace Autofac
 
             return registration.WithMetadata(t =>
             {
-                // ## 苦竹 修改 ##
-#if NET40
-                var attrs = t.GetCustomAttributes(true).OfType<TAttribute>().ToArray();
-#else
                 var attrs = t.GetTypeInfo().GetCustomAttributes(true).OfType<TAttribute>().ToArray();
-#endif
 
                 if (attrs.Length == 0)
                     throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MetadataAttributeNotFound, typeof(TAttribute), t));
@@ -617,7 +612,7 @@ namespace Autofac
         private static Type[] GetImplementedInterfaces(Type type)
         {
             var interfaces = type.GetTypeInfo().ImplementedInterfaces.Where(i => i != typeof(IDisposable));
-            return type.GetTypeInfo().IsInterface ? interfaces.AppendX(type).ToArray() : interfaces.ToArray();
+            return type.GetTypeInfo().IsInterface ? interfaces.AppendItem(type).ToArray() : interfaces.ToArray();
         }
 
         /// <summary>

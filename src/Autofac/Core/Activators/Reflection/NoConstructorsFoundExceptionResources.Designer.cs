@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Core.Lifetime {
+namespace Autofac.Core.Activators.Reflection {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Autofac.Core.Lifetime {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class LifetimeScopeResources {
+    internal class NoConstructorsFoundExceptionResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal LifetimeScopeResources() {
+        internal NoConstructorsFoundExceptionResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Autofac.Core.Lifetime {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Lifetime.LifetimeScopeResources", typeof(LifetimeScopeResources).AssemblyX());
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.Reflection.NoConstructorsFoundExceptionResources", typeof(NoConstructorsFoundExceptionResources).AssemblyX());
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,29 +61,11 @@ namespace Autofac.Core.Lifetime {
         }
         
         /// <summary>
-        ///   查找类似 The tag &apos;{0}&apos; has already been assigned to a parent lifetime scope. 的本地化字符串。
+        ///   查找类似 No accessible constructors were found for the type &apos;{0}&apos;. 的本地化字符串。
         /// </summary>
-        internal static string DuplicateTagDetected {
+        internal static string Message {
             get {
-                return ResourceManager.GetString("DuplicateTagDetected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 Instances cannot be resolved and nested lifetimes cannot be created from this LifetimeScope as it has already been disposed. 的本地化字符串。
-        /// </summary>
-        internal static string ScopeIsDisposed {
-            get {
-                return ResourceManager.GetString("ScopeIsDisposed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 The constructor of type &apos;{0}&apos; attempted to create another instance of itself. This is not permitted because the service is configured to only allowed a single instance per lifetime scope. 的本地化字符串。
-        /// </summary>
-        internal static string SelfConstructingDependencyDetected {
-            get {
-                return ResourceManager.GetString("SelfConstructingDependencyDetected", resourceCulture);
+                return ResourceManager.GetString("Message", resourceCulture);
             }
         }
     }

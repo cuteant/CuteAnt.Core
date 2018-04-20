@@ -446,5 +446,52 @@ namespace Autofac.Test.Features.Scanning
 
             Assert.Equal(1, implementations.Count());
         }
+
+        [Fact]
+        public void InternalClassesAreFoundByDefault()
+        {
+            // Issue #897: It may not be obvious, but our long-running behavior has been to include non-public types.
+            var c = RegisterScenarioAssembly();
+            var internalType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.InternalComponent", true);
+            Assert.True(c.IsRegistered(internalType));
+        }
+
+        [Fact]
+        public void InternalClassesCanBeFilteredOut()
+        {
+            // Issue #897: It may not be obvious, but our long-running behavior has been to include non-public types.
+            var c = RegisterScenarioAssembly(conf => conf.PublicOnly());
+            var internalType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.InternalComponent", true);
+            Assert.False(c.IsRegistered(internalType));
+        }
+
+        [Fact]
+        public void NonPublicNestedClassesAreFoundByDefault()
+        {
+            // Issue #897: It may not be obvious, but our long-running behavior has been to include non-public types.
+            var c = RegisterScenarioAssembly();
+            var privateType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+PrivateComponent", true);
+            var internalType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+InternalComponent", true);
+            c.AssertRegistered<NestedComponent>();
+            Assert.True(c.IsRegistered(privateType));
+        }
+
+        [Fact]
+        public void NonPublicNestedClassesCanBeFilteredOut()
+        {
+            // Issue #897: It may not be obvious, but our long-running behavior has been to include non-public types.
+            var c = RegisterScenarioAssembly(conf => conf.PublicOnly());
+            var privateType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+PrivateComponent", true);
+            var internalType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+InternalComponent", true);
+            c.AssertRegistered<NestedComponent>();
+            Assert.False(c.IsRegistered(privateType));
+        }
+
+        [Fact]
+        public void PublicNestedClassesAreScanned()
+        {
+            var c = RegisterScenarioAssembly();
+            c.AssertRegistered<NestedComponent.PublicComponent>();
+        }
     }
 }

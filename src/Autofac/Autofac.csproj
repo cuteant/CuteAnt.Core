@@ -79,6 +79,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>MostParametersConstructorSelectorResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Core\Activators\Reflection\NoConstructorsFoundExceptionResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>NoConstructorsFoundExceptionResources.resx</DependentUpon>
+    </Compile>
     <Compile Update="Core\Activators\Reflection\ReflectionActivatorResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -269,6 +274,10 @@
     <EmbeddedResource Update="Core\Activators\Reflection\MostParametersConstructorSelectorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MostParametersConstructorSelectorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Activators\Reflection\NoConstructorsFoundExceptionResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NoConstructorsFoundExceptionResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\Activators\Reflection\ReflectionActivatorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

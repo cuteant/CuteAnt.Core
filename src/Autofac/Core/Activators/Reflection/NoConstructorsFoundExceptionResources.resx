@@ -117,13 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DuplicateTagDetected" xml:space="preserve">
-    <value>The tag '{0}' has already been assigned to a parent lifetime scope.</value>
-  </data>
-  <data name="ScopeIsDisposed" xml:space="preserve">
-    <value>Instances cannot be resolved and nested lifetimes cannot be created from this LifetimeScope as it has already been disposed.</value>
-  </data>
-  <data name="SelfConstructingDependencyDetected" xml:space="preserve">
-    <value>The constructor of type '{0}' attempted to create another instance of itself. This is not permitted because the service is configured to only allowed a single instance per lifetime scope.</value>
+  <data name="Message" xml:space="preserve">
+    <value>No accessible constructors were found for the type '{0}'.</value>
   </data>
 </root>

@@ -30,5 +30,9 @@ namespace Autofac.Builder
         internal const string RegistrationOrderMetadataKey = "__RegistrationOrder";
 
         internal const string AutoActivated = "__AutoActivated";
+
+        internal const string StartOnActivatePropertyKey = "__StartOnActivate";
+
+        internal const string ContainerBuildOptions = "__ContainerBuildOptions";
     }
 }

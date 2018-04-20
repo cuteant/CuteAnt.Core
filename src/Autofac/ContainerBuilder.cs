@@ -142,54 +142,17 @@ namespace Autofac
         public IContainer Build(ContainerBuildOptions options = ContainerBuildOptions.None)
         {
             var result = new Container(Properties);
+            result.ComponentRegistry.Properties[MetadataKeys.ContainerBuildOptions] = options;
             Build(result.ComponentRegistry, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
 
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
-                StartStartableComponents(result);
+                StartableManager.StartStartableComponents(result);
 
             var buildCallbacks = GetBuildCallbacks();
             foreach (var buildCallback in buildCallbacks)
                 buildCallback(result);
 
             return result;
-        }
-
-        private static void StartStartableComponents(IComponentContext componentContext)
-        {
-            // We track which registrations have already been auto-activated by adding
-            // a metadata value. If the value is present, we won't re-activate. This helps
-            // in the container update situation.
-            const string started = MetadataKeys.AutoActivated;
-            object meta;
-
-            foreach (var startable in componentContext.ComponentRegistry.RegistrationsFor(new TypedService(typeof(IStartable))).Where(r => !r.Metadata.TryGetValue(started, out meta)))
-            {
-                try
-                {
-                    var instance = (IStartable)componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
-                    instance.Start();
-                }
-                finally
-                {
-                    startable.Metadata[started] = true;
-                }
-            }
-
-            foreach (var registration in componentContext.ComponentRegistry.RegistrationsFor(new AutoActivateService()).Where(r => !r.Metadata.TryGetValue(started, out meta)))
-            {
-                try
-                {
-                    componentContext.ResolveComponent(registration, Enumerable.Empty<Parameter>());
-                }
-                catch (DependencyResolutionException ex)
-                {
-                    throw new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, ContainerBuilderResources.ErrorAutoActivating, registration), ex);
-                }
-                finally
-                {
-                    registration.Metadata[started] = true;
-                }
-            }
         }
 
         /// <summary>
@@ -228,7 +191,7 @@ namespace Autofac
             if (container == null) throw new ArgumentNullException(nameof(container));
             Update(container.ComponentRegistry);
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
-                StartStartableComponents(container);
+                StartableManager.StartStartableComponents(container);
         }
 
         /// <summary>
