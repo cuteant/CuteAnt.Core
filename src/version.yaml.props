@@ -3,8 +3,8 @@
   <PropertyGroup>
     <AssemblyVersion>2.1.0.0</AssemblyVersion>
     <VersionPrefix Condition=" '$(VersionPrefix)'=='' ">2.1.0</VersionPrefix>
-    <VersionSuffix Condition=" '$(VersionSuffix)'=='' ">preview3</VersionSuffix>
-    <VersionDateSuffix Condition=" '$(VersionDateSuffix)'=='' ">180420-01</VersionDateSuffix>
+    <VersionSuffix Condition=" '$(VersionSuffix)'=='' ">rc1</VersionSuffix>
+    <VersionDateSuffix Condition=" '$(VersionDateSuffix)'=='' ">180512-01</VersionDateSuffix>
     <VersionSuffix Condition=" '$(VersionDateSuffix)'!='' ">$(VersionSuffix)-$(VersionDateSuffix)</VersionSuffix>
   </PropertyGroup>
   <Choose>
