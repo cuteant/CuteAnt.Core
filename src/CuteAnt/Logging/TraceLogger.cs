@@ -173,6 +173,7 @@ namespace Microsoft.Extensions.Logging
 
     #region -- Dump --
 
+#if DESKTOPCLR
     /// <summary>Create a mini-dump file for the current state of this process</summary>
     /// <param name="dumpType">Type of mini-dump to create</param>
     /// <returns><c>FileInfo</c> for the location of the newly created mini-dump file</returns>
@@ -207,12 +208,14 @@ namespace Microsoft.Extensions.Logging
 
       return new FileInfo(dumpFileName);
     }
+#endif
 
     private static IntPtr GetProcessHandle(Process process)
     {
       return process.Handle;
     }
 
+#if DESKTOPCLR
     private static class NativeMethods
     {
       [DllImport("Dbghelp.dll")]
@@ -225,6 +228,7 @@ namespace Microsoft.Extensions.Logging
           IntPtr userStreamParam,
           IntPtr callbackParam);
     }
+#endif
 
     #endregion
 
@@ -282,6 +286,7 @@ namespace Microsoft.Extensions.Logging
     #endregion
   }
 
+#if DESKTOPCLR
   internal enum MiniDumpType
   {
     // ReSharper disable UnusedMember.Global
@@ -303,4 +308,5 @@ namespace Microsoft.Extensions.Logging
     MiniDumpWithoutManagedState = 0x00004000,
     // ReSharper restore UnusedMember.Global
   }
+#endif
 }

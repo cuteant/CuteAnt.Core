@@ -644,9 +644,12 @@ namespace CuteAnt.Reflection
     #region -- GetTypes / GetDefinedTypes --
 
 #if NET40
-    public static IEnumerable<Type> GetTypes(Assembly assembly, Predicate<Type> whereFunc, ILogger logger = null)
+    public static IEnumerable<Type> GetTypes(Assembly assembly, Predicate<Type> whereFunc, ILogger logger = null, bool ignoreNestedPrivateType = false)
     {
-      return assembly.IsDynamic ? Enumerable.Empty<Type>() : GetDefinedTypes(assembly, logger).Where(type => !type.GetTypeInfo().IsNestedPrivate && whereFunc(type));
+      return assembly.IsDynamic 
+           ? Enumerable.Empty<Type>() 
+           : GetDefinedTypes(assembly, logger)
+                .Where(type => (!ignoreNestedPrivateType || (ignoreNestedPrivateType && !type.IsNestedPrivate)) && whereFunc(type));
     }
     public static IEnumerable<Type> GetDefinedTypes(Assembly assembly, ILogger logger = null)
     {
@@ -672,9 +675,13 @@ namespace CuteAnt.Reflection
       }
     }
 #else
-    public static IEnumerable<Type> GetTypes(Assembly assembly, Predicate<Type> whereFunc, ILogger logger = null)
+    public static IEnumerable<Type> GetTypes(Assembly assembly, Predicate<Type> whereFunc, ILogger logger = null, bool ignoreNestedPrivateType = false)
     {
-      return assembly.IsDynamic ? Enumerable.Empty<Type>() : GetDefinedTypes(assembly, logger).Select(t => t.AsType()).Where(type => !type.GetTypeInfo().IsNestedPrivate && whereFunc(type));
+      return assembly.IsDynamic           
+           ? Enumerable.Empty<Type>() 
+           : GetDefinedTypes(assembly, logger)
+                .Select(t => t.AsType())
+                .Where(type => (!ignoreNestedPrivateType || (ignoreNestedPrivateType && !type.GetTypeInfo().IsNestedPrivate)) && whereFunc(type));
     }
 
     public static IEnumerable<TypeInfo> GetDefinedTypes(Assembly assembly, ILogger logger = null)
