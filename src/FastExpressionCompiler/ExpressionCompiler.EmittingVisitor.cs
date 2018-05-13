@@ -92,7 +92,7 @@ namespace FastExpressionCompiler
           case ExpressionType.LessThanOrEqual:
           case ExpressionType.Equal:
           case ExpressionType.NotEqual:
-            return EmitComparison((BinaryExpression)exprObj, exprNodeType, paramExprs, il, closure);
+            return EmitComparison(exprObj, exprNodeType, paramExprs, il, closure);
 
           case ExpressionType.Add:
           case ExpressionType.AddChecked:
@@ -132,7 +132,7 @@ namespace FastExpressionCompiler
                 : EmitThrowInfo((UnaryExpressionInfo)exprObj, paramExprs, il, closure);
 
           case ExpressionType.Default:
-            return EmitDefault((DefaultExpression)exprObj, il);
+            return EmitDefault(exprObj, il);
 
           case ExpressionType.Index:
             return EmitIndex((IndexExpression)exprObj, paramExprs, il, closure);
@@ -213,12 +213,12 @@ namespace FastExpressionCompiler
 
       #region ** EmitDefault **
 
-      private static bool EmitDefault(DefaultExpression exprObj, ILGenerator il)
+      private static bool EmitDefault(object exprObj, ILGenerator il)
       {
-        var type = exprObj.Type;
-
+        var type = exprObj.GetResultType();
         if (type == typeof(void)) { return true; }
-        else if (type == typeof(string)) { il.Emit(OpCodes.Ldnull); }
+
+        if (type == typeof(string)) { il.Emit(OpCodes.Ldnull); }
         else if (type == typeof(bool) ||
                 type == typeof(byte) ||
                 type == typeof(char) ||
@@ -250,10 +250,7 @@ namespace FastExpressionCompiler
         else if (type.GetTypeInfo().IsValueType)
 #endif
         {
-          LocalBuilder lb = il.DeclareLocal(type);
-          il.Emit(OpCodes.Ldloca, lb);
-          il.Emit(OpCodes.Initobj, type);
-          il.Emit(OpCodes.Ldloc, lb);
+          il.Emit(OpCodes.Ldloc, InitValueTypeVariable(il, type));
         }
         else
         {
@@ -669,11 +666,21 @@ namespace FastExpressionCompiler
 
       private static bool EmitConstant(object exprObj, Type exprType, ILGenerator il, ClosureInfo closure)
       {
-        var constExprInfo = exprObj as ConstantExpressionInfo;
-        var constantValue = constExprInfo != null ? constExprInfo.Value : ((ConstantExpression)exprObj).Value;
+        var constantValue = exprObj is ConstantExpressionInfo constExprInfo ? constExprInfo.Value : ((ConstantExpression)exprObj).Value;
         if (constantValue == null)
         {
-          il.Emit(OpCodes.Ldnull);
+#if NET40
+          if (exprType.IsValueType) // handles the conversion of null to Nullable<T>
+#else
+          if (exprType.GetTypeInfo().IsValueType) // handles the conversion of null to Nullable<T>
+#endif
+          {
+            il.Emit(OpCodes.Ldloc, InitValueTypeVariable(il, exprType));
+          }
+          else
+          {
+            il.Emit(OpCodes.Ldnull);
+          }
           return true;
         }
 
@@ -775,6 +782,18 @@ namespace FastExpressionCompiler
 
       #endregion
 
+      #region ** InitValueTypeVariable **
+
+      private static LocalBuilder InitValueTypeVariable(ILGenerator il, Type exprType, LocalBuilder existingVar = null)
+      {
+        var valVar = existingVar ?? il.DeclareLocal(exprType);
+        il.Emit(OpCodes.Ldloca, valVar);
+        il.Emit(OpCodes.Initobj, exprType);
+        return valVar;
+      }
+
+      #endregion
+
       #region ** LoadClosureFieldOrItem **
 
       // if itemType is null, then itemExprObj should be not null
@@ -851,9 +870,7 @@ namespace FastExpressionCompiler
             return false; // null constructor and not a value type, better fallback
           }
 
-          var valueVar = resultValueVar ?? il.DeclareLocal(exprType);
-          il.Emit(OpCodes.Ldloca, valueVar);
-          il.Emit(OpCodes.Initobj, exprType);
+          var valueVar = InitValueTypeVariable(il, exprType, resultValueVar);
           if (resultValueVar == null)
           {
             il.Emit(OpCodes.Ldloc, valueVar);
@@ -1818,18 +1835,35 @@ namespace FastExpressionCompiler
 
       #region ** EmitComparison **
 
-      private static bool EmitComparison(BinaryExpression expr, ExpressionType exprNodeType,
-        object[] paramExprs, ILGenerator il, ClosureInfo closure)
+      private static bool EmitComparison(
+          object exprObj, ExpressionType exprNodeType, object[] paramExprs, ILGenerator il, ClosureInfo closure)
       {
-        if (!EmitBinary(expr, paramExprs, il, closure)) { return false; }
+        if (!EmitBinary(exprObj, paramExprs, il, closure)) { return false; }
+
+        // todo: for now handling only parameters of the same type
+        // todo: for now Nullable is not supported ()
+        Type leftOpType, rightOpType;
+        var expr = exprObj as BinaryExpression;
+        if (expr != null)
+        {
+          leftOpType = expr.Left.Type;
+          rightOpType = expr.Right.Type;
+        }
+        else
+        {
+          var exprInfo = (BinaryExpressionInfo)exprObj;
+          leftOpType = exprInfo.Left.GetResultType();
+          rightOpType = exprInfo.Right.GetResultType();
+        }
+
+        if (leftOpType != rightOpType || leftOpType.IsNullable()) { return false; }
 
 #if NET40
-        var leftOpType = expr.Left.Type;
         var leftOpTypeInfo = leftOpType;
 #else
-        var leftOpType = expr.Left.Type;
         var leftOpTypeInfo = leftOpType.GetTypeInfo();
 #endif
+
         if (!leftOpTypeInfo.IsPrimitive && !leftOpTypeInfo.IsEnum)
         {
           var methodName
@@ -1875,7 +1909,7 @@ namespace FastExpressionCompiler
           return true;
         }
 
-        // emit for primitives
+        // handle primitives comparison
         switch (exprNodeType)
         {
           case ExpressionType.Equal:
