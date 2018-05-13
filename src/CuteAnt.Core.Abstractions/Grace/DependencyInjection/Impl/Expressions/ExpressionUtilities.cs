@@ -45,9 +45,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// <param name="allowDisposableTracking"></param>
     /// <param name="scope"></param>
     /// <param name="request"></param>
+    /// <param name="requestingStrategy"></param>
     /// <returns></returns>
     public static IActivationExpressionResult CreateExpressionForDelegate(Delegate delegateInstance, bool allowDisposableTracking,
-      IInjectionScope scope, IActivationExpressionRequest request)
+      IInjectionScope scope, IActivationExpressionRequest request, IActivationStrategy requestingStrategy)
     {
       var methodInfo = delegateInstance.GetMethodInfo();
 
@@ -57,17 +58,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
       // Handle closure based delegates differently
       if (delegateInstance.Target != null && string.Equals(_closureName, delegateInstance.Target.GetType().FullName, StringComparison.Ordinal))
       {
-        resultsExpressions = CreateExpressionsForTypes(request.RequestingStrategy, scope, request, methodInfo.ReturnType,
-            methodInfo.GetParameters().
-                Where(p => !(p.Position == 0 && string.Equals(_closureName, p.ParameterType.FullName, StringComparison.Ordinal))).
-                Select(p => p.ParameterType).ToArray());
+        resultsExpressions = CreateExpressionsForTypes(requestingStrategy, scope, request, methodInfo.ReturnType, 
+            methodInfo.GetParameters()
+                .Where(p => !(p.Position == 0 && string.Equals(_closureName, p.ParameterType.FullName, StringComparison.Ordinal)))
+                .Select(p => p.ParameterType).ToArray());
 
         expression = Expression.Invoke(Expression.Constant(delegateInstance),
             resultsExpressions.Select(e => e.Expression));
       }
       else
       {
-        resultsExpressions = CreateExpressionsForTypes(request.RequestingStrategy, scope, request, methodInfo.ReturnType,
+        resultsExpressions = CreateExpressionsForTypes(requestingStrategy, scope, request, methodInfo.ReturnType,
             methodInfo.GetParameters().Select(p => p.ParameterType).ToArray());
 
         expression = methodInfo.IsStatic

@@ -181,9 +181,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// <returns></returns>
     protected IActivationExpressionResult CallExportFunc(IActivationStrategy strategy, ParameterInfo parameter, ConstructorParameterInfo parameterInfo, IInjectionScope injectionScope, IActivationExpressionRequest request, bool configurationExternallyOwned)
     {
-      var exportDelegate = parameterInfo.ExportFunc as Delegate;
-
-      if (exportDelegate == null)
+      if (!(parameterInfo.ExportFunc is Delegate exportDelegate))
       {
         throw new ArgumentException($"Parameter Info {parameterInfo.ParameterName} is not delegate", nameof(parameterInfo));
       }
@@ -191,7 +189,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
       var newRequest = request.NewRequest(parameter.ParameterType, strategy, strategy.ActivationType,
           RequestType.ConstructorParameter, parameter, false, true);
 
-      return ExpressionUtilities.CreateExpressionForDelegate(exportDelegate, ShouldTrackDisposable(configurationExternallyOwned, injectionScope, strategy), injectionScope, newRequest);
+      return ExpressionUtilities.CreateExpressionForDelegate(exportDelegate, ShouldTrackDisposable(configurationExternallyOwned, injectionScope, strategy), injectionScope, newRequest, strategy);
     }
 
     /// <summary>Should the export be tracked for disposal</summary>
