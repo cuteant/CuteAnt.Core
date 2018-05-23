@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.DependencyInjection.Impl;
+using Grace.DependencyInjection.Impl.CompiledStrategies;
 using Grace.DependencyInjection.Impl.Expressions;
 
 namespace Grace.DependencyInjection
@@ -14,7 +15,7 @@ namespace Grace.DependencyInjection
   {
     /// <summary>Ups the priority of partially closed generics based on the number of closed parameters</summary>
     /// <param name="registrationBlock">registration block</param>
-    public static void PrioritizePartiallyClosedGenerics(this IExportRegistrationBlock registrationBlock) 
+    public static void PrioritizePartiallyClosedGenerics(this IExportRegistrationBlock registrationBlock)
         => registrationBlock.AddInspector(new PartiallyClosedGenericPriorityAugmenter());
 
     /// <summary>Export types from an assembly</summary>
@@ -68,14 +69,14 @@ namespace Grace.DependencyInjection
     /// <typeparam name="TInterface">type to export as</typeparam>
     /// <param name="registrationBlock"></param>
     /// <returns></returns>
-    public static IFluentExportStrategyConfiguration<T> ExportAs<T, TInterface>(this IExportRegistrationBlock registrationBlock) 
+    public static IFluentExportStrategyConfiguration<T> ExportAs<T, TInterface>(this IExportRegistrationBlock registrationBlock)
       where T : TInterface => registrationBlock.Export<T>().As<TInterface>();
 
     /// <summary>Extension to export a list of types to a registration block</summary>
     /// <param name="types">list of types</param>
     /// <param name="registrationBlock">registration block</param>
     /// <returns>configuration object</returns>
-    public static IExportTypeSetConfiguration ExportTo(this IEnumerable<Type> types, IExportRegistrationBlock registrationBlock) 
+    public static IExportTypeSetConfiguration ExportTo(this IEnumerable<Type> types, IExportRegistrationBlock registrationBlock)
         => registrationBlock.Export(types);
 
     /// <summary>This is a short cut to registering a value as a name using the member name for exporting
@@ -104,6 +105,11 @@ namespace Grace.DependencyInjection
       throw new Exception("This method can only be used on members (i.e. ExportNamedValue(() => SomeProperty))");
     }
 
+    public static void ExportDecoratorFactory<T, TResult>(this IExportRegistrationBlock registrationBlock, Func<T, TResult> factory)
+    {
+      registrationBlock.AddActivationStrategy(new CompiledFactoryDecoratorStrategy<TResult>(factory, registrationBlock.OwningScope));
+    }
+
     /// <summary>Import all members of a specific type and can be filtered</summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="registrationBlock"></param>
@@ -121,7 +127,7 @@ namespace Grace.DependencyInjection
     /// <param name="registrationBlock"></param>
     /// <param name="filter">filter out members to inject</param>
     /// <param name="processAttributes">process import attribute</param>
-    public static IExportRegistrationBlock ImportMembers<T>(this IExportRegistrationBlock registrationBlock, 
+    public static IExportRegistrationBlock ImportMembers<T>(this IExportRegistrationBlock registrationBlock,
       Func<MemberInfo, bool> filter = null, bool processAttributes = true)
     {
       registrationBlock.AddMemberInjectionSelector(new PropertyFieldInjectionSelector(typeof(T), filter, processAttributes));
@@ -134,7 +140,7 @@ namespace Grace.DependencyInjection
     /// <param name="filter"></param>
     /// <param name="injectMethods">should methods be injected, false by default</param>
     /// <param name="processAttributes">process import attribute</param>
-    public static IExportRegistrationBlock ImportMembers(this IExportRegistrationBlock registrationBlock, 
+    public static IExportRegistrationBlock ImportMembers(this IExportRegistrationBlock registrationBlock,
       Func<MemberInfo, bool> filter = null, bool injectMethods = false, bool processAttributes = true)
     {
       registrationBlock.AddMemberInjectionSelector(new PublicMemeberInjectionSelector(filter, injectMethods, processAttributes));
