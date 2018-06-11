@@ -76,7 +76,7 @@ namespace CuteAnt.Reflection
       this.TypeName = key;
     }
 
-    public TypeKey(string typeName) : this(Encoding.UTF8.GetBytes(typeName)) { }
+    public TypeKey(string typeName) : this(StringHelper.UTF8NoBOM.GetBytes(typeName)) { }
 
     public string GetTypeName() => Encoding.UTF8.GetString(this.TypeName);
 
