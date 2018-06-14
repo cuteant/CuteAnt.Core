@@ -17,6 +17,9 @@
     /// both in <see cref="Microsoft.Extensions.Logging.ILogger.Log"/> and <see cref="Microsoft.Extensions.Logging.ILogger.BeginScope"/>.</summary>
     public bool CaptureMessageProperties { get; set; }
 
+    /// <summary>Use the NLog engine for parsing the message template (again) and format using the NLog formatter</summary>
+    public bool ParseMessageTemplates { get; set; }
+
     /// <summary>Initializes a new instance of the <see cref="T:System.Object"/> class.</summary>
     public NLogProviderOptions()
     {
@@ -24,6 +27,7 @@
       IgnoreEmptyEventId = true;
       CaptureMessageTemplates = true;
       CaptureMessageProperties = true;
+      ParseMessageTemplates = false;
     }
 
     /// <summary>Default options</summary>

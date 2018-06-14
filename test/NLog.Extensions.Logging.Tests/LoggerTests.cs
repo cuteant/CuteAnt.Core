@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,6 +50,15 @@ namespace NLog.Extensions.Logging.Tests
 
             var target = GetTarget();
             Assert.Equal("NLog.Extensions.Logging.Tests.LoggerTests.Runner|DEBUG|message with id and 1 parameters |1", target.Logs.FirstOrDefault());
+        }
+
+        [Fact]
+        public void TestStructuredLoggingFormatter()
+        {
+            GetRunner().LogDebugWithStructuredParameterFormater();
+
+            var target = GetTarget();
+            Assert.Equal("NLog.Extensions.Logging.Tests.LoggerTests.Runner|DEBUG|message with id and {\"TestValue\":\"This is the test value\"} parameters |", target.Logs.FirstOrDefault());
         }
 
         [Fact]
@@ -241,6 +250,11 @@ namespace NLog.Extensions.Logging.Tests
                 _logger.LogDebug("message with id and {ParameterCount} parameters", "1");
             }
 
+            public void LogDebugWithStructuredParameterFormater()
+            {
+                _logger.LogDebug("message with id and {@ObjectParameter} parameters", new TestObject());
+            }
+
             public void LogDebugWithSimulatedStructuredParameters()
             {
                 _logger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, default(EventId), new List<KeyValuePair<string, object>>(new [] { new KeyValuePair<string,object>("{OriginalFormat}", "message with id and {ParameterCount} property"), new KeyValuePair<string, object>("ParameterCount", 1) }), null, (s, ex) => "message with id and 1 property");
@@ -276,6 +290,11 @@ namespace NLog.Extensions.Logging.Tests
             {
                 _logger.LogDebug("init runner");
             }
+        }
+
+        public class TestObject
+        {
+            public string TestValue { get; set; } = "This is the test value";
         }
     }
 }
