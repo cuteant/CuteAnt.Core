@@ -223,9 +223,8 @@ namespace Grace.DependencyInjection
     StaticInjectionContext GetStaticInjectionContext();
 
     /// <summary>Create target info for request</summary>
-    /// <param name="targetInfos">child targets</param>
     /// <returns></returns>
-    ImmutableLinkedList<InjectionTargetInfo> CreateTargetInfo(ImmutableLinkedList<InjectionTargetInfo> targetInfos);
+    ImmutableLinkedList<InjectionTargetInfo> CreateTargetInfo();
 
     /// <summary>Add known value expression to request</summary>
     /// <param name="knownValueExpression">known value expression</param>

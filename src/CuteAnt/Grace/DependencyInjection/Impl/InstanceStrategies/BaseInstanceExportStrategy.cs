@@ -8,7 +8,7 @@ using Grace.DependencyInjection.Lifestyle;
 namespace Grace.DependencyInjection.Impl.InstanceStrategies
 {
   /// <summary>Base export strategy for all instance and factory exports</summary>
-  public abstract class BaseInstanceExportStrategy : ConfigurableActivationStrategy, ICompiledExportStrategy
+  public abstract class BaseInstanceExportStrategy : ConfigurableActivationStrategy, ICompiledExportStrategy, IInstanceActivationStrategy
   {
     private ImmutableLinkedList<ICompiledExportStrategy> _secondaryStrategies = ImmutableLinkedList<ICompiledExportStrategy>.Empty;
 
@@ -77,6 +77,9 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
 
     /// <summary>Type of activation strategy</summary>
     public override ActivationStrategyType StrategyType { get; } = ActivationStrategyType.ExportStrategy;
+
+    /// <summary>Allow for null returns</summary>
+    public bool? AllowNullReturn { get; set; }
 
     /// <summary>Create expression that is implemented in child class</summary>
     /// <param name="scope"></param>

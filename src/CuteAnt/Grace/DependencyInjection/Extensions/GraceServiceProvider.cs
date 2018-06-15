@@ -1,4 +1,5 @@
 ﻿using System;
+using Grace.DependencyInjection.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Grace.DependencyInjection.Extensions
@@ -17,7 +18,11 @@ namespace Grace.DependencyInjection.Extensions
     /// <param name="serviceType">An object that specifies the type of service object to get.</param>
     /// <returns>A service object of type <paramref name="serviceType"/>. Throws an exception if the <see
     /// cref="T:System.IServiceProvider"/> cannot create the object.</returns>
-    public object GetRequiredService(Type serviceType) => _injectionScope.Locate(serviceType);
+    public object GetRequiredService(Type serviceType)
+    {
+      return _injectionScope.Locate(serviceType) ??
+             throw new LocateException(new StaticInjectionContext(serviceType));
+    }
 
     /// <summary>Gets the service object of the specified type.</summary>
     /// <returns>A service object of type <paramref name="serviceType"/>.-or- null if there is no service

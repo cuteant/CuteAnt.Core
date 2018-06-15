@@ -28,6 +28,10 @@ namespace Grace.DependencyInjection
     /// <param name="provider"></param>
     void AddMissingExportStrategyProvider(IMissingExportStrategyProvider provider);
 
+    /// <summary>Add missing dependency expression provider</summary>
+    /// <param name="provider"></param>
+    void AddMissingDependencyExpressionProvider(IMissingDependencyExpressionProvider provider);
+
     /// <summary>Add IInjectionValueProvider allowing the developer to override the normal behavior for
     /// creating an injection value</summary>
     /// <param name="provider"></param>

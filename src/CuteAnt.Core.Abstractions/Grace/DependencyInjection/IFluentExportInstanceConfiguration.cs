@@ -7,6 +7,12 @@ namespace Grace.DependencyInjection
   /// <typeparam name="T"></typeparam>
   public interface IFluentExportInstanceConfiguration<T>
   {
+    /// <summary>This will turn off graces built in check for null return values on exports.
+    /// By default an exception will be thrown if null is returned.</summary>
+    /// <param name="allowNullReturn"></param>
+    /// <returns></returns>
+    IFluentExportInstanceConfiguration<T> AllowNullReturn(bool allowNullReturn = true);
+
     /// <summary>Export as specific type</summary>
     /// <param name="type">type to export as</param>
     /// <returns></returns>

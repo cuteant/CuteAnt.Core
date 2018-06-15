@@ -8,16 +8,27 @@ namespace Grace.DependencyInjection.Impl
   /// <typeparam name="T"></typeparam>
   public class FluentExportInstanceConfiguration<T> : IFluentExportInstanceConfiguration<T>, IActivationStrategyProvider
   {
-    private readonly IConfigurableActivationStrategy _exportConfiguration;
+    private readonly IInstanceActivationStrategy _exportConfiguration;
     private readonly IExportRegistrationBlock _registrationBlock;
 
     /// <summary>Default constructor</summary>
     /// <param name="exportConfiguration"></param>
     /// <param name="registrationBlock"></param>
-    public FluentExportInstanceConfiguration(IConfigurableActivationStrategy exportConfiguration, IExportRegistrationBlock registrationBlock)
+    public FluentExportInstanceConfiguration(IInstanceActivationStrategy exportConfiguration, IExportRegistrationBlock registrationBlock)
     {
       _exportConfiguration = exportConfiguration;
       _registrationBlock = registrationBlock;
+    }
+
+    /// <summary>This will turn off graces built in check for null return values on exports.
+    /// By default an exception will be thrown if null is returned.</summary>
+    /// <param name="allowNullReturn"></param>
+    /// <returns></returns>
+    public IFluentExportInstanceConfiguration<T> AllowNullReturn(bool allowNullReturn = true)
+    {
+      _exportConfiguration.AllowNullReturn = allowNullReturn;
+
+      return this;
     }
 
     /// <summary>Export as specific type</summary>

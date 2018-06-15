@@ -105,7 +105,10 @@ namespace Grace.Data.Immutable
   public class ImmutableLinkedList<T> : IEnumerable<T>, IReadOnlyList<T>
   {
     /// <summary>Empty instance of list</summary>
-    public static readonly ImmutableLinkedList<T> Empty = new ImmutableLinkedList<T>(default(T), null, 0);
+    public static readonly ImmutableLinkedList<T> Empty = new ImmutableLinkedList<T>(default, null, 0);
+
+    /// <summary>Empty enumerator</summary>
+    private static readonly EmptyLinkedListEnumerator EmptyEnumerator = new EmptyLinkedListEnumerator();
 
     /// <summary>Default constructor</summary>
     /// <param name="value"></param>
@@ -130,7 +133,10 @@ namespace Grace.Data.Immutable
     /// <summary>Add value to list</summary>
     /// <param name="value">value to add to list</param>
     /// <returns>new linked list</returns>
-    public ImmutableLinkedList<T> Add(T value) => new ImmutableLinkedList<T>(value, this, Count + 1);
+    public ImmutableLinkedList<T> Add(T value)
+    {
+      return new ImmutableLinkedList<T>(value, this, Count + 1);
+    }
 
     /// <summary>Add range to linked list</summary>
     /// <param name="range">range to add</param>
@@ -151,15 +157,24 @@ namespace Grace.Data.Immutable
 
     /// <summary>Get an enumerator for list</summary>
     /// <returns></returns>
-    public IEnumerator<T> GetEnumerator() => new LinkedListEnumerator(this);
+    public IEnumerator<T> GetEnumerator()
+    {
+      return Count == 0 ? (IEnumerator<T>)EmptyEnumerator : new LinkedListEnumerator(this);
+    }
 
     /// <summary>Get enumerator for list</summary>
     /// <returns></returns>
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      return GetEnumerator();
+    }
 
     /// <summary>Reverse linked list</summary>
     /// <returns></returns>
-    public ImmutableLinkedList<T> Reverse() => this.Aggregate(Empty, (current, t) => current.Add(t));
+    public ImmutableLinkedList<T> Reverse()
+    {
+      return this.Aggregate(Empty, (current, t) => current.Add(t));
+    }
 
     /// <summary>Visit all values in list</summary>
     /// <param name="action">action to call</param>
@@ -168,13 +183,25 @@ namespace Grace.Data.Immutable
     {
       if (action == null) throw new ArgumentNullException(nameof(action));
 
-      if (this == Empty) { return; }
+      if (this == Empty)
+      {
+        return;
+      }
 
-      if (!startAtEnd) { action(Value); }
+      if (!startAtEnd)
+      {
+        action(Value);
+      }
 
-      if (Next != Empty) { Next.Visit(action, startAtEnd); }
+      if (Next != Empty)
+      {
+        Next.Visit(action, startAtEnd);
+      }
 
-      if (startAtEnd) { action(Value); }
+      if (startAtEnd)
+      {
+        action(Value);
+      }
     }
 
     /// <summary>Check if list contains value</summary>
@@ -182,13 +209,19 @@ namespace Grace.Data.Immutable
     /// <returns></returns>
     public bool Contains(T value)
     {
-      if (this == Empty) { return false; }
+      if (this == Empty)
+      {
+        return false;
+      }
 
       var current = this;
 
       while (current != null && current != Empty)
       {
-        if (value.Equals(current.Value)) { return true; }
+        if (value.Equals(current.Value))
+        {
+          return true;
+        }
 
         current = current.Next;
       }
@@ -198,18 +231,58 @@ namespace Grace.Data.Immutable
 
     private string DebuggerDisplayString => $"Count: {Count}";
 
+    /// <summary>Empty enumerator</summary>
+    private class EmptyLinkedListEnumerator : IEnumerator<T>
+    {
+      /// <summary>Advances the enumerator to the next element of the collection.</summary>
+      /// <returns>true if the enumerator was successfully advanced to the next element; false if the
+      /// enumerator has passed the end of the collection.</returns>
+      /// <exception cref="T:System.InvalidOperationException">
+      /// The collection was modified after the enumerator was created.
+      /// </exception>
+      public bool MoveNext()
+      {
+        return false;
+      }
+
+      /// <summary>Sets the enumerator to its initial position, which is before the first element in the collection.</summary>
+      /// <exception cref="T:System.InvalidOperationException">The collection was modified after the enumerator was created.</exception>
+      public void Reset()
+      {
+      }
+
+      /// <summary>Gets the element in the collection at the current position of the enumerator.</summary>
+      /// <returns>The element in the collection at the current position of the enumerator.</returns>
+      public T Current { get; }
+
+      /// <summary>Gets the current element in the collection.</summary>
+      /// <returns>The current element in the collection.</returns>
+      object IEnumerator.Current => Current;
+
+      /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+      public void Dispose()
+      {
+      }
+    }
+
     private class LinkedListEnumerator : IEnumerator<T>
     {
       private readonly ImmutableLinkedList<T> _start;
       private ImmutableLinkedList<T> _current;
 
-      public LinkedListEnumerator(ImmutableLinkedList<T> current) => _start = current;
+      public LinkedListEnumerator(ImmutableLinkedList<T> current)
+      {
+        _start = current;
+      }
 
       public bool MoveNext()
       {
         if (_current == null)
         {
-          if (_start.Next == null) { return false; }
+          if (_start.Next == null)
+          {
+            return false;
+          }
 
           _current = _start;
         }
@@ -225,7 +298,10 @@ namespace Grace.Data.Immutable
         return true;
       }
 
-      public void Reset() => _current = _start;
+      public void Reset()
+      {
+        _current = _start;
+      }
 
       public T Current => _current.Value;
 

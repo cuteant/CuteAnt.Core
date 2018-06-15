@@ -124,6 +124,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
         }
       }
 
+      foreach (var scopeMissingDependencyExpressionProvider in scope.MissingDependencyExpressionProviders)
+      {
+        var result = scopeMissingDependencyExpressionProvider.ProvideExpression(scope, request);
+
+        if (result != null)
+        {
+          return result;
+        }
+      }
+
       if (scope.Parent is IInjectionScope parent)
       {
         return GetActivationExpression(parent, request);
@@ -189,17 +199,17 @@ namespace Grace.DependencyInjection.Impl.Expressions
         key = keyString.ToLowerInvariant();
       }
 
-      var expresion = Expression.Call(Expression.Constant(_contextValueProvider),
-                                      closedMethod,
-                                      request.ScopeParameter,
-                                      Expression.Constant(request.GetStaticInjectionContext()),
-                                      Expression.Constant(key, typeof(object)),
-                                      request.InjectionContextParameter,
-                                      Expression.Constant(request.DefaultValue?.DefaultValue, typeof(object)),
-                                      Expression.Constant(request.DefaultValue != null),
-                                      Expression.Constant(request.IsRequired));
+      var expression = Expression.Call(Expression.Constant(_contextValueProvider),
+                                       closedMethod,
+                                       request.ScopeParameter,
+                                       Expression.Constant(request.GetStaticInjectionContext()),
+                                       Expression.Constant(key, typeof(object)),
+                                       request.InjectionContextParameter,
+                                       Expression.Constant(request.DefaultValue?.DefaultValue, typeof(object)),
+                                       Expression.Constant(request.DefaultValue != null),
+                                       Expression.Constant(request.IsRequired));
 
-      var result = request.Services.Compiler.CreateNewResult(request, expresion);
+      var result = request.Services.Compiler.CreateNewResult(request, expression);
 
       result.UsingFallbackExpression = true;
 
