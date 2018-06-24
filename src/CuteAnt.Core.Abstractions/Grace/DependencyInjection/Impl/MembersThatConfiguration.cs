@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Grace.Data;
 using Grace.Utilities;
 
@@ -164,7 +165,7 @@ namespace Grace.DependencyInjection.Impl
       {
         if (_filters.UseOr)
         {
-          throw new Exception("Cannot use And with Or");
+          ThrowException();
         }
 
         _filters.UseOr = false;
@@ -198,5 +199,15 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>Implicitly convert to func</summary>
     /// <param name="configuration"></param>
     public static implicit operator Func<MemberInfo, bool>(MembersThatConfiguration configuration) => configuration._filters;
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowException()
+    {
+      throw GetException();
+      Exception GetException()
+      {
+        return new Exception("Cannot use And with Or");
+      }
+    }
   }
 }

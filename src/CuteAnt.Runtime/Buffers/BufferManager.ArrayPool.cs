@@ -2,6 +2,7 @@
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using CuteAnt.Runtime;
 
 namespace CuteAnt.Buffers
 {
@@ -52,7 +53,7 @@ namespace CuteAnt.Buffers
     /// <summary>Creates a new <see cref="T:System.Buffers.ArrayPool{byte}" /> with a specified maximum buffer pool size and a maximum size for each individual buffer in the pool.</summary>
     public static ArrayPool<byte> CreateArrayPool(BufferManager bufferManager)
     {
-      if (null == bufferManager) { throw new ArgumentNullException(nameof(bufferManager)); }
+      if (null == bufferManager) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.bufferManager); }
 
       return new BufferManagerPool(bufferManager);
     }
@@ -76,17 +77,24 @@ namespace CuteAnt.Buffers
 
       public override byte[] Rent(int minimumLength)
       {
-        if (minimumLength < 0)
-        {
-          throw new ArgumentOutOfRangeException(nameof(minimumLength), minimumLength, "Value must be non-negative.");
-        }
+        if (minimumLength < 0) { ThrowArgumentOutOfRangeException(minimumLength); }
 
         return _bufferManager.TakeBuffer(minimumLength);
       }
 
+      [MethodImpl(MethodImplOptions.NoInlining)]
+      private static void ThrowArgumentOutOfRangeException(int minimumLength)
+      {
+        throw GetArgumentOutOfRangeException();
+        ArgumentOutOfRangeException GetArgumentOutOfRangeException()
+        {
+          return new ArgumentOutOfRangeException(nameof(minimumLength), minimumLength, "Value must be non-negative.");
+        }
+      }
+
       public override unsafe void Return(byte[] array, bool clearArray = false)
       {
-        if (array == null) { throw new ArgumentNullException(nameof(array)); }
+        if (array == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array); }
         if (array.Length == 0) { return; } // Ignore empty arrays.
 
         if (clearArray)

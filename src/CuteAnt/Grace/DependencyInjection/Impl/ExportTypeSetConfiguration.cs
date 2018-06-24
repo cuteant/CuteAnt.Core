@@ -51,7 +51,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IExportTypeSetConfiguration AndCondition(Func<Type, IEnumerable<ICompiledCondition>> conditionFunc)
     {
-      if (conditionFunc == null) throw new ArgumentNullException(nameof(conditionFunc));
+      if (null == conditionFunc) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.conditionFunc);
 
       _conditions = _conditions.Add(conditionFunc);
 
@@ -63,7 +63,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IExportTypeSetConfiguration BasedOn(Type baseType)
     {
-      if (baseType == null) throw new ArgumentNullException(nameof(baseType));
+      if (null == baseType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.baseType);
 
       _basedOnTypes = _basedOnTypes.Add(baseType);
 
@@ -84,7 +84,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IExportTypeSetConfiguration ByInterface(Type interfaceType)
     {
-      if (interfaceType == null) throw new ArgumentNullException(nameof(interfaceType));
+      if (null == interfaceType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.interfaceType);
 
       _byInterface = _byInterface.Add(interfaceType);
 
@@ -100,6 +100,7 @@ namespace Grace.DependencyInjection.Impl
       return this;
     }
 
+    private static readonly Func<Type, bool> s_whereClause = type => true;
     /// <summary>Export all classes by interface or that match a set of interfaces</summary>
     /// <param name="whereClause">where clause to test if the interface should be used for exporting</param>
     /// <returns>configuration object</returns>
@@ -107,7 +108,7 @@ namespace Grace.DependencyInjection.Impl
     {
       if (whereClause == null)
       {
-        whereClause = type => true;
+        whereClause = s_whereClause;
       }
 
       _byInterfaces = _byInterfaces.Add(whereClause);
@@ -115,6 +116,7 @@ namespace Grace.DependencyInjection.Impl
       return this;
     }
 
+    private static readonly Func<Type, IEnumerable<string>> s_nameFunc = type => new[] { type.Name };
     /// <summary>Export by name</summary>
     /// <param name="nameFunc"></param>
     /// <returns></returns>
@@ -122,7 +124,7 @@ namespace Grace.DependencyInjection.Impl
     {
       if (nameFunc == null)
       {
-        nameFunc = type => new[] { type.Name };
+        nameFunc = s_nameFunc;
       }
 
       _byName = _byName.Add(nameFunc);
@@ -139,7 +141,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IExportTypeSetConfiguration ByTypes(Func<Type, IEnumerable<Type>> typeDelegate)
     {
-      if (typeDelegate == null) throw new ArgumentNullException(nameof(typeDelegate));
+      if (null == typeDelegate) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.typeDelegate);
 
       _byTypes = _byTypes.Add(typeDelegate);
 
@@ -151,7 +153,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IExportTypeSetConfiguration ByKeyedTypes(Func<Type, IEnumerable<Tuple<Type, object>>> keyedDelegate)
     {
-      if (keyedDelegate == null) throw new ArgumentNullException(nameof(keyedDelegate));
+      if (null == keyedDelegate) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.keyedDelegate);
 
       _byKeyedType = _byKeyedType.Add(keyedDelegate);
 
@@ -163,7 +165,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IExportTypeSetConfiguration Exclude(Func<Type, bool> exclude)
     {
-      if (exclude == null) throw new ArgumentNullException(nameof(exclude));
+      if (null == exclude) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.exclude);
 
       _excludeFuncs = _excludeFuncs.Add(exclude);
 
@@ -184,7 +186,8 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IExportTypeSetConfiguration ImportConstructorSelection(Func<Type, IConstructorExpressionCreator> method)
     {
-      _constructorSelectionMethod = method ?? throw new ArgumentNullException(nameof(method));
+      if (null == method) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.method);
+      _constructorSelectionMethod = method;
 
       return this;
     }
@@ -203,7 +206,8 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IExportTypeSetConfiguration UsingLifestyle(Func<Type, ICompiledLifestyle> lifestyleFunc)
     {
-      _lifestyleFunc = lifestyleFunc ?? throw new ArgumentNullException(nameof(lifestyleFunc));
+      if (null == lifestyleFunc) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.lifestyleFunc);
+      _lifestyleFunc = lifestyleFunc;
 
       return this;
     }
@@ -213,7 +217,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IExportTypeSetConfiguration Where(Func<Type, bool> typeFilter)
     {
-      if (typeFilter == null) throw new ArgumentNullException(nameof(typeFilter));
+      if (null == typeFilter) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.typeFilter);
 
       _whereFilter.Add(typeFilter);
 
@@ -225,7 +229,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IExportTypeSetConfiguration WithInspector(IActivationStrategyInspector inspector)
     {
-      if (inspector == null) throw new ArgumentNullException(nameof(inspector));
+      if (null == inspector) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.inspector);
 
       _inspectors = _inspectors.Add(inspector);
 

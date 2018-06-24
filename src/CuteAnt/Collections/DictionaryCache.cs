@@ -156,7 +156,7 @@ namespace CuteAnt.Collections
       {
         if (!_innerDictionary.TryGetValue(key, out TValue value))
         {
-          if (null == func) { throw new ArgumentNullException(nameof(func)); }
+          if (null == func) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.func); }
 
           var addedValue = func(key);
           if (!object.Equals(addedValue, s_defaultValue))
@@ -186,7 +186,7 @@ namespace CuteAnt.Collections
     {
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
-        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+        if (null == func) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.func); }
 
         var addedValue = func(key, arg);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
@@ -217,7 +217,7 @@ namespace CuteAnt.Collections
     {
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
-        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+        if (null == func) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.func); }
 
         var addedValue = func(key, arg, arg2);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
@@ -250,7 +250,7 @@ namespace CuteAnt.Collections
     {
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
-        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+        if (null == func) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.func); }
 
         var addedValue = func(key, arg, arg2, arg3);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
@@ -285,7 +285,7 @@ namespace CuteAnt.Collections
     {
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
-        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+        if (null == func) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.func); }
 
         var addedValue = func(key, arg, arg2, arg3, arg4);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
@@ -323,7 +323,7 @@ namespace CuteAnt.Collections
     {
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
-        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+        if (null == func) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.func); }
 
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
@@ -363,7 +363,7 @@ namespace CuteAnt.Collections
     {
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
-        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+        if (null == func) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.func); }
 
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5, arg6);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
@@ -405,7 +405,7 @@ namespace CuteAnt.Collections
     {
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
-        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+        if (null == func) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.func); }
 
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5, arg6, arg7);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
@@ -449,7 +449,7 @@ namespace CuteAnt.Collections
     {
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
-        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+        if (null == func) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.func); }
 
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
@@ -495,7 +495,7 @@ namespace CuteAnt.Collections
     {
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
-        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+        if (null == func) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.func); }
 
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))
@@ -543,7 +543,7 @@ namespace CuteAnt.Collections
     {
       if (!_innerDictionary.TryGetValue(key, out TValue value))
       {
-        if (null == func) { throw new ArgumentNullException(nameof(func)); }
+        if (null == func) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.func); }
 
         var addedValue = func(key, arg, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
         if (CacheDefault || !object.Equals(addedValue, s_defaultValue))

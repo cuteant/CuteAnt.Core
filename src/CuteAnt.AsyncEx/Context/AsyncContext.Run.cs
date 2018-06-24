@@ -10,7 +10,7 @@ namespace CuteAnt.AsyncEx
     /// <param name="action">The action to execute. May not be <c>null</c>.</param>
     public static void Run(Action action)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -21,7 +21,7 @@ namespace CuteAnt.AsyncEx
     }
     public static void Run<T1>(Action<T1> action, T1 arg1)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -37,7 +37,7 @@ namespace CuteAnt.AsyncEx
     }
     public static void Run<T1, T2>(Action<T1, T2> action, T1 arg1, T2 arg2)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -53,7 +53,7 @@ namespace CuteAnt.AsyncEx
     }
     public static void Run<T1, T2, T3>(Action<T1, T2, T3> action, T1 arg1, T2 arg2, T3 arg3)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -69,7 +69,7 @@ namespace CuteAnt.AsyncEx
     }
     public static void Run<T1, T2, T3, T4>(Action<T1, T2, T3, T4> action, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -85,7 +85,7 @@ namespace CuteAnt.AsyncEx
     }
     public static void Run<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> action, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -102,7 +102,7 @@ namespace CuteAnt.AsyncEx
     public static void Run<T1, T2, T3, T4, T5, T6>(Action<T1, T2, T3, T4, T5, T6> action,
       T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -124,7 +124,7 @@ namespace CuteAnt.AsyncEx
     /// <param name="action">The action to execute. May not be <c>null</c>.</param>
     public static void Run(Func<Task> action)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -140,7 +140,7 @@ namespace CuteAnt.AsyncEx
     }
     public static void Run<T1>(Func<T1, Task> action, T1 arg1)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -156,7 +156,7 @@ namespace CuteAnt.AsyncEx
     }
     public static void Run<T1, T2>(Func<T1, T2, Task> action, T1 arg1, T2 arg2)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -172,7 +172,7 @@ namespace CuteAnt.AsyncEx
     }
     public static void Run<T1, T2, T3>(Func<T1, T2, T3, Task> action, T1 arg1, T2 arg2, T3 arg3)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -188,7 +188,7 @@ namespace CuteAnt.AsyncEx
     }
     public static void Run<T1, T2, T3, T4>(Func<T1, T2, T3, T4, Task> action, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -205,7 +205,7 @@ namespace CuteAnt.AsyncEx
     public static void Run<T1, T2, T3, T4, T5>(Func<T1, T2, T3, T4, T5, Task> action,
       T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -222,7 +222,7 @@ namespace CuteAnt.AsyncEx
     public static void Run<T1, T2, T3, T4, T5, T6>(Func<T1, T2, T3, T4, T5, T6, Task> action,
       T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -245,7 +245,7 @@ namespace CuteAnt.AsyncEx
     /// <param name="action">The action to execute. May not be <c>null</c>.</param>
     public static TResult Run<TResult>(Func<TResult> action)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -256,7 +256,7 @@ namespace CuteAnt.AsyncEx
     }
     public static TResult Run<T1, TResult>(Func<T1, TResult> function, T1 arg1)
     {
-      if (function == null) throw new ArgumentNullException(nameof(function));
+      if (function == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.function);
 
       using (var context = new AsyncContext())
       {
@@ -272,7 +272,7 @@ namespace CuteAnt.AsyncEx
     }
     public static TResult Run<T1, T2, TResult>(Func<T1, T2, TResult> function, T1 arg1, T2 arg2)
     {
-      if (function == null) throw new ArgumentNullException(nameof(function));
+      if (function == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.function);
 
       using (var context = new AsyncContext())
       {
@@ -288,7 +288,7 @@ namespace CuteAnt.AsyncEx
     }
     public static TResult Run<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> function, T1 arg1, T2 arg2, T3 arg3)
     {
-      if (function == null) throw new ArgumentNullException(nameof(function));
+      if (function == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.function);
 
       using (var context = new AsyncContext())
       {
@@ -304,7 +304,7 @@ namespace CuteAnt.AsyncEx
     }
     public static TResult Run<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
     {
-      if (function == null) throw new ArgumentNullException(nameof(function));
+      if (function == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.function);
 
       using (var context = new AsyncContext())
       {
@@ -321,7 +321,7 @@ namespace CuteAnt.AsyncEx
     public static TResult Run<T1, T2, T3, T4, T5, TResult>(Func<T1, T2, T3, T4, T5, TResult> function,
       T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
     {
-      if (function == null) throw new ArgumentNullException(nameof(function));
+      if (function == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.function);
 
       using (var context = new AsyncContext())
       {
@@ -338,7 +338,7 @@ namespace CuteAnt.AsyncEx
     public static TResult Run<T1, T2, T3, T4, T5, T6, TResult>(Func<T1, T2, T3, T4, T5, T6, TResult> function,
       T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
     {
-      if (function == null) throw new ArgumentNullException(nameof(function));
+      if (function == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.function);
 
       using (var context = new AsyncContext())
       {
@@ -361,7 +361,7 @@ namespace CuteAnt.AsyncEx
     /// <param name="action">The action to execute. May not be <c>null</c>.</param>
     public static TResult Run<TResult>(Func<Task<TResult>> action)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       using (var context = new AsyncContext())
       {
@@ -377,7 +377,7 @@ namespace CuteAnt.AsyncEx
     }
     public static TResult Run<T1, TResult>(Func<T1, Task<TResult>> function, T1 arg1)
     {
-      if (function == null) throw new ArgumentNullException(nameof(function));
+      if (function == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.function);
 
       using (var context = new AsyncContext())
       {
@@ -393,7 +393,7 @@ namespace CuteAnt.AsyncEx
     }
     public static TResult Run<T1, T2, TResult>(Func<T1, T2, Task<TResult>> function, T1 arg1, T2 arg2)
     {
-      if (function == null) throw new ArgumentNullException(nameof(function));
+      if (function == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.function);
 
       using (var context = new AsyncContext())
       {
@@ -409,7 +409,7 @@ namespace CuteAnt.AsyncEx
     }
     public static TResult Run<T1, T2, T3, TResult>(Func<T1, T2, T3, Task<TResult>> function, T1 arg1, T2 arg2, T3 arg3)
     {
-      if (function == null) throw new ArgumentNullException(nameof(function));
+      if (function == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.function);
 
       using (var context = new AsyncContext())
       {
@@ -425,7 +425,7 @@ namespace CuteAnt.AsyncEx
     }
     public static TResult Run<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, Task<TResult>> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
     {
-      if (function == null) throw new ArgumentNullException(nameof(function));
+      if (function == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.function);
 
       using (var context = new AsyncContext())
       {
@@ -442,7 +442,7 @@ namespace CuteAnt.AsyncEx
     public static TResult Run<T1, T2, T3, T4, T5, TResult>(Func<T1, T2, T3, T4, T5, Task<TResult>> function,
       T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
     {
-      if (function == null) throw new ArgumentNullException(nameof(function));
+      if (function == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.function);
 
       using (var context = new AsyncContext())
       {
@@ -459,7 +459,7 @@ namespace CuteAnt.AsyncEx
     public static TResult Run<T1, T2, T3, T4, T5, T6, TResult>(Func<T1, T2, T3, T4, T5, T6, Task<TResult>> function,
       T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
     {
-      if (function == null) throw new ArgumentNullException(nameof(function));
+      if (function == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.function);
 
       using (var context = new AsyncContext())
       {

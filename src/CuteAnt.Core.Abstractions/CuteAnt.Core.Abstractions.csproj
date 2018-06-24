@@ -8,7 +8,7 @@
   </ImportGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>net471;net451;net40;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netstandard2.0;net471;net451;net40</TargetFrameworks>
     <RootNamespace>CuteAnt</RootNamespace>
     <AssemblyName>CuteAnt.Core.Abstractions</AssemblyName>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
@@ -24,6 +24,21 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
     <PackageReference Include="NetFx.Extensions.Primitives" Version="$(NetFxExtensionsPrimitivesPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Internal\Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Internal\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   </Project>

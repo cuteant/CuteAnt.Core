@@ -19,7 +19,8 @@ namespace CuteAnt.Pool
 
     public ConcurrentObjectPool(IPooledObjectPolicy<TPoolItem> policy, int maximumRetained)
     {
-      _policy = policy ?? throw new ArgumentNullException(nameof(policy));
+      if (null == policy) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.policy); }
+      _policy = policy;
       _innerPool = new ConcurrentBag<TPoolItem>();
       _maximumRetained = maximumRetained;
     }

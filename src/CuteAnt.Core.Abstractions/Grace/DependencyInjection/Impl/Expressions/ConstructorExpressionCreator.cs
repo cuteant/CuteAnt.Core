@@ -199,7 +199,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
     {
       if (!(parameterInfo.ExportFunc is Delegate exportDelegate))
       {
-        throw new ArgumentException($"Parameter Info {parameterInfo.ParameterName} is not delegate", nameof(parameterInfo));
+        ThrowHelper.ThrowArgumentException($"Parameter Info {parameterInfo.ParameterName} is not delegate", ExceptionArgument.parameterInfo); return null;
       }
 
       var newRequest = request.NewRequest(parameter.ParameterType, strategy, strategy.ActivationType,

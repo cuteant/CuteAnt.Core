@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Grace.DependencyInjection.Impl.Wrappers
 {
@@ -49,10 +50,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
       var strategy = request.GetWrappedExportStrategy();
 
-      if (strategy == null)
-      {
-        throw new Exception("Could not find export stragegy to get metadata from");
-      }
+      if (strategy == null) { ThrowException(); }
 
       var expressionResult = request.Services.ExpressionBuilder.GetActivationExpression(scope, newRequest);
 
@@ -63,6 +61,16 @@ namespace Grace.DependencyInjection.Impl.Wrappers
       newResult.AddExpressionResult(expressionResult);
 
       return newResult;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowException()
+    {
+      throw GetException();
+      Exception GetException()
+      {
+        return new Exception("Could not find export stragegy to get metadata from");
+      }
     }
 
     /// <summary>Compiles delegate</summary>

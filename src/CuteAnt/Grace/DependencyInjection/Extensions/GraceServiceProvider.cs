@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Grace.DependencyInjection.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,8 +21,19 @@ namespace Grace.DependencyInjection.Extensions
     /// cref="T:System.IServiceProvider"/> cannot create the object.</returns>
     public object GetRequiredService(Type serviceType)
     {
-      return _injectionScope.Locate(serviceType) ??
-             throw new LocateException(new StaticInjectionContext(serviceType));
+      var obj = _injectionScope.Locate(serviceType);
+      if (null == obj) { ThrowLocateException(serviceType); }
+      return obj;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowLocateException(Type serviceType)
+    {
+      throw GetLocateException();
+      LocateException GetLocateException()
+      {
+        return new LocateException(new StaticInjectionContext(serviceType));
+      }
     }
 
     /// <summary>Gets the service object of the specified type.</summary>

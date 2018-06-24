@@ -12,15 +12,17 @@ namespace Grace.DependencyInjection.Conditions
     /// <param name="types"></param>
     public WhenInjectedInto(params Type[] types)
     {
-      if (types == null) throw new ArgumentNullException(nameof(types));
-
+      if (types == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.types);
       _typeTest = type => TestTypes(type, types);
     }
 
     /// <summary>Constructor that takes func to test with instead of array of types</summary>
     /// <param name="typeTest"></param>
-    public WhenInjectedInto(Func<Type, bool> typeTest) 
-        => _typeTest = typeTest ?? throw new ArgumentNullException(nameof(typeTest));
+    public WhenInjectedInto(Func<Type, bool> typeTest)
+    {
+      if (typeTest == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.typeTest);
+      _typeTest = typeTest;
+    }
 
     /// <summary>Test if being injected into a specific type</summary>
     /// <param name="strategy">strategy to test</param>

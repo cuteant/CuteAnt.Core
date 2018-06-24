@@ -64,7 +64,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static MemberSetter GetValueSetter(this PropertyInfo propertyInfo)
     {
-      if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
+      if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
 
       return s_propertiesValueSetterCache.GetOrAdd(propertyInfo, s_propertyInfoGetValueSetterFunc);
     }
@@ -107,7 +107,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static MemberSetter<T> GetValueSetter<T>(this PropertyInfo propertyInfo)
     {
-      if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
+      if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
 
       return StaticMemberAccessors<T>.GetValueSetter(propertyInfo);
     }
@@ -125,7 +125,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static MemberSetter GetValueSetter(this FieldInfo fieldInfo)
     {
-      if (fieldInfo == null) { throw new ArgumentNullException(nameof(fieldInfo)); }
+      if (null == fieldInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.fieldInfo); }
 
       return s_fieldsValueSetterCache.GetOrAdd(fieldInfo, s_fieldInfoGetValueSetterFunc);
     }
@@ -161,7 +161,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static MemberSetter<T> GetValueSetter<T>(this FieldInfo fieldInfo)
     {
-      if (fieldInfo == null) { throw new ArgumentNullException(nameof(fieldInfo)); }
+      if (null == fieldInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.fieldInfo); }
 
       return StaticMemberAccessors<T>.GetValueSetter(fieldInfo);
     }
@@ -215,7 +215,7 @@ namespace CuteAnt.Reflection
       if (member is PropertyInfo property) { SetPropertyValue(target, property, value); return; }
       if (member is FieldInfo field) { SetFieldValue(target, field, value); return; }
 
-      throw new ArgumentOutOfRangeException(nameof(member));
+      ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.member);
     }
 
     /// <summary>设置目标对象的成员值</summary>

@@ -25,7 +25,8 @@ namespace CuteAnt.Pool
 
     public DefaultObjectPool(IPooledObjectPolicy<T> policy, int maximumRetained)
     {
-      _policy = policy ?? throw new ArgumentNullException(nameof(policy));
+      if (null == policy) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.policy); }
+      _policy = policy;
       _fastPolicy = policy as PooledObjectPolicy<T>;
       _isDefaultPolicy = IsDefaultPolicy();
 

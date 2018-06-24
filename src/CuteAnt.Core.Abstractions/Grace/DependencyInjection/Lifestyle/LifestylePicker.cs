@@ -75,7 +75,7 @@ namespace Grace.DependencyInjection.Lifestyle
     /// <returns></returns>
     public T SingletonPerNamedScope(string scopeName)
     {
-      if (scopeName == null) throw new ArgumentNullException(nameof(scopeName));
+      if (scopeName == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.scopeName);
 
       _addLifestyle(new SingletonPerNamedScopeLifestyle(scopeName));
 
@@ -98,7 +98,7 @@ namespace Grace.DependencyInjection.Lifestyle
     /// <returns></returns>
     public T SingletonPerAncestor(Type ancestorType, bool locking = false)
     {
-      if (ancestorType == null) throw new ArgumentNullException(nameof(ancestorType));
+      if (ancestorType == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.ancestorType);
 
       _addLifestyle(new SingletonPerAncestor(ancestorType, locking));
 

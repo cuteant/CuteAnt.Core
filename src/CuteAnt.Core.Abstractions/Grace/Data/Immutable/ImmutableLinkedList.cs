@@ -63,8 +63,8 @@ namespace Grace.Data.Immutable
     /// <param name="values"></param>
     public static void ThreadSafeAddRange<T>(ref ImmutableLinkedList<T> list, IEnumerable<T> values)
     {
-      if (list == null) throw new ArgumentNullException(nameof(list));
-      if (values == null) throw new ArgumentNullException(nameof(values));
+      if (list == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.list);
+      if (values == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.values);
 
       foreach (var value in values)
       {
@@ -78,7 +78,7 @@ namespace Grace.Data.Immutable
     /// <returns>new list</returns>
     public static ImmutableLinkedList<T> From<T>(IEnumerable<T> enumerable)
     {
-      if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
+      if (enumerable == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.enumerable);
 
       return ImmutableLinkedList<T>.Empty.AddRange(enumerable);
     }
@@ -143,7 +143,7 @@ namespace Grace.Data.Immutable
     /// <returns>new linked list</returns>
     public ImmutableLinkedList<T> AddRange(IEnumerable<T> range)
     {
-      if (range == null) throw new ArgumentNullException(nameof(range));
+      if (range == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.range);
 
       var current = this;
 
@@ -181,7 +181,7 @@ namespace Grace.Data.Immutable
     /// <param name="startAtEnd">start at the end of the linked list</param>
     public void Visit(Action<T> action, bool startAtEnd = false)
     {
-      if (action == null) throw new ArgumentNullException(nameof(action));
+      if (action == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.action);
 
       if (this == Empty)
       {
@@ -322,7 +322,7 @@ namespace Grace.Data.Immutable
       {
         if (index < 0 || index >= Count)
         {
-          throw new ArgumentOutOfRangeException(nameof(index));
+          ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.index);
         }
 
         var current = this;

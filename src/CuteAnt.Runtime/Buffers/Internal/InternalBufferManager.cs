@@ -16,6 +16,7 @@ using System.Security.Permissions;
 #endif
 #endif //DEBUG
 using CuteAnt.Diagnostics;
+using CuteAnt.Runtime;
 using CuteAnt.Pool;
 
 namespace CuteAnt.Buffers
@@ -317,7 +318,7 @@ namespace CuteAnt.Buffers
         {
           if (buffer.Length != bufferPool.BufferSize)
           {
-            throw Fx.Exception.Argument(nameof(buffer), InternalSR.BufferIsNotRightSizeForBufferManager);
+            ThrowHelper.ThrowArgumentException(ExceptionResource.BufferIsNotRightSizeForBufferManager, ExceptionArgument.buffer);
           }
 
           if (bufferPool.Return(buffer))

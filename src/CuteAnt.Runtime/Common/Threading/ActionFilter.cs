@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CuteAnt.Runtime;
 
 namespace CuteAnt.Threading
 {
@@ -30,7 +31,7 @@ namespace CuteAnt.Threading
     {
       if (onActionExecuting == null && onActionExecuted == null)
       {
-        throw new ArgumentNullException("Lambda filter requires at least one non-null parameter to be functional");
+        ThrowHelper.ThrowArgumentNullException(ExceptionResource.Lambda_Filter_Requires);
       }
 
       this.onActionExecuting = onActionExecuting ?? NoOpFilter;

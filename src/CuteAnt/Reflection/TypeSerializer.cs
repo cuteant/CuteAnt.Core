@@ -18,18 +18,18 @@ namespace CuteAnt.Reflection
     /// <summary>The number of concurrent writes for which to optimize by default.</summary>
     private static Int32 DefaultConcurrencyLevel => DEFAULT_CONCURRENCY_MULTIPLIER * PlatformHelper.ProcessorCount;
 
-    private static readonly ConcurrentDictionary<Type, TypeKey> _typeCache = 
+    private static readonly ConcurrentDictionary<Type, TypeKey> _typeCache =
         new ConcurrentDictionary<Type, TypeKey>(DefaultConcurrencyLevel, DictionaryCacheConstants.SIZE_MEDIUM);
 
-    private static readonly ConcurrentDictionary<TypeKey, Type> _typeKeyCache = 
+    private static readonly ConcurrentDictionary<TypeKey, Type> _typeKeyCache =
         new ConcurrentDictionary<TypeKey, Type>(DefaultConcurrencyLevel, DictionaryCacheConstants.SIZE_MEDIUM, new TypeKey.Comparer());
 
-    private static readonly Func<Type, TypeKey> _getTypeKey = 
+    private static readonly Func<Type, TypeKey> _getTypeKey =
         type => new TypeKey(StringHelper.UTF8NoBOM.GetBytes(RuntimeTypeNameFormatter.Format(type)));
 
     public static TypeKey GetTypeKeyFromType(Type type)
     {
-      if (null == type) { throw new ArgumentNullException(nameof(type)); }
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
 
       return _typeCache.GetOrAdd(type, _getTypeKey);
     }

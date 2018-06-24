@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Grace.DependencyInjection.Impl.Expressions;
 using Grace.DependencyInjection.Lifestyle;
 
@@ -13,14 +14,24 @@ namespace Grace.DependencyInjection.Impl.InstanceStrategies
     /// <summary>Default constructor</summary>
     /// <param name="activationType">type being activated</param>
     /// <param name="injectionScope">injection scope</param>
-    /// <param name="delegate">delegate instance</param>
-    public DelegateBaseExportStrategy(Type activationType, IInjectionScope injectionScope, object @delegate)
+    /// <param name="del">delegate instance</param>
+    public DelegateBaseExportStrategy(Type activationType, IInjectionScope injectionScope, object del)
       : base(activationType, injectionScope)
     {
-      if (@delegate == null) throw new ArgumentNullException(nameof(@delegate));
-      if (!(@delegate is Delegate)) throw new ArgumentException("parameter must be type of delegate", nameof(@delegate));
+      if (null == del) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.del);
+      if (!(del is Delegate)) ThrowArgumentException();
 
-      _delegate = @delegate;
+      _delegate = del;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowArgumentException()
+    {
+      throw GetArgumentException();
+      ArgumentException GetArgumentException()
+      {
+        return new ArgumentException("parameter must be type of delegate", "del");
+      }
     }
 
     /// <summary>Create expression that is implemented in child class</summary>

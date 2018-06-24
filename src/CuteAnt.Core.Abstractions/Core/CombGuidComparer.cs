@@ -59,7 +59,7 @@ namespace CuteAnt
     /// <inheritdoc />
     public int GetHashCode(object obj)
     {
-      if (obj == null) { throw new ArgumentNullException(nameof(obj)); }
+      if (obj == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.obj); }
 
       if (obj is CombGuid) { return ((CombGuid)obj).GetHashCode(); }
 

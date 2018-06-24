@@ -14,7 +14,8 @@ namespace CuteAnt.Pool
 
     public LeakTrackingObjectPool(ObjectPool<T> inner)
     {
-      _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+      if (null == inner) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.inner); }
+      _inner = inner;
     }
 
     public override T Take()

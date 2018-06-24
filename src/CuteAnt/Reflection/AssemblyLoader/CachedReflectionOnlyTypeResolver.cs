@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace CuteAnt.Reflection
 {
@@ -12,18 +13,17 @@ namespace CuteAnt.Reflection
     /// <inheritdoc />
     public Type ResolveType(string name)
     {
-      if (TryResolveType(name, out var result)) { return result; }
-
-      throw new TypeAccessException(string.Format("Unable to find a type named {0}", name));
+      if (!TryResolveType(name, out var result))
+      {
+        ThrowTypeAccessException(name);
+      }
+      return result;
     }
 
     /// <inheritdoc />
     public bool TryResolveType(string name, out Type type)
     {
-      if (string.IsNullOrWhiteSpace(name))
-      {
-        throw new ArgumentException("A FullName must not be null nor consist of only whitespace.", nameof(name));
-      }
+      //if (string.IsNullOrWhiteSpace(name)) { ThrowArgumentException(); }
       if (TryGetCachedType(name, out type)) { return true; }
       if (!TryPerformUncachedTypeResolution(name, out type)) { return false; }
 
@@ -47,14 +47,14 @@ namespace CuteAnt.Reflection
     }
     private bool TryGetCachedType(string name, out Type result)
     {
-      if (string.IsNullOrWhiteSpace(name)) { throw new ArgumentException("type name was null or whitespace"); }
+      if (string.IsNullOrWhiteSpace(name)) { ThrowArgumentException0(); }
       return _typeCache.TryGetValue(name, out result);
     }
 
     private void AddTypeToCache(string name, Type type)
     {
       var entry = _typeCache.GetOrAdd(name, _ => type);
-      if (!ReferenceEquals(entry, type)) { throw new InvalidOperationException("inconsistent type name association"); }
+      if (!ReferenceEquals(entry, type)) { ThrowInvalidOperationException(); }
     }
 
     public static Assembly OnReflectionOnlyAssemblyResolve(object sender, ResolveEventArgs args)
@@ -79,6 +79,46 @@ namespace CuteAnt.Reflection
         var fileName = string.Format("{0}.dll", assemblyName.Name);
         var pathName = Path.Combine(dirName, fileName);
         return Assembly.ReflectionOnlyLoadFrom(pathName);
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    internal static void ThrowArgumentException()
+    {
+      throw GetArgumentException();
+      ArgumentException GetArgumentException()
+      {
+        return new ArgumentException("A FullName must not be null nor consist of only whitespace.", "name");
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    internal static void ThrowArgumentException0()
+    {
+      throw GetArgumentException();
+      ArgumentException GetArgumentException()
+      {
+        return new ArgumentException("type name was null or whitespace.", "name");
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    internal static void ThrowInvalidOperationException()
+    {
+      throw GetInvalidOperationException();
+      InvalidOperationException GetInvalidOperationException()
+      {
+        return new InvalidOperationException("inconsistent type name association");
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowTypeAccessException(string name)
+    {
+      throw GetTypeAccessException();
+      TypeAccessException GetTypeAccessException()
+      {
+        return new TypeAccessException(string.Format("Unable to find a type named {0}", name));
       }
     }
   }

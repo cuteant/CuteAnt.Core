@@ -28,7 +28,7 @@ namespace Grace.DependencyInjection.Exceptions
 
     private static string CreateMessage(StaticInjectionContext context, string message = null)
     {
-      if (context == null) throw new ArgumentNullException(nameof(context));
+      if (context == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.context);
 
       var infoStack = new List<InjectionTargetInfo>(context.InjectionStack.Reverse());
       var builder = StringBuilderCache.Acquire();

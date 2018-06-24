@@ -18,14 +18,17 @@ namespace CuteAnt.Reflection
     internal ConstructorMatcher(Type instanceType, ConstructorInfo constructor)
       : base(constructor)
     {
-      InstanceType = instanceType ?? throw new ArgumentNullException(nameof(instanceType));
+      if (null == instanceType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.instanceType);
+      InstanceType = instanceType;
       Invocation = ReflectUtils.MakeDelegateForCtor<object>(InstanceType, Parameters.Select(_ => _.ParameterType).ToArray(), Value);
     }
     internal ConstructorMatcher(Type instanceType, CtorInvoker<object> invoker)
       : base(null)
     {
-      InstanceType = instanceType ?? throw new ArgumentNullException(nameof(instanceType));
-      Invocation = invoker ?? throw new ArgumentNullException(nameof(invoker));
+      if (null == instanceType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.instanceType);
+      if (null == invoker) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.invoker);
+      InstanceType = instanceType;
+      Invocation = invoker;
     }
 
     #endregion

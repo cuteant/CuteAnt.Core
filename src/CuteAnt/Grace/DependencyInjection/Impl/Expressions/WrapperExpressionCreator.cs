@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl.Expressions
@@ -78,11 +79,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
           var newType = strategy.GetWrappedType(type);
 
-          if (newType == null)
-          {
-            throw new Exception("Wrapper strategy returned null for wrapped type, " +
-                                strategy.GetType().FullName);
-          }
+          if (newType == null) { ThrowException(strategy); }
 
           return GetWrappers(scope, newType, request, out wrappedType).Add(new WrapperActivationPathNode(strategy, type, null));
         }
@@ -91,6 +88,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
       wrappedType = type;
 
       return ImmutableLinkedList<IActivationPathNode>.Empty;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowException(ICompiledWrapperStrategy strategy)
+    {
+      throw GetException();
+      Exception GetException()
+      {
+        return new Exception($"Wrapper strategy returned null for wrapped type, {strategy.GetType().FullName}");
+      }
     }
 
     /// <summary>Sets up wrappers for request</summary>

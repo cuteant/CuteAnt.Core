@@ -22,14 +22,14 @@ namespace Grace.DependencyInjection
 
     public virtual TInjectionScopeConfiguration ConfigureContainerBehavior(TInjectionScopeConfiguration configuration)
     {
-      if (null == configuration) { throw new ArgumentNullException(nameof(configuration)); }
+      if (null == configuration) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.configuration);
       configuration.Behaviors.AllowInjectionScopeLocation = true;
       return configuration;
     }
 
     public IInjectionScope CreateContainer(TInjectionScopeConfiguration configuration)
     {
-      if (null == configuration) { throw new ArgumentNullException(nameof(configuration)); }
+      if (null == configuration) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.configuration);
 
       if (!_implementingSingleton) { return new DependencyInjectionContainer(configuration); }
 

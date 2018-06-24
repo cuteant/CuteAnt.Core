@@ -13,7 +13,7 @@ namespace Grace.Utilities
     /// <param name="typeFilters"></param>
     public GenericFilterGroup(params Func<T, bool>[] typeFilters)
     {
-      if (typeFilters == null) throw new ArgumentNullException(nameof(typeFilters));
+      if (typeFilters == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.typeFilters);
 
       _typeFilters = typeFilters.Length == 0 ?
                      ImmutableLinkedList<Func<T, bool>>.Empty :

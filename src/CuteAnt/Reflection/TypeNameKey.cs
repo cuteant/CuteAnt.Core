@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace CuteAnt.Reflection
 {
@@ -61,15 +62,22 @@ namespace CuteAnt.Reflection
       if (x == null) { return -1; }
       if (y == null) { return 1; }
 
-      if (x is TypeNameKey && y is TypeNameKey)
+      if (x is TypeNameKey obj1 && y is TypeNameKey obj2)
       {
-        return Compare((TypeNameKey)x, (TypeNameKey)y);
+        return Compare(obj1, obj2);
       }
-      //if (x is IComparable ia)
-      //{
-      //  return ia.CompareTo(y);
-      //}
-      throw new ArgumentException("类型不是 TypeNameKey");
+      return ThrowArgumentException();
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static int ThrowArgumentException()
+    {
+      throw GetArgumentException();
+
+      ArgumentException GetArgumentException()
+      {
+        return new ArgumentException("类型不是 TypeNameKey");
+      }
     }
 
     #endregion
@@ -107,7 +115,7 @@ namespace CuteAnt.Reflection
     /// <inheritdoc />
     public int GetHashCode(object obj)
     {
-      if (obj == null) { throw new ArgumentNullException(nameof(obj)); }
+      if (obj == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.obj); }
 
       if (obj is TypeNameKey) { return ((TypeNameKey)obj).GetHashCode(); }
 

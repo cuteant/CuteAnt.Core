@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CuteAnt.Pool;
+using CuteAnt.Runtime;
 //using Nessos.LinqOptimizer.CSharp;
 
 namespace CuteAnt.Buffers
@@ -55,8 +56,8 @@ namespace CuteAnt.Buffers
 
     public static int Sum(IList<ArraySegment<Byte>> segments)
     {
-      if (null == segments) { throw new ArgumentNullException(nameof(segments)); }
-      if (segments.Count <= 0) { throw new ArgumentException("The length of segments must be greater than zero."); }
+      if (null == segments) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.segments);
+      if (segments.Count <= 0) { ThrowHelper.ThrowArgumentException(ExceptionResource.Segments_NeedNonNegNum); }
 
       //return segments.AsQueryExpr().Select(x => x.Count).Sum().Run();
       return segments.Select(x => x.Count).Sum();
@@ -71,18 +72,14 @@ namespace CuteAnt.Buffers
     /// <remarks>This method creates a new buffer pool with as many buffers as can be created.</remarks>
     public static BufferManager CreateBufferManager(Int64 maxBufferPoolSize, Int32 maxBufferSize)
     {
-      //if (maxBufferPoolSize < 0) { throw new ArgumentOutOfRangeException("maxBufferPoolSize", maxBufferPoolSize, "Value must be non-negative."); }
-      //if (maxBufferSize < 0) { throw new ArgumentOutOfRangeException("maxBufferSize", maxBufferSize, "Value must be non-negative."); }
       if (maxBufferPoolSize < 0)
       {
-        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentOutOfRangeException(nameof(maxBufferPoolSize),
-            maxBufferPoolSize, "Value must be non-negative."));
+        ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.maxBufferPoolSize, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
       }
 
       if (maxBufferSize < 0)
       {
-        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentOutOfRangeException(nameof(maxBufferSize),
-            maxBufferSize, "Value must be non-negative."));
+        ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.maxBufferSize, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
       }
 
       return new WrappingBufferManager(InternalBufferManager.Create(maxBufferPoolSize, maxBufferSize));
@@ -173,9 +170,7 @@ namespace CuteAnt.Buffers
       {
         if (bufferSize < 0)
         {
-          //throw new ArgumentOutOfRangeException("bufferSize", bufferSize, "Value must be non-negative.");
-          throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentOutOfRangeException(nameof(bufferSize), bufferSize,
-              "Value must be non-negative."));
+          ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.bufferSize, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
         }
 
         return _innerBufferManager.TakeBuffer(bufferSize);
@@ -184,10 +179,7 @@ namespace CuteAnt.Buffers
       [MethodImpl(InlineMethod.Value)]
       public override void ReturnBuffer(byte[] buffer)
       {
-        if (buffer == null)
-        {
-          throw DiagnosticUtility.ExceptionUtility.ThrowHelperArgumentNull(nameof(buffer));
-        }
+        if (null == buffer) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.buffer);
         if (buffer.Length == 0) { return; } // Ignore empty arrays.
 
         _innerBufferManager.ReturnBuffer(buffer);
@@ -230,7 +222,7 @@ namespace CuteAnt.Buffers
 
     public static String GetStringWithBuffer(this Encoding encoding, byte[] bytes, ArrayPool<byte> bufferManager = null)
     {
-      if (bytes == null) { throw new ArgumentNullException(nameof(bytes)); }
+      if (bytes == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.bytes); }
 
       if (bytes.Length <= MAX_BUFFER_SIZE)
       {
@@ -258,7 +250,7 @@ namespace CuteAnt.Buffers
 
     public static String GetStringWithBuffer(this Encoding encoding, Stream stream, ArrayPool<byte> bufferManager = null)
     {
-      if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
+      if (stream == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.stream); }
 
       // If stream size is small, read in a single operation.
       if (stream.Length <= MAX_BUFFER_SIZE)
@@ -341,8 +333,8 @@ namespace CuteAnt.Buffers
     /// <returns>the decoded String</returns>
     public static async Task<String> GetStringAsync(this Encoding encoding, Stream stream, ArrayPool<byte> bufferManager)
     {
-      if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
-      if (bufferManager == null) { throw new ArgumentNullException(nameof(bufferManager)); }
+      if (stream == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.stream); }
+      if (bufferManager == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.bufferManager); }
 
       // If stream size is small, read in a single operation.
       if (stream.Length <= MAX_BUFFER_SIZE)
@@ -414,10 +406,10 @@ namespace CuteAnt.Buffers
     /// <returns>the decoded String</returns>
     public static async Task<String> GetStringAsync(this Encoding encoding, Stream stream, Int64 offset, Int64 count, ArrayPool<byte> bufferManager)
     {
-      if (stream == null) { throw new ArgumentNullException(nameof(stream)); }
-      if (bufferManager == null) { throw new ArgumentNullException(nameof(bufferManager)); }
-      if (offset < 0L) { throw new ArgumentOutOfRangeException("Offset points before the start of the stream."); }
-      if (offset > stream.Length) { throw new ArgumentOutOfRangeException("Offset points beyond the end of the stream."); }
+      if (stream == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.stream); }
+      if (bufferManager == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.bufferManager); }
+      if (offset < 0L) { ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset, ExceptionResource.Offset_Before_Start_Stream); }
+      if (offset > stream.Length) { ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset, ExceptionResource.Offset_Beyond_End_Stream); }
 
       // If stream size is small, read in a single operation.
       if (count <= MAX_BUFFER_SIZE)
@@ -518,7 +510,7 @@ namespace CuteAnt.Buffers
     /// <returns>A byte array containing the results of encoding the specified set of characters.</returns>
     public static ArraySegment<Byte> GetBufferSegment(this Encoding encoding, Char[] chars, Int32 charIndex, Int32 charCount, ArrayPool<byte> bufferManager)
     {
-      if (charCount < 0) { throw new ArgumentOutOfRangeException(nameof(charCount), "Value must be non-negative."); }
+      if (charCount < 0) { ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.charCount, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum); }
       if (chars.IsNullOrEmpty() || encoding == null) { return BufferManager.Empty; }
 
       var bufferSize = encoding.GetMaxByteCount(charCount);
@@ -558,7 +550,7 @@ namespace CuteAnt.Buffers
     /// <returns>A byte array containing the results of encoding the specified set of characters.</returns>
     public static ArraySegment<Byte> GetBufferSegment(this Encoding encoding, String s, Int32 charIndex, Int32 charCount, ArrayPool<byte> bufferManager)
     {
-      if (charCount < 0) { throw new ArgumentOutOfRangeException(nameof(charCount), "Value must be non-negative."); }
+      if (charCount < 0) { ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.charCount, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum); }
       if (String.IsNullOrEmpty(s) || encoding == null) { return BufferManager.Empty; }
 
       var bufferSize = encoding.GetMaxByteCount(charCount);

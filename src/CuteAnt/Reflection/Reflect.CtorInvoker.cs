@@ -154,12 +154,25 @@ namespace CuteAnt.Reflection
     /// <summary>Generates or gets a strongly-typed open-instance delegate to the specified type constructor that takes the specified type params.</summary>
     public static CtorInvoker<T> MakeDelegateForCtor<T>(this Type instanceType, params Type[] paramTypes)
     {
-      if (TryMakeDelegateForCtor<T>(instanceType, paramTypes, out var result)) { return result; }
+      if (!TryMakeDelegateForCtor<T>(instanceType, paramTypes, out var result))
+      {
+        GetTypeAccessException(instanceType, paramTypes);
+      }
+      return result;
+    }
 
-      throw new TypeAccessException("Generating constructor for type: " + instanceType +
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    internal static void GetTypeAccessException(Type instanceType, Type[] paramTypes)
+    {
+      throw GetTypeAccessException();
+      TypeAccessException GetTypeAccessException()
+      {
+        return new TypeAccessException("Generating constructor for type: " + instanceType +
           (paramTypes == null || paramTypes.Length == 0 ? " No empty constructor found!" :
           " No constructor found that matches the following parameter types: " +
           string.Join(",", paramTypes.Select(x => x.Name).ToArray())));
+
+      }
     }
 
     /// <summary>Try generates or gets a weakly-typed open-instance delegate to the specified type constructor that takes the specified type params.</summary>
@@ -169,7 +182,7 @@ namespace CuteAnt.Reflection
     /// <summary>Try generates or gets a strongly-typed open-instance delegate to the specified type constructor that takes the specified type params.</summary>
     public static bool TryMakeDelegateForCtor<T>(this Type instanceType, Type[] paramTypes, out CtorInvoker<T> result)
     {
-      if (null == instanceType) { throw new ArgumentNullException(nameof(instanceType)); }
+      if (null == instanceType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.instanceType);
 
       ConstructorInfo ctor = null;
       var typeInfo = instanceType.GetTypeInfo();

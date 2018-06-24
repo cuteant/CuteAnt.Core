@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Text;
+using CuteAnt.Runtime;
 
 namespace CuteAnt.Pool
 {
@@ -52,7 +53,7 @@ namespace CuteAnt.Pool
       }
       set
       {
-        if (null == value) { throw new ArgumentNullException(nameof(value)); }
+        if (null == value) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.value); }
         Interlocked.CompareExchange(ref _innerPool, value, null);
       }
     }

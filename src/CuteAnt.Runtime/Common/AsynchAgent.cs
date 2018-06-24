@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using CuteAnt.Threading;
@@ -75,7 +76,7 @@ namespace CuteAnt.Runtime
 
     public virtual void Start()
     {
-      ThrowIfDisposed();
+      if(disposed) ThrowIfDisposed();
       lock (Lockable)
       {
         if (State == ThreadState.Running)
@@ -105,7 +106,7 @@ namespace CuteAnt.Runtime
     {
       try
       {
-        ThrowIfDisposed();
+        if (disposed) ThrowIfDisposed();
         lock (Lockable)
         {
           if (State == ThreadState.Running)
@@ -249,11 +250,13 @@ namespace CuteAnt.Runtime
       }
     }
 
-    private void ThrowIfDisposed()
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowIfDisposed()
     {
-      if (disposed)
+      throw GetObjectDisposedException();
+      ObjectDisposedException GetObjectDisposedException()
       {
-        throw new ObjectDisposedException("Cannot access disposed AsynchAgent");
+        return new ObjectDisposedException("Cannot access disposed AsynchAgent");
       }
     }
   }

@@ -77,7 +77,10 @@ namespace Grace.DependencyInjection
     public Func<Type, bool> KeyedTypeSelector
     {
       get => _keyedTypeSelector;
-      set => _keyedTypeSelector = value ?? throw new ArgumentNullException(nameof(KeyedTypeSelector), "value must not be null");
+      set
+      {
+        if (null == value) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.KeyedTypeSelector, ExceptionResource.Value_Must_Not_Be_Null);
+      }
     }
 
     /// <summary>By default ExportInstance and ExportFactory must return a value.</summary>

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Grace.DependencyInjection.Exceptions;
 
 namespace Grace.DependencyInjection.Lifestyle
@@ -108,7 +109,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
       if (injectionInfoTarget == null)
       {
-        throw new LocateException(context, $"Could not find ancestor type {_ancestorType.Name}");
+        ThrowLocateException(context, _ancestorType.Name);
       }
 
       return injectionInfoTarget.UniqueId;
@@ -171,6 +172,16 @@ namespace Grace.DependencyInjection.Lifestyle
       }
 
       return (T)value;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowLocateException(StaticInjectionContext context, string typeName)
+    {
+      throw GetLocateException();
+      LocateException GetLocateException()
+      {
+        return new LocateException(context, $"Could not find ancestor type {typeName}");
+      }
     }
   }
 }

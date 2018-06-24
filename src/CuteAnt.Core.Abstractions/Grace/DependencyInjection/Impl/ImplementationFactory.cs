@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Impl
@@ -14,7 +15,7 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>Export an instance of a type</summary>
     /// <typeparam name="T">type being exported</typeparam>
     /// <param name="exportFunc">export func</param>
-    public void ExportInstance<T>(Func<ImplementationFactory, T> exportFunc) 
+    public void ExportInstance<T>(Func<ImplementationFactory, T> exportFunc)
         => _factories = _factories.Add(typeof(T), exportFunc, (o, n) => n);
 
     /// <summary>Export a singleton</summary>
@@ -45,10 +46,7 @@ namespace Grace.DependencyInjection.Impl
     {
       var func = _factories.GetValueOrDefault(typeof(T)) as Func<ImplementationFactory, T>;
 
-      if (func == null)
-      {
-        throw new Exception($"Could not locate type of {typeof(T).FullName}");
-      }
+      if (func == null) { ThrowException<T>(); }
 
       return func(this);
     }
@@ -56,5 +54,15 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>Clone implementation factory</summary>
     /// <returns></returns>
     public ImplementationFactory Clone() => new ImplementationFactory { _factories = _factories };
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    internal static void ThrowException<T>()
+    {
+      throw GetException();
+      Exception GetException()
+      {
+        return new Exception($"Could not locate type of {typeof(T).FullName}");
+      }
+    }
   }
 }

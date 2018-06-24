@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using CuteAnt.Reflection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl.Expressions;
@@ -52,7 +53,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
       if (!_wrapperExpressionCreator.SetupWrappersForRequest(scope, request))
       {
-        throw new LocateException(request.GetStaticInjectionContext(), "Could not calculate wrapper");
+        ThrowLocateException0(request);
       }
 
       var expressionResult = GetActivationExpression(scope, request);
@@ -89,7 +90,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
       if (wrappedStrategy == null)
       {
-        throw new LocateException(request.GetStaticInjectionContext(), "Could not find strategy that is wrapped");
+        ThrowLocateException1(request);
       }
 
       var metadata = _strongMetadataInstanceProvider.GetMetadata(requestGenericTypeArguments[1], wrappedStrategy.Metadata);
@@ -105,6 +106,26 @@ namespace Grace.DependencyInjection.Impl.Wrappers
       request.RequireInjectionContext();
 
       return request.Services.Compiler.CreateNewResult(request, callExpression);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowLocateException0(IActivationExpressionRequest request)
+    {
+      throw GetLocateException();
+      LocateException GetLocateException()
+      {
+        return new LocateException(request.GetStaticInjectionContext(), "Could not calculate wrapper");
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowLocateException1(IActivationExpressionRequest request)
+    {
+      throw GetLocateException();
+      LocateException GetLocateException()
+      {
+        return new LocateException(request.GetStaticInjectionContext(), "Could not find strategy that is wrapped");
+      }
     }
 
     /// <summary>Lazy expression helper class</summary>

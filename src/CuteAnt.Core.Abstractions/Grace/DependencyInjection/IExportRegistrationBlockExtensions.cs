@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Grace.DependencyInjection.Impl;
 using Grace.DependencyInjection.Impl.CompiledStrategies;
 using Grace.DependencyInjection.Impl.Expressions;
@@ -102,7 +103,7 @@ namespace Grace.DependencyInjection
         return registrationBlock.ExportFactory(func).AsKeyed(typeof(T), exportName);
       }
 
-      throw new Exception("This method can only be used on members (i.e. ExportNamedValue(() => SomeProperty))");
+      ThrowException(); return null;
     }
 
     public static void ExportDecoratorFactory<T, TResult>(this IExportRegistrationBlock registrationBlock, Func<T, TResult> factory)
@@ -259,6 +260,16 @@ namespace Grace.DependencyInjection
       block.AddInspector(new ExportInitializeInspector(func, typeof(T)));
 
       return block;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowException()
+    {
+      throw GetException();
+      Exception GetException()
+      {
+        return new Exception("This method can only be used on members (i.e. ExportNamedValue(() => SomeProperty))");
+      }
     }
   }
 }

@@ -19,7 +19,7 @@ namespace CuteAnt.Reflection
     /// <exception cref="System.ArgumentNullException">assemblyPredicate is null.</exception>
     public static AssemblyLoaderReflectionCriterion NewCriterion(AssemblyPredicate assemblyPredicate)
     {
-      if (assemblyPredicate == null) { throw new ArgumentNullException(nameof(assemblyPredicate)); }
+      if (null == assemblyPredicate) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.assemblyPredicate);
 
       return new AssemblyLoaderReflectionCriterion(assemblyPredicate);
     }
@@ -85,7 +85,7 @@ namespace CuteAnt.Reflection
       // LoaderExceptions property in order to make it meaningful.
       var all = new List<Exception> { rtle };
       all.AddRange(rtle.LoaderExceptions);
-      throw new AggregateException("A ReflectionTypeLoadException has been thrown. The original exception and the contents of the LoaderExceptions property have been aggregated for your convenience.", all);
+      return new AggregateException("A ReflectionTypeLoadException has been thrown. The original exception and the contents of the LoaderExceptions property have been aggregated for your convenience.", all);
     }
 
     /// <summary>Create a new criterion that filters assemblies by predicate.</summary>

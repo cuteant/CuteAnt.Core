@@ -22,7 +22,7 @@ namespace CuteAnt.Reflection
     /// <returns>A <see cref="string"/> form of <paramref name="type"/> which can be parsed by <see cref="Type.GetType(string)"/>.</returns>
     public static string Format(Type type)
     {
-      if (type == null) throw new ArgumentNullException(nameof(type));
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
 
       return Cache.GetOrAdd(type, s_formatFunc);
     }
@@ -47,7 +47,7 @@ namespace CuteAnt.Reflection
     /// <returns>A <see cref="string"/> form of <paramref name="type"/> which can be parsed by <see cref="TypeUtils.ResolveType(string)"/>.</returns>
     public static string Serialize(Type type)
     {
-      if (null == type) { throw new ArgumentNullException(nameof(type)); }
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
 
       return _typeNameSerializerCache.GetOrAdd(type, _serializeTypeNameFunc);
     }

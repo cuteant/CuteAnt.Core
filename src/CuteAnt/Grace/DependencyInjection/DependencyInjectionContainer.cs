@@ -62,7 +62,7 @@ namespace Grace.DependencyInjection
     /// <param name="module"></param>
     public void Add(IConfigurationModule module)
     {
-      if (module == null) throw new ArgumentNullException(nameof(module));
+      if (null == module) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.module);
 
       Configure(module.Configure);
     }
@@ -71,7 +71,7 @@ namespace Grace.DependencyInjection
     /// <param name="registrationAction"></param>
     public void Add(Action<IExportRegistrationBlock> registrationAction)
     {
-      if (registrationAction == null) throw new ArgumentNullException(nameof(registrationAction));
+      if (null == registrationAction) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.registrationAction);
 
       Configure(registrationAction);
     }

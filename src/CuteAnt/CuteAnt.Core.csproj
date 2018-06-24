@@ -35,10 +35,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\CuteAnt.Core.Abstractions\Grace\ThrowHelper.cs" Link="Grace\ThrowHelper.cs" />
+    <Compile Include="..\CuteAnt.Core.Abstractions\Grace\ThrowHelper.Extensions.cs" Link="Grace\ThrowHelper.Extensions.cs" />
+    <Compile Include="..\CuteAnt.Core.Abstractions\Internal\SR.cs" Link="Internal\SR.cs" />
+    <Compile Include="..\CuteAnt.Core.Abstractions\Internal\ThrowHelper.cs" Link="Internal\ThrowHelper.cs" />
+    <Compile Include="..\CuteAnt.Core.Abstractions\Internal\ThrowHelper.Extensions.cs" Link="Internal\ThrowHelper.Extensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CuteAnt.Core.Abstractions\CuteAnt.Core.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Internal\Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -46,6 +59,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="Internal\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

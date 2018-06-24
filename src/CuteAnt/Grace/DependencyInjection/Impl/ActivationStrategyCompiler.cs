@@ -56,8 +56,8 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>request</returns>
     public virtual IActivationExpressionRequest CreateNewRequest(Type activationType, int objectGraphDepth, IInjectionScope requestingScope)
     {
-      if (activationType == null) throw new ArgumentNullException(nameof(activationType));
-      if (requestingScope == null) throw new ArgumentNullException(nameof(requestingScope));
+      if (null == activationType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.activationType);
+      if (null == requestingScope) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.requestingScope);
 
       return new ActivationExpressionRequest(activationType,
                                              RequestType.Root,
@@ -74,7 +74,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public virtual IActivationExpressionResult CreateNewResult(IActivationExpressionRequest request, Expression expression = null)
     {
-      if (request == null) throw new ArgumentNullException(nameof(request));
+      if (null == request) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.request);
 
       return new ActivationExpressionResult(request) { Expression = expression };
     }

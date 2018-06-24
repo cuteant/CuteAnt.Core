@@ -78,7 +78,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IFluentExportInstanceConfiguration<T> AsName(string name)
     {
-      if (string.IsNullOrEmpty(name)) throw new ArgumentException("Value cannot be null or empty.", nameof(name));
+      if (string.IsNullOrEmpty(name)) ThrowHelper.ThrowArgumentNullOrEmpty(ExceptionArgument.name);
 
       _exportConfiguration.AddExportAsName(name);
 

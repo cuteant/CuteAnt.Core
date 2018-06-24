@@ -20,11 +20,13 @@ using System.Text;
 using System.Threading;
 using System.Globalization;
 using System.Diagnostics.Contracts;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 #if DESKTOPCLR
 using System.Security.Permissions;
 #endif
 using CuteAnt.Pool;
+using CuteAnt.Runtime;
 #if !NET40
 using CuteAnt.AsyncEx;
 using System.Threading.Tasks;
@@ -67,13 +69,15 @@ namespace CuteAnt.IO
     public StringWriterX(StringBuilder sb, IFormatProvider formatProvider)
       : base(formatProvider)
     {
-      _sb = sb ?? throw new ArgumentNullException(nameof(sb));
+      if (null == sb) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.sb); }
+      _sb = sb;
       _isOpen = true;
     }
 
     public StringWriterX Reinitialize(StringBuilder sb)
     {
-      _sb = sb ?? throw new ArgumentNullException(nameof(sb));
+      if (null == sb) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.sb); }
+      _sb = sb;
       _isOpen = true;
       return this;
     }
@@ -122,8 +126,7 @@ namespace CuteAnt.IO
     {
       if (!_isOpen)
       {
-        //__Error.WriterClosed();
-        throw new ObjectDisposedException(null, "ObjectDisposed_WriterClosed");
+        ThrowObjectDisposedException();
       }
       _sb.Append(value);
     }
@@ -137,26 +140,25 @@ namespace CuteAnt.IO
     {
       if (buffer == null)
       {
-        throw new ArgumentNullException(nameof(buffer));
+        ThrowHelper.ThrowArgumentNullException(ExceptionArgument.buffer);
       }
       if (index < 0)
       {
-        throw new ArgumentOutOfRangeException(nameof(index), "ArgumentOutOfRange_NeedNonNegNum");
+        ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.index, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
       }
       if (count < 0)
       {
-        throw new ArgumentOutOfRangeException(nameof(count), "ArgumentOutOfRange_NeedNonNegNum");
+        ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.count, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
       }
       if (buffer.Length - index < count)
       {
-        throw new ArgumentException("Argument_InvalidOffLen");
+        ThrowHelper.ThrowArgumentException(ExceptionResource.Argument_InvalidOffLen);
       }
       Contract.EndContractBlock();
 
       if (!_isOpen)
       {
-        //__Error.WriterClosed();
-        throw new ObjectDisposedException(null, "ObjectDisposed_WriterClosed");
+        ThrowObjectDisposedException();
       }
 
       _sb.Append(buffer, index, count);
@@ -169,10 +171,19 @@ namespace CuteAnt.IO
     {
       if (!_isOpen)
       {
-        //__Error.WriterClosed();
-        throw new ObjectDisposedException(null, "ObjectDisposed_WriterClosed");
+        ThrowObjectDisposedException();
       }
       if (value != null) _sb.Append(value);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowObjectDisposedException()
+    {
+      throw GetObjectDisposedException();
+      ObjectDisposedException GetObjectDisposedException()
+      {
+        return new ObjectDisposedException(null, "Cannot write to a closed TextWriter.");
+      }
     }
 
 #if !NET40

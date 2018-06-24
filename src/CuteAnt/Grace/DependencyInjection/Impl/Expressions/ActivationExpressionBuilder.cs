@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Exceptions;
 
@@ -164,12 +165,19 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
       if (hasDefault) { return (T)defaultValue; }
 
-      if (isRequired)
-      {
-        throw new LocateException(staticInjectionContext, $"Could not locate dynamic value for type {typeof(T).FullName}");
-      }
+      if (isRequired) { ThrowLocateException<T>(staticInjectionContext); }
 
       return default;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowLocateException<T>(StaticInjectionContext staticInjectionContext)
+    {
+      throw GetLocateException();
+      LocateException GetLocateException()
+      {
+        return new LocateException(staticInjectionContext, $"Could not locate dynamic value for type {typeof(T).FullName}");
+      }
     }
 
     /// <summary>Creates expression for calling method GetValueFromInjectionContext</summary>
@@ -350,7 +358,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
       {
         if (!scope.ScopeConfiguration.Behaviors.AllowInjectionScopeLocation)
         {
-          throw new ImportInjectionScopeException(request.GetStaticInjectionContext());
+          ThrowImportInjectionScopeException(request);
         }
 
         const string _GetInjectionScopeMethodName = nameof(IExportLocatorScopeExtensions.GetInjectionScope);
@@ -425,6 +433,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
       }
 
       return null;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowImportInjectionScopeException(IActivationExpressionRequest request)
+    {
+      throw GetImportInjectionScopeException();
+      ImportInjectionScopeException GetImportInjectionScopeException()
+      {
+        return new ImportInjectionScopeException(request.GetStaticInjectionContext());
+      }
     }
 
     /// <summary>Get expression from decorator</summary>

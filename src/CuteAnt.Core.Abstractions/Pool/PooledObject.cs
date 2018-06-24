@@ -10,20 +10,24 @@ namespace CuteAnt.Pool
 
     public PooledObject(ObjectPool<T> pool)
     {
-      _pool = pool ?? throw new ArgumentNullException(nameof(pool));
+      if (null == pool) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.pool); }
+      _pool = pool;
       _pooledObject = _pool.Get();
     }
 
     public PooledObject(ObjectPool<T> pool, bool useTaking)
     {
-      _pool = pool ?? throw new ArgumentNullException(nameof(pool));
+      if (null == pool) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.pool); }
+      _pool = pool;
       _pooledObject = useTaking ? _pool.Take() : _pool.Get();
     }
 
     public PooledObject(ObjectPool<T> pool, T obj)
     {
-      _pool = pool ?? throw new ArgumentNullException(nameof(pool));
-      _pooledObject = obj ?? throw new ArgumentNullException(nameof(obj));
+      if (null == pool) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.pool); }
+      if (null == obj) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.obj); }
+      _pool = pool;
+      _pooledObject = obj;
     }
 
     public T Object => _pooledObject;

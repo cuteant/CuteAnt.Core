@@ -41,7 +41,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static MemberGetter GetValueGetter(this PropertyInfo propertyInfo)
     {
-      if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
+      if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
 
       return s_propertiesValueGetterCache.GetOrAdd(propertyInfo, s_propertyInfoGetValueGetterFunc);
     }
@@ -81,7 +81,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static MemberGetter<T> GetValueGetter<T>(this PropertyInfo propertyInfo)
     {
-      if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
+      if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
 
       return StaticMemberAccessors<T>.GetValueGetter(propertyInfo);
     }
@@ -99,7 +99,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static MemberGetter GetValueGetter(this FieldInfo fieldInfo)
     {
-      if (fieldInfo == null) { throw new ArgumentNullException(nameof(fieldInfo)); }
+      if (null == fieldInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.fieldInfo); }
 
       return s_fieldsValueGetterCache.GetOrAdd(fieldInfo, s_fieldInfoGetValueGetterFunc);
     }
@@ -135,7 +135,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static MemberGetter<T> GetValueGetter<T>(this FieldInfo fieldInfo)
     {
-      if (fieldInfo == null) { throw new ArgumentNullException(nameof(fieldInfo)); }
+      if (null == fieldInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.fieldInfo); }
 
       return StaticMemberAccessors<T>.GetValueGetter(fieldInfo);
     }
@@ -152,8 +152,8 @@ namespace CuteAnt.Reflection
     [DebuggerHidden]
     public static object GetMemberValue(this object target, string name, bool throwOnError = true)
     {
-      if (target == null) { throw new ArgumentNullException(nameof(target)); }
-      ValidationHelper.ArgumentNullOrEmpty(name, nameof(name));
+      if (null == target) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.target);
+      if (string.IsNullOrWhiteSpace(name)) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name);
 
       if (TryGetMemberValue(target, name, out object value)) { return value; }
 
@@ -170,7 +170,7 @@ namespace CuteAnt.Reflection
     /// <returns>是否成功获取数值</returns>
     public static bool TryGetMemberValue(this object target, string name, out object value)
     {
-      if (target == null) { throw new ArgumentNullException(nameof(target)); }
+      if (null == target) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.target);
 
       value = null;
 
@@ -202,7 +202,7 @@ namespace CuteAnt.Reflection
       if (member is PropertyInfo property) { return GetPropertyValue(target, property); }
       if (member is FieldInfo field) { return GetFieldValue(target, field); }
 
-      throw new ArgumentOutOfRangeException(nameof(member));
+      ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.member); return null;
     }
 
     /// <summary>获取目标对象的成员值</summary>

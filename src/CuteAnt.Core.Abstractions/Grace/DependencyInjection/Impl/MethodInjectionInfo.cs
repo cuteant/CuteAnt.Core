@@ -41,7 +41,8 @@ namespace Grace.DependencyInjection.Impl
     /// <param name="parameterName">the name of the parameter</param>
     public MethodParameterInfo(string parameterName)
     {
-      ParameterName = parameterName ?? throw new ArgumentNullException(nameof(parameterName));
+      if (null == parameterName) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.parameterName);
+      ParameterName = parameterName;
     }
   }
 }

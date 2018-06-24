@@ -57,7 +57,7 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
     /// <param name="secondaryStrategy">new secondary strategy</param>
     public void AddSecondaryStrategy(ICompiledExportStrategy secondaryStrategy)
     {
-      if (secondaryStrategy == null) throw new ArgumentNullException(nameof(secondaryStrategy));
+      if (null == secondaryStrategy) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.secondaryStrategy);
 
       _secondaryStrategies = _secondaryStrategies.Add(secondaryStrategy);
     }

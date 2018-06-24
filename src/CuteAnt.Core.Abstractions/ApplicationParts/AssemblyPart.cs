@@ -12,7 +12,8 @@ namespace CuteAnt.ApplicationParts
     /// <param name="assembly"></param>
     public AssemblyPart(Assembly assembly)
     {
-      this.Assembly = assembly ?? throw new ArgumentNullException(nameof(assembly));
+      if (null == assembly) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.assembly); }
+      this.Assembly = assembly;
     }
 
     /// <summary>Gets the <see cref="Assembly"/> of the <see cref="IApplicationPart"/>.</summary>

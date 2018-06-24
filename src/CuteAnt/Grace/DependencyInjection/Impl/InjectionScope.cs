@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Impl.KnownTypeStrategies;
 using Grace.DependencyInjection.Impl.Wrappers;
 using Grace.Diagnostics;
+#if NET40
+using System.Reflection;
+#endif
 
 namespace Grace.DependencyInjection.Impl
 {
@@ -384,7 +387,7 @@ namespace Grace.DependencyInjection.Impl
     /// <param name="module">configuration module</param>
     public void Configure(IConfigurationModule module)
     {
-      if (module == null) throw new ArgumentNullException(nameof(module));
+      if (null == module) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.module);
 
       Configure(module.Configure);
     }
@@ -481,12 +484,19 @@ namespace Grace.DependencyInjection.Impl
             consider, allowNull);
       }
 
-      if (!allowNull)
-      {
-        throw new LocateException(new StaticInjectionContext(typeof(object)));
-      }
+      if (!allowNull) { ThrowLocateException_Object(); }
 
       return null;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowLocateException_Object()
+    {
+      throw GetLocateException();
+      LocateException GetLocateException()
+      {
+        return new LocateException(new StaticInjectionContext(typeof(object)));
+      }
     }
 
     /// <summary>Internal locate all method</summary>
@@ -662,12 +672,19 @@ namespace Grace.DependencyInjection.Impl
         return value;
       }
 
-      if (!allowNull)
+      if (!allowNull) { ThrowLocateException(type); }
+
+      return null;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowLocateException(Type type)
+    {
+      throw GetLocateException();
+      LocateException GetLocateException()
       {
         throw new LocateException(new StaticInjectionContext(type));
       }
-
-      return null;
     }
 
     private object DynamicIEnumerable(IExportLocatorScope scope, IDisposalScope disposalScope, Type type, ActivationStrategyFilter consider, IInjectionContext injectionContext)

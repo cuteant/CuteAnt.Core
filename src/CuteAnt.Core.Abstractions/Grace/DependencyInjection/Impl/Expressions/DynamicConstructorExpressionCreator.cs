@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
+using System.Runtime.CompilerServices;
 using CuteAnt.Text;
 using Grace.DependencyInjection.Exceptions;
 using Grace.Utilities;
@@ -371,7 +371,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
       if (isRequired && !useDefault)
       {
         // TODO: replace with LocateException
-        throw new Exception("Could not locate type");
+        ThrowException();
       }
 
       return defaultVlalue;
@@ -382,5 +382,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
     /// <summary>Method to use for locate</summary>
     public virtual MethodInfo DynamicLocateMethodInfo => GetType().GetTypeInfo().GetDeclaredMethod(_dynamicLocateMethodName);
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowException()
+    {
+      throw GetException();
+      Exception GetException()
+      {
+        return new Exception("Could not locate type");
+      }
+    }
   }
 }

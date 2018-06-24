@@ -4,7 +4,7 @@
 
 using System;
 using System.Buffers;
-using System.Text;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using CuteAnt.Diagnostics;
 using CuteAnt.Pool;
@@ -76,15 +76,16 @@ namespace CuteAnt.Buffers
       Reinitialize(initialSize, maxSizeQuota, maxSizeQuota, bufferManager);
     }
 
-    protected override Exception CreateQuotaExceededException(int maxSizeQuota)
-    {
-      var excMsg = string.IsNullOrWhiteSpace(m_quotaExceededString) ? InternalSR._BufferedOutputStreamQuotaExceeded.FormatWith(maxSizeQuota) : m_quotaExceededString.FormatWith(maxSizeQuota);
-      if (TD.MaxSentMessageSizeExceededIsEnabled())
-      {
-        TD.MaxSentMessageSizeExceeded(excMsg);
-      }
-      return new QuotaExceededException(excMsg);
-    }
+    //[MethodImpl(MethodImplOptions.NoInlining)]
+    //private static void ThrowQuotaExceededException(int maxSizeQuota)
+    //{
+    //  var excMsg = string.IsNullOrWhiteSpace(m_quotaExceededString) ? InternalSR._BufferedOutputStreamQuotaExceeded.FormatWith(maxSizeQuota) : m_quotaExceededString.FormatWith(maxSizeQuota);
+    //  if (TD.MaxSentMessageSizeExceededIsEnabled())
+    //  {
+    //    TD.MaxSentMessageSizeExceeded(excMsg);
+    //  }
+    //  return new QuotaExceededException(excMsg);
+    //}
   }
 
   public sealed class BufferManagerOutputStreamPooledObjectPolicy : IPooledObjectPolicy<BufferManagerOutputStream>

@@ -33,7 +33,7 @@ namespace CuteAnt.Reflection
 
     public static MethodMatcher<TTarget, TReturn> GetMethodMatcher(MethodInfo method)
     {
-      if (method == null) { throw new ArgumentNullException(nameof(method)); }
+      if (method == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.method); }
 
       if (s_methodInvocationCache.TryGetValue(method, out var defaultValue)) return defaultValue;
 

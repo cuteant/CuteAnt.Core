@@ -41,7 +41,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TParam>(Func<TParam> paramValue = null)
     {
-      if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
+      if (paramValue == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.paramValue);
 
       var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
 
@@ -57,7 +57,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TArg1, TParam>(Func<TArg1, TParam> paramValue)
     {
-      if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
+      if (paramValue == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.paramValue);
 
       var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
 
@@ -74,7 +74,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TArg1, TArg2, TParam>(Func<TArg1, TArg2, TParam> paramValue)
     {
-      if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
+      if (paramValue == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.paramValue);
 
       var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
 
@@ -92,7 +92,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TArg1, TArg2, TArg3, TParam>(Func<TArg1, TArg2, TArg3, TParam> paramValue)
     {
-      if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
+      if (paramValue == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.paramValue);
 
       var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
 
@@ -111,7 +111,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TArg1, TArg2, TArg3, TArg4, TParam>(Func<TArg1, TArg2, TArg3, TArg4, TParam> paramValue)
     {
-      if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
+      if (paramValue == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.paramValue);
 
       var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
 
@@ -131,7 +131,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IFluentDecoratorWithCtorConfiguration<TParam> WithCtorParam<TArg1, TArg2, TArg3, TArg4, TArg5, TParam>(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TParam> paramValue)
     {
-      if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
+      if (paramValue == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.paramValue);
 
       var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
 

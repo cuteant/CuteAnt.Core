@@ -25,8 +25,8 @@ namespace System
     /// <returns></returns>
     public static bool HasAttribute(this MemberInfo memberInfo, Type attributeType, bool inherit = true)
     {
-      if (memberInfo == null) { throw new ArgumentNullException(nameof(memberInfo)); }
-      if (attributeType == null) { throw new ArgumentNullException(nameof(attributeType)); }
+      if (null == memberInfo) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.memberInfo);
+      if (null == attributeType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.attributeType);
 
       if (memberInfo is Type typeInfo) { return HasAttribute(typeInfo, attributeType, inherit); }
       if (memberInfo is PropertyInfo propertyInfo) { return HasAttribute(propertyInfo, attributeType, inherit); }
@@ -55,8 +55,8 @@ namespace System
     /// <returns></returns>
     public static bool HasAttributeNamed(this MemberInfo memberInfo, string name, bool inherit = true)
     {
-      if (memberInfo == null) { throw new ArgumentNullException(nameof(memberInfo)); }
-      if (string.IsNullOrWhiteSpace(name)) { throw new ArgumentNullException(nameof(name)); }
+      if (null == memberInfo) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.memberInfo);
+      if (string.IsNullOrWhiteSpace(name)) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
 
       if (memberInfo is Type typeInfo) { return HasAttributeNamed(typeInfo, name, inherit); }
       if (memberInfo is PropertyInfo propertyInfo) { return HasAttributeNamed(propertyInfo, name, inherit); }
@@ -249,7 +249,7 @@ namespace System
     /// <returns></returns>
     public static Type AddRuntimeAttributes(this Type type, params Attribute[] attrs)
     {
-      if (type == null) { throw new ArgumentNullException(nameof(type)); }
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
 
       var runtimeAttributes = s_typeAttributesMap.GetItem(type, k => new List<Attribute>());
       lock (runtimeAttributes)
@@ -265,7 +265,7 @@ namespace System
     /// <returns></returns>
     public static Type ReplaceRuntimeAttribute(this Type type, Attribute attr)
     {
-      if (type == null) { throw new ArgumentNullException(nameof(type)); }
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
 
       var runtimeAttributes = s_typeAttributesMap.GetItem(type, k => new List<Attribute>());
 
@@ -283,7 +283,7 @@ namespace System
     /// <returns></returns>
     public static Type ClearRuntimeAttributes(this Type type)
     {
-      if (type == null) { throw new ArgumentNullException(nameof(type)); }
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
 
       var runtimeAttributes = s_typeAttributesMap.GetItem(type, k => new List<Attribute>());
 
@@ -306,8 +306,8 @@ namespace System
     /// <returns></returns>
     public static bool HasAttribute(this Type type, Type attributeType, bool inherit = true)
     {
-      if (type == null) { throw new ArgumentNullException(nameof(type)); }
-      if (attributeType == null) { throw new ArgumentNullException(nameof(attributeType)); }
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
+      if (null == attributeType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.attributeType);
 
       if (GetRuntimeAttributes(type).Any(_ => _.GetType() == attributeType)) { return true; }
 
@@ -344,8 +344,8 @@ namespace System
     /// <returns></returns>
     public static bool HasAttributeNamed(this Type type, string name, bool inherit = true)
     {
-      if (type == null) { throw new ArgumentNullException(nameof(type)); }
-      if (string.IsNullOrWhiteSpace(name)) { throw new ArgumentNullException(nameof(name)); }
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
+      if (string.IsNullOrWhiteSpace(name)) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
 
       var normalizedAttr = name.Replace("Attribute", "");
       if (GetRuntimeAttributes(type).Any(_ =>
@@ -538,7 +538,7 @@ namespace System
     /// <returns></returns>
     public static PropertyInfo AddRuntimeAttributes(this PropertyInfo propertyInfo, params Attribute[] attrs)
     {
-      if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
+      if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
 
       var runtimeAttributes = s_propertyAttributesMap.GetItem(UniqueKey(propertyInfo), k => new List<Attribute>());
       lock (runtimeAttributes)
@@ -554,7 +554,7 @@ namespace System
     /// <returns></returns>
     public static PropertyInfo ReplaceRuntimeAttribute(this PropertyInfo propertyInfo, Attribute attr)
     {
-      if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
+      if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
 
       var runtimeAttributes = s_propertyAttributesMap.GetItem(UniqueKey(propertyInfo), k => new List<Attribute>());
 
@@ -572,7 +572,7 @@ namespace System
     /// <returns></returns>
     public static PropertyInfo ClearRuntimeAttributes(this PropertyInfo propertyInfo)
     {
-      if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
+      if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
 
       var runtimeAttributes = s_propertyAttributesMap.GetItem(UniqueKey(propertyInfo), k => new List<Attribute>());
 
@@ -595,8 +595,8 @@ namespace System
     /// <returns></returns>
     public static bool HasAttribute(this PropertyInfo propertyInfo, Type attributeType, bool inherit = true)
     {
-      if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
-      if (attributeType == null) { throw new ArgumentNullException(nameof(attributeType)); }
+      if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
+      if (null == attributeType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.attributeType);
 
       if (GetRuntimeAttributes(propertyInfo).Any(_ => _.GetType() == attributeType)) { return true; }
 
@@ -623,8 +623,8 @@ namespace System
     /// <returns></returns>
     public static bool HasAttributeNamed(this PropertyInfo propertyInfo, string name, bool inherit = true)
     {
-      if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
-      if (string.IsNullOrWhiteSpace(name)) { throw new ArgumentNullException(nameof(name)); }
+      if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
+      if (string.IsNullOrWhiteSpace(name)) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
 
       var normalizedAttr = name.Replace("Attribute", "");
       if (GetRuntimeAttributes(propertyInfo).Any(_ =>
@@ -811,10 +811,21 @@ namespace System
     private static string UniqueKey(PropertyInfo pi) => s_propertyUniqueKeyCache.GetOrAdd(pi, s_propertyUniqueKeyFunc);
     private static string UniqueKeyInternal(PropertyInfo pi)
     {
-      if (null == pi.DeclaringType) { throw new ArgumentException($"Property '{pi.Name}' has no DeclaringType"); }
+      if (null == pi.DeclaringType) { ThrowArgumentException_PI(pi.Name); }
 
       //return $"{pi.DeclaringType.Namespace}.{pi.DeclaringType.Name}.{pi.Name}";
       return $"{TypeUtils.GetTypeIdentifier(pi.DeclaringType)}.{pi.Name}";
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowArgumentException_PI(string name)
+    {
+      throw GetArgumentException();
+      ArgumentException GetArgumentException()
+      {
+        return new ArgumentException($"Property '{name}' has no DeclaringType", "pi");
+
+      }
     }
 
     #endregion
@@ -835,7 +846,7 @@ namespace System
     /// <returns></returns>
     public static FieldInfo AddRuntimeAttributes(this FieldInfo fieldInfo, params Attribute[] attrs)
     {
-      if (fieldInfo == null) { throw new ArgumentNullException(nameof(fieldInfo)); }
+      if (null == fieldInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.fieldInfo); }
 
       var runtimeAttributes = s_fieldAttributesMap.GetItem(UniqueKey(fieldInfo), k => new List<Attribute>());
       lock (runtimeAttributes)
@@ -851,7 +862,7 @@ namespace System
     /// <returns></returns>
     public static FieldInfo ReplaceRuntimeAttribute(this FieldInfo fieldInfo, Attribute attr)
     {
-      if (fieldInfo == null) { throw new ArgumentNullException(nameof(fieldInfo)); }
+      if (null == fieldInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.fieldInfo); }
 
       var runtimeAttributes = s_fieldAttributesMap.GetItem(UniqueKey(fieldInfo), k => new List<Attribute>());
 
@@ -869,7 +880,7 @@ namespace System
     /// <returns></returns>
     public static FieldInfo ClearRuntimeAttributes(this FieldInfo fieldInfo)
     {
-      if (fieldInfo == null) { throw new ArgumentNullException(nameof(fieldInfo)); }
+      if (null == fieldInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.fieldInfo); }
 
       var runtimeAttributes = s_fieldAttributesMap.GetItem(UniqueKey(fieldInfo), k => new List<Attribute>());
 
@@ -892,8 +903,8 @@ namespace System
     /// <returns></returns>
     public static bool HasAttribute(this FieldInfo fieldInfo, Type attributeType, bool inherit = true)
     {
-      if (fieldInfo == null) { throw new ArgumentNullException(nameof(fieldInfo)); }
-      if (attributeType == null) { throw new ArgumentNullException(nameof(attributeType)); }
+      if (null == fieldInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.fieldInfo); }
+      if (null == attributeType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.attributeType);
 
       if (GetRuntimeAttributes(fieldInfo).Any(_ => _.GetType() == attributeType)) { return true; }
 
@@ -920,8 +931,8 @@ namespace System
     /// <returns></returns>
     public static bool HasAttributeNamed(this FieldInfo fieldInfo, string name, bool inherit = true)
     {
-      if (fieldInfo == null) { throw new ArgumentNullException(nameof(fieldInfo)); }
-      if (string.IsNullOrWhiteSpace(name)) { throw new ArgumentNullException(nameof(name)); }
+      if (null == fieldInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.fieldInfo); }
+      if (string.IsNullOrWhiteSpace(name)) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
 
       var normalizedAttr = name.Replace("Attribute", "");
       if (GetRuntimeAttributes(fieldInfo).Any(_ =>
@@ -1108,10 +1119,21 @@ namespace System
     private static string UniqueKey(FieldInfo fi) => s_fieldUniqueKeyCache.GetOrAdd(fi, s_fieldUniqueKeyFunc);
     private static string UniqueKeyInternal(FieldInfo fi)
     {
-      if (fi.DeclaringType == null) throw new ArgumentException($"Property '{fi.Name}' has no DeclaringType");
+      if (fi.DeclaringType == null) ThrowArgumentException_FI(fi.Name);
 
       //return $"{fi.DeclaringType.Namespace}.{fi.DeclaringType.Name}.{fi.Name}";
       return $"{TypeUtils.GetTypeIdentifier(fi.DeclaringType)}.{fi.Name}";
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowArgumentException_FI(string name)
+    {
+      throw GetArgumentException();
+      ArgumentException GetArgumentException()
+      {
+        return new ArgumentException($"Field '{name}' has no DeclaringType", "fi");
+
+      }
     }
 
     #endregion

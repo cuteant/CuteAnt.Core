@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Grace.Data;
 using Grace.Utilities;
 
@@ -54,11 +55,11 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public TypesThatConfiguration AreBasedOn(Type baseType)
     {
-      if (baseType == null) throw new ArgumentNullException(nameof(baseType));
+      if (baseType == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.baseType);
 
       var notValue = GetNotAndingValue();
 
-      Func<Type, bool> basedOnFilter = type => ReflectionService.CheckTypeIsBasedOnAnotherType(type, baseType) == notValue;
+      bool basedOnFilter(Type type) => ReflectionService.CheckTypeIsBasedOnAnotherType(type, baseType) == notValue;
 
       Add(basedOnFilter);
 
@@ -70,35 +71,34 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>type filter</returns>
     public TypesThatConfiguration AreBasedOn(Func<Type, bool> typeFilter)
     {
-      if (typeFilter == null) throw new ArgumentNullException(nameof(typeFilter));
+      if (typeFilter == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.typeFilter);
 
       var notValue = GetNotAndingValue();
 
-      Func<Type, bool> basedOnFilter =
-          type =>
+      bool basedOnFilter(Type type)
+      {
+        var baseType = type;
+
+        while (baseType != null && baseType != typeof(object))
+        {
+          if (typeFilter(baseType))
           {
-            var baseType = type;
+            return true == notValue;
+          }
 
-            while (baseType != null && baseType != typeof(object))
-            {
-              if (typeFilter(baseType))
-              {
-                return true == notValue;
-              }
+          baseType = baseType.GetTypeInfo().BaseType;
+        }
 
-              baseType = baseType.GetTypeInfo().BaseType;
-            }
+        foreach (var implementedInterface in type.GetTypeInfo().ImplementedInterfaces)
+        {
+          if (typeFilter(implementedInterface))
+          {
+            return notValue;
+          }
+        }
 
-            foreach (var implementedInterface in type.GetTypeInfo().ImplementedInterfaces)
-            {
-              if (typeFilter(implementedInterface))
-              {
-                return notValue;
-              }
-            }
-
-            return false == notValue;
-          };
+        return false == notValue;
+      }
 
       Add(basedOnFilter);
 
@@ -293,23 +293,22 @@ namespace Grace.DependencyInjection.Impl
     {
       var notValue = GetNotAndingValue();
 
-      Func<Type, bool> newFilter =
-          type =>
-          {
+      bool newFilter(Type type)
+      {
 #if NET40
-            foreach (var customAttribute in type.GetCustomAttributes())
+        foreach (var customAttribute in type.GetCustomAttributes())
 #else
-            foreach (var customAttribute in type.GetTypeInfo().GetCustomAttributes())
+        foreach (var customAttribute in type.GetTypeInfo().GetCustomAttributes())
 #endif
-            {
-              if (consider(customAttribute.GetType()))
-              {
-                return notValue;
-              }
-            }
+        {
+          if (consider(customAttribute.GetType()))
+          {
+            return notValue;
+          }
+        }
 
-            return false == notValue;
-          };
+        return false == notValue;
+      }
 
       Add(newFilter);
 
@@ -381,7 +380,7 @@ namespace Grace.DependencyInjection.Impl
       {
         if (UseOr)
         {
-          throw new Exception("Cannot use And with Or");
+          ThrowException();
         }
 
         UseOr = false;
@@ -399,6 +398,16 @@ namespace Grace.DependencyInjection.Impl
       _notLogicValue = true;
 
       return tempValue;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowException()
+    {
+      throw GetException();
+      Exception GetException()
+      {
+        return new Exception("Cannot use And with Or");
+      }
     }
   }
 }

@@ -11,7 +11,8 @@ namespace CuteAnt.Pool
 
     public LeakTrackingObjectPoolProvider(ObjectPoolProvider inner)
     {
-      _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+      if (null == inner) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.inner); }
+      _inner = inner;
     }
 
     public override ObjectPool<T> Create<T>(IPooledObjectPolicy<T> policy)

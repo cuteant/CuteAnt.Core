@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Grace.DependencyInjection
 {
@@ -59,7 +60,7 @@ namespace Grace.DependencyInjection
         return strategy.WithCtorParam(func).Named(memberExpression.Member.Name);
       }
 
-      throw new Exception("WithNamedCtorValue must be passed a Func that references a member");
+      ThrowException(); return null;
     }
 
     /// <summary>This is intended to be a short cut for setting named property values The expression will be
@@ -88,7 +89,17 @@ namespace Grace.DependencyInjection
         return strategy.WithCtorParam(func).Named(memberExpression.Member.Name);
       }
 
-      throw new Exception("WithNamedCtorValue must be passed a Func that references a member");
+      ThrowException(); return null;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowException()
+    {
+      throw GetException();
+      Exception GetException()
+      {
+        return new Exception("WithNamedCtorValue must be passed a Func that references a member");
+      }
     }
   }
 }

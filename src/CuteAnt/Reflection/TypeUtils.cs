@@ -145,7 +145,7 @@ namespace CuteAnt.Reflection
 
     public static string SerializeTypeName(Type type)
     {
-      if (null == type) { throw new ArgumentNullException(nameof(type)); }
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
 
       return _typeNameSerializerCache.GetOrAdd(type, _serializeTypeNameFunc);
     }
@@ -467,26 +467,26 @@ namespace CuteAnt.Reflection
 #if !NET40
     private static string GetFullName(TypeInfo typeInfo)
     {
-      if (typeInfo == null) throw new ArgumentNullException(nameof(typeInfo));
+      if (null == typeInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.typeInfo); }
       return GetFullName(typeInfo.AsType());
     }
 #endif
 
-    private static string GetFullName(Type t)
+    private static string GetFullName(Type type)
     {
-      if (t == null) throw new ArgumentNullException(nameof(t));
-      if (t.IsNested && !t.IsGenericParameter)
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
+      if (type.IsNested && !type.IsGenericParameter)
       {
-        return t.Namespace + "." + t.DeclaringType.Name + "." + t.Name;
+        return type.Namespace + "." + type.DeclaringType.Name + "." + type.Name;
       }
-      if (t.IsArray)
+      if (type.IsArray)
       {
-        return GetFullName(t.GetElementType())
+        return GetFullName(type.GetElementType())
                + "["
-               + new string(',', t.GetArrayRank() - 1)
+               + new string(',', type.GetArrayRank() - 1)
                + "]";
       }
-      return t.FullName ?? (t.IsGenericParameter ? t.Name : t.Namespace + "." + t.Name);
+      return type.FullName ?? (type.IsGenericParameter ? type.Name : type.Namespace + "." + type.Name);
     }
 
     #endregion
@@ -960,7 +960,7 @@ namespace CuteAnt.Reflection
         return methodCall.Method;
       }
 
-      throw new ArgumentException("Expression type unsupported.");
+      ThrowArgumentException_Expr(); return null;
     }
 
     /// <summary>Returns the <see cref="MethodInfo"/> for the simple method call in the provided <paramref name="expression"/>.</summary>
@@ -974,7 +974,7 @@ namespace CuteAnt.Reflection
         return methodCall.Method;
       }
 
-      throw new ArgumentException("Expression type unsupported.");
+      ThrowArgumentException_Expr(); return null;
     }
 
     /// <summary>Returns the <see cref="MethodInfo"/> for the simple method call in the provided <paramref name="expression"/>.</summary>
@@ -988,7 +988,7 @@ namespace CuteAnt.Reflection
         return methodCall.Method;
       }
 
-      throw new ArgumentException("Expression type unsupported.");
+      ThrowArgumentException_Expr(); return null;
     }
 
     /// <summary>Returns the <see cref="MethodInfo"/> for the simple method call in the provided <paramref name="expression"/>.</summary>
@@ -1001,7 +1001,7 @@ namespace CuteAnt.Reflection
         return methodCall.Method;
       }
 
-      throw new ArgumentException("Expression type unsupported.");
+      ThrowArgumentException_Expr(); return null;
     }
 
     #endregion
@@ -1018,7 +1018,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static object CallMethod(MethodInfo method, object target, params object[] parameters)
     {
-      if (null == method) { throw new ArgumentNullException(nameof(method)); }
+      if (null == method) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.method); }
 
       var matcher = s_methodMatcherCache.GetOrAdd(method, mi => new MethodMatcher(mi));
 
@@ -1029,7 +1029,7 @@ namespace CuteAnt.Reflection
         {
           if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
           {
-            throw new InvalidOperationException($"Unable to resolve service for type '{paramInfos[index].ParameterType}' while attempting to activate '{method}'.");
+            ThrowInvalidOperationException(paramInfos[index].ParameterType, method);
           }
           else
           {
@@ -1043,7 +1043,7 @@ namespace CuteAnt.Reflection
 
     public static TReturn CallMethod<TTarget, TReturn>(MethodInfo method, TTarget target, params object[] parameters)
     {
-      if (null == method) { throw new ArgumentNullException(nameof(method)); }
+      if (null == method) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.method); }
 
       var matcher = MethodMatcher<TTarget, TReturn>.GetMethodMatcher(method);
 
@@ -1054,7 +1054,7 @@ namespace CuteAnt.Reflection
         {
           if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
           {
-            throw new InvalidOperationException($"Unable to resolve service for type '{paramInfos[index].ParameterType}' while attempting to activate '{method}'.");
+            ThrowInvalidOperationException(paramInfos[index].ParameterType, method);
           }
           else
           {
@@ -1082,7 +1082,7 @@ namespace CuteAnt.Reflection
         return property.Member as PropertyInfo;
       }
 
-      throw new ArgumentException("Expression type unsupported.");
+      ThrowArgumentException_Expr(); return null;
     }
 
     /// <summary>Returns the <see cref="PropertyInfo"/> for the simple member access in the provided <paramref name="expression"/>.</summary>
@@ -1096,7 +1096,7 @@ namespace CuteAnt.Reflection
         return property.Member as PropertyInfo;
       }
 
-      throw new ArgumentException("Expression type unsupported.");
+      ThrowArgumentException_Expr(); return null;
     }
 
     #endregion
@@ -1120,7 +1120,7 @@ namespace CuteAnt.Reflection
         return property.Member;
       }
 
-      throw new ArgumentException("Expression type unsupported.");
+      ThrowArgumentException_Expr(); return null;
     }
 
     /// <summary>Returns the <see cref="MemberInfo"/> for the simple member access in the provided <paramref name="expression"/>.</summary>
@@ -1139,7 +1139,7 @@ namespace CuteAnt.Reflection
         return property.Member;
       }
 
-      throw new ArgumentException("Expression type unsupported.");
+      ThrowArgumentException_Expr(); return null;
     }
 
     #endregion
@@ -1655,7 +1655,7 @@ namespace CuteAnt.Reflection
     {
       if (TryResolveType(qualifiedTypeName, out var result)) { return result; }
 
-      throw new TypeAccessException($"Unable to find a type named {qualifiedTypeName}");
+      ThrowTypeAccessException(qualifiedTypeName); return null;
     }
 
     /// <summary>Gets <see cref="Type"/> by full name (with falling back to the first part only).</summary>
@@ -1666,7 +1666,7 @@ namespace CuteAnt.Reflection
     {
       if (string.IsNullOrWhiteSpace(qualifiedTypeName))
       {
-        throw new ArgumentException("A type name must not be null nor consist of only whitespace.", nameof(qualifiedTypeName));
+        ThrowHelper.ThrowArgumentException(ExceptionResource.Type_Name_Must_Not_Null, ExceptionArgument.qualifiedTypeName);
       }
 
       if (_resolveTypeCache.TryGetValue(qualifiedTypeName, out type)) { return true; }
@@ -1712,14 +1712,14 @@ namespace CuteAnt.Reflection
     private static void AddTypeToCache(string typeName, Type type)
     {
       var entry = _resolveTypeCache.GetOrAdd(typeName, _ => type);
-      if (!ReferenceEquals(entry, type)) { throw new InvalidOperationException("inconsistent type name association"); }
+      if (!ReferenceEquals(entry, type)) { ThrowInvalidOperationException(); }
     }
 
     internal static bool TryPerformUncachedTypeResolution(string fullName, out Type type)
     {
       if (string.IsNullOrWhiteSpace(fullName))
       {
-        throw new ArgumentException("A type name must not be null nor consist of only whitespace.", nameof(fullName));
+        ThrowHelper.ThrowArgumentException(ExceptionResource.Type_Name_Must_Not_Null, ExceptionArgument.fullName);
       }
 
       var typeNameKey = SplitFullyQualifiedTypeName(fullName);
@@ -1730,7 +1730,7 @@ namespace CuteAnt.Reflection
     {
       if (TryResolveType(typeNameKey, out var result)) { return result; }
 
-      throw new TypeAccessException($"Unable to find a type named {typeNameKey.TypeName}[{typeNameKey.AssemblyName}]");
+      ThrowTypeAccessException($"{typeNameKey.TypeName}[{typeNameKey.AssemblyName}]"); return null;
     }
 
     /// <inheritdoc />
@@ -1748,7 +1748,7 @@ namespace CuteAnt.Reflection
     private static void AddTypeToCache(in TypeNameKey typeNameKey, Type type)
     {
       var entry = _typeNameKeyCache.GetOrAdd(typeNameKey, _ => type);
-      if (!ReferenceEquals(entry, type)) { throw new InvalidOperationException("inconsistent type name association"); }
+      if (!ReferenceEquals(entry, type)) { ThrowInvalidOperationException(); }
     }
 
     internal static bool TryPerformUncachedTypeResolution(in TypeNameKey typeNameKey, out Type type)
@@ -1988,8 +1988,56 @@ namespace CuteAnt.Reflection
     private static int _typeIdentifier;
     public static string GetTypeIdentifier(this Type type)
     {
-      if (null == type) { throw new ArgumentNullException(nameof(type)); }
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
       return s_typeIdentifierCache.GetOrAdd(type, t => Interlocked.Increment(ref _typeIdentifier).ToString(CultureInfo.InvariantCulture));
+    }
+
+    #endregion
+
+    #region ** ThrowHelper **
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowArgumentException_Expr()
+    {
+      throw GetArgumentException();
+
+      ArgumentException GetArgumentException()
+      {
+        return new ArgumentException("Expression type unsupported.");
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowTypeAccessException(string qualifiedTypeName)
+    {
+      throw GetTypeAccessException();
+
+      TypeAccessException GetTypeAccessException()
+      {
+        return new TypeAccessException($"Unable to find a type named {qualifiedTypeName}");
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowInvalidOperationException()
+    {
+      throw GetInvalidOperationException();
+
+      InvalidOperationException GetInvalidOperationException()
+      {
+        return new InvalidOperationException("inconsistent type name association");
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowInvalidOperationException(Type parameterType, MethodInfo method)
+    {
+      throw GetInvalidOperationException();
+
+      InvalidOperationException GetInvalidOperationException()
+      {
+        return new InvalidOperationException($"Unable to resolve service for type '{parameterType}' while attempting to activate '{method}'.");
+      }
     }
 
     #endregion

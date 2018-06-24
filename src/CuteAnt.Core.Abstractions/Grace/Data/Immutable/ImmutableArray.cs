@@ -28,7 +28,7 @@ namespace Grace.Data.Immutable
     /// <returns>immutable array</returns>
     public static ImmutableArray<T> From<T>(IEnumerable<T> list)
     {
-      if (list == null) throw new ArgumentNullException(nameof(list));
+      if (list == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.list);
 
       var array = list.ToArray();
 
@@ -42,7 +42,7 @@ namespace Grace.Data.Immutable
     /// <returns></returns>
     public static ImmutableArray<T> From<T>(T[] ts, int count = -1)
     {
-      if (ts == null) throw new ArgumentNullException(nameof(ts));
+      if (ts == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.ts);
 
       return new ImmutableArray<T>(CloneArray(ts, count));
     }
@@ -244,7 +244,7 @@ namespace Grace.Data.Immutable
 
         if (compareArray == null ^ _list == null)
         {
-          throw new ArgumentNullException(nameof(other), "Arrays not initialized properly");
+          ThrowHelper.ThrowArgumentNullException(ExceptionArgument.other, ExceptionResource.ImmutableArray_Arrays_Not_Initialized);
         }
       }
 
@@ -253,7 +253,8 @@ namespace Grace.Data.Immutable
         return ((IStructuralComparable)compareArray).CompareTo(_list, comparer);
       }
 
-      throw new ArgumentNullException(nameof(other), "Other is not an array of T");
+      ThrowHelper.ThrowArgumentNullException(ExceptionArgument.other, ExceptionResource.ImmutableArray_Not_Array);
+      return default;
     }
 
     /// <summary>Determines whether the specified objects are equal.</summary>
@@ -299,7 +300,7 @@ namespace Grace.Data.Immutable
 
         if (compareArray == null ^ _list == null)
         {
-          throw new ArgumentNullException(nameof(other), "Arrays not initialized properly");
+          ThrowHelper.ThrowArgumentNullException(ExceptionArgument.other, ExceptionResource.ImmutableArray_Arrays_Not_Initialized);
         }
       }
 
@@ -308,7 +309,8 @@ namespace Grace.Data.Immutable
         return ((IStructuralEquatable)compareArray).Equals(_list, comparer);
       }
 
-      throw new ArgumentNullException(nameof(other), "Other is not an array of T");
+      ThrowHelper.ThrowArgumentNullException(ExceptionArgument.other, ExceptionResource.ImmutableArray_Not_Array);
+      return default;
     }
 
     int IStructuralEquatable.GetHashCode(IEqualityComparer comparer)

@@ -23,7 +23,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static object GetDefaultValue(this Type type)
     {
-      if (type == null) { throw new ArgumentNullException(nameof(type)); }
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
 
       if (!type.IsValueType) return null;
 
@@ -55,11 +55,11 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static Type GetCachedGenericType(this Type type, params Type[] argTypes)
     {
-      if (type == null) { throw new ArgumentNullException(nameof(type)); }
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
 
       if (!type.GetTypeInfo().IsGenericTypeDefinition)
       {
-        throw new ArgumentException($"{type.FullName} is not a Generic Type Definition", nameof(type));
+        ThrowArgumentException_Make(type);
       }
 
       if (argTypes == null) { argTypes = Type.EmptyTypes; }
@@ -75,6 +75,17 @@ namespace CuteAnt.Reflection
     }
 
     private static Type MakeGenericTypeInternal(string typeKey, Type type, Type[] argTypes) => type.MakeGenericType(argTypes);
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowArgumentException_Make(Type type)
+    {
+      throw GetArgumentException();
+      ArgumentException GetArgumentException()
+      {
+        return new ArgumentException($"{type.FullName} is not a Generic Type Definition", nameof(type));
+
+      }
+    }
 
     #endregion
 
@@ -204,7 +215,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     static Type GetTypeInternal(ref Object target)
     {
-      if (target == null) { throw new ArgumentNullException(nameof(target)); }
+      if (null == target) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.target);
 
       var type = target as Type;
       if (type == null)

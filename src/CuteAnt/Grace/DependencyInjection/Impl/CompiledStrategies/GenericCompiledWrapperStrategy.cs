@@ -1,8 +1,11 @@
 ﻿using System;
-using System.Reflection;
+using System.Runtime.CompilerServices;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl.Expressions;
 using Grace.Utilities;
+#if NET40
+using System.Reflection;
+#endif
 
 namespace Grace.DependencyInjection.Impl.CompiledStrategies
 {
@@ -104,9 +107,19 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
     /// <param name="argPosition"></param>
     public void SetWrappedGenericArgPosition(int argPosition)
     {
-      if (argPosition < 0) throw new ArgumentOutOfRangeException(nameof(argPosition), "arg position must be >= 0");
+      if (argPosition < 0) ThrowArgumentOutOfRangeException();
 
       _wrappedGenericArgPosition = argPosition;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowArgumentOutOfRangeException()
+    {
+      throw GetArgumentOutOfRangeException();
+      ArgumentOutOfRangeException GetArgumentOutOfRangeException()
+      {
+        return new ArgumentOutOfRangeException("argPosition", "arg position must be >= 0");
+      }
     }
   }
 }

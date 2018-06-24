@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using CuteAnt.Collections;
 using Grace.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
@@ -69,22 +70,24 @@ namespace CuteAnt.Reflection
 
     public static ConstructorMatcher GetConstructorMatcher(Type instanceType, params Type[] argumentTypes)
     {
-      if (TryGetConstructorMatcher(instanceType, argumentTypes, out var bestMatcher)) { return bestMatcher; }
-
-      var message = $"A suitable constructor for type '{instanceType}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
-      throw new InvalidOperationException(message);
+      if (!TryGetConstructorMatcher(instanceType, argumentTypes, out var bestMatcher))
+      {
+        ThrowInvalidOperationException(instanceType);
+      }
+      return bestMatcher;
     }
     public static ConstructorMatcher<TInstance> GetConstructorMatcher<TInstance>(params Type[] argumentTypes)
     {
-      if (TryGetConstructorMatcher<TInstance>(argumentTypes, out var bestMatcher)) { return bestMatcher; }
-
-      var message = $"A suitable constructor for type '{typeof(TInstance)}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
-      throw new InvalidOperationException(message);
+      if (!TryGetConstructorMatcher<TInstance>(argumentTypes, out var bestMatcher))
+      {
+        ThrowInvalidOperationException<TInstance>();
+      }
+      return bestMatcher;
     }
 
     public static bool TryGetConstructorMatcher(Type instanceType, Type[] argumentTypes, out ConstructorMatcher matcher)
     {
-      if (null == instanceType) { throw new ArgumentNullException(nameof(instanceType)); }
+      if (null == instanceType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.instanceType);
       if (null == argumentTypes) { argumentTypes = Type.EmptyTypes; }
 
       matcher = null;
@@ -124,7 +127,7 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static object FastCreateInstance(string typeName)
     {
-      if (string.IsNullOrWhiteSpace(typeName)) { throw new ArgumentNullException(nameof(typeName)); }
+      if (string.IsNullOrWhiteSpace(typeName)) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.typeName); }
       var instanceType = TypeUtils.ResolveType(typeName);
 
       return FastCreateInstance(instanceType);
@@ -133,11 +136,7 @@ namespace CuteAnt.Reflection
     /// <summary>Creates a new instance from the default constructor of type</summary>
     public static object FastCreateInstance(Type instanceType)
     {
-      if (null == instanceType) { throw new ArgumentNullException(nameof(instanceType)); }
-      //if (instanceType.GetTypeInfo().IsAbstract)
-      //{
-      //  throw new TypeAccessException($"Type '{instanceType}' is an interface or abstract class and cannot be instantiated");
-      //}
+      if (null == instanceType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.instanceType);
 
       return s_typeEmptyConstructorCache.GetOrAdd(instanceType, s_makeDelegateForCtorFunc).Invoke(s_emptyObjects);
     }
@@ -160,7 +159,7 @@ namespace CuteAnt.Reflection
 
     public static object CreateInstance(string typeName, params object[] parameters)
     {
-      if (string.IsNullOrWhiteSpace(typeName)) { throw new ArgumentNullException(nameof(typeName)); }
+      if (string.IsNullOrWhiteSpace(typeName)) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.typeName); }
       var instanceType = TypeUtils.ResolveType(typeName);
 
       return CreateInstance(instanceType, parameters);
@@ -168,7 +167,7 @@ namespace CuteAnt.Reflection
 
     public static object CreateInstance(Type instanceType, params object[] parameters)
     {
-      if (instanceType == null) { throw new ArgumentNullException(nameof(instanceType)); }
+      if (null == instanceType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.instanceType);
 
       // 需要考虑可选参数，不能在 parameters 为空的情况下直接转 FastCreateInstance 模式
       int bestLength = -1;
@@ -192,8 +191,7 @@ namespace CuteAnt.Reflection
 
       if (bestMatcher == null)
       {
-        var message = $"A suitable constructor for type '{instanceType}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
-        throw new InvalidOperationException(message);
+        ThrowInvalidOperationException(instanceType);
       }
 
       for (var index = 0; index != paramInfos.Length; index++)
@@ -202,7 +200,7 @@ namespace CuteAnt.Reflection
         {
           if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
           {
-            throw new InvalidOperationException($"Unable to resolve service for type '{paramInfos[index].ParameterType}' while attempting to activate '{instanceType}'.");
+            ThrowInvalidOperationException(paramInfos[index].ParameterType, instanceType);
           }
           else
           {
@@ -238,8 +236,7 @@ namespace CuteAnt.Reflection
 
       if (bestMatcher == null)
       {
-        var message = $"A suitable constructor for type '{typeof(TInstance)}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
-        throw new InvalidOperationException(message);
+        ThrowInvalidOperationException<TInstance>();
       }
 
       for (var index = 0; index != paramInfos.Length; index++)
@@ -248,7 +245,7 @@ namespace CuteAnt.Reflection
         {
           if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
           {
-            throw new InvalidOperationException($"Unable to resolve service for type '{paramInfos[index].ParameterType}' while attempting to activate '{typeof(TInstance)}'.");
+            ThrowInvalidOperationException<TInstance>(paramInfos[index].ParameterType);
           }
           else
           {
@@ -269,7 +266,7 @@ namespace CuteAnt.Reflection
 
     public static object CreateInstance(IServiceProvider serviceProvider, string typeName, params object[] parameters)
     {
-      if (string.IsNullOrWhiteSpace(typeName)) { throw new ArgumentNullException(nameof(typeName)); }
+      if (string.IsNullOrWhiteSpace(typeName)) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.typeName); }
       var instanceType = TypeUtils.ResolveType(typeName);
 
       return CreateInstance(serviceProvider, instanceType, parameters);
@@ -316,8 +313,7 @@ namespace CuteAnt.Reflection
 
       if (bestMatcher == null)
       {
-        var message = $"A suitable constructor for type '{instanceType}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
-        throw new InvalidOperationException(message);
+        ThrowInvalidOperationException(instanceType);
       }
 
       for (var index = 0; index != paramInfos.Length; index++)
@@ -329,7 +325,7 @@ namespace CuteAnt.Reflection
           {
             if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
             {
-              throw new InvalidOperationException($"Unable to resolve service for type '{paramInfos[index].ParameterType}' while attempting to activate '{instanceType}'.");
+              ThrowInvalidOperationException(paramInfos[index].ParameterType, instanceType);
             }
             else
             {
@@ -387,8 +383,7 @@ namespace CuteAnt.Reflection
 
       if (bestMatcher == null)
       {
-        var message = $"A suitable constructor for type '{typeof(TInstance)}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
-        throw new InvalidOperationException(message);
+        ThrowInvalidOperationException<TInstance>();
       }
 
       for (var index = 0; index != paramInfos.Length; index++)
@@ -400,7 +395,7 @@ namespace CuteAnt.Reflection
           {
             if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
             {
-              throw new InvalidOperationException($"Unable to resolve service for type '{paramInfos[index].ParameterType}' while attempting to activate '{typeof(TInstance)}'.");
+              ThrowInvalidOperationException<TInstance>(paramInfos[index].ParameterType);
             }
             else
             {
@@ -420,23 +415,13 @@ namespace CuteAnt.Reflection
     public static TInstance CreateInstance<TInstance>(IServiceProvider serviceProvider, Type implementationType, params object[] parameters)
         => (TInstance)CreateInstance(serviceProvider, implementationType, parameters);
 
-    private static void ThrowMultipleCtorsMarkedWithAttributeException()
-    {
-      throw new InvalidOperationException($"Multiple constructors were marked with {nameof(ActivatorUtilitiesConstructorAttribute)}.");
-    }
-
-    private static void ThrowMarkedCtorDoesNotTakeAllProvidedArguments()
-    {
-      throw new InvalidOperationException($"Constructor marked with {nameof(ActivatorUtilitiesConstructorAttribute)} does not accept all given argument types.");
-    }
-
     #endregion
 
     #region -- CreateInstance with Grace --
 
     public static object CreateInstance(ILocatorService services, string typeName, params object[] parameters)
     {
-      if (string.IsNullOrWhiteSpace(typeName)) { throw new ArgumentNullException(nameof(typeName)); }
+      if (string.IsNullOrWhiteSpace(typeName)) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.typeName); }
       var instanceType = TypeUtils.ResolveType(typeName);
 
       return CreateInstance(services, instanceType, parameters);
@@ -465,8 +450,7 @@ namespace CuteAnt.Reflection
 
       if (bestMatcher == null)
       {
-        var message = $"A suitable constructor for type '{instanceType}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
-        throw new InvalidOperationException(message);
+        ThrowInvalidOperationException(instanceType);
       }
 
       for (var index = 0; index != paramInfos.Length; index++)
@@ -478,7 +462,7 @@ namespace CuteAnt.Reflection
           {
             if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
             {
-              throw new InvalidOperationException($"Unable to resolve service for type '{paramInfos[index].ParameterType}' while attempting to activate '{instanceType}'.");
+              ThrowInvalidOperationException(paramInfos[index].ParameterType, instanceType);
             }
             else
             {
@@ -518,8 +502,7 @@ namespace CuteAnt.Reflection
 
       if (bestMatcher == null)
       {
-        var message = $"A suitable constructor for type '{typeof(TInstance)}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.";
-        throw new InvalidOperationException(message);
+        ThrowInvalidOperationException<TInstance>();
       }
 
       for (var index = 0; index != paramInfos.Length; index++)
@@ -531,7 +514,7 @@ namespace CuteAnt.Reflection
           {
             if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
             {
-              throw new InvalidOperationException($"Unable to resolve service for type '{paramInfos[index].ParameterType}' while attempting to activate '{typeof(TInstance)}'.");
+              ThrowInvalidOperationException<TInstance>(paramInfos[index].ParameterType);
             }
             else
             {
@@ -566,6 +549,66 @@ namespace CuteAnt.Reflection
 
     public static object GetServiceOrCreateInstance(ILocatorService services, Type type)
         => services.LocateOrDefault(type) ?? CreateInstance(services, type);
+
+    #endregion
+
+    #region ** ThrowHelper **
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowMultipleCtorsMarkedWithAttributeException()
+    {
+      throw GetInvalidOperationException();
+      InvalidOperationException GetInvalidOperationException()
+      {
+        return new InvalidOperationException($"Multiple constructors were marked with {nameof(ActivatorUtilitiesConstructorAttribute)}.");
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowMarkedCtorDoesNotTakeAllProvidedArguments()
+    {
+      throw GetInvalidOperationException();
+      InvalidOperationException GetInvalidOperationException()
+      {
+        return new InvalidOperationException($"Constructor marked with {nameof(ActivatorUtilitiesConstructorAttribute)} does not accept all given argument types.");
+      }
+    }
+
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowInvalidOperationException(Type instanceType)
+    {
+      throw GetInvalidOperationException(instanceType);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowInvalidOperationException<T>()
+    {
+      throw GetInvalidOperationException(typeof(T));
+    }
+
+    private static InvalidOperationException GetInvalidOperationException(Type instanceType)
+    {
+      return new InvalidOperationException($"A suitable constructor for type '{instanceType}' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.");
+    }
+
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowInvalidOperationException(Type parameterType, Type instanceType)
+    {
+      throw GetInvalidOperationException(parameterType, instanceType);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowInvalidOperationException<T>(Type parameterType)
+    {
+      throw GetInvalidOperationException(parameterType, typeof(T));
+    }
+
+    private static InvalidOperationException GetInvalidOperationException(Type parameterType, Type instanceType)
+    {
+      return new InvalidOperationException($"Unable to resolve service for type '{parameterType}' while attempting to activate '{instanceType}'.");
+    }
 
     #endregion
   }

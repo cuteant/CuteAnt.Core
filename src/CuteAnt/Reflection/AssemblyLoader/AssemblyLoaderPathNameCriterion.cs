@@ -9,7 +9,7 @@ namespace CuteAnt.Reflection
 
     public static AssemblyLoaderPathNameCriterion NewCriterion(Predicate predicate)
     {
-      if (predicate == null) { throw new ArgumentNullException(nameof(predicate)); }
+      if (null == predicate) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.predicate);
 
       return new AssemblyLoaderPathNameCriterion(predicate);
     }

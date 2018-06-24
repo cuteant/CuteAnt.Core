@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Exceptions;
 using Grace.Utilities;
@@ -126,12 +127,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
           {
             if (memberKVP.Value.IsRequired)
             {
-              throw new LocateException(newRequest.GetStaticInjectionContext());
+              ThrowLocateException(newRequest);
             }
           }
           else
           {
-            Expression memberExpression;
+            Expression memberExpression = null;
 
             if (memberKVP.Key is FieldInfo KeyFieldInfo)
             {
@@ -143,7 +144,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
             else
             {
-              throw new LocateException(request.GetStaticInjectionContext(), $"{memberKVP.Key.GetType().Name} member type not supported");
+              ThrowLocateException(request, memberKVP.Key);
             }
 
             newResult.AddExpressionResult(memberResult);
@@ -208,7 +209,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
           {
             if (memberKVP.Value.IsRequired)
             {
-              throw new LocateException(newRequest.GetStaticInjectionContext());
+              ThrowLocateException(newRequest);
             }
           }
           else
@@ -230,6 +231,26 @@ namespace Grace.DependencyInjection.Impl.Expressions
       }
 
       return result;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowLocateException(IActivationExpressionRequest request)
+    {
+      throw GetLocateException();
+      LocateException GetLocateException()
+      {
+        return new LocateException(request.GetStaticInjectionContext());
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowLocateException(IActivationExpressionRequest request, MemberInfo member)
+    {
+      throw GetLocateException();
+      LocateException GetLocateException()
+      {
+        return new LocateException(request.GetStaticInjectionContext(), $"{member.GetType().Name} member type not supported");
+      }
     }
 
     /// <summary>Get dictionary of members that need to be injected</summary>

@@ -22,7 +22,8 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IFluentDecoratorWithCtorConfiguration<TParam> Consider(ActivationStrategyFilter filter)
     {
-      _constructorParameterInfo.ExportStrategyFilter = filter ?? throw new ArgumentNullException(nameof(filter));
+      if (null == filter) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.filter);
+      _constructorParameterInfo.ExportStrategyFilter = filter;
 
       return this;
     }
@@ -42,7 +43,8 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IFluentDecoratorWithCtorConfiguration<TParam> DefaultValue(Func<TParam> defaultValueFunc)
     {
-      _constructorParameterInfo.DefaultValue = defaultValueFunc ?? throw new ArgumentNullException(nameof(defaultValueFunc));
+      if (null == defaultValueFunc) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.defaultValueFunc);
+      _constructorParameterInfo.DefaultValue = defaultValueFunc;
 
       return this;
     }
@@ -52,7 +54,8 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IFluentDecoratorWithCtorConfiguration<TParam> DefaultValue(Func<IExportLocatorScope, StaticInjectionContext, IInjectionContext, TParam> defaultValueFunc)
     {
-      _constructorParameterInfo.DefaultValue = defaultValueFunc ?? throw new ArgumentNullException(nameof(defaultValueFunc));
+      if (null == defaultValueFunc) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.defaultValueFunc);
+      _constructorParameterInfo.DefaultValue = defaultValueFunc;
 
       return this;
     }
@@ -82,7 +85,8 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IFluentDecoratorWithCtorConfiguration<TParam> LocateWithKey(object locateKey)
     {
-      _constructorParameterInfo.LocateWithKey = locateKey ?? throw new ArgumentNullException(nameof(locateKey));
+      if (null == locateKey) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.locateKey);
+      _constructorParameterInfo.LocateWithKey = locateKey;
 
       return this;
     }
@@ -92,7 +96,8 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IFluentDecoratorWithCtorConfiguration<TParam> Named(string name)
     {
-      _constructorParameterInfo.ParameterName = name ?? throw new ArgumentNullException(nameof(name));
+      if (null == name) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name);
+      _constructorParameterInfo.ParameterName = name;
 
       return this;
     }
@@ -102,7 +107,8 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IFluentDecoratorWithCtorConfiguration<TParam> Use(Type type)
     {
-      _constructorParameterInfo.UseType = type ?? throw new ArgumentNullException(nameof(type));
+      if (null == type) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type);
+      _constructorParameterInfo.UseType = type;
 
       return this;
     }

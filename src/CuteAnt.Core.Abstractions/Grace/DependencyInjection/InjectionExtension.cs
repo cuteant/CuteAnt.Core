@@ -13,8 +13,8 @@ namespace Grace.DependencyInjection
     /// <param name="extraData">extra data, can be null</param>
     public static void Inject(this IExportLocatorScope scope, object instance, object extraData = null)
     {
-      if (scope == null) throw new ArgumentNullException(nameof(scope));
-      if (instance == null) throw new ArgumentNullException(nameof(instance));
+      if (scope == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.scope);
+      if (instance == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.instance);
 
       var parentScope = scope;
 

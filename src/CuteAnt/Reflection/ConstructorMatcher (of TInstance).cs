@@ -77,7 +77,8 @@ namespace CuteAnt.Reflection
     internal ConstructorMatcher(CtorInvoker<TInstance> invoker)
       : base(null)
     {
-      Invocation = invoker ?? throw new ArgumentNullException(nameof(invoker));
+      if (null == invoker) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.invoker);
+      Invocation = invoker;
     }
 
     #endregion

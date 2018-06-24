@@ -13,7 +13,7 @@ namespace CuteAnt.Reflection
       : this(method, false) { }
     protected MethodBaseMatcher(TMethod method, bool throwOnError)
     {
-      if (throwOnError && null == method) { throw new ArgumentNullException(nameof(method)); }
+      if (throwOnError && null == method) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.method);
       Value = method;
       Parameters = method?.GetParameters() ?? EmptyArray<ParameterInfo>.Instance;
     }

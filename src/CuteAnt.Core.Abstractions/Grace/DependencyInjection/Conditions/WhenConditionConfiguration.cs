@@ -17,9 +17,9 @@ namespace Grace.DependencyInjection.Conditions
     /// <param name="t">T to return</param>
     public WhenConditionConfiguration(Action<ICompiledCondition> addAction, T t)
     {
-      if (addAction == null) throw new ArgumentNullException(nameof(addAction));
+      if (addAction == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.addAction);
 
-      if (t == null) throw new ArgumentNullException(nameof(t));
+      if (t == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.t);
 
       AddAction = addAction;
 
@@ -31,7 +31,7 @@ namespace Grace.DependencyInjection.Conditions
     /// <returns>T</returns>
     public T MeetsCondition(ICompiledCondition condition)
     {
-      if (condition == null) throw new ArgumentNullException(nameof(condition));
+      if (condition == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.condition);
 
       AddAction(condition);
 
@@ -43,7 +43,7 @@ namespace Grace.DependencyInjection.Conditions
     /// <returns></returns>
     public T MeetsCondition(Func<IActivationStrategy, StaticInjectionContext, bool> condition)
     {
-      if (condition == null) throw new ArgumentNullException(nameof(condition));
+      if (condition == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.condition);
 
       AddAction(new FuncCompiledCondition(condition));
 
@@ -73,7 +73,7 @@ namespace Grace.DependencyInjection.Conditions
     /// <returns></returns>
     public T ClassHas(Type attributeType, Func<Attribute, bool> testFunc = null)
     {
-      if (attributeType == null) throw new ArgumentNullException(nameof(attributeType));
+      if (attributeType == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.attributeType);
 
       AddAction(new WhenClassHas(attributeType, testFunc));
 
@@ -117,9 +117,9 @@ namespace Grace.DependencyInjection.Conditions
     /// <returns></returns>
     public T InjectedInto(params Type[] types)
     {
-      if (types == null) throw new ArgumentNullException(nameof(types));
+      if (types == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.types);
 
-      if (types.Length < 1) throw new ArgumentException("You must provide at least one type to test against", nameof(types));
+      if (types.Length < 1) ThrowHelper.ThrowArgumentException(ExceptionResource.Provide_At_Least_One_Type, ExceptionArgument.types);
 
       AddAction(new WhenInjectedInto(types));
 
@@ -131,7 +131,7 @@ namespace Grace.DependencyInjection.Conditions
     /// <returns></returns>
     public T InjectedInto(Func<Type, bool> consider)
     {
-      if (consider == null) throw new ArgumentNullException(nameof(consider));
+      if (consider == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.consider);
 
       AddAction(new WhenInjectedInto(consider));
 

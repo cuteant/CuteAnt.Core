@@ -25,7 +25,7 @@ namespace CuteAnt
     /// <param name="defaultFn"></param>
     public AsyncLocalShim(Func<T> defaultFn)
     {
-      if (defaultFn == null) { throw new ArgumentNullException(nameof(defaultFn)); }
+      if (defaultFn == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.defaultFn); }
       _defaultFn = defaultFn;
     }
 

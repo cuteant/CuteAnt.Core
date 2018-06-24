@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Exceptions;
@@ -320,7 +321,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
     {
       if (ObjectGraphDepth + 1 > Services.Compiler.MaxObjectGraphDepth)
       {
-        throw new RecursiveLocateException(GetStaticInjectionContext());
+        ThrowRecursiveLocateException(this);
       }
 
       var data = carryData ? PerDelegateData : new PerDelegateData();
@@ -361,7 +362,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
     {
       if (ObjectGraphDepth + 1 > Services.Compiler.MaxObjectGraphDepth)
       {
-        throw new RecursiveLocateException(GetStaticInjectionContext());
+        ThrowRecursiveLocateException(this);
       }
 
       var returnValue = new ActivationExpressionRequest(activationType,
@@ -379,6 +380,16 @@ namespace Grace.DependencyInjection.Impl.Expressions
       }
 
       return returnValue;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowRecursiveLocateException(ActivationExpressionRequest request)
+    {
+      throw GetRecursiveLocateException();
+      RecursiveLocateException GetRecursiveLocateException()
+      {
+        return new RecursiveLocateException(request.GetStaticInjectionContext());
+      }
     }
 
     /// <summary>Original requesting scope</summary>

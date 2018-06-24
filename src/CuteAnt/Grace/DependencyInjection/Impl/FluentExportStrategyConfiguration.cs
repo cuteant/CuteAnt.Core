@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Grace.DependencyInjection.Conditions;
 using Grace.DependencyInjection.Impl.CompiledStrategies;
 using Grace.DependencyInjection.Impl.Expressions;
@@ -29,7 +30,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuraiton object</returns>
     public IFluentExportStrategyConfiguration As(Type type)
     {
-      if (type == null) throw new ArgumentNullException(nameof(type));
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
 
       _exportConfiguration.AddExportAs(type);
 
@@ -42,8 +43,8 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IFluentExportStrategyConfiguration AsKeyed(Type type, object key)
     {
-      if (type == null) throw new ArgumentNullException(nameof(type));
-      if (key == null) throw new ArgumentNullException(nameof(key));
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
+      if (null == key) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.key);
 
       _exportConfiguration.AddExportAsKeyed(type, key);
 
@@ -55,7 +56,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IFluentExportStrategyConfiguration AsName(string name)
     {
-      if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+      if (string.IsNullOrEmpty(name)) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name);
 
       _exportConfiguration.AddExportAsName(name);
 
@@ -104,7 +105,8 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IFluentExportStrategyConfiguration ImportConstructor(ConstructorInfo constructorInfo)
     {
-      _exportConfiguration.SelectedConstructor = constructorInfo ?? throw new ArgumentNullException(nameof(constructorInfo));
+      if (null == constructorInfo) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.constructorInfo);
+      _exportConfiguration.SelectedConstructor = constructorInfo;
 
       return this;
     }
@@ -179,7 +181,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuraiton object</returns>
     public IFluentExportStrategyConfiguration WithMetadata(object key, object value)
     {
-      if (key == null) throw new ArgumentNullException(nameof(key));
+      if (null == key) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.key);
 
       _exportConfiguration.SetMetadata(key, value);
 
@@ -241,15 +243,25 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IFluentExportStrategyConfiguration<T> ActivationMethod(Expression<Action<T>> activationMethod)
     {
-      if (activationMethod == null) throw new ArgumentNullException(nameof(activationMethod));
+      if (null == activationMethod) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.activationMethod);
 
       var methodExpression = activationMethod.Body as MethodCallExpression;
 
-      if (methodExpression == null) throw new ArgumentException("Must be method call expression", nameof(activationMethod));
+      if (methodExpression == null) ThrowArgumentException();
 
       _exportConfiguration.ActivationMethod = new MethodInjectionInfo { Method = methodExpression.Method };
 
       return this;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowArgumentException()
+    {
+      throw GetArgumentException();
+      ArgumentException GetArgumentException()
+      {
+        return new ArgumentException("Must be method call expression", "activationMethod");
+      }
     }
 
     /// <summary>Apply an action to the export just after construction</summary>
@@ -274,7 +286,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IFluentExportStrategyConfiguration<T> As(Type type)
     {
-      if (type == null) throw new ArgumentNullException(nameof(type));
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
 
       _exportConfiguration.AddExportAs(type);
 
@@ -297,8 +309,8 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IFluentExportStrategyConfiguration<T> AsKeyed(Type type, object key)
     {
-      if (type == null) throw new ArgumentNullException(nameof(type));
-      if (key == null) throw new ArgumentNullException(nameof(key));
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
+      if (null == key) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.key);
 
       _exportConfiguration.AddExportAsKeyed(type, key);
 
@@ -311,7 +323,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IFluentExportStrategyConfiguration<T> AsKeyed<TInterface>(object key)
     {
-      if (key == null) throw new ArgumentNullException(nameof(key));
+      if (null == key) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.key);
 
       _exportConfiguration.AddExportAsKeyed(typeof(TInterface), key);
 
@@ -323,7 +335,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IFluentExportStrategyConfiguration<T> AsName(string name)
     {
-      if (string.IsNullOrEmpty(name)) throw new ArgumentException("Value cannot be null or empty.", nameof(name));
+      if (string.IsNullOrEmpty(name)) ThrowHelper.ThrowArgumentNullOrEmpty(ExceptionArgument.name);
 
       _exportConfiguration.AddExportAsName(name);
 
@@ -374,7 +386,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IFluentExportStrategyConfiguration<T> EnrichWithDelegate(Func<IExportLocatorScope, StaticInjectionContext, T, T> enrichmentDelegate)
     {
-      if (enrichmentDelegate == null) throw new ArgumentNullException(nameof(enrichmentDelegate));
+      if (null == enrichmentDelegate) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.enrichmentDelegate);
 
       _exportConfiguration.EnrichmentDelegate(enrichmentDelegate);
 
@@ -419,14 +431,21 @@ namespace Grace.DependencyInjection.Impl
         }
       }
 
-      if (strategy == null)
-      {
-        throw new NotSupportedException("Expression is not supported as a means to export, please use a property, field or method");
-      }
+      if (strategy == null) { ThrowNotSupportedException(); }
 
       _exportConfiguration.AddSecondaryStrategy(strategy);
 
       return new FluentExportMemberConfiguration<T>(this, strategy);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowNotSupportedException()
+    {
+      throw GetNotSupportedException();
+      NotSupportedException GetNotSupportedException()
+      {
+        return new NotSupportedException("Expression is not supported as a means to export, please use a property, field or method");
+      }
     }
 
     /// <summary>Mark an export as externally owned means the container will not track and dispose the instance </summary>
@@ -457,7 +476,8 @@ namespace Grace.DependencyInjection.Impl
     /// <returns></returns>
     public IFluentExportStrategyConfiguration<T> ImportConstructor(ConstructorInfo constructorInfo)
     {
-      _exportConfiguration.SelectedConstructor = constructorInfo ?? throw new ArgumentNullException(nameof(constructorInfo));
+      if (null == constructorInfo) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.constructorInfo);
+      _exportConfiguration.SelectedConstructor = constructorInfo;
 
       return this;
     }
@@ -491,10 +511,7 @@ namespace Grace.DependencyInjection.Impl
     {
       var member = property.Body as MemberExpression;
 
-      if (member == null)
-      {
-        throw new ArgumentException("Property must be a property on type" + typeof(T).FullName, nameof(property));
-      }
+      if (member == null) { ThrowArgumentException<T>(); }
 
       var propertyInfo = member.Member.DeclaringType.GetTypeInfo().GetDeclaredProperty(member.Member.Name);
 
@@ -513,6 +530,16 @@ namespace Grace.DependencyInjection.Impl
       return new FluentImportPropertyConfiguration<T, TProp>(this, memberInfo);
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowArgumentException<T>()
+    {
+      throw GetArgumentException();
+      ArgumentException GetArgumentException()
+      {
+        return new ArgumentException("Property must be a property on type" + typeof(T).FullName, "property");
+      }
+    }
+
     /// <summary>Import a specific method on the type</summary>
     /// <param name="method">method to import</param>
     /// <returns></returns>
@@ -520,16 +547,23 @@ namespace Grace.DependencyInjection.Impl
     {
       var methodCall = method.Body as MethodCallExpression;
 
-      if (methodCall == null)
-      {
-        throw new ArgumentException("expression must be method", nameof(method));
-      }
+      if (methodCall == null) { ThrowArgumentException0(); }
 
       var methodInjectionInfo = new MethodInjectionInfo { Method = methodCall.Method };
 
       _exportConfiguration.MethodInjectionInfo(methodInjectionInfo);
 
       return this;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowArgumentException0()
+    {
+      throw GetArgumentException();
+      ArgumentException GetArgumentException()
+      {
+        return new ArgumentException("expression must be method", "method");
+      }
     }
 
     /// <summary>Assign a lifestyle to this export</summary>
@@ -596,7 +630,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TParam>(Func<TArg1, TParam> paramValue)
     {
-      if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
+      if (paramValue == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.paramValue);
 
       var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
 
@@ -613,7 +647,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TArg2, TParam>(Func<TArg1, TArg2, TParam> paramValue)
     {
-      if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
+      if (paramValue == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.paramValue);
 
       var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
 
@@ -631,7 +665,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TArg2, TArg3, TParam>(Func<TArg1, TArg2, TArg3, TParam> paramValue)
     {
-      if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
+      if (paramValue == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.paramValue);
 
       var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
 
@@ -650,7 +684,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TArg2, TArg3, TArg4, TParam>(Func<TArg1, TArg2, TArg3, TArg4, TParam> paramValue)
     {
-      if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
+      if (paramValue == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.paramValue);
 
       var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
 
@@ -670,7 +704,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuration object</returns>
     public IFluentWithCtorConfiguration<T, TParam> WithCtorParam<TArg1, TArg2, TArg3, TArg4, TArg5, TParam>(Func<TArg1, TArg2, TArg3, TArg4, TArg5, TParam> paramValue)
     {
-      if (paramValue == null) throw new ArgumentNullException(nameof(paramValue));
+      if (paramValue == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.paramValue);
 
       var parameterInfo = new ConstructorParameterInfo(paramValue) { ParameterType = typeof(TParam) };
 

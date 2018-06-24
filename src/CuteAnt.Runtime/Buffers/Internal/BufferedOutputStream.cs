@@ -6,14 +6,12 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CuteAnt.AsyncEx;
 using CuteAnt.Runtime;
-#if !NET40
-using System.Runtime.CompilerServices;
-#endif
 
 namespace CuteAnt.Buffers
 {
@@ -140,10 +138,10 @@ namespace CuteAnt.Buffers
     {
       if (initialSize < 0)
       {
-        throw new ArgumentOutOfRangeException(nameof(initialSize), initialSize, "Value must be non-negative.");
+        ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.initialSize, initialSize, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
       }
       Fx.Assert(!Initialized, "Clear must be called before re-initializing stream");
-      if (bufferManager == null) { throw Fx.Exception.ArgumentNull(nameof(bufferManager)); }
+      if (null == bufferManager) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.bufferManager);
 
       _maxSizeQuota = maxSizeQuota;
       _maxSize = effectiveMaxSize;
@@ -282,7 +280,7 @@ namespace CuteAnt.Buffers
 #if NET_4_0_GREATER
     public override Task WriteAsync(Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken)
     {
-      if (offset < 0) { throw Fx.Exception.ArgumentOutOfRange(nameof(offset), offset, InternalSR.ValueMustBeNonNegative); }
+      if (offset < 0) { ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset, offset, ExceptionResource.ValueMustBeNonNegative); }
 
       if (cancellationToken.IsCancellationRequested)
       {
@@ -322,18 +320,18 @@ namespace CuteAnt.Buffers
 
       if (size < 0)
       {
-        throw Fx.Exception.ArgumentOutOfRange(nameof(size), size, InternalSR.ValueMustBeNonNegative);
+        ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.size, size, ExceptionResource.ValueMustBeNonNegative);
       }
 
       if ((int.MaxValue - size) < _totalSize)
       {
-        throw Fx.Exception.AsError(CreateQuotaExceededException(_maxSizeQuota));
+        ThrowQuotaExceededException(_maxSizeQuota);
       }
 
       int newTotalSize = _totalSize + size;
       if (newTotalSize > _maxSize)
       {
-        throw Fx.Exception.AsError(CreateQuotaExceededException(_maxSizeQuota));
+        ThrowQuotaExceededException(_maxSizeQuota);
       }
 
       int remainingSizeInChunk = _currentChunk.Length - _currentChunkSize;
@@ -367,7 +365,7 @@ namespace CuteAnt.Buffers
 
       if (_totalSize == _maxSize)
       {
-        throw Fx.Exception.AsError(CreateQuotaExceededException(_maxSize));
+        ThrowQuotaExceededException(_maxSize);
       }
       if (_currentChunkSize == _currentChunk.Length)
       {
@@ -721,7 +719,7 @@ namespace CuteAnt.Buffers
     {
       if (Char.IsSurrogate(ch))
       {
-        throw new ArgumentException("Surrogates Not Allowed As Single Char"); // Environment.GetResourceString("Arg_SurrogatesNotAllowedAsSingleChar")
+        ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_SurrogatesNotAllowedAsSingleChar);
       }
       Contract.EndContractBlock();
 
@@ -743,7 +741,7 @@ namespace CuteAnt.Buffers
     /// <param name="chars">A character array containing the data to write.</param>
     public void WriteValue(Char[] chars)
     {
-      if (chars == null) { throw new ArgumentNullException(nameof(chars)); }
+      if (null == chars) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.chars);
       Contract.EndContractBlock();
 
       //var bytes = InternalEncoding.GetBytes(chars, 0, chars.Length);
@@ -829,7 +827,7 @@ namespace CuteAnt.Buffers
           {
             if (charStart < 0 || charCount < 0 || charStart + charCount > value.Length)
             {
-              throw new ArgumentOutOfRangeException(nameof(charCount));
+              ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.charCount);
             }
 
             fixed (char* pChars = value)
@@ -1185,9 +1183,14 @@ namespace CuteAnt.Buffers
 
     #region ++ CreateQuotaExceededException ++
 
-    protected virtual Exception CreateQuotaExceededException(int maxSizeQuota)
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowQuotaExceededException(int maxSizeQuota)
     {
-      return new InvalidOperationException(InternalSR.BufferedOutputStreamQuotaExceeded(maxSizeQuota));
+      throw GetInvalidOperationException();
+      InvalidOperationException GetInvalidOperationException()
+      {
+        return new InvalidOperationException(InternalSR.BufferedOutputStreamQuotaExceeded(maxSizeQuota));
+      }
     }
 
     #endregion

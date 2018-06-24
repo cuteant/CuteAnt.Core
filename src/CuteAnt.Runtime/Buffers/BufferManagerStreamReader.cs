@@ -40,7 +40,7 @@ namespace CuteAnt.Buffers
       : this()
     {
       if (null == inputStream) { throw new ArgumentNullException(nameof(inputStream)); }
-      if (null == bufferManager) { throw new ArgumentNullException(nameof(bufferManager)); }
+      if (null == bufferManager) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.bufferManager); }
 
       m_inputStream = inputStream;
       m_leaveOpen = leaveOpen;
@@ -57,7 +57,7 @@ namespace CuteAnt.Buffers
     {
       if (null == inputStream) { throw new ArgumentNullException(nameof(inputStream)); }
       if (null == encoding) { throw new ArgumentNullException(nameof(encoding)); }
-      if (null == bufferManager) { throw new ArgumentNullException(nameof(bufferManager)); }
+      if (null == bufferManager) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.bufferManager); }
 
       m_inputStream = inputStream;
       m_leaveOpen = leaveOpen;
@@ -226,7 +226,7 @@ namespace CuteAnt.Buffers
     public void Reinitialize(Stream inputStream, bool leaveOpen, ArrayPool<byte> bufferManager)
     {
       if (null == inputStream) { throw new ArgumentNullException(nameof(inputStream)); }
-      if (null == bufferManager) { throw new ArgumentNullException(nameof(bufferManager)); }
+      if (null == bufferManager) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.bufferManager); }
 
       m_inputStream = inputStream;
       m_leaveOpen = leaveOpen;
@@ -242,7 +242,7 @@ namespace CuteAnt.Buffers
     {
       if (null == inputStream) { throw new ArgumentNullException(nameof(inputStream)); }
       if (null == encoding) { throw new ArgumentNullException(nameof(encoding)); }
-      if (null == bufferManager) { throw new ArgumentNullException(nameof(bufferManager)); }
+      if (null == bufferManager) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.bufferManager); }
 
       m_inputStream = inputStream;
       m_leaveOpen = leaveOpen;

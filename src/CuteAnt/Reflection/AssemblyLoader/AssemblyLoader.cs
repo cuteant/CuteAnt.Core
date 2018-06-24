@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
-using System.Text;
+using System.Runtime.CompilerServices;
 using CuteAnt.Text;
 using Grace.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -179,19 +179,14 @@ namespace CuteAnt.Reflection
     public static AssemblyLoader NewAssemblyLoader(Dictionary<string, SearchOption> dirEnumArgs, IEnumerable<AssemblyLoaderPathNameCriterion> pathNameCriteria,
       IEnumerable<AssemblyLoaderReflectionCriterion> reflectionCriteria, ILogger logger = null)
     {
-      if (null == dirEnumArgs) { throw new ArgumentNullException(nameof(dirEnumArgs)); }
-      if (dirEnumArgs.Count == 0)
-      {
-        throw new ArgumentException("At least one directory is necessary in order to search for assemblies.");
-      }
+      if (null == dirEnumArgs) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.dirEnumArgs);
+      if (dirEnumArgs.Count == 0) { ThrowArgumentException0(); }
+
       HashSet<AssemblyLoaderPathNameCriterion> pathNameCriteriaSet = null == pathNameCriteria
           ? new HashSet<AssemblyLoaderPathNameCriterion>()
           : new HashSet<AssemblyLoaderPathNameCriterion>(pathNameCriteria.Distinct());
 
-      if (null == reflectionCriteria || !reflectionCriteria.Any())
-      {
-        throw new ArgumentException("No assemblies will be loaded unless reflection criteria are specified.");
-      }
+      if (null == reflectionCriteria || !reflectionCriteria.Any()) { ThrowArgumentException1(); }
 
       var reflectionCriteriaSet = new HashSet<AssemblyLoaderReflectionCriterion>(reflectionCriteria.Distinct());
 
@@ -208,10 +203,7 @@ namespace CuteAnt.Reflection
     {
       try
       {
-        if (_dirEnumArgs.Count == 0)
-        {
-          throw new InvalidOperationException("Please specify a directory to search using the AddDirectory or AddRoot methods.");
-        }
+        if (_dirEnumArgs.Count == 0) { ThrowInvalidOperationException0(); }
 
         AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += CachedReflectionOnlyTypeResolver.OnReflectionOnlyAssemblyResolve;
         // the following explicit loop ensures that the finally clause is invoked
@@ -413,7 +405,7 @@ namespace CuteAnt.Reflection
     {
       try
       {
-        if (SimulateReflectionOnlyLoadFailure) { throw NewTestUnexpectedException(); }
+        if (SimulateReflectionOnlyLoadFailure) { ThrowNewTestUnexpectedException(); }
 
         if (IsCompatibleWithCurrentProcess(pathName, out complaints))
         {
@@ -556,7 +548,7 @@ namespace CuteAnt.Reflection
       if (0 == count)
       {
         StringBuilderCache.Release(msg);
-        throw new InvalidOperationException("No complaint provided for assembly.");
+        ThrowInvalidOperationException1();
       }
       // we can't use an error code here because we want each log message to be displayed.
       _logger.LogInformation(StringBuilderCache.GetStringAndRelease(msg));
@@ -564,12 +556,55 @@ namespace CuteAnt.Reflection
 
     #endregion
 
-    #region **& NewTestUnexpectedException &**
+    #region **& ThrowHelper &**
 
-    private static AggregateException NewTestUnexpectedException()
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowNewTestUnexpectedException()
     {
-      var inner = new Exception[] { new Exception("Inner Exception #1"), new Exception("Inner Exception #2") };
-      return new AggregateException("Unexpected AssemblyLoader Exception Used for Unit Tests", inner);
+      throw GetAggregateException();
+      AggregateException GetAggregateException()
+      {
+        var inner = new Exception[] { new Exception("Inner Exception #1"), new Exception("Inner Exception #2") };
+        return new AggregateException("Unexpected AssemblyLoader Exception Used for Unit Tests", inner);
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowArgumentException0()
+    {
+      throw GetArgumentException();
+      ArgumentException GetArgumentException()
+      {
+        return new ArgumentException("At least one directory is necessary in order to search for assemblies.");
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowArgumentException1()
+    {
+      throw GetArgumentException();
+      ArgumentException GetArgumentException()
+      {
+        return new ArgumentException("No assemblies will be loaded unless reflection criteria are specified.");
+      }
+    }
+
+    internal static void ThrowInvalidOperationException0()
+    {
+      throw GetInvalidOperationException();
+      InvalidOperationException GetInvalidOperationException()
+      {
+        return new InvalidOperationException("Please specify a directory to search using the AddDirectory or AddRoot methods.");
+      }
+    }
+
+    internal static void ThrowInvalidOperationException1()
+    {
+      throw GetInvalidOperationException();
+      InvalidOperationException GetInvalidOperationException()
+      {
+        return new InvalidOperationException("No complaint provided for assembly.");
+      }
     }
 
     #endregion
@@ -597,7 +632,7 @@ namespace CuteAnt.Reflection
         IEnumerable<string> complaints;
         try
         {
-          if (SimulateLoadCriteriaFailure) { throw NewTestUnexpectedException(); }
+          if (SimulateLoadCriteriaFailure) { ThrowNewTestUnexpectedException(); }
 
           if (i.EvaluateCandidate(assembly, out complaints)) { return true; }
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using CuteAnt.Reflection;
 using Microsoft.Extensions.Logging;
 
@@ -75,8 +76,8 @@ namespace CuteAnt.ApplicationParts
     /// <returns>The builder with the additionally added assembly.</returns>
     public static IApplicationPartManagerWithAssemblies AddApplicationPart(this IApplicationPartManager manager, Assembly assembly)
     {
-      if (manager == null) { throw new ArgumentNullException(nameof(manager)); }
-      if (assembly == null) { throw new ArgumentNullException(nameof(assembly)); }
+      if (null == manager) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.manager); }
+      if (null == assembly) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.assembly); }
 
       return new ApplicationPartManagerWithAssemblies(manager.AddApplicationPart(new AssemblyPart(assembly)), new[] { assembly });
     }
@@ -86,7 +87,7 @@ namespace CuteAnt.ApplicationParts
     /// <returns>The builder with the additionally added assemblies.</returns>
     public static IApplicationPartManagerWithAssemblies AddFromApplicationBaseDirectory(this IApplicationPartManager manager)
     {
-      if (manager == null) { throw new ArgumentNullException(nameof(manager)); }
+      if (null == manager) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.manager); }
 
       var appDomainBase = AppDomain.CurrentDomain.BaseDirectory;
       if (string.IsNullOrWhiteSpace(appDomainBase) || !Directory.Exists(appDomainBase)) return new ApplicationPartManagerWithAssemblies(manager, Enumerable.Empty<Assembly>());
@@ -99,8 +100,8 @@ namespace CuteAnt.ApplicationParts
     /// <param name="directories">The directories to search.</param>
     public static IApplicationPartManagerWithAssemblies AddFromProbingPath(this IApplicationPartManager manager, params string[] directories)
     {
-      if (manager == null) { throw new ArgumentNullException(nameof(manager)); }
-      if (directories == null) throw new ArgumentNullException(nameof(directories));
+      if (null == manager) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.manager); }
+      if (null == directories) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.directories); }
 
       var dirs = new Dictionary<string, SearchOption>();
       foreach (var dir in directories)
@@ -125,8 +126,8 @@ namespace CuteAnt.ApplicationParts
     public static IApplicationPartManagerWithAssemblies AddFromProbingPath(this IApplicationPartManager manager, Dictionary<string, SearchOption> dirEnumArgs,
       IEnumerable<AssemblyLoaderPathNameCriterion> pathNameCriteria, IEnumerable<AssemblyLoaderReflectionCriterion> reflectionCriteria)
     {
-      if (manager == null) { throw new ArgumentNullException(nameof(manager)); }
-      if (dirEnumArgs == null) throw new ArgumentNullException(nameof(dirEnumArgs));
+      if (null == manager) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.manager); }
+      if (null == dirEnumArgs) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.dirEnumArgs); }
 
       var excludeCriteria = (pathNameCriteria != null && pathNameCriteria.Any())
           ? pathNameCriteria.ToArray() : new AssemblyLoaderPathNameCriterion[] { AssemblyLoaderCriteria.ExcludeResourceAssemblies };
@@ -148,7 +149,7 @@ namespace CuteAnt.ApplicationParts
     /// <returns>The builder with the added assemblies.</returns>
     public static IApplicationPartManagerWithAssemblies AddFromAppDomain(this IApplicationPartManager manager)
     {
-      if (manager == null) { throw new ArgumentNullException(nameof(manager)); }
+      if (null == manager) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.manager); }
 
       var processedAssemblies = new HashSet<Assembly>(AppDomain.CurrentDomain.GetAssemblies());
       foreach (var assembly in processedAssemblies)
@@ -164,7 +165,7 @@ namespace CuteAnt.ApplicationParts
     /// <returns>The builder with the additionally included assemblies.</returns>
     public static IApplicationPartManagerWithAssemblies WithReferences(this IApplicationPartManagerWithAssemblies manager)
     {
-      if (manager == null) { throw new ArgumentNullException(nameof(manager)); }
+      if (null == manager) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.manager); }
 
       var referencedAssemblies = new HashSet<Assembly>(manager.Assemblies);
       foreach (var scopedAssembly in manager.Assemblies)
@@ -181,8 +182,8 @@ namespace CuteAnt.ApplicationParts
 
       void LoadReferencedAssemblies(Assembly asm, HashSet<Assembly> includedAssemblies)
       {
-        if (asm == null) { throw new ArgumentNullException(nameof(asm)); }
-        if (includedAssemblies == null) { throw new ArgumentNullException(nameof(includedAssemblies)); }
+        if (null == asm) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.asm); }
+        if (null == includedAssemblies) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.includedAssemblies); }
 
         var referenced = asm.GetReferencedAssemblies();
         foreach (var asmName in referenced)
@@ -255,7 +256,7 @@ namespace CuteAnt.ApplicationParts
       if (properties.TryGetValue(ApplicationPartsKey, out var value))
       {
         result = value as ApplicationPartManager;
-        if (result == null) throw new InvalidOperationException($"The ApplicationPartManager value is of the wrong type {value.GetType()}. It should be {nameof(ApplicationPartManager)}");
+        if (result == null) ThrowInvalidOperationException(value.GetType());
       }
       else
       {
@@ -263,6 +264,17 @@ namespace CuteAnt.ApplicationParts
       }
 
       return result;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowInvalidOperationException(Type type)
+    {
+      throw GetInvalidOperationException();
+
+      InvalidOperationException GetInvalidOperationException()
+      {
+        return new InvalidOperationException($"The ApplicationPartManager value is of the wrong type {type}. It should be {nameof(ApplicationPartManager)}");
+      }
     }
 
     #region ** class ApplicationPartManagerWithAssemblies **

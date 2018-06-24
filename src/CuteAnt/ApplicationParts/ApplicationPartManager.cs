@@ -54,7 +54,7 @@ namespace CuteAnt.ApplicationParts
     /// <param name="feature">The feature instance to populate.</param>
     public void PopulateFeature<TFeature>(TFeature feature)
     {
-      if (feature == null) { throw new ArgumentNullException(nameof(feature)); }
+      if (null == feature) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.feature); }
 
       foreach (var provider in FeatureProviders.OfType<IApplicationFeatureProvider<TFeature>>())
       {

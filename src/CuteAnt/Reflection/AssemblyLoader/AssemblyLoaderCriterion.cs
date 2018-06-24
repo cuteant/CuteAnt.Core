@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace CuteAnt.Reflection
 {
@@ -48,16 +48,30 @@ namespace CuteAnt.Reflection
 
     public static void CheckComplaintQuality(IEnumerable<string> complaints)
     {
-      if (complaints == null || !complaints.Any())
-      {
-        throw new ArgumentException("Predicates returning false must provide at least one complaint string.");
-      }
+      if (complaints == null || !complaints.Any()) { ThrowArgumentException(); }
       foreach (var s in complaints)
       {
-        if (String.IsNullOrWhiteSpace(s))
-        {
-          throw new InvalidOperationException("All complaint strings must be substantive.");
-        }
+        if (String.IsNullOrWhiteSpace(s)) { ThrowInvalidOperationException(); }
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowArgumentException()
+    {
+      throw GetArgumentException();
+      ArgumentException GetArgumentException()
+      {
+        return new ArgumentException("Predicates returning false must provide at least one complaint string.");
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowInvalidOperationException()
+    {
+      throw GetInvalidOperationException();
+      InvalidOperationException GetInvalidOperationException()
+      {
+        return new InvalidOperationException("All complaint strings must be substantive.");
       }
     }
   }

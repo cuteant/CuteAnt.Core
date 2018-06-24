@@ -63,8 +63,8 @@ namespace Grace.Data.Immutable
     /// <param name="updateDelegate">update delegate</param>
     public static void ThreadSafeAdd<TKey, TValue>(ref ImmutableHashTree<TKey, TValue> destination, TKey key, TValue value, ImmutableHashTree<TKey, TValue>.UpdateDelegate updateDelegate)
     {
-      if (destination == null) throw new ArgumentNullException(nameof(destination));
-      if (key == null) throw new ArgumentNullException(nameof(key));
+      if (destination == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.destination);
+      if (key == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.key);
 
       var currentValue = destination;
 
@@ -144,7 +144,7 @@ namespace Grace.Data.Immutable
     /// <param name="iterateAction"></param>
     public void IterateInOrder(Action<TKey, TValue> iterateAction)
     {
-      if (iterateAction == null) throw new ArgumentNullException(nameof(iterateAction));
+      if (iterateAction == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.iterateAction);
 
       if (Height == 0) { return; }
 
@@ -212,7 +212,7 @@ namespace Grace.Data.Immutable
     /// <returns></returns>
     public ImmutableHashTree<TKey, TValue> Add(TKey key, TValue value, UpdateDelegate updateDelegate = null)
     {
-      if (key == null) throw new ArgumentNullException(nameof(key));
+      if (key == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.key);
 
       return InternalAdd(key.GetHashCode(), key, value, updateDelegate ?? KeyAlreadyExists);
     }
@@ -222,7 +222,7 @@ namespace Grace.Data.Immutable
     /// <returns></returns>
     public bool ContainsKey(TKey key)
     {
-      if (key == null) throw new ArgumentNullException(nameof(key));
+      if (key == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.key);
 
       return TryGetValue(key, out TValue value);
     }
@@ -233,11 +233,11 @@ namespace Grace.Data.Immutable
     /// <returns></returns>
     public bool TryGetValue(TKey key, out TValue value)
     {
-      if (key == null) throw new ArgumentNullException(nameof(key));
+      if (key == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.key);
 
       if (Height == 0)
       {
-        value = default(TValue);
+        value = default;
 
         return false;
       }
@@ -274,7 +274,7 @@ namespace Grace.Data.Immutable
         }
       }
 
-      value = default(TValue);
+      value = default;
 
       return false;
     }
@@ -284,7 +284,7 @@ namespace Grace.Data.Immutable
     /// <param name="defaultValue">default value if not found</param>
     /// <returns></returns>
     [MethodImpl(InlineMethod.Value)]
-    public TValue GetValueOrDefault(TKey key, TValue defaultValue = default(TValue))
+    public TValue GetValueOrDefault(TKey key, TValue defaultValue = default)
     {
       if (ReferenceEquals(Key, key)) { return Value; }
 
@@ -307,7 +307,7 @@ namespace Grace.Data.Immutable
     /// <param name="defaultValue">default value to return when not found</param>
     /// <returns></returns>
     [MethodImpl(InlineMethod.Value)]
-    public TValue GetValueOrDefault(TKey key, int keyHash, TValue defaultValue = default(TValue))
+    public TValue GetValueOrDefault(TKey key, int keyHash, TValue defaultValue = default)
     {
       if (ReferenceEquals(Key, key)) { return Value; }
 
@@ -353,11 +353,9 @@ namespace Grace.Data.Immutable
     {
       get
       {
-        TValue value;
-
-        if (!TryGetValue(key, out value))
+        if (!TryGetValue(key, out var value))
         {
-          throw new KeyNotFoundException($"Key {key} was not found");
+          ThrowKeyNotFoundException(key);
         }
 
         return value;
@@ -482,5 +480,15 @@ namespace Grace.Data.Immutable
     private static TValue KeyAlreadyExists(TValue currentValue, TValue newValue) => throw new KeyExistsException<TKey>();
 
     private string DebuggerDisplayString => $"Count: {Count}";
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowKeyNotFoundException(TKey key)
+    {
+      throw GetKeyNotFoundException();
+      KeyNotFoundException GetKeyNotFoundException()
+      {
+        return new KeyNotFoundException($"Key {key} was not found");
+      }
+    }
   }
 }

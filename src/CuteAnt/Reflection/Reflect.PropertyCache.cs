@@ -375,8 +375,8 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static PropertyInfo LookupTypeProperty(this Type type, string name, Type returnType, bool declaredOnly = false)
     {
-      if (name == null) throw new ArgumentNullException(nameof(name));
-      if (returnType == null) throw new ArgumentNullException(nameof(returnType));
+      if (null == name) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
+      if (null == returnType) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.returnType); }
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
       while (type != null && type != TypeConstants.ObjectType)
@@ -406,8 +406,8 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static PropertyInfo LookupTypeProperty(this Type type, string name, Type[] parameterTypes, bool declaredOnly = false)
     {
-      if (name == null) throw new ArgumentNullException(nameof(name));
-      if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
+      if (null == name) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
+      if (null == parameterTypes) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.parameterTypes); }
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
       while (type != null && type != TypeConstants.ObjectType)
@@ -438,8 +438,8 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static PropertyInfo LookupTypeProperty(this Type type, string name, Type returnType, Type[] parameterTypes, bool declaredOnly = false)
     {
-      if (name == null) throw new ArgumentNullException(nameof(name));
-      if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
+      if (null == name) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
+      if (null == parameterTypes) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.parameterTypes); }
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
       while (type != null && type != TypeConstants.ObjectType)
@@ -516,8 +516,8 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static PropertyInfo LookupInstanceProperty(this Type type, string name, Type returnType, bool declaredOnly = false)
     {
-      if (name == null) throw new ArgumentNullException(nameof(name));
-      if (returnType == null) throw new ArgumentNullException(nameof(returnType));
+      if (null == name) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
+      if (null == returnType) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.returnType); }
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
       while (type != null && type != TypeConstants.ObjectType)
@@ -547,8 +547,8 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static PropertyInfo LookupInstanceProperty(this Type type, string name, Type[] parameterTypes, bool declaredOnly = false)
     {
-      if (name == null) throw new ArgumentNullException(nameof(name));
-      if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
+      if (null == name) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
+      if (null == parameterTypes) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.parameterTypes); }
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
       while (type != null && type != TypeConstants.ObjectType)
@@ -579,8 +579,8 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static PropertyInfo LookupInstanceProperty(this Type type, string name, Type returnType, Type[] parameterTypes, bool declaredOnly = false)
     {
-      if (name == null) throw new ArgumentNullException(nameof(name));
-      if (parameterTypes == null) throw new ArgumentNullException(nameof(parameterTypes));
+      if (null == name) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
+      if (null == parameterTypes) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.parameterTypes); }
 
       // 父类属性的获取需要递归，有些类型的父类为空，比如接口
       while (type != null && type != TypeConstants.ObjectType)
@@ -613,8 +613,8 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     public static PropertyInfo AsDeclaredProperty(this PropertyInfo propertyInfo, Type type)
     {
-      if (propertyInfo == null) { throw new ArgumentNullException(nameof(propertyInfo)); }
-      if (type == null) { throw new ArgumentNullException(nameof(type)); }
+      if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
+      if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
 
       if (propertyInfo.DeclaringType == type) { return propertyInfo; }
 

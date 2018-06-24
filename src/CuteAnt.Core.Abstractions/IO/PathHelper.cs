@@ -529,7 +529,7 @@ namespace CuteAnt.IO
 
     public static Boolean IsUrl(String path)
     {
-      if (path == null) { throw new ArgumentNullException("path"); }
+      if (path == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.path); }
       return path.IndexOf("://", StringComparison.Ordinal) > 0;
     }
 
