@@ -197,24 +197,27 @@ namespace Grace.Data
     {
       values = values ?? ImmutableHashTree<string, object>.Empty;
 
-      if (annonymousObject == null) { return values; }
-
-      if (annonymousObject is Array array)
+      switch (annonymousObject)
       {
-        var i = 0;
+        case null:
+          return values;
 
-        foreach (var value in array)
-        {
-          values = values.Add(i.ToString(), value);
-          i++;
-        }
+        case Array array:
+          var i = 0;
 
-        return values;
-      }
+          foreach (var value in array)
+          {
+            values = values.Add(i.ToString(), value);
+            i++;
+          }
 
-      if (annonymousObject is IDictionary<string, object> dictionary)
-      {
-        return dictionary.Aggregate(values, (v, kvp) => v.Add(kvp.Key, kvp.Value));
+          return values;
+
+        case IDictionary<string, object> dictionary:
+          return dictionary.Aggregate(values, (v, kvp) => v.Add(kvp.Key, kvp.Value));
+
+        default:
+          break;
       }
 
       var objectType = annonymousObject.GetType();

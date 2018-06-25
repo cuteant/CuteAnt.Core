@@ -6,6 +6,11 @@ namespace CuteAnt
   public static class InlineMethod
   {
     /// <summary>Value for lining method</summary>
-    public const MethodImplOptions Value = (MethodImplOptions)256;
+    public const MethodImplOptions Value =
+#if NET40
+      (MethodImplOptions)256;
+#else
+      MethodImplOptions.AggressiveInlining;
+#endif
   }
 }

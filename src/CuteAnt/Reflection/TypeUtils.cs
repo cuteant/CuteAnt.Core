@@ -403,7 +403,7 @@ namespace CuteAnt.Reflection
     {
       // Iterate over strings of length 2 positionwise.
       var charsWithPositions = input.Zip(Enumerable.Range(0, input.Length), (c, i) => new { Ch = c, Pos = i });
-      var candidatesWithPositions = charsWithPositions.Zip(charsWithPositions.Skip(1), (c1, c2) => new { Str = c1.Ch.ToString() + c2.Ch, Pos = c1.Pos });
+      var candidatesWithPositions = charsWithPositions.Zip(charsWithPositions.Skip(1), (c1, c2) => new { Str = c1.Ch.ToString() + c2.Ch, c1.Pos });
 
       var results = new List<string>();
       int startPos = -1;
@@ -955,12 +955,9 @@ namespace CuteAnt.Reflection
     /// <returns>The <see cref="MethodInfo"/> for the simple method call in the provided <paramref name="expression"/>.</returns>
     public static MethodInfo Method<T, TResult>(Expression<Func<T, TResult>> expression)
     {
-      if (expression.Body is MethodCallExpression methodCall)
-      {
-        return methodCall.Method;
-      }
-
-      ThrowArgumentException_Expr(); return null;
+      var methodCall = expression.Body as MethodCallExpression;
+      if (null == methodCall) { ThrowArgumentException_Expr(); }
+      return methodCall.Method;
     }
 
     /// <summary>Returns the <see cref="MethodInfo"/> for the simple method call in the provided <paramref name="expression"/>.</summary>
@@ -969,12 +966,9 @@ namespace CuteAnt.Reflection
     /// <returns>The <see cref="MethodInfo"/> for the simple method call in the provided <paramref name="expression"/>.</returns>
     public static MethodInfo Method<T>(Expression<Func<T>> expression)
     {
-      if (expression.Body is MethodCallExpression methodCall)
-      {
-        return methodCall.Method;
-      }
-
-      ThrowArgumentException_Expr(); return null;
+      var methodCall = expression.Body as MethodCallExpression;
+      if (null == methodCall) { ThrowArgumentException_Expr(); }
+      return methodCall.Method;
     }
 
     /// <summary>Returns the <see cref="MethodInfo"/> for the simple method call in the provided <paramref name="expression"/>.</summary>
@@ -983,12 +977,9 @@ namespace CuteAnt.Reflection
     /// <returns>The <see cref="MethodInfo"/> for the simple method call in the provided <paramref name="expression"/>.</returns>
     public static MethodInfo Method<T>(Expression<Action<T>> expression)
     {
-      if (expression.Body is MethodCallExpression methodCall)
-      {
-        return methodCall.Method;
-      }
-
-      ThrowArgumentException_Expr(); return null;
+      var methodCall = expression.Body as MethodCallExpression;
+      if (null == methodCall) { ThrowArgumentException_Expr(); }
+      return methodCall.Method;
     }
 
     /// <summary>Returns the <see cref="MethodInfo"/> for the simple method call in the provided <paramref name="expression"/>.</summary>
@@ -996,12 +987,9 @@ namespace CuteAnt.Reflection
     /// <returns>The <see cref="MethodInfo"/> for the simple method call in the provided <paramref name="expression"/>.</returns>
     public static MethodInfo Method(Expression<Action> expression)
     {
-      if (expression.Body is MethodCallExpression methodCall)
-      {
-        return methodCall.Method;
-      }
-
-      ThrowArgumentException_Expr(); return null;
+      var methodCall = expression.Body as MethodCallExpression;
+      if (null == methodCall) { ThrowArgumentException_Expr(); }
+      return methodCall.Method;
     }
 
     #endregion
@@ -1077,12 +1065,9 @@ namespace CuteAnt.Reflection
     /// <returns>The <see cref="PropertyInfo"/> for the simple member access call in the provided <paramref name="expression"/>.</returns>
     public static PropertyInfo Property<T, TResult>(Expression<Func<T, TResult>> expression)
     {
-      if (expression.Body is MemberExpression property)
-      {
-        return property.Member as PropertyInfo;
-      }
-
-      ThrowArgumentException_Expr(); return null;
+      var property = expression.Body as MemberExpression;
+      if (null == property) { ThrowArgumentException_Expr(); }
+      return property.Member as PropertyInfo;
     }
 
     /// <summary>Returns the <see cref="PropertyInfo"/> for the simple member access in the provided <paramref name="expression"/>.</summary>
@@ -1091,12 +1076,9 @@ namespace CuteAnt.Reflection
     /// <returns>The <see cref="PropertyInfo"/> for the simple member access call in the provided <paramref name="expression"/>.</returns>
     public static PropertyInfo Property<TResult>(Expression<Func<TResult>> expression)
     {
-      if (expression.Body is MemberExpression property)
-      {
-        return property.Member as PropertyInfo;
-      }
-
-      ThrowArgumentException_Expr(); return null;
+      var property = expression.Body as MemberExpression;
+      if (null == property) { ThrowArgumentException_Expr(); }
+      return property.Member as PropertyInfo;
     }
 
     #endregion
@@ -1110,17 +1092,15 @@ namespace CuteAnt.Reflection
     /// <returns>The <see cref="MemberInfo"/> for the simple member access call in the provided <paramref name="expression"/>.</returns>
     public static MemberInfo Member<T, TResult>(Expression<Func<T, TResult>> expression)
     {
-      if (expression.Body is MethodCallExpression methodCall)
+      switch (expression.Body)
       {
-        return methodCall.Method;
+        case MethodCallExpression methodCall:
+          return methodCall.Method;
+        case MemberExpression property:
+          return property.Member;
+        default:
+          ThrowArgumentException_Expr(); return null;
       }
-
-      if (expression.Body is MemberExpression property)
-      {
-        return property.Member;
-      }
-
-      ThrowArgumentException_Expr(); return null;
     }
 
     /// <summary>Returns the <see cref="MemberInfo"/> for the simple member access in the provided <paramref name="expression"/>.</summary>
@@ -1129,17 +1109,15 @@ namespace CuteAnt.Reflection
     /// <returns>The <see cref="MemberInfo"/> for the simple member access call in the provided <paramref name="expression"/>.</returns>
     public static MemberInfo Member<TResult>(Expression<Func<TResult>> expression)
     {
-      if (expression.Body is MethodCallExpression methodCall)
+      switch (expression.Body)
       {
-        return methodCall.Method;
+        case MethodCallExpression methodCall:
+          return methodCall.Method;
+        case MemberExpression property:
+          return property.Member;
+        default:
+          ThrowArgumentException_Expr(); return null;
       }
-
-      if (expression.Body is MemberExpression property)
-      {
-        return property.Member;
-      }
-
-      ThrowArgumentException_Expr(); return null;
     }
 
     #endregion
@@ -1452,8 +1430,7 @@ namespace CuteAnt.Reflection
       }
       else if (vtype == _.CombGuid)
       {
-        CombGuid comb;
-        if (CombGuid.TryParse(value, CombGuidSequentialSegmentType.Comb, out comb)) { return comb; }
+        if (CombGuid.TryParse(value, CombGuidSequentialSegmentType.Comb, out var comb)) { return comb; }
         if (CombGuid.TryParse(value, CombGuidSequentialSegmentType.Guid, out comb)) { return comb; }
         return CombGuid.Null;
       }
@@ -1653,9 +1630,11 @@ namespace CuteAnt.Reflection
 
     public static Type ResolveType(string qualifiedTypeName)
     {
-      if (TryResolveType(qualifiedTypeName, out var result)) { return result; }
-
-      ThrowTypeAccessException(qualifiedTypeName); return null;
+      if (!TryResolveType(qualifiedTypeName, out var result))
+      {
+        ThrowTypeAccessException(qualifiedTypeName);
+      }
+      return result;
     }
 
     /// <summary>Gets <see cref="Type"/> by full name (with falling back to the first part only).</summary>
@@ -1728,9 +1707,11 @@ namespace CuteAnt.Reflection
 
     internal static Type ResolveType(in TypeNameKey typeNameKey)
     {
-      if (TryResolveType(typeNameKey, out var result)) { return result; }
-
-      ThrowTypeAccessException($"{typeNameKey.TypeName}[{typeNameKey.AssemblyName}]"); return null;
+      if (!TryResolveType(typeNameKey, out var result))
+      {
+        ThrowTypeAccessException($"{typeNameKey.TypeName}[{typeNameKey.AssemblyName}]");
+      }
+      return result;
     }
 
     /// <inheritdoc />

@@ -216,9 +216,9 @@ namespace Grace.Data.Immutable
     /// <returns></returns>
     public override bool Equals(object obj)
     {
-      if (obj is ImmutableArray<T>)
+      if (obj is ImmutableArray<T> array)
       {
-        return Equals((ImmutableArray<T>)obj, this);
+        return Equals(array, this);
       }
 
       return false;
@@ -236,9 +236,9 @@ namespace Grace.Data.Immutable
     {
       var compareArray = other as Array;
 
-      if (compareArray == null && other is ImmutableArray<T>)
+      if (compareArray == null && other is ImmutableArray<T> immutableArray)
       {
-        compareArray = ((ImmutableArray<T>)other)._list;
+        compareArray = immutableArray._list;
 
         if (compareArray == null && _list == null) { return 0; }
 
@@ -292,9 +292,9 @@ namespace Grace.Data.Immutable
     {
       var compareArray = other as Array;
 
-      if (compareArray == null && other is ImmutableArray<T>)
+      if (compareArray == null && other is ImmutableArray<T> immutableArray)
       {
-        compareArray = ((ImmutableArray<T>)other)._list;
+        compareArray = immutableArray._list;
 
         if (compareArray == null && _list == null) { return false; }
 

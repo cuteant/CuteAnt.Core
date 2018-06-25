@@ -401,34 +401,35 @@ namespace Grace.DependencyInjection.Impl
     {
       ICompiledExportStrategy strategy = null;
 
-      var member = memberExpression.Body as MemberExpression;
-
-      if (member != null)
+      switch (memberExpression.Body)
       {
-        if (member.Member is PropertyInfo)
-        {
-          var propertyInfo = (PropertyInfo)member.Member;
+        case MemberExpression member:
+          switch (member.Member)
+          {
+            case PropertyInfo propertyInfo:
+              strategy = new ExportedPropertyOrFieldStrategy(propertyInfo.PropertyType,
+                  _exportConfiguration.InjectionScope, _exportConfiguration, propertyInfo.Name);
+              break;
 
-          strategy = new ExportedPropertyOrFieldStrategy(propertyInfo.PropertyType,
-              _exportConfiguration.InjectionScope, _exportConfiguration, propertyInfo.Name);
-        }
-        else if (member.Member is FieldInfo)
-        {
-          var fieldInfo = (FieldInfo)member.Member;
+            case FieldInfo fieldInfo:
+              strategy = new ExportedPropertyOrFieldStrategy(fieldInfo.FieldType,
+                  _exportConfiguration.InjectionScope, _exportConfiguration, fieldInfo.Name);
+              break;
 
-          strategy = new ExportedPropertyOrFieldStrategy(fieldInfo.FieldType,
-              _exportConfiguration.InjectionScope, _exportConfiguration, fieldInfo.Name);
-        }
-      }
-      else
-      {
-        if (memberExpression.Body is MethodCallExpression methodCall)
-        {
+            default:
+              break;
+          }
+          break;
+
+        case MethodCallExpression methodCall:
           var methodInfo = methodCall.Method;
 
           strategy = new ExportMethodStrategy(methodInfo.ReturnType, _exportConfiguration.InjectionScope,
               _exportConfiguration, methodInfo);
-        }
+          break;
+
+        default:
+          break;
       }
 
       if (strategy == null) { ThrowNotSupportedException(); }

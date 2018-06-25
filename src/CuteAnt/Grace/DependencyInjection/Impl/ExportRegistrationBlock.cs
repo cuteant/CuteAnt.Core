@@ -516,23 +516,19 @@ namespace Grace.DependencyInjection.Impl
     {
       if (null == activationStrategy) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.activationStrategy);
 
-      // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
-      if (activationStrategy is ICompiledExportStrategy)
+      switch (activationStrategy)
       {
-        AddExportStrategy((ICompiledExportStrategy)activationStrategy);
-      }
-      else if (activationStrategy is ICompiledDecoratorStrategy)
-      {
-        _decoratorStrategyProviders = _decoratorStrategyProviders.Add(
-             new SimpleDecoratorStrategyProvider((ICompiledDecoratorStrategy)activationStrategy));
-      }
-      else if (activationStrategy is ICompiledWrapperStrategy)
-      {
-        _wrapperProviders = _wrapperProviders.Add(new SimpleExportWrapperProvider((ICompiledWrapperStrategy)activationStrategy));
-      }
-      else
-      {
-        throw new NotSupportedException($"activation strategy of type {activationStrategy.GetType().Name} is not supported");
+        case ICompiledExportStrategy compiledExportStrategy:
+          AddExportStrategy(compiledExportStrategy);
+          break;
+        case ICompiledDecoratorStrategy compiledDecoratorStrategy:
+          _decoratorStrategyProviders = _decoratorStrategyProviders.Add(new SimpleDecoratorStrategyProvider(compiledDecoratorStrategy));
+          break;
+        case ICompiledWrapperStrategy compiledWrapperStrategy:
+          _wrapperProviders = _wrapperProviders.Add(new SimpleExportWrapperProvider(compiledWrapperStrategy));
+          break;
+        default:
+          throw new NotSupportedException($"activation strategy of type {activationStrategy.GetType().Name} is not supported");
       }
     }
 

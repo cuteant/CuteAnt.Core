@@ -23,6 +23,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
     private readonly IInjectionContextValueProvider _contextValueProvider;
 
+    private readonly MethodInfo _getValueFromInjectionContextMethod;
+
     /// <summary>Default constructor</summary>
     /// <param name="arrayExpressionCreator"></param>
     /// <param name="enumerableExpressionCreator"></param>
@@ -37,6 +39,18 @@ namespace Grace.DependencyInjection.Impl.Expressions
       ArrayExpressionCreator = arrayExpressionCreator;
       WrapperExpressionCreator = wrapperExpressionCreator;
       _contextValueProvider = contextValueProvider;
+
+      const string _getValueFromInjectionContextMethodName = nameof(IInjectionContextValueProvider.GetValueFromInjectionContext);
+      _getValueFromInjectionContextMethod = _contextValueProvider.GetType().GetRuntimeMethod(_getValueFromInjectionContextMethodName, new[]
+      {
+        typeof(IExportLocatorScope),
+        typeof(StaticInjectionContext),
+        typeof(object),
+        typeof(IInjectionContext),
+        typeof(object),
+        typeof(bool),
+        typeof(bool)
+      });
     }
 
     /// <summary>Get a linq expression to satisfy the request</summary>
@@ -186,19 +200,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// <returns></returns>
     public virtual IActivationExpressionResult GetValueFromInjectionContext(IInjectionScope scope, IActivationExpressionRequest request)
     {
-      const string _getValueFromInjectionContextMethodName = nameof(IInjectionContextValueProvider.GetValueFromInjectionContext);
-      var valueMethod = _contextValueProvider.GetType().GetRuntimeMethod(_getValueFromInjectionContextMethodName, new[]
-      {
-        typeof(IExportLocatorScope),
-        typeof(StaticInjectionContext),
-        typeof(object),
-        typeof(IInjectionContext),
-        typeof(object),
-        typeof(bool),
-        typeof(bool)
-      });
-
-      var closedMethod = valueMethod.MakeGenericMethod(request.ActivationType);
+      var closedMethod = _getValueFromInjectionContextMethod.MakeGenericMethod(request.ActivationType);
 
       var key = request.LocateKey;
 
@@ -257,6 +259,23 @@ namespace Grace.DependencyInjection.Impl.Expressions
       return scope.Parent is IInjectionScope parent ? GetValueFromInjectionValueProviders(parent, request) : null;
     }
 
+    private const string c_getDynamicValueMethodName = nameof(GetDynamicValue);
+    private static readonly MethodInfo s_dynamicMethod =
+        typeof(ActivationExpressionBuilder).GetRuntimeMethod(c_getDynamicValueMethodName, new[]
+        {
+          typeof(IExportLocatorScope),
+          typeof(IDisposalScope),
+          typeof(StaticInjectionContext),
+          typeof(IInjectionContext),
+          typeof(object),
+          typeof(bool),
+          typeof(bool),
+          typeof(object)
+        });
+    private const string c_getInjectionScopeMethodName = nameof(IExportLocatorScopeExtensions.GetInjectionScope);
+    private static readonly MethodInfo s_getInjectionScopeMethod = 
+        typeof(IExportLocatorScopeExtensions).GetRuntimeMethod(c_getInjectionScopeMethodName, new[] { typeof(IExportLocatorScope) });
+
     /// <summary>Get expression result from request</summary>
     /// <param name="scope"></param>
     /// <param name="request"></param>
@@ -298,32 +317,35 @@ namespace Grace.DependencyInjection.Impl.Expressions
           }
         }
 
-        if (request.Info is MemberInfo memberInfo)
+        switch (request.Info)
         {
-          var knownValue = knownValues.FirstOrDefault(v => Equals(v.Key, memberInfo.Name));
+          case MemberInfo memberInfo:
+            var knownValue = knownValues.FirstOrDefault(v => Equals(v.Key, memberInfo.Name));
 
-          if (knownValue != null)
-          {
-            return knownValue.ValueExpression(request);
-          }
-        }
+            if (knownValue != null)
+            {
+              return knownValue.ValueExpression(request);
+            }
+            break;
+          case ParameterInfo parameterInfo:
+            var knownValue0 = knownValues.FirstOrDefault(v => Equals(v.Key, parameterInfo.Name));
 
-        if (request.Info is ParameterInfo parameterInfo)
-        {
-          var knownValue = knownValues.FirstOrDefault(v => Equals(v.Key, parameterInfo.Name));
+            if (knownValue0 != null)
+            {
+              return knownValue0.ValueExpression(request);
+            }
 
-          if (knownValue != null)
-          {
-            return knownValue.ValueExpression(request);
-          }
+            knownValue0 = knownValues.FirstOrDefault(v =>
+                Equals(v.Position.GetValueOrDefault(-1), parameterInfo.Position));
 
-          knownValue = knownValues.FirstOrDefault(v =>
-              Equals(v.Position.GetValueOrDefault(-1), parameterInfo.Position));
-
-          if (knownValue != null)
-          {
-            return knownValue.ValueExpression(request);
-          }
+            if (knownValue0 != null)
+            {
+              return knownValue0.ValueExpression(request);
+            }
+            break;
+          default:
+            // nothing to do
+            break;
         }
 
         return knownValues[0].ValueExpression(request);
@@ -361,10 +383,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
           ThrowImportInjectionScopeException(request);
         }
 
-        const string _GetInjectionScopeMethodName = nameof(IExportLocatorScopeExtensions.GetInjectionScope);
-        var method = typeof(IExportLocatorScopeExtensions).GetRuntimeMethod(_GetInjectionScopeMethodName, new[] { typeof(IExportLocatorScope) });
-
-        var expression = Expression.Call(method, request.ScopeParameter);
+        var expression = Expression.Call(s_getInjectionScopeMethod, request.ScopeParameter);
 
         return request.Services.Compiler.CreateNewResult(request, expression);
       }
@@ -400,22 +419,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
       if (request.IsDynamic)
       {
-        const string _GetDynamicValueMethodName = nameof(ActivationExpressionBuilder.GetDynamicValue);
-        var dynamicMethod =
-            typeof(ActivationExpressionBuilder).GetRuntimeMethod(_GetDynamicValueMethodName,
-                new[]
-                {
-                  typeof(IExportLocatorScope),
-                  typeof(IDisposalScope),
-                  typeof(StaticInjectionContext),
-                  typeof(IInjectionContext),
-                  typeof(object),
-                  typeof(bool),
-                  typeof(bool),
-                  typeof(object)
-                });
-
-        var closedMethod = dynamicMethod.MakeGenericMethod(request.ActivationType);
+        var closedMethod = s_dynamicMethod.MakeGenericMethod(request.ActivationType);
 
         Expression defaultExpression = Expression.Constant(request.DefaultValue?.DefaultValue, typeof(object));
 

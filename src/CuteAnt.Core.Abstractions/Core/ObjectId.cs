@@ -405,9 +405,9 @@ namespace CuteAnt.Runtime
     /// <returns>True if the other object is an ObjectId and equal to this one.</returns>
     public override bool Equals(object obj)
     {
-      if (obj is ObjectId)
+      if (obj is ObjectId id)
       {
-        return Equals((ObjectId)obj);
+        return Equals(id);
       }
       else
       {

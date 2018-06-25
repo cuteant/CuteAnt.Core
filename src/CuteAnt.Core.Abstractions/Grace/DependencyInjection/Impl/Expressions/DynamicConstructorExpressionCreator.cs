@@ -339,15 +339,15 @@ namespace Grace.DependencyInjection.Impl.Expressions
     {
       var value = context.GetExtraData(parameterName);
 
-      if (value is T) { return (T)value; }
+      if (value is T tv0) { return tv0; }
 
       value = context.GetValueByType(typeof(T));
 
-      if (value is T) { return (T)value; }
+      if (value is T tv1) { return tv1; }
 
       value = scope.GetInjectionScope().LocateFromChildScope(scope, disposalScope, typeof(T), context, null, null, true, false);
 
-      if (value is T) { return (T)value; }
+      if (value is T tv2) { return tv2; }
 
       var currentScope = scope;
 
@@ -355,13 +355,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
       {
         value = currentScope.GetExtraData(parameterName);
 
-        if (value is T) { return (T)value; }
+        if (value is T tv) { return tv; }
 
         foreach (var valuePair in currentScope.KeyValuePairs)
         {
-          if (!valuePair.Key.ToString().StartsWith(UniqueStringId.Prefix, StringComparison.Ordinal) && valuePair.Value is T)
+          if (!valuePair.Key.ToString().StartsWith(UniqueStringId.Prefix, StringComparison.Ordinal) && valuePair.Value is T vv)
           {
-            return (T)valuePair.Value;
+            return vv;
           }
         }
 

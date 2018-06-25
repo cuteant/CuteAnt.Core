@@ -27,9 +27,8 @@ namespace CuteAnt.Reflection
 
     public override bool Equals(object obj)
     {
-      if (!(obj is TypeNameKey)) { return false; }
-
-      return Equals((TypeNameKey)obj);
+      if (obj is TypeNameKey nameKey) { return Equals(nameKey); }
+      return false;
     }
 
     public bool Equals(TypeNameKey other)

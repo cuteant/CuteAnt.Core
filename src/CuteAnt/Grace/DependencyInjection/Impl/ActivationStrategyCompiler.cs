@@ -237,17 +237,19 @@ namespace Grace.DependencyInjection.Impl
       {
         foreach (var activationStrategy in strategyProvider.ProvideExports(scope, request))
         {
-          if (activationStrategy is ICompiledExportStrategy)
+          switch (activationStrategy)
           {
-            scope.StrategyCollectionContainer.AddStrategy(activationStrategy as ICompiledExportStrategy);
-          }
-          else if (activationStrategy is ICompiledWrapperStrategy)
-          {
-            scope.WrapperCollectionContainer.AddStrategy(activationStrategy as ICompiledWrapperStrategy);
-          }
-          else if (activationStrategy is ICompiledDecoratorStrategy)
-          {
-            scope.DecoratorCollectionContainer.AddStrategy(activationStrategy as ICompiledDecoratorStrategy);
+            case ICompiledExportStrategy compiledExportStrategy:
+              scope.StrategyCollectionContainer.AddStrategy(compiledExportStrategy);
+              break;
+            case ICompiledWrapperStrategy compiledWrapperStrategy:
+              scope.WrapperCollectionContainer.AddStrategy(compiledWrapperStrategy);
+              break;
+            case ICompiledDecoratorStrategy compiledDecoratorStrategy:
+              scope.DecoratorCollectionContainer.AddStrategy(compiledDecoratorStrategy);
+              break;
+            default:
+              break;
           }
         }
       }

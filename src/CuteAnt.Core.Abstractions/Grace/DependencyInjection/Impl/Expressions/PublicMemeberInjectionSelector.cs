@@ -43,26 +43,31 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
           Type importType = null;
 
-          if (declaredMember is PropertyInfo propertyInfo)
+          switch (declaredMember)
           {
+            case PropertyInfo propertyInfo:
 #if NET40
-            var setMethodInfo = propertyInfo.SetMethod();
+              var setMethodInfo = propertyInfo.SetMethod();
 #else
-            var setMethodInfo = propertyInfo.SetMethod;
+              var setMethodInfo = propertyInfo.SetMethod;
 #endif
-            if (propertyInfo.CanWrite && setMethodInfo.IsPublic && !setMethodInfo.IsStatic)
-            {
-              importType = propertyInfo.PropertyType;
-            }
-          }
-          else if (declaredMember is FieldInfo fieldInfo)
-          {
-            //var fieldInfo = (FieldInfo)declaredMember;
+              if (propertyInfo.CanWrite && setMethodInfo.IsPublic && !setMethodInfo.IsStatic)
+              {
+                importType = propertyInfo.PropertyType;
+              }
+              break;
 
-            if (fieldInfo.IsPublic && !fieldInfo.IsStatic)
-            {
-              importType = fieldInfo.FieldType;
-            }
+            case FieldInfo fieldInfo:
+              //var fieldInfo = (FieldInfo)declaredMember;
+
+              if (fieldInfo.IsPublic && !fieldInfo.IsStatic)
+              {
+                importType = fieldInfo.FieldType;
+              }
+              break;
+
+            default:
+              break;
           }
 
           if (importType != null && (_picker == null || _picker(declaredMember)))

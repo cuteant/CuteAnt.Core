@@ -18,7 +18,7 @@ namespace Grace.Data
 
       if (value == null) { return defaultValue; }
 
-      if (value is T) { return (T)value; }
+      if (value is T tv) { return tv; }
 
       return (T)Convert.ChangeType(value, typeof(T));
     }

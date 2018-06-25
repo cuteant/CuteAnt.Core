@@ -33,31 +33,26 @@ namespace Grace.DependencyInjection.Impl
 
       Attribute[] attributes;
 
-      if (value is Type type)
+      switch (value)
       {
+        case Type type:
 #if NET40
-        attributes = type.GetCustomAttributes()?.ToArray();
+          attributes = type.GetCustomAttributes()?.ToArray();
 #else
-        attributes = type.GetTypeInfo().GetCustomAttributes()?.ToArray();
+          attributes = type.GetTypeInfo().GetCustomAttributes()?.ToArray();
 #endif
-      }
-      else
-      {
-        if (value is ParameterInfo parameterInfo)
-        {
+          break;
+
+        case ParameterInfo parameterInfo:
           attributes = parameterInfo.GetCustomAttributes()?.ToArray();
-        }
-        else
-        {
-          if (value is MemberInfo memberInfo)
-          {
-            attributes = memberInfo.GetCustomAttributes<Attribute>()?.ToArray();
-          }
-          else
-          {
-            throw new NotSupportedException($"Getting attributes on type {value.GetType().Name} is not supported");
-          }
-        }
+          break;
+
+        case MemberInfo memberInfo:
+          attributes = memberInfo.GetCustomAttributes<Attribute>()?.ToArray();
+          break;
+
+        default:
+          throw new NotSupportedException($"Getting attributes on type {value.GetType().Name} is not supported");
       }
 
       if (attributes == null || attributes.Length == 0)

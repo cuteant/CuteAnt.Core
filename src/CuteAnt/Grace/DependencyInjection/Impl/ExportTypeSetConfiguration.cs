@@ -394,23 +394,30 @@ namespace Grace.DependencyInjection.Impl
       foreach (var customAttribute in type.GetTypeInfo().GetCustomAttributes())
 #endif
       {
-        if (customAttribute is ILifestyleProviderAttribute lifestyleAttribute)
+        switch (customAttribute)
         {
-          strategy.Lifestyle = lifestyleAttribute.ProvideLifestyle(type);
-        }
-
-        var condition = (customAttribute as IExportConditionAttribute)?.ProvideCondition(type);
-
-        if (condition != null) { strategy.AddCondition(condition); }
-
-        var metadata = (customAttribute as IExportMetadataAttribute)?.ProvideMetadata(type);
-
-        if (metadata != null)
-        {
-          foreach (var keyValuePair in metadata)
-          {
-            strategy.SetMetadata(keyValuePair.Key, keyValuePair.Value);
-          }
+          case ILifestyleProviderAttribute lifestyleAttribute:
+            strategy.Lifestyle = lifestyleAttribute.ProvideLifestyle(type);
+            break;
+          case IExportConditionAttribute exportConditionAttribute:
+            var condition = exportConditionAttribute.ProvideCondition(type);
+            if (condition != null)
+            {
+              strategy.AddCondition(condition);
+            }
+            break;
+          case IExportMetadataAttribute exportMetadataAttribute:
+            var metadata = exportMetadataAttribute.ProvideMetadata(type);
+            if (metadata != null)
+            {
+              foreach (var keyValuePair in metadata)
+              {
+                strategy.SetMetadata(keyValuePair.Key, keyValuePair.Value);
+              }
+            }
+            break;
+          default:
+            break;
         }
       }
 

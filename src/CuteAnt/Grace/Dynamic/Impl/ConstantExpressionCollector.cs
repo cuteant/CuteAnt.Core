@@ -56,20 +56,18 @@ namespace Grace.Dynamic.Impl
 
     private bool ProcessDefaultExpressionType(Expression expression, List<object> constants)
     {
-      if (expression is UnaryExpression unaryExpression)
+      switch (expression)
       {
-        return GetConstantExpressions(unaryExpression.Operand, constants);
+        case UnaryExpression unaryExpression:
+          return GetConstantExpressions(unaryExpression.Operand, constants);
+
+        case BinaryExpression binaryExpression:
+          return GetConstantExpressions(binaryExpression.Left, constants) &&
+                 GetConstantExpressions(binaryExpression.Right, constants);
+
+        default:
+          return false;
       }
-
-      var binaryExpression = expression as BinaryExpression;
-
-      if (binaryExpression != null)
-      {
-        return GetConstantExpressions(binaryExpression.Left, constants) &&
-               GetConstantExpressions(binaryExpression.Right, constants);
-      }
-
-      return false;
     }
 
     private bool ProcessMemberInit(Expression expression, List<object> constants)
@@ -89,21 +87,22 @@ namespace Grace.Dynamic.Impl
       return true;
     }
 
+    private static readonly HashSet<Type> s_expressionValueTypes = new HashSet<Type>(new[]
+    {
+      typeof(int), typeof(double), typeof(bool), typeof(string)
+    });
     private bool ProcessConstantExpression(ConstantExpression expression, List<object> constants)
     {
-      if (expression.Value != null)
+      var exprValue = expression.Value;
+      if (exprValue != null)
       {
-        var valueType = expression.Value.GetType();
+        var valueType = exprValue.GetType();
 
         if (valueType == typeof(Delegate)) { return false; }
 
-        if (valueType != typeof(int) &&
-            valueType != typeof(double) &&
-            valueType != typeof(bool) &&
-            valueType != typeof(string) &&
-           !constants.Contains(expression.Value))
+        if (!s_expressionValueTypes.Contains(valueType) && !constants.Contains(exprValue))
         {
-          constants.Add(expression.Value);
+          constants.Add(exprValue);
         }
       }
 

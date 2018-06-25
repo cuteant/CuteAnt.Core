@@ -33,25 +33,26 @@ namespace Grace.Dynamic.Impl
 
         if (!request.TryGenerateIL(request, ((MemberAssignment)binding).Expression)) { return false; }
 
-        if (binding.Member is PropertyInfo propertyInfo)
+        switch (binding.Member)
         {
+          case PropertyInfo propertyInfo:
 #if NET40
-          var setMethod = propertyInfo.GetSetMethod(true);
+            var setMethod = propertyInfo.GetSetMethod(true);
 #else
-          var setMethod = propertyInfo.SetMethod;
+            var setMethod = propertyInfo.SetMethod;
 #endif
 
-          if (setMethod == null) { return false; }
+            if (setMethod == null) { return false; }
 
-          request.ILGenerator.EmitMethodCall(setMethod);
-        }
-        else if (binding.Member is FieldInfo)
-        {
-          request.ILGenerator.Emit(OpCodes.Stfld, (FieldInfo)binding.Member);
-        }
-        else
-        {
-          return false;
+            request.ILGenerator.EmitMethodCall(setMethod);
+            break;
+
+          case FieldInfo fieldInfo:
+            request.ILGenerator.Emit(OpCodes.Stfld, fieldInfo);
+            break;
+
+          default:
+            return false;
         }
       }
 
