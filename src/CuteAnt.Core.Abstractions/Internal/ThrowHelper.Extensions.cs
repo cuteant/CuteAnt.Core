@@ -60,6 +60,10 @@
     assemblyPredicate,
     collection,
     capacity,
+    match,
+    index,
+    length,
+    startIndex,
   }
 
   #endregion
@@ -74,6 +78,9 @@
     Value_Cannot_Be_Null,
     Value_Is_Of_Incorrect_Type,
     Dest_Array_Cannot_Be_Null,
+    ArgumentOutOfRange_Index,
+    ArgumentOutOfRange_NeedNonNegNum,
+    ArgumentOutOfRange_Count,
   }
 
   #endregion

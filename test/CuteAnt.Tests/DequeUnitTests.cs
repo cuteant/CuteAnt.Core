@@ -1069,5 +1069,28 @@ namespace CuteAnt.Tests
       result = deque.ToList().ToArray();
       Assert.Equal(new[] { 3, 2, 1 }, result);
     }
+
+    [Fact]
+    public void Find_FindLast_FindAll()
+    {
+      var deque = new Deque<int>(new[] { 1, 2, 3, 4 });
+      Assert.Equal(2, deque.Find(_ => _ > 1));
+      Assert.Equal(4, deque.FindLast(_ => _ > 1));
+      Assert.Equal(new int[] { 3, 4 }, deque.FindAll(_ => _ > 2));
+    }
+
+    [Fact]
+    public void FindIndex_FindLastIndex()
+    {
+      var deque = new Deque<int>();
+      Assert.Equal(-1, deque.FindLastIndex(-1, _ => _ > 0));
+      deque = new Deque<int>(new[] { 1, 2, 3, 4 });
+      Assert.Equal(1, deque.FindIndex(_ => _ == 2));
+      Assert.Equal(3, deque.FindIndex(_ => _ == 4));
+      Assert.Equal(0, deque.FindIndex(_ => _ > 0));
+      Assert.Equal(3, deque.FindLastIndex(_ => _ == 4));
+      Assert.Equal(0, deque.FindLastIndex(_ => _ == 1));
+      Assert.Equal(3, deque.FindLastIndex(_ => _ > 0));
+    }
   }
 }

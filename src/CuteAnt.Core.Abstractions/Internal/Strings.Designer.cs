@@ -61,6 +61,33 @@ namespace CuteAnt.Internal {
         }
         
         /// <summary>
+        ///   查找类似 Count must be positive and count must refer to a location within the collection. 的本地化字符串。
+        /// </summary>
+        internal static string ArgumentOutOfRange_Count {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRange_Count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Index was out of range. Must be non-negative and less than the size of the collection. 的本地化字符串。
+        /// </summary>
+        internal static string ArgumentOutOfRange_Index {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRange_Index", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Non-negative number required. 的本地化字符串。
+        /// </summary>
+        internal static string ArgumentOutOfRange_NeedNonNegNum {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRange_NeedNonNegNum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Capacity may not be negative. 的本地化字符串。
         /// </summary>
         internal static string Capacity_May_Not_Be_Negative {

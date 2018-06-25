@@ -400,6 +400,36 @@ namespace CuteAnt.Collections
         return new ArgumentOutOfRangeException(nameof(offset), "Invalid offset " + offset);
       }
     }
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowArgumentOutOfRange_IndexException()
+    {
+      throw ThrowHelper.GetArgumentOutOfRangeException(ExceptionArgument.index,
+                                              ExceptionResource.ArgumentOutOfRange_Index);
+    }
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowIndexArgumentOutOfRange_NeedNonNegNumException()
+    {
+      throw ThrowHelper.GetArgumentOutOfRangeException(ExceptionArgument.index,
+                                              ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
+    }
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowLengthArgumentOutOfRange_ArgumentOutOfRange_NeedNonNegNum()
+    {
+      throw ThrowHelper.GetArgumentOutOfRangeException(ExceptionArgument.length,
+                                              ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
+    }
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowStartIndexArgumentOutOfRange_ArgumentOutOfRange_Index()
+    {
+      throw ThrowHelper.GetArgumentOutOfRangeException(ExceptionArgument.startIndex,
+                                              ExceptionResource.ArgumentOutOfRange_Index);
+    }
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowCountArgumentOutOfRange_ArgumentOutOfRange_Count()
+    {
+      throw ThrowHelper.GetArgumentOutOfRangeException(ExceptionArgument.count,
+                                              ExceptionResource.ArgumentOutOfRange_Count);
+    }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static void ThrowArgumentNullException_Action()
@@ -920,6 +950,139 @@ namespace CuteAnt.Collections
 
     #endregion
 
+    #region -- Exists --
+
+    public bool Exists(Predicate<T> match) => FindIndex(match) != -1;
+
+    #endregion
+
+    #region -- Find --
+
+    public T Find(Predicate<T> match)
+    {
+      if (match == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.match); }
+
+      var idx = 0;
+      while (idx < _count)
+      {
+        var item = DoGetItem(idx);
+        if (match(item)) { return item; }
+        idx++;
+      }
+      return default;
+    }
+
+    #endregion
+
+    #region -- FindAll --
+
+    public Deque<T> FindAll(Predicate<T> match)
+    {
+      if (match == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.match); }
+
+      var list = new Deque<T>();
+      var idx = 0;
+      while (idx < _count)
+      {
+        var item = DoGetItem(idx);
+        if (match(item)) { list.AddToBack(item); }
+        idx++;
+      }
+      return list;
+    }
+
+    #endregion
+
+    #region -- FindIndex --
+
+    public int FindIndex(Predicate<T> match) => FindIndex(0, _count, match);
+
+    public int FindIndex(int startIndex, Predicate<T> match) => FindIndex(startIndex, _count - startIndex, match);
+
+    public int FindIndex(int startIndex, int count, Predicate<T> match)
+    {
+      if ((uint)startIndex > (uint)_count) { ThrowStartIndexArgumentOutOfRange_ArgumentOutOfRange_Index(); }
+      if (count < 0 || startIndex > _count - count) { ThrowCountArgumentOutOfRange_ArgumentOutOfRange_Count(); }
+      if (match == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.match); }
+
+      int endIndex = startIndex + count;
+      var idx = startIndex;
+      while (idx < endIndex)
+      {
+        var item = DoGetItem(idx);
+        if (match(item)) { return idx; }
+        idx++;
+      }
+
+      return -1;
+    }
+
+    #endregion
+
+    #region -- FindLast --
+
+    public T FindLast(Predicate<T> match)
+    {
+      if (match == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.match); }
+
+      var idx = _count - 1;
+      while (idx >= 0)
+      {
+        var item = DoGetItem(idx);
+        if (match(item)) { return item; }
+        idx--;
+      }
+
+      return default;
+    }
+
+    #endregion
+
+    #region -- FindLastIndex --
+
+    public int FindLastIndex(Predicate<T> match) => FindLastIndex(_count - 1, _count, match);
+
+    public int FindLastIndex(int startIndex, Predicate<T> match) => FindLastIndex(startIndex, startIndex + 1, match);
+
+    public int FindLastIndex(int startIndex, int count, Predicate<T> match)
+    {
+      if (match == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.match); }
+      if (_count == 0)
+      {
+        // Special case for 0 length List
+        if (startIndex != -1)
+        {
+          ThrowStartIndexArgumentOutOfRange_ArgumentOutOfRange_Index();
+        }
+      }
+      else
+      {
+        // Make sure we're not out of range
+        if ((uint)startIndex >= (uint)_count)
+        {
+          ThrowStartIndexArgumentOutOfRange_ArgumentOutOfRange_Index();
+        }
+      }
+
+      // 2nd have of this also catches when startIndex == MAXINT, so MAXINT - 0 + 1 == -1, which is < 0.
+      if (count < 0 || startIndex - count + 1 < 0)
+      {
+        ThrowCountArgumentOutOfRange_ArgumentOutOfRange_Count();
+      }
+
+      int endIndex = startIndex - count;
+      var idx = startIndex;
+      while (idx > endIndex)
+      {
+        if (match(DoGetItem(idx))) { return idx; }
+        idx--;
+      }
+
+      return -1;
+    }
+
+    #endregion
+
     #region -- ForEach --
 
     public void ForEach(Action<T> action)
@@ -1085,7 +1248,49 @@ namespace CuteAnt.Collections
 
     #endregion
 
-    #region -- PeekFromBack --
+    #region -- TrueForAll --
+
+    public bool TrueForAll(Predicate<T> match)
+    {
+      if (match == null)
+      {
+        ThrowHelper.ThrowArgumentNullException(ExceptionArgument.match);
+      }
+
+      if (IsEmpty) { return false; }
+
+      var idx = 0;
+      while (idx < _count)
+      {
+        if (!match(DoGetItem(idx))) { return false; }
+        idx++;
+      }
+      return true;
+    }
+
+    #endregion
+
+    #region -- PeekFromBack / Last --
+
+    public T Last
+    {
+      get
+      {
+        if (IsEmpty) { ThrowInvalidOperationException(); }
+
+        return _buffer[DequeIndexToBufferIndex(_count - 1)];
+      }
+    }
+
+    public T LastOrDefault
+    {
+      get
+      {
+        if (IsEmpty) { return default; }
+
+        return _buffer[DequeIndexToBufferIndex(_count - 1)];
+      }
+    }
 
     public T PeekFromBack()
     {
@@ -1185,7 +1390,25 @@ namespace CuteAnt.Collections
 
     #endregion
 
-    #region -- PeekFromFront --
+    #region -- PeekFromFront / First --
+
+    public T First
+    {
+      get
+      {
+        if (IsEmpty) { ThrowInvalidOperationException(); }
+        return _buffer[_offset];
+      }
+    }
+
+    public T FirstOrDefault
+    {
+      get
+      {
+        if (IsEmpty) { return default; }
+        return _buffer[_offset];
+      }
+    }
 
     public T PeekFromFront()
     {
