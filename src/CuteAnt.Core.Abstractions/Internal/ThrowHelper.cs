@@ -169,11 +169,13 @@ namespace CuteAnt
 
     #region -- Throw InvalidOperationException --
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void ThrowInvalidOperationException(ExceptionResource resource)
     {
       throw GetInvalidOperationException(resource);
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void ThrowInvalidOperationException(ExceptionResource resource, Exception e)
     {
       throw GetInvalidOperationException();
