@@ -32,6 +32,8 @@ namespace CuteAnt.Collections
 
     private readonly bool _useReversingEnumerator;
 
+    private int _count = 0;
+
     #endregion
 
     #region -- Constructors --
@@ -62,6 +64,12 @@ namespace CuteAnt.Collections
     /// <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer{T}"/> implementation to use when comparing elements, 
     /// or null to use the default <see cref="T:System.Collections.Generic.EqualityComparer{T}"/> for the type of the element.</param>
     public Deque(int capacity, IEqualityComparer<T> comparer) : this(capacity, false, comparer) { }
+
+    /// <summary>Initializes a new instance of the <see cref="Deque&lt;T&gt;"/> class with the specified capacity.</summary>
+    /// <param name="useReversingEnumerator"></param>
+    /// <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer{T}"/> implementation to use when comparing elements, 
+    /// or null to use the default <see cref="T:System.Collections.Generic.EqualityComparer{T}"/> for the type of the element.</param>
+    public Deque(bool useReversingEnumerator, IEqualityComparer<T> comparer) : this(DefaultCapacity, useReversingEnumerator, comparer) { }
 
     /// <summary>Initializes a new instance of the <see cref="Deque&lt;T&gt;"/> class with the specified capacity.</summary>
     /// <param name="capacity">The initial capacity. Must be greater than <c>0</c>.</param>
@@ -538,6 +546,8 @@ namespace CuteAnt.Collections
 
     #region @@ Properties @@
 
+    public bool UseReversingEnumerator => _useReversingEnumerator;
+
     /// <summary>Gets a value indicating whether this instance is empty.</summary>
     public bool IsEmpty
     {
@@ -588,7 +598,6 @@ namespace CuteAnt.Collections
       }
     }
 
-    private int _count = 0;
     /// <summary>Gets the number of elements contained in this deque.</summary>
     /// <returns>The number of elements contained in this deque.</returns>
     public int Count => _count;
@@ -745,9 +754,9 @@ namespace CuteAnt.Collections
     {
       var collectionCount = collection.Count;
 #else
-        private void DoInsertRange(int index, IEnumerable<T> collection)
-        {
-            var collectionCount = collection.Count();
+    private void DoInsertRange(int index, IEnumerable<T> collection)
+    {
+      var collectionCount = collection.Count();
 #endif
       // Make room in the existing list
       if (index < _count / 2)
