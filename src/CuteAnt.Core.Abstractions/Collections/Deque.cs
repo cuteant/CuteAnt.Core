@@ -27,6 +27,8 @@ namespace CuteAnt.Collections
     /// <summary>The offset into <see cref="_buffer"/> where the view begins.</summary>
     private int _offset;
 
+    private readonly IEqualityComparer<T> _comparer;
+
     #endregion
 
     #region -- Constructors --
@@ -36,18 +38,31 @@ namespace CuteAnt.Collections
 
     /// <summary>Initializes a new instance of the <see cref="Deque&lt;T&gt;"/> class with the specified capacity.</summary>
     /// <param name="capacity">The initial capacity. Must be greater than <c>0</c>.</param>
-    public Deque(int capacity)
+    public Deque(int capacity) : this(capacity, null) { }
+
+    /// <summary>Initializes a new instance of the <see cref="Deque&lt;T&gt;"/> class with the specified capacity.</summary>
+    /// <param name="capacity">The initial capacity. Must be greater than <c>0</c>.</param>
+    /// <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer{T}"/> implementation to use when comparing elements, 
+    /// or null to use the default <see cref="T:System.Collections.Generic.EqualityComparer{T}"/> for the type of the element.</param>
+    public Deque(int capacity, IEqualityComparer<T> comparer)
     {
       if (capacity < 0)
       {
         ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.capacity, ExceptionResource.Capacity_May_Not_Be_Negative);
       }
       _buffer = new T[capacity];
+      _comparer = comparer ?? EqualityComparer<T>.Default;
     }
 
     /// <summary>Initializes a new instance of the <see cref="Deque&lt;T&gt;"/> class with the elements from the specified collection.</summary>
     /// <param name="collection">The collection. May not be <c>null</c>.</param>
-    public Deque(IEnumerable<T> collection)
+    public Deque(IEnumerable<T> collection) : this(collection, null) { }
+
+    /// <summary>Initializes a new instance of the <see cref="Deque&lt;T&gt;"/> class with the elements from the specified collection.</summary>
+    /// <param name="collection">The collection. May not be <c>null</c>.</param>
+    /// <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer{T}"/> implementation to use when comparing elements, 
+    /// or null to use the default <see cref="T:System.Collections.Generic.EqualityComparer{T}"/> for the type of the element.</param>
+    public Deque(IEnumerable<T> collection, IEqualityComparer<T> comparer)
     {
       if (collection == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.collection);
 
@@ -62,6 +77,7 @@ namespace CuteAnt.Collections
       {
         _buffer = new T[DefaultCapacity];
       }
+      _comparer = comparer ?? EqualityComparer<T>.Default;
     }
 
     #endregion
@@ -128,12 +144,10 @@ namespace CuteAnt.Collections
     /// <returns>The index of <paramref name="item"/> if found in this list; otherwise, -1.</returns>
     public int IndexOf(T item)
     {
-      var comparer = EqualityComparer<T>.Default;
-
       var idx = 0;
       while (idx < _count)
       {
-        if (comparer.Equals(item, DoGetItem(idx))) { return idx; }
+        if (_comparer.Equals(item, DoGetItem(idx))) { return idx; }
         idx++;
       }
 
@@ -157,11 +171,10 @@ namespace CuteAnt.Collections
     {
       if (IsEmpty) { return false; }
 
-      var comparer = EqualityComparer<T>.Default;
       var idx = 0;
       while (idx < _count)
       {
-        if (comparer.Equals(item, DoGetItem(idx))) { return true; }
+        if (_comparer.Equals(item, DoGetItem(idx))) { return true; }
         idx++;
       }
       return false;
@@ -946,6 +959,33 @@ namespace CuteAnt.Collections
       int result = _count - freeIndex;
       _count = freeIndex;
       return result;
+    }
+
+    #endregion
+
+    #region -- UpdateAll --
+
+    public int UpdateAll(Predicate<T> match, Func<T, T> updateValueFactory)
+    {
+      if (null == match) { ThrowArgumentNullException_Match(); }
+      if (null == updateValueFactory) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.updateValueFactory); }
+      if (IsEmpty) { return 0; }
+
+      var count = 0;
+      var idx = 0;
+      while (idx < _count)
+      {
+        var index = DequeIndexToBufferIndex(idx);
+        var item = _buffer[index];
+        if (match(item))
+        {
+          var newItem = updateValueFactory(item);
+          _buffer[index] = newItem;
+          count++;
+        }
+        idx++;
+      }
+      return count;
     }
 
     #endregion

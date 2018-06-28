@@ -575,6 +575,14 @@ namespace CuteAnt.Tests
       Assert.Equal(4, deque.RemoveAll(_ => _ >= 4 && _ <= 7));
       Assert.Equal(4, deque.Count);
       Assert.Equal(new[] { 1, 2, 3, 8 }, deque);
+
+      deque = new Deque<int>(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+      Assert.Equal(9, deque.RemoveFromBack());
+      deque.AddToFront(0);
+      Assert.Equal(5, deque.RemoveAll(_ => _ >= 4 && _ <= 7 || _ == 1));
+      Assert.Equal(4, deque.Count);
+      Assert.Equal(new[] { 0, 2, 3, 8 }, deque);
+
       deque = new Deque<int>(new[] { 1, 2, 3, 4, 5, 6, 7, 8 });
       deque.RemoveFromFront();
       deque.AddToBack(9);
@@ -584,6 +592,22 @@ namespace CuteAnt.Tests
       Assert.Equal(4, deque.Count);
       Assert.Equal(new[] { 2, 3, 8, 9 }, deque);
       Assert.False(deque.IsSplit);
+    }
+
+    [Fact]
+    public void UpdateAll()
+    {
+      var deque = new Deque<int>(new[] { 1, 2, 3, 4, 5, 6, 7, 8 });
+      Assert.Equal(4, deque.UpdateAll(_ => _ >= 4 && _ <= 7, _ => _ * 2));
+      Assert.Equal(8, deque.Count);
+      Assert.Equal(new[] { 1, 2, 3, 8, 10, 12, 14, 8 }, deque);
+
+      deque = new Deque<int>(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+      Assert.Equal(9, deque.RemoveFromBack());
+      deque.AddToFront(0);
+      Assert.Equal(4, deque.UpdateAll(_ => _ % 2 == 1, _ => _ * 5));
+      Assert.Equal(9, deque.Count);
+      Assert.Equal(new[] { 0, 5, 2, 15, 4, 25, 6, 35, 8 }, deque);
     }
 
     [Fact]

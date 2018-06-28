@@ -64,6 +64,7 @@
     index,
     length,
     startIndex,
+    updateValueFactory,
   }
 
   #endregion
