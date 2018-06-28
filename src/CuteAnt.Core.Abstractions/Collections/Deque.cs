@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -29,28 +30,52 @@ namespace CuteAnt.Collections
 
     private readonly IEqualityComparer<T> _comparer;
 
+    private readonly bool _useReversingEnumerator;
+
     #endregion
 
     #region -- Constructors --
 
     /// <summary>Initializes a new instance of the <see cref="Deque&lt;T&gt;"/> class.</summary>
-    public Deque() : this(DefaultCapacity) { }
+    public Deque() : this(DefaultCapacity, false, null) { }
 
     /// <summary>Initializes a new instance of the <see cref="Deque&lt;T&gt;"/> class with the specified capacity.</summary>
     /// <param name="capacity">The initial capacity. Must be greater than <c>0</c>.</param>
-    public Deque(int capacity) : this(capacity, null) { }
+    public Deque(int capacity) : this(capacity, false, null) { }
+
+    /// <summary>Initializes a new instance of the <see cref="Deque&lt;T&gt;"/> class with the specified capacity.</summary>
+    /// <param name="useReversingEnumerator"></param>
+    public Deque(bool useReversingEnumerator) : this(DefaultCapacity, useReversingEnumerator, null) { }
+
+    /// <summary>Initializes a new instance of the <see cref="Deque&lt;T&gt;"/> class with the specified capacity.</summary>
+    /// <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer{T}"/> implementation to use when comparing elements, 
+    /// or null to use the default <see cref="T:System.Collections.Generic.EqualityComparer{T}"/> for the type of the element.</param>
+    public Deque(IEqualityComparer<T> comparer) : this(DefaultCapacity, false, comparer) { }
+
+    /// <summary>Initializes a new instance of the <see cref="Deque&lt;T&gt;"/> class with the specified capacity.</summary>
+    /// <param name="capacity">The initial capacity. Must be greater than <c>0</c>.</param>
+    /// <param name="useReversingEnumerator"></param>
+    public Deque(int capacity, bool useReversingEnumerator) : this(capacity, useReversingEnumerator, null) { }
 
     /// <summary>Initializes a new instance of the <see cref="Deque&lt;T&gt;"/> class with the specified capacity.</summary>
     /// <param name="capacity">The initial capacity. Must be greater than <c>0</c>.</param>
     /// <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer{T}"/> implementation to use when comparing elements, 
     /// or null to use the default <see cref="T:System.Collections.Generic.EqualityComparer{T}"/> for the type of the element.</param>
-    public Deque(int capacity, IEqualityComparer<T> comparer)
+    public Deque(int capacity, IEqualityComparer<T> comparer) : this(capacity, false, comparer) { }
+
+    /// <summary>Initializes a new instance of the <see cref="Deque&lt;T&gt;"/> class with the specified capacity.</summary>
+    /// <param name="capacity">The initial capacity. Must be greater than <c>0</c>.</param>
+    /// <param name="useReversingEnumerator"></param>
+    /// <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer{T}"/> implementation to use when comparing elements, 
+    /// or null to use the default <see cref="T:System.Collections.Generic.EqualityComparer{T}"/> for the type of the element.</param>
+    public Deque(int capacity, bool useReversingEnumerator, IEqualityComparer<T> comparer)
     {
       if (capacity < 0)
       {
         ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.capacity, ExceptionResource.Capacity_May_Not_Be_Negative);
       }
       _buffer = new T[capacity];
+      _useReversingEnumerator = useReversingEnumerator;
       _comparer = comparer ?? EqualityComparer<T>.Default;
     }
 
@@ -78,6 +103,7 @@ namespace CuteAnt.Collections
         _buffer = new T[DefaultCapacity];
       }
       _comparer = comparer ?? EqualityComparer<T>.Default;
+      _useReversingEnumerator = false;
     }
 
     #endregion
@@ -244,19 +270,39 @@ namespace CuteAnt.Collections
     /// <returns>A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.</returns>
     public IEnumerator<T> GetEnumerator()
     {
-      var idx = 0;
-      while (idx < _count)
+      if (_useReversingEnumerator)
       {
-        yield return DoGetItem(idx);
-        idx++;
+        return new ReversingEnumerator(this);
+      }
+      else
+      {
+        return new Enumerator(this);
       }
     }
 
-    /// <summary>Returns an enumerator that iterates through a collection.</summary>
-    /// <returns>An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.</returns>
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    /// <internalonly/>
+    IEnumerator<T> IEnumerable<T>.GetEnumerator()
     {
-      return GetEnumerator();
+      if (_useReversingEnumerator)
+      {
+        return new ReversingEnumerator(this);
+      }
+      else
+      {
+        return new Enumerator(this);
+      }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      if (_useReversingEnumerator)
+      {
+        return new ReversingEnumerator(this);
+      }
+      else
+      {
+        return new Enumerator(this);
+      }
     }
 
     #endregion
@@ -1588,6 +1634,171 @@ namespace CuteAnt.Collections
       var result = new T[_count];
       CopyTo(result, 0);
       return result;
+    }
+
+    #endregion
+
+    #region -- struct Enumerator --
+
+    public struct Enumerator : IEnumerator<T>, IEnumerator
+    {
+      private readonly Deque<T> _deque;
+      //private readonly int _version;
+      private int _index;   // -1 = not started, -2 = ended/disposed
+      private T _currentElement;
+
+      internal Enumerator(Deque<T> deque)
+      {
+        _deque = deque;
+        //_version = deque._version;
+        _index = -1;
+        _currentElement = default;
+      }
+
+      public void Dispose()
+      {
+        _index = -2;
+        _currentElement = default;
+      }
+
+      public bool MoveNext()
+      {
+        //if (_version != _deque._version) throw new InvalidOperationException(SR.InvalidOperation_EnumFailedVersion);
+
+        if (_index == -2) { return false; }
+
+        _index++;
+
+        if (_index == _deque._count)
+        {
+          // We've run past the last element
+          _index = -2;
+          _currentElement = default;
+          return false;
+        }
+
+        _currentElement = _deque.DoGetItem(_index);
+        return true;
+      }
+
+      public T Current
+      {
+        get
+        {
+          if (_index < 0) { ThrowEnumerationNotStartedOrEnded(_index); }
+          return _currentElement;
+        }
+      }
+
+      private static void ThrowEnumerationNotStartedOrEnded(int index)
+      {
+        Debug.Assert(index == -1 || index == -2);
+        throw GetInvalidOperationException();
+        InvalidOperationException GetInvalidOperationException()
+        {
+          throw new InvalidOperationException(index == -1
+              ? "Enumeration has not started. Call MoveNext."
+              : "Enumeration already finished.");
+        }
+      }
+
+      object IEnumerator.Current
+      {
+        get { return Current; }
+      }
+
+      void IEnumerator.Reset()
+      {
+        //if (_version != _deque._version) throw new InvalidOperationException(SR.InvalidOperation_EnumFailedVersion);
+        _index = -1;
+        _currentElement = default;
+      }
+    }
+
+    #endregion
+
+    #region -- struct ReversingEnumerator --
+
+    public struct ReversingEnumerator : IEnumerator<T>, IEnumerator
+    {
+      private readonly Deque<T> _deque;
+      //private readonly int _version;
+      private int _index;   // -1 = not started, -2 = ended/disposed
+      private T _currentElement;
+
+      internal ReversingEnumerator(Deque<T> q)
+      {
+        _deque = q;
+        //_version = _deque._version;
+        _index = -2;
+        _currentElement = default;
+      }
+
+      public void Dispose()
+      {
+        _index = -1;
+        _currentElement = default;
+      }
+
+      public bool MoveNext()
+      {
+        bool retval;
+        //if (_version != _deque._version) throw new InvalidOperationException(SR.InvalidOperation_EnumFailedVersion);
+        if (_index == -2)
+        {  // First call to enumerator.
+          _index = _deque.Count - 1;
+          retval = (_index >= 0);
+          if (retval)
+          {
+            _currentElement = _deque.DoGetItem(_index);
+          }
+          return retval;
+        }
+        if (_index == -1)
+        {  // End of enumeration.
+          return false;
+        }
+
+        retval = (--_index >= 0);
+        if (retval)
+          _currentElement = _deque.DoGetItem(_index);
+        else
+          _currentElement = default;
+        return retval;
+      }
+
+      public T Current
+      {
+        get
+        {
+          if (_index < 0) { ThrowEnumerationNotStartedOrEnded(_index); }
+          return _currentElement;
+        }
+      }
+
+      private static void ThrowEnumerationNotStartedOrEnded(int index)
+      {
+        Debug.Assert(index == -1 || index == -2);
+        throw GetInvalidOperationException();
+        InvalidOperationException GetInvalidOperationException()
+        {
+          throw new InvalidOperationException(index == -2
+              ? "Enumeration has not started. Call MoveNext."
+              : "Enumeration already finished.");
+        }
+      }
+
+      object IEnumerator.Current
+      {
+        get { return Current; }
+      }
+
+      void IEnumerator.Reset()
+      {
+        //if (_version != _deque._version) throw new InvalidOperationException(SR.InvalidOperation_EnumFailedVersion);
+        _index = -2;
+        _currentElement = default;
+      }
     }
 
     #endregion

@@ -1116,5 +1116,41 @@ namespace CuteAnt.Tests
       Assert.Equal(0, deque.FindLastIndex(_ => _ == 1));
       Assert.Equal(3, deque.FindLastIndex(_ => _ > 0));
     }
+
+    [Fact]
+    public void Enumerator_ReversingEnumerator()
+    {
+      var deque = new Deque<int>(new[] { 1, 2, 3, 4 });
+      deque.AddToBack(5);
+      Assert.Equal(new[] { 1, 2, 3, 4, 5 }, deque);
+
+      var list = new List<int>();
+      deque.ForEach((item, lst) => lst.Add(item), list);
+      Assert.Equal(new[] { 1, 2, 3, 4, 5 }, list);
+
+      list.Clear();
+      deque.Reverse((item, lst) => lst.Add(item), list);
+      Assert.Equal(new[] { 5, 4, 3, 2, 1 }, list);
+
+      deque = new Deque<int>();
+      deque.AddToBack(1);
+      deque.AddToBack(2);
+      Assert.Equal(new[] { 1, 2 }, deque);
+
+      deque = new Deque<int>();
+      deque.AddToFront(1);
+      deque.AddToFront(2);
+      Assert.Equal(new[] { 2, 1 }, deque);
+
+      deque = new Deque<int>(true);
+      deque.AddToFront(1);
+      deque.AddToFront(2);
+      Assert.Equal(new[] { 1, 2 }, deque);
+
+      deque = new Deque<int>(true);
+      deque.AddToBack(1);
+      deque.AddToBack(2);
+      Assert.Equal(new[] { 2, 1 }, deque);
+    }
   }
 }
