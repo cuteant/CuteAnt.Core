@@ -612,7 +612,17 @@ namespace CuteAnt.Collections
     [MethodImpl(InlineMethod.Value)]
     private int DequeIndexToBufferIndex(int index)
     {
-      return (index + _offset) % Capacity;
+      //return (index + _offset) % Capacity;
+      var tmp = _offset + index;
+      var buffer = _buffer;
+      if (tmp < buffer.Length)
+      {
+        return tmp;
+      }
+      else
+      {
+        return tmp % buffer.Length;
+      }
     }
 
     /// <summary>Gets an element at the specified view index.</summary>
@@ -621,7 +631,17 @@ namespace CuteAnt.Collections
     [MethodImpl(InlineMethod.Value)]
     private T DoGetItem(int index)
     {
-      return _buffer[DequeIndexToBufferIndex(index)];
+      //return _buffer[DequeIndexToBufferIndex(index)];
+      var offset = _offset + index;
+      var buffer = _buffer;
+      if ((uint)offset < (uint)buffer.Length)
+      {
+        return buffer[offset];
+      }
+      else
+      {
+        return buffer[offset % buffer.Length];
+      }
     }
 
     /// <summary>Sets an element at the specified view index.</summary>
@@ -630,7 +650,17 @@ namespace CuteAnt.Collections
     [MethodImpl(InlineMethod.Value)]
     private void DoSetItem(int index, T item)
     {
-      _buffer[DequeIndexToBufferIndex(index)] = item;
+      //_buffer[DequeIndexToBufferIndex(index)] = item;
+      var offset = _offset + index;
+      var buffer = _buffer;
+      if ((uint)offset < (uint)buffer.Length)
+      {
+        buffer[offset] = item;
+      }
+      else
+      {
+        buffer[offset % buffer.Length] = item;
+      }
     }
 
     /// <summary>Inserts an element at the specified view index.</summary>
@@ -673,23 +703,37 @@ namespace CuteAnt.Collections
     }
 
     /// <summary>Increments <see cref="_offset"/> by <paramref name="value"/> using modulo-<see cref="Capacity"/> arithmetic.</summary>
+    /// <param name="offset">The offset into <see cref="_buffer"/> where the view begins.</param>
     /// <param name="value">The value by which to increase <see cref="_offset"/>. May not be negative.</param>
     /// <returns>The value of <see cref="_offset"/> after it was incremented.</returns>
     [MethodImpl(InlineMethod.Value)]
-    private void PostIncrement(int value)
+    private void PostIncrement(ref int offset, int value)
     {
-      _offset = (_offset + value) % Capacity;
+      //_offset = (_offset + value) % Capacity;
+      var tmp = offset + value;
+      if (tmp < _buffer.Length)
+      {
+        offset = tmp;
+      }
+      else
+      {
+        offset = tmp % _buffer.Length;
+      }
     }
 
     /// <summary>Decrements <see cref="_offset"/> by <paramref name="value"/> using modulo-<see cref="Capacity"/> arithmetic.</summary>
+    /// <param name="offset">The offset into <see cref="_buffer"/> where the view begins.</param>
     /// <param name="value">The value by which to reduce <see cref="_offset"/>. May not be negative or greater than <see cref="Capacity"/>.</param>
     /// <returns>The value of <see cref="_offset"/> before it was decremented.</returns>
     [MethodImpl(InlineMethod.Value)]
-    private int PreDecrement(int value)
+    private void PreDecrement(ref int offset, int value)
     {
-      _offset -= value;
-      if (_offset < 0) { _offset += Capacity; }
-      return _offset;
+      //_offset -= value;
+      //if (_offset < 0) { _offset += Capacity; }
+      //return _offset;
+      var tmp = offset - value;
+      if (tmp < 0) { tmp += Capacity; }
+      offset = tmp;
     }
 
     /// <summary>Inserts a single element to the back of the view. <see cref="IsFull"/> must be false when this method is called.</summary>
@@ -697,7 +741,18 @@ namespace CuteAnt.Collections
     [MethodImpl(InlineMethod.Value)]
     private void DoAddToBack(T value)
     {
-      _buffer[DequeIndexToBufferIndex(_count++)] = value;
+      //_buffer[DequeIndexToBufferIndex(_count++)] = value;
+      var offset = _offset + _count;
+      var buffer = _buffer;
+      if ((uint)offset < (uint)buffer.Length)
+      {
+        buffer[offset] = value;
+      }
+      else
+      {
+        buffer[offset % buffer.Length] = value;
+      }
+      _count++;
     }
 
     /// <summary>Inserts a single element to the front of the view. <see cref="IsFull"/> must be false when this method is called.</summary>
@@ -705,8 +760,13 @@ namespace CuteAnt.Collections
     [MethodImpl(InlineMethod.Value)]
     private void DoAddToFront(T value)
     {
-      _buffer[PreDecrement(1)] = value;
-      ++_count;
+      //_buffer[PreDecrement(1)] = value;
+      var buffer = _buffer;
+      var offset = _offset - 1;
+      if (offset < 0) { offset += buffer.Length; }
+      buffer[offset] = value;
+      _offset = offset;
+      _count++;
     }
 
     /// <summary>Removes and returns the last element in the view. <see cref="IsEmpty"/> must be false when this method is called.</summary>
@@ -714,17 +774,38 @@ namespace CuteAnt.Collections
     [MethodImpl(InlineMethod.Value)]
     private T DoRemoveFromBack()
     {
-      var index = DequeIndexToBufferIndex(--_count);
-      T ret = _buffer[index];
-#if NETCOREAPP
-      if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+      //var index = DequeIndexToBufferIndex(--_count);
+      var count = _count - 1;
+      var offset = _offset + count;
+      _count = count;
+      var buffer = _buffer;
+      if ((uint)offset < (uint)buffer.Length)
       {
-        _buffer[index] = default;
-      }
+        T ret = buffer[offset];
+#if NETCOREAPP
+        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+        {
+          buffer[offset] = default;
+        }
 #else
-      _buffer[index] = default;
+        buffer[offset] = default;
 #endif
-      return ret;
+        return ret;
+      }
+      else
+      {
+        offset = offset % buffer.Length;
+        T ret = buffer[offset];
+#if NETCOREAPP
+        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+        {
+          buffer[offset] = default;
+        }
+#else
+        buffer[offset] = default;
+#endif
+        return ret;
+      }
     }
 
     /// <summary>Removes and returns the first element in the view. <see cref="IsEmpty"/> must be false when this method is called.</summary>
@@ -732,17 +813,20 @@ namespace CuteAnt.Collections
     [MethodImpl(InlineMethod.Value)]
     private T DoRemoveFromFront()
     {
-      --_count;
-      var index = _offset; PostIncrement(1);
-      var ret = _buffer[index];
+      var offset = _offset;
+      var buffer = _buffer;
+      var ret = buffer[offset];
 #if NETCOREAPP
       if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
       {
-        _buffer[index] = default;
+        buffer[offset] = default;
       }
 #else
-      _buffer[index] = default;
+      buffer[offset] = default;
 #endif
+      PostIncrement(ref _offset, 1);
+      _count--;
+
       return ret;
     }
 
@@ -758,8 +842,10 @@ namespace CuteAnt.Collections
     {
       var collectionCount = collection.Count();
 #endif
+      var buffer = _buffer;
+      var count = _count;
       // Make room in the existing list
-      if (index < _count / 2)
+      if (index < count / 2)
       {
         // Inserting into the first half of the list
 
@@ -770,22 +856,22 @@ namespace CuteAnt.Collections
         int writeIndex = Capacity - collectionCount;
         for (int j = 0; j != copyCount; ++j)
         {
-          _buffer[DequeIndexToBufferIndex(writeIndex + j)] = _buffer[DequeIndexToBufferIndex(j)];
+          buffer[DequeIndexToBufferIndex(writeIndex + j)] = buffer[DequeIndexToBufferIndex(j)];
         }
 
         // Rotate to the new view
-        PreDecrement(collectionCount);
+        PreDecrement(ref _offset, collectionCount);
       }
       else
       {
         // Inserting into the second half of the list
 
         // Move higher items up: [index, count) -> [index + collectionCount, collectionCount + count)
-        int copyCount = _count - index;
+        int copyCount = count - index;
         int writeIndex = index + collectionCount;
         for (int j = copyCount - 1; j != -1; --j)
         {
-          _buffer[DequeIndexToBufferIndex(writeIndex + j)] = _buffer[DequeIndexToBufferIndex(index + j)];
+          buffer[DequeIndexToBufferIndex(writeIndex + j)] = buffer[DequeIndexToBufferIndex(index + j)];
         }
       }
 
@@ -793,12 +879,12 @@ namespace CuteAnt.Collections
       int i = index;
       foreach (T item in collection)
       {
-        _buffer[DequeIndexToBufferIndex(i)] = item;
+        buffer[DequeIndexToBufferIndex(i)] = item;
         ++i;
       }
 
       // Adjust valid count
-      _count += collectionCount;
+      _count = count + collectionCount;
     }
 
     /// <summary>Removes a range of elements from the view.</summary>
@@ -806,6 +892,8 @@ namespace CuteAnt.Collections
     /// <param name="collectionCount">The number of elements in the range. This must be greater than 0 and less than or equal to <see cref="Count"/>.</param>
     private void DoRemoveRange(int index, int collectionCount)
     {
+      var count = _count;
+      var buffer = _buffer;
       if (index == 0)
       {
 #if NETCOREAPP
@@ -815,17 +903,17 @@ namespace CuteAnt.Collections
           var maxIndex = _offset + collectionCount;
           for (var idx = _offset; idx < maxIndex; idx++)
           {
-            _buffer[idx % Capacity] = default;
+            buffer[idx % Capacity] = default;
           }
 #if NETCOREAPP
         }
 #endif
         // Removing from the beginning: rotate to the new view
-        PostIncrement(collectionCount);
-        _count -= collectionCount;
+        PostIncrement(ref _offset, collectionCount);
+        _count = count - collectionCount;
         return;
       }
-      else if (index == _count - collectionCount)
+      else if (index == count - collectionCount)
       {
 #if NETCOREAPP
         if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
@@ -834,17 +922,17 @@ namespace CuteAnt.Collections
           var maxIndex = index + collectionCount;
           for (var idx = index; idx < maxIndex; idx++)
           {
-            _buffer[DequeIndexToBufferIndex(index)] = default;
+            buffer[DequeIndexToBufferIndex(index)] = default;
           }
 #if NETCOREAPP
         }
 #endif
         // Removing from the ending: trim the existing view
-        _count -= collectionCount;
+        _count = count - collectionCount;
         return;
       }
 
-      if ((index + (collectionCount / 2)) < _count / 2)
+      if ((index + (collectionCount / 2)) < count / 2)
       {
         // Removing from first half of list
 
@@ -854,44 +942,44 @@ namespace CuteAnt.Collections
         for (int j = copyCount - 1; j != -1; --j)
         {
           var idx = DequeIndexToBufferIndex(j);
-          _buffer[DequeIndexToBufferIndex(writeIndex + j)] = _buffer[idx];
+          buffer[DequeIndexToBufferIndex(writeIndex + j)] = buffer[idx];
 #if NETCOREAPP
           if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
           {
-            _buffer[idx] = default;
+            buffer[idx] = default;
           }
 #else
-          _buffer[idx] = default;
+          buffer[idx] = default;
 #endif
         }
 
         // Rotate to new view
-        PostIncrement(collectionCount);
+        PostIncrement(ref _offset, collectionCount);
       }
       else
       {
         // Removing from second half of list
 
         // Move higher items down: [index + collectionCount, count) -> [index, count - collectionCount)
-        int copyCount = _count - collectionCount - index;
+        int copyCount = count - collectionCount - index;
         int readIndex = index + collectionCount;
         for (int j = 0; j != copyCount; ++j)
         {
           var idx = DequeIndexToBufferIndex(readIndex + j);
-          _buffer[DequeIndexToBufferIndex(index + j)] = _buffer[idx];
+          buffer[DequeIndexToBufferIndex(index + j)] = buffer[idx];
 #if NETCOREAPP
           if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
           {
-            _buffer[idx] = default;
+            buffer[idx] = default;
           }
 #else
-          _buffer[idx] = default;
+          buffer[idx] = default;
 #endif
         }
       }
 
       // Adjust valid count
-      _count -= collectionCount;
+      _count = count - collectionCount;
     }
 
     /// <summary>Doubles the capacity if necessary to make room for one more element. When this method returns, <see cref="IsFull"/> is false.</summary>
@@ -984,34 +1072,36 @@ namespace CuteAnt.Collections
       if (IsEmpty) { return 0; }
 
       int freeIndex = 0;   // the first free slot in items array
+      var buffer = _buffer;
+      var count = _count;
 
       // Find the first item which needs to be removed.
-      while (freeIndex < _count && !match(_buffer[DequeIndexToBufferIndex(freeIndex)])) freeIndex++;
-      if (freeIndex >= _count) return 0;
+      while (freeIndex < count && !match(buffer[DequeIndexToBufferIndex(freeIndex)])) freeIndex++;
+      if (freeIndex >= count) return 0;
 
       int current = freeIndex + 1;
-      while (current < _count)
+      while (current < count)
       {
         // Find the first item which needs to be kept.
-        while (current < _count && match(_buffer[DequeIndexToBufferIndex(current)])) current++;
+        while (current < count && match(buffer[DequeIndexToBufferIndex(current)])) current++;
 
-        if (current < _count)
+        if (current < count)
         {
           var idx = DequeIndexToBufferIndex(current++);
           // copy item to the free slot.
-          _buffer[DequeIndexToBufferIndex(freeIndex++)] = _buffer[idx];
+          buffer[DequeIndexToBufferIndex(freeIndex++)] = buffer[idx];
 #if NETCOREAPP
           if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
           {
-            _buffer[idx] = default;
+            buffer[idx] = default;
           }
 #else
-          _buffer[idx] = default;
+          buffer[idx] = default;
 #endif
         }
       }
 
-      int result = _count - freeIndex;
+      int result = count - freeIndex;
       _count = freeIndex;
       return result;
     }
@@ -1026,16 +1116,16 @@ namespace CuteAnt.Collections
       if (null == updateValueFactory) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.updateValueFactory); }
       if (IsEmpty) { return 0; }
 
+      var buffer = _buffer;
       var count = 0;
       var idx = 0;
       while (idx < _count)
       {
         var index = DequeIndexToBufferIndex(idx);
-        var item = _buffer[index];
+        var item = buffer[index];
         if (match(item))
         {
-          var newItem = updateValueFactory(item);
-          _buffer[index] = newItem;
+          buffer[index] = updateValueFactory(item);
           count++;
         }
         idx++;
@@ -1395,7 +1485,7 @@ namespace CuteAnt.Collections
       {
         if (IsEmpty) { ThrowInvalidOperationException(); }
 
-        return _buffer[DequeIndexToBufferIndex(_count - 1)];
+        return DoGetItem(_count - 1);
       }
     }
 
@@ -1405,7 +1495,7 @@ namespace CuteAnt.Collections
       {
         if (IsEmpty) { return default; }
 
-        return _buffer[DequeIndexToBufferIndex(_count - 1)];
+        return DoGetItem(_count - 1);
       }
     }
 
@@ -1413,14 +1503,14 @@ namespace CuteAnt.Collections
     {
       if (IsEmpty) { ThrowInvalidOperationException(); }
 
-      return _buffer[DequeIndexToBufferIndex(_count - 1)];
+      return DoGetItem(_count - 1);
     }
 
     public bool TryPeekFromBack(out T result)
     {
       if (IsEmpty) { result = default; return false; }
 
-      result = _buffer[DequeIndexToBufferIndex(_count - 1)];
+      result = DoGetItem(_count - 1);
       return true;
     }
 
@@ -1458,27 +1548,50 @@ namespace CuteAnt.Collections
       if (IsEmpty) { result = default; return false; }
 
       var size = _count - 1;
-      var index = DequeIndexToBufferIndex(size);
-      var item = _buffer[index];
-      if (predicate(item))
+      var buffer = _buffer;
+
+      //var index = DequeIndexToBufferIndex(size);
+      var index = _offset + size;
+      if ((uint)index < (uint)buffer.Length)
       {
-        result = item;
-#if NETCOREAPP
-        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+        var item = buffer[index];
+        if (predicate(item))
         {
-          _buffer[index] = default;
-        }
+          result = item;
+#if NETCOREAPP
+          if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+          {
+            buffer[index] = default;
+          }
 #else
-        _buffer[index] = default;
+          buffer[index] = default;
 #endif
-        _count = size;
-        return true;
+          _count = size;
+          return true;
+        }
       }
       else
       {
-        result = default;
-        return false;
+        index = index % buffer.Length;
+        var item = buffer[index];
+        if (predicate(item))
+        {
+          result = item;
+#if NETCOREAPP
+          if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+          {
+            buffer[index] = default;
+          }
+#else
+          buffer[index] = default;
+#endif
+          _count = size;
+          return true;
+        }
       }
+
+      result = default;
+      return false;
     }
 
     public bool TryRemoveFromBackUntil(Predicate<T> predicate, out T result)
@@ -1574,21 +1687,22 @@ namespace CuteAnt.Collections
     {
       if (IsEmpty) { result = default; return false; }
 
-      var item = _buffer[_offset];
+      var offset = _offset;
+      var buffer = _buffer;
+      var item = buffer[offset];
       if (predicate(item))
       {
 #if NETCOREAPP
         if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
         {
-          _buffer[_offset] = default;
+          buffer[offset] = default;
         }
 #else
-        _buffer[_offset] = default;
+        buffer[offset] = default;
 #endif
         --_count;
         result = item;
-        _offset += 1;
-        _offset %= Capacity;
+        PostIncrement(ref _offset, 1);
         return true;
       }
       else
