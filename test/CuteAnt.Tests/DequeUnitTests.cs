@@ -611,6 +611,23 @@ namespace CuteAnt.Tests
     }
 
     [Fact]
+    public void ConvertAll()
+    {
+      var deque = new Deque<int>(new[] { 1, 2, 3, 4 });
+      var deque_str = deque.ConvertAll(_ => _ + "");
+      Assert.Equal(4, deque_str.Count);
+      Assert.Equal(new[] { "1", "2", "3", "4" }, deque_str);
+
+      deque = new Deque<int>(new[] { 1, 2, 3, 4 });
+      Assert.Equal(4, deque.RemoveFromBack());
+      deque.AddToFront(0);
+      Assert.True(deque.IsSplit);
+      deque_str = deque.ConvertAll(_ => _ + "");
+      Assert.Equal(4, deque_str.Count);
+      Assert.Equal(new[] { "0", "1", "2", "3" }, deque_str);
+    }
+
+    [Fact]
     public void RemoveMultiple()
     {
       RemoveTest(new[] { 1, 2, 3 });
@@ -1118,39 +1135,178 @@ namespace CuteAnt.Tests
     }
 
     [Fact]
-    public void Enumerator_ReversingEnumerator()
+    public void DequeVsList()
     {
       var deque = new Deque<int>(new[] { 1, 2, 3, 4 });
       deque.AddToBack(5);
       Assert.Equal(new[] { 1, 2, 3, 4, 5 }, deque);
 
-      var list = new List<int>();
-      deque.ForEach((item, lst) => lst.Add(item), list);
-      Assert.Equal(new[] { 1, 2, 3, 4, 5 }, list);
+      var queue = new QueueX<int>(new[] { 1, 2, 3, 4 });
+      queue.Enqueue(5);
+      Assert.Equal(new[] { 1, 2, 3, 4, 5 }, queue);
 
+      var stack = new StackX<int>(new[] { 1, 2, 3, 4 });
+      stack.Push(5);
+      Assert.Equal(new[] { 5, 4, 3, 2, 1 }, stack);
+
+      var lstComparer = new List<int>();
+      deque.ForEach((item, lst) => lst.Add(item), lstComparer);
+      Assert.Equal(new[] { 1, 2, 3, 4, 5 }, lstComparer);
+
+      lstComparer.Clear();
+      deque.Reverse((item, lst) => lst.Add(item), lstComparer);
+      Assert.Equal(new[] { 5, 4, 3, 2, 1 }, lstComparer);
+
+      lstComparer.Clear();
+      queue.ForEach((item, lst) => lst.Add(item), lstComparer);
+      Assert.Equal(new[] { 1, 2, 3, 4, 5 }, lstComparer);
+
+      lstComparer.Clear();
+      queue.Reverse((item, lst) => lst.Add(item), lstComparer);
+      Assert.Equal(new[] { 5, 4, 3, 2, 1 }, lstComparer);
+
+      lstComparer.Clear();
+      stack.ForEach((item, lst) => lst.Add(item), lstComparer);
+      Assert.Equal(new[] { 5, 4, 3, 2, 1 }, lstComparer);
+
+      lstComparer.Clear();
+      stack.Reverse((item, lst) => lst.Add(item), lstComparer);
+      Assert.Equal(new[] { 1, 2, 3, 4, 5 }, lstComparer);
+
+      var list = new List<int>(new [] { 1, 2 });
+      Assert.Equal(new[] { 1, 2 }, list);
+      Assert.Equal(new[] { 1, 2 }, list.ToArray());
+
+      deque = new Deque<int>();
+      deque.AddToBack(1);
+      deque.AddToBack(2);
+      Assert.Equal(new[] { 1, 2 }, deque);
+      Assert.Equal(new[] { 1, 2 }, deque.ToArray());
+      Assert.Equal(list, deque);
+
+      deque = new Deque<int>(true);
+      deque.AddToBack(1);
+      deque.AddToBack(2);
+      Assert.Equal(new[] { 2, 1 }, deque);
+      Assert.Equal(new[] { 1, 2 }, deque.ToArray());
+
+      deque = new Deque<int>();
+      deque.AddToFront(1);
+      deque.AddToFront(2);
+      Assert.Equal(new[] { 2, 1 }, deque);
+      Assert.Equal(new[] { 2, 1 }, deque.ToArray());
+
+      deque = new Deque<int>(true);
+      deque.AddToFront(1);
+      deque.AddToFront(2);
+      Assert.Equal(new[] { 1, 2 }, deque);
+      Assert.Equal(new[] { 2, 1 }, deque.ToArray());
+      Assert.Equal(list, deque);
+    }
+
+    [Fact]
+    public void DequeVsQueue()
+    {
+      var list = new List<int>();
+
+      var queue = new Queue<int>(new[] { 1, 2, 3, 4 });
+      queue.Enqueue(5);
+      Assert.Equal(new[] { 1, 2, 3, 4, 5 }, queue);
+
+      queue = new Queue<int>();
+      queue.Enqueue(1);
+      queue.Enqueue(2);
+      Assert.Equal(new[] { 1, 2 }, queue);
+      Assert.Equal(new[] { 1, 2 }, queue.ToArray());
+
+      var deque = new Deque<int>();
+      deque.AddToBack(1);
+      deque.AddToBack(2);
+      Assert.Equal(new[] { 1, 2 }, deque);
+      Assert.Equal(new[] { 1, 2 }, deque.ToArray());
+      Assert.Equal(queue, deque);
+      list.Clear();
+      deque.ForEach((item, lst) => lst.Add(item), list);
+      Assert.Equal(queue, list);
+
+      deque = new Deque<int>(true);
+      deque.AddToBack(1);
+      deque.AddToBack(2);
+      Assert.Equal(new[] { 2, 1 }, deque);
+      Assert.Equal(new[] { 1, 2 }, deque.ToArray());
+      list.Clear();
+      deque.ForEach((item, lst) => lst.Add(item), list);
+      Assert.Equal(queue, list);
+
+      deque = new Deque<int>();
+      deque.AddToFront(1);
+      deque.AddToFront(2);
+      Assert.Equal(new[] { 2, 1 }, deque);
+      Assert.Equal(new[] { 2, 1 }, deque.ToArray());
       list.Clear();
       deque.Reverse((item, lst) => lst.Add(item), list);
-      Assert.Equal(new[] { 5, 4, 3, 2, 1 }, list);
-
-      deque = new Deque<int>();
-      deque.AddToBack(1);
-      deque.AddToBack(2);
-      Assert.Equal(new[] { 1, 2 }, deque);
-
-      deque = new Deque<int>();
-      deque.AddToFront(1);
-      deque.AddToFront(2);
-      Assert.Equal(new[] { 2, 1 }, deque);
+      Assert.Equal(queue, list);
 
       deque = new Deque<int>(true);
       deque.AddToFront(1);
       deque.AddToFront(2);
       Assert.Equal(new[] { 1, 2 }, deque);
+      Assert.Equal(new[] { 2, 1 }, deque.ToArray());
+      list.Clear();
+      deque.Reverse((item, lst) => lst.Add(item), list);
+      Assert.Equal(queue, list);
+    }
+
+    [Fact]
+    public void DequeVsStack()
+    {
+      var list = new List<int>();
+
+      var stack = new Stack<int>(new[] { 1, 2, 3, 4 });
+      stack.Push(5);
+      Assert.Equal(new[] { 5, 4, 3, 2, 1 }, stack);
+
+      stack = new Stack<int>();
+      stack.Push(1);
+      stack.Push(2);
+      Assert.Equal(new[] { 2, 1 }, stack);
+      Assert.Equal(new[] { 2, 1 }, stack.ToArray());
+
+      var deque = new Deque<int>();
+      deque.AddToBack(1);
+      deque.AddToBack(2);
+      Assert.Equal(new[] { 1, 2 }, deque);
+      Assert.Equal(new[] { 1, 2 }, deque.ToArray());
+      list.Clear();
+      deque.Reverse((item, lst) => lst.Add(item), list);
+      Assert.Equal(stack, list);
 
       deque = new Deque<int>(true);
       deque.AddToBack(1);
       deque.AddToBack(2);
       Assert.Equal(new[] { 2, 1 }, deque);
+      Assert.Equal(new[] { 1, 2 }, deque.ToArray());
+      list.Clear();
+      deque.Reverse((item, lst) => lst.Add(item), list);
+      Assert.Equal(stack, list);
+
+      deque = new Deque<int>();
+      deque.AddToFront(1);
+      deque.AddToFront(2);
+      Assert.Equal(new[] { 2, 1 }, deque);
+      Assert.Equal(new[] { 2, 1 }, deque.ToArray());
+      list.Clear();
+      deque.ForEach((item, lst) => lst.Add(item), list);
+      Assert.Equal(stack, list);
+
+      deque = new Deque<int>(true);
+      deque.AddToFront(1);
+      deque.AddToFront(2);
+      Assert.Equal(new[] { 1, 2 }, deque);
+      Assert.Equal(new[] { 2, 1 }, deque.ToArray());
+      list.Clear();
+      deque.ForEach((item, lst) => lst.Add(item), list);
+      Assert.Equal(stack, list);
     }
   }
 }

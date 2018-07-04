@@ -61,12 +61,23 @@ namespace QueuePerformance
       Stopwatch sw = new Stopwatch();
       Queue<int> queue = new Queue<int>(8);
       Stack<int> stack = new Stack<int>(8);
+      StackX<int> stackX = new StackX<int>(8);
+      QueueX<int> queueX = new QueueX<int>(8);
       var list = new List<int>(8);
       Deque<int> deque = new Deque<int>();
       LinkedList<int> linkedlist1 = new LinkedList<int>();
       int dummy;
 
 
+      for (int i = 0; i < 100000; i++)
+      {
+        stack.Push(rand.Next());
+      }
+      for (int i = 0; i < 100000; i++)
+      {
+        dummy = stack.Pop();
+      }
+      stack = new Stack<int>(8);
       sw.Reset();
       Console.Write("{0,40}", "Push to Stack...");
       sw.Start();
@@ -90,6 +101,47 @@ namespace QueuePerformance
       Console.WriteLine("  Time used: {0,9} ticks\n", sw.ElapsedTicks);
 
 
+      for (int i = 0; i < 100000; i++)
+      {
+        stackX.Push(rand.Next());
+      }
+      for (int i = 0; i < 100000; i++)
+      {
+        dummy = stackX.Pop();
+      }
+      stackX = new StackX<int>(8);
+      sw.Reset();
+      Console.Write("{0,40}", "Push to StackX...");
+      sw.Start();
+      for (int i = 0; i < 100000; i++)
+      {
+        stackX.Push(rand.Next());
+      }
+      sw.Stop();
+      Console.WriteLine("  Time used: {0,9} ticks", sw.ElapsedTicks);
+      sw.Reset();
+      Console.Write("{0,40}", "Pop from StackX...");
+      sw.Start();
+      for (int i = 0; i < 100000; i++)
+      {
+        //var count = akkaStack.Count;
+        var isEmpty = stackX.IsEmpty;
+        dummy = stackX.Pop();
+        dummy++;
+      }
+      sw.Stop();
+      Console.WriteLine("  Time used: {0,9} ticks\n", sw.ElapsedTicks);
+
+
+      for (int i = 0; i < 100000; i++)
+      {
+        queue.Enqueue(rand.Next());
+      }
+      for (int i = 0; i < 100000; i++)
+      {
+        dummy = queue.Dequeue();
+      }
+      queue = new Queue<int>(8);
       sw.Reset();
       Console.Write("{0,40}", "Enqueue to Queue...");
       sw.Start();
@@ -113,6 +165,49 @@ namespace QueuePerformance
       Console.WriteLine("  Time used: {0,9} ticks\n", sw.ElapsedTicks);
 
 
+      for (int i = 0; i < 100000; i++)
+      {
+        queueX.Enqueue(rand.Next());
+      }
+      for (int i = 0; i < 100000; i++)
+      {
+        dummy = queueX.Dequeue();
+      }
+      queueX = new QueueX<int>(8);
+      sw.Reset();
+      Console.Write("{0,40}", "Enqueue to QueueX...");
+      sw.Start();
+      for (int i = 0; i < 100000; i++)
+      {
+        queueX.Enqueue(rand.Next());
+      }
+      sw.Stop();
+      Console.WriteLine("  Time used: {0,9} ticks", sw.ElapsedTicks);
+      sw.Reset();
+      Console.Write("{0,40}", "Dequeue from QueueX...");
+      sw.Start();
+      for (int i = 0; i < 100000; i++)
+      {
+        var isEmpty = queueX.IsEmpty;
+        dummy = queueX.Dequeue();
+        dummy++;
+      }
+      sw.Stop();
+      Console.WriteLine("  Time used: {0,9} ticks\n", sw.ElapsedTicks);
+
+
+      for (int i = 0; i < 100000; i++)
+      {
+        deque.AddToFront(rand.Next());
+        deque.AddToBack(rand.Next());
+      }
+      for (int i = 0; i < 100000; i++)
+      {
+        dummy = deque.RemoveFromFront();
+        dummy = deque.RemoveFromBack();
+      }
+
+      deque = new Deque<int>(8);
       sw.Reset();
       Console.Write("{0,40}", "AddToBack to Deque...");
       sw.Start();
@@ -135,7 +230,7 @@ namespace QueuePerformance
       sw.Stop();
       Console.WriteLine("  Time used: {0,9} ticks\n", sw.ElapsedTicks);
 
-
+      
       deque = new Deque<int>(8);
       sw.Reset();
       Console.Write("{0,40}", "AddToFront to Deque...");

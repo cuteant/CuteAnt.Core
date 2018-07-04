@@ -1045,6 +1045,28 @@ namespace CuteAnt.Collections
 
     #endregion
 
+    #region -- ConvertAll --
+
+    public Deque<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter)
+    {
+      if (converter == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.converter); }
+
+      var deque = new Deque<TOutput>(_count);
+
+      var idx = 0;
+      while (idx < _count)
+      {
+        var item = DoGetItem(idx);
+        deque._buffer[idx] = converter(item);
+        idx++;
+      }
+      deque._count = _count;
+
+      return deque;
+    }
+
+    #endregion
+
     #region -- Exists --
 
     public bool Exists(Predicate<T> match) => FindIndex(match) != -1;
