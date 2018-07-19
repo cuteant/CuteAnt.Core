@@ -66,6 +66,8 @@
     startIndex,
     updateValueFactory,
     converter,
+    results,
+    action,
   }
 
   #endregion

@@ -232,7 +232,7 @@ namespace CuteAnt.Collections
     {
       if (array == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
       if (arrayIndex < 0) { CheckRangeArguments_Offset(arrayIndex); }
-      if (_count < 0) { CheckRangeArguments_Count(_count); }
+      //if (_count < 0) { CheckRangeArguments_Count(_count); }
       if (array.Length - arrayIndex < _count) { CheckRangeArguments(array.Length, arrayIndex, _count); }
 
       CopyToArray(array, arrayIndex);
@@ -381,7 +381,7 @@ namespace CuteAnt.Collections
     {
       if (array == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array, ExceptionResource.Dest_Array_Cannot_Be_Null);
       if (index < 0) { CheckRangeArguments_Offset(index); }
-      if (_count < 0) { CheckRangeArguments_Count(_count); }
+      //if (_count < 0) { CheckRangeArguments_Count(_count); }
       if (array.Length - index < _count) { CheckRangeArguments(array.Length, index, _count); }
 
       try
@@ -501,23 +501,19 @@ namespace CuteAnt.Collections
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static void ThrowArgumentNullException_Action()
     {
-      throw GetArgumentNullException();
-
-      ArgumentNullException GetArgumentNullException()
-      {
-        return new ArgumentNullException("action");
-      }
+      throw ThrowHelper.GetArgumentNullException(ExceptionArgument.action);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static void ThrowArgumentNullException_Match()
     {
-      throw GetArgumentNullException();
+      throw ThrowHelper.GetArgumentNullException(ExceptionArgument.match);
+    }
 
-      ArgumentNullException GetArgumentNullException()
-      {
-        return new ArgumentNullException("match");
-      }
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowArgumentNullException_Results()
+    {
+      throw ThrowHelper.GetArgumentNullException(ExceptionArgument.results);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
@@ -1077,7 +1073,7 @@ namespace CuteAnt.Collections
 
       // Find the first item which needs to be removed.
       while (freeIndex < count && !match(buffer[DequeIndexToBufferIndex(freeIndex)])) freeIndex++;
-      if (freeIndex >= count) return 0;
+      if (freeIndex >= count) { return 0; }
 
       int current = freeIndex + 1;
       while (current < count)
@@ -1117,20 +1113,35 @@ namespace CuteAnt.Collections
       if (IsEmpty) { return 0; }
 
       var buffer = _buffer;
-      var count = 0;
+      var size = 0;
       var idx = 0;
       while (idx < _count)
       {
-        var index = DequeIndexToBufferIndex(idx);
-        var item = buffer[index];
-        if (match(item))
+        //var index = DequeIndexToBufferIndex(idx);
+        var index = _offset + idx;
+        if ((uint)index < (uint)buffer.Length)
         {
-          buffer[index] = updateValueFactory(item);
-          count++;
+          var item = buffer[index];
+          if (match(item))
+          {
+            buffer[index] = updateValueFactory(item);
+            size++;
+          }
         }
+        else
+        {
+          var offset = index % buffer.Length;
+          var item = buffer[offset];
+          if (match(item))
+          {
+            buffer[offset] = updateValueFactory(item);
+            size++;
+          }
+        }
+
         idx++;
       }
-      return count;
+      return size;
     }
 
     #endregion
@@ -1167,7 +1178,7 @@ namespace CuteAnt.Collections
 
     public T Find(Predicate<T> match)
     {
-      if (match == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.match); }
+      if (match == null) { ThrowArgumentNullException_Match(); }
 
       var idx = 0;
       while (idx < _count)
@@ -1185,7 +1196,7 @@ namespace CuteAnt.Collections
 
     public Deque<T> FindAll(Predicate<T> match)
     {
-      if (match == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.match); }
+      if (match == null) { ThrowArgumentNullException_Match(); }
 
       var list = new Deque<T>();
       var idx = 0;
@@ -1210,7 +1221,7 @@ namespace CuteAnt.Collections
     {
       if ((uint)startIndex > (uint)_count) { ThrowStartIndexArgumentOutOfRange_ArgumentOutOfRange_Index(); }
       if (count < 0 || startIndex > _count - count) { ThrowCountArgumentOutOfRange_ArgumentOutOfRange_Count(); }
-      if (match == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.match); }
+      if (match == null) { ThrowArgumentNullException_Match(); }
 
       int endIndex = startIndex + count;
       var idx = startIndex;
@@ -1230,7 +1241,7 @@ namespace CuteAnt.Collections
 
     public T FindLast(Predicate<T> match)
     {
-      if (match == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.match); }
+      if (match == null) { ThrowArgumentNullException_Match(); }
 
       var idx = _count - 1;
       while (idx >= 0)
@@ -1253,7 +1264,7 @@ namespace CuteAnt.Collections
 
     public int FindLastIndex(int startIndex, int count, Predicate<T> match)
     {
-      if (match == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.match); }
+      if (match == null) { ThrowArgumentNullException_Match(); }
       if (_count == 0)
       {
         // Special case for 0 length List
@@ -1459,10 +1470,7 @@ namespace CuteAnt.Collections
 
     public bool TrueForAll(Predicate<T> match)
     {
-      if (match == null)
-      {
-        ThrowHelper.ThrowArgumentNullException(ExceptionArgument.match);
-      }
+      if (match == null) { ThrowArgumentNullException_Match(); }
 
       if (IsEmpty) { return false; }
 
@@ -1539,12 +1547,50 @@ namespace CuteAnt.Collections
       return true;
     }
 
+    public bool TryRemoveFromBack(List<T> results, int count)
+    {
+      if (null == results) { ThrowArgumentNullException_Results(); }
+      if (count < 0) { CheckRangeArguments_Count(count); }
+
+      if (IsEmpty) { return false; }
+
+      var buffer = _buffer;
+      var startIndex = _count - 1;
+      var maxCount = Math.Min(_count, count);
+      var endIndex = startIndex - maxCount;
+      var idx = startIndex;
+      while (idx > endIndex)
+      {
+        //var index = DequeIndexToBufferIndex(idx);
+        var index = _offset + idx;
+        if ((uint)index < (uint)buffer.Length)
+        {
+          results.Add(buffer[index]);
+          buffer[index] = default;
+        }
+        else
+        {
+          var offset = index % buffer.Length;
+          results.Add(buffer[offset]);
+          buffer[offset] = default;
+        }
+
+        idx--;
+      }
+
+      _count = _count - maxCount;
+
+      return true;
+    }
+
     /// <summary>Removes and returns the last element of this deque.</summary>
-    /// <param name="predicate">The predicate that must return true for the item to be dequeued.  If null, all items implicitly return true.</param>
+    /// <param name="match">The predicate that must return true for the item to be dequeued.  If null, all items implicitly return true.</param>
     /// <param name="result">The former last element.</param>
     /// <returns>true if an item could be dequeued; otherwise, false.</returns>
-    public bool TryRemoveFromBackIf(Predicate<T> predicate, out T result)
+    public bool TryRemoveFromBackIf(Predicate<T> match, out T result)
     {
+      if (match == null) { ThrowArgumentNullException_Match(); }
+
       if (IsEmpty) { result = default; return false; }
 
       var size = _count - 1;
@@ -1555,7 +1601,7 @@ namespace CuteAnt.Collections
       if ((uint)index < (uint)buffer.Length)
       {
         var item = buffer[index];
-        if (predicate(item))
+        if (match(item))
         {
           result = item;
 #if NETCOREAPP
@@ -1574,7 +1620,7 @@ namespace CuteAnt.Collections
       {
         index = index % buffer.Length;
         var item = buffer[index];
-        if (predicate(item))
+        if (match(item))
         {
           result = item;
 #if NETCOREAPP
@@ -1594,8 +1640,10 @@ namespace CuteAnt.Collections
       return false;
     }
 
-    public bool TryRemoveFromBackUntil(Predicate<T> predicate, out T result)
+    public bool TryRemoveFromBackUntil(Predicate<T> match, out T result)
     {
+      if (match == null) { ThrowArgumentNullException_Match(); }
+
       if (IsEmpty) { result = default; return false; }
 
       var found = false;
@@ -1604,7 +1652,7 @@ namespace CuteAnt.Collections
       while (idx >= 0)
       {
         item = DoGetItem(idx);
-        if (predicate(item))
+        if (match(item))
         {
           found = true;
           break;
@@ -1679,18 +1727,55 @@ namespace CuteAnt.Collections
       return true;
     }
 
+    public bool TryRemoveFromFront(List<T> results, int count)
+    {
+      if (null == results) { ThrowArgumentNullException_Results(); }
+      if (count < 0) { CheckRangeArguments_Count(count); }
+
+      if (IsEmpty) { return false; }
+
+      var buffer = _buffer;
+      var idx = 0;
+      var maxCount = Math.Min(_count, count);
+      while (idx < maxCount)
+      {
+        //var index = DequeIndexToBufferIndex(idx);
+        var index = _offset + idx;
+        if ((uint)index < (uint)buffer.Length)
+        {
+          results.Add(buffer[index]);
+          buffer[index] = default;
+        }
+        else
+        {
+          var offset = index % buffer.Length;
+          results.Add(buffer[offset]);
+          buffer[offset] = default;
+        }
+
+        idx++;
+      }
+
+      _count = _count - idx;
+      PostIncrement(ref _offset, idx);
+
+      return true;
+    }
+
     /// <summary>Removes and returns the first element of this deque.</summary>
-    /// <param name="predicate">The predicate that must return true for the item to be dequeued.  If null, all items implicitly return true.</param>
+    /// <param name="match">The predicate that must return true for the item to be dequeued.  If null, all items implicitly return true.</param>
     /// <param name="result">The former first element.</param>
     /// <returns>true if an item could be dequeued; otherwise, false.</returns>
-    public bool TryRemoveFromFrontIf(Predicate<T> predicate, out T result)
+    public bool TryRemoveFromFrontIf(Predicate<T> match, out T result)
     {
+      if (match == null) { ThrowArgumentNullException_Match(); }
+
       if (IsEmpty) { result = default; return false; }
 
       var offset = _offset;
       var buffer = _buffer;
       var item = buffer[offset];
-      if (predicate(item))
+      if (match(item))
       {
 #if NETCOREAPP
         if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
@@ -1712,8 +1797,10 @@ namespace CuteAnt.Collections
       }
     }
 
-    public bool TryRemoveFromFrontUntil(Predicate<T> predicate, out T result)
+    public bool TryRemoveFromFrontUntil(Predicate<T> match, out T result)
     {
+      if (match == null) { ThrowArgumentNullException_Match(); }
+
       if (IsEmpty) { result = default; return false; }
 
       var found = false;
@@ -1722,7 +1809,7 @@ namespace CuteAnt.Collections
       while (idx < _count)
       {
         item = DoGetItem(idx);
-        if (predicate(item))
+        if (match(item))
         {
           found = true;
           break;

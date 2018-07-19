@@ -207,30 +207,7 @@ namespace QueuePerformance
         dummy = deque.RemoveFromBack();
       }
 
-      deque = new Deque<int>(8);
-      sw.Reset();
-      Console.Write("{0,40}", "AddToBack to Deque...");
-      sw.Start();
-      for (int i = 0; i < 100000; i++)
-      {
-        deque.AddToBack(rand.Next());
-      }
-      sw.Stop();
-      Console.WriteLine("  Time used: {0,9} ticks", sw.ElapsedTicks);
-      sw.Reset();
-      Console.Write("{0,40}", "RemoveFromFront from Deque...");
-      sw.Start();
-      for (int i = 0; i < 100000; i++)
-      {
-        //var count = deque.Count;
-        var isEmpty = deque.IsEmpty;
-        dummy = deque.RemoveFromFront();
-        dummy++;
-      }
-      sw.Stop();
-      Console.WriteLine("  Time used: {0,9} ticks\n", sw.ElapsedTicks);
 
-      
       deque = new Deque<int>(8);
       sw.Reset();
       Console.Write("{0,40}", "AddToFront to Deque...");
@@ -249,6 +226,30 @@ namespace QueuePerformance
         //var count = deque.Count;
         var isEmpty = deque.IsEmpty;
         dummy = deque.RemoveFromBack();
+        dummy++;
+      }
+      sw.Stop();
+      Console.WriteLine("  Time used: {0,9} ticks\n", sw.ElapsedTicks);
+
+
+      deque = new Deque<int>(8);
+      sw.Reset();
+      Console.Write("{0,40}", "AddToBack to Deque...");
+      sw.Start();
+      for (int i = 0; i < 100000; i++)
+      {
+        deque.AddToBack(rand.Next());
+      }
+      sw.Stop();
+      Console.WriteLine("  Time used: {0,9} ticks", sw.ElapsedTicks);
+      sw.Reset();
+      Console.Write("{0,40}", "RemoveFromFront from Deque...");
+      sw.Start();
+      for (int i = 0; i < 100000; i++)
+      {
+        //var count = deque.Count;
+        var isEmpty = deque.IsEmpty;
+        dummy = deque.RemoveFromFront();
         dummy++;
       }
       sw.Stop();

@@ -592,6 +592,25 @@ namespace CuteAnt.Tests
       Assert.Equal(4, deque.Count);
       Assert.Equal(new[] { 2, 3, 8, 9 }, deque);
       Assert.False(deque.IsSplit);
+
+      var list = new List<int>();
+      deque = new Deque<int>(new[] { 1, 2, 3, 4, 5, 6, 7, 8 });
+      var result = deque.TryRemoveFromFront(list, 4);
+      Assert.True(result);
+      Assert.Equal(new[] { 1, 2, 3, 4 }, list);
+      Assert.Equal(new[] { 5, 6, 7, 8 }, deque);
+      list.Clear();
+
+      result = deque.TryRemoveFromBack(list, 3);
+      Assert.True(result);
+      Assert.Equal(new[] { 8, 7, 6 }, list);
+      Assert.Single(deque);
+      result = deque.TryRemoveFromBack(list, 4);
+      Assert.True(result);
+      Assert.Equal(new[] { 8, 7, 6, 5 }, list);
+      Assert.Empty(deque);
+      Assert.False(deque.TryRemoveFromFront(list, 10));
+      Assert.False(deque.TryRemoveFromBack(list, 10));
     }
 
     [Fact]
@@ -750,7 +769,11 @@ namespace CuteAnt.Tests
     {
       var deque = new Deque<int>(new[] { 1, 2, 3 });
       deque.RemoveFromBack();
+      deque.RemoveFromFront();
+      deque.RemoveFromFront();
       deque.AddToFront(0);
+      deque.AddToBack(1);
+      deque.AddToBack(2);
       deque[0] = 7;
       deque[1] = 11;
       deque[2] = 13;
@@ -1173,7 +1196,7 @@ namespace CuteAnt.Tests
       stack.Reverse((item, lst) => lst.Add(item), lstComparer);
       Assert.Equal(new[] { 1, 2, 3, 4, 5 }, lstComparer);
 
-      var list = new List<int>(new [] { 1, 2 });
+      var list = new List<int>(new[] { 1, 2 });
       Assert.Equal(new[] { 1, 2 }, list);
       Assert.Equal(new[] { 1, 2 }, list.ToArray());
 
