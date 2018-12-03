@@ -114,12 +114,20 @@ namespace Polly
         /// <param name="cancellationToken">A cancellation token which can be used to cancel the action.  When a retry policy in use, also cancels any further retries.</param>
         /// <exception cref="System.InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
         [DebuggerStepThrough]
-        public Task ExecuteAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public async Task ExecuteAsync(Func<Context, CancellationToken, Task> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
-            SetPolicyContext(context);
 
-            return ExecuteAsyncInternal(action, context, cancellationToken, continueOnCapturedContext);
+            SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
+
+            try
+            {
+                await ExecuteAsyncInternal(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+            }
+            finally
+            {
+                RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
+            }
         }
 
         #region Overloads method-generic in TResult
@@ -242,12 +250,20 @@ namespace Polly
         /// <returns>The value returned by the action</returns>
         /// <exception cref="System.InvalidOperationException">Please use asynchronous-defined policies when calling asynchronous ExecuteAsync (and similar) methods.</exception>
         [DebuggerStepThrough]
-        public Task<TResult> ExecuteAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
+        public async Task<TResult> ExecuteAsync<TResult>(Func<Context, CancellationToken, Task<TResult>> action, Context context, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
-            SetPolicyContext(context);
 
-            return ExecuteAsyncInternal(action, context, cancellationToken, continueOnCapturedContext);
+            SetPolicyContext(context, out string priorPolicyWrapKey, out string priorPolicyKey);
+
+            try
+            {
+                return await ExecuteAsyncInternal(action, context, cancellationToken, continueOnCapturedContext).ConfigureAwait(continueOnCapturedContext);
+            }
+            finally
+            {
+                RestorePolicyContext(context, priorPolicyWrapKey, priorPolicyKey);
+            }
         }
 
         #endregion

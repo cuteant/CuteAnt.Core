@@ -62,6 +62,62 @@ namespace Polly.Specs.Wrap
         }
 
         [Fact]
+        public async Task Should_restore_PolicyKey_of_outer_policy_to_execution_context_as_move_outwards_through_PolicyWrap()
+        {
+            IAsyncPolicy fallback = Policy
+                .Handle<Exception>()
+                .FallbackAsync((_,__) => TaskHelper.EmptyTask, (_, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("FallbackPolicy");
+                    return TaskHelper.EmptyTask;
+                })
+                .WithPolicyKey("FallbackPolicy");
+
+            IAsyncPolicy retry = Policy
+                .Handle<Exception>()
+                .RetryAsync(1, onRetry: (result, retryCount, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("RetryPolicy");
+                })
+                .WithPolicyKey("RetryPolicy");
+
+            IAsyncPolicy policyWrap = Policy.WrapAsync(fallback, retry)
+                .WithPolicyKey("PolicyWrap");
+
+            await policyWrap.ExecuteAsync(() => throw new Exception());
+        }
+
+        [Fact]
+        public async Task Should_restore_PolicyKey_of_outer_policy_to_execution_context_as_move_outwards_through_PolicyWrap_with_deeper_async_execution()
+        {
+            IAsyncPolicy fallback = Policy
+                .Handle<Exception>()
+                .FallbackAsync((_, __) => TaskHelper.EmptyTask, (_, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("FallbackPolicy");
+                    return TaskHelper.EmptyTask;
+                })
+                .WithPolicyKey("FallbackPolicy");
+
+            IAsyncPolicy retry = Policy
+                .Handle<Exception>()
+                .RetryAsync(1, onRetry: (result, retryCount, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("RetryPolicy");
+                })
+                .WithPolicyKey("RetryPolicy");
+
+            IAsyncPolicy policyWrap = Policy.WrapAsync(fallback, retry)
+                .WithPolicyKey("PolicyWrap");
+
+            await policyWrap.ExecuteAsync(async () => await Task.Run(() => throw new Exception())); // Regression test for issue 510
+        }
+
+        [Fact]
         public async Task Should_pass_outmost_PolicyWrap_Key_as_PolicyWrapKey_ignoring_inner_PolicyWrap_keys_even_when_executing_policies_in_inner_WrapAsync()
         {
             string retryKey = Guid.NewGuid().ToString();
@@ -191,6 +247,70 @@ namespace Polly.Specs.Wrap
             policyWrapKeySetOnExecutionContext.Should().NotBe(breakerKey);
             policyWrapKeySetOnExecutionContext.Should().Be(wrapKey);
         }
+
+        [Fact]
+        public async Task Should_restore_PolicyKey_of_outer_policy_to_execution_context_as_move_outwards_through_PolicyWrap()
+        {
+            IAsyncPolicy<ResultPrimitive> fallback = Policy<ResultPrimitive>
+                .Handle<Exception>()
+                .FallbackAsync((_, __) => Task.FromResult(ResultPrimitive.Undefined), (_, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("FallbackPolicy");
+                    return TaskHelper.EmptyTask;
+                })
+                .WithPolicyKey("FallbackPolicy");
+
+            IAsyncPolicy<ResultPrimitive> retry = Policy<ResultPrimitive>
+                .Handle<Exception>()
+                .RetryAsync(1, onRetry: (result, retryCount, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("RetryPolicy");
+                })
+                .WithPolicyKey("RetryPolicy");
+
+            IAsyncPolicy<ResultPrimitive> policyWrap = Policy.WrapAsync(fallback, retry)
+                .WithPolicyKey("PolicyWrap");
+
+            await policyWrap.ExecuteAsync(() => throw new Exception());
+        }
+
+        [Fact]
+        public async Task Should_restore_PolicyKey_of_outer_policy_to_execution_context_as_move_outwards_through_PolicyWrap_with_deeper_async_execution()
+        {
+            IAsyncPolicy<ResultPrimitive> fallback = Policy<ResultPrimitive>
+                .Handle<Exception>()
+                .FallbackAsync((_, __) => Task.FromResult(ResultPrimitive.Undefined), (_, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("FallbackPolicy");
+                    return TaskHelper.EmptyTask;
+                })
+                .WithPolicyKey("FallbackPolicy");
+
+            IAsyncPolicy<ResultPrimitive> retry = Policy<ResultPrimitive>
+                .Handle<Exception>()
+                .RetryAsync(1, onRetry: (result, retryCount, context) =>
+                {
+                    context.PolicyWrapKey.Should().Be("PolicyWrap");
+                    context.PolicyKey.Should().Be("RetryPolicy");
+                })
+                .WithPolicyKey("RetryPolicy");
+
+            IAsyncPolicy<ResultPrimitive> policyWrap = Policy.WrapAsync(fallback, retry)
+                .WithPolicyKey("PolicyWrap");
+
+            await policyWrap.ExecuteAsync(async () => await Task.Run(() => // Regression test for issue 510
+            {
+                throw new Exception();
+#pragma warning disable 0162 // unreachable code detected
+                return ResultPrimitive.WhateverButTooLate;
+#pragma warning restore 0162
+
+            }));
+        }
+
 
         [Fact]
         public async Task Should_pass_outmost_PolicyWrap_Key_as_PolicyWrapKey_ignoring_inner_PolicyWrap_keys_even_when_executing_policies_in_inner_WrapAsync()
