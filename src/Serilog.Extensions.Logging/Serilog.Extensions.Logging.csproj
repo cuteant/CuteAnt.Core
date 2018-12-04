@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\version.serilog.props" />
   <Import Project="..\nuget.serilog.props" />
-  
+
   <PropertyGroup>
     <TargetFrameworks>net471;net451;netstandard2.0</TargetFrameworks>
     <AssemblyName>Serilog.Extensions.Logging</AssemblyName>

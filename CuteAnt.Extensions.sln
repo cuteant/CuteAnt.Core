@@ -35,7 +35,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.Web.AspNetCore.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog.Web.Tests", "test\NLog.Web.Tests\NLog.Web.Tests.csproj", "{CC1AC638-C527-4CCF-9A64-6B3CB2460B1C}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CuteAnt.Extensions.Reflection.Sources", "..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.shproj", "{C7F8DBE6-77B7-494D-AF00-018F7579548C}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{c7f8dbe6-77b7-494d-af00-018f7579548c}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -96,6 +101,7 @@ Global
 		{4BED4B19-10D6-443C-8B1E-F368442D84F6} = {1F97D5A4-285F-4962-8F8C-BCEF8278143B}
 		{B181D9E8-C648-4FB4-8B02-88B5D8C2A1E2} = {ABC72801-895A-4C64-B795-B8CD5B56CEA8}
 		{CC1AC638-C527-4CCF-9A64-6B3CB2460B1C} = {ABC72801-895A-4C64-B795-B8CD5B56CEA8}
+		{C7F8DBE6-77B7-494D-AF00-018F7579548C} = {4744CD6C-82C3-4D38-A708-3D301A74397F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {93230366-D5C3-4397-83D3-ED46E43B8121}

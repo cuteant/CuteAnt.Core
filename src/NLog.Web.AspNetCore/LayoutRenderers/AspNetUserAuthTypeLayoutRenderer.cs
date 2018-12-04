@@ -2,8 +2,8 @@
 using System.Text;
 #if !ASP_NET_CORE
 using System.Web;
-#else
 #endif
+using NLog.Config;
 using NLog.LayoutRenderers;
 
 namespace NLog.Web.LayoutRenderers
@@ -12,6 +12,7 @@ namespace NLog.Web.LayoutRenderers
     /// ASP.NET User variable.
     /// </summary>
     [LayoutRenderer("aspnet-user-authtype")]
+    [ThreadSafe]
     public class AspNetUserAuthTypeLayoutRenderer : AspNetLayoutRendererBase
     {
         /// <summary>
@@ -23,14 +24,14 @@ namespace NLog.Web.LayoutRenderers
         {
             try
             {
-                var context = HttpContextAccessor.HttpContext;
-
-                if (context.User?.Identity?.IsAuthenticated == null)
+                var identity = HttpContextAccessor.HttpContext.User?.Identity;
+                if (identity == null)
                 {
+                    Common.InternalLogger.Debug("aspnet-user-authtype - HttpContext User Identity is null");
                     return;
                 }
 
-                builder.Append(context.User.Identity.AuthenticationType);
+                builder.Append(identity.AuthenticationType);
             }
             catch (ObjectDisposedException)
             {

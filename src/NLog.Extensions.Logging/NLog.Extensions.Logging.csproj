@@ -1,7 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\version.nlog.props" />
   <Import Project="..\nuget.nlog.props" />
-  
+
+  <ImportGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
+  </ImportGroup>
+
   <PropertyGroup>
     <TargetFrameworks>net471;net451;net40;netstandard2.0</TargetFrameworks>
     <AssemblyName>NLog.Extensions.Logging</AssemblyName>

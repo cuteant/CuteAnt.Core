@@ -1,25 +1,50 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NLog.Config;
+using NLog.Layouts;
 using NLog.Web.Enums;
 
 namespace NLog.Web.LayoutRenderers
 {
     /// <summary>
-    /// Layout renderers for ASP.NET rendering multiple values.
+    /// Layout renderers for ASP.NET rendering multiple key/value pairs.
     /// </summary>
     public abstract class AspNetLayoutMultiValueRendererBase : AspNetLayoutRendererBase
     {
+        private string _itemSeparator = ",";
+        private Layout _itemSeparatorLayout = ",";
+        private string _valueSeparator = "=";
+        private Layout _valueSeparatorLayout = "=";
+
         /// <summary>
         /// Separator between item. Only used for <see cref="AspNetRequestLayoutOutputFormat.Flat"/>
         /// </summary>
-        public string ItemSeparator { get; set; } = ",";
+        /// <remarks>Render with <see cref="GetRenderedItemSeparator"/></remarks>
+        public string ItemSeparator
+        {
+            get => _itemSeparator;
+            set
+            {
+                _itemSeparator = value;
+                _itemSeparatorLayout = value;
+            }
+        }
 
         /// <summary>
         /// Separator between value and key. Only used for <see cref="AspNetRequestLayoutOutputFormat.Flat"/>
         /// </summary>
-        public string ValueSeparator { get; set; } = "=";
+        /// <remarks>Render with <see cref="GetRenderedValueSeparator"/></remarks>
+        public string ValueSeparator
+        {
+            get => _valueSeparator;
+            set
+            {
+                _valueSeparator = value;
+                _valueSeparatorLayout = value;
+            }
+        }
 
         /// <summary>
         /// Single item in array? Only used for <see cref="AspNetRequestLayoutOutputFormat.Json"/>
@@ -35,40 +60,55 @@ namespace NLog.Web.LayoutRenderers
         public AspNetRequestLayoutOutputFormat OutputFormat { get; set; } = AspNetRequestLayoutOutputFormat.Flat;
 
         /// <summary>
-        /// Serialize multiple values
+        /// Only render values if true, otherwise render key/value pairs.
         /// </summary>
-        /// <param name="values">The values with key and value.</param>
-        /// <param name="builder">Add to this builder.</param>
-        protected void SerializeValues(IEnumerable<KeyValuePair<string, string>> values,
-            StringBuilder builder)
-        {
+        public bool ValuesOnly { get; set; }
 
+        /// <summary>
+        /// Serialize multiple key/value pairs
+        /// </summary>
+        /// <param name="pairs">The key/value pairs.</param>
+        /// <param name="builder">Add to this builder.</param>
+        [Obsolete("use SerializePairs with logEvent to support Layouts for Separator. This overload will be removed in NLog.Web(aspNetCore) 5")]
+        protected void SerializePairs(IEnumerable<KeyValuePair<string, string>> pairs, StringBuilder builder)
+        {
+            SerializePairs(pairs, builder, null);
+        }
+
+        /// <summary>
+        /// Serialize multiple key/value pairs
+        /// </summary>
+        /// <param name="pairs">The key/value pairs.</param>
+        /// <param name="builder">Add to this builder.</param>
+        /// <param name="logEvent">Log event for rendering separators.</param>
+        protected void SerializePairs(IEnumerable<KeyValuePair<string, string>> pairs, StringBuilder builder, LogEventInfo logEvent)
+        {
             switch (OutputFormat)
             {
                 case AspNetRequestLayoutOutputFormat.Flat:
-                    SerializValuesFlat(values, builder);
+                    SerializePairsFlat(pairs, builder, logEvent);
                     break;
                 case AspNetRequestLayoutOutputFormat.Json:
-                    SerializeValuesJson(values, builder);
+                    SerializePairsJson(pairs, builder);
                     break;
             }
         }
 
-        private void SerializeValuesJson(IEnumerable<KeyValuePair<string, string>> values, StringBuilder builder)
+        private void SerializePairsJson(IEnumerable<KeyValuePair<string, string>> pairs, StringBuilder builder)
         {
             var firstItem = true;
-            var valueList = values.ToList();
+            var pairsList = pairs.ToList();
 
-            if (valueList.Count > 0)
+            if (pairsList.Count > 0)
             {
-                var addArray = valueList.Count > (SingleAsArray ? 0 : 1);
+                var addArray = pairsList.Count > (SingleAsArray | ValuesOnly ? 0 : 1);
 
                 if (addArray)
                 {
                     builder.Append('[');
                 }
 
-                foreach (var kpv in valueList)
+                foreach (var kpv in pairsList)
                 {
                     var key = kpv.Key;
                     var value = kpv.Value;
@@ -78,40 +118,77 @@ namespace NLog.Web.LayoutRenderers
                     }
                     firstItem = false;
 
-                    //quoted key
-                    builder.Append('{');
-                    AppendQuoted(builder, key);
+                    if (!ValuesOnly)
+                    {
+                        // Quoted key
+                        builder.Append('{');
+                        AppendQuoted(builder, key);
 
-                    builder.Append(':');
-                    //quoted value;
+                        builder.Append(':');
+                    }
+
+                    // Quoted value
                     AppendQuoted(builder, value);
-                    builder.Append('}');
+
+                    if (!ValuesOnly)
+                    {
+                        builder.Append('}');
+                    }
                 }
                 if (addArray)
                 {
                     builder.Append(']');
                 }
             }
-
         }
 
-        private void SerializValuesFlat(IEnumerable<KeyValuePair<string, string>> values, StringBuilder builder)
+        private void SerializePairsFlat(IEnumerable<KeyValuePair<string, string>> pairs, StringBuilder builder,
+            LogEventInfo logEvent)
         {
+            var itemSeparator = GetRenderedItemSeparator(logEvent);
+            var valueSeparator = GetRenderedValueSeparator(logEvent);
+
             var firstItem = true;
-            foreach (var kpv in values)
+            foreach (var kpv in pairs)
             {
                 var key = kpv.Key;
                 var value = kpv.Value;
 
                 if (!firstItem)
                 {
-                    builder.Append(ItemSeparator);
+                    builder.Append(itemSeparator);
                 }
                 firstItem = false;
-                builder.Append(key);
-                builder.Append(ValueSeparator);
+
+                if (!ValuesOnly)
+                {
+                    builder.Append(key);
+
+                    builder.Append(valueSeparator);
+                }
+
                 builder.Append(value);
             }
+        }
+
+        /// <summary>
+        /// Get the rendered <see cref="ItemSeparator"/>
+        /// </summary>
+        /// <param name="logEvent"></param>
+        /// <returns></returns>
+        protected string GetRenderedItemSeparator(LogEventInfo logEvent)
+        {
+            return logEvent != null ? _itemSeparatorLayout.Render(logEvent) : ItemSeparator;
+        }
+
+        /// <summary>
+        /// Get the rendered <see cref="ValueSeparator"/>
+        /// </summary>
+        /// <param name="logEvent"></param>
+        /// <returns></returns>
+        protected string GetRenderedValueSeparator(LogEventInfo logEvent)
+        {
+            return logEvent != null ? _valueSeparatorLayout.Render(logEvent) : ValueSeparator;
         }
 
         /// <summary>

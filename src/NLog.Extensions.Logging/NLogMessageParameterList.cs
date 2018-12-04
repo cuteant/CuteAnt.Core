@@ -15,16 +15,18 @@ namespace NLog.Extensions.Logging
 #else
     private readonly IReadOnlyList<KeyValuePair<string, object>> _parameterList;
 #endif
+    private static readonly NLogMessageParameterList EmptyList = new NLogMessageParameterList(new KeyValuePair<string, object>[0]);
+    private static readonly NLogMessageParameterList OriginalMessageList = new NLogMessageParameterList(new[] { new KeyValuePair<string, object>(NLogLogger.OriginalFormatPropertyName, string.Empty) });
 
-    public object OriginalMessage => _originalMessageIndex.HasValue ? _parameterList[_originalMessageIndex.Value].Value : null;
-    private int? _originalMessageIndex;
+    public bool HasOriginalMessage => _originalMessageIndex.HasValue;
+    private readonly int? _originalMessageIndex;
 
     public bool HasComplexParameters => _hasMessageTemplateCapture || _isMixedPositional;
-    private bool _hasMessageTemplateCapture;
-    private bool _isMixedPositional;
+    private readonly bool _hasMessageTemplateCapture;
+    private readonly bool _isMixedPositional;
 
     public bool IsPositional => _isPositional;
-    private bool _isPositional;
+    private readonly bool _isPositional;
 
 #if NET40
     public NLogMessageParameterList(IList<KeyValuePair<string, object>> parameterList)
@@ -54,7 +56,36 @@ namespace NLog.Extensions.Logging
     public static NLogMessageParameterList TryParse(IReadOnlyList<KeyValuePair<string, object>> parameterList)
 #endif
     {
-      return parameterList?.Count > 0 ? new NLogMessageParameterList(parameterList) : null;
+      if (parameterList.Count > 1 || (parameterList.Count == 1 && parameterList[0].Key != NLogLogger.OriginalFormatPropertyName))
+      {
+        return new NLogMessageParameterList(parameterList);
+      }
+      else if (parameterList.Count == 1)
+      {
+        return OriginalMessageList; // Skip allocation
+      }
+      else
+      {
+        return EmptyList;           // Skip allocation
+      }
+    }
+
+    public bool HasMessageTemplateSyntax(bool parseMessageTemplates)
+    {
+      return HasOriginalMessage && (HasComplexParameters || (parseMessageTemplates && Count > 0));
+    }
+
+#if NET40
+    public string GetOriginalMessage(IList<KeyValuePair<string, object>> messageProperties)
+#else
+    public string GetOriginalMessage(IReadOnlyList<KeyValuePair<string, object>> messageProperties)
+#endif
+    {
+      if (_originalMessageIndex < messageProperties?.Count)
+      {
+        return messageProperties[_originalMessageIndex.Value].Value as string;
+      }
+      return null;
     }
 
     /// <summary>

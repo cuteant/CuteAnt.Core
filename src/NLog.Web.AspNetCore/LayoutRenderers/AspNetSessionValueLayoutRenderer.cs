@@ -2,13 +2,13 @@
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using NLog.Common;
 #if !ASP_NET_CORE
 using System.Web;
 #else
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Http;
 #endif
+using NLog.Common;
 using NLog.Config;
 using NLog.LayoutRenderers;
 using NLog.Web.Internal;
@@ -42,6 +42,7 @@ namespace NLog.Web.LayoutRenderers
     /// </code>
     /// </example>
     [LayoutRenderer("aspnet-session")]
+    [ThreadSafe]
     public class AspNetSessionValueLayoutRenderer : AspNetLayoutRendererBase
     {
         /// <summary>
@@ -49,7 +50,7 @@ namespace NLog.Web.LayoutRenderers
         /// </summary>
         public AspNetSessionValueLayoutRenderer()
         {
-            this.Culture = CultureInfo.CurrentUICulture;
+            Culture = CultureInfo.CurrentUICulture;
         }
 
         /// <summary>
@@ -78,42 +79,44 @@ namespace NLog.Web.LayoutRenderers
         /// <param name="logEvent">Logging event.</param>
         protected override void DoAppend(StringBuilder builder, LogEventInfo logEvent)
         {
-            if (this.Variable == null) { return; }
+            if (Variable == null) { return; }
 
             var context = HttpContextAccessor.HttpContext;
             if (context?.Session == null)
             {
-                InternalLogger.Debug("Session is null");
+                InternalLogger.Trace("aspnet-session - HttpContext Session is null");
                 return;
             }
-#if !ASP_NET_CORE
-            var value = PropertyReader.GetValue(Variable, k => context.Session[k], EvaluateAsNestedProperties);
-#else
-            if (context.Items == null || context.Features.Get<ISessionFeature>()?.Session == null) { return; }
 
+#if !ASP_NET_CORE
+            var value = PropertyReader.GetValue(Variable, context.Session, (session,key) => session.Count > 0 ? session[key] : null, EvaluateAsNestedProperties);
+#else
             //because session.get / session.getstring also creating log messages in some cases, this could lead to stackoverflow issues. 
             //We remember on the context.Items that we are looking up a session value so we prevent stackoverflows
-            if (context.Items.ContainsKey(NLogRetrievingSessionValue)) { return; }
-
+            if (context.Items == null || context.Features.Get<ISessionFeature>()?.Session == null) { return; }
+            if (context.Items.Count > 0 && context.Items.ContainsKey(NLogRetrievingSessionValue)) { return; }
             context.Items[NLogRetrievingSessionValue] = true;
+
             object value;
             try
             {
-                value = PropertyReader.GetValue(Variable, k => context.Session.GetString(k), EvaluateAsNestedProperties);
+                value = PropertyReader.GetValue(Variable, context.Session, (session, key) => session.GetString(key), EvaluateAsNestedProperties);
             }
             catch (Exception ex)
             {
-                InternalLogger.Warn(ex, "Retrieving session value failed. ");
+                InternalLogger.Warn(ex, "aspnet-session - Retrieving session value failed.");
                 return;
             }
             finally
             {
                 context.Items.Remove(NLogRetrievingSessionValue);
             }
-
 #endif
-            var formatProvider = GetFormatProvider(logEvent, Culture);
-            builder.Append(Convert.ToString(value, formatProvider));
+            if (value != null)
+            {
+                var formatProvider = GetFormatProvider(logEvent, Culture);
+                builder.Append(Convert.ToString(value, formatProvider));
+            }
         }
 
 #if ASP_NET_CORE

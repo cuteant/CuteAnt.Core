@@ -1,16 +1,15 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 #if !ASP_NET_CORE
-using System.Web;
 using System.Collections.Specialized;
+using System.Web;
 #else
 using Microsoft.AspNetCore.Http;
 #endif
-using NLog.LayoutRenderers;
-using System.Collections.Generic;
 using NLog.Config;
-using NLog.Web.Enums;
-using System;
-using System.Linq;
+using NLog.LayoutRenderers;
 using NLog.Web.Internal;
 
 namespace NLog.Web.LayoutRenderers
@@ -26,6 +25,7 @@ namespace NLog.Web.LayoutRenderers
     /// </code>
     /// </example>
     [LayoutRenderer("aspnet-request-querystring")]
+    [ThreadSafe]
     public class AspNetQueryStringLayoutRenderer : AspNetLayoutMultiValueRendererBase
     {
         /// <summary>
@@ -41,21 +41,16 @@ namespace NLog.Web.LayoutRenderers
         /// <param name="logEvent"></param>
         protected override void DoAppend(StringBuilder builder, LogEventInfo logEvent)
         {
-            var httpRequest = HttpContextAccessor?.HttpContext?.TryGetRequest();
+            var httpRequest = HttpContextAccessor.HttpContext.TryGetRequest();
             if (httpRequest == null)
                 return;
 
-
-
-
-            var printAllQueryString = this.QueryStringKeys == null || this.QueryStringKeys.Count == 0;
-            var queryStringKeys = this.QueryStringKeys;
+            var printAllQueryString = QueryStringKeys == null || QueryStringKeys.Count == 0;
+            var queryStringKeys = QueryStringKeys;
 #if !ASP_NET_CORE
             var queryStrings = httpRequest.QueryString;
-
-            if (queryStrings == null)
+            if (queryStrings == null || queryStrings.Count == 0)
                 return;
-
 
             if (printAllQueryString)
             {
@@ -71,8 +66,7 @@ namespace NLog.Web.LayoutRenderers
             }
 #else
             var queryStrings = httpRequest.Query;
-
-            if (queryStrings == null)
+            if (queryStrings == null || queryStrings.Count == 0)
                 return;
 
             if (printAllQueryString)
@@ -81,33 +75,31 @@ namespace NLog.Web.LayoutRenderers
             }
 #endif
 
-            var values = GetValues(queryStrings, queryStringKeys);
-            SerializeValues(values, builder);
+            var pairs = GetPairs(queryStrings, queryStringKeys);
+            SerializePairs(pairs, builder, logEvent);
         }
 
-        private static IEnumerable<KeyValuePair<string, string>> GetValues(
-#if ASP_NET_CORE
-            IQueryCollection queryStrings,
-#else
-            NameValueCollection queryStrings,
-#endif
-            IEnumerable<string> queryStringKeys)
-
-        {
-            if (queryStrings.Count > 0)
-            {
-                foreach (var key in queryStringKeys)
-                {
-                    // This platoform specific code is to prevent an unncessary .ToString call otherwise. 
+        private static IEnumerable<KeyValuePair<string, string>> GetPairs(
 #if !ASP_NET_CORE
-                    var value = queryStrings[key];
+            NameValueCollection queryStrings,
 #else
-                    var value = queryStrings[key].ToString();
+            IQueryCollection queryStrings,       
 #endif
-                    if (!String.IsNullOrEmpty(value))
-                    {
-                        yield return new KeyValuePair<string, string>(key, value);
-                    }
+            List<string> queryStringKeys)
+        {
+            foreach (var key in queryStringKeys)
+            {
+                // This platoform specific code is to prevent an unncessary .ToString call otherwise. 
+#if !ASP_NET_CORE
+                var value = queryStrings[key];
+#else
+                if (!queryStrings.TryGetValue(key, out var objValue))
+                    continue;
+                var value = objValue.ToString();
+#endif
+                if (!String.IsNullOrEmpty(value))
+                {
+                    yield return new KeyValuePair<string, string>(key, value);
                 }
             }
         }

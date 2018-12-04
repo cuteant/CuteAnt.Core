@@ -11,6 +11,7 @@ namespace NLog.Extensions.Logging
   {
     /// <summary>NLog options</summary>
     public NLogProviderOptions Options { get; set; }
+    private NLogBeginScopeParser _beginScopeParser;
 
     /// <summary>New provider with default options, see <see cref="Options"/></summary>
     public NLogLoggerProvider() : this(null) { }
@@ -19,7 +20,8 @@ namespace NLog.Extensions.Logging
     /// <param name="options"></param>
     public NLogLoggerProvider(NLogProviderOptions options)
     {
-      Options = options;
+      Options = options ?? NLogProviderOptions.Default;
+      _beginScopeParser = new NLogBeginScopeParser(options);
       RegisterHiddenAssembliesForCallSite();
     }
 
@@ -28,12 +30,27 @@ namespace NLog.Extensions.Logging
     /// <returns>New Logger</returns>
     public Microsoft.Extensions.Logging.ILogger CreateLogger(string name)
     {
-      return new NLogLogger(LogManager.GetLogger(name), Options);
+      var beginScopeParser = ((Options?.CaptureMessageProperties ?? true) && (Options?.IncludeScopes ?? true))
+          ? (_beginScopeParser ?? System.Threading.Interlocked.CompareExchange(ref _beginScopeParser, new NLogBeginScopeParser(Options), null))
+          : null;
+      return new NLogLogger(LogManager.GetLogger(name), Options, beginScopeParser);
     }
 
     /// <summary>Cleanup</summary>
     public void Dispose()
     {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    /// <summary>Cleanup</summary>
+    /// <param name="disposing"></param>
+    protected virtual void Dispose(bool disposing)
+    {
+      if (disposing)
+      {
+        LogManager.Flush();
+      }
     }
 
     /// <summary>Ignore assemblies for ${callsite}</summary>

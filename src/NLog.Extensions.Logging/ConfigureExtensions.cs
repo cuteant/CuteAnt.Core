@@ -22,10 +22,7 @@ namespace NLog.Extensions.Logging
     /// <returns>ILoggerFactory for chaining</returns>
     public static ILoggerFactory AddNLog(this ILoggerFactory factory, NLogProviderOptions options)
     {
-      using (var provider = new NLogLoggerProvider(options))
-      {
-        factory.AddProvider(provider);
-      }
+      factory.AddProvider(new NLogLoggerProvider(options));
       return factory;
     }
 
@@ -43,10 +40,7 @@ namespace NLog.Extensions.Logging
     /// <returns>ILoggerFactory for chaining</returns>
     public static ILoggingBuilder AddNLog(this ILoggingBuilder factory, NLogProviderOptions options)
     {
-      using (var provider = new NLogLoggerProvider(options))
-      {
-        factory.AddProvider(provider);
-      }
+      factory.AddProvider(new NLogLoggerProvider(options));
       return factory;
     }
 

@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using NLog.LayoutRenderers;
-
 #if ASP_NET_CORE
-using NLog.Web.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using NLog.Web.DependencyInjection;
 #endif
+
+using NLog.LayoutRenderers;
 
 namespace NLog.Web.LayoutRenderers
 {
@@ -40,6 +39,7 @@ namespace NLog.Web.LayoutRenderers
         /// Provides access to the current request HttpContext.
         /// </summary>
         /// <returns>HttpContextAccessor or <c>null</c></returns>
+        [NLog.Config.NLogConfigurationIgnorePropertyAttribute]
         public IHttpContextAccessor HttpContextAccessor
         {
             get => _httpContextAccessor ?? (_httpContextAccessor = RetrieveHttpContextAccessor());
@@ -55,18 +55,28 @@ namespace NLog.Web.LayoutRenderers
                 return null;
             }
 
-            var httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
-            if (httpContextAccessor == null)
+            try
             {
-                Common.InternalLogger.Debug("Missing IHttpContextAccessor, so no HttpContext");
+                var httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
+                if (httpContextAccessor == null)
+                {
+                    Common.InternalLogger.Debug("Missing IHttpContextAccessor, so no HttpContext");
+                }
+                return httpContextAccessor;
             }
-            return httpContextAccessor;
+            catch (ObjectDisposedException ex)
+            {
+                Common.InternalLogger.Debug(ex, "ServiceProvider has been disposed, so no HttpContext");
+                return null;
+            }
         }
 
 #else
+
         /// <summary>
         /// Provides access to the current request HttpContext.
         /// </summary>
+        [NLog.Config.NLogConfigurationIgnorePropertyAttribute]
         public IHttpContextAccessor HttpContextAccessor { get; set; }
 
 #endif
@@ -78,8 +88,15 @@ namespace NLog.Web.LayoutRenderers
         /// <param name="logEvent">Logging event.</param>
         protected override void Append(StringBuilder builder, LogEventInfo logEvent)
         {
-            if (HttpContextAccessor?.HttpContext == null)
+            var httpContextAccessor = HttpContextAccessor;
+            if (httpContextAccessor == null)
                 return;
+
+            if (httpContextAccessor.HttpContext == null)
+            {
+                Common.InternalLogger.Debug("No available HttpContext. Logging outside valid request context?");
+                return;
+            }
 
             DoAppend(builder, logEvent);
         }

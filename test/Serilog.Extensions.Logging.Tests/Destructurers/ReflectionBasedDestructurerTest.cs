@@ -3,6 +3,8 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
     using FluentAssertions;
     using Serilog.Exceptions.Core;
     using Serilog.Exceptions.Destructurers;
@@ -29,11 +31,11 @@
             Assert.DoesNotContain(properties, x => string.Equals(x.Key, "ProtectedProperty"));
             Assert.DoesNotContain(properties, x => string.Equals(x.Key, "PrivateProperty"));
             Assert.Equal("MessageValue", properties[nameof(TestException.Message)]);
-#if NET461
+#if DESKTOPCLR
             Assert.StartsWith("Void DestructureComplexException_EachTypeOfPropertyIsDestructuredAsExpected(", properties[nameof(TestException.TargetSite)].ToString());
 #endif
             Assert.NotEmpty(properties[nameof(TestException.StackTrace)].ToString());
-            Assert.Equal("Serilog.Exceptions.Test", properties[nameof(TestException.Source)]);
+            Assert.Equal("Serilog.Extensions.Logging.Tests", properties[nameof(TestException.Source)]);
             Assert.Equal(-2146233088, properties[nameof(TestException.HResult)]);
             Assert.Contains(typeof(TestException).FullName, properties["Type"].ToString());
         }
@@ -73,6 +75,69 @@
             var uriDataValue = data["UriDataItem"];
             Assert.IsType<string>(uriDataValue);
             Assert.Equal(uriValue, uriDataValue);
+        }
+
+        [Fact]
+        public void CanDestructureTask()
+        {
+            Task task = new TaskFactory<int>().StartNew(() => 12, TaskCreationOptions.LongRunning | TaskCreationOptions.PreferFairness);
+            var exception = new TaskCanceledException(task);
+
+            var propertiesBag = new ExceptionPropertiesBag(exception);
+            CreateReflectionBasedDestructurer().Destructure(exception, propertiesBag, null);
+
+            var properties = propertiesBag.GetResultDictionary();
+            var destructuredTaskObject = (IDictionary)properties[nameof(TaskCanceledException.Task)];
+            var destructuredTaskProperties = Assert.IsAssignableFrom<IDictionary<string, object>>(destructuredTaskObject);
+            destructuredTaskProperties.Should().ContainKey(nameof(Task.Id));
+            destructuredTaskProperties.Should().ContainKey(nameof(Task.Status))
+                .WhichValue.Should().BeOfType<string>()
+                .Which.Should().Be(nameof(TaskStatus.RanToCompletion));
+            destructuredTaskProperties.Should().ContainKey(nameof(Task.CreationOptions))
+                .WhichValue.Should().BeOfType<string>()
+                .Which.Should().Contain(nameof(TaskCreationOptions.LongRunning))
+                .And.Contain(nameof(TaskCreationOptions.PreferFairness));
+        }
+
+        [Fact]
+        public void CanDestructureFaultedTask()
+        {
+            var taskException = new Exception("INNER EXCEPTION MESSAGE");
+#if NET452
+            var tcs = new TaskCompletionSource<int>();
+            tcs.SetException(taskException);
+            var task = tcs.Task;
+#else
+            Task task = Task.FromException(taskException);
+#endif
+            var exception = new TaskException("TASK EXCEPTION MESSAGE", task);
+
+            var propertiesBag = new ExceptionPropertiesBag(exception);
+            CreateReflectionBasedDestructurer().Destructure(exception, propertiesBag, InnerDestructure(CreateReflectionBasedDestructurer()));
+
+            var properties = propertiesBag.GetResultDictionary();
+            var destructuredTaskObject = (IDictionary)properties[nameof(TaskCanceledException.Task)];
+            var destructuredTaskProperties = Assert.IsAssignableFrom<IDictionary<string, object>>(destructuredTaskObject);
+            destructuredTaskProperties.Should().ContainKey(nameof(Task.Id));
+            destructuredTaskProperties.Should().ContainKey(nameof(Task.Status))
+                .WhichValue.Should().BeOfType<string>()
+                .Which.Should().Be(nameof(TaskStatus.Faulted));
+            destructuredTaskProperties.Should().ContainKey(nameof(Task.CreationOptions))
+                .WhichValue.Should().BeOfType<string>()
+                .Which.Should().Be(nameof(TaskCreationOptions.None));
+            var taskFirstLevelExceptionDictionary = destructuredTaskProperties.Should().ContainKey(nameof(Task.Exception))
+                .WhichValue.Should().BeAssignableTo<IDictionary<string, object>>()
+                .Which;
+            taskFirstLevelExceptionDictionary.Should().ContainKey("Message")
+                .WhichValue.Should().BeOfType<string>()
+                .Which.Should().Contain("One or more errors occurred.", "task's first level exception is aggregate exception");
+            taskFirstLevelExceptionDictionary.Should().ContainKey("InnerExceptions")
+                .WhichValue.Should().BeAssignableTo<IReadOnlyCollection<object>>()
+                .Which.Should().ContainSingle()
+                .Which.Should().BeAssignableTo<IDictionary<string, object>>()
+                .Which.Should().ContainKey("Message")
+                .WhichValue.Should().BeOfType<string>()
+                .Which.Should().Be("INNER EXCEPTION MESSAGE");
         }
 
         [Fact]
@@ -255,20 +320,47 @@
         }
 
         [Fact]
+        public void WhenObjectContainsCyclicReferencesInTask_ThenRecursiveDestructureIsImmediatelyStopped()
+        {
+            // Arrange
+            var exception = new CyclicExceptionTask();
+#if NET452
+            var tcs = new TaskCompletionSource<int>();
+            tcs.SetException(exception);
+            var task = tcs.Task;
+#else
+            var task = Task.FromException(exception);
+#endif
+            exception.Task = task;
+
+            // Act
+            var result = new ExceptionPropertiesBag(exception);
+            var destructurer = CreateReflectionBasedDestructurer();
+            destructurer.Destructure(exception, result, InnerDestructure(destructurer));
+
+            // Assert
+            var resultsDictionary = result.GetResultDictionary();
+            var destructuredTask = resultsDictionary[nameof(CyclicExceptionTask.Task)].Should().BeAssignableTo<IDictionary<string, object>>().Which;
+            var destructuredCyclicException = destructuredTask.Should().ContainKey(nameof(Task.Exception))
+                .WhichValue.Should().BeAssignableTo<IDictionary<string, object>>()
+                .Which.Should().ContainKey(nameof(AggregateException.InnerExceptions))
+                .WhichValue.Should().BeAssignableTo<IReadOnlyCollection<object>>()
+                .Which.Should().ContainSingle()
+                .Which.Should().BeAssignableTo<IDictionary<string, object>>().Which;
+            destructuredCyclicException.Should().ContainKey(nameof(Exception.Message))
+                .WhichValue.Should().BeOfType<string>()
+                .Which.Should().Contain(nameof(CyclicExceptionTask));
+            destructuredCyclicException.Should().ContainKey(nameof(CyclicExceptionTask.Task))
+                .WhichValue.Should().BeAssignableTo<IDictionary<string, object>>()
+                .Which.Should().ContainKey("$ref", "task was already destructured, so inner task should just contain ref");
+        }
+
+        [Fact]
         public void WhenDestruringArgumentException_ResultShouldBeEquivalentToArgumentExceptionDestructurer()
         {
             var exception = ThrowAndCatchException(() => throw new ArgumentException("MESSAGE", "paramName"));
             Test_ResultOfReflectionDestructurerShouldBeEquivalentToCustomOne(exception, new ArgumentExceptionDestructurer());
         }
-
-        // To be discussed: whether we need to keep consistent behaviour even for inner exceptions
-        //[Fact]
-        //public void WhenDestruringAggregateException_ResultShouldBeEquivalentToAggregateExceptionDestructurer()
-        //{
-        //    var argumentException = ThrowAndCatchException(() => throw new ArgumentException("MESSAGE", "paramName"));
-        //    var aggregateException = ThrowAndCatchException(() => throw new AggregateException(argumentException));
-        //    Test_ResultOfReflectionDestructurerShouldBeEquivalentToCustomOne(aggregateException, new AggregateExceptionDestructurer());
-        //}
 
         private static void Test_ResultOfReflectionDestructurerShouldBeEquivalentToCustomOne(
             Exception exception,
@@ -280,18 +372,6 @@
             var reflectionBasedDestructurer = CreateReflectionBasedDestructurer();
 
             // Act
-            Func<Exception, IReadOnlyDictionary<string, object>> InnerDestructure(IExceptionDestructurer destructurer)
-            {
-                return (ex) =>
-                {
-                    var resultsBag = new ExceptionPropertiesBag(ex);
-
-                    destructurer.Destructure(ex, resultsBag, null);
-
-                    return resultsBag.GetResultDictionary();
-                };
-            }
-
             reflectionBasedDestructurer.Destructure(exception, reflectionBasedResult, InnerDestructure(reflectionBasedDestructurer));
             customDestructurer.Destructure(exception, customBasedResult, InnerDestructure(new ArgumentExceptionDestructurer()));
 
@@ -301,6 +381,15 @@
 
             reflectionBasedDictionary.Should().BeEquivalentTo(customBasedDictionary);
         }
+
+        private static Func<Exception, IReadOnlyDictionary<string, object>> InnerDestructure(IExceptionDestructurer destructurer) => (ex) =>
+        {
+            var resultsBag = new ExceptionPropertiesBag(ex);
+
+            destructurer.Destructure(ex, resultsBag, InnerDestructure(destructurer));
+
+            return resultsBag.GetResultDictionary();
+        };
 
         private static Exception ThrowAndCatchException(Action throwingAction)
         {
@@ -317,10 +406,8 @@
             return null;
         }
 
-        private static ReflectionBasedDestructurer CreateReflectionBasedDestructurer()
-        {
-            return new ReflectionBasedDestructurer(10);
-        }
+        private static ReflectionBasedDestructurer CreateReflectionBasedDestructurer() =>
+            new ReflectionBasedDestructurer(10);
 
         public class MyObject
         {
@@ -342,16 +429,10 @@
 
             public MyObjectEnumerable Reference { get; set; }
 
-            public IEnumerator<MyObjectEnumerable> GetEnumerator()
-            {
-                var myObjects = new List<MyObjectEnumerable> { this.Reference };
-                return myObjects.GetEnumerator();
-            }
+            public IEnumerator<MyObjectEnumerable> GetEnumerator() =>
+                new List<MyObjectEnumerable> { this.Reference }.GetEnumerator();
 
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return this.GetEnumerator();
-            }
+            IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
         }
 
         public class CyclicException2 : Exception
@@ -362,6 +443,11 @@
         public class CyclicExceptionDict : Exception
         {
             public MyObjectDict MyObjectDict { get; set; }
+        }
+
+        public class CyclicExceptionTask : Exception
+        {
+            public Task Task { get; set; }
         }
 
         public class MyObjectDict
@@ -392,10 +478,7 @@
 
             public string PublicProperty { get; set; }
 
-            public string ExceptionProperty
-            {
-                get { throw new Exception(); }
-            }
+            public string ExceptionProperty => throw new Exception();
 
             internal string InternalProperty { get; set; }
 
@@ -409,12 +492,19 @@
         public class UriException : Exception
         {
             public UriException(string message, Uri uri)
-                : base(message)
-            {
+                : base(message) =>
                 this.Uri = uri;
-            }
 
             public Uri Uri { get; }
+        }
+
+        public class TaskException : Exception
+        {
+            public TaskException(string message, Task task)
+                : base(message) =>
+                this.Task = task;
+
+            public Task Task { get; }
         }
 
         public class RecursiveNode

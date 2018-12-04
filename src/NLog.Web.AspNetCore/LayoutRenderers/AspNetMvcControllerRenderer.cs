@@ -1,5 +1,4 @@
-﻿using NLog.LayoutRenderers;
-using System.Text;
+﻿using System.Text;
 #if !ASP_NET_CORE
 using System.Web.Routing;
 using System.Web;
@@ -8,7 +7,8 @@ using HttpContextBase = Microsoft.AspNetCore.Http.HttpContext;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Http;
 #endif
-
+using NLog.Config;
+using NLog.LayoutRenderers;
 
 namespace NLog.Web.LayoutRenderers
 {
@@ -24,6 +24,7 @@ namespace NLog.Web.LayoutRenderers
     /// </code>
     /// </example>
     [LayoutRenderer("aspnet-mvc-controller")]
+    [ThreadSafe]
     public class AspNetMvcControllerRenderer : AspNetMvcLayoutRendererBase
     {
         /// <summary>

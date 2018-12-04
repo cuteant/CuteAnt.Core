@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using Microsoft.Extensions.Logging;
 using NLog.Common;
 
 namespace NLog.Extensions.Logging
@@ -6,7 +7,7 @@ namespace NLog.Extensions.Logging
   /// <summary>Creating DI loggers for Microsoft.Extensions.Logging and NLog</summary>
   public class NLogLoggerFactory : ILoggerFactory
   {
-    private NLogLoggerProvider _provider;
+    private readonly NLogLoggerProvider _provider;
 
     /// <summary>New factory with default options</summary>
     public NLogLoggerFactory()
@@ -26,7 +27,17 @@ namespace NLog.Extensions.Logging
     /// <summary>Dispose</summary>
     public void Dispose()
     {
-      LogManager.Flush();
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    /// <summary>Cleanup</summary>
+    protected virtual void Dispose(bool disposing)
+    {
+      if (disposing)
+      {
+        LogManager.Flush();
+      }
     }
 
     #endregion

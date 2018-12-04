@@ -1,18 +1,15 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 #if !ASP_NET_CORE
 using System.Collections.Specialized;
 using System.Web;
 #else
-using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Http;
 #endif
-using NLog.LayoutRenderers;
-using System.Collections.Generic;
 using NLog.Config;
+using NLog.LayoutRenderers;
 using NLog.Web.Enums;
-using System;
-using System.Linq;
-
 using NLog.Web.Internal;
 
 namespace NLog.Web.LayoutRenderers
@@ -28,6 +25,7 @@ namespace NLog.Web.LayoutRenderers
     /// </code>
     /// </example>
     [LayoutRenderer("aspnet-request-cookie")]
+    [ThreadSafe]
     public class AspNetRequestCookieLayoutRenderer : AspNetLayoutMultiValueRendererBase
     {
         /// <summary>
@@ -42,76 +40,63 @@ namespace NLog.Web.LayoutRenderers
         /// <param name="logEvent">Logging event.</param>
         protected override void DoAppend(StringBuilder builder, LogEventInfo logEvent)
         {
-            var httpRequest = HttpContextAccessor?.HttpContext?.TryGetRequest();
-
+            var httpRequest = HttpContextAccessor.HttpContext.TryGetRequest();
             if (httpRequest == null)
-            {
                 return;
-            }
 
             var cookies = httpRequest.Cookies;
-
-            if (this.CookieNames?.Count > 0 && cookies?.Count > 0)
+            if (CookieNames?.Count > 0 && cookies?.Count > 0)
             {
                 var cookieValues = GetCookies(cookies);
-                SerializeValues(cookieValues, builder);
+                SerializePairs(cookieValues, builder, logEvent);
             }
         }
 
-
 #if !ASP_NET_CORE
-
         private IEnumerable<KeyValuePair<string, string>> GetCookies(HttpCookieCollection cookies)
         {
-            if (CookieNames != null)
+            foreach (var cookieName in CookieNames)
             {
-                foreach (var cookieName in CookieNames)
+                var httpCookie = cookies[cookieName];
+                if (httpCookie == null)
                 {
-                    var value = cookies[cookieName];
-                    
-                    if (value != null)
+                    continue;
+                }
+
+                if (OutputFormat == AspNetRequestLayoutOutputFormat.Json)
+                {
+                    // Split multi-valued cookie, as allowed for in the HttpCookie API for backwards compatibility with classic ASP
+                    var isFirst = true;
+                    foreach (var multiValueKey in httpCookie.Values.AllKeys)
                     {
-                        if (this.OutputFormat == AspNetRequestLayoutOutputFormat.Json)
+                        var cookieKey = multiValueKey;
+                        if (isFirst)
                         {
-                            //split
-                            var isFirst = true;
-                            foreach (var key in value.Values.AllKeys)
-                            {
-                                var key2 = key;
-                                if (isFirst)
-                                {
-                                    key2 = cookieName;
-                                    isFirst = false;
-                                }
-                                yield return new KeyValuePair<string, string>(key2, value.Values[key]);
-                            }
+                            cookieKey = cookieName;
+                            isFirst = false;
                         }
-                        else
-                        {
-                            yield return new KeyValuePair<string, string>(cookieName, value.Value);
-                        }
+                        yield return new KeyValuePair<string, string>(cookieKey, httpCookie.Values[multiValueKey]);
                     }
+                }
+                else
+                {
+                    yield return new KeyValuePair<string, string>(cookieName, httpCookie.Value);
                 }
             }
         }
 #else
-
         private IEnumerable<KeyValuePair<string, string>> GetCookies(IRequestCookieCollection cookies)
         {
-            var cookieNames = this.CookieNames;
-            if (cookieNames != null)
+            foreach (var cookieName in CookieNames)
             {
-                foreach (var cookieName in cookieNames)
+                if (!cookies.TryGetValue(cookieName, out var cookieValue))
                 {
-                    if (cookies.TryGetValue(cookieName, out var cookieValue))
-                    {
-                        yield return new KeyValuePair<string, string>(cookieName, cookieValue);
-                    }
+                    continue;
                 }
+
+                yield return new KeyValuePair<string, string>(cookieName, cookieValue);
             }
         }
 #endif
-
-
     }
 }

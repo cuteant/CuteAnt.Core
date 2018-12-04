@@ -20,7 +20,9 @@
             new ArgumentExceptionDestructurer(),
             new ArgumentOutOfRangeExceptionDestructurer(),
             new AggregateExceptionDestructurer(),
-            new ReflectionTypeLoadExceptionDestructurer()
+            new ReflectionTypeLoadExceptionDestructurer(),
+            new OperationCanceledExceptionDestructurer(),
+            new TaskCanceledExceptionDestructurer(),
         };
 
         /// <summary>
@@ -29,7 +31,7 @@
         /// </summary>
         public static readonly IExceptionPropertyFilter IgnoreStackTraceAndTargetSiteExceptionFilter =
 
-#if NET45
+#if DESKTOPCLR
             new IgnorePropertyByNameExceptionFilter(
                 nameof(Exception.StackTrace),
                 nameof(Exception.TargetSite));

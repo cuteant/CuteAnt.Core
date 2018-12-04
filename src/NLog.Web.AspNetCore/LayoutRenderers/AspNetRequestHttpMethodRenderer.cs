@@ -1,12 +1,10 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 #if !ASP_NET_CORE
 using System.Web;
-using System.Collections.Specialized;
 #endif
-using NLog.LayoutRenderers;
-using System.Collections.Generic;
 using NLog.Config;
-using System;
+using NLog.LayoutRenderers;
 using NLog.Web.Internal;
 
 namespace NLog.Web.LayoutRenderers
@@ -21,6 +19,7 @@ namespace NLog.Web.LayoutRenderers
     /// </code>
     /// </example>
     [LayoutRenderer("aspnet-request-method")]
+    [ThreadSafe]
     public class AspNetRequestHttpMethodRenderer : AspNetLayoutRendererBase
     {
         /// <summary>
@@ -30,8 +29,7 @@ namespace NLog.Web.LayoutRenderers
         /// <param name="logEvent">Logging event.</param>
         protected override void DoAppend(StringBuilder builder, LogEventInfo logEvent)
         {
-            var httpRequest = HttpContextAccessor?.HttpContext?.TryGetRequest();
-
+            var httpRequest = HttpContextAccessor.HttpContext.TryGetRequest();
             if (httpRequest == null)
                 return;
 
@@ -41,7 +39,6 @@ namespace NLog.Web.LayoutRenderers
 #else
             httpMethod = httpRequest.Method;
 #endif
-
             builder.Append(httpMethod);
 
         }

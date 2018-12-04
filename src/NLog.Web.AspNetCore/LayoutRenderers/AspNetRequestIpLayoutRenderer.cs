@@ -18,25 +18,74 @@ namespace NLog.Web.LayoutRenderers
     /// </code>
     /// </example>
     [LayoutRenderer("aspnet-request-ip")]
+    [ThreadSafe]
     public class AspNetRequestIpLayoutRenderer : AspNetLayoutRendererBase
     {
+        private const string ForwardedForHeader = "X-Forwarded-For";
+
+        /// <summary>
+        /// Gets or sets whether the renderer should check value of X-Forwarded-For header
+        /// </summary>
+        /// <docgen category='Rendering Options' order='10' />
+        public bool CheckForwardedForHeader { get; set; }
+
         /// <summary>
         /// Render IP
         /// </summary>
         protected override void DoAppend(StringBuilder builder, LogEventInfo logEvent)
         {
             var httpContext = HttpContextAccessor.HttpContext;
-            if (httpContext == null)
+
+            var request = httpContext.TryGetRequest();
+            if (request == null)
             {
                 return;
             }
-#if !ASP_NET_CORE
 
-            var ip = httpContext.TryGetRequest()?.ServerVariables["REMOTE_ADDR"];
+            var ip = CheckForwardedForHeader ? TryLookupForwardHeader(request) : string.Empty;
+
+            if (string.IsNullOrEmpty(ip))
+            {
+#if !ASP_NET_CORE
+                ip = request.ServerVariables["REMOTE_ADDR"];
 #else
-            var ip = httpContext.Connection?.RemoteIpAddress;
+                ip = httpContext.Connection?.RemoteIpAddress?.ToString();
 #endif
+            }
+
             builder.Append(ip);
         }
+
+#if !ASP_NET_CORE
+        string TryLookupForwardHeader(System.Web.HttpRequestBase httpRequest)
+        {
+            var forwardedHeader = httpRequest.Headers[ForwardedForHeader];
+
+            if (!string.IsNullOrEmpty(forwardedHeader))
+            {
+                var addresses = forwardedHeader.Split(',');
+                if (addresses.Length > 0)
+                {
+                    return addresses[0];
+                }
+            }
+
+            return string.Empty;
+        }
+#else
+        string TryLookupForwardHeader(HttpRequest httpRequest)
+        {
+            if (httpRequest.Headers?.ContainsKey(ForwardedForHeader)==true)
+            {
+                var forwardedHeaders = httpRequest.Headers.GetCommaSeparatedValues(ForwardedForHeader);
+                if (forwardedHeaders.Length > 0)
+                {
+                    return forwardedHeaders[0];
+                }
+            }
+
+            return string.Empty;
+        }
+#endif
     }
 }
