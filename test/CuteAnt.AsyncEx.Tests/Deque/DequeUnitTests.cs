@@ -2,6 +2,7 @@
 using Xunit;
 using System.Collections.Generic;
 using System.Collections;
+using CuteAnt.Collections;
 
 namespace CuteAnt.AsyncEx.Tests
 {

@@ -132,6 +132,25 @@ namespace Grace.DependencyInjection.Impl
       return this;
     }
 
+    /// <summary>Import property by name</summary>
+    /// <param name="propertyName">property name</param>
+    /// <returns>configuration object</returns>
+    public IFluentImportPropertyConfiguration ImportProperty(string propertyName)
+    {
+      var property = _exportConfiguration.ActivationType.GetRuntimeProperty(propertyName);
+
+      if (property == null)
+      {
+        throw new Exception($"Could not find property named {propertyName} on type {_exportConfiguration.ActivationType.Name}");
+      }
+
+      var memberInjection = new MemberInjectionInfo { MemberInfo = property };
+
+      _exportConfiguration.MemberInjectionSelector(new KnownMemberInjectionSelector(memberInjection));
+
+      return new FluentImportPropertyConfiguration(this, memberInjection);
+    }
+
     /// <summary>Apply a lifestlye to export strategy</summary>
     public ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle => new LifestylePicker<IFluentExportStrategyConfiguration>(this, lifestlye => UsingLifestyle(lifestlye));
 
@@ -161,6 +180,18 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>Apply a condition on when to use strategy</summary>
     public IWhenConditionConfiguration<IFluentExportStrategyConfiguration> When =>
         new WhenConditionConfiguration<IFluentExportStrategyConfiguration>(condition => _exportConfiguration.AddCondition(condition), this);
+
+    /// <summary>Configure constructor parameter</summary>
+    /// <param name="parameterType">parameter type</param>
+    /// <returns></returns>
+    public IFluentWithCtorConfiguration WithCtorParam(Type parameterType = null)
+    {
+      var constructorInfo = new ConstructorParameterInfo(null) { ParameterType = parameterType };
+
+      _exportConfiguration.ConstructorParameter(constructorInfo);
+
+      return new FluentWithCtorConfiguration(this, constructorInfo);
+    }
 
     /// <summary>Configure constructor parameter</summary>
     /// <typeparam name="TParam"></typeparam>

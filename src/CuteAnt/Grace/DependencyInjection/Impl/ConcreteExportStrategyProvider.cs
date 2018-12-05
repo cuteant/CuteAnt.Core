@@ -66,7 +66,7 @@ namespace Grace.DependencyInjection.Impl
 
     /// <summary>Add Filter type filter</summary>
     /// <param name="filter"></param>
-    public void AddFilter(Func<Type, bool> filter)
+    public virtual void AddFilter(Func<Type, bool> filter)
     {
       if (filter != null)
       {
@@ -78,7 +78,7 @@ namespace Grace.DependencyInjection.Impl
     /// <param name="scope"></param>
     /// <param name="request"></param>
     /// <returns></returns>
-    public bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request)
+    public virtual bool CanLocate(IInjectionScope scope, IActivationExpressionRequest request)
     {
       var requestedType = request.ActivationType;
 
@@ -145,14 +145,14 @@ namespace Grace.DependencyInjection.Impl
         return false;
       }
 
-      return ShouldCreateConcreteStrategy(requestedType);
+      return ShouldCreateConcreteStrategy(request);
     }
 
     /// <summary>Provide exports for a missing type</summary>
     /// <param name="scope">scope to provide value</param>
     /// <param name="request">request</param>
     /// <returns>set of activation strategies</returns>
-    public IEnumerable<IActivationStrategy> ProvideExports(IInjectionScope scope, IActivationExpressionRequest request)
+    public virtual IEnumerable<IActivationStrategy> ProvideExports(IInjectionScope scope, IActivationExpressionRequest request)
     {
       var requestedType = request.ActivationType;
 
@@ -274,7 +274,7 @@ namespace Grace.DependencyInjection.Impl
           }
         }
       }
-      else if (ShouldCreateConcreteStrategy(requestedType))
+      else if (ShouldCreateConcreteStrategy(request))
       {
         var strategy =
             new CompiledExportStrategy(requestedType, scope, request.Services.LifestyleExpressionBuilder).ProcessAttributeForStrategy();
@@ -286,10 +286,11 @@ namespace Grace.DependencyInjection.Impl
     }
 
     /// <summary>Should a type be exported</summary>
-    /// <param name="type"></param>
+    /// <param name="request"></param>
     /// <returns></returns>
-    public virtual bool ShouldCreateConcreteStrategy(Type type)
+    public virtual bool ShouldCreateConcreteStrategy(IActivationExpressionRequest request)
     {
+      var type = request.ActivationType;
       var typeInfo = type.GetTypeInfo();
       // ## 苦竹 修改 ##
       //if (type == typeof(string) || typeInfo.IsPrimitive || type == typeof(DateTime))

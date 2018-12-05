@@ -168,7 +168,7 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             var instance = container.Locate<DynamicMultipleIntParameters>(new { secondValue = 10, firstValue = 5 });
 
             Assert.NotNull(instance);
-            Assert.Equal(5, instance.FirstValue);
+            Assert.Equal(instance.FirstValue, 5);
             Assert.Equal(10, instance.SecondValue);
         }
 
@@ -369,6 +369,16 @@ namespace Grace.Tests.DependencyInjection.ConstructorSelection
             {
                 var instance = childContainer.Locate<IDependentService<IBasicService>>();
             }
+        }
+
+        [Fact]
+        public void DynamicConstructorSelection_Disposable_Singleton()
+        {
+            var container = new DependencyInjectionContainer(c => c.Behaviors.ConstructorSelection = ConstructorSelectionMethod.Dynamic);
+                
+            container.Configure(c => c.Export<DisposableService>().As<IDisposableService>().Lifestyle.Singleton());
+
+            var instance = container.Locate<IDisposableService>();
         }
     }
 }

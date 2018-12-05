@@ -15,6 +15,6 @@ namespace CuteAnt.Disposables
     }
 
     /// <summary>Gets the instance of <see cref="NoopDisposable"/>.</summary>
-    public static NoopDisposable Instance { get; } = new NoopDisposable();
+    public static readonly NoopDisposable Instance = new NoopDisposable();
   }
 }

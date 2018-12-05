@@ -73,6 +73,15 @@ namespace Grace.DependencyInjection
     public static IFluentExportStrategyConfiguration<T> ExportAs<T, TInterface>(this IExportRegistrationBlock registrationBlock)
       where T : TInterface => registrationBlock.Export<T>().As<TInterface>();
 
+    /// <summary>Export type as keyed type</summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TInterface"></typeparam>
+    /// <param name="registrationBlock"></param>
+    /// <param name="key"></param>
+    /// <returns></returns>
+    public static IFluentExportStrategyConfiguration<T> ExportAsKeyed<T, TInterface>(this IExportRegistrationBlock registrationBlock, object key)
+        => registrationBlock.Export<T>().AsKeyed(typeof(TInterface), key);
+
     /// <summary>Extension to export a list of types to a registration block</summary>
     /// <param name="types">list of types</param>
     /// <param name="registrationBlock">registration block</param>

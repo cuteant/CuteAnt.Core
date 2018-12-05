@@ -152,6 +152,25 @@ namespace Grace.DependencyInjection.Impl.Expressions
             newResult.AddExtraExpression(Expression.Assign(memberExpression, memberResult.Expression));
           }
         }
+        else
+        {
+          Expression memberExpression;
+
+          if (memberKVP.Key is FieldInfo KeyFieldInfo)
+          {
+            memberExpression = Expression.Field(variable, KeyFieldInfo);
+          }
+          else if (memberKVP.Key is PropertyInfo keyPropertyInfo)
+          {
+            memberExpression = Expression.Property(variable, keyPropertyInfo);
+          }
+          else
+          {
+            throw new LocateException(request.GetStaticInjectionContext(), $"{memberKVP.Key.GetType().Name} member type not supported");
+          }
+
+          newResult.AddExtraExpression(Expression.Assign(memberExpression, expression));
+        }
       }
 
       newResult.Expression = variable;

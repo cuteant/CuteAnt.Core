@@ -101,14 +101,20 @@ namespace CuteAnt.AsyncEx
         while (Full && !_completed)
         {
           if (sync)
-            _completedOrNotFull.Wait();
+          {
+            _completedOrNotFull.Wait(cancellationToken);
+          }
           else
+          {
             await _completedOrNotFull.WaitAsync(cancellationToken).ConfigureAwait(false);
+          }
         }
 
         // If the queue has been marked complete, then abort.
         if (_completed)
+        {
           throw new InvalidOperationException("Enqueue failed; the producer/consumer queue has completed adding.");
+        }
 
         _queue.Enqueue(item);
         _completedOrNotEmpty.Notify();
@@ -147,9 +153,13 @@ namespace CuteAnt.AsyncEx
         while (Empty && !_completed)
         {
           if (sync)
-            _completedOrNotEmpty.Wait();
+          {
+            _completedOrNotEmpty.Wait(cancellationToken);
+          }
           else
+          {
             await _completedOrNotEmpty.WaitAsync(cancellationToken).ConfigureAwait(false);
+          }
         }
         return !Empty;
       }

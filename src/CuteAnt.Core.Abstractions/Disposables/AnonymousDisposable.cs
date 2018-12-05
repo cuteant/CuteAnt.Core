@@ -15,7 +15,7 @@ namespace CuteAnt.Disposables
     /// <inheritdoc />
     protected override void Dispose(Action context) => context?.Invoke();
 
-    /// <summary>Adds a delegate to be executed when this instance is disposed. If this instance is already disposed,
+    /// <summary>Adds a delegate to be executed when this instance is disposed or disposing. If this instance is already disposed,
     /// then <paramref name="dispose"/> is executed immediately.</summary>
     /// <param name="dispose">The delegate to add. May be <c>null</c> to indicate no additional action.</param>
     public void Add(Action dispose)

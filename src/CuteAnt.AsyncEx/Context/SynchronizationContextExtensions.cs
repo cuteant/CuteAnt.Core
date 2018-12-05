@@ -39,6 +39,14 @@ namespace CuteAnt.AsyncEx
           ((Action)state)();
           tcs.TrySetResult(null);
         }
+        catch (OperationCanceledException ex)
+        {
+#if NET40 || NET451
+          tcs.TrySetCanceled();
+#else
+          tcs.TrySetCanceled(ex.CancellationToken);
+#endif
+        }
         catch (Exception ex)
         {
           tcs.TrySetException(ex);
@@ -59,6 +67,14 @@ namespace CuteAnt.AsyncEx
         try
         {
           tcs.SetResult(((Func<T>)state)());
+        }
+        catch (OperationCanceledException ex)
+        {
+#if NET40 || NET451
+          tcs.TrySetCanceled();
+#else
+          tcs.TrySetCanceled(ex.CancellationToken);
+#endif
         }
         catch (Exception ex)
         {
@@ -81,6 +97,14 @@ namespace CuteAnt.AsyncEx
           await ((Func<Task>)state)().ConfigureAwait(false);
           tcs.TrySetResult(null);
         }
+        catch (OperationCanceledException ex)
+        {
+#if NET40 || NET451
+          tcs.TrySetCanceled();
+#else
+          tcs.TrySetCanceled(ex.CancellationToken);
+#endif
+        }
         catch (Exception ex)
         {
           tcs.TrySetException(ex);
@@ -101,6 +125,14 @@ namespace CuteAnt.AsyncEx
         try
         {
           tcs.SetResult(await ((Func<Task<T>>)state)().ConfigureAwait(false));
+        }
+        catch (OperationCanceledException ex)
+        {
+#if NET40 || NET451
+          tcs.TrySetCanceled();
+#else
+          tcs.TrySetCanceled(ex.CancellationToken);
+#endif
         }
         catch (Exception ex)
         {

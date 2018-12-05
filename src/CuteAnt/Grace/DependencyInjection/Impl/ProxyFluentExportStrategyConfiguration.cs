@@ -49,7 +49,7 @@ namespace Grace.DependencyInjection.Impl
     /// <summary>Specify the constructor selection algorithm</summary>
     /// <param name="method"></param>
     /// <returns></returns>
-    public IFluentExportStrategyConfiguration ImportConstructorSelection(IConstructorExpressionCreator method) => throw new NotImplementedException();
+    public IFluentExportStrategyConfiguration ImportConstructorSelection(IConstructorExpressionCreator method) => _strategy.ImportConstructorSelection(method);
 
     /// <summary>Import a specific member</summary>
     /// <param name="selector">selector method, can be null</param>
@@ -57,6 +57,11 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>configuraiton object</returns>
     public IFluentExportStrategyConfiguration ImportMembers(Func<MemberInfo, bool> selector = null, bool injectMethods = false)
         => _strategy.ImportMembers(selector, injectMethods);
+
+    /// <summary>Import property by name.</summary>
+    /// <param name="propertyName">property name</param>
+    /// <returns>configuration object</returns>
+    public IFluentImportPropertyConfiguration ImportProperty(string propertyName) => _strategy.ImportProperty(propertyName);
 
     /// <summary>Apply a lifestlye to export strategy</summary>
     public ILifestylePicker<IFluentExportStrategyConfiguration> Lifestyle => _strategy.Lifestyle;
@@ -73,6 +78,11 @@ namespace Grace.DependencyInjection.Impl
 
     /// <summary>Apply a condition on when to use strategy</summary>
     public IWhenConditionConfiguration<IFluentExportStrategyConfiguration> When => _strategy.When;
+
+    /// <summary>Configure constructor parameter.</summary>
+    /// <param name="parameterType">parameter type</param>
+    /// <returns></returns>
+    public IFluentWithCtorConfiguration WithCtorParam(Type parameterType = null) => _strategy.WithCtorParam(parameterType);
 
     /// <summary>Configure constructor parameter</summary>
     /// <typeparam name="TParam"></typeparam>

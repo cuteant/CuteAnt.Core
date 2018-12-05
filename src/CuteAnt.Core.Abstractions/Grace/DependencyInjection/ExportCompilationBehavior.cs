@@ -80,10 +80,14 @@ namespace Grace.DependencyInjection
       set
       {
         if (null == value) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.KeyedTypeSelector, ExceptionResource.Value_Must_Not_Be_Null);
+        _keyedTypeSelector = value;
       }
     }
 
     /// <summary>By default ExportInstance and ExportFactory must return a value.</summary>
     public bool AllowInstanceAndFactoryToReturnNull { get; set; } = false;
+
+    /// <summary>Process ImportAttribute for parameteres</summary>
+    public bool ProcessImportAttributeForParameters { get; set; } = true;
   }
 }
