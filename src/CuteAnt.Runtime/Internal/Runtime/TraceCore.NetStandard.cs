@@ -90,7 +90,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57394, Level=informational, Channel=Analytic
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool HandledExceptionIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.HandledExceptionIsEnabled();
@@ -103,7 +103,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="trace">The trace provider</param>
     /// <param name="param0">Parameter 0 for event: Handling an exception.  Exception details: {0}</param>
     /// <param name="exception">Exception associated with the event</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void HandledException(EtwDiagnosticTrace trace, string param0, System.Exception exception)
     {
       string serializedException = EtwDiagnosticTrace.ExceptionToTraceString(exception, int.MaxValue);
@@ -117,7 +117,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="param0">Parameter 0 for event: An unexpected failure occurred. Applications should not attempt to handle this error. For diagnostic purposes, this English message is associated with the failure: {0}.</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void ShipAssertExceptionMessage(EtwDiagnosticTrace trace, string param0)
     {
       WcfEventSource.Instance.ShipAssertExceptionMessage(param0);
@@ -128,7 +128,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57396, Level=warning, Channel=Analytic
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool ThrowingExceptionIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.ThrowingExceptionIsEnabled();
@@ -142,7 +142,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="param0">Parameter 0 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="param1">Parameter 1 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="exception">Exception associated with the event</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void ThrowingException(EtwDiagnosticTrace trace, string param0, string param1, System.Exception exception)
     {
       string serializedException = EtwDiagnosticTrace.ExceptionToTraceString(exception, int.MaxValue);
@@ -154,7 +154,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57397, Level=critical, Channel=Operational
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool UnhandledExceptionIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.UnhandledExceptionIsEnabled();
@@ -167,7 +167,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="trace">The trace provider</param>
     /// <param name="param0">Parameter 0 for event: Unhandled exception.  Exception details: {0}</param>
     /// <param name="exception">Exception associated with the event</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void UnhandledException(EtwDiagnosticTrace trace, string param0, System.Exception exception)
     {
       string serializedException = EtwDiagnosticTrace.ExceptionToTraceString(exception, int.MaxValue);
@@ -179,7 +179,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57399, Level=critical, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool TraceCodeEventLogCriticalIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.TraceCodeEventLogCriticalIsEnabled();
@@ -191,7 +191,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="traceRecord">Extended data (TraceRecord) for the event</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void TraceCodeEventLogCritical(EtwDiagnosticTrace trace, TraceRecord traceRecord)
     {
       WcfEventSource.Instance.TraceCodeEventLogCritical(traceRecord.EventId);
@@ -202,7 +202,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57400, Level=error, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool TraceCodeEventLogErrorIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.TraceCodeEventLogErrorIsEnabled();
@@ -214,7 +214,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="traceRecord">Extended data (TraceRecord) for the event</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void TraceCodeEventLogError(EtwDiagnosticTrace trace, TraceRecord traceRecord)
     {
       WcfEventSource.Instance.TraceCodeEventLogError(traceRecord.EventId);
@@ -225,7 +225,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57401, Level=informational, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool TraceCodeEventLogInfoIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.TraceCodeEventLogInfoIsEnabled();
@@ -237,7 +237,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="traceRecord">Extended data (TraceRecord) for the event</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void TraceCodeEventLogInfo(EtwDiagnosticTrace trace, TraceRecord traceRecord)
     {
       WcfEventSource.Instance.TraceCodeEventLogInfo(traceRecord.EventId);
@@ -248,7 +248,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57402, Level=verbose, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool TraceCodeEventLogVerboseIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.TraceCodeEventLogVerboseIsEnabled();
@@ -260,7 +260,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="traceRecord">Extended data (TraceRecord) for the event</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void TraceCodeEventLogVerbose(EtwDiagnosticTrace trace, TraceRecord traceRecord)
     {
       WcfEventSource.Instance.TraceCodeEventLogVerbose(traceRecord.EventId);
@@ -271,7 +271,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57403, Level=warning, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool TraceCodeEventLogWarningIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.TraceCodeEventLogWarningIsEnabled();
@@ -283,7 +283,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="traceRecord">Extended data (TraceRecord) for the event</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void TraceCodeEventLogWarning(EtwDiagnosticTrace trace, TraceRecord traceRecord)
     {
       WcfEventSource.Instance.TraceCodeEventLogWarning(traceRecord.EventId);
@@ -294,7 +294,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57404, Level=warning, Channel=Analytic
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool HandledExceptionWarningIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.HandledExceptionWarningIsEnabled();
@@ -307,7 +307,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="trace">The trace provider</param>
     /// <param name="param0">Parameter 0 for event: Handling an exception. Exception details: {0}</param>
     /// <param name="exception">Exception associated with the event</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void HandledExceptionWarning(EtwDiagnosticTrace trace, string param0, System.Exception exception)
     {
       string serializedException = EtwDiagnosticTrace.ExceptionToTraceString(exception, int.MaxValue);
@@ -319,7 +319,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=131, Level=verbose, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool BufferPoolAllocationIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.BufferPoolAllocationIsEnabled();
@@ -331,7 +331,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="Size">Parameter 0 for event: Pool allocating {0} Bytes.</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void BufferPoolAllocation(EtwDiagnosticTrace trace, int Size)
     {
       WcfEventSource.Instance.BufferPoolAllocation(Size);
@@ -342,7 +342,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=132, Level=verbose, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool BufferPoolChangeQuotaIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.BufferPoolChangeQuotaIsEnabled();
@@ -355,7 +355,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="trace">The trace provider</param>
     /// <param name="PoolSize">Parameter 0 for event: BufferPool of size {0}, changing quota by {1}.</param>
     /// <param name="Delta">Parameter 1 for event: BufferPool of size {0}, changing quota by {1}.</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void BufferPoolChangeQuota(EtwDiagnosticTrace trace, int PoolSize, int Delta)
     {
       WcfEventSource.Instance.BufferPoolChangeQuota(PoolSize, Delta);
@@ -366,7 +366,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=133, Level=verbose, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool ActionItemScheduledIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.ActionItemScheduledIsEnabled();
@@ -378,7 +378,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="eventTraceActivity">The event trace activity</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void ActionItemScheduled(EtwDiagnosticTrace trace, CuteAnt.Diagnostics.EventTraceActivity eventTraceActivity)
     {
       WcfEventSource.Instance.ActionItemScheduled();
@@ -389,7 +389,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=134, Level=verbose, Channel=Debug
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool ActionItemCallbackInvokedIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.ActionItemCallbackInvokedIsEnabled();
@@ -401,7 +401,7 @@ namespace CuteAnt.Diagnostics
     /// </summary>
     /// <param name="trace">The trace provider</param>
     /// <param name="eventTraceActivity">The event trace activity</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void ActionItemCallbackInvoked(EtwDiagnosticTrace trace, CuteAnt.Diagnostics.EventTraceActivity eventTraceActivity)
     {
       WcfEventSource.Instance.ActionItemCallbackInvoked();
@@ -412,7 +412,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57405, Level=error, Channel=Operational
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool HandledExceptionErrorIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.HandledExceptionErrorIsEnabled();
@@ -425,7 +425,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="trace">The trace provider</param>
     /// <param name="param0">Parameter 0 for event: Handling an exception. Exception details: {0}</param>
     /// <param name="exception">Exception associated with the event</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void HandledExceptionError(EtwDiagnosticTrace trace, string param0, System.Exception exception)
     {
       string serializedException = EtwDiagnosticTrace.ExceptionToTraceString(exception, int.MaxValue);
@@ -437,7 +437,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57406, Level=verbose, Channel=Analytic
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool HandledExceptionVerboseIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.HandledExceptionVerboseIsEnabled();
@@ -450,7 +450,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="trace">The trace provider</param>
     /// <param name="param0">Parameter 0 for event: Handling an exception  Exception details: {0}</param>
     /// <param name="exception">Exception associated with the event</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void HandledExceptionVerbose(EtwDiagnosticTrace trace, string param0, System.Exception exception)
     {
       string serializedException = EtwDiagnosticTrace.ExceptionToTraceString(exception, int.MaxValue);
@@ -462,7 +462,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57408, Level=critical, Channel=Operational
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool EtwUnhandledExceptionIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.EtwUnhandledExceptionIsEnabled();
@@ -475,7 +475,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="trace">The trace provider</param>
     /// <param name="param0">Parameter 0 for event: Unhandled exception. Exception details: {0}</param>
     /// <param name="exception">Exception associated with the event</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void EtwUnhandledException(EtwDiagnosticTrace trace, string param0, System.Exception exception)
     {
       string serializedException = EtwDiagnosticTrace.ExceptionToTraceString(exception, int.MaxValue);
@@ -487,7 +487,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57410, Level=warning, Channel=Analytic
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool ThrowingEtwExceptionIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.ThrowingEtwExceptionIsEnabled();
@@ -501,7 +501,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="param0">Parameter 0 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="param1">Parameter 1 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="exception">Exception associated with the event</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void ThrowingEtwException(EtwDiagnosticTrace trace, string param0, string param1, System.Exception exception)
     {
       string serializedException = EtwDiagnosticTrace.ExceptionToTraceString(exception, int.MaxValue);
@@ -513,7 +513,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57409, Level=verbose, Channel=Analytic
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool ThrowingEtwExceptionVerboseIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.ThrowingEtwExceptionVerboseIsEnabled();
@@ -527,7 +527,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="param0">Parameter 0 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="param1">Parameter 1 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="exception">Exception associated with the event</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void ThrowingEtwExceptionVerbose(EtwDiagnosticTrace trace, string param0, string param1, System.Exception exception)
     {
       string serializedException = EtwDiagnosticTrace.ExceptionToTraceString(exception, int.MaxValue);
@@ -539,7 +539,7 @@ namespace CuteAnt.Diagnostics
     /// Event description ID=57407, Level=verbose, Channel=Analytic
     /// </summary>
     /// <param name="trace">The trace provider</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static bool ThrowingExceptionVerboseIsEnabled(EtwDiagnosticTrace trace)
     {
       return WcfEventSource.Instance.ThrowingExceptionVerboseIsEnabled();
@@ -553,7 +553,7 @@ namespace CuteAnt.Diagnostics
     /// <param name="param0">Parameter 0 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="param1">Parameter 1 for event: Throwing an exception. Source: {0}. Exception details: {1}</param>
     /// <param name="exception">Exception associated with the event</param>
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void ThrowingExceptionVerbose(EtwDiagnosticTrace trace, string param0, string param1, System.Exception exception)
     {
       string serializedException = EtwDiagnosticTrace.ExceptionToTraceString(exception, int.MaxValue);

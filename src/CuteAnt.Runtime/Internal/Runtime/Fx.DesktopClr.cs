@@ -41,7 +41,7 @@ namespace CuteAnt
 
     public static ExceptionTrace Exception
     {
-      [MethodImpl(InlineMethod.Value)]
+      [MethodImpl(MethodImplOptions.NoInlining)]
       get
       {
         if (s_exceptionTrace == null)

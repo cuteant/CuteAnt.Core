@@ -15,7 +15,7 @@ namespace CuteAnt.Diagnostics
   internal static class AssertHelper
   {
     [SuppressMessage(FxCop.Category.ReliabilityBasic, FxCop.Rule.InvariantAssertRule, Justification = "Assert implementation")]
-    [MethodImpl(InlineMethod.Value)]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void FireAssert(string message)
     {
       try
