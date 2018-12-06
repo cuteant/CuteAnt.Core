@@ -449,9 +449,6 @@ namespace System.Threading.Tasks.Dataflow.Internal
         _target = target;
       }
 
-      /// <summary>Gets the number of messages waiting to be processed.</summary>
-      internal Int32 InputCount { get { return _target.InputCount; } }
-
       /// <summary>Gets the messages waiting to be processed.</summary>
       internal IEnumerable<TInput> InputQueue { get { return _target._messages.ToList(); } }
 

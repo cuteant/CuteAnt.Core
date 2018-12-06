@@ -646,7 +646,7 @@ namespace System.Threading.Tasks
   #region == struct PaddingFor32 ==
 
   /// <summary>Padding structure used to minimize false sharing in SingleProducerSingleConsumerQueue{T}.</summary>
-  [StructLayout(LayoutKind.Explicit, Size = PaddingHelpers.CACHE_LINE_SIZE - sizeof(Int32))] // Based on common case of 64-byte cache lines
+  [StructLayout(LayoutKind.Explicit, Size = PaddingHelpers.CACHE_LINE_SIZE - sizeof(Int32))]
   internal struct PaddingFor32 { }
 
   #endregion

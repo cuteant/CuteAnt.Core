@@ -1,4 +1,4 @@
-﻿#if NET40
+﻿#if NET40 && !DEBUG
 // ==++==
 //
 //   Copyright (c) Microsoft Corporation.  All rights reserved.

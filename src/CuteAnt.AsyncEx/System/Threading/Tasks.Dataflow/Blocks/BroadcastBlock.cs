@@ -1435,9 +1435,6 @@ namespace System.Threading.Tasks.Dataflow
         /// <summary>Gets the value of the source's current message.</summary>
         public TOutput Value { get { return _source._currentMessage; } }
 
-        /// <summary>Gets the number of messages waiting to be made current.</summary>
-        public Int32 InputCount { get { return _source._messages.Count; } }
-
         /// <summary>Gets the messages available for receiving.</summary>
         public IEnumerable<TOutput> InputQueue { get { return _source._messages.ToList(); } }
 
@@ -1446,9 +1443,6 @@ namespace System.Threading.Tasks.Dataflow
 
         /// <summary>Gets the DataflowBlockOptions used to configure this block.</summary>
         public DataflowBlockOptions DataflowBlockOptions { get { return _source._dataflowBlockOptions; } }
-
-        /// <summary>Gets whether the block is declining further messages.</summary>
-        public Boolean IsDecliningPermanently { get { return _source._decliningPermanently; } }
 
         /// <summary>Gets whether the block is completed.</summary>
         public Boolean IsCompleted { get { return _source.Completion.IsCompleted; } }

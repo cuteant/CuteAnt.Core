@@ -558,7 +558,7 @@ namespace System.Threading.Tasks.Dataflow.Internal
 
     #region == AddException ==
 
-    /// <summary>Adds an individual exceptionto this source.</summary>
+    /// <summary>Adds an individual exception to this source.</summary>
     /// <param name="exception">The exception to add</param>
     internal void AddException(Exception exception)
     {
@@ -1142,9 +1142,6 @@ namespace System.Threading.Tasks.Dataflow.Internal
 
       /// <summary>Gets the DataflowBlockOptions used to configure this block.</summary>
       internal DataflowBlockOptions DataflowBlockOptions { get { return _source._dataflowBlockOptions; } }
-
-      /// <summary>Gets whether the block is declining further messages.</summary>
-      internal Boolean IsDecliningPermanently { get { return _source._decliningPermanently; } }
 
       /// <summary>Gets whether the block is completed.</summary>
       internal Boolean IsCompleted { get { return _source.Completion.IsCompleted; } }

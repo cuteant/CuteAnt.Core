@@ -47,7 +47,7 @@ namespace CuteAnt.AsyncEx.Resources {
         }
         
         /// <summary>
-        ///   使用此强类型资源类，为所有资源查找
+        ///   重写当前线程的 CurrentUICulture 属性
         ///   重写当前线程的 CurrentUICulture 属性。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -606,6 +606,15 @@ namespace CuteAnt.AsyncEx.Resources {
         internal static string InvalidOperation_DataNotAvailableForReceive {
             get {
                 return ResourceManager.GetString("InvalidOperation_DataNotAvailableForReceive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 An error occurred while linking up the target or during the cleanup after completion. 的本地化字符串。
+        /// </summary>
+        internal static string InvalidOperation_ErrorDuringCleanup {
+            get {
+                return ResourceManager.GetString("InvalidOperation_ErrorDuringCleanup", resourceCulture);
             }
         }
         
