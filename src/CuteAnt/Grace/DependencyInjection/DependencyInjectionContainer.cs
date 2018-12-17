@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Threading;
 using Grace.Data.Immutable;
 using Grace.DependencyInjection.Impl;
@@ -30,13 +29,8 @@ namespace Grace.DependencyInjection
         }
         return container;
       }
-      //set
-      //{
-      //  Contract.Requires(value != null);
-
-      //  Volatile.Write(ref _singleton, value);
-      //}
     }
+
     /// <summary>ConfigureSingleton</summary>
     /// <param name="configuration"></param>
     public static void ConfigureSingleton(Action<IInjectionScopeConfiguration> configuration = null)
