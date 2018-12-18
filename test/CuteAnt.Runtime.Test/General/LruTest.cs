@@ -3,7 +3,7 @@ using System;
 using CuteAnt.Pool;
 using Xunit;
 
-namespace CuteAnt.Rumtime.Test
+namespace CuteAnt.Runtime.Tests
 {
   /// <summary>
   ///This is a test class for the LRU class and is intended

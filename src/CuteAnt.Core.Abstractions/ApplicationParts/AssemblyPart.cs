@@ -8,7 +8,7 @@ namespace CuteAnt.ApplicationParts
   [DebuggerDisplay("{" + nameof(Assembly) + "}")]
   public class AssemblyPart : ApplicationPart, IApplicationPart
   {
-    /// <summary>Initalizes a new <see cref="AssemblyPart"/> instance.</summary>
+    /// <summary>Initializes a new <see cref="AssemblyPart"/> instance.</summary>
     /// <param name="assembly"></param>
     public AssemblyPart(Assembly assembly)
     {

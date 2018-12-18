@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 
-namespace CuteAnt.Pool.Test
+namespace CuteAnt.Pool.Tests
 {
   public class DefaultObjectPoolTest
   {

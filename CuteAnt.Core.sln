@@ -61,7 +61,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grace.Extensions.Dependency
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.AsyncEx.Tests", "test\CuteAnt.AsyncEx.Tests\CuteAnt.AsyncEx.Tests.csproj", "{F5EBF205-531E-4B5D-8178-AD037A406B84}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.Runtime.Test", "test\CuteAnt.Runtime.Test\CuteAnt.Runtime.Test.csproj", "{A457D323-4CC8-4561-A4A2-6E8C4FBD1210}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.Runtime.Tests", "test\CuteAnt.Runtime.Test\CuteAnt.Runtime.Tests.csproj", "{A457D323-4CC8-4561-A4A2-6E8C4FBD1210}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.IO.RecyclableMemoryStream.Tests", "test\Microsoft.IO.RecyclableMemoryStream.Tests\Microsoft.IO.RecyclableMemoryStream.Tests.csproj", "{E471B018-5731-4CAC-B7D6-A5F82BB935FC}"
 EndProject

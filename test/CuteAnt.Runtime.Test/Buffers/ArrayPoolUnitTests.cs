@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace CuteAnt.Buffers.Test
+namespace CuteAnt.Buffers.Tests
 {
   public partial class ArrayPoolUnitTests
   {

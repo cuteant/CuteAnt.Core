@@ -5,7 +5,7 @@ using System.Text;
 using CuteAnt.Buffers;
 using Xunit;
 
-namespace CuteAnt.Runtime.Test
+namespace CuteAnt.Runtime.Tests
 {
   public class BufferManagerStreamReaderTest
   {

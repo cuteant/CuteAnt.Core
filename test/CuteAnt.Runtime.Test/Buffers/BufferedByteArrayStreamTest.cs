@@ -8,7 +8,7 @@ using CuteAnt.Buffers;
 //using Nessos.LinqOptimizer.CSharp;
 using Xunit;
 
-namespace CuteAnt.Buffers.Test
+namespace CuteAnt.Buffers.Tests
 {
   public class BufferedByteArrayStreamTest
   {
