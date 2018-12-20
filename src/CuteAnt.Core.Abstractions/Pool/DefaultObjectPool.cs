@@ -43,7 +43,7 @@ namespace CuteAnt.Pool
 
     public override T Take()
     {
-      T item = _firstItem;
+      var item = _firstItem;
 
       if (item == null || Interlocked.CompareExchange(ref _firstItem, null, item) != item)
       {
@@ -63,20 +63,17 @@ namespace CuteAnt.Pool
     [MethodImpl(InlineMethod.Value)]
     private T GetViaScan()
     {
-      ObjectWrapper[] items = _items;
-      T item = null;
-
+      var items = _items;
       for (var i = 0; i < items.Length; i++)
       {
-        item = items[i];
-
+        var item = items[i].Element;
         if (item != null && Interlocked.CompareExchange(ref items[i].Element, null, item) == item)
         {
-          break;
+          return item;
         }
       }
 
-      return item ?? Create();
+      return Create();
     }
 
     // Non-inline to improve its code quality as uncommon path
@@ -105,7 +102,7 @@ namespace CuteAnt.Pool
     [MethodImpl(InlineMethod.Value)]
     private void ReturnViaScan(T obj)
     {
-      ObjectWrapper[] items = _items;
+      var items = _items;
 
       for (var i = 0; i < items.Length && Interlocked.CompareExchange(ref items[i].Element, obj, null) != null; ++i)
       {
@@ -116,10 +113,6 @@ namespace CuteAnt.Pool
     private struct ObjectWrapper
     {
       public T Element;
-
-      public ObjectWrapper(T item) => Element = item;
-
-      public static implicit operator T(ObjectWrapper wrapper) => wrapper.Element;
     }
   }
 }
