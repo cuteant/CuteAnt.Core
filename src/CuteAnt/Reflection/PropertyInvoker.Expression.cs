@@ -36,10 +36,15 @@ namespace CuteAnt.Reflection
 
       try
       {
+        var declaringType = propertyInfo.ReflectedType;
+
         var instance = Expression.Parameter(TypeConstants.ObjectType, TypeAccessorHelper.InstanceParameterName);
         var argument = Expression.Parameter(TypeConstants.ObjectType, TypeAccessorHelper.ArgumentParameterName);
 
-        var instanceParam = Expression.Convert(instance, propertyInfo.ReflectedType);
+        var instanceParam = declaringType.IsValueType && !declaringType.IsNullableType()
+            ? Expression.Unbox(instance, declaringType)
+            : Expression.Convert(instance, declaringType);
+
         //var valueParam = Expression.Convert(argument, propertyInfo.PropertyType);
         var valueParam = TypeAccessorHelper.GetCastOrConvertExpression(argument, propertyInfo.PropertyType);
 
@@ -84,22 +89,29 @@ namespace CuteAnt.Reflection
       var mi = propertyInfo.GetSetMethod(true);
       if (mi == null) return TypeAccessorHelper<T>.EmptyMemberSetter;
 
-      var thisType = TypeAccessorHelper<T>.ThisType;
-      var propertyDeclaringType = propertyInfo.DeclaringType;
+      try
+      {
+        var thisType = TypeAccessorHelper<T>.ThisType;
+        var propertyDeclaringType = propertyInfo.DeclaringType;
 
-      var instance = Expression.Parameter(thisType, TypeAccessorHelper.InstanceParameterName);
-      var argument = Expression.Parameter(TypeConstants.ObjectType, TypeAccessorHelper.ArgumentParameterName);
+        var instance = Expression.Parameter(thisType, TypeAccessorHelper.InstanceParameterName);
+        var argument = Expression.Parameter(TypeConstants.ObjectType, TypeAccessorHelper.ArgumentParameterName);
 
-      var instanceType = thisType != propertyDeclaringType
-          ? (Expression)Expression.TypeAs(instance, propertyDeclaringType)
-          : instance;
+        var instanceType = thisType != propertyDeclaringType
+            ? (Expression)Expression.TypeAs(instance, propertyDeclaringType)
+            : instance;
 
-      var setterCall = Expression.Call(
-          instanceType,
-          mi,
-          TypeAccessorHelper.GetCastOrConvertExpression(argument, propertyInfo.PropertyType));  //Expression.Convert(argument, propertyInfo.PropertyType));
+        var setterCall = Expression.Call(
+            instanceType,
+            mi,
+            TypeAccessorHelper.GetCastOrConvertExpression(argument, propertyInfo.PropertyType));  //Expression.Convert(argument, propertyInfo.PropertyType));
 
-      return Expression.Lambda<MemberSetter<T>>(setterCall, instance, argument).Compile();
+        return Expression.Lambda<MemberSetter<T>>(setterCall, instance, argument).Compile();
+      }
+      catch //fallback for Android
+      {
+        return (o, convertedValue) => mi.Invoke(o, new[] { convertedValue });
+      }
     }
 
     #endregion

@@ -25,49 +25,39 @@
         <FileVersion>6.1.2.1200</FileVersion>
       </PropertyGroup>
     </When>
-    <When Condition="'$(TargetFramework)' == 'net46'">
+    <When Condition="'$(TargetFramework)' == 'net47'">
       <PropertyGroup>
         <FileVersion>6.1.2.2000</FileVersion>
       </PropertyGroup>
     </When>
-    <When Condition="'$(TargetFramework)' == 'net461'">
+    <When Condition="'$(TargetFramework)' == 'net471'">
       <PropertyGroup>
         <FileVersion>6.1.2.2100</FileVersion>
       </PropertyGroup>
     </When>
-    <When Condition="'$(TargetFramework)' == 'net462'">
+    <When Condition="'$(TargetFramework)' == 'net472'">
       <PropertyGroup>
         <FileVersion>6.1.2.2200</FileVersion>
       </PropertyGroup>
     </When>
-    <When Condition="'$(TargetFramework)' == 'net47'">
-      <PropertyGroup>
-        <FileVersion>6.1.2.3000</FileVersion>
-      </PropertyGroup>
-    </When>
-    <When Condition="'$(TargetFramework)' == 'net471'">
-      <PropertyGroup>
-        <FileVersion>6.1.2.3100</FileVersion>
-      </PropertyGroup>
-    </When>
-    <When Condition="'$(TargetFramework)' == 'net472'">
-      <PropertyGroup>
-        <FileVersion>6.1.2.3200</FileVersion>
-      </PropertyGroup>
-    </When>
-    <When Condition=" '$(TargetFramework)' == 'netcoreapp2.0' or '$(TargetFramework)' == 'netstandard2.0' ">
+    <When Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
       <PropertyGroup>
         <FileVersion>6.1.2.5000</FileVersion>
       </PropertyGroup>
     </When>
+    <When Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">
+      <PropertyGroup>
+        <FileVersion>6.1.2.6000</FileVersion>
+      </PropertyGroup>
+    </When>
     <When Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
       <PropertyGroup>
-        <FileVersion>6.1.2.5100</FileVersion>
+        <FileVersion>6.1.2.6100</FileVersion>
       </PropertyGroup>
     </When>
     <When Condition=" '$(TargetFramework)' == 'netcoreapp2.2' ">
       <PropertyGroup>
-        <FileVersion>6.1.2.5200</FileVersion>
+        <FileVersion>6.1.2.6200</FileVersion>
       </PropertyGroup>
     </When>
     <Otherwise>

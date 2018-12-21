@@ -77,11 +77,9 @@ namespace CuteAnt.Reflection
     /// <returns></returns>
     private static EmptyCtorInvoker GetConstructorMethodToCache(Type instanceType)
     {
-      if (instanceType == TypeConstants.StringType)
-      {
-        return () => string.Empty;
-      }
-      else if (instanceType.IsInterface)
+      if (instanceType == TypeConstants.StringType) { return () => string.Empty; }
+
+      if (instanceType.IsInterface)
       {
         if (instanceType.HasGenericType())
         {

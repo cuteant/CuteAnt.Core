@@ -563,12 +563,12 @@ namespace Grace.DependencyInjection.Impl
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private static void ThrowArgumentException<T>()
+    private static void ThrowArgumentException<T1>()
     {
       throw GetArgumentException();
       ArgumentException GetArgumentException()
       {
-        return new ArgumentException("Property must be a property on type" + typeof(T).FullName, "property");
+        return new ArgumentException("Property must be a property on type" + typeof(T1).FullName, "property");
       }
     }
 

@@ -33,7 +33,9 @@ namespace CuteAnt.Reflection
       var sourceParameter = Expression.Parameter(TypeConstants.ObjectType, TypeAccessorHelper.SourceParameterName);
       var valueParameter = Expression.Parameter(TypeConstants.ObjectType, TypeAccessorHelper.ValueParameterName);
 
-      var sourceExpression = TypeAccessorHelper.GetCastOrConvertExpression(sourceParameter, fieldDeclaringType);
+      var sourceExpression = fieldDeclaringType.IsValueType && !fieldDeclaringType.IsNullableType()
+          ? Expression.Unbox(sourceParameter, fieldDeclaringType)
+          : TypeAccessorHelper.GetCastOrConvertExpression(sourceParameter, fieldDeclaringType);
 
       var fieldExpression = Expression.Field(sourceExpression, fieldInfo);
 
