@@ -5,7 +5,7 @@
     <Company>CuteAnt Development Team(cuteant@outlook.com)</Company>
     <Product>CuteAnt</Product>
     <Copyright>Copyright © 2018 CuteAnt Development Team</Copyright>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/cuteant/CuteAnt.Core/master/LICENSE</PackageLicenseUrl>
+    <PackageLicense>https://raw.githubusercontent.com/cuteant/CuteAnt.Core/master/LICENSE</PackageLicense>
     <PackageProjectUrl>https://github.com/cuteant/CuteAnt.Core</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/cuteant/CuteAnt.Core.git</RepositoryUrl>

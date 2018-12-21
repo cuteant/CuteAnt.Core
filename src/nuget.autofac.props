@@ -6,7 +6,7 @@
     <Product>Autofac</Product>
     <PackageReleaseNotes>Release notes are at https://github.com/autofac/Autofac/releases</PackageReleaseNotes>
     <PackageProjectUrl>http://autofac.org</PackageProjectUrl>
-    <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
+    <PackageLicense>http://www.opensource.org/licenses/mit-license.php</PackageLicense>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/autofac/Autofac</RepositoryUrl>
     <NeutralLanguage>en-US</NeutralLanguage>

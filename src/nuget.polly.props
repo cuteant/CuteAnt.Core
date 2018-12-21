@@ -6,7 +6,7 @@
     <Product>Polly</Product>
     <Copyright>Copyright © 2016, App vNext</Copyright>
     <PackageProjectUrl>https://github.com/App-vNext/Polly</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageLicense>https://raw.github.com/App-vNext/Polly/master/LICENSE.txt</PackageLicense>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/App-vNext/Polly</RepositoryUrl>
     <NeutralLanguage>en-US</NeutralLanguage>

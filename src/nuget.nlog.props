@@ -6,7 +6,7 @@
     <Product>NLog</Product>
     <Copyright>Copyright © 2017 Julian Verdurmen</Copyright>
     <PackageProjectUrl>https://github.com/NLog/NLog.Extensions.Logging</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/NLog/NLog.Extensions.Logging/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicense>https://github.com/NLog/NLog.Extensions.Logging/blob/master/LICENSE</PackageLicense>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/NLog/NLog.Extensions.Logging</RepositoryUrl>
     <NeutralLanguage>en-US</NeutralLanguage>

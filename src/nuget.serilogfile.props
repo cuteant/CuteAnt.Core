@@ -6,7 +6,7 @@
     <Product>Serilog</Product>
     <Copyright>Copyright © 2017 Serilog Contributors</Copyright>
     <PackageProjectUrl>https://github.com/serilog/serilog-extensions-logging-file</PackageProjectUrl>
-    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <PackageLicense>http://www.apache.org/licenses/LICENSE-2.0</PackageLicense>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/serilog/serilog-extensions-logging-file</RepositoryUrl>
     <NeutralLanguage>en-US</NeutralLanguage>

@@ -5,7 +5,7 @@
     <Company>Maksim Volkau</Company>
     <Product>FastExpressionCompiler</Product>
     <Copyright>Copyright © 2013-2017 Maksim Volkau</Copyright>
-    <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageLicense>http://opensource.org/licenses/MIT</PackageLicense>
     <PackageProjectUrl>https://github.com/dadhi/FastExpressionCompiler</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/dadhi/FastExpressionCompiler</RepositoryUrl>
