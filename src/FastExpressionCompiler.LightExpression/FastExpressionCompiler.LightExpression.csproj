@@ -3,21 +3,25 @@
   <Import Project="..\nuget.fast.props" />
   
   <PropertyGroup>
-    <TargetFrameworks>net40</TargetFrameworks>
-    <AssemblyName>FastExpressionCompiler</AssemblyName>
-    <RootNamespace>FastExpressionCompiler</RootNamespace>
+    <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
+    <AssemblyName>FastExpressionCompiler.LightExpression</AssemblyName>
+    <RootNamespace>FastExpressionCompiler.LightExpression</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>$(DefineConstants);LIGHT_EXPRESSION</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <PackageId>FastExpressionCompiler.Net40</PackageId>
-    <Title>FastExpressionCompiler.Net40</Title>
+    <PackageId>FastExpressionCompiler.LightExpression.Unofficial</PackageId>
+    <Title>FastExpressionCompiler.LightExpression(Unofficial)</Title>
     <Description>
-      The complete port of the FastExpressionCompiler assembly to support .NET Framework 4.0. 
-      You can refer (https://github.com/dadhi/FastExpressionCompiler) for more details.
+      FastExpressionCompiler for LightExpression is 10-40x times faster than Expression.Compile()
     </Description>
     <PackageTags>Performance Expression ExpressionTree Compile DynamicMethod IL ILEmit DryIoc ExpressionToCodeLib</PackageTags>
   </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="$(SystemReflectionEmitLightweightPackageVersion)" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="..\FastExpressionCompiler\**\*.cs" Exclude="..\FastExpressionCompiler\bin\**;..\FastExpressionCompiler\obj\**" />
