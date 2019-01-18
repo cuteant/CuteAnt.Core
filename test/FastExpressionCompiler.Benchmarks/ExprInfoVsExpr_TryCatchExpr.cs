@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
 using static System.Linq.Expressions.Expression;
-using E = FastExpressionCompiler.ExpressionInfo;
 
 namespace FastExpressionCompiler.Benchmarks
 {
@@ -42,41 +41,21 @@ namespace FastExpressionCompiler.Benchmarks
             );
         }
 
-        //private static ExpressionInfo<Func<string, int>> CreateExprInfo()
-        //{
-        //    var aParamExpr = E.Parameter(typeof(string), "a");
-        //    var exParamExpr = E.Parameter(typeof(Exception), "ex");
-
-        //    return E.Lambda<Func<string, int>>(
-        //        E.TryCatch(
-        //            E.Call(typeof(int).GetTypeInfo()
-        //                    .DeclaredMethods.First(m => m.Name == nameof(int.Parse)),
-        //                aParamExpr),
-        //            E.Catch(exParamExpr,
-        //                E.Property(
-        //                    E.Property(exParamExpr, typeof(Exception).GetTypeInfo()
-        //                        .DeclaredProperties.First(p => p.Name == nameof(Exception.Message))),
-        //                    typeof(string).GetTypeInfo()
-        //                        .DeclaredProperties.First(p => p.Name == nameof(string.Length))
-        //                )
-        //            )
-        //        ),
-        //        aParamExpr
-        //    );
-        //}
-
         [MemoryDiagnoser]
-        public class Compile
+        public class Compilation
         {
             [Benchmark]
             public object Expr_Compile() => Expr.Compile();
 
             [Benchmark(Baseline = true)]
             public object Expr_CompileFast() => Expr.CompileFast();
+
+            //[Benchmark(Baseline = true)]
+            //public object ExprInfo_CompileFast() => ExprInfo.CompileFast();
         }
 
         [MemoryDiagnoser, DisassemblyDiagnoser(printIL: true)]
-        public class Invoke
+        public class Invocation
         {
             private static Func<string, int> _compiled = Expr.Compile();
             private static Func<string, int> _compiledFast = Expr.CompileFast();
@@ -87,6 +66,5 @@ namespace FastExpressionCompiler.Benchmarks
             [Benchmark(Baseline = true)]
             public object Invoke_CompiledFast() => _compiledFast.Invoke("123");
         }
-
     }
 }

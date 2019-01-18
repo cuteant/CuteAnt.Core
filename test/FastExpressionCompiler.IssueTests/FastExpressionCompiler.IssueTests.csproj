@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(StandardTestTfms)</TargetFrameworks>
-    <AssemblyName>FastExpressionCompiler.IssueTests</AssemblyName>
-    <RootNamespace>FastExpressionCompiler.IssueTests</RootNamespace>
+    <TargetFrameworks>netcoreapp2.2;net471</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net471' or '$(TargetFramework)' == 'net452' ">
@@ -13,6 +11,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNetTestSdkPackageVersion)" />
     <PackageReference Include="NUnit" Version="$(NUnitPackageVersion)" />
+    <PackageReference Include="NUnit3TestAdapter" Version="$(NUnit3TestAdapterPackageVersion)" />
+    <PackageReference Include="Mono.Cecil" Version="$(MonoCecilPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ILDebugging.Decoder">
+      <HintPath>..\libs\ILDebugging.Decoder.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

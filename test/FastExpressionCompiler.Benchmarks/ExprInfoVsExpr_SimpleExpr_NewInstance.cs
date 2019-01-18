@@ -3,6 +3,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
 
+using LE = FastExpressionCompiler.LightExpression.Expression;
+
 namespace FastExpressionCompiler.Benchmarks
 {
     [MemoryDiagnoser]
@@ -20,7 +22,7 @@ namespace FastExpressionCompiler.Benchmarks
         [Benchmark]
         public object NewExpressionInfo()
         {
-            return ExpressionInfo.New(_xCtor, ExpressionInfo.Constant(_y));
+            return LE.New(_xCtor, LE.Constant(_y));
         }
 
         public class Y { }

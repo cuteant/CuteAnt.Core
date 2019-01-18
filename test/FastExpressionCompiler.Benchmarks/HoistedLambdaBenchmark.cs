@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Exporters;
 
 namespace FastExpressionCompiler.Benchmarks
 {
@@ -17,48 +16,40 @@ namespace FastExpressionCompiler.Benchmarks
 
         private static readonly Expression<Func<X>> _hoistedExpr = GetHoistedExpr();
 
-        [MemoryDiagnoser, MarkdownExporter]
-        public class Compile
+        [MemoryDiagnoser]
+        [MarkdownExporter]
+        [CoreJob]
+        public class Compilation
         {
             [Benchmark]
-            public object ExpressionCompile()
-            {
-                return _hoistedExpr.Compile();
-            }
+            public object Compile() => _hoistedExpr.Compile();
 
             [Benchmark(Baseline = true)]
-            public object ExpressionCompileFast()
-            {
-                return _hoistedExpr.CompileFast();
-            }
+            public object CompileFast() => _hoistedExpr.CompileFast();
         }
 
-        [MemoryDiagnoser, MarkdownExporter]
-        public class Invoke
+        [MemoryDiagnoser]
+        [MarkdownExporter]
+        [CoreJob]
+        public class Invocation
         {
             private static readonly Func<X> _lambdaCompiled = _hoistedExpr.Compile();
             private static readonly Func<X> _lambdaCompiledFast = _hoistedExpr.CompileFast();
 
-            A aa = new A();
-            B bb = new B();
+            private readonly A _aa = new A();
+            private readonly B _bb = new B();
 
             [Benchmark]
-            public object DirectConstructorCall()
-            {
-                return new X(aa, bb);
-            }
+            public object DirectConstructorCall() => 
+                new X(_aa, _bb);
 
             [Benchmark]
-            public object CompiledLambda()
-            {
-                return _lambdaCompiled();
-            }
+            public object CompiledLambda() => 
+                _lambdaCompiled();
 
             [Benchmark(Baseline = true)]
-            public object FastCompiledLambda()
-            {
-                return _lambdaCompiledFast();
-            }
+            public object FastCompiledLambda() => 
+                _lambdaCompiledFast();
         }
 
         #region SUT

@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
-using static System.Linq.Expressions.Expression;
 
+#if LIGHT_EXPRESSION
+using static FastExpressionCompiler.LightExpression.Expression;
+namespace FastExpressionCompiler.LightExpression.UnitTests
+#else
+using System.Linq.Expressions;
+using static System.Linq.Expressions.Expression;
 namespace FastExpressionCompiler.UnitTests
+#endif
 {
     [TestFixture]
     public class BlockTests
@@ -23,7 +28,7 @@ namespace FastExpressionCompiler.UnitTests
 
             var lambda = Lambda<Func<int>>(block);
 
-            var fastCompiled = lambda.TryCompile<Func<int>>();
+            var fastCompiled = lambda.CompileFast<Func<int>>();
 
             Assert.NotNull(fastCompiled);
             Assert.AreEqual(6, fastCompiled());
@@ -40,7 +45,7 @@ namespace FastExpressionCompiler.UnitTests
 
             var lambda = Lambda<Func<int>>(block);
 
-            var fastCompiled = lambda.TryCompile<Func<int>>();
+            var fastCompiled = lambda.CompileFast<Func<int>>();
 
             Assert.NotNull(fastCompiled);
             Assert.AreEqual(6, fastCompiled());
@@ -57,7 +62,7 @@ namespace FastExpressionCompiler.UnitTests
 
             var lambda = Lambda<Func<int>>(block);
 
-            var fastCompiled = lambda.TryCompile<Func<int>>();
+            var fastCompiled = lambda.CompileFast<Func<int>>();
 
             Assert.NotNull(fastCompiled);
             Assert.AreEqual(6, fastCompiled());
@@ -74,7 +79,7 @@ namespace FastExpressionCompiler.UnitTests
 
             var lambda = Lambda<Func<int>>(block);
 
-            var fastCompiled = lambda.TryCompile<Func<int>>();
+            var fastCompiled = lambda.CompileFast<Func<int>>();
 
             Assert.NotNull(fastCompiled);
             Assert.AreEqual(6, fastCompiled());
@@ -94,7 +99,7 @@ namespace FastExpressionCompiler.UnitTests
 
             var lambda = Lambda<Func<int, int>>(block, param);
 
-            var fastCompiled = lambda.TryCompile<Func<int, int>>();
+            var fastCompiled = lambda.CompileFast<Func<int, int>>();
 
             Assert.NotNull(fastCompiled);
             Assert.AreEqual(8, fastCompiled(8));
@@ -113,7 +118,7 @@ namespace FastExpressionCompiler.UnitTests
 
             var lambda = Lambda<Func<int, int>>(block, param);
 
-            var fastCompiled = lambda.TryCompile<Func<int, int>>();
+            var fastCompiled = lambda.CompileFast<Func<int, int>>();
 
             Assert.NotNull(fastCompiled);
             Assert.AreEqual(8, fastCompiled(8));
@@ -131,7 +136,7 @@ namespace FastExpressionCompiler.UnitTests
 
             var lambda = Lambda<Func<int, int>>(block, param);
 
-            var fastCompiled = lambda.TryCompile<Func<int, int>>();
+            var fastCompiled = lambda.CompileFast<Func<int, int>>();
 
             Assert.NotNull(fastCompiled);
             Assert.AreEqual(5, fastCompiled(8));
@@ -149,7 +154,7 @@ namespace FastExpressionCompiler.UnitTests
 
             var lambda = Lambda<Func<int, int>>(block, param);
 
-            var fastCompiled = lambda.TryCompile<Func<int, int>>();
+            var fastCompiled = lambda.CompileFast<Func<int, int>>();
 
             Assert.NotNull(fastCompiled);
             Assert.AreEqual(5, fastCompiled(8));
@@ -166,7 +171,7 @@ namespace FastExpressionCompiler.UnitTests
 
             var lambda = Lambda<Func<int>>(block);
 
-            var fastCompiled = lambda.TryCompile<Func<int>>();
+            var fastCompiled = lambda.CompileFast<Func<int>>();
 
             Assert.NotNull(fastCompiled);
             Assert.AreEqual(5, fastCompiled());
@@ -183,7 +188,7 @@ namespace FastExpressionCompiler.UnitTests
 
             var lambda = Lambda<Func<int>>(block);
 
-            var fastCompiled = lambda.TryCompile<Func<int>>();
+            var fastCompiled = lambda.CompileFast<Func<int>>();
 
             Assert.NotNull(fastCompiled);
             Assert.AreEqual(5, fastCompiled());
@@ -202,7 +207,7 @@ namespace FastExpressionCompiler.UnitTests
 
             var lambda = Lambda<Func<int>>(block);
 
-            var fastCompiled = lambda.TryCompile<Func<int>>();
+            var fastCompiled = lambda.CompileFast<Func<int>>();
 
             Assert.NotNull(fastCompiled);
             Assert.AreEqual(5, fastCompiled());
@@ -220,7 +225,7 @@ namespace FastExpressionCompiler.UnitTests
 
             var lambda = Lambda<Func<int>>(block);
 
-            var fastCompiled = lambda.TryCompile<Func<int>>();
+            var fastCompiled = lambda.CompileFast<Func<int>>();
 
             Assert.NotNull(fastCompiled);
             Assert.AreEqual(5, fastCompiled());
@@ -235,6 +240,7 @@ namespace FastExpressionCompiler.UnitTests
         {
             while (true)
                 yield return Variable(typeof(T));
+            // ReSharper disable once IteratorNeverReturns
         }
     }
 }

@@ -2,9 +2,14 @@
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using static System.Linq.Expressions.Expression;
 
+#if LIGHT_EXPRESSION
+using static FastExpressionCompiler.LightExpression.Expression;
+namespace FastExpressionCompiler.LightExpression.UnitTests
+#else
+using static System.Linq.Expressions.Expression;
 namespace FastExpressionCompiler.UnitTests
+#endif
 {
     [TestFixture]
     public class AssignTests
@@ -18,34 +23,6 @@ namespace FastExpressionCompiler.UnitTests
                 sParamExpr);
 
             var f = expr.CompileFast(true);
-
-            Assert.IsNotNull(f);
-            Assert.AreEqual("aaa", f("ignored"));
-        }
-
-        [Test]
-        public void Can_assign_to_parameter_via_ExpressionInfo()
-        {
-            var sParamExpr = Parameter(typeof(string), "s");
-            var expr = ExpressionInfo.Lambda<Func<string, string>>(
-                ExpressionInfo.Assign(sParamExpr, ExpressionInfo.Constant("aaa")),
-                sParamExpr);
-
-            var f = expr.TryCompile();
-
-            Assert.IsNotNull(f);
-            Assert.AreEqual("aaa", f("ignored"));
-        }
-
-        [Test]
-        public void Can_assign_to_parameter_via_ExpressionInfo_with_untyped_delegate()
-        {
-            var sParamExpr = Parameter(typeof(string), "s");
-            var expr = ExpressionInfo.Lambda(
-                ExpressionInfo.Assign(sParamExpr, ExpressionInfo.Constant("aaa")),
-                sParamExpr);
-
-            var f = (Func<string, string>)expr.TryCompile();
 
             Assert.IsNotNull(f);
             Assert.AreEqual("aaa", f("ignored"));
@@ -72,8 +49,7 @@ namespace FastExpressionCompiler.UnitTests
         {
             var a = new Test();
             var expr = Lambda<Func<int>>(
-               Assign(Property(Constant(a), "Prop"),
-                  Constant(5)));
+               Assign(Property(Constant(a), "Prop"), Constant(5)));
 
             var f = expr.CompileFast(true);
 

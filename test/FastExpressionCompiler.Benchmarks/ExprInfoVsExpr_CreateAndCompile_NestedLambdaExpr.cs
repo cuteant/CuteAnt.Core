@@ -3,11 +3,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Exporters;
+
+using LEC = FastExpressionCompiler.LightExpression.ExpressionCompiler;
+using LE = FastExpressionCompiler.LightExpression.Expression;
 
 namespace FastExpressionCompiler.Benchmarks
 {
-    [MemoryDiagnoser, MarkdownExporter]
+    [MemoryDiagnoser]
     public class ExprInfoVsExpr_CreateAndCompile_NestedLambdaExpr
     {
         public class S
@@ -57,15 +59,10 @@ namespace FastExpressionCompiler.Benchmarks
         {
             //Expression<Func<Action<string>>> expr = () => a => s.SetValue(a);
 
-            var aParam = Expression.Parameter(typeof(string), "a");
-            var expr = ExpressionInfo.Lambda(
-                ExpressionInfo.Lambda(
-                    ExpressionInfo.Call(ExpressionInfo.Constant(_s), _setValueMethod, aParam),
-                    aParam
-                )
-            );
+            var aParam = LE.Parameter(typeof(string), "a");
+            var expr = LE.Lambda(LE.Lambda(LE.Call(LE.Constant(_s), _setValueMethod, aParam), aParam));
 
-            return expr.TryCompile<Func<Action<string>>>();
+            return LEC.TryCompile<Func<Action<string>>>(expr);
         }
     }
 }

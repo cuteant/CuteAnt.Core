@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 
+#if LIGHT_EXPRESSION
+using static FastExpressionCompiler.LightExpression.Expression;
+namespace FastExpressionCompiler.LightExpression.UnitTests
+#else
+using System.Linq.Expressions;
+using static System.Linq.Expressions.Expression;
 namespace FastExpressionCompiler.UnitTests
+#endif
 {
     [TestFixture]
     public class ManuallyComposedExprTests
@@ -14,7 +20,7 @@ namespace FastExpressionCompiler.UnitTests
         {
             var manualExpr = ComposeManualExpr();
 
-            var lambda = ExpressionCompiler.Compile(manualExpr);
+            var lambda = manualExpr.CompileFast();
 
             Assert.IsInstanceOf<X>(lambda());
         }
@@ -23,10 +29,10 @@ namespace FastExpressionCompiler.UnitTests
         {
             var a = new A();
             var b = new B();
-            var e = Expression.Lambda<Func<object>>(
-                Expression.New(typeof(X).GetTypeInfo().DeclaredConstructors.First(),
-                    Expression.Constant(a, typeof(A)),
-                    Expression.Constant(b, typeof(B))));
+            var e = Lambda<Func<object>>(
+                New(typeof(X).GetTypeInfo().DeclaredConstructors.First(),
+                    Constant(a, typeof(A)),
+                    Constant(b, typeof(B))));
             return e;
         }
 
@@ -35,7 +41,7 @@ namespace FastExpressionCompiler.UnitTests
         {
             var manualExpr = ComposeManualExprWithParams();
 
-            var lambda = ExpressionCompiler.Compile<Func<B, X>>(manualExpr);
+            var lambda = manualExpr.CompileFast<Func<B, X>>();
 
             Assert.IsInstanceOf<X>(lambda(new B()));
         }
@@ -43,11 +49,11 @@ namespace FastExpressionCompiler.UnitTests
         private static LambdaExpression ComposeManualExprWithParams()
         {
             var a = new A();
-            var bParamExpr = Expression.Parameter(typeof(B), "b");
+            var bParamExpr = Parameter(typeof(B), "b");
 
-            var e = Expression.Lambda(
-                Expression.New(typeof(X).GetTypeInfo().DeclaredConstructors.First(),
-                    Expression.Constant(a, typeof(A)),
+            var e = Lambda(
+                New(typeof(X).GetTypeInfo().DeclaredConstructors.First(),
+                    Constant(a, typeof(A)),
                     bParamExpr),
                 bParamExpr);
             return e;
