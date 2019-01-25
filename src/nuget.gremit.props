@@ -1,0 +1,17 @@
+<Project>
+  <!-- Set common properties regarding assembly information and nuget packages -->
+  <PropertyGroup>
+    <Authors>Igor Chevdar</Authors>
+    <Company>Igor Chevdar</Company>
+    <Product>GrEmit</Product>
+    <Copyright>Copyright © 2019, Igor Chevdar</Copyright>
+    <PackageProjectUrl>https://github.com/skbkontur/gremit</PackageProjectUrl>
+    <PackageLicense>https://github.com/skbkontur/gremit/blob/master/LICENSE</PackageLicense>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/skbkontur/gremit.git</RepositoryUrl>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <IncludeSymbols>false</IncludeSymbols>
+    <IncludeSource>false</IncludeSource>
+  </PropertyGroup>
+</Project>

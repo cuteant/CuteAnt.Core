@@ -1,0 +1,17 @@
+<Project>
+  <!-- Set common properties regarding assembly information and nuget packages -->
+  <PropertyGroup>
+    <Authors>Igor Chevdar</Authors>
+    <Company>Igor Chevdar</Company>
+    <Product>GrobExp.Compiler</Product>
+    <Copyright>Copyright © 2019, Igor Chevdar</Copyright>
+    <PackageProjectUrl>https://github.com/skbkontur/GrobExp.Compiler</PackageProjectUrl>
+    <PackageLicense>https://github.com/skbkontur/GrobExp.Compiler/blob/master/LICENSE</PackageLicense>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/skbkontur/GrobExp.Compiler.git</RepositoryUrl>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <IncludeSymbols>false</IncludeSymbols>
+    <IncludeSource>false</IncludeSource>
+  </PropertyGroup>
+</Project>
