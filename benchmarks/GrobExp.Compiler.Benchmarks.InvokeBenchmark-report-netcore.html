@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>GrobExp.Compiler.Benchmarks.InvokeBenchmark</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.11.3, OS=Windows 10.0.17134.523 (1803/April2018Update/Redstone4)
+Intel Core i5-3450 CPU 3.10GHz (Ivy Bridge), 1 CPU, 4 logical and 4 physical cores
+Frequency=3027372 Hz, Resolution=330.3195 ns, Timer=TSC
+.NET Core SDK=2.2.102
+  [Host]     : .NET Core 2.2.1 (CoreCLR 4.6.27207.03, CoreFX 4.6.27207.03), 64bit RyuJIT
+  DefaultJob : .NET Core 2.2.1 (CoreCLR 4.6.27207.03, CoreFX 4.6.27207.03), 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>                            Method</th><th>  Mean</th><th>Error</th><th>StdDev</th>
+</tr>
+</thead><tbody><tr><td>Simple_Compile</td><td>2.987 ns</td><td>0.0101 ns</td><td>0.0095 ns</td>
+</tr><tr><td>Simple_GroboCompile_Without_Checking</td><td>8.906 ns</td><td>0.0348 ns</td><td>0.0326 ns</td>
+</tr><tr><td>Simple_GroboCompile_With_Checking</td><td>10.520 ns</td><td>0.0257 ns</td><td>0.0228 ns</td>
+</tr><tr><td>SubLambda1_Compile</td><td>1,041.564 ns</td><td>5.5762 ns</td><td>5.2160 ns</td>
+</tr><tr><td>SubLambda1_GroboCompile_Without_Checking</td><td>55.241 ns</td><td>0.1556 ns</td><td>0.1455 ns</td>
+</tr><tr><td>SubLambda1_GroboCompile_With_Checking</td><td>58.039 ns</td><td>0.3293 ns</td><td>0.3080 ns</td>
+</tr><tr><td>SubLambda2_Compile</td><td>4,136.405 ns</td><td>18.8414 ns</td><td>17.6243 ns</td>
+</tr><tr><td>SubLambda2_GroboCompile_Without_Checking</td><td>260.487 ns</td><td>1.4624 ns</td><td>1.2212 ns</td>
+</tr><tr><td>SubLambda2_GroboCompile_With_Checking</td><td>282.262 ns</td><td>1.4203 ns</td><td>1.3285 ns</td>
+</tr><tr><td>Invoke1_Compile</td><td>4.386 ns</td><td>0.0142 ns</td><td>0.0126 ns</td>
+</tr><tr><td>Invoke1_GroboCompile_Without_Checking</td><td>10.999 ns</td><td>0.0264 ns</td><td>0.0247 ns</td>
+</tr><tr><td>Invoke1_GroboCompile_With_Checking</td><td>16.919 ns</td><td>0.0500 ns</td><td>0.0468 ns</td>
+</tr><tr><td>Invoke2_Compile</td><td>1.462 ns</td><td>0.0052 ns</td><td>0.0048 ns</td>
+</tr><tr><td>Invoke2_GroboCompile_Without_Checking</td><td>2.936 ns</td><td>0.0225 ns</td><td>0.0210 ns</td>
+</tr><tr><td>Invoke2_GroboCompile_With_Checking</td><td>4.440 ns</td><td>0.0568 ns</td><td>0.0531 ns</td>
+</tr><tr><td>Invoke3_Compile</td><td>1.493 ns</td><td>0.0197 ns</td><td>0.0184 ns</td>
+</tr><tr><td>Invoke3_GroboCompile_Without_Checking</td><td>5.743 ns</td><td>0.0392 ns</td><td>0.0366 ns</td>
+</tr><tr><td>Invoke3_GroboCompile_With_Checking</td><td>8.889 ns</td><td>0.1190 ns</td><td>0.1113 ns</td>
+</tr><tr><td>Factorial_Compile</td><td>4.158 ns</td><td>0.0258 ns</td><td>0.0229 ns</td>
+</tr><tr><td>Factorial_GroboCompile_Without_Checking</td><td>10.375 ns</td><td>0.0886 ns</td><td>0.0828 ns</td>
+</tr><tr><td>Factorial_GroboCompile_With_Checking</td><td>10.275 ns</td><td>0.1489 ns</td><td>0.1393 ns</td>
+</tr><tr><td>Switch_Compile</td><td>2.331 ns</td><td>0.0138 ns</td><td>0.0129 ns</td>
+</tr><tr><td>Switch_GroboCompile_Without_Checking</td><td>4.645 ns</td><td>0.0165 ns</td><td>0.0155 ns</td>
+</tr><tr><td>Switch_GroboCompile_With_Checking</td><td>4.675 ns</td><td>0.0143 ns</td><td>0.0134 ns</td>
+</tr></tbody></table>
+</body>
+</html>
