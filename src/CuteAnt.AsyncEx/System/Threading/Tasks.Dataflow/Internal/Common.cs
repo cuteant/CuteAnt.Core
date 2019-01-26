@@ -452,7 +452,7 @@ namespace System.Threading.Tasks.Dataflow.Internal
 		/// <summary>Validates that a timeout either is -1 or is non-negative and within the range of an Int32.</summary>
 		/// <param name="timeout">The timeout to validate.</param>
 		/// <returns>true if the timeout is valid; otherwise, false.</returns>
-		internal static Boolean IsValidTimeout(in TimeSpan timeout)
+		internal static Boolean IsValidTimeout(TimeSpan timeout)
 		{
 			var millisecondsTimeout = (Int64)timeout.TotalMilliseconds;
 			return millisecondsTimeout >= Timeout.Infinite && millisecondsTimeout <= Int32.MaxValue;

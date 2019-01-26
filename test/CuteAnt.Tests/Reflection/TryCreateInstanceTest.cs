@@ -173,7 +173,7 @@ namespace CuteAnt.Reflection.Tests
       Assert.Equal(MovementCapabilities.Water, animal.MovementCapabilities);
     }
 
-    private static void Verify(Lion animal, int constructorInstanceUsed, int id, string name, in DateTime? birthday)
+    private static void Verify(Lion animal, int constructorInstanceUsed, int id, string name, DateTime? birthday)
     {
       Assert.NotNull(animal);
       Assert.Equal(constructorInstanceUsed, animal.ConstructorInstanceUsed);

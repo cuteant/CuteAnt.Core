@@ -114,7 +114,7 @@ namespace CuteAnt.Diagnostics
             }
         }
 
-        public void SetAndTraceTransfer(in Guid newId, bool emitTransfer)
+        public void SetAndTraceTransfer(Guid newId, bool emitTransfer)
         {
             if (emitTransfer)
             {
@@ -126,7 +126,7 @@ namespace CuteAnt.Diagnostics
         [Fx.Tag.SecurityNote(Critical = "Access critical transferEventDescriptor field, as well as other critical methods",
             Safe = "Doesn't leak information or resources")]
         [SecuritySafeCritical]
-        public void TraceTransfer(in Guid newId)
+        public void TraceTransfer(Guid newId)
         {
         }
 

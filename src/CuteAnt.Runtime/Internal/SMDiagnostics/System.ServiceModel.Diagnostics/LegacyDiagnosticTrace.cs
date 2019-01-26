@@ -145,7 +145,7 @@ namespace CuteAnt.ServiceModel.Diagnostics
     }
 #pragma warning restore 56500
 
-    internal void TraceEvent(TraceEventType type, int code, string msdnTraceCode, string description, TraceRecord trace, Exception exception, in Guid activityId, object source)
+    internal void TraceEvent(TraceEventType type, int code, string msdnTraceCode, string description, TraceRecord trace, Exception exception, Guid activityId, object source)
     {
 #pragma warning disable 618
       using ((this.ShouldUseActivity && Guid.Empty != activityId) ? Activity.CreateActivity(activityId) : null)

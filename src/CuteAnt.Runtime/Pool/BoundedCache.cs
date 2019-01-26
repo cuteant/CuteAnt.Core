@@ -257,7 +257,7 @@ namespace CuteAnt.Pool
     /// <returns>true if item was added, false if item was not added</returns>
     /// <exception cref="LimitExceededException">Thrown if an attempt is made to add an item when the current 
     /// cache size is equal to the capacity</exception>
-    public virtual bool TryAdd(string key, T item, in DateTime expirationTime)
+    public virtual bool TryAdd(string key, T item, DateTime expirationTime)
     {
       Purge();
 

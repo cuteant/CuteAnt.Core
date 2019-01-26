@@ -107,7 +107,7 @@ namespace CuteAnt.Collections
       InitializeTimer(cleanupFreq);
     }
 
-    private void InitializeTimer(in TimeSpan cleanupFreq)
+    private void InitializeTimer(TimeSpan cleanupFreq)
     {
       this._cacheCleanupInterval = (cleanupFreq <= TimeSpan.Zero) ? TimeoutShim.InfiniteTimeSpan : cleanupFreq;
       if (TimeoutShim.InfiniteTimeSpan != _cacheCleanupInterval)

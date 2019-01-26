@@ -29,7 +29,7 @@ namespace CuteAnt.Runtime
       safeTimerBase = new SafeTimerBase(logger, callbackFunc, state, dueTime, period);
     }
 
-    public void Start(in TimeSpan dueTime, in TimeSpan period)
+    public void Start(TimeSpan dueTime, TimeSpan period)
     {
       safeTimerBase.Start(dueTime, period);
     }
@@ -58,7 +58,7 @@ namespace CuteAnt.Runtime
       return String.Format("SafeTimer: {0}. ", callbackFunc != null ? callbackFunc.GetType().FullName : "");
     }
 
-    public bool CheckTimerFreeze(in DateTime lastCheckTime, Func<string> callerName)
+    public bool CheckTimerFreeze(DateTime lastCheckTime, Func<string> callerName)
     {
       return safeTimerBase.CheckTimerFreeze(lastCheckTime, callerName);
     }

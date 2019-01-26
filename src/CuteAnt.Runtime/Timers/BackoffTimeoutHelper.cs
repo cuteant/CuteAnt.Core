@@ -25,17 +25,17 @@ namespace CuteAnt.Runtime
     Random random;
     TimeSpan originalTimeout;
 
-    internal BackoffTimeoutHelper(in TimeSpan timeout)
+    internal BackoffTimeoutHelper(TimeSpan timeout)
         : this(timeout, BackoffTimeoutHelper.defaultMaxWaitTime)
     {
     }
 
-    internal BackoffTimeoutHelper(in TimeSpan timeout, in TimeSpan maxWaitTime)
+    internal BackoffTimeoutHelper(TimeSpan timeout, TimeSpan maxWaitTime)
         : this(timeout, maxWaitTime, BackoffTimeoutHelper.defaultInitialWaitTime)
     {
     }
 
-    internal BackoffTimeoutHelper(in TimeSpan timeout, in TimeSpan maxWaitTime, in TimeSpan initialWaitTime)
+    internal BackoffTimeoutHelper(TimeSpan timeout, TimeSpan maxWaitTime, TimeSpan initialWaitTime)
     {
       this.random = new Random(GetHashCode());
       this.maxWaitTime = maxWaitTime;
@@ -51,7 +51,7 @@ namespace CuteAnt.Runtime
       }
     }
 
-    void Reset(in TimeSpan timeout, in TimeSpan initialWaitTime)
+    void Reset(TimeSpan timeout, TimeSpan initialWaitTime)
     {
       if (timeout == TimeSpan.MaxValue)
       {

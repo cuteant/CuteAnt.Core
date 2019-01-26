@@ -127,7 +127,7 @@ namespace CuteAnt.Pool
       private IPHostEntry _hostEntry;
       private DateTime _timeStamp;
 
-      public DnsCacheEntry(IPHostEntry hostEntry, in DateTime timeStamp)
+      public DnsCacheEntry(IPHostEntry hostEntry, DateTime timeStamp)
       {
         _hostEntry = hostEntry;
         _timeStamp = timeStamp;

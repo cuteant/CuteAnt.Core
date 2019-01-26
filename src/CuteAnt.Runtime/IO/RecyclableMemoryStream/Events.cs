@@ -45,7 +45,7 @@ namespace CuteAnt.IO
             }
 
             [Event(1, Level = EventLevel.Verbose)]
-            public void MemoryStreamCreated(in Guid guid, string tag, int requestedSize)
+            public void MemoryStreamCreated(Guid guid, string tag, int requestedSize)
             {
                 if (this.IsEnabled(EventLevel.Verbose, EventKeywords.None))
                 {
@@ -54,7 +54,7 @@ namespace CuteAnt.IO
             }
 
             [Event(2, Level = EventLevel.Verbose)]
-            public void MemoryStreamDisposed(in Guid guid, string tag)
+            public void MemoryStreamDisposed(Guid guid, string tag)
             {
                 if (this.IsEnabled(EventLevel.Verbose, EventKeywords.None))
                 {
@@ -63,7 +63,7 @@ namespace CuteAnt.IO
             }
 
             [Event(3, Level = EventLevel.Critical)]
-            public void MemoryStreamDoubleDispose(in Guid guid, string tag, string allocationStack, string disposeStack1,
+            public void MemoryStreamDoubleDispose(Guid guid, string tag, string allocationStack, string disposeStack1,
                                                   string disposeStack2)
             {
                 if (this.IsEnabled())
@@ -74,7 +74,7 @@ namespace CuteAnt.IO
             }
 
             [Event(4, Level = EventLevel.Error)]
-            public void MemoryStreamFinalized(in Guid guid, string tag, string allocationStack)
+            public void MemoryStreamFinalized(Guid guid, string tag, string allocationStack)
             {
                 if (this.IsEnabled())
                 {
@@ -83,7 +83,7 @@ namespace CuteAnt.IO
             }
 
             [Event(5, Level = EventLevel.Verbose)]
-            public void MemoryStreamToArray(in Guid guid, string tag, string stack, int size)
+            public void MemoryStreamToArray(Guid guid, string tag, string stack, int size)
             {
                 if (this.IsEnabled(EventLevel.Verbose, EventKeywords.None))
                 {

@@ -857,19 +857,19 @@ namespace CuteAnt.Buffers
     #region - Other simple types -
 
     /// <summary> Write a <c>TimeSpan</c> value to the stream. </summary>
-    public void WriteValue(in TimeSpan ts)
+    public void WriteValue(TimeSpan ts)
     {
       WriteValue(ts.Ticks);
     }
 
     /// <summary> Write a <c>DataTime</c> value to the stream. </summary>
-    public void WriteValue(in DateTime dt)
+    public void WriteValue(DateTime dt)
     {
       WriteValue(dt.ToBinary());
     }
 
     /// <summary> Write a <c>Guid</c> value to the stream. </summary>
-    public void WriteValue(in Guid id)
+    public void WriteValue(Guid id)
     {
       var bts = id.ToByteArray();
       Write(bts, 0, bts.Length);

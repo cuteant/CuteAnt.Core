@@ -118,7 +118,7 @@ namespace CuteAnt.Runtime
       }
     }
 
-    public static bool Wait<TException>(this Task task, in TimeSpan timeout)
+    public static bool Wait<TException>(this Task task, TimeSpan timeout)
     {
       try
       {
@@ -137,7 +137,7 @@ namespace CuteAnt.Runtime
       }
     }
 
-    public static void Wait(this Task task, in TimeSpan timeout, Action<Exception, TimeSpan, string> exceptionConverter, string operationType)
+    public static void Wait(this Task task, TimeSpan timeout, Action<Exception, TimeSpan, string> exceptionConverter, string operationType)
     {
       bool timedOut = false;
 
