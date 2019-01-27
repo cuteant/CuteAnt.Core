@@ -188,17 +188,36 @@ namespace Grace.DependencyInjection.Impl.Expressions
         newRequest.SetLocateKey(parameter.Name);
       }
 
-      if (parameterInfo?.DefaultValue != null)
+      try
       {
-        newRequest.SetDefaultValue(new DefaultValueInformation { DefaultValue = parameterInfo.DefaultValue });
-      }
+
+        if (parameterInfo?.DefaultValue != null)
+        {
+          newRequest.SetDefaultValue(new DefaultValueInformation { DefaultValue = parameterInfo.DefaultValue });
+        }
 #if NET40
-      else if (parameter.HasDefaultValue())
+        else if (parameter.HasDefaultValue())
 #else
-      else if (parameter.HasDefaultValue)
+        else if (parameter.HasDefaultValue)
 #endif
+        {
+          var defaultValue = parameter.DefaultValue;
+
+          if (defaultValue == null && parameter.ParameterType.GetTypeInfo().IsValueType)
+          {
+            defaultValue = Activator.CreateInstance(parameter.ParameterType);
+          }
+
+          newRequest.SetDefaultValue(new DefaultValueInformation { DefaultValue = defaultValue });
+
+        }
+      }
+      catch (FormatException)
       {
-        newRequest.SetDefaultValue(new DefaultValueInformation { DefaultValue = parameter.DefaultValue });
+        if (parameter.ParameterType == typeof(DateTime))
+        {
+          newRequest.SetDefaultValue(new DefaultValueInformation { DefaultValue = new DateTime() });
+        }
       }
 
       if (parameterInfo != null)
