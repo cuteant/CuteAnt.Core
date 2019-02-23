@@ -46,13 +46,16 @@
     <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetMvcControllerRenderer.cs" />
     <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetMvcActionRenderer.cs" />
     <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetMvcLayoutRendererBase.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetRequestContentTypeLayoutRenderer.cs" Link="AspNetRequestContentTypeLayoutRenderer.cs" />
     <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetRequestFormLayoutRenderer.cs">
       <Link>AspNetRequestFormLayoutRenderer.cs</Link>
     </Compile>
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetRequestPostedBody.cs" Link="AspNetRequestPostedBody.cs" />
     <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetRequestValueLayoutRenderer.cs" />
     <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetRequestIpLayoutRenderer.cs" />
     <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetSessionIdLayoutRenderer.cs" />
     <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetSessionValueLayoutRenderer.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetTraceIdentifierLayoutRenderer.cs" Link="AspNetTraceIdentifierLayoutRenderer.cs" />
     <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetUserAuthTypeLayoutRenderer.cs" />
     <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetUserIdentityLayoutRenderer.cs" />
     <Compile Include="..\NLog.Web.AspNetCore\LayoutRenderers\AspNetWebRootPathLayoutRenderer.cs" />

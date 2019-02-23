@@ -21,6 +21,7 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="$(xUnitRunnerVsPackageVersion)" />
     <PackageReference Include="NSubstitute" Version="$(NSubstitutePackageVersion)" />
     <PackageReference Include="Castle.Core" Version="$(CastleCorePackageVersion)" />
+    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTuplePackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,10 +32,13 @@
     <Compile Include="..\NLog.Web.AspNetCore.Tests\LayoutRenderers\AspNetMvcActionRendererTests.cs" />
     <Compile Include="..\NLog.Web.AspNetCore.Tests\LayoutRenderers\AspNetCookieLayoutRendererTests.cs" />
     <Compile Include="..\NLog.Web.AspNetCore.Tests\LayoutRenderers\AspNetItemValueLayoutRendererTests.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore.Tests\LayoutRenderers\AspNetRequestPostedBodyTests.cs" Link="AspNetRequestPostedBodyTests.cs" />
     <Compile Include="..\NLog.Web.AspNetCore.Tests\LayoutRenderers\AspNetRequestValueLayoutRendererTests.cs" />
     <Compile Include="..\NLog.Web.AspNetCore.Tests\LayoutRenderers\AspNetSessionIDLayoutRendererTests.cs" />
     <Compile Include="..\NLog.Web.AspNetCore.Tests\LayoutRenderers\AspNetSessionValueLayoutRendererTests.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore.Tests\LayoutRenderers\AspNetTraceIdentifierRendererTests.cs" Link="AspNetTraceIdentifierRendererTests.cs" />
     <Compile Include="..\NLog.Web.AspNetCore.Tests\LayoutRenderers\AspNetUserAuthTypeLayoutRendererTests.cs" />
+    <Compile Include="..\NLog.Web.AspNetCore.Tests\LayoutRenderers\LayoutRenderersTestBase.cs" Link="LayoutRenderersTestBase.cs" />
     <Compile Include="..\NLog.Web.AspNetCore.Tests\LayoutRenderers\TestInvolvingAspNetHttpContext.cs" />
     <Compile Include="..\NLog.Web.AspNetCore.Tests\LayoutRenderers\AspNetUserIdentityLayoutRendererTests.cs" />
     <Compile Include="..\NLog.Web.AspNetCore.Tests\LayoutRenderers\AspNetRequestReferrerRendererTests.cs" />
