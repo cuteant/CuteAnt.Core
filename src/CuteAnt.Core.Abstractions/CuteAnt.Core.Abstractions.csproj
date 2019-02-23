@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\version.props" />
   <Import Project="..\nuget.props" />
-  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.ValidationHelper.Sources\CuteAnt.Extensions.ValidationHelper.Sources.projitems" Label="Shared" />
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Collection.Sources\CuteAnt.Extensions.Collection.Sources.projitems" Label="Shared" />
   <ImportGroup Condition=" '$(TargetFramework)' == 'net40' ">
     <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
@@ -11,7 +10,7 @@
     <TargetFrameworks>netcoreapp2.2;netstandard2.0;net471;net451;net40</TargetFrameworks>
     <RootNamespace>CuteAnt</RootNamespace>
     <AssemblyName>CuteAnt.Core.Abstractions</AssemblyName>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>$(DefineConstants);NOTSUPPORT_EMIT_ASSEMBLYBUILDER</DefineConstants>
   </PropertyGroup>
 

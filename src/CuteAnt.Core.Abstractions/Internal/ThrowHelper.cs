@@ -195,7 +195,7 @@ namespace CuteAnt
     #region ** GetArgumentName **
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private static string GetArgumentName(ExceptionArgument argument)
+    internal static string GetArgumentName(ExceptionArgument argument)
     {
       Debug.Assert(Enum.IsDefined(typeof(ExceptionArgument), argument),
           "The enum value is not defined, please check the ExceptionArgument Enum.");

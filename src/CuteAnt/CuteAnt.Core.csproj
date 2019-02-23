@@ -1,13 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\version.props" />
   <Import Project="..\nuget.props" />
-  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Collection.Sources\CuteAnt.Extensions.Collection.Sources.projitems" Label="Shared" />
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.DateTimeUtilities.Sources\CuteAnt.Extensions.DateTimeUtilities.Sources.projitems" Label="Shared" />
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Logging.Sources\CuteAnt.Extensions.Logging.Sources.projitems" Label="Shared" />
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.ReaderWriterLockSlim.Sources\CuteAnt.Extensions.ReaderWriterLockSlim.Sources.projitems" Label="Shared" />
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.String.Sources\CuteAnt.Extensions.String.Sources.projitems" Label="Shared" />
-  <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.ValidationHelper.Sources\CuteAnt.Extensions.ValidationHelper.Sources.projitems" Label="Shared" />
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\Microsoft.Extensions.ParameterDefaultValue.Sources\Microsoft.Extensions.ParameterDefaultValue.Sources.projitems" Label="Shared" />
 
   <PropertyGroup>

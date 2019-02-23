@@ -1645,7 +1645,8 @@ namespace CuteAnt.Reflection
     {
       if (string.IsNullOrWhiteSpace(qualifiedTypeName))
       {
-        ThrowHelper.ThrowArgumentException(ExceptionResource.Type_Name_Must_Not_Null, ExceptionArgument.qualifiedTypeName);
+        type = null; return false;
+        //ThrowHelper.ThrowArgumentException(ExceptionResource.Type_Name_Must_Not_Null, ExceptionArgument.qualifiedTypeName);
       }
 
       if (_resolveTypeCache.TryGetValue(qualifiedTypeName, out type)) { return true; }
@@ -1698,7 +1699,8 @@ namespace CuteAnt.Reflection
     {
       if (string.IsNullOrWhiteSpace(fullName))
       {
-        ThrowHelper.ThrowArgumentException(ExceptionResource.Type_Name_Must_Not_Null, ExceptionArgument.fullName);
+        type = null; return false;
+        //ThrowHelper.ThrowArgumentException(ExceptionResource.Type_Name_Must_Not_Null, ExceptionArgument.fullName);
       }
 
       var typeNameKey = SplitFullyQualifiedTypeName(fullName);

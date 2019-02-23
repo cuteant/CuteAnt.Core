@@ -124,7 +124,7 @@ namespace CuteAnt.IO
     [MethodImpl(AggressiveInlining)]
     public static String ApplicationBasePathCombine(params String[] paths)
     {
-      ValidationHelper.ArgumentNull(paths, "paths");
+      if (null == paths) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.paths); }
 
       var list = new List<String>(paths.Length + 1);
       list.Add(ApplicationBasePath);

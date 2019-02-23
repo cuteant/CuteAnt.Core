@@ -511,7 +511,7 @@ namespace CuteAnt.Buffers
     public static ArraySegment<Byte> GetBufferSegment(this Encoding encoding, Char[] chars, Int32 charIndex, Int32 charCount, ArrayPool<byte> bufferManager)
     {
       if (charCount < 0) { ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.charCount, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum); }
-      if (chars.IsNullOrEmpty() || encoding == null) { return BufferManager.Empty; }
+      if (chars == null || chars.Length == 0 || encoding == null) { return BufferManager.Empty; }
 
       var bufferSize = encoding.GetMaxByteCount(charCount);
       if (bufferSize > c_maxCharBufferSize)

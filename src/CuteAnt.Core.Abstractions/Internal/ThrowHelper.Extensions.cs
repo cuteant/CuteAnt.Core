@@ -1,91 +1,103 @@
-﻿namespace CuteAnt
+﻿using System;
+using System.Runtime.CompilerServices;
+
+namespace CuteAnt
 {
-  #region -- ExceptionArgument --
+    #region -- ExceptionArgument --
 
-  /// <summary>The convention for this enum is using the argument name as the enum name</summary>
-  internal enum ExceptionArgument
-  {
-    array,
-    assembly,
-    buffer,
-    destination,
-    key,
-    obj,
-    s,
-    str,
-    source,
-    type,
-    types,
-    value,
-    values,
-    valueFactory,
-    name,
-    item,
-    options,
-    list,
-    ts,
-    other,
-    pool,
-    inner,
-    policy,
-    offset,
-    count,
-    path,
-    typeInfo,
-    method,
-    qualifiedTypeName,
-    fullName,
-    feature,
-    manager,
-    directories,
-    dirEnumArgs,
-    asm,
-    includedAssemblies,
-    func,
-    defaultFn,
-    returnType,
-    propertyInfo,
-    parameterTypes,
-    fieldInfo,
-    memberInfo,
-    attributeType,
-    pi,
-    fi,
-    invoker,
-    instanceType,
-    target,
-    member,
-    typeName,
-    predicate,
-    assemblyPredicate,
-    collection,
-    capacity,
-    match,
-    index,
-    length,
-    startIndex,
-    updateValueFactory,
-    converter,
-    results,
-    action,
-  }
+    /// <summary>The convention for this enum is using the argument name as the enum name</summary>
+    internal enum ExceptionArgument
+    {
+        array,
+        assembly,
+        buffer,
+        destination,
+        key,
+        obj,
+        s,
+        d,
+        str,
+        source,
+        type,
+        types,
+        value,
+        values,
+        valueFactory,
+        name,
+        item,
+        options,
+        list,
+        ts,
+        other,
+        comb,
+        pool,
+        paths,
+        inner,
+        policy,
+        filenName,
+        radix,
+        offset,
+        count,
+        path,
+        typeInfo,
+        method,
+        qualifiedTypeName,
+        fullName,
+        feature,
+        manager,
+        directories,
+        dirEnumArgs,
+        asm,
+        includedAssemblies,
+        func,
+        defaultFn,
+        returnType,
+        propertyInfo,
+        parameterTypes,
+        fieldInfo,
+        memberInfo,
+        attributeType,
+        pi,
+        fi,
+        invoker,
+        instanceType,
+        target,
+        member,
+        typeName,
+        predicate,
+        assemblyPredicate,
+        collection,
+        capacity,
+        match,
+        index,
+        length,
+        startIndex,
+        updateValueFactory,
+        converter,
+        results,
+        action,
+    }
 
-  #endregion
+    #endregion
 
-  #region -- ExceptionResource --
+    #region -- ExceptionResource --
 
-  /// <summary>The convention for this enum is using the resource name as the enum name</summary>
-  internal enum ExceptionResource
-  {
-    Type_Name_Must_Not_Null,
-    Capacity_May_Not_Be_Negative,
-    Value_Cannot_Be_Null,
-    Value_Is_Of_Incorrect_Type,
-    Dest_Array_Cannot_Be_Null,
-    ArgumentOutOfRange_Index,
-    ArgumentOutOfRange_NeedNonNegNum,
-    ArgumentOutOfRange_Count,
-  }
+    /// <summary>The convention for this enum is using the resource name as the enum name</summary>
+    internal enum ExceptionResource
+    {
+        Type_Name_Must_Not_Null,
+        Capacity_May_Not_Be_Negative,
+        Value_Cannot_Be_Null,
+        Value_Is_Of_Incorrect_Type,
+        Dest_Array_Cannot_Be_Null,
+        ArgumentOutOfRange_Index,
+        ArgumentOutOfRange_NeedNonNegNum,
+        ArgumentOutOfRange_Count,
+    }
 
-  #endregion
+    #endregion
+
+    partial class ThrowHelper
+    {
+    }
 }
