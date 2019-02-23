@@ -192,23 +192,23 @@ namespace CuteAnt.Buffers
 
     #region - ArraySegment<Byte> -
 
-    public void Reinitialize(ArraySegment<byte> segment)
+    public void Reinitialize(in ArraySegment<byte> segment)
     {
       Reinitialize(segment, CuteAnt.Buffers.BufferManager.Shared);
     }
 
-    public void Reinitialize(ArraySegment<byte> segment, ArrayPool<byte> bufferManager)
+    public void Reinitialize(in ArraySegment<byte> segment, ArrayPool<byte> bufferManager)
     {
       var stream = new BufferedMemoryStream(segment.Array, segment.Offset, segment.Count, false);
       Reinitialize(stream, false, bufferManager);
     }
 
-    public void Reinitialize(ArraySegment<byte> segment, Encoding encoding)
+    public void Reinitialize(in ArraySegment<byte> segment, Encoding encoding)
     {
       Reinitialize(segment, encoding, CuteAnt.Buffers.BufferManager.Shared);
     }
 
-    public void Reinitialize(ArraySegment<byte> segment, Encoding encoding, ArrayPool<byte> bufferManager)
+    public void Reinitialize(in ArraySegment<byte> segment, Encoding encoding, ArrayPool<byte> bufferManager)
     {
       var stream = new BufferedMemoryStream(segment.Array, segment.Offset, segment.Count, false);
       Reinitialize(stream, encoding, false, bufferManager);

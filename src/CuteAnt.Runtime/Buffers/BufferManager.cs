@@ -41,7 +41,7 @@ namespace CuteAnt.Buffers
     /// <summary>Releases the buffers currently cached in the manager.</summary>
     public abstract void Clear();
 
-    public void ReturnBuffer(ArraySegment<byte> segment)
+    public void ReturnBuffer(in ArraySegment<byte> segment)
     {
       ReturnBuffer(segment.Array);
     }
