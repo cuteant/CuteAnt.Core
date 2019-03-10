@@ -85,21 +85,11 @@ namespace Grace.DependencyInjection.Lifestyle
 
     private string GetAncestorRequestId(StaticInjectionContext context)
     {
-#if NET40
-      var typeInfo = _ancestorType;
-#else
-      var typeInfo = _ancestorType.GetTypeInfo();
-#endif
-
       var injectionInfoTarget = context.InjectionStack.FirstOrDefault(target =>
       {
-#if NET40
-        var injectionInfo = target.InjectionType;
-#else
-        var injectionInfo = target.InjectionType?.GetTypeInfo();
-#endif
+        var injectionType = target.InjectionType;
 
-        if (injectionInfo != null && typeInfo.IsAssignableFrom(injectionInfo))
+        if (injectionType != null && _ancestorType.IsAssignableFrom(injectionType))
         {
           return true;
         }

@@ -39,9 +39,9 @@ namespace Grace.DependencyInjection
     public static IExportTypeSetConfiguration ExportAssemblyContaining<T>(this IExportRegistrationBlock registrationBlock)
     {
 #if NET40
-      return registrationBlock.Export(typeof(T).GetTypeInfo().Assembly.GetExportedTypes());
+      return registrationBlock.Export(typeof(T).Assembly.GetExportedTypes());
 #else
-      return registrationBlock.Export(typeof(T).GetTypeInfo().Assembly.ExportedTypes);
+      return registrationBlock.Export(typeof(T).Assembly.ExportedTypes);
 #endif
     }
 
@@ -248,7 +248,7 @@ namespace Grace.DependencyInjection
       var provider = (IConcreteExportStrategyProvider)
           block.OwningScope.MissingExportStrategyProviders.FirstOrDefault(p => p is IConcreteExportStrategyProvider);
 
-      provider?.AddFilter(t => t.GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()));
+      provider?.AddFilter(t => t.IsAssignableFrom(type));
 
       return block;
     }

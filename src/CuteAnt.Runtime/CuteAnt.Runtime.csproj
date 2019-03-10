@@ -7,7 +7,7 @@
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
   
   <PropertyGroup>
-    <TargetFrameworks>net471;net451;net40;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.2;net471;net451;net40;netstandard2.0</TargetFrameworks>
     <RootNamespace>CuteAnt.Runtime</RootNamespace>
     <AssemblyName>CuteAnt.Runtime</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -28,7 +28,7 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net40' ">
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net40' and '$(TargetFramework)' != 'netcoreapp2.2' ">
     <PackageReference Include="System.Buffers" Version="$(SystemBuffersPackageVersion)" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">

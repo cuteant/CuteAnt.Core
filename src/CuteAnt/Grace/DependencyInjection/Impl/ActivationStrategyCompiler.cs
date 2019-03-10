@@ -183,7 +183,7 @@ namespace Grace.DependencyInjection.Impl
       }
 
       if (finalExpression.NodeType == ExpressionType.Convert &&
-         !expressionContext.Expression.Type.GetTypeInfo().IsValueType)
+         !expressionContext.Expression.Type.IsValueType)
       {
         finalExpression = ((UnaryExpression)finalExpression).Operand;
       }

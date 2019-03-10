@@ -185,7 +185,7 @@ namespace Microsoft.Extensions.Logging
       var thisAssembly = Assembly.GetEntryAssembly()
           ?? Assembly.GetCallingAssembly()
           ?? typeof(TraceLogger)
-          .GetTypeInfo().Assembly;
+          .Assembly;
 
       var dumpFileName = $@"{thisAssembly.GetName().Name}-MiniDump-{DateTime.UtcNow.ToString(dateFormat,
               CultureInfo.InvariantCulture)}.dmp";

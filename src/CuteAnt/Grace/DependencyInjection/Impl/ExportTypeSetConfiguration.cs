@@ -297,11 +297,7 @@ namespace Grace.DependencyInjection.Impl
 
         if (_exportByAttributes)
         {
-#if NET40
           foreach (var attribute in type.GetCustomAttributes())
-#else
-          foreach (var attribute in type.GetTypeInfo().GetCustomAttributes())
-#endif
           {
             if (attribute is IExportAttribute exportAttribute)
             {
@@ -388,11 +384,7 @@ namespace Grace.DependencyInjection.Impl
 
     private void ProcessAttributes(Type type, ICompiledExportStrategy strategy)
     {
-#if NET40
       foreach (var customAttribute in type.GetCustomAttributes())
-#else
-      foreach (var customAttribute in type.GetTypeInfo().GetCustomAttributes())
-#endif
       {
         switch (customAttribute)
         {
@@ -490,7 +482,7 @@ namespace Grace.DependencyInjection.Impl
     private ImmutableLinkedList<Type> GetExportedInterfaceList(Type type)
     {
       var returnList = ImmutableLinkedList<Type>.Empty;
-      var isGeneric = type.GetTypeInfo().IsGenericTypeDefinition;
+      var isGeneric = type.IsGenericTypeDefinition;
 
       foreach (var testInterface in type.GetTypeInfo().ImplementedInterfaces)
       {
@@ -522,17 +514,17 @@ namespace Grace.DependencyInjection.Impl
 
         foreach (var exportInterface in _byInterface)
         {
-          if (exportInterface.GetTypeInfo().IsGenericTypeDefinition)
+          if (exportInterface.IsGenericTypeDefinition)
           {
-            if (implementedInterface.GetTypeInfo().IsGenericType &&
+            if (implementedInterface.IsGenericType &&
                 implementedInterface.GetGenericTypeDefinition() == exportInterface)
             {
-              returnList = returnList.Add(type.GetTypeInfo().IsGenericTypeDefinition ? exportInterface : implementedInterface);
+              returnList = returnList.Add(type.IsGenericTypeDefinition ? exportInterface : implementedInterface);
 
               found = true;
             }
           }
-          else if (exportInterface.GetTypeInfo().IsAssignableFrom(implementedInterface.GetTypeInfo()))
+          else if (exportInterface.IsAssignableFrom(implementedInterface))
           {
             returnList = returnList.Add(exportInterface);
 
@@ -564,10 +556,10 @@ namespace Grace.DependencyInjection.Impl
 
     private static bool ShouldSkipType(Type exportedType)
     {
-      var skipType = exportedType.GetTypeInfo().IsInterface ||
-                     exportedType.GetTypeInfo().IsAbstract ||
-                     typeof(MulticastDelegate).GetTypeInfo().IsAssignableFrom(exportedType.GetTypeInfo()) ||
-                     typeof(Exception).GetTypeInfo().IsAssignableFrom(exportedType.GetTypeInfo());
+      var skipType = exportedType.IsInterface ||
+                     exportedType.IsAbstract ||
+                     typeof(MulticastDelegate).IsAssignableFrom(exportedType) ||
+                     typeof(Exception).IsAssignableFrom(exportedType);
 
       return !skipType;
     }

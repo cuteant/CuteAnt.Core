@@ -128,16 +128,14 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>instance or null if one can't be found</returns>
     public object GetValueByType(Type type)
     {
-      var typeInfo = type.GetTypeInfo();
-
-      if (ExtraData != null && typeInfo.IsAssignableFrom(ExtraData.GetType().GetTypeInfo()))
+      if (ExtraData != null && type.IsAssignableFrom(ExtraData.GetType()))
       {
         return ExtraData;
       }
 
-      var value = _extraDataProperties.Values.FirstOrDefault(v => typeInfo.IsAssignableFrom(v.GetType().GetTypeInfo()));
+      var value = _extraDataProperties.Values.FirstOrDefault(v => type.IsAssignableFrom(v.GetType()));
 
-      return value ?? _extraDataValues.Values.FirstOrDefault(v => typeInfo.IsAssignableFrom(v.GetType().GetTypeInfo()));
+      return value ?? _extraDataValues.Values.FirstOrDefault(v => type.IsAssignableFrom(v.GetType()));
     }
 
     /// <summary>Clone the extra data provider</summary>

@@ -210,7 +210,7 @@ namespace Grace.DependencyInjection.Impl
 
     private IEnumerable<Type> GetTypes(Type type)
     {
-      if (type.GetTypeInfo().IsInterface)
+      if (type.IsInterface)
       {
         yield return type;
 
@@ -229,7 +229,7 @@ namespace Grace.DependencyInjection.Impl
         {
           yield return type;
 
-          type = type.GetTypeInfo().BaseType;
+          type = type.BaseType;
         }
       }
     }

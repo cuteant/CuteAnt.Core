@@ -22,8 +22,7 @@ namespace CuteAnt.Reflection
       var cache = forDI ? s_typeConstructorMatcherDICache : s_typeConstructorMatcherCache;
       if (cache.TryGetValue(instanceType, out var matchers)) { return matchers; }
 
-      var typeInfo = instanceType.GetTypeInfo();
-      if (typeInfo.IsAbstract)
+      if (instanceType.IsAbstract)
       {
         matchers = new ConstructorMatcher[] { new ConstructorMatcher(instanceType, instanceType.MakeDelegateForCtor()) };
         s_typeConstructorMatcherCache.TryAdd(instanceType, matchers);
@@ -32,13 +31,13 @@ namespace CuteAnt.Reflection
       }
 
       ConstructorMatcher[] diMatchers = matchers = null;
-      if (instanceType != TypeConstants.StringType && !typeInfo.IsArray)
+      if (instanceType != TypeConstants.StringType && !instanceType.IsArray)
       {
         try
         {
-          diMatchers = typeInfo.DeclaredConstructors
+          diMatchers = instanceType.GetTypeInfo().DeclaredConstructors
                                .Where(_ => !_.IsStatic && _.IsPublic)
-                               .Select(_ => new ConstructorMatcher(typeInfo.AsType(), _))
+                               .Select(_ => new ConstructorMatcher(instanceType, _))
                                .ToArray() ?? EmptyArray<ConstructorMatcher>.Instance;
           matchers = diMatchers;
           if (diMatchers.Length == 0)

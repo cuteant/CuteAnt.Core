@@ -80,7 +80,7 @@ namespace Grace.DependencyInjection.Impl
           continue;
         }
 
-        if (_exportConfiguration.ActivationType.GetTypeInfo().IsGenericTypeDefinition)
+        if (_exportConfiguration.ActivationType.IsGenericTypeDefinition)
         {
 #if NET40
           if (interfaceTypes.IsConstructedGenericType())

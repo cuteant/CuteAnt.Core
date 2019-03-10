@@ -126,15 +126,14 @@ namespace Grace.DependencyInjection.Impl
         }
       }
 
-      var requestedTypeInfo = requestedType.GetTypeInfo();
-      if (requestedTypeInfo.IsInterface || requestedTypeInfo.IsAbstract)
+      if (requestedType.IsInterface || requestedType.IsAbstract)
       {
         return false;
       }
 
-      if (typeof(MulticastDelegate).GetTypeInfo().IsAssignableFrom(requestedTypeInfo))
+      if (typeof(MulticastDelegate).IsAssignableFrom(requestedType))
       {
-        var method = requestedTypeInfo.GetDeclaredMethod(InvokeMethodName);
+        var method = requestedType.GetDeclaredMethod(InvokeMethodName);
 
         if (method.ReturnType != TypeConstants.VoidType &&
             scope.CanLocate(method.ReturnType))
@@ -232,15 +231,14 @@ namespace Grace.DependencyInjection.Impl
         }
       }
 
-      var requestedTypeInfo = requestedType.GetTypeInfo();
-      if (requestedTypeInfo.IsInterface || requestedTypeInfo.IsAbstract)
+      if (requestedType.IsInterface || requestedType.IsAbstract)
       {
         yield break;
       }
 
-      if (typeof(MulticastDelegate).GetTypeInfo().IsAssignableFrom(requestedTypeInfo))
+      if (typeof(MulticastDelegate).IsAssignableFrom(requestedType))
       {
-        var method = requestedTypeInfo.GetDeclaredMethod(InvokeMethodName);
+        var method = requestedType.GetDeclaredMethod(InvokeMethodName);
 
         if (method.ReturnType != TypeConstants.VoidType && scope.CanLocate(method.ReturnType))
         {
@@ -291,15 +289,14 @@ namespace Grace.DependencyInjection.Impl
     public virtual bool ShouldCreateConcreteStrategy(IActivationExpressionRequest request)
     {
       var type = request.ActivationType;
-      var typeInfo = type.GetTypeInfo();
       // ## 苦竹 修改 ##
       //if (type == typeof(string) || typeInfo.IsPrimitive || type == typeof(DateTime))
-      if (typeInfo.IsPrimitive || s_specialTypes.Contains(type))
+      if (type.IsPrimitive || s_specialTypes.Contains(type))
       {
         return false;
       }
 
-      return typeInfo.DeclaredConstructors.Any(c => c.IsPublic && !c.IsStatic) &&
+      return type.GetTypeInfo().DeclaredConstructors.Any(c => c.IsPublic && !c.IsStatic) &&
              _filters.All(func => !func(type));
     }
   }

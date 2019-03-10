@@ -27,7 +27,7 @@ namespace Grace.Factory
 #if NET40
       return request.ActivationType.IsInterface &&
 #else
-      return request.ActivationType.GetTypeInfo().IsInterface &&
+      return request.ActivationType.IsInterface &&
 #endif
                    (_typeFilter?.Invoke(request.ActivationType) ?? true);
     }
@@ -41,7 +41,7 @@ namespace Grace.Factory
 #if NET40
       if (request.ActivationType.IsInterface &&
 #else
-      if (request.ActivationType.GetTypeInfo().IsInterface &&
+      if (request.ActivationType.IsInterface &&
 #endif
                 (_typeFilter?.Invoke(request.ActivationType) ?? true))
       {

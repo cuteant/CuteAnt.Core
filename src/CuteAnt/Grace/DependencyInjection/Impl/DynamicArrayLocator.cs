@@ -36,7 +36,7 @@ namespace Grace.DependencyInjection.Impl
 
       if (createDelegate == null)
       {
-        var elementType = type.GetTypeInfo().GetElementType();
+        var elementType = type.GetElementType();
 
         var method = typeof(DynamicArrayLocator)
             .GetRuntimeMethods().FirstOrDefault(m => string.Equals(_arrayCreateMethodName, m.Name, StringComparison.Ordinal));

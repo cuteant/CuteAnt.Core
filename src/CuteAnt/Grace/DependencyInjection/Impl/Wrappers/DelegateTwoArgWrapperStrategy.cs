@@ -95,7 +95,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
         _action = request.Services.Compiler.CompileDelegate(scope, activationExpression);
 
-        _funcMethodInfo = typeof(FuncClass).GetTypeInfo().GetDeclaredMethod(FuncClass.FuncMethodName);
+        _funcMethodInfo = typeof(FuncClass).GetDeclaredMethod(FuncClass.FuncMethodName);
       }
 
       /// <summary>Method that creates delegate</summary>

@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-#if NETSTANDARD
+#if !DESKTOPCLR
 using System;
 using System.Reflection;
 using System.Security;

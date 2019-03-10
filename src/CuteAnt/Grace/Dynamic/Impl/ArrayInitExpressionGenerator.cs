@@ -28,7 +28,7 @@ namespace Grace.Dynamic.Impl
 #if NET40
       var elementIsValueType = elementType.IsValueType;
 #else
-      var elementIsValueType = elementType.GetTypeInfo().IsValueType;
+      var elementIsValueType = elementType.IsValueType;
 #endif
 
       var arrayInstance = request.ILGenerator.DeclareLocal(arrayType);

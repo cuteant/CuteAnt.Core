@@ -13,7 +13,7 @@ namespace Grace.DependencyInjection.Impl
       var configurableStrategy = strategy as IConfigurableActivationStrategy;
 
       if (configurableStrategy != null &&
-          configurableStrategy.ActivationType.GetTypeInfo().IsGenericTypeDefinition)
+          configurableStrategy.ActivationType.IsGenericTypeDefinition)
       {
         var maxClosed = 0;
         var openGenericParams = configurableStrategy.ActivationType.GetTypeInfo().GenericTypeParameters.Length;

@@ -65,14 +65,14 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 #if NET40
       if (type.IsConstructedGenericType() &&
           _genericArgPosition >= 0 &&
-          ActivationType.GetTypeInfo().IsGenericTypeDefinition)
+          ActivationType.IsGenericTypeDefinition)
       {
         return type.GenericTypeArguments()[_genericArgPosition];
       }
 #else
       if (type.IsConstructedGenericType &&
           _genericArgPosition >= 0 &&
-          ActivationType.GetTypeInfo().IsGenericTypeDefinition)
+          ActivationType.IsGenericTypeDefinition)
       {
         return type.GenericTypeArguments[_genericArgPosition];
       }

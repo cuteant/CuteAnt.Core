@@ -29,7 +29,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
         foreach (var parameter in invokeMethod.GetParameters())
         {
-          if (parameter.ParameterType.GetTypeInfo().IsAssignableFrom(expression.Type.GetTypeInfo()))
+          if (parameter.ParameterType.IsAssignableFrom(expression.Type))
           {
             expressions.Add(expression);
           }

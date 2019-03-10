@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 
-#if NETSTANDARD
+#if !DESKTOPCLR
 namespace CuteAnt.ServiceModel.Diagnostics
 {
     internal static class DiagnosticStrings

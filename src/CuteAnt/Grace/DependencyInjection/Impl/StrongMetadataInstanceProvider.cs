@@ -25,7 +25,7 @@ namespace Grace.DependencyInjection.Impl
         return metadata;
       }
 
-      if (metadataType.GetTypeInfo().IsInterface)
+      if (metadataType.IsInterface)
       {
         throw new NotSupportedException("Interface metadata types not supported");
       }
@@ -92,7 +92,7 @@ namespace Grace.DependencyInjection.Impl
           if (parameterValue != null)
           {
             constructorParameters[index] =
-                parameterType.GetTypeInfo().IsAssignableFrom(parameterValue.GetType().GetTypeInfo())
+                parameterType.IsAssignableFrom(parameterValue.GetType())
                     ? parameterValue
                     : ConvertValue(parameterType, parameterValue);
           }
@@ -147,7 +147,7 @@ namespace Grace.DependencyInjection.Impl
 
         if (setValue != null)
         {
-          if (!propertyInfo.PropertyType.GetTypeInfo().IsAssignableFrom(setValue.GetType().GetTypeInfo()))
+          if (!propertyInfo.PropertyType.IsAssignableFrom(setValue.GetType()))
           {
             setValue = ConvertValue(propertyInfo.PropertyType, setValue);
           }

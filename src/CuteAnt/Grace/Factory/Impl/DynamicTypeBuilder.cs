@@ -233,7 +233,7 @@ namespace Grace.Factory.Impl
 #if NET40
         ilGenerator.Emit(method.ReturnType.IsValueType ?
 #else
-        ilGenerator.Emit(method.ReturnType.GetTypeInfo().IsValueType ?
+        ilGenerator.Emit(method.ReturnType.IsValueType ?
 #endif
                     OpCodes.Unbox_Any : OpCodes.Castclass, method.ReturnType);
       }

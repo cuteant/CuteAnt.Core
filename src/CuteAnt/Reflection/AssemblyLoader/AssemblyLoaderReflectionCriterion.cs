@@ -38,11 +38,7 @@ namespace CuteAnt.Reflection
       return NewCriterion(
               (Assembly assembly, out IEnumerable<string> assemblyComplaints) =>
               {
-#if NET40
                 Type[] types;
-#else
-                TypeInfo[] types;
-#endif
                 try
                 {
                   types = TypeUtils.GetDefinedTypes(assembly, null).ToArray();

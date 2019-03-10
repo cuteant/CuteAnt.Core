@@ -111,7 +111,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
       if (wrappers != ImmutableLinkedList<IActivationPathNode>.Empty)
       {
         if (request.DecoratorPathNode != null &&
-            wrappedType.GetTypeInfo().IsAssignableFrom(request.DecoratorPathNode.Strategy.ActivationType.GetTypeInfo()))
+            wrappedType.IsAssignableFrom(request.DecoratorPathNode.Strategy.ActivationType))
         {
           var decorator = request.PopDecoratorPathNode();
 

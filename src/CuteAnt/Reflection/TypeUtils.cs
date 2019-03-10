@@ -65,12 +65,11 @@ namespace CuteAnt.Reflection
 
         #region -- GetSimpleTypeName --
 
-#if NET40
         public static string GetSimpleTypeName(Type type, Predicate<Type> fullName)
         {
             if (type.IsNestedPublic || type.IsNestedPrivate)
             {
-                if (type.DeclaringType.GetTypeInfo().IsGenericType)
+                if (type.DeclaringType.IsGenericType)
                 {
                     return GetTemplatedName(
                         GetUntemplatedTypeName(type.DeclaringType.Name),
@@ -86,34 +85,6 @@ namespace CuteAnt.Reflection
 
             return fullName != null && fullName(type) ? GetFullName(type) : type.Name;
         }
-#else
-        public static string GetSimpleTypeName(Type t, Predicate<Type> fullName)
-        {
-            return GetSimpleTypeName(t.GetTypeInfo(), fullName);
-        }
-
-        public static string GetSimpleTypeName(TypeInfo typeInfo, Predicate<Type> fullName)
-        {
-            if (typeInfo.IsNestedPublic || typeInfo.IsNestedPrivate)
-            {
-                if (typeInfo.DeclaringType.GetTypeInfo().IsGenericType)
-                {
-                    return GetTemplatedName(
-                        GetUntemplatedTypeName(typeInfo.DeclaringType.Name),
-                        typeInfo.DeclaringType,
-                        typeInfo.GetGenericArguments(),
-                        _ => true) + "." + GetUntemplatedTypeName(typeInfo.Name);
-                }
-
-                return GetTemplatedName(typeInfo.DeclaringType) + "." + GetUntemplatedTypeName(typeInfo.Name);
-            }
-
-            var type = typeInfo.AsType();
-            if (typeInfo.IsGenericType) return GetSimpleTypeName(fullName != null && fullName(type) ? GetFullName(type) : typeInfo.Name);
-
-            return fullName != null && fullName(type) ? GetFullName(type) : typeInfo.Name;
-        }
-#endif
 
         public static string GetSimpleTypeName(string typeName)
         {
@@ -140,22 +111,9 @@ namespace CuteAnt.Reflection
         #region -- SerializeTypeName --
 
         private const char c_keyDelimiter = ':';
-        private static readonly CachedReadConcurrentDictionary<Type, string> _typeNameSerializerCache =
-            new CachedReadConcurrentDictionary<Type, string>(DictionaryCacheConstants.SIZE_MEDIUM);
-        private static readonly Func<Type, string> _serializeTypeNameFunc = SerializeTypeNameInternal;
 
-        public static string SerializeTypeName(Type type)
-        {
-            if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
-
-            return _typeNameSerializerCache.GetOrAdd(type, _serializeTypeNameFunc);
-        }
-
-        private static string SerializeTypeNameInternal(Type t)
-        {
-            var typeName = RuntimeTypeNameFormatter.Format(t);
-            return typeName.Replace(", ", ":");
-        }
+        [Obsolete("=> RuntimeTypeNameFormatter.Serialize")]
+        public static string SerializeTypeName(Type type) => RuntimeTypeNameFormatter.Serialize(type);
 
         #endregion
 
@@ -185,12 +143,7 @@ namespace CuteAnt.Reflection
             if (fullName == null)
                 fullName = _ => true; // default to full type names
 
-#if NET40
             if (t.IsGenericType) return GetTemplatedName(GetSimpleTypeName(t, fullName), t, t.GetGenericArguments(), fullName);
-#else
-            var typeInfo = t.GetTypeInfo();
-            if (typeInfo.IsGenericType) return GetTemplatedName(GetSimpleTypeName(typeInfo, fullName), t, typeInfo.GetGenericArguments(), fullName);
-#endif
 
             if (t.IsArray)
             {
@@ -200,39 +153,18 @@ namespace CuteAnt.Reflection
                        + "]";
             }
 
-#if NET40
             return GetSimpleTypeName(t, fullName);
-#else
-            return GetSimpleTypeName(typeInfo, fullName);
-#endif
         }
 
         public static string GetTemplatedName(string baseName, Type t, Type[] genericArguments, Predicate<Type> fullName)
         {
-#if NET40
             if (!t.IsGenericType || (t.DeclaringType != null && t.DeclaringType.IsGenericType)) return baseName;
-#else
-            var typeInfo = t.GetTypeInfo();
-            if (!typeInfo.IsGenericType || (t.DeclaringType != null && t.DeclaringType.GetTypeInfo().IsGenericType)) return baseName;
-#endif
             string s = baseName;
             s += "<";
             s += GetGenericTypeArgs(genericArguments, fullName);
             s += ">";
             return s;
         }
-
-        #endregion
-
-        #region -- GetTypeInfos --
-
-#if !NET40
-        public static IEnumerable<TypeInfo> GetTypeInfos(this IEnumerable<Type> types)
-        {
-            if (null == types) { return Enumerable.Empty<TypeInfo>(); }
-            return types.Select(t => t.GetTypeInfo());
-        }
-#endif
 
         #endregion
 
@@ -249,7 +181,7 @@ namespace CuteAnt.Reflection
                 {
                     s += ",";
                 }
-                if (!genericParameter.GetTypeInfo().IsGenericType)
+                if (!genericParameter.IsGenericType)
                 {
                     s += GetSimpleTypeName(genericParameter, fullName);
                 }
@@ -267,51 +199,48 @@ namespace CuteAnt.Reflection
 
         #region -- GetParameterizedTemplateName --
 
-#if !NET40
-        public static string GetParameterizedTemplateName(TypeInfo typeInfo, bool applyRecursively = false, Predicate<Type> fullName = null)
+        public static string GetParameterizedTemplateName(Type type, bool applyRecursively = false, Predicate<Type> fullName = null)
         {
             if (fullName == null)
                 fullName = tt => true;
 
-            return GetParameterizedTemplateName(typeInfo, fullName, applyRecursively);
+            return GetParameterizedTemplateName(type, fullName, applyRecursively);
         }
 
-        public static string GetParameterizedTemplateName(TypeInfo typeInfo, Predicate<Type> fullName, bool applyRecursively = false)
+        public static string GetParameterizedTemplateName(Type type, Predicate<Type> fullName, bool applyRecursively = false)
         {
-            if (typeInfo.IsGenericType)
+            if (type.IsGenericType)
             {
-                return GetParameterizedTemplateName(GetSimpleTypeName(typeInfo, fullName), typeInfo, applyRecursively, fullName);
+                return GetParameterizedTemplateName(GetSimpleTypeName(type, fullName), type, applyRecursively, fullName);
             }
 
-            var t = typeInfo.AsType();
-            if (fullName != null && fullName(t) == true)
+            if (fullName != null && fullName(type) == true)
             {
-                return t.FullName;
+                return type.FullName;
             }
 
-            return t.Name;
+            return type.Name;
         }
 
-        public static string GetParameterizedTemplateName(string baseName, TypeInfo typeInfo, bool applyRecursively = false, Predicate<Type> fullName = null)
+        public static string GetParameterizedTemplateName(string baseName, Type type, bool applyRecursively = false, Predicate<Type> fullName = null)
         {
             if (fullName == null)
                 fullName = tt => false;
 
-            if (!typeInfo.IsGenericType) return baseName;
+            if (!type.IsGenericType) return baseName;
 
             string s = baseName;
             s += "<";
             bool first = true;
-            foreach (var genericParameter in typeInfo.GetGenericArguments())
+            foreach (var genericParameter in type.GetGenericArguments())
             {
                 if (!first)
                 {
                     s += ",";
                 }
-                var genericParameterTypeInfo = genericParameter.GetTypeInfo();
-                if (applyRecursively && genericParameterTypeInfo.IsGenericType)
+                if (applyRecursively && genericParameter.IsGenericType)
                 {
-                    s += GetParameterizedTemplateName(genericParameterTypeInfo, applyRecursively);
+                    s += GetParameterizedTemplateName(genericParameter, applyRecursively);
                 }
                 else
                 {
@@ -324,7 +253,6 @@ namespace CuteAnt.Reflection
             s += ">";
             return s;
         }
-#endif
 
         #endregion
 
@@ -332,12 +260,7 @@ namespace CuteAnt.Reflection
 
         public static string GetRawClassName(string baseName, Type t)
         {
-#if NET40
             return t.IsGenericType ? baseName + '`' + t.GetGenericArguments().Length : baseName;
-#else
-            var typeInfo = t.GetTypeInfo();
-            return typeInfo.IsGenericType ? baseName + '`' + typeInfo.GetGenericArguments().Length : baseName;
-#endif
         }
 
         public static string GetRawClassName(string typeName)
@@ -465,14 +388,6 @@ namespace CuteAnt.Reflection
 
         #region ** GetFullName **
 
-#if !NET40
-        private static string GetFullName(TypeInfo typeInfo)
-        {
-            if (null == typeInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.typeInfo); }
-            return GetFullName(typeInfo.AsType());
-        }
-#endif
-
         private static string GetFullName(Type type)
         {
             if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
@@ -496,11 +411,7 @@ namespace CuteAnt.Reflection
 
         public static bool IsConcreteTemplateType(Type t)
         {
-#if NET40
             if (t.IsGenericType) return true;
-#else
-            if (t.GetTypeInfo().IsGenericType) return true;
-#endif
             return t.IsArray && IsConcreteTemplateType(t.GetElementType());
         }
 
@@ -533,7 +444,7 @@ namespace CuteAnt.Reflection
                     yield return field;
                 }
 
-                current = current.GetTypeInfo().BaseType;
+                current = current.BaseType;
             }
         }
 
@@ -644,7 +555,6 @@ namespace CuteAnt.Reflection
 
         #region -- GetTypes / GetDefinedTypes --
 
-#if NET40
         public static IEnumerable<Type> GetTypes(Assembly assembly, Predicate<Type> whereFunc, ILogger logger = null)
         {
             return assembly.IsDynamic
@@ -675,41 +585,6 @@ namespace CuteAnt.Reflection
                 return Enumerable.Empty<Type>();
             }
         }
-#else
-        public static IEnumerable<Type> GetTypes(Assembly assembly, Predicate<Type> whereFunc, ILogger logger = null)
-        {
-            return assembly.IsDynamic
-                 ? Enumerable.Empty<Type>()
-                 : GetDefinedTypes(assembly, logger)
-                      .Select(t => t.AsType())
-                      .Where(type => whereFunc(type));
-        }
-
-        public static IEnumerable<TypeInfo> GetDefinedTypes(Assembly assembly, ILogger logger = null)
-        {
-            try
-            {
-                return assembly.DefinedTypes;
-            }
-            catch (Exception exception)
-            {
-                if (null == logger) { logger = s_logger; }
-                if (logger.IsWarningLevelEnabled())
-                {
-                    var message = $"Exception loading types from assembly '{assembly.FullName}': {TraceLogger.PrintException(exception)}.";
-                    logger.LogWarning(exception, message);
-                }
-
-                if (exception is ReflectionTypeLoadException typeLoadException)
-                {
-                    return typeLoadException.Types?.Where(type => type != null).Select(type => type.GetTypeInfo()) ??
-                           Enumerable.Empty<TypeInfo>();
-                }
-
-                return Enumerable.Empty<TypeInfo>();
-            }
-        }
-#endif
 
         #endregion
 
@@ -728,12 +603,7 @@ namespace CuteAnt.Reflection
                         attrib => attribType.IsAssignableFrom(attrib.AttributeType));
             }
 
-            return TypeHasAttribute(type.GetTypeInfo(), attribType);
-        }
-
-        internal static bool TypeHasAttribute(TypeInfo typeInfo, Type attribType)
-        {
-            return typeInfo.GetCustomAttributes(attribType, true).Any();
+            return type.GetCustomAttributes(attribType, true).Any();
         }
 #endif
 
@@ -822,14 +692,13 @@ namespace CuteAnt.Reflection
             string BuildParseableName()
             {
                 var builder = new StringBuilder();
-                var typeInfo = type.GetTypeInfo();
                 GetParseableName(
                     type,
                     builder,
                     new Queue<Type>(
-                        typeInfo.IsGenericTypeDefinition
-                            ? typeInfo.GetGenericArguments()
-                            : typeInfo.GenericTypeArguments),
+                        type.IsGenericTypeDefinition
+                            ? type.GetGenericArguments()
+                            : type.GenericTypeArguments),
                     options,
                     getNameFunc ?? (t => t.GetUnadornedTypeName() + options.NameSuffix));
                 return builder.ToString();
@@ -844,10 +713,9 @@ namespace CuteAnt.Reflection
         /// <param name="getNameFunc">Delegate that returns name for a type.</param>
         private static void GetParseableName(Type type, StringBuilder builder, Queue<Type> typeArguments, TypeFormattingOptions options, Func<Type, string> getNameFunc)
         {
-            var typeInfo = type.GetTypeInfo();
-            if (typeInfo.IsArray)
+            if (type.IsArray)
             {
-                var elementType = typeInfo.GetElementType().GetParseableName(options);
+                var elementType = type.GetElementType().GetParseableName(options);
                 if (!string.IsNullOrWhiteSpace(elementType))
                 {
                     builder.AppendFormat(
@@ -859,7 +727,7 @@ namespace CuteAnt.Reflection
                 return;
             }
 
-            if (typeInfo.IsGenericParameter)
+            if (type.IsGenericParameter)
             {
                 if (options.IncludeGenericTypeParameters)
                 {
@@ -869,10 +737,10 @@ namespace CuteAnt.Reflection
                 return;
             }
 
-            if (typeInfo.DeclaringType != null)
+            if (type.DeclaringType != null)
             {
                 // This is not the root type.
-                GetParseableName(typeInfo.DeclaringType, builder, typeArguments, options, t => t.GetUnadornedTypeName());
+                GetParseableName(type.DeclaringType, builder, typeArguments, options, t => t.GetUnadornedTypeName());
                 builder.Append(options.NestedTypeSeparator);
             }
             else if (!string.IsNullOrWhiteSpace(type.Namespace) && options.IncludeNamespace)
@@ -898,7 +766,7 @@ namespace CuteAnt.Reflection
                 var unadornedTypeName = getNameFunc(type);
                 builder.Append(EscapeIdentifier(unadornedTypeName));
                 var generics =
-                    Enumerable.Range(0, Math.Min(typeInfo.GetGenericArguments().Count(), typeArguments.Count))
+                    Enumerable.Range(0, Math.Min(type.GetGenericArguments().Count(), typeArguments.Count))
                         .Select(_ => typeArguments.Dequeue())
                         .ToList();
                 if (generics.Count > 0 && options.IncludeTypeParameters)
@@ -909,7 +777,7 @@ namespace CuteAnt.Reflection
                     builder.AppendFormat("<{0}>", genericParameters);
                 }
             }
-            else if (typeInfo.IsGenericTypeDefinition)
+            else if (type.IsGenericTypeDefinition)
             {
                 // Get the unadorned name, the generic parameters, and add them together.
                 var unadornedTypeName = getNameFunc(type);

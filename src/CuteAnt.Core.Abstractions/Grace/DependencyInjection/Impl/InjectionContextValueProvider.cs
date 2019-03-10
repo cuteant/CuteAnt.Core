@@ -58,7 +58,7 @@ namespace Grace.DependencyInjection.Impl
 
         if (value == null && context.ExtraData != null)
         {
-          if (type.GetTypeInfo().IsAssignableFrom(context.ExtraData.GetType().GetTypeInfo()))
+          if (type.IsAssignableFrom(context.ExtraData.GetType()))
           {
             value = context.ExtraData;
           }
@@ -95,7 +95,7 @@ namespace Grace.DependencyInjection.Impl
               ReflectionService.InjectAndExecuteDelegate(locator, new StaticInjectionContext(type), context, value as Delegate);
         }
 
-        if (!(type.GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo())))
+        if (!(type.IsAssignableFrom(value.GetType())))
         {
           try
           {
@@ -267,7 +267,7 @@ namespace Grace.DependencyInjection.Impl
 
       foreach (var o in dataProvider.Values)
       {
-        if (type.GetTypeInfo().IsAssignableFrom(o.GetType().GetTypeInfo()))
+        if (type.IsAssignableFrom(o.GetType()))
         {
           tValue = o;
 

@@ -116,27 +116,27 @@ namespace Grace.Data
     {
       if (checkType == baseType) { return true; }
 
-      if (baseType.GetTypeInfo().IsInterface)
+      if (baseType.IsInterface)
       {
-        if (baseType.GetTypeInfo().IsGenericTypeDefinition)
+        if (baseType.IsGenericTypeDefinition)
         {
           foreach (var implementedInterface in checkType.GetTypeInfo().ImplementedInterfaces)
           {
 #if NET40
             if (implementedInterface.IsConstructedGenericType() &&
-                implementedInterface.GetTypeInfo().GetGenericTypeDefinition() == baseType)
+                implementedInterface.GetGenericTypeDefinition() == baseType)
 #else
             if (implementedInterface.IsConstructedGenericType &&
-                implementedInterface.GetTypeInfo().GetGenericTypeDefinition() == baseType)
+                implementedInterface.GetGenericTypeDefinition() == baseType)
 #endif
             {
               return true;
             }
           }
         }
-        else if (checkType.GetTypeInfo().IsInterface)
+        else if (checkType.IsInterface)
         {
-          return baseType.GetTypeInfo().IsAssignableFrom(checkType.GetTypeInfo());
+          return baseType.IsAssignableFrom(checkType);
         }
         else if (checkType.GetTypeInfo().ImplementedInterfaces.Contains(baseType))
         {
@@ -145,7 +145,7 @@ namespace Grace.Data
       }
       else
       {
-        if (baseType.GetTypeInfo().IsGenericTypeDefinition)
+        if (baseType.IsGenericTypeDefinition)
         {
           var currentBaseType = checkType;
 
@@ -162,12 +162,12 @@ namespace Grace.Data
               return true;
             }
 
-            currentBaseType = currentBaseType.GetTypeInfo().BaseType;
+            currentBaseType = currentBaseType.BaseType;
           }
         }
         else
         {
-          return baseType.GetTypeInfo().IsAssignableFrom(checkType.GetTypeInfo());
+          return baseType.IsAssignableFrom(checkType);
         }
       }
 

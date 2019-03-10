@@ -7,256 +7,252 @@ using CuteAnt.Collections;
 
 namespace CuteAnt.Reflection
 {
-  partial class ReflectUtils
-  {
-    #region ** enum ReflectMembersTokenType **
-
-    private enum ReflectMembersTokenType
+    partial class ReflectUtils
     {
-      InstanceDeclaredAndPublicOnlyMembers,
-      InstanceDeclaredOnlyMembers,
+        #region ** enum ReflectMembersTokenType **
 
-      InstancePublicOnlyMembers,
-      InstanceMembers,
+        private enum ReflectMembersTokenType
+        {
+            InstanceDeclaredAndPublicOnlyMembers,
+            InstanceDeclaredOnlyMembers,
 
-      TypeDeclaredAndPublicOnlyMembers,
-      TypeDeclaredOnlyMembers,
+            InstancePublicOnlyMembers,
+            InstanceMembers,
 
-      TypePublicOnlyMembers,
-      TypeMembers,
+            TypeDeclaredAndPublicOnlyMembers,
+            TypeDeclaredOnlyMembers,
 
-      TypeFlattenHierarchyPublicOnlyMembers,
-      TypeFlattenHierarchyMembers
-    }
+            TypePublicOnlyMembers,
+            TypeMembers,
 
-    #endregion
+            TypeFlattenHierarchyPublicOnlyMembers,
+            TypeFlattenHierarchyMembers
+        }
 
-    #region * Fields Cache *
+        #endregion
 
-    private static readonly ConcurrentDictionary<Type, DictionaryCache<ReflectMembersTokenType, FieldInfo[]>> s_fieldsCache =
-        new ConcurrentDictionary<Type, DictionaryCache<ReflectMembersTokenType, FieldInfo[]>>();
+        #region * Fields Cache *
 
-    #endregion
+        private static readonly ConcurrentDictionary<Type, DictionaryCache<ReflectMembersTokenType, FieldInfo[]>> s_fieldsCache =
+            new ConcurrentDictionary<Type, DictionaryCache<ReflectMembersTokenType, FieldInfo[]>>();
 
-    #region * GetFieldsInternal *
+        #endregion
 
-    private static readonly Func<ReflectMembersTokenType, Type, FieldInfo[]> s_getTypeFieldsFunc = GetTypeFields;
+        #region * GetFieldsInternal *
 
-    private static FieldInfo[] GetTypeFields(ReflectMembersTokenType reflectFieldsToken, Type type)
-    {
-      // Void*的基类就是null
-      if (type == typeof(object) || type.BaseType == null) return EmptyArray<FieldInfo>.Instance;
+        private static readonly Func<ReflectMembersTokenType, Type, FieldInfo[]> s_getTypeFieldsFunc = GetTypeFields;
 
-      BindingFlags bindingFlags;
-      switch (reflectFieldsToken)
-      {
-        case ReflectMembersTokenType.InstanceDeclaredAndPublicOnlyMembers:
-          bindingFlags = BindingFlagsHelper.InstanceDeclaredAndPublicOnlyLookup;
-          break;
-        case ReflectMembersTokenType.InstanceDeclaredOnlyMembers:
-          bindingFlags = BindingFlagsHelper.InstanceDeclaredOnlyLookup;
-          break;
+        private static FieldInfo[] GetTypeFields(ReflectMembersTokenType reflectFieldsToken, Type type)
+        {
+            // Void*的基类就是null
+            if (type == typeof(object) || type.BaseType == null) return EmptyArray<FieldInfo>.Instance;
 
-        case ReflectMembersTokenType.InstancePublicOnlyMembers:
-          bindingFlags = BindingFlagsHelper.InstancePublicOnlyLookup;
-          break;
-        case ReflectMembersTokenType.InstanceMembers:
-          bindingFlags = BindingFlagsHelper.InstanceLookup;
-          break;
+            BindingFlags bindingFlags;
+            switch (reflectFieldsToken)
+            {
+                case ReflectMembersTokenType.InstanceDeclaredAndPublicOnlyMembers:
+                    bindingFlags = BindingFlagsHelper.InstanceDeclaredAndPublicOnlyLookup;
+                    break;
+                case ReflectMembersTokenType.InstanceDeclaredOnlyMembers:
+                    bindingFlags = BindingFlagsHelper.InstanceDeclaredOnlyLookup;
+                    break;
 
-        case ReflectMembersTokenType.TypeDeclaredAndPublicOnlyMembers:
-          bindingFlags = BindingFlagsHelper.DefaultDeclaredAndPublicOnlyLookup;
-          break;
-        case ReflectMembersTokenType.TypeDeclaredOnlyMembers:
-          bindingFlags = BindingFlagsHelper.DefaultDeclaredOnlyLookup;
-          break;
+                case ReflectMembersTokenType.InstancePublicOnlyMembers:
+                    bindingFlags = BindingFlagsHelper.InstancePublicOnlyLookup;
+                    break;
+                case ReflectMembersTokenType.InstanceMembers:
+                    bindingFlags = BindingFlagsHelper.InstanceLookup;
+                    break;
 
-        case ReflectMembersTokenType.TypePublicOnlyMembers:
-          bindingFlags = BindingFlagsHelper.DefaultPublicOnlyLookup;
-          break;
+                case ReflectMembersTokenType.TypeDeclaredAndPublicOnlyMembers:
+                    bindingFlags = BindingFlagsHelper.DefaultDeclaredAndPublicOnlyLookup;
+                    break;
+                case ReflectMembersTokenType.TypeDeclaredOnlyMembers:
+                    bindingFlags = BindingFlagsHelper.DefaultDeclaredOnlyLookup;
+                    break;
 
-        case ReflectMembersTokenType.TypeFlattenHierarchyPublicOnlyMembers:
-          bindingFlags = BindingFlagsHelper.DefaultPublicOnlyLookupAll;
-          break;
-        case ReflectMembersTokenType.TypeFlattenHierarchyMembers:
-          bindingFlags = BindingFlagsHelper.DefaultLookupAll;
-          break;
+                case ReflectMembersTokenType.TypePublicOnlyMembers:
+                    bindingFlags = BindingFlagsHelper.DefaultPublicOnlyLookup;
+                    break;
 
-        case ReflectMembersTokenType.TypeMembers:
-        default:
-          bindingFlags = BindingFlagsHelper.DefaultLookup;
-          break;
-      }
+                case ReflectMembersTokenType.TypeFlattenHierarchyPublicOnlyMembers:
+                    bindingFlags = BindingFlagsHelper.DefaultPublicOnlyLookupAll;
+                    break;
+                case ReflectMembersTokenType.TypeFlattenHierarchyMembers:
+                    bindingFlags = BindingFlagsHelper.DefaultLookupAll;
+                    break;
 
-      return type
-#if !NET40
-             .GetTypeInfo()
-#endif
-             .GetFields(bindingFlags);
-    }
+                case ReflectMembersTokenType.TypeMembers:
+                default:
+                    bindingFlags = BindingFlagsHelper.DefaultLookup;
+                    break;
+            }
 
-    [MethodImpl(InlineMethod.Value)]
-    private static FieldInfo[] GetFieldsInternal(Type type, ReflectMembersTokenType reflectFieldsToken)
-    {
-      if (type == null) { return EmptyArray<FieldInfo>.Instance; }
+            return type.GetFields(bindingFlags);
+        }
 
-      // 二级字典缓存
-      var cache = s_fieldsCache.GetOrAdd(type, k => new DictionaryCache<ReflectMembersTokenType, FieldInfo[]>());
-      return cache.GetItem(reflectFieldsToken, type, s_getTypeFieldsFunc);
-    }
+        [MethodImpl(InlineMethod.Value)]
+        private static FieldInfo[] GetFieldsInternal(Type type, ReflectMembersTokenType reflectFieldsToken)
+        {
+            if (type == null) { return EmptyArray<FieldInfo>.Instance; }
 
-    #endregion
+            // 二级字典缓存
+            var cache = s_fieldsCache.GetOrAdd(type, k => new DictionaryCache<ReflectMembersTokenType, FieldInfo[]>());
+            return cache.GetItem(reflectFieldsToken, type, s_getTypeFieldsFunc);
+        }
 
-    /// <summary>GetInstanceDeclaredPublicFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetInstanceDeclaredPublicFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.InstanceDeclaredAndPublicOnlyMembers);
+        #endregion
 
-    /// <summary>GetInstanceDeclaredFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetInstanceDeclaredFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.InstanceDeclaredOnlyMembers);
+        /// <summary>GetInstanceDeclaredPublicFields</summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static FieldInfo[] GetInstanceDeclaredPublicFields(this Type type) =>
+          GetFieldsInternal(type, ReflectMembersTokenType.InstanceDeclaredAndPublicOnlyMembers);
 
-    /// <summary>GetInstancePublicFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetInstancePublicFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.InstancePublicOnlyMembers);
+        /// <summary>GetInstanceDeclaredFields</summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static FieldInfo[] GetInstanceDeclaredFields(this Type type) =>
+          GetFieldsInternal(type, ReflectMembersTokenType.InstanceDeclaredOnlyMembers);
 
-    /// <summary>GetInstanceFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetInstanceFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.InstanceMembers);
+        /// <summary>GetInstancePublicFields</summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static FieldInfo[] GetInstancePublicFields(this Type type) =>
+          GetFieldsInternal(type, ReflectMembersTokenType.InstancePublicOnlyMembers);
 
-    /// <summary>GetTypeDeclaredPublicFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetTypeDeclaredPublicFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.TypeDeclaredAndPublicOnlyMembers);
+        /// <summary>GetInstanceFields</summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static FieldInfo[] GetInstanceFields(this Type type) =>
+          GetFieldsInternal(type, ReflectMembersTokenType.InstanceMembers);
 
-    /// <summary>GetTypeDeclaredFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetTypeDeclaredFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.TypeDeclaredOnlyMembers);
+        /// <summary>GetTypeDeclaredPublicFields</summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static FieldInfo[] GetTypeDeclaredPublicFields(this Type type) =>
+          GetFieldsInternal(type, ReflectMembersTokenType.TypeDeclaredAndPublicOnlyMembers);
 
-    /// <summary>GetTypePublicFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetTypePublicFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.TypePublicOnlyMembers);
+        /// <summary>GetTypeDeclaredFields</summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static FieldInfo[] GetTypeDeclaredFields(this Type type) =>
+          GetFieldsInternal(type, ReflectMembersTokenType.TypeDeclaredOnlyMembers);
 
-    /// <summary>GetTypeFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetTypeFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.TypeMembers);
+        /// <summary>GetTypePublicFields</summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static FieldInfo[] GetTypePublicFields(this Type type) =>
+          GetFieldsInternal(type, ReflectMembersTokenType.TypePublicOnlyMembers);
 
-    /// <summary>GetTypeFlattenHierarchyPublicFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetTypeFlattenHierarchyPublicFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.TypeFlattenHierarchyPublicOnlyMembers);
+        /// <summary>GetTypeFields</summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static FieldInfo[] GetTypeFields(this Type type) =>
+          GetFieldsInternal(type, ReflectMembersTokenType.TypeMembers);
 
-    /// <summary>GetTypeFlattenHierarchyFields</summary>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static FieldInfo[] GetTypeFlattenHierarchyFields(this Type type) =>
-      GetFieldsInternal(type, ReflectMembersTokenType.TypeFlattenHierarchyMembers);
+        /// <summary>GetTypeFlattenHierarchyPublicFields</summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static FieldInfo[] GetTypeFlattenHierarchyPublicFields(this Type type) =>
+          GetFieldsInternal(type, ReflectMembersTokenType.TypeFlattenHierarchyPublicOnlyMembers);
 
-    #region - LookupTypeField -
+        /// <summary>GetTypeFlattenHierarchyFields</summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static FieldInfo[] GetTypeFlattenHierarchyFields(this Type type) =>
+          GetFieldsInternal(type, ReflectMembersTokenType.TypeFlattenHierarchyMembers);
 
-    /// <summary>获取字段。</summary>
-    /// <param name="type">类型</param>
-    /// <param name="name">名称</param>
-    /// <param name="declaredOnly"></param>
-    /// <returns></returns>
-    public static FieldInfo LookupTypeField(this Type type, string name, bool declaredOnly = false)
-    {
-      if (name.IsNullOrWhiteSpace()) { return null; }
+        #region - LookupTypeField -
 
-      // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeConstants.ObjectType)
-      {
-        var fields = s_typeDeclaredFieldsCache.GetItem(type, s_getTypeDeclaredFieldsFunc);
-        if (fields.TryGetValue(name, out FieldInfo field)) { return field; };
+        /// <summary>获取字段。</summary>
+        /// <param name="type">类型</param>
+        /// <param name="name">名称</param>
+        /// <param name="declaredOnly"></param>
+        /// <returns></returns>
+        public static FieldInfo LookupTypeField(this Type type, string name, bool declaredOnly = false)
+        {
+            if (name.IsNullOrWhiteSpace()) { return null; }
 
-        if (declaredOnly) { break; }
+            // 父类属性的获取需要递归，有些类型的父类为空，比如接口
+            while (type != null && type != TypeConstants.ObjectType)
+            {
+                var fields = s_typeDeclaredFieldsCache.GetItem(type, s_getTypeDeclaredFieldsFunc);
+                if (fields.TryGetValue(name, out FieldInfo field)) { return field; };
+
+                if (declaredOnly) { break; }
 
 #if NET40
-        type = type.BaseType;
+                type = type.BaseType;
 #else
-        type = type.GetTypeInfo().BaseType;
+                type = type.BaseType;
 #endif
-      }
+            }
 
-      return null;
-    }
+            return null;
+        }
 
-    private static readonly DictionaryCache<Type, Dictionary<string, FieldInfo>> s_typeDeclaredFieldsCache =
-        new DictionaryCache<Type, Dictionary<string, FieldInfo>>();
-    private static readonly Func<Type, Dictionary<string, FieldInfo>> s_getTypeDeclaredFieldsFunc = GetTypeDeclaredFieldsInternal;
-    private static Dictionary<string, FieldInfo> GetTypeDeclaredFieldsInternal(Type type)
-    {
-      //return GetTypeDeclaredFields(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
-      var dic = new Dictionary<string, FieldInfo>(StringComparer.Ordinal);
-      var fields = GetTypeDeclaredFields(type);
-      foreach (var fi in fields)
-      {
-        dic[fi.Name] = fi;
-      }
-      return dic;
-    }
+        private static readonly DictionaryCache<Type, Dictionary<string, FieldInfo>> s_typeDeclaredFieldsCache =
+            new DictionaryCache<Type, Dictionary<string, FieldInfo>>();
+        private static readonly Func<Type, Dictionary<string, FieldInfo>> s_getTypeDeclaredFieldsFunc = GetTypeDeclaredFieldsInternal;
+        private static Dictionary<string, FieldInfo> GetTypeDeclaredFieldsInternal(Type type)
+        {
+            //return GetTypeDeclaredFields(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
+            var dic = new Dictionary<string, FieldInfo>(StringComparer.Ordinal);
+            var fields = GetTypeDeclaredFields(type);
+            foreach (var fi in fields)
+            {
+                dic[fi.Name] = fi;
+            }
+            return dic;
+        }
 
-    #endregion
+        #endregion
 
-    #region - LookupInstanceField -
+        #region - LookupInstanceField -
 
-    /// <summary>获取字段。</summary>
-    /// <param name="type">类型</param>
-    /// <param name="name">名称</param>
-    /// <param name="declaredOnly"></param>
-    /// <returns></returns>
-    public static FieldInfo LookupInstanceField(this Type type, string name, bool declaredOnly = false)
-    {
-      if (name.IsNullOrWhiteSpace()) { return null; }
+        /// <summary>获取字段。</summary>
+        /// <param name="type">类型</param>
+        /// <param name="name">名称</param>
+        /// <param name="declaredOnly"></param>
+        /// <returns></returns>
+        public static FieldInfo LookupInstanceField(this Type type, string name, bool declaredOnly = false)
+        {
+            if (name.IsNullOrWhiteSpace()) { return null; }
 
-      // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-      while (type != null && type != TypeConstants.ObjectType)
-      {
-        var fields = s_instanceDeclaredFieldsCache.GetItem(type, s_getInstanceDeclaredFieldsFunc);
-        if (fields.TryGetValue(name, out FieldInfo field)) { return field; };
+            // 父类属性的获取需要递归，有些类型的父类为空，比如接口
+            while (type != null && type != TypeConstants.ObjectType)
+            {
+                var fields = s_instanceDeclaredFieldsCache.GetItem(type, s_getInstanceDeclaredFieldsFunc);
+                if (fields.TryGetValue(name, out FieldInfo field)) { return field; };
 
-        if (declaredOnly) { break; }
+                if (declaredOnly) { break; }
 
 #if NET40
-        type = type.BaseType;
+                type = type.BaseType;
 #else
-        type = type.GetTypeInfo().BaseType;
+                type = type.BaseType;
 #endif
-      }
+            }
 
-      return null;
+            return null;
+        }
+
+        private static readonly DictionaryCache<Type, Dictionary<string, FieldInfo>> s_instanceDeclaredFieldsCache =
+            new DictionaryCache<Type, Dictionary<string, FieldInfo>>();
+        private static readonly Func<Type, Dictionary<string, FieldInfo>> s_getInstanceDeclaredFieldsFunc = GetInstanceDeclaredFieldsInternal;
+        private static Dictionary<string, FieldInfo> GetInstanceDeclaredFieldsInternal(Type type)
+        {
+            //return GetTypeDeclaredFields(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
+            var dic = new Dictionary<string, FieldInfo>(StringComparer.Ordinal);
+            var fields = GetInstanceDeclaredFields(type);
+            foreach (var fi in fields)
+            {
+                dic[fi.Name] = fi;
+            }
+            return dic;
+        }
+
+        #endregion
     }
-
-    private static readonly DictionaryCache<Type, Dictionary<string, FieldInfo>> s_instanceDeclaredFieldsCache =
-        new DictionaryCache<Type, Dictionary<string, FieldInfo>>();
-    private static readonly Func<Type, Dictionary<string, FieldInfo>> s_getInstanceDeclaredFieldsFunc = GetInstanceDeclaredFieldsInternal;
-    private static Dictionary<string, FieldInfo> GetInstanceDeclaredFieldsInternal(Type type)
-    {
-      //return GetTypeDeclaredFields(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
-      var dic = new Dictionary<string, FieldInfo>(StringComparer.Ordinal);
-      var fields = GetInstanceDeclaredFields(type);
-      foreach (var fi in fields)
-      {
-        dic[fi.Name] = fi;
-      }
-      return dic;
-    }
-
-    #endregion
-  }
 }

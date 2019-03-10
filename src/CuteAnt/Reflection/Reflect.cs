@@ -57,7 +57,7 @@ namespace CuteAnt.Reflection
     {
       if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
 
-      if (!type.GetTypeInfo().IsGenericTypeDefinition)
+      if (!type.IsGenericTypeDefinition)
       {
         ThrowArgumentException_Make(type);
       }
@@ -114,7 +114,7 @@ namespace CuteAnt.Reflection
 #if NET40
         type = type.BaseType;
 #else
-        type = type.GetTypeInfo().BaseType;
+        type = type.BaseType;
 #endif
       }
 

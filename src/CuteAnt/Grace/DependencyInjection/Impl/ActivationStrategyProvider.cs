@@ -36,7 +36,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>new wrapper strategy</returns>
     public virtual IConfigurableCompiledWrapperStrategy GetCompiledWrapperStrategy(Type type)
     {
-      if (type.GetTypeInfo().IsGenericTypeDefinition)
+      if (type.IsGenericTypeDefinition)
       {
         return new GenericCompiledWrapperStrategy(type, _injectionScope, _exportExpressionBuilder);
       }
@@ -55,7 +55,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>new compiled export strategy</returns>
     public virtual ICompiledExportStrategy GetCompiledExportStrategy(Type exportType)
     {
-      if (exportType.GetTypeInfo().IsGenericTypeDefinition)
+      if (exportType.IsGenericTypeDefinition)
       {
         return new GenericCompiledExportStrategy(exportType, _injectionScope, _exportExpressionBuilder);
       }
@@ -68,7 +68,7 @@ namespace Grace.DependencyInjection.Impl
     /// <returns>new decorator</returns>
     public virtual ICompiledDecoratorStrategy GetCompiledDecoratorStrategy(Type activationType)
     {
-      if (activationType.GetTypeInfo().IsGenericTypeDefinition)
+      if (activationType.IsGenericTypeDefinition)
       {
         return new GenericCompiledDecoratorStrategy(activationType, _injectionScope, _exportExpressionBuilder);
       }

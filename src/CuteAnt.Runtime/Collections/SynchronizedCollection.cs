@@ -304,7 +304,7 @@ namespace CuteAnt.Collections
     {
       if (value == null)
       {
-        if (typeof(T).GetTypeInfo().IsValueType)
+        if (typeof(T).IsValueType)
         {
           throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new ArgumentException(InternalSR.SynchronizedCollectionWrongTypeNull));
         }

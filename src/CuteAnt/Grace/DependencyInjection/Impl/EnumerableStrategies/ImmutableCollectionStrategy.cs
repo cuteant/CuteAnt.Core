@@ -15,7 +15,7 @@ namespace Grace.DependencyInjection.Impl.EnumerableStrategies
     /// <param name="injectionScope"></param>
     public ImmutableCollectionStrategy(Type activationType, IInjectionScope injectionScope) : base(activationType, injectionScope)
     {
-      var staticType = activationType.GetTypeInfo().Assembly.GetType(activationType.FullName.Replace("`1", ""));
+      var staticType = activationType.Assembly.GetType(activationType.FullName.Replace("`1", ""));
 
       const string _createMethodName = "Create";
       _createMethod = staticType.GetTypeInfo()

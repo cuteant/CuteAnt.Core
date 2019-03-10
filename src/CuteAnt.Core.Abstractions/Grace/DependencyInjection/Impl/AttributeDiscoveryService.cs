@@ -36,11 +36,7 @@ namespace Grace.DependencyInjection.Impl
       switch (value)
       {
         case Type type:
-#if NET40
           attributes = type.GetCustomAttributes()?.ToArray();
-#else
-          attributes = type.GetTypeInfo().GetCustomAttributes()?.ToArray();
-#endif
           break;
 
         case ParameterInfo parameterInfo:

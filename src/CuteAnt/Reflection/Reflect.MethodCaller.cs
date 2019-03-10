@@ -60,7 +60,7 @@ namespace CuteAnt.Reflection
           il.Emit(OpCodes.Unbox_Any, targetType);
         }
         il.Emit(OpCodes.Stloc_0);
-        if (targetType.GetTypeInfo().IsValueType)
+        if (targetType.IsValueType)
         {
           il.Emit(OpCodes.Ldloca, 0);
         }
@@ -81,7 +81,7 @@ namespace CuteAnt.Reflection
         var param = prams[i];
         var paramType = param.ParameterType;
 
-        var dataType = paramType.GetTypeInfo().IsByRef ? paramType.GetElementType() : paramType;
+        var dataType = paramType.IsByRef ? paramType.GetElementType() : paramType;
 
         var tmp = il.DeclareLocal(dataType);
         il.Emit(OpCodes.Unbox_Any, dataType);
@@ -118,7 +118,7 @@ namespace CuteAnt.Reflection
           il.Emit(OpCodes.Ldarg_1);
           il.Emit(OpCodes.Ldc_I4, i);
           il.Emit(OpCodes.Ldloc, i + localVarStart);
-          if (byRefType.GetTypeInfo().IsValueType)
+          if (byRefType.IsValueType)
           {
             il.Emit(OpCodes.Box, byRefType);
           }

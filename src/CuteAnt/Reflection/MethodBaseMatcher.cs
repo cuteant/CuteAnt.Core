@@ -29,7 +29,7 @@ namespace CuteAnt.Reflection
 
       for (var idx = 0; idx != argumentTypes.Length; idx++)
       {
-        if (!Parameters[idx].ParameterType.GetTypeInfo().IsAssignableFrom(argumentTypes[idx]?.GetTypeInfo())) { return false; }
+        if (!Parameters[idx].ParameterType.IsAssignableFrom(argumentTypes[idx])) { return false; }
       }
 
       return true;
@@ -46,21 +46,13 @@ namespace CuteAnt.Reflection
 
       for (var givenIndex = 0; givenIndex != givenParameters.Length; givenIndex++)
       {
-#if NET40
         var givenType = givenParameters[givenIndex]?.GetType();
-#else
-        var givenType = givenParameters[givenIndex]?.GetType().GetTypeInfo();
-#endif
         var givenMatched = false;
 
         for (var applyIndex = applyIndexStart; givenMatched == false && applyIndex != Parameters.Length; ++applyIndex)
         {
           if (parameterValuesSet[applyIndex] == false &&
-#if NET40
               Parameters[applyIndex].ParameterType.IsAssignableFrom(givenType))
-#else
-              Parameters[applyIndex].ParameterType.GetTypeInfo().IsAssignableFrom(givenType))
-#endif
           {
             givenMatched = true;
             parameterValuesSet[applyIndex] = true;

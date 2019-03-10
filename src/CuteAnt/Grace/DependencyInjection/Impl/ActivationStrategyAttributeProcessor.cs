@@ -95,11 +95,7 @@ namespace Grace.DependencyInjection.Impl
 
     private void ProcessClassAttributes(IConfigurableActivationStrategy strategy)
     {
-#if NET40
       foreach (var attribute in strategy.ActivationType.GetCustomAttributes())
-#else
-      foreach (var attribute in strategy.ActivationType.GetTypeInfo().GetCustomAttributes())
-#endif
       {
         switch (attribute)
         {

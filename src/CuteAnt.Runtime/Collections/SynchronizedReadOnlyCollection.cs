@@ -266,7 +266,7 @@ namespace CuteAnt.Collections
 
     private static void VerifyValueType(object value)
     {
-      if ((value is T) || (value == null && !typeof(T).GetTypeInfo().IsValueType)) { return; }
+      if ((value is T) || (value == null && !typeof(T).IsValueType)) { return; }
 
       Type type = (value == null) ? typeof(Object) : value.GetType();
       string message = string.Format(InternalSR.SFxCollectionWrongType2, type.ToString(), typeof(T).ToString());

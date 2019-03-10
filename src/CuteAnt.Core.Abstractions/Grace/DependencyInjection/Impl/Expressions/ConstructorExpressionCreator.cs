@@ -135,13 +135,13 @@ namespace Grace.DependencyInjection.Impl.Expressions
     /// <returns></returns>
     protected virtual ConstructorParameterInfo FindParameterInfoExpression(ParameterInfo parameter, TypeActivationConfiguration configuration)
     {
-      var parameterInfo = parameter.ParameterType.GetTypeInfo();
+      var parameterType = parameter.ParameterType;
 
       var matchedConstructor = configuration.ConstructorParameters.FirstOrDefault(
           p => string.Compare(p.ParameterName, parameter.Name, StringComparison.CurrentCultureIgnoreCase) == 0 &&
                (p.ParameterType == null ||
-                p.ParameterType.GetTypeInfo().IsAssignableFrom(parameterInfo) ||
-                parameterInfo.IsAssignableFrom(p.ParameterType.GetTypeInfo())));
+                p.ParameterType.IsAssignableFrom(parameterType) ||
+                parameterType.IsAssignableFrom(p.ParameterType)));
 
       if (matchedConstructor != null)
       {
@@ -150,8 +150,8 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
       return configuration.ConstructorParameters.FirstOrDefault(p => string.IsNullOrEmpty(p.ParameterName) &&
                                                                   p.ParameterType != null &&
-                                                                  (parameterInfo.IsAssignableFrom(p.ParameterType.GetTypeInfo()) ||
-                                                                  p.ParameterType.GetTypeInfo().IsAssignableFrom(parameterInfo)));
+                                                                  (parameterType.IsAssignableFrom(p.ParameterType) ||
+                                                                  p.ParameterType.IsAssignableFrom(parameterType)));
     }
 
     /// <summary>Get expression for parameter</summary>
@@ -203,7 +203,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
           var defaultValue = parameter.DefaultValue;
 
-          if (defaultValue == null && parameter.ParameterType.GetTypeInfo().IsValueType)
+          if (defaultValue == null && parameter.ParameterType.IsValueType)
           {
             defaultValue = Activator.CreateInstance(parameter.ParameterType);
           }
@@ -286,7 +286,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
       var constructors = configuration.ActivationType.GetTypeInfo().DeclaredConstructors.Where(c => c.IsPublic && !c.IsStatic).OrderByDescending(c => c.GetParameters().Length).ToArray();
 
-      if (constructors.Length == 0)
+      if (0u >= (uint)constructors.Length)
       {
         throw new Exception("Could not find public constructor on type " + configuration.ActivationType.FullName);
       }

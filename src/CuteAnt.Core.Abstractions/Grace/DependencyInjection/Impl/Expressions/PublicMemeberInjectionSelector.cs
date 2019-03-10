@@ -96,7 +96,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
           }
         }
 
-        type = type.GetTypeInfo().BaseType;
+        type = type.BaseType;
       }
     }
 
@@ -123,7 +123,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             }
           }
 
-          type = type.GetTypeInfo().BaseType;
+          type = type.BaseType;
         }
       }
     }

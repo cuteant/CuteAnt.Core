@@ -22,7 +22,7 @@ namespace Grace.DependencyInjection.Impl
     {
       if (strategy is ICompiledExportStrategy compiledExportStrategy)
       {
-        if (_initializeType.GetTypeInfo().IsAssignableFrom(strategy.ActivationType.GetTypeInfo()))
+        if (_initializeType.IsAssignableFrom(strategy.ActivationType))
         {
           compiledExportStrategy.EnrichmentDelegate(_initializeDelegate);
         }

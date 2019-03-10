@@ -54,9 +54,9 @@ namespace Grace.DependencyInjection
     /// <returns></returns>
     public static bool DefaultKeyedTypeSelector(Type arg)
     {
-      if (arg.GetTypeInfo().IsAssignableFrom(typeof(Delegate).GetTypeInfo())) { return false; }
+      if (arg.IsAssignableFrom(typeof(Delegate))) { return false; }
 
-      return arg == typeof(string) || arg.GetTypeInfo().IsPrimitive || arg == typeof(DateTime);
+      return arg == typeof(string) || arg.IsPrimitive || arg == typeof(DateTime);
     }
 
     /// <summary>Max object graph depth, this is what's used to detect a recursive loop</summary>
