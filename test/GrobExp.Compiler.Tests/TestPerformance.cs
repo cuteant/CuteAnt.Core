@@ -145,7 +145,7 @@ namespace GrobExp.Compiler.Tests
             }
         }
 
-#if DESKTOPCLR
+#if NET45
         [Test]
         [Ignore("Is used for debugging")]
         public unsafe void TestWriteAssemblerCode3()

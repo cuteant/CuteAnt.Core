@@ -45,7 +45,7 @@ namespace GrEmit.Tests
 
         private static string SelectName(string netcoreName, string net45Name)
         {
-#if DESKTOPCLR
+#if NET45
             return net45Name;
 #else
             return netcoreName;

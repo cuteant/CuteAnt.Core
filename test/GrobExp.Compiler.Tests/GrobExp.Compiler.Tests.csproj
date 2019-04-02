@@ -2,15 +2,15 @@
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <TargetFrameworks>netcoreapp2.2;net471</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.2;net45</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net471' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)'=='net471' ">
+  <ItemGroup Condition=" '$(TargetFramework)'=='net45' ">
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 

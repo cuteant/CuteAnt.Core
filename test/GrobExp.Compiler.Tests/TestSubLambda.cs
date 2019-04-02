@@ -293,7 +293,7 @@ namespace GrobExp.Compiler.Tests
             public int X { get; set; }
         }
 
-#if DESKTOPCLR
+#if NET45
         [Test]
         [Ignore("Is used for debugging")]
         public void CompileAndSave()

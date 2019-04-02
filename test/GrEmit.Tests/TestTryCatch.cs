@@ -2,7 +2,7 @@
 using System.Reflection.Emit;
 
 using NUnit.Framework;
-#if DESKTOPCLR
+#if NET45
 using System.Reflection;
 using System.Threading;
 #endif
@@ -134,7 +134,7 @@ namespace GrEmit.Tests
             }
         }
 
-#if DESKTOPCLR
+#if NET45
         [Test]
         public void Test2()
         {
