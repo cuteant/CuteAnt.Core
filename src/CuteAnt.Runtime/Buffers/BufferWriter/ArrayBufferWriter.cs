@@ -1,16 +1,18 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
+
 #if !NET40
-using System;
-using System.Buffers;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using CuteAnt.Runtime;
 
 namespace CuteAnt.Buffers
 {
-    public sealed class ArrayBufferWriter : ArrayBufferWriter<byte>
+    using System;
+    using System.Buffers;
+    using System.Diagnostics;
+    using System.Runtime.CompilerServices;
+    using CuteAnt.Runtime;
+
+    public sealed class ArrayBufferWriter : ArrayBufferWriter<ArrayBufferWriter>
     {
         public ArrayBufferWriter() : base(BufferManager.Shared) { }
 
@@ -21,33 +23,102 @@ namespace CuteAnt.Buffers
         public ArrayBufferWriter(ArrayPool<byte> arrayPool, int initialCapacity) : base(arrayPool, initialCapacity) { }
     }
 
-    // borrowed from https://github.com/dotnet/corefx/blob/master/src/System.Text.Json/src/System/Text/Json/Serialization/ArrayBufferWriter.cs
-    public class ArrayBufferWriter<T> : IBufferWriter<T>, IDisposable
+    public abstract class ArrayBufferWriter<TWriter> : ArrayBufferWriter<byte, ArrayBufferWriter<TWriter>>
+        where TWriter : ArrayBufferWriter<TWriter>
     {
-        private const int c_minimumBufferSize = 256;
-        private const uint c_maxBufferSize = int.MaxValue;
-        private static readonly int s_defaultBufferSize;
+        public ArrayBufferWriter(ArrayPool<byte> arrayPool) : base(arrayPool) { }
+
+        public ArrayBufferWriter(ArrayPool<byte> arrayPool, int initialCapacity) : base(arrayPool, initialCapacity) { }
+
+#if NET471
+        public unsafe override byte[] ToArray()
+        {
+            uint nLen = (uint)_writerIndex;
+            if (0u >= nLen) { return CuteAnt.EmptyArray<byte>.Instance; }
+
+            var destination = new byte[_writerIndex];
+            fixed (byte* source = &_borrowedBuffer[0])
+            fixed (byte* dst = &destination[0])
+            {
+                Buffer.MemoryCopy(source, dst, _writerIndex, _writerIndex);
+            }
+            return destination;
+        }
+#else
+        public override byte[] ToArray()
+        {
+            uint nLen = (uint)_writerIndex;
+            if (0u >= nLen) { return CuteAnt.EmptyArray<byte>.Instance; }
+
+            var destination = new byte[_writerIndex];
+            Unsafe.CopyBlockUnaligned(ref destination[0], ref _borrowedBuffer[0], nLen);
+            return destination;
+        }
+#endif
+    }
+
+    // borrowed from https://github.com/dotnet/corefx/blob/master/src/System.Text.Json/src/System/Text/Json/Serialization/ArrayBufferWriter.cs
+    public abstract class ArrayBufferWriter<T, TWriter> : IArrayBufferWriter<T>
+        where TWriter : ArrayBufferWriter<T, TWriter>
+    {
+        protected const int c_minimumBufferSize = 256;
+        protected const uint c_maxBufferSize = int.MaxValue;
+        protected static readonly int s_defaultBufferSize;
 
         static ArrayBufferWriter()
         {
-            s_defaultBufferSize = 1 + ((4 * 1024 - 1) / Unsafe.SizeOf<T>());
+            s_defaultBufferSize = 1 + ((64 * 1024 - 1) / Unsafe.SizeOf<T>());
         }
 
-        private ArrayPool<T> _arrayPool;
-        private T[] _rentedBuffer;
-        private int _writerIndex;
+        protected ArrayPool<T> _arrayPool;
+        protected T[] _borrowedBuffer;
+        protected int _writerIndex;
 
         public ArrayBufferWriter(ArrayPool<T> arrayPool) : this(arrayPool, s_defaultBufferSize) { }
 
-        public ArrayBufferWriter(ArrayPool<T> arrayPool, int initialCapacity)
+        public ArrayBufferWriter(ArrayPool<T> arrayPool, int initialCapacity) : this()
         {
             if (null == arrayPool) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.arrayPool); }
             //if (initialCapacity <= 0) ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.initialCapacity);
             if (((uint)(initialCapacity - 1)) > c_maxBufferSize) { initialCapacity = s_defaultBufferSize; }
 
             _arrayPool = arrayPool;
-            _rentedBuffer = _arrayPool.Rent(initialCapacity);
+            _borrowedBuffer = _arrayPool.Rent(initialCapacity);
+        }
+
+        protected ArrayBufferWriter()
+        {
             _writerIndex = 0;
+        }
+
+        public ref T Origin
+        {
+            get
+            {
+                CheckIfDisposed();
+
+                return ref _borrowedBuffer[0];
+            }
+        }
+
+        public ArraySegment<T> WrittenBuffer
+        {
+            get
+            {
+                CheckIfDisposed();
+
+                return new ArraySegment<T>(_borrowedBuffer, 0, _writerIndex);
+            }
+        }
+
+        public ReadOnlySpan<T> WrittenSpan
+        {
+            get
+            {
+                CheckIfDisposed();
+
+                return new ReadOnlySpan<T>(_borrowedBuffer, 0, _writerIndex);
+            }
         }
 
         public ReadOnlyMemory<T> WrittenMemory
@@ -56,7 +127,17 @@ namespace CuteAnt.Buffers
             {
                 CheckIfDisposed();
 
-                return _rentedBuffer.AsMemory(0, _writerIndex);
+                return new ReadOnlyMemory<T>(_borrowedBuffer, 0, _writerIndex);
+            }
+        }
+
+        public IOwnedBuffer<T> OwnedWrittenBuffer
+        {
+            get
+            {
+                CheckIfDisposed();
+
+                return new ArrayWrittenBuffer(this);
             }
         }
 
@@ -76,7 +157,7 @@ namespace CuteAnt.Buffers
             {
                 CheckIfDisposed();
 
-                return _rentedBuffer.Length;
+                return _borrowedBuffer.Length;
             }
         }
 
@@ -86,9 +167,11 @@ namespace CuteAnt.Buffers
             {
                 CheckIfDisposed();
 
-                return _rentedBuffer.Length - _writerIndex;
+                return _borrowedBuffer.Length - _writerIndex;
             }
         }
+
+        public virtual T[] ToArray() => ToArray();
 
         public void Clear()
         {
@@ -97,32 +180,35 @@ namespace CuteAnt.Buffers
             ClearHelper();
         }
 
-        private void ClearHelper()
+        protected void ClearHelper()
         {
-            Debug.Assert(_rentedBuffer != null);
+            Debug.Assert(_borrowedBuffer != null);
 
-            _rentedBuffer.AsSpan(0, _writerIndex).Clear();
+            _borrowedBuffer.AsSpan(0, _writerIndex).Clear();
             _writerIndex = 0;
         }
 
         // Returns the rented buffer back to the pool
         public void Dispose()
         {
-            if (_rentedBuffer == null)
-            {
-                return;
-            }
+            if (_borrowedBuffer == null) { return; }
 
-            ClearHelper();
-            _arrayPool.Return(_rentedBuffer);
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            //ClearHelper();
+            var borrowedBuffer = _borrowedBuffer;
+            _borrowedBuffer = null;
+            _arrayPool.Return(borrowedBuffer);
             _arrayPool = null;
-            _rentedBuffer = null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void CheckIfDisposed()
         {
-            if (_rentedBuffer == null) ThrowObjectDisposedException();
+            if (_borrowedBuffer == null) ThrowObjectDisposedException();
         }
 
         public void Advance(int count)
@@ -131,10 +217,20 @@ namespace CuteAnt.Buffers
 
             if (count < 0) ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.count);
 
-            if (_writerIndex > _rentedBuffer.Length - count)
-                ThrowInvalidOperationException(_rentedBuffer.Length);
+            if (_writerIndex > _borrowedBuffer.Length - count)
+            {
+                ThrowInvalidOperationException(_borrowedBuffer.Length);
+            }
 
             _writerIndex += count;
+        }
+
+        public ArraySegment<T> GetBuffer(int sizeHint = 0)
+        {
+            CheckIfDisposed();
+
+            CheckAndResizeBuffer(sizeHint);
+            return new ArraySegment<T>(_borrowedBuffer, _writerIndex, _borrowedBuffer.Length - _writerIndex);
         }
 
         public Memory<T> GetMemory(int sizeHint = 0)
@@ -142,7 +238,7 @@ namespace CuteAnt.Buffers
             CheckIfDisposed();
 
             CheckAndResizeBuffer(sizeHint);
-            return _rentedBuffer.AsMemory(_writerIndex);
+            return _borrowedBuffer.AsMemory(_writerIndex);
         }
 
         public Span<T> GetSpan(int sizeHint = 0)
@@ -150,44 +246,73 @@ namespace CuteAnt.Buffers
             CheckIfDisposed();
 
             CheckAndResizeBuffer(sizeHint);
-            return _rentedBuffer.AsSpan(_writerIndex);
+            return _borrowedBuffer.AsSpan(_writerIndex);
         }
 
-        private void CheckAndResizeBuffer(int sizeHint)
+        protected virtual void CheckAndResizeBuffer(int sizeHint)
         {
-            Debug.Assert(_rentedBuffer != null);
+            Debug.Assert(_borrowedBuffer != null);
 
             //if (sizeHint < 0) ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.sizeHint);
             //if (sizeHint == 0)
-            if ((uint)(sizeHint - 1) > c_maxBufferSize)
+            if (unchecked((uint)(sizeHint - 1)) > c_maxBufferSize)
             {
                 sizeHint = c_minimumBufferSize;
             }
 
-            int availableSpace = _rentedBuffer.Length - _writerIndex;
+            int availableSpace = _borrowedBuffer.Length - _writerIndex;
 
             if (sizeHint > availableSpace)
             {
-                int growBy = Math.Max(sizeHint, _rentedBuffer.Length);
+                int growBy = Math.Max(sizeHint, _borrowedBuffer.Length);
 
-                int newSize = checked(_rentedBuffer.Length + growBy);
+                int newSize = checked(_borrowedBuffer.Length + growBy);
 
-                T[] oldBuffer = _rentedBuffer;
+                T[] oldBuffer = _borrowedBuffer;
 
-                _rentedBuffer = _arrayPool.Rent(newSize);
+                _borrowedBuffer = _arrayPool.Rent(newSize);
 
                 Debug.Assert(oldBuffer.Length >= _writerIndex);
-                Debug.Assert(_rentedBuffer.Length >= _writerIndex);
+                Debug.Assert(_borrowedBuffer.Length >= _writerIndex);
 
                 Span<T> previousBuffer = oldBuffer.AsSpan(0, _writerIndex);
-                previousBuffer.CopyTo(_rentedBuffer);
+                previousBuffer.CopyTo(_borrowedBuffer);
                 previousBuffer.Clear();
                 _arrayPool.Return(oldBuffer);
             }
 
-            Debug.Assert(_rentedBuffer.Length - _writerIndex > 0);
-            Debug.Assert(_rentedBuffer.Length - _writerIndex >= sizeHint);
+            Debug.Assert(_borrowedBuffer.Length - _writerIndex > 0);
+            Debug.Assert(_borrowedBuffer.Length - _writerIndex >= sizeHint);
         }
+
+        #region ** class ArrayWrittenBuffer **
+
+        private sealed class ArrayWrittenBuffer : IOwnedBuffer<T>
+        {
+            private ArrayBufferWriter<T, TWriter> _writer;
+
+            public ArrayWrittenBuffer(ArrayBufferWriter<T, TWriter> writer) => _writer = writer;
+
+            public int Count => _writer.WrittenCount;
+
+            public ArraySegment<T> Buffer => _writer.WrittenBuffer;
+
+            public ReadOnlyMemory<T> Memory => _writer.WrittenMemory;
+
+            public ReadOnlySpan<T> Span => _writer.WrittenSpan;
+
+            public void Dispose()
+            {
+                var writer = _writer;
+                if (writer != null)
+                {
+                    _writer = null;
+                    writer.Dispose();
+                }
+            }
+        }
+
+        #endregion
 
         #region ** ThrowHelper **
 
@@ -197,7 +322,7 @@ namespace CuteAnt.Buffers
             throw GetException();
             ObjectDisposedException GetException()
             {
-                return new ObjectDisposedException(nameof(ArrayBufferWriter<T>));
+                return new ObjectDisposedException(nameof(TWriter));
             }
         }
 
@@ -214,4 +339,5 @@ namespace CuteAnt.Buffers
         #endregion
     }
 }
+
 #endif
