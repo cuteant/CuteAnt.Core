@@ -171,7 +171,7 @@ namespace CuteAnt.Buffers
             }
         }
 
-        public virtual T[] ToArray() => ToArray();
+        public virtual T[] ToArray() => WrittenSpan.ToArray();
 
         public void Clear()
         {
