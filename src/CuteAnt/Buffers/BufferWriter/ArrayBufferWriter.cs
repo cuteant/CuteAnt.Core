@@ -10,6 +10,18 @@ namespace CuteAnt.Buffers
     using System.Buffers;
     using System.Diagnostics;
     using System.Runtime.CompilerServices;
+    using System.Threading;
+
+    public sealed class DefaultBufferWriter : ArrayBufferWriter<DefaultBufferWriter>
+    {
+        public DefaultBufferWriter() : base(ArrayPool<byte>.Shared) { }
+
+        public DefaultBufferWriter(int initialCapacity) : base(ArrayPool<byte>.Shared, initialCapacity) { }
+
+        public DefaultBufferWriter(ArrayPool<byte> arrayPool) : base(arrayPool) { }
+
+        public DefaultBufferWriter(ArrayPool<byte> arrayPool, int initialCapacity) : base(arrayPool, initialCapacity) { }
+    }
 
     public abstract class ArrayBufferWriter<TWriter> : ArrayBufferWriter<byte, ArrayBufferWriter<TWriter>>
         where TWriter : ArrayBufferWriter<TWriter>
@@ -187,8 +199,7 @@ namespace CuteAnt.Buffers
         protected virtual void Dispose(bool disposing)
         {
             //ClearHelper();
-            var borrowedBuffer = _borrowedBuffer;
-            _borrowedBuffer = null;
+            var borrowedBuffer = Interlocked.Exchange(ref _borrowedBuffer, null);
             _arrayPool.Return(borrowedBuffer);
             _arrayPool = null;
         }

@@ -9,12 +9,11 @@ namespace CuteAnt.Buffers
     using System.Buffers;
     using System.Runtime.CompilerServices;
 
-    public sealed class ArrayMemoryPool : ArrayMemoryPool<byte>
+    public sealed class DefaultMemoryPool : ArrayMemoryPool<byte>
     {
-        new public static readonly ArrayMemoryPool Instance = new ArrayMemoryPool();
-        private ArrayMemoryPool() : this(ArrayPool<byte>.Shared) { }
+        new public static readonly DefaultMemoryPool Instance = new DefaultMemoryPool();
 
-        public ArrayMemoryPool(ArrayPool<byte> arrayPool) : base(arrayPool) { }
+        private DefaultMemoryPool() : base(ArrayPool<byte>.Shared) { }
     }
 
     // borrowed from https://github.com/dotnet/corefx/blob/master/src/System.Memory/src/System/Buffers/ArrayMemoryPool.cs
