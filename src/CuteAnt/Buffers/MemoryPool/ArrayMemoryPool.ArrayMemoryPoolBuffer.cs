@@ -1,10 +1,11 @@
 ﻿#if !NET40
-using System;
-using System.Buffers;
-using System.Runtime.CompilerServices;
 
 namespace CuteAnt.Buffers
 {
+    using System;
+    using System.Buffers;
+    using System.Runtime.CompilerServices;
+
     partial class ArrayMemoryPool<T> : MemoryPool<T>
     {
         private sealed class ArrayMemoryPoolBuffer : IMemoryOwner<T>
@@ -49,4 +50,5 @@ namespace CuteAnt.Buffers
         }
     }
 }
+
 #endif

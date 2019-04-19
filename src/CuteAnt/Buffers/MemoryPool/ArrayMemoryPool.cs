@@ -1,17 +1,18 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
+
 #if !NET40
-using System.Buffers;
-using System.Runtime.CompilerServices;
-using CuteAnt.Runtime;
 
 namespace CuteAnt.Buffers
 {
+    using System.Buffers;
+    using System.Runtime.CompilerServices;
+
     public sealed class ArrayMemoryPool : ArrayMemoryPool<byte>
     {
         new public static readonly ArrayMemoryPool Instance = new ArrayMemoryPool();
-        private ArrayMemoryPool() : this(BufferManager.Shared) { }
+        private ArrayMemoryPool() : this(ArrayPool<byte>.Shared) { }
 
         public ArrayMemoryPool(ArrayPool<byte> arrayPool) : base(arrayPool) { }
     }
@@ -50,4 +51,5 @@ namespace CuteAnt.Buffers
         protected sealed override void Dispose(bool disposing) { }  // ArrayMemoryPool is a shared pool so Dispose() would be a nop even if there were native resources to dispose.
     }
 }
+
 #endif

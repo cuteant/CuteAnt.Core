@@ -6,18 +6,6 @@ namespace CuteAnt.Buffers
     using System.Buffers;
     using System.Diagnostics;
     using System.Runtime.CompilerServices;
-    using CuteAnt.Runtime;
-
-    public sealed class ThreadLocalBufferWriter : ThreadLocalBufferWriter<ThreadLocalBufferWriter>
-    {
-        public ThreadLocalBufferWriter() : base(BufferManager.Shared) { }
-
-        public ThreadLocalBufferWriter(int initialCapacity) : base(BufferManager.Shared, initialCapacity) { }
-
-        public ThreadLocalBufferWriter(ArrayPool<byte> arrayPool) : base(arrayPool) { }
-
-        public ThreadLocalBufferWriter(ArrayPool<byte> arrayPool, int initialCapacity) : base(arrayPool, initialCapacity) { }
-    }
 
     public abstract class ThreadLocalBufferWriter<TWriter> : ThreadLocalBufferWriter<byte, ThreadLocalBufferWriter<TWriter>>
         where TWriter : ThreadLocalBufferWriter<TWriter>
@@ -26,31 +14,31 @@ namespace CuteAnt.Buffers
 
         public ThreadLocalBufferWriter(ArrayPool<byte> arrayPool, int initialCapacity) : base(arrayPool, initialCapacity) { }
 
-#if NET471
-        public unsafe override byte[] ToArray()
-        {
-            uint nLen = (uint)_writerIndex;
-            if (0u >= nLen) { return CuteAnt.EmptyArray<byte>.Instance; }
-
-            var destination = new byte[_writerIndex];
-            fixed (byte* source = &_borrowedBuffer[0])
-            fixed (byte* dst = &destination[0])
-            {
-                Buffer.MemoryCopy(source, dst, _writerIndex, _writerIndex);
-            }
-            return destination;
-        }
-#else
         public override byte[] ToArray()
         {
-            uint nLen = (uint)_writerIndex;
-            if (0u >= nLen) { return CuteAnt.EmptyArray<byte>.Instance; }
+            var count = _writerIndex;
+            uint nCount = (uint)count;
+            if (0u >= nCount) { return EmptyArray<byte>.Instance; }
 
-            var destination = new byte[_writerIndex];
-            Unsafe.CopyBlockUnaligned(ref destination[0], ref _borrowedBuffer[0], nLen);
+            var destination = new byte[count];
+#if NET451
+            Buffer.BlockCopy(_borrowedBuffer, 0, destination, 0, count);
+#elif NET471
+            unsafe
+            {
+                fixed (byte* source = &_borrowedBuffer[0])
+                {
+                    fixed (byte* dest = &destination[0])
+                    {
+                        Buffer.MemoryCopy(source, dest, count, count);
+                    }
+                }
+            }
+#else
+            Unsafe.CopyBlockUnaligned(ref destination[0], ref _borrowedBuffer[0], nCount);
+#endif
             return destination;
         }
-#endif
     }
 
     public abstract class ThreadLocalBufferWriter<T, TWriter> : ArrayBufferWriter<T, TWriter>
@@ -88,11 +76,11 @@ namespace CuteAnt.Buffers
             _borrowedBuffer = null;
             if (_useThreadLocal)
             {
-                Release();
+                _useThreadLocal = false;
             }
             else
             {
-                _arrayPool.Return(borrowedBuffer);
+                _arrayPool?.Return(borrowedBuffer);
             }
             _arrayPool = null;
         }
@@ -128,7 +116,7 @@ namespace CuteAnt.Buffers
 
                 if (_useThreadLocal)
                 {
-                    Release();
+                    _useThreadLocal = false;
                 }
                 else
                 {
@@ -140,20 +128,8 @@ namespace CuteAnt.Buffers
             Debug.Assert(_borrowedBuffer.Length - _writerIndex >= sizeHint);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Release()
-        {
-            _useThreadLocal = false;
-            InternalMemoryPool.Free();
-        }
-
         #region == InternalMemoryPool ==
 
-        sealed class InternalWrappingBuffer
-        {
-            public T[] Buffer;
-            public bool Idle;
-        }
         static class InternalMemoryPool
         {
             private static readonly int s_initialCapacity;
@@ -166,26 +142,12 @@ namespace CuteAnt.Buffers
             }
 
             [ThreadStatic]
-            static InternalWrappingBuffer s_wrappingBuffer = null;
+            static T[] s_buffer = null;
 
             public static T[] GetBuffer()
             {
-                if (s_wrappingBuffer == null)
-                {
-                    s_wrappingBuffer = new InternalWrappingBuffer { Buffer = new T[s_initialCapacity], Idle = true };
-                }
-                if (s_wrappingBuffer.Idle)
-                {
-                    s_wrappingBuffer.Idle = false;
-                    return s_wrappingBuffer.Buffer;
-                }
-                return null;
-            }
-
-            public static void Free()
-            {
-                Debug.Assert(s_wrappingBuffer != null);
-                s_wrappingBuffer.Idle = true;
+                if (s_buffer == null) { s_buffer = new T[s_initialCapacity]; }
+                return s_buffer;
             }
         }
 

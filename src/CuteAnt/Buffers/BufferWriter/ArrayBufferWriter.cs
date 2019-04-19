@@ -10,18 +10,6 @@ namespace CuteAnt.Buffers
     using System.Buffers;
     using System.Diagnostics;
     using System.Runtime.CompilerServices;
-    using CuteAnt.Runtime;
-
-    public sealed class ArrayBufferWriter : ArrayBufferWriter<ArrayBufferWriter>
-    {
-        public ArrayBufferWriter() : base(BufferManager.Shared) { }
-
-        public ArrayBufferWriter(int initialCapacity) : base(BufferManager.Shared, initialCapacity) { }
-
-        public ArrayBufferWriter(ArrayPool<byte> arrayPool) : base(arrayPool) { }
-
-        public ArrayBufferWriter(ArrayPool<byte> arrayPool, int initialCapacity) : base(arrayPool, initialCapacity) { }
-    }
 
     public abstract class ArrayBufferWriter<TWriter> : ArrayBufferWriter<byte, ArrayBufferWriter<TWriter>>
         where TWriter : ArrayBufferWriter<TWriter>
@@ -30,31 +18,31 @@ namespace CuteAnt.Buffers
 
         public ArrayBufferWriter(ArrayPool<byte> arrayPool, int initialCapacity) : base(arrayPool, initialCapacity) { }
 
-#if NET471
-        public unsafe override byte[] ToArray()
-        {
-            uint nLen = (uint)_writerIndex;
-            if (0u >= nLen) { return CuteAnt.EmptyArray<byte>.Instance; }
-
-            var destination = new byte[_writerIndex];
-            fixed (byte* source = &_borrowedBuffer[0])
-            fixed (byte* dst = &destination[0])
-            {
-                Buffer.MemoryCopy(source, dst, _writerIndex, _writerIndex);
-            }
-            return destination;
-        }
-#else
         public override byte[] ToArray()
         {
-            uint nLen = (uint)_writerIndex;
-            if (0u >= nLen) { return CuteAnt.EmptyArray<byte>.Instance; }
+            var count = _writerIndex;
+            uint nCount = (uint)count;
+            if (0u >= nCount) { return EmptyArray<byte>.Instance; }
 
-            var destination = new byte[_writerIndex];
-            Unsafe.CopyBlockUnaligned(ref destination[0], ref _borrowedBuffer[0], nLen);
+            var destination = new byte[count];
+#if NET451
+            Buffer.BlockCopy(_borrowedBuffer, 0, destination, 0, count);
+#elif NET471
+            unsafe
+            {
+                fixed (byte* source = &_borrowedBuffer[0])
+                {
+                    fixed (byte* dest = &destination[0])
+                    {
+                        Buffer.MemoryCopy(source, dest, count, count);
+                    }
+                }
+            }
+#else
+            Unsafe.CopyBlockUnaligned(ref destination[0], ref _borrowedBuffer[0], nCount);
+#endif
             return destination;
         }
-#endif
     }
 
     // borrowed from https://github.com/dotnet/corefx/blob/master/src/System.Text.Json/src/System/Text/Json/Serialization/ArrayBufferWriter.cs
@@ -171,7 +159,7 @@ namespace CuteAnt.Buffers
             }
         }
 
-        public virtual T[] ToArray() => ToArray();
+        public virtual T[] ToArray() => WrittenSpan.ToArray();
 
         public void Clear()
         {
