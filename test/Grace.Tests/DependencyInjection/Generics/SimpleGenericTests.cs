@@ -1,15 +1,10 @@
-﻿using System;
-using System.Reflection;
-using Grace.Data;
-using Grace.DependencyInjection;
+﻿using Grace.DependencyInjection;
 using Grace.Tests.Classes.Generics;
 using Grace.Tests.Classes.Simple;
 using Xunit;
 
 namespace Grace.Tests.DependencyInjection.Generics
 {
-
-    
     public class SimpleGenericTests
     {
         [Fact]
@@ -37,7 +32,7 @@ namespace Grace.Tests.DependencyInjection.Generics
 
             container.Configure(c => c.Export(typeof(ImportGenericService<>)).As(typeof(IImportGenericService<>)));
 
-            var service = container.Locate<IImportGenericService<int>>(new { value = 5 });
+            var service = container.Locate<IImportGenericService<int>>(new { value = 5});
 
             Assert.NotNull(service);
             Assert.Equal(5, service.Value);
@@ -57,7 +52,7 @@ namespace Grace.Tests.DependencyInjection.Generics
         {
             public T Value { get; set; }
         }
-
+        
         public class GenericClassC<T> : IGenericClass<T>
         {
             public T Value { get; set; }
@@ -67,7 +62,7 @@ namespace Grace.Tests.DependencyInjection.Generics
         public void Locate_Open_Generic_With_Key()
         {
             var container = new DependencyInjectionContainer();
-
+            
             container.Configure(c =>
             {
                 c.Export(typeof(DependentService<>)).WithCtorParam<object>().Named("value").LocateWithKey('A');
@@ -101,74 +96,5 @@ namespace Grace.Tests.DependencyInjection.Generics
             Assert.NotNull(instance.Value);
             Assert.IsType<GenericClassB<int>>(instance.Value);
         }
-        
-
-        [Fact]
-        public void Generic_When_Test()
-        {
-            var container = new DependencyInjectionContainer();
-
-            container.Configure(c =>
-            {
-                c.Export(typeof(GenericClassA<>)).As(typeof(IGenericClass<>)).When.GenericArgumentIs(typeof(BasicService));
-                c.Export(typeof(GenericClassB<>)).As(typeof(IGenericClass<>));
-            });
-
-            var instance = container.Locate<IGenericClass<BasicService>>();
-
-            Assert.NotNull(instance);
-            Assert.IsType<GenericClassA<BasicService>>(instance);
-
-            var instance2 = container.Locate<IGenericClass<IBasicService>>();
-
-            Assert.NotNull(instance2);
-            Assert.IsType<GenericClassB<IBasicService>>(instance2);
-        }
     }
-
-    public static class WhenExtension
-    {
-        public static IWhenConditionConfiguration<IFluentExportStrategyConfiguration> GenericArgumentIs(this IWhenConditionConfiguration<IFluentExportStrategyConfiguration> configuration,
-            params Type[] args)
-        {
-            configuration.MeetsCondition((strategy, context) =>
-            {
-                var activationType = context.ActivationType;
-
-                if (activationType.IsConstructedGenericType)
-                {
-                    var genericArgs = activationType.GetGenericArguments();
-
-                    if (args.Length > genericArgs.Length)
-                    {
-                        return false;
-                    }
-
-                    var i = 0;
-
-                    foreach (var type in args)
-                    {
-                        if (type == null)
-                        {
-                            continue;
-                        }
-
-                        if (type != genericArgs[i])
-                        {
-                            return false;
-                        }
-
-                        i++;
-                    }
-
-                    return true;
-                }
-
-                return false;
-            });
-
-            return configuration;
-        }
-    }
-
 }

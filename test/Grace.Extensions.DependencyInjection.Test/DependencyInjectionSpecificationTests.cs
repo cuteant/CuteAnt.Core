@@ -712,9 +712,7 @@ namespace Microsoft.Extensions.DependencyInjection.Specification
       Assert.NotNull(enumerable[1]);
       Assert.NotNull(enumerable[2]);
 
-      // ## 苦竹 修改 Grace 与 msdi顺序不同 ##
-      //Assert.Equal(instance, enumerable[2]);
-      Assert.Equal(instance, enumerable[1]);
+      Assert.Equal(instance, enumerable[2]);
       Assert.IsType<FakeService>(enumerable[0]);
     }
 

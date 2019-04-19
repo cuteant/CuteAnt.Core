@@ -4,7 +4,7 @@
     <AssemblyVersion>2.2.0.0</AssemblyVersion>
     <VersionPrefix Condition=" '$(VersionPrefix)'=='' ">2.2.0</VersionPrefix>
     <VersionSuffix Condition=" '$(VersionSuffix)'=='' ">rtm</VersionSuffix>
-    <VersionDateSuffix Condition=" '$(VersionDateSuffix)'=='' ">190309-01</VersionDateSuffix>
+    <VersionDateSuffix Condition=" '$(VersionDateSuffix)'=='' ">190420-01</VersionDateSuffix>
     <VersionSuffix Condition=" '$(VersionDateSuffix)'!='' ">$(VersionSuffix)-$(VersionDateSuffix)</VersionSuffix>
   </PropertyGroup>
   <Choose>
@@ -43,9 +43,19 @@
         <FileVersion>2.2.0.2200</FileVersion>
       </PropertyGroup>
     </When>
+    <When Condition=" '$(TargetFramework)' == 'net48' ">
+      <PropertyGroup>
+        <FileVersion>2.2.0.2500</FileVersion>
+      </PropertyGroup>
+    </When>
     <When Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
       <PropertyGroup>
         <FileVersion>2.2.0.5000</FileVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
+      <PropertyGroup>
+        <FileVersion>2.2.0.5100</FileVersion>
       </PropertyGroup>
     </When>
     <When Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">
@@ -61,6 +71,11 @@
     <When Condition=" '$(TargetFramework)' == 'netcoreapp2.2' ">
       <PropertyGroup>
         <FileVersion>2.2.0.6200</FileVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition=" '$(TargetFramework)' == 'netcoreapp3.0' ">
+      <PropertyGroup>
+        <FileVersion>2.2.0.6500</FileVersion>
       </PropertyGroup>
     </When>
     <Otherwise>

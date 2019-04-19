@@ -8,203 +8,205 @@ using CuteAnt.Runtime;
 
 namespace CuteAnt.Buffers
 {
-  /// <summary>基类，外部无法创建此类实例，请使用BufferManagerMemoryStream，只适合做固定容量的MemoryStream，不能进行容量动态扩展，可读写。</summary>
-  public class BufferedMemoryStream : MemoryStream, IBufferedStreamCloneable, IBufferedStream
-  {
-    #region @@ Fields @@
-
-    private Byte[] m_bufferedBytes;
-    private Int32 m_bufferOrigin;
-    private Int32 m_bufferSize;
-    private ArrayPool<byte> m_bufferManager;
-
-    private const Int32 c_off = 0;
-    private const Int32 c_on = 1;
-    private Int32 m_isDisposed = c_off;
-
-    private bool m_callerReturnsBuffer;
-
-    #endregion
-
-    #region @@ Properties @@
-
-    /// <summary>获取只读字节数组，不允许对此数组做任何修改！</summary>
-    public Byte[] ReadOnlyBuffer { get { return (c_off == m_isDisposed) ? m_bufferedBytes : EmptyArray<byte>.Instance; } }
-
-    /// <summary>获取只读字节数组原始偏移。</summary>
-    public Int32 ReadOnlyBufferOrigin { get { return (c_off == m_isDisposed) ? m_bufferOrigin : c_off; } }
-
-    /// <summary>获取只读字节数组有效长度。</summary>
-    public Int32 ReadOnlyBufferSize { get { return (c_off == m_isDisposed) ? m_bufferSize : c_off; } }
-
-    #endregion
-
-    #region @@ Constructors @@
-
-    internal BufferedMemoryStream(byte[] buffer, bool writable)
-      : this(buffer, writable, null)
+    /// <summary>基类，外部无法创建此类实例，请使用BufferManagerMemoryStream，只适合做固定容量的MemoryStream，不能进行容量动态扩展，可读写。</summary>
+    public class BufferedMemoryStream : MemoryStream, IBufferedStreamCloneable, IBufferedStream
     {
-    }
+        #region @@ Fields @@
 
-    internal BufferedMemoryStream(byte[] buffer, int index, int count, bool writable)
-      : this(buffer, index, count, writable, null)
-    {
-    }
+        private Byte[] m_bufferedBytes;
+        private Int32 m_bufferOrigin;
+        private Int32 m_bufferSize;
+        private ArrayPool<byte> m_bufferManager;
 
-    internal BufferedMemoryStream(int capacity, ArrayPool<byte> bufferManager)
-      : this(bufferManager.Rent(capacity), 0, capacity, true, bufferManager)
-    {
-    }
+        private const Int32 c_off = 0;
+        private const Int32 c_on = 1;
+        private Int32 m_isDisposed = c_off;
 
-    internal BufferedMemoryStream(byte[] buffer, bool writable, ArrayPool<byte> bufferManager)
-      : base(buffer, writable)
-    {
-      m_bufferedBytes = buffer;
-      m_bufferOrigin = c_off;
-      m_bufferSize = buffer.Length;
-      m_bufferManager = bufferManager;
-    }
+        private bool m_callerReturnsBuffer;
 
-    internal BufferedMemoryStream(byte[] buffer, int index, int count, bool writable, ArrayPool<byte> bufferManager)
-      : base(buffer, index, count, writable)
-    {
-      m_bufferedBytes = buffer;
-      m_bufferOrigin = index;
-      m_bufferSize = count;
-      m_bufferManager = bufferManager;
-    }
+        #endregion
 
-    #endregion
+        #region @@ Properties @@
 
-    #region ++ Dispose ++
+        /// <summary>获取只读字节数组，不允许对此数组做任何修改！</summary>
+        public Byte[] ReadOnlyBuffer { get { return (c_off == m_isDisposed) ? m_bufferedBytes : EmptyArray<byte>.Instance; } }
 
-    protected override void Dispose(Boolean disposing)
-    {
-      if (c_on == Interlocked.CompareExchange(ref m_isDisposed, c_on, c_off)) { return; }
+        /// <summary>获取只读字节数组原始偏移。</summary>
+        public Int32 ReadOnlyBufferOrigin { get { return (c_off == m_isDisposed) ? m_bufferOrigin : c_off; } }
 
-      try
-      {
-        var bufferManager = Interlocked.Exchange(ref m_bufferManager, null);
-        if (disposing && bufferManager != null)
+        /// <summary>获取只读字节数组有效长度。</summary>
+        public Int32 ReadOnlyBufferSize { get { return (c_off == m_isDisposed) ? m_bufferSize : c_off; } }
+
+        #endregion
+
+        #region @@ Constructors @@
+
+        internal BufferedMemoryStream(byte[] buffer, bool writable)
+          : this(buffer, writable, null)
         {
-          var bufferedBytes = Interlocked.Exchange(ref m_bufferedBytes, null);
-          if (!m_callerReturnsBuffer && bufferedBytes != null) { bufferManager.Return(bufferedBytes); }
-          m_callerReturnsBuffer = false;
         }
-      }
-      catch { }
-      finally
-      {
-        base.Dispose(disposing);
-      }
-    }
 
-    #endregion
+        internal BufferedMemoryStream(byte[] buffer, int index, int count, bool writable)
+          : this(buffer, index, count, writable, null)
+        {
+        }
 
-    #region ++ ToArraySegment ++
+        internal BufferedMemoryStream(int capacity, ArrayPool<byte> bufferManager)
+          : this(bufferManager.Rent(capacity), 0, capacity, true, bufferManager)
+        {
+        }
 
-    /// <summary>ToArraySegment</summary>
-    /// <returns></returns>
-    public ArraySegment<byte> ToArraySegment()
-    {
-      if (m_bufferedBytes == null || m_bufferedBytes.Length == 0) { return BufferManager.Empty; }
+        internal BufferedMemoryStream(byte[] buffer, bool writable, ArrayPool<byte> bufferManager)
+          : base(buffer, writable)
+        {
+            m_bufferedBytes = buffer;
+            m_bufferOrigin = c_off;
+            m_bufferSize = buffer.Length;
+            m_bufferManager = bufferManager;
+        }
 
-      m_callerReturnsBuffer = true;
-      return new ArraySegment<byte>(m_bufferedBytes, m_bufferOrigin, m_bufferSize);
-    }
+        internal BufferedMemoryStream(byte[] buffer, int index, int count, bool writable, ArrayPool<byte> bufferManager)
+          : base(buffer, index, count, writable)
+        {
+            m_bufferedBytes = buffer;
+            m_bufferOrigin = index;
+            m_bufferSize = count;
+            m_bufferManager = bufferManager;
+        }
 
-    #endregion
+        #endregion
 
-    #region -- IBufferedStreamCloneable Members --
+        #region ++ Dispose ++
 
-    Stream IBufferedStreamCloneable.Clone()
-    {
-      var copy = new BufferedMemoryStream(this.m_bufferedBytes, this.m_bufferOrigin, this.m_bufferSize, false, this.m_bufferManager);
-      copy.m_callerReturnsBuffer = true;
-      return copy;
-    }
+        protected override void Dispose(Boolean disposing)
+        {
+            if (c_on == Interlocked.CompareExchange(ref m_isDisposed, c_on, c_off)) { return; }
 
-    #endregion
+            try
+            {
+                var bufferManager = Interlocked.Exchange(ref m_bufferManager, null);
+                if (disposing && bufferManager != null)
+                {
+                    var bufferedBytes = Interlocked.Exchange(ref m_bufferedBytes, null);
+                    if (!m_callerReturnsBuffer && bufferedBytes != null) { bufferManager.Return(bufferedBytes); }
+                    m_callerReturnsBuffer = false;
+                }
+            }
+            catch { }
+            finally
+            {
+                base.Dispose(disposing);
+            }
+        }
 
-    #region -- IBufferedStream Members --
+        #endregion
 
-    public bool IsReadOnly => !CanWrite;
+        #region ++ ToArraySegment ++
 
-    int IBufferedStream.Length => (int)this.Length;
+        /// <summary>ToArraySegment</summary>
+        /// <returns></returns>
+        public ArraySegment<byte> ToArraySegment()
+        {
+            if (m_bufferedBytes == null || m_bufferedBytes.Length == 0) { return BufferManager.Empty; }
 
-    public void CopyToSync(Stream destination)
-    {
-      if (null == destination) { throw new ArgumentNullException(nameof(destination)); }
+            m_callerReturnsBuffer = true;
+            return new ArraySegment<byte>(m_bufferedBytes, m_bufferOrigin, m_bufferSize);
+        }
 
-      var position = (int)this.Position;
-      var count = m_bufferSize - position;
-      if (count > 0)
-      {
-        destination.Write(m_bufferedBytes, position + m_bufferOrigin, count);
-        this.Position = position + count;
-      }
-    }
+        #endregion
 
-    public void CopyToSync(Stream destination, int bufferSize) => CopyToSync(destination);
+        #region -- IBufferedStreamCloneable Members --
 
-    public void CopyToSync(ArraySegment<Byte> destination)
-    {
-      var position = (int)this.Position;
-      var count = Math.Min(m_bufferSize - position, destination.Count);
+        Stream IBufferedStreamCloneable.Clone()
+        {
+            var copy = new BufferedMemoryStream(this.m_bufferedBytes, this.m_bufferOrigin, this.m_bufferSize, false, this.m_bufferManager);
+            copy.m_callerReturnsBuffer = true;
+            return copy;
+        }
 
-      if (count > 0)
-      {
-        System.Buffer.BlockCopy(m_bufferedBytes, position + m_bufferOrigin, destination.Array, destination.Offset, count);
-        this.Position = position + count;
-      }
-    }
+        #endregion
 
-    private async Task InternalCopyToAsync(Stream destination)
-    {
-      if (null == destination) { throw new ArgumentNullException(nameof(destination)); }
+        #region -- IBufferedStream Members --
 
-      var position = (int)this.Position;
-      var count = m_bufferSize - position;
-      if (count > 0)
-      {
-        await destination.WriteAsync(m_bufferedBytes, position + m_bufferOrigin, count);
-        this.Position = position + count;
-      }
-    }
+        public bool IsReadOnly => !CanWrite;
+
+        int IBufferedStream.Length => (int)this.Length;
+
+        public void CopyToSync(Stream destination)
+        {
+            if (null == destination) { throw new ArgumentNullException(nameof(destination)); }
+
+            var position = (int)this.Position;
+            var count = m_bufferSize - position;
+            if (count > 0)
+            {
+                destination.Write(m_bufferedBytes, position + m_bufferOrigin, count);
+                this.Position = position + count;
+            }
+        }
+
+        public void CopyToSync(Stream destination, int bufferSize) => CopyToSync(destination);
+
+        public void CopyToSync(ArraySegment<Byte> destination)
+        {
+            var position = (int)this.Position;
+            var count = Math.Min(m_bufferSize - position, destination.Count);
+
+            if (count > 0)
+            {
+                System.Buffer.BlockCopy(m_bufferedBytes, position + m_bufferOrigin, destination.Array, destination.Offset, count);
+                this.Position = position + count;
+            }
+        }
+
+        private async Task InternalCopyToAsync(Stream destination)
+        {
+            if (null == destination) { throw new ArgumentNullException(nameof(destination)); }
+
+            var position = (int)this.Position;
+            var count = m_bufferSize - position;
+            if (count > 0)
+            {
+                await destination.WriteAsync(m_bufferedBytes, position + m_bufferOrigin, count);
+                this.Position = position + count;
+            }
+        }
 
 #if NET40
-    Task IBufferedStream.CopyToAsync(Stream destination)
-    {
-      return InternalCopyToAsync(destination);
-    }
+        Task IBufferedStream.CopyToAsync(Stream destination)
+        {
+            return InternalCopyToAsync(destination);
+        }
 
-    Task IBufferedStream.CopyToAsync(Stream destination, int bufferSize)
-    {
-      return InternalCopyToAsync(destination);
-    }
+        Task IBufferedStream.CopyToAsync(Stream destination, int bufferSize)
+        {
+            return InternalCopyToAsync(destination);
+        }
 
-    Task IBufferedStream.CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
-    {
-      if (cancellationToken.IsCancellationRequested) { return TaskConstants.Canceled; }
-      return InternalCopyToAsync(destination);
-    }
+        Task IBufferedStream.CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
+        {
+            if (cancellationToken.IsCancellationRequested) { return TaskConstants.Canceled; }
+            return InternalCopyToAsync(destination);
+        }
 
-    public Task CopyToAsync(Stream destination, CancellationToken cancellationToken)
-    {
-      if (cancellationToken.IsCancellationRequested) { return TaskConstants.Canceled; }
-      return InternalCopyToAsync(destination);
-    }
+        public Task CopyToAsync(Stream destination, CancellationToken cancellationToken)
+        {
+            if (cancellationToken.IsCancellationRequested) { return TaskConstants.Canceled; }
+            return InternalCopyToAsync(destination);
+        }
 #else
-    public Task CopyToAsync(Stream destination, CancellationToken cancellationToken) =>
-       CopyToAsync(destination, StreamToStreamCopy.DefaultBufferSize, cancellationToken);
-
-    public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
-    {
-      if (cancellationToken.IsCancellationRequested) { return TaskConstants.Canceled; }
-      return InternalCopyToAsync(destination);
-    }
+#if !NETCOREAPP
+        public Task CopyToAsync(Stream destination, CancellationToken cancellationToken) =>
+           CopyToAsync(destination, StreamToStreamCopy.DefaultBufferSize, cancellationToken);
 #endif
 
-    #endregion
-  }
+        public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
+        {
+            if (cancellationToken.IsCancellationRequested) { return TaskConstants.Canceled; }
+            return InternalCopyToAsync(destination);
+        }
+#endif
+
+        #endregion
+    }
 }

@@ -4,57 +4,55 @@ using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection
 {
-  /// <summary>C# extenion class to inject object</summary>
-  public static class InjectionExtension
-  {
-    /// <summary>Inject instance with dependencies</summary>
-    /// <param name="scope">export locator scope</param>
-    /// <param name="instance">instance to inject</param>
-    /// <param name="extraData">extra data, can be null</param>
-    public static void Inject(this IExportLocatorScope scope, object instance, object extraData = null)
+    /// <summary>C# extenion class to inject object</summary>
+    public static class InjectionExtension
     {
-      if (scope == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.scope);
-      if (instance == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.instance);
+        /// <summary>Inject instance with dependencies</summary>
+        /// <param name="scope">export locator scope</param>
+        /// <param name="instance">instance to inject</param>
+        /// <param name="extraData">extra data, can be null</param>
+        public static void Inject(this IExportLocatorScope scope, object instance, object extraData = null)
+        {
+            if (scope == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.scope);
+            if (instance == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.instance);
 
-      var parentScope = scope;
+            var parentScope = scope;
 
-      while (parentScope.Parent != null)
-      {
-        parentScope = parentScope.Parent;
-      }
+            while (parentScope.Parent != null)
+            {
+                parentScope = parentScope.Parent;
+            }
 
-      var injectionScope = (IInjectionScope)parentScope;
+            var injectionScope = (IInjectionScope)parentScope;
 
-      var value = parentScope.GetExtraDataOrDefaultValue<InjectionHashTreeHolder>(typeof(InjectionHashTreeHolder)) ??
-                  (InjectionHashTreeHolder)parentScope.SetExtraData(typeof(InjectionHashTreeHolder), new InjectionHashTreeHolder(), false);
+            var value = parentScope.GetExtraDataOrDefaultValue<InjectionHashTreeHolder>(typeof(InjectionHashTreeHolder)) ??
+                        (InjectionHashTreeHolder)parentScope.SetExtraData(typeof(InjectionHashTreeHolder), new InjectionHashTreeHolder(), false);
 
-      var instanceType = instance.GetType();
+            var instanceType = instance.GetType();
 
-      var injectionDelegate = value.Delegates.GetValueOrDefault(instanceType);
+            var injectionDelegate = value.Delegates.GetValueOrDefault(instanceType);
 
-      if (injectionDelegate == null)
-      {
-        injectionDelegate = injectionScope.StrategyCompiler.CreateInjectionDelegate(injectionScope, instanceType);
+            if (injectionDelegate == null)
+            {
+                injectionDelegate = injectionScope.StrategyCompiler.CreateInjectionDelegate(injectionScope, instanceType);
 
-        injectionDelegate = ImmutableHashTree.ThreadSafeAdd(ref value.Delegates, instanceType, injectionDelegate);
-      }
+                injectionDelegate = ImmutableHashTree.ThreadSafeAdd(ref value.Delegates, instanceType, injectionDelegate);
+            }
 
-      var disposalScope = injectionScope.ScopeConfiguration.DisposalScopeProvider?.ProvideDisposalScope(scope) ?? scope;
+            IInjectionContext context = null;
 
-      IInjectionContext context = null;
+            if (extraData != null)
+            {
+                context = injectionScope.CreateContext(extraData);
+            }
 
-      if (extraData != null)
-      {
-        context = injectionScope.CreateContext(extraData);
-      }
+            injectionDelegate(scope, scope, context, instance);
+        }
 
-      injectionDelegate(scope, disposalScope, context, instance);
+        /// <summary></summary>
+        private class InjectionHashTreeHolder
+        {
+            public ImmutableHashTree<Type, InjectionStrategyDelegate> Delegates = ImmutableHashTree<Type, InjectionStrategyDelegate>.Empty;
+        }
     }
-
-    /// <summary></summary>
-    private class InjectionHashTreeHolder
-    {
-      public ImmutableHashTree<Type, InjectionStrategyDelegate> Delegates = ImmutableHashTree<Type, InjectionStrategyDelegate>.Empty;
-    }
-  }
 }

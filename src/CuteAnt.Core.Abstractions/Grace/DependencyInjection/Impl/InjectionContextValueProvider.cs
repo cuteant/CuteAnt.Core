@@ -6,287 +6,315 @@ using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Impl
 {
-  /// <summary>Interface for getting data from extra data</summary>
-  public interface IInjectionContextValueProvider
-  {
-    /// <summary>Get data from injection context</summary>
-    /// <param name="scope"></param>
-    /// <param name="type"></param>
-    /// <param name="key"></param>
-    /// <param name="context"></param>
-    /// <param name="isRequired"></param>
-    /// <returns></returns>
-    object GetValueFromInjectionContext(IExportLocatorScope scope, Type type, object key, IInjectionContext context, bool isRequired);
-
-    /// <summary>Get data from injection context</summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="locator"></param>
-    /// <param name="staticContext"></param>
-    /// <param name="key"></param>
-    /// <param name="dataProvider"></param>
-    /// <param name="defaultValue"></param>
-    /// <param name="useDefault"></param>
-    /// <param name="isRequired"></param>
-    /// <returns></returns>
-    T GetValueFromInjectionContext<T>(
-        IExportLocatorScope locator,
-        StaticInjectionContext staticContext,
-        object key,
-        IInjectionContext dataProvider,
-        object defaultValue,
-        bool useDefault,
-        bool isRequired);
-  }
-
-  /// <summary>Implementation for fetching data from context value</summary>
-  public class InjectionContextValueProvider : IInjectionContextValueProvider
-  {
-    /// <summary>Get data from injection context</summary>
-    /// <param name="locator"></param>
-    /// <param name="type"></param>
-    /// <param name="key"></param>
-    /// <param name="context"></param>
-    /// <param name="isRequired"></param>
-    /// <returns></returns>
-    public virtual object GetValueFromInjectionContext(IExportLocatorScope locator, Type type, object key, IInjectionContext context, bool isRequired)
+    /// <summary>Interface for getting data from extra data</summary>
+    public interface IInjectionContextValueProvider
     {
-      object value = null;
+        /// <summary>Get data from injection context</summary>
+        /// <param name="scope"></param>
+        /// <param name="type"></param>
+        /// <param name="key"></param>
+        /// <param name="context"></param>
+        /// <param name="isRequired"></param>
+        /// <returns></returns>
+        object GetValueFromInjectionContext(IExportLocatorScope scope, Type type, object key, IInjectionContext context, bool isRequired);
 
-      if (context != null)
-      {
-        GetValueFromExtraDataProvider(type, key, context, out value);
+        /// <summary>Get data from injection context</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="locator"></param>
+        /// <param name="staticContext"></param>
+        /// <param name="key"></param>
+        /// <param name="dataProvider"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="useDefault"></param>
+        /// <param name="isRequired"></param>
+        /// <returns></returns>
+        T GetValueFromInjectionContext<T>(
+            IExportLocatorScope locator,
+            StaticInjectionContext staticContext,
+            object key,
+            IInjectionContext dataProvider,
+            object defaultValue,
+            bool useDefault,
+            bool isRequired);
+    }
 
-        if (value == null && context.ExtraData != null)
+    /// <summary>Implementation for fetching data from context value</summary>
+    public class InjectionContextValueProvider : IInjectionContextValueProvider
+    {
+        /// <summary>Get data from injection context</summary>
+        /// <param name="locator"></param>
+        /// <param name="type"></param>
+        /// <param name="key"></param>
+        /// <param name="context"></param>
+        /// <param name="isRequired"></param>
+        /// <returns></returns>
+        public virtual object GetValueFromInjectionContext(IExportLocatorScope locator, Type type, object key, IInjectionContext context, bool isRequired)
         {
-          if (type.IsAssignableFrom(context.ExtraData.GetType()))
-          {
-            value = context.ExtraData;
-          }
-          else
-          {
-            if (context.ExtraData is Delegate delegateInstance && delegateInstance.GetMethodInfo().ReturnType == type)
+            object value = null;
+
+            if (context != null)
             {
-              value = delegateInstance;
+                GetValueFromExtraDataProvider(type, key, context, out value);
+
+                if (value == null && context.ExtraData != null)
+                {
+                    if (type.IsAssignableFrom(context.ExtraData.GetType()))
+                    {
+                        value = context.ExtraData;
+                    }
+                    else
+                    {
+                        if (context.ExtraData is Delegate delegateInstance && delegateInstance.GetMethodInfo().ReturnType == type)
+                        {
+                            value = delegateInstance;
+                        }
+                    }
+                }
             }
-          }
-        }
-      }
 
-      if (value == null)
-      {
-        var currentLocator = locator;
-
-        while (currentLocator != null)
-        {
-          if (GetValueFromExtraDataProvider(type, key, currentLocator, out value))
-          {
-            break;
-          }
-
-          currentLocator = currentLocator.Parent;
-        }
-      }
-
-      if (value != null)
-      {
-        if (value is Delegate)
-        {
-          value =
-              ReflectionService.InjectAndExecuteDelegate(locator, new StaticInjectionContext(type), context, value as Delegate);
-        }
-
-        if (!(type.IsAssignableFrom(value.GetType())))
-        {
-          try
-          {
-            value = Convert.ChangeType(value, type);
-          }
-          catch (Exception exp)
-          {
-            // to do fix up exception
-            throw new LocateException(new StaticInjectionContext(type), exp);
-          }
-        }
-      }
-      else if (isRequired)
-      {
-        throw new LocateException(new StaticInjectionContext(type));
-      }
-
-      return value;
-    }
-
-    /// <summary>Get data from injection context</summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="locator"></param>
-    /// <param name="staticContext"></param>
-    /// <param name="key"></param>
-    /// <param name="dataProvider"></param>
-    /// <param name="defaultValue"></param>
-    /// <param name="useDefault"></param>
-    /// <param name="isRequired"></param>
-    /// <returns></returns>
-    public virtual T GetValueFromInjectionContext<T>(IExportLocatorScope locator, StaticInjectionContext staticContext,
-      object key, IInjectionContext dataProvider, object defaultValue, bool useDefault, bool isRequired)
-    {
-      object value = null;
-
-      if (dataProvider != null)
-      {
-        GetValueFromExtraDataProvider<T>(key, dataProvider, out value);
-
-        if (value == null)
-        {
-          if (dataProvider.ExtraData is T)
-          {
-            value = dataProvider.ExtraData;
-          }
-          else
-          {
-
-            if (dataProvider.ExtraData is Delegate delegateInstance && delegateInstance.GetMethodInfo().ReturnType == typeof(T))
+            if (value == null)
             {
-              value = delegateInstance;
+                var currentLocator = locator;
+
+                while (currentLocator != null)
+                {
+                    if (GetValueFromExtraDataProvider(type, key, currentLocator, out value))
+                    {
+                        break;
+                    }
+
+                    currentLocator = currentLocator.Parent;
+                }
             }
-          }
+
+            if (value != null)
+            {
+                if (value is Delegate)
+                {
+                    value =
+                        ReflectionService.InjectAndExecuteDelegate(locator, new StaticInjectionContext(type), context, value as Delegate);
+                }
+
+                if (!(type.IsAssignableFrom(value.GetType())))
+                {
+                    try
+                    {
+                        value = Convert.ChangeType(value, type);
+                    }
+                    catch (Exception exp)
+                    {
+                        // to do fix up exception
+                        throw new LocateException(new StaticInjectionContext(type), exp);
+                    }
+                }
+            }
+            else if (isRequired)
+            {
+                throw new LocateException(new StaticInjectionContext(type));
+            }
+
+            return value;
         }
-      }
 
-      if (value == null)
-      {
-        var currentLocator = locator;
-
-        while (currentLocator != null)
+        /// <summary>Get data from injection context</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="locator"></param>
+        /// <param name="staticContext"></param>
+        /// <param name="key"></param>
+        /// <param name="dataProvider"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="useDefault"></param>
+        /// <param name="isRequired"></param>
+        /// <returns></returns>
+        public virtual T GetValueFromInjectionContext<T>(IExportLocatorScope locator, StaticInjectionContext staticContext,
+          object key, IInjectionContext dataProvider, object defaultValue, bool useDefault, bool isRequired)
         {
-          if (GetValueFromExtraDataProvider<T>(key, currentLocator, out value))
-          {
-            break;
-          }
+            object value = null;
 
-          currentLocator = currentLocator.Parent;
+            if (dataProvider != null)
+            {
+                GetValueFromExtraDataProvider<T>(key, dataProvider, out value);
+
+                if (value == null)
+                {
+                    if (dataProvider.ExtraData is T)
+                    {
+                        value = dataProvider.ExtraData;
+                    }
+                    else
+                    {
+
+                        if (dataProvider.ExtraData is Delegate delegateInstance && delegateInstance.GetMethodInfo().ReturnType == typeof(T))
+                        {
+                            value = delegateInstance;
+                        }
+                    }
+                }
+            }
+
+            if (value == null)
+            {
+                var currentLocator = locator;
+
+                while (currentLocator != null)
+                {
+                    if (GetValueFromExtraDataProvider<T>(key, currentLocator, out value))
+                    {
+                        break;
+                    }
+
+                    currentLocator = currentLocator.Parent;
+                }
+            }
+
+            if (value == null && useDefault)
+            {
+                value = defaultValue;
+            }
+
+            if (value != null)
+            {
+                if (value is Delegate delegateValue)
+                {
+                    value = ReflectionService.InjectAndExecuteDelegate(locator, staticContext, dataProvider, delegateValue);
+                }
+
+                if (!(value is T))
+                {
+                    try
+                    {
+                        if (typeof(T)
+#if NET40
+                            .IsConstructedGenericType()
+#else
+                            .IsConstructedGenericType
+#endif
+                            && typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>))
+                        {
+#if NET40
+                            var genericTypeArguments = typeof(T).GenericTypeArguments();
+#else
+                            var genericTypeArguments = typeof(T).GenericTypeArguments;
+#endif
+
+                            var type = genericTypeArguments[0];
+
+                            if (type.IsEnum)
+                            {
+                                value = Enum.ToObject(type, value);
+                            }
+                            else
+                            {
+                                value = Convert.ChangeType(value, genericTypeArguments[0]);
+                            }
+                        }
+                        else
+                        {
+                            value = Convert.ChangeType(value, typeof(T));
+                        }
+                    }
+                    catch (Exception exp)
+                    {
+                        // to do fix up exception
+                        throw new LocateException(staticContext, exp);
+                    }
+                }
+            }
+            else if (isRequired && !useDefault)
+            {
+                throw new LocateException(staticContext);
+            }
+
+            return (T)value;
         }
-      }
 
-      if (value == null && useDefault)
-      {
-        value = defaultValue;
-      }
-
-      if (value != null)
-      {
-        if (value is Delegate delegateValue)
+        /// <summary>Get value from extra data provider</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="dataProvider"></param>
+        /// <param name="tValue"></param>
+        /// <returns></returns>
+        protected virtual bool GetValueFromExtraDataProvider<T>(object key, IExtraDataContainer dataProvider, out object tValue)
         {
-          value = ReflectionService.InjectAndExecuteDelegate(locator, staticContext, dataProvider, delegateValue);
+            object value = null;
+
+            if (key != null)
+            {
+                value = dataProvider.GetExtraData(key);
+            }
+
+            if (value != null)
+            {
+                tValue = value;
+                return true;
+            }
+
+            foreach (var o in dataProvider.KeyValuePairs)
+            {
+                if (o.Key is string stringKey &&
+                    stringKey.StartsWith(UniqueStringId.Prefix))
+                {
+                    continue;
+                }
+
+                if (o.Value is T)
+                {
+                    tValue = o.Value;
+
+                    return true;
+                }
+
+                if (o.Value is Delegate delegateInstance &&
+                    delegateInstance.GetMethodInfo().ReturnType == typeof(T))
+                {
+                    tValue = o.Value;
+
+                    return true;
+                }
+            }
+
+            tValue = null;
+
+            return false;
         }
 
-        if (!(value is T))
+        protected virtual bool GetValueFromExtraDataProvider(Type type, object key, IExtraDataContainer dataProvider, out object tValue)
         {
-          try
-          {
-            value = Convert.ChangeType(value, typeof(T));
-          }
-          catch (Exception exp)
-          {
-            // to do fix up exception
-            throw new LocateException(staticContext, exp);
-          }
-        }
-      }
-      else if (isRequired && !useDefault)
-      {
-        throw new LocateException(staticContext);
-      }
+            object value = null;
 
-      return (T)value;
+            if (key != null)
+            {
+                value = dataProvider.GetExtraData(key);
+            }
+
+            if (value != null)
+            {
+                tValue = value;
+                return true;
+            }
+
+            foreach (var o in dataProvider.Values)
+            {
+                if (type.IsAssignableFrom(o.GetType()))
+                {
+                    tValue = o;
+
+                    return true;
+                }
+
+
+                if (o is Delegate delegateInstance &&
+                    delegateInstance.GetMethodInfo().ReturnType == type)
+                {
+                    tValue = o;
+
+                    return true;
+                }
+            }
+
+            tValue = null;
+
+            return false;
+        }
     }
-
-    /// <summary>Get value from extra data provider</summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="key"></param>
-    /// <param name="dataProvider"></param>
-    /// <param name="tValue"></param>
-    /// <returns></returns>
-    protected virtual bool GetValueFromExtraDataProvider<T>(object key, IExtraDataContainer dataProvider, out object tValue)
-    {
-      object value = null;
-
-      if (key != null)
-      {
-        value = dataProvider.GetExtraData(key);
-      }
-
-      if (value != null)
-      {
-        tValue = value;
-        return true;
-      }
-
-      foreach (var o in dataProvider.KeyValuePairs)
-      {
-        if (o.Key is string stringKey &&
-            stringKey.StartsWith(UniqueStringId.Prefix))
-        {
-          continue;
-        }
-
-        if (o.Value is T)
-        {
-          tValue = o.Value;
-
-          return true;
-        }
-
-        if (o.Value is Delegate delegateInstance &&
-            delegateInstance.GetMethodInfo().ReturnType == typeof(T))
-        {
-          tValue = o.Value;
-
-          return true;
-        }
-      }
-
-      tValue = null;
-
-      return false;
-    }
-
-    protected virtual bool GetValueFromExtraDataProvider(Type type, object key, IExtraDataContainer dataProvider, out object tValue)
-    {
-      object value = null;
-
-      if (key != null)
-      {
-        value = dataProvider.GetExtraData(key);
-      }
-
-      if (value != null)
-      {
-        tValue = value;
-        return true;
-      }
-
-      foreach (var o in dataProvider.Values)
-      {
-        if (type.IsAssignableFrom(o.GetType()))
-        {
-          tValue = o;
-
-          return true;
-        }
-
-
-        if (o is Delegate delegateInstance &&
-            delegateInstance.GetMethodInfo().ReturnType == type)
-        {
-          tValue = o;
-
-          return true;
-        }
-      }
-
-      tValue = null;
-
-      return false;
-    }
-  }
 }
