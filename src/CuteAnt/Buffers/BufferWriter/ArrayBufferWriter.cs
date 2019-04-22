@@ -32,6 +32,8 @@ namespace CuteAnt.Buffers
 
         public override byte[] ToArray()
         {
+            CheckIfDisposed();
+
             var count = _writerIndex;
             uint nCount = (uint)count;
             if (0u >= nCount) { return EmptyArray<byte>.Instance; }
@@ -171,6 +173,17 @@ namespace CuteAnt.Buffers
             }
         }
 
+        public virtual int DiscardWrittenBuffer(out ArrayPool<T> arrayPool, out T[] writtenBuffer)
+        {
+            CheckIfDisposed();
+
+            arrayPool = _arrayPool;
+            _arrayPool = null;
+            writtenBuffer = _borrowedBuffer;
+            _borrowedBuffer = null;
+            return _writerIndex;
+        }
+
         public virtual T[] ToArray() => WrittenSpan.ToArray();
 
         public void Clear()
@@ -205,7 +218,7 @@ namespace CuteAnt.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void CheckIfDisposed()
+        protected void CheckIfDisposed()
         {
             if (_borrowedBuffer == null) ThrowObjectDisposedException();
         }
@@ -302,12 +315,8 @@ namespace CuteAnt.Buffers
 
             public void Dispose()
             {
-                var writer = _writer;
-                if (writer != null)
-                {
-                    _writer = null;
-                    writer.Dispose();
-                }
+                var writer = Interlocked.Exchange(ref _writer, null);
+                writer?.Dispose();
             }
         }
 

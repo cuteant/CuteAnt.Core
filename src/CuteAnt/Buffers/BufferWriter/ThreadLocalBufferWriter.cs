@@ -16,6 +16,8 @@ namespace CuteAnt.Buffers
 
         public override byte[] ToArray()
         {
+            CheckIfDisposed();
+
             var count = _writerIndex;
             uint nCount = (uint)count;
             if (0u >= nCount) { return EmptyArray<byte>.Instance; }
@@ -66,6 +68,17 @@ namespace CuteAnt.Buffers
                 buffer = _arrayPool.Rent(initialCapacity);
             }
             _borrowedBuffer = buffer;
+        }
+
+        public override int DiscardWrittenBuffer(out ArrayPool<T> arrayPool, out T[] writtenBuffer)
+        {
+            CheckIfDisposed();
+
+            arrayPool = _useThreadLocal ? null : _arrayPool;
+            _arrayPool = null;
+            writtenBuffer = _borrowedBuffer;
+            _borrowedBuffer = null;
+            return _writerIndex;
         }
 
         // Returns the rented buffer back to the pool
