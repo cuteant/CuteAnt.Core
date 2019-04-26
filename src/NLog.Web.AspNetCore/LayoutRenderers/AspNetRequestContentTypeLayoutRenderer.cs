@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using NLog.Config;
 using NLog.LayoutRenderers;
 using NLog.Web.Internal;
@@ -20,17 +20,21 @@ namespace NLog.Web.LayoutRenderers
         /// <summary>
         /// Renders the specified ASP.NET Application variable and appends it to the specified <see cref="StringBuilder" />.
         /// </summary>
-        /// <param name="builder">The <see cref="StringBuilder"/> to append the rendered data to.</param>
+        /// <param name="builder">The <see cref="StringBuilder" /> to append the rendered data to.</param>
         /// <param name="logEvent">Logging event.</param>
         protected override void DoAppend(StringBuilder builder, LogEventInfo logEvent)
         {
             var request = HttpContextAccessor.HttpContext.TryGetRequest();
             if (request == null)
+            {
                 return;
+            }
 
             var contentType = request.ContentType;
             if (!string.IsNullOrEmpty(contentType))
+            {
                 builder.Append(contentType);
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ namespace NLog.Extensions.Logging
     [ProviderAlias("NLog")]
     public class NLogLoggerProvider : Microsoft.Extensions.Logging.ILoggerProvider
     {
-        private NLogBeginScopeParser _beginScopeParser;
+        private readonly NLogBeginScopeParser _beginScopeParser;
 
         /// <summary>NLog options</summary>
         public NLogProviderOptions Options { get; set; }
@@ -43,10 +43,7 @@ namespace NLog.Extensions.Logging
         /// <returns>New Logger</returns>
         public Microsoft.Extensions.Logging.ILogger CreateLogger(string name)
         {
-            var beginScopeParser = ((Options?.CaptureMessageProperties ?? true) && (Options?.IncludeScopes ?? true))
-                ? (_beginScopeParser ?? System.Threading.Interlocked.CompareExchange(ref _beginScopeParser, new NLogBeginScopeParser(Options), null))
-                : null;
-            return new NLogLogger(LogFactory.GetLogger(name), Options, beginScopeParser);
+            return new NLogLogger(LogFactory.GetLogger(name), Options, _beginScopeParser);
         }
 
         /// <summary>Cleanup</summary>
@@ -70,11 +67,8 @@ namespace NLog.Extensions.Logging
         private static void RegisterHiddenAssembliesForCallSite()
         {
             InternalLogger.Debug("Hide assemblies for callsite");
-#if NET40
-      LogManager.AddHiddenAssembly(typeof(NLogLoggerProvider).Assembly);
-#else
-            LogManager.AddHiddenAssembly(typeof(NLogLoggerProvider).GetTypeInfo().Assembly);
-#endif
+            LogManager.AddHiddenAssembly(typeof(NLogLoggerProvider).Assembly);
+            NLog.Config.ConfigurationItemFactory.Default.RegisterItemsFromAssembly(typeof(NLogLoggerProvider).Assembly);
 
             var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var assembly in allAssemblies)
