@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using Grace.Data;
 using Grace.DependencyInjection.Conditions;
@@ -68,7 +69,9 @@ namespace Grace.DependencyInjection
         /// <returns></returns>
         IActivationStrategyMetadata Metadata { get; }
 
-        /// <summary>This is a value set by the container at registration time.</summary>
+        /// <summary>This is a value set by the container at registration time.
+        /// Do not set this yourself.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         int ExportOrder { get; set; }
 
         /// <summary>Dependencies needed to activate strategy given a specific request</summary>
