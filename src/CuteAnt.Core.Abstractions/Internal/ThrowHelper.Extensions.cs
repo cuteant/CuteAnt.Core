@@ -33,6 +33,7 @@ namespace CuteAnt
         comb,
         pool,
         paths,
+        input,
         inner,
         policy,
         filenName,
@@ -94,11 +95,41 @@ namespace CuteAnt
         ArgumentOutOfRange_Index,
         ArgumentOutOfRange_NeedNonNegNum,
         ArgumentOutOfRange_Count,
+        Format_GuidDashes,
+        Format_GuidInvLen,
+        Format_GuidInvalidChar,
+        Format_GuidUnrecognized,
+        Format_InvalidGuidFormatSpecification,
     }
 
     #endregion
 
     partial class ThrowHelper
     {
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static ArgumentException GetArgumentException_InvalidCombGuid()
+        {
+            return new ArgumentException("value 类型不是 CombGuid");
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static void ThrowArgumentException_GuidInvLen_D()
+        {
+            throw GetException();
+            static ArgumentException GetException()
+            {
+                return new ArgumentException("d 的长度不是 8 个字节。");
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static void ThrowArgumentException_GuidInvLen()
+        {
+            throw GetException();
+            static ArgumentException GetException()
+            {
+                return new ArgumentException("value 的长度不是 16 个字节。");
+            }
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace CuteAnt.Internal {
     // 类通过类似于 ResGen 或 Visual Studio 的工具自动生成的。
     // 若要添加或移除成员，请编辑 .ResX 文件，然后重新运行 ResGen
     // (以 /str 作为命令选项)，或重新生成 VS 项目。
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Strings {
@@ -47,7 +47,7 @@ namespace CuteAnt.Internal {
         }
         
         /// <summary>
-        ///   使用此强类型资源类，为所有资源查找
+        ///   重写当前线程的 CurrentUICulture 属性
         ///   重写当前线程的 CurrentUICulture 属性。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -102,6 +102,51 @@ namespace CuteAnt.Internal {
         internal static string Dest_Array_Cannot_Be_Null {
             get {
                 return ResourceManager.GetString("Dest_Array_Cannot_Be_Null", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Dashes are in the wrong position for GUID parsing. 的本地化字符串。
+        /// </summary>
+        internal static string Format_GuidDashes {
+            get {
+                return ResourceManager.GetString("Format_GuidDashes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Guid string should only contain hexadecimal characters. 的本地化字符串。
+        /// </summary>
+        internal static string Format_GuidInvalidChar {
+            get {
+                return ResourceManager.GetString("Format_GuidInvalidChar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Guid should contain 32 digits with 4 dashes (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx). 的本地化字符串。
+        /// </summary>
+        internal static string Format_GuidInvLen {
+            get {
+                return ResourceManager.GetString("Format_GuidInvLen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Unrecognized Guid format. 的本地化字符串。
+        /// </summary>
+        internal static string Format_GuidUnrecognized {
+            get {
+                return ResourceManager.GetString("Format_GuidUnrecognized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Format string can be only &quot;D&quot;, &quot;d&quot;, &quot;N&quot;, &quot;n&quot;, &quot;P&quot;, &quot;p&quot;, &quot;B&quot;, &quot;b&quot;, &quot;X&quot; or &quot;x&quot;. 的本地化字符串。
+        /// </summary>
+        internal static string Format_InvalidGuidFormatSpecification {
+            get {
+                return ResourceManager.GetString("Format_InvalidGuidFormatSpecification", resourceCulture);
             }
         }
         

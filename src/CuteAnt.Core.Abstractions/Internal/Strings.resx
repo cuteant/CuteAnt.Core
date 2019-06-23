@@ -132,6 +132,12 @@
   <data name="Dest_Array_Cannot_Be_Null" xml:space="preserve">
     <value>Destination array cannot be null.</value>
   </data>
+  <data name="Format_GuidInvalidChar" xml:space="preserve">
+    <value>Guid string should only contain hexadecimal characters.</value>
+  </data>
+  <data name="Format_GuidInvLen" xml:space="preserve">
+    <value>Guid should contain 32 digits with 4 dashes (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).</value>
+  </data>
   <data name="ImmutableArray_Arrays_Not_Initialized" xml:space="preserve">
     <value>Arrays not initialized properly</value>
   </data>
@@ -152,5 +158,14 @@
   </data>
   <data name="Value_Must_Not_Be_Null" xml:space="preserve">
     <value>value must not be null</value>
+  </data>
+  <data name="Format_GuidDashes" xml:space="preserve">
+    <value>Dashes are in the wrong position for GUID parsing.</value>
+  </data>
+  <data name="Format_GuidUnrecognized" xml:space="preserve">
+    <value>Unrecognized Guid format.</value>
+  </data>
+  <data name="Format_InvalidGuidFormatSpecification" xml:space="preserve">
+    <value>Format string can be only "D", "d", "N", "n", "P", "p", "B", "b", "X" or "x".</value>
   </data>
 </root>

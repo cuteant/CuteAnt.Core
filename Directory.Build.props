@@ -27,13 +27,14 @@
 
   <!-- Common compile parameters -->
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>preview</LangVersion>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <TieredCompilation>true</TieredCompilation>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DefineConstants>$(DefineConstants);NET_3_5_GREATER;SIGNED</DefineConstants>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!--<NullableContextOptions>enable</NullableContextOptions>-->
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>

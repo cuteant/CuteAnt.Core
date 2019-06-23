@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlTypes;
-using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Xml;
 using System.Xml.Schema;
@@ -32,31 +31,6 @@ namespace CuteAnt
         private const String _NullString = "nil";
 
         private const Int32 _SizeOfGuid = 16;
-
-        // Comparison orders.
-        private static readonly Int32[] _GuidComparisonOrders = new Int32[16] { 10, 11, 12, 13, 14, 15, 8, 9, 6, 7, 4, 5, 0, 1, 2, 3 };
-
-        // Parse orders.
-        private static readonly Int32[] _GuidParseOrders32 = new Int32[32]
-        {
-            30, 31, 28, 29, 26, 27, 24, 25,
-            22, 23, 20, 21,
-            18, 19, 16, 17,
-            12, 13, 14, 15,
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-        };
-        private static readonly Int32[] _GuidParseOrders36 = new Int32[36]
-        {
-            34, 35, 32, 33, 30, 31, 28, 29,
-            27,
-            25, 26, 23, 24,
-            22,
-            20, 21, 18, 19,
-            17,
-            13, 14, 15, 16,
-            12,
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-        };
 
         // the CombGuid is null if m_value is null
         private Byte[] m_value;
@@ -135,70 +109,12 @@ namespace CuteAnt
             m_value = null;
         }
 
-        /// <summary>使用指定的字节数组初始化 CombGuid 结构的新实例。</summary>
-        /// <param name="value">包含初始化 CombGuid 的值的 16 元素字节数组。</param>
-        /// <param name="sequentialType">指示字节数组中标识顺序的 6 位字节的位置</param>
-        /// <param name="isOwner">指示使用指定的字节数组初始化 CombGuid 结构的新实例是否拥有此字节数组。</param>
-        public CombGuid(Byte[] value, CombGuidSequentialSegmentType sequentialType = CombGuidSequentialSegmentType.Guid, Boolean isOwner = false)
+        private CombGuid(byte[] value)
         {
-            if (value == null || value.Length != _SizeOfGuid)
-            {
-                throw new ArgumentException("value 的长度不是 16 个字节。");
-            }
-            if (sequentialType == CombGuidSequentialSegmentType.Guid)
-            {
-                if (isOwner)
-                {
-                    m_value = value;
-                }
-                else
-                {
-                    m_value = new Byte[_SizeOfGuid];
-                    value.CopyTo(m_value, 0);
-                }
-            }
-            else
-            {
-                m_value = new Byte[_SizeOfGuid];
-                for (Int32 i = 0; i < _SizeOfGuid; i++)
-                {
-                    m_value[_GuidComparisonOrders[i]] = value[i];
-                }
-            }
+            m_value = value;
         }
 
-        /// <summary>使用指定字符串所表示的值初始化 CombGuid 结构的新实例。</summary>
-        /// <param name="comb">包含下面任一格式的 CombGuid 的字符串（“d”表示忽略大小写的十六进制数字）：
-        /// <para>32 个连续的数字 dddddddddddddddddddddddddddddddd </para>
-        /// <para>- 或 CombGuid 格式字符串 - </para>
-        /// <para>12 和 4、4、4、8 位数字的分组，各组之间有连线符，dddddddddddd-dddd-dddd-dddd-dddddddd</para>
-        /// <para>- 或 Guid 格式字符串 - </para>
-        /// <para>8、4、4、4 和 12 位数字的分组，各组之间有连线符，dddddddd-dddd-dddd-dddd-dddddddddddd</para>
-        /// </param>
-        /// <param name="sequentialType">指示字符串中标识顺序的 12 位字符串的位置</param>
-        public CombGuid(String comb, CombGuidSequentialSegmentType sequentialType = CombGuidSequentialSegmentType.Guid)
-        {
-            if (string.IsNullOrEmpty(comb)) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.comb); }
-
-            Int32 a; Int16 b, c; Byte[] d;
-            if (new GuidParser(comb, sequentialType).TryParse(out a, out b, out c, out d))
-            {
-                m_value = new Byte[_SizeOfGuid];
-                Init(a, b, c, d);
-            }
-            else
-            {
-                if (string.Equals(_NullString, comb, StringComparison.OrdinalIgnoreCase))
-                {
-                    m_value = null;
-                }
-                else
-                {
-                    throw CreateFormatException(comb);
-                }
-            }
-        }
-
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static Exception CreateFormatException(String s)
         {
             return new FormatException(String.Format("Invalid CombGuid format: {0}", s));
@@ -220,7 +136,7 @@ namespace CuteAnt
         {
             if (null == d) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.d); }
             // Check that array is not too big
-            if (d.Length != 8) { throw new ArgumentException("d 的长度不是 8 个字节。"); }
+            if (d.Length != 8) { ThrowHelper.ThrowArgumentException_GuidInvLen_D(); }
 
             m_value = new Byte[_SizeOfGuid];
             Init(a, b, c, d);
@@ -228,22 +144,22 @@ namespace CuteAnt
 
         private void Init(Int32 a, Int16 b, Int16 c, Byte[] d)
         {
-            m_value[0] = (Byte)(a);
-            m_value[1] = (Byte)(a >> 8);
-            m_value[2] = (Byte)(a >> 16);
-            m_value[3] = (Byte)(a >> 24);
-            m_value[4] = (Byte)(b);
-            m_value[5] = (Byte)(b >> 8);
-            m_value[6] = (Byte)(c);
-            m_value[7] = (Byte)(c >> 8);
-            m_value[8] = d[0];
-            m_value[9] = d[1];
-            m_value[10] = d[2];
-            m_value[11] = d[3];
-            m_value[12] = d[4];
-            m_value[13] = d[5];
-            m_value[14] = d[6];
             m_value[15] = d[7];
+            m_value[14] = d[6];
+            m_value[13] = d[5];
+            m_value[12] = d[4];
+            m_value[11] = d[3];
+            m_value[10] = d[2];
+            m_value[9] = d[1];
+            m_value[8] = d[0];
+            m_value[7] = (Byte)(c >> 8);
+            m_value[6] = (Byte)(c);
+            m_value[5] = (Byte)(b >> 8);
+            m_value[4] = (Byte)(b);
+            m_value[3] = (Byte)(a >> 24);
+            m_value[2] = (Byte)(a >> 16);
+            m_value[1] = (Byte)(a >> 8);
+            m_value[0] = (Byte)(a);
         }
 
         /// <summary>使用指定的值初始化 CombGuid 结构的新实例。</summary>
@@ -262,187 +178,33 @@ namespace CuteAnt
         {
             m_value = new Byte[_SizeOfGuid];
 
-            m_value[0] = (Byte)(a);
-            m_value[1] = (Byte)(a >> 8);
-            m_value[2] = (Byte)(a >> 16);
-            m_value[3] = (Byte)(a >> 24);
-            m_value[4] = (Byte)(b);
-            m_value[5] = (Byte)(b >> 8);
-            m_value[6] = (Byte)(c);
-            m_value[7] = (Byte)(c >> 8);
-            m_value[8] = d;
-            m_value[9] = e;
-            m_value[10] = f;
-            m_value[11] = g;
-            m_value[12] = h;
-            m_value[13] = i;
-            m_value[14] = j;
             m_value[15] = k;
+            m_value[14] = j;
+            m_value[13] = i;
+            m_value[12] = h;
+            m_value[11] = g;
+            m_value[10] = f;
+            m_value[9] = e;
+            m_value[8] = d;
+            m_value[7] = (Byte)(c >> 8);
+            m_value[6] = (Byte)(c);
+            m_value[5] = (Byte)(b >> 8);
+            m_value[4] = (Byte)(b);
+            m_value[3] = (Byte)(a >> 24);
+            m_value[2] = (Byte)(a >> 16);
+            m_value[1] = (Byte)(a >> 8);
+            m_value[0] = (Byte)(a);
         }
 
         #endregion
 
         #region -- 方法 --
 
-        #region - ToByteArray -
-
-        /// <summary>将此 CombGuid 结构转换为字节数组。</summary>
-        /// <param name="sequentialType">指示生成的字节数组中标识顺序的 6 位字节的位置</param>
-        /// <returns>16 元素字节数组。</returns>
-        public Byte[] ToByteArray(CombGuidSequentialSegmentType sequentialType = CombGuidSequentialSegmentType.Guid)
-        {
-            //if (IsNull) { throw new HmExceptionBase("此 CombGuid 结构字节数组为空！"); }
-            if (IsNull) { return Empty.ToByteArray(sequentialType); }
-
-            var ret = new Byte[_SizeOfGuid];
-            if (sequentialType == CombGuidSequentialSegmentType.Guid)
-            {
-                m_value.CopyTo(ret, 0);
-            }
-            else
-            {
-                for (Int32 i = 0; i < _SizeOfGuid; i++)
-                {
-                    ret[i] = m_value[_GuidComparisonOrders[i]];
-                }
-            }
-
-            return ret;
-        }
-
-        #endregion
-
-        #region - GetByteArray -
-
-        /// <summary>直接获取此 CombGuid 结构内部的字节数组。
-        /// <para>调用此方法后，不要对获取的字节数组做任何改变！！！</para>
-        /// </summary>
-        /// <param name="sequentialType">指示生成的字节数组中标识顺序的 6 位字节的位置</param>
-        /// <returns>16 元素字节数组 或 null。</returns>
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public Byte[] GetByteArray(CombGuidSequentialSegmentType sequentialType = CombGuidSequentialSegmentType.Guid)
-        {
-            //if (IsNull) { throw new HmExceptionBase("此 CombGuid 结构字节数组为空！"); }
-            if (IsNull) { return Empty.m_value; }
-
-            if (sequentialType == CombGuidSequentialSegmentType.Guid)
-            {
-                return m_value;
-            }
-            else
-            {
-                return ToByteArray(CombGuidSequentialSegmentType.Comb);
-            }
-        }
-
-        #endregion
-
-        #region - ToString / GetChars -
-
         /// <summary>已重载，将此 CombGuid 结构转换为字符串，如果此 CombGuid 结构值为空，则返回表示空值的字符串。</summary>
         /// <returns>返回该 CombGuid 结构的字符串表示形式。</returns>
         public override String ToString()
         {
             return ToString(CombGuidFormatStringType.Comb);
-        }
-
-        /// <summary>根据所提供的格式方式，返回此 CombGuid 实例值的字符串表示形式，如果此 CombGuid 结构值为空，则返回表示空值的字符串。</summary>
-        /// <param name="formatType">格式化方式，它指示如何格式化此 CombGuid 的值。</param>
-        /// <returns>此 CombGuid 的值，用一系列指定格式的小写十六进制位表示</returns>
-        public String ToString(CombGuidFormatStringType formatType)
-        {
-            //if (IsNull) { return _NullString; }
-            if (IsNull) { return Empty.ToString(formatType); }
-
-            var guidChars = GetChars(formatType);
-            return new String(guidChars);
-        }
-
-        /// <summary>根据所提供的格式方式，返回此 CombGuid 实例值的字符数组，如果此 CombGuid 结构值为空，则返回表示空值的字符数组。</summary>
-        /// <param name="formatType">格式化方式，它指示如何格式化此 CombGuid 的值。</param>
-        /// <returns>此 CombGuid 的字符数组，包含一系列指定格式的小写十六进制位字符</returns>
-        public Char[] GetChars(CombGuidFormatStringType formatType)
-        {
-            //if (IsNull) { throw new HmExceptionBase("此 CombGuid 结构字节数组为空！"); }
-            if (IsNull) { return Empty.GetChars(formatType); }
-
-            var offset = 0;
-            var strLength = 36;
-            var dash = true;
-            if (formatType == CombGuidFormatStringType.Guid32Digits || formatType == CombGuidFormatStringType.Comb32Digits)
-            {
-                strLength = 32;
-                dash = false;
-            }
-            var guidChars = new Char[strLength];
-            var isComb = formatType == CombGuidFormatStringType.Comb || formatType == CombGuidFormatStringType.Comb32Digits;
-
-            #region MS GUID类内部代码
-
-            //g[0] = (Byte)(_a);
-            //g[1] = (Byte)(_a >> 8);
-            //g[2] = (Byte)(_a >> 16);
-            //g[3] = (Byte)(_a >> 24);
-            //g[4] = (Byte)(_b);
-            //g[5] = (Byte)(_b >> 8);
-            //g[6] = (Byte)(_c);
-            //g[7] = (Byte)(_c >> 8);
-            //g[8] = _d;
-            //g[9] = _e;
-            //g[10] = _f;
-            //g[11] = _g;
-            //g[12] = _h;
-            //g[13] = _i;
-            //g[14] = _j;
-            //g[15] = _k;
-            //// [{|(]dddddddd[-]dddd[-]dddd[-]dddd[-]dddddddddddd[}|)]
-            //offset = HexsToChars(guidChars, offset, _a >> 24, _a >> 16);
-            //offset = HexsToChars(guidChars, offset, _a >> 8, _a);
-            //if (dash) guidChars[offset++] = '-';
-            //offset = HexsToChars(guidChars, offset, _b >> 8, _b);
-            //if (dash) guidChars[offset++] = '-';
-            //offset = HexsToChars(guidChars, offset, _c >> 8, _c);
-            //if (dash) guidChars[offset++] = '-';
-            //offset = HexsToChars(guidChars, offset, _d, _e);
-            //if (dash) guidChars[offset++] = '-';
-            //offset = HexsToChars(guidChars, offset, _f, _g);
-            //offset = HexsToChars(guidChars, offset, _h, _i);
-            //offset = HexsToChars(guidChars, offset, _j, _k);
-
-            #endregion
-
-            if (isComb)
-            {
-                offset = HexsToChars(guidChars, offset, m_value[10], m_value[11]);
-                offset = HexsToChars(guidChars, offset, m_value[12], m_value[13]);
-                offset = HexsToChars(guidChars, offset, m_value[14], m_value[15]);
-                if (dash) { guidChars[offset++] = '-'; }
-                offset = HexsToChars(guidChars, offset, m_value[8], m_value[9]);
-                if (dash) { guidChars[offset++] = '-'; }
-                offset = HexsToChars(guidChars, offset, m_value[6], m_value[7]);
-                if (dash) { guidChars[offset++] = '-'; }
-                offset = HexsToChars(guidChars, offset, m_value[4], m_value[5]);
-                if (dash) { guidChars[offset++] = '-'; }
-                offset = HexsToChars(guidChars, offset, m_value[0], m_value[1]);
-                offset = HexsToChars(guidChars, offset, m_value[2], m_value[3]);
-            }
-            else
-            {
-                offset = HexsToChars(guidChars, offset, m_value[3], m_value[2]);
-                offset = HexsToChars(guidChars, offset, m_value[1], m_value[0]);
-                if (dash) { guidChars[offset++] = '-'; }
-                offset = HexsToChars(guidChars, offset, m_value[5], m_value[4]);
-                if (dash) { guidChars[offset++] = '-'; }
-                offset = HexsToChars(guidChars, offset, m_value[7], m_value[6]);
-                if (dash) { guidChars[offset++] = '-'; }
-                offset = HexsToChars(guidChars, offset, m_value[8], m_value[9]);
-                if (dash) { guidChars[offset++] = '-'; }
-                offset = HexsToChars(guidChars, offset, m_value[10], m_value[11]);
-                offset = HexsToChars(guidChars, offset, m_value[12], m_value[13]);
-                offset = HexsToChars(guidChars, offset, m_value[14], m_value[15]);
-            }
-
-            return guidChars;
         }
 
         /// <summary>获取 CombGuid 结构字符串指定区域的无序字符（小写十六进制位），每个区域只允许获取 1 或 2 个字符，
@@ -456,6 +218,9 @@ namespace CuteAnt
             //if (IsNull) { throw new HmExceptionBase("此 CombGuid 结构字节数组为空！"); }
             if (IsNull) { return Empty.GetChars(partType, isSingleCharacter); }
 
+            var charToHexStringHigh = InternalCombGuidHelper.CharToHexStringHigh;
+            var charToHexStringLow = InternalCombGuidHelper.CharToHexStringLow;
+
             var length = isSingleCharacter ? 1 : 2;
             var chars = new Char[length];
             switch (partType)
@@ -463,36 +228,36 @@ namespace CuteAnt
                 case CombGuidSplitPartType.PartOne:
                     if (isSingleCharacter)
                     {
-                        chars[0] = HexToChar(m_value[3]);
+                        chars[0] = charToHexStringLow[m_value[3]]/*HexToChar(m_value[3])*/;
                     }
                     else
                     {
-                        chars[0] = HexToChar(((Int32)m_value[3]) >> 4);
-                        chars[1] = HexToChar(m_value[3]);
+                        chars[0] = charToHexStringHigh[m_value[3]]/*HexToChar(((Int32)m_value[3]) >> 4)*/;
+                        chars[1] = charToHexStringLow[m_value[3]]/*HexToChar(m_value[3])*/;
                     }
                     break;
                 case CombGuidSplitPartType.PartTwo:
                     if (isSingleCharacter)
                     {
                         // m_value[5]
-                        chars[0] = HexToChar(m_value[5]);
+                        chars[0] = charToHexStringLow[m_value[5]]/*HexToChar(m_value[5])*/;
                     }
                     else
                     {
-                        chars[0] = HexToChar(((Int32)m_value[5]) >> 4);
-                        chars[1] = HexToChar(m_value[5]);
+                        chars[0] = charToHexStringHigh[m_value[5]]/*HexToChar(((Int32)m_value[5]) >> 4)*/;
+                        chars[1] = charToHexStringLow[m_value[5]]/*HexToChar(m_value[5])*/;
                     }
                     break;
                 case CombGuidSplitPartType.PartThree:
                     if (isSingleCharacter)
                     {
                         //m_value[6]
-                        chars[0] = HexToChar(m_value[6]);
+                        chars[0] = charToHexStringLow[m_value[6]]/*HexToChar(m_value[6])*/;
                     }
                     else
                     {
-                        chars[0] = HexToChar(((Int32)m_value[6]) >> 4);
-                        chars[1] = HexToChar(m_value[6]);
+                        chars[0] = charToHexStringHigh[m_value[6]]/*HexToChar(((Int32)m_value[6]) >> 4)*/;
+                        chars[1] = charToHexStringLow[m_value[6]]/*HexToChar(m_value[6])*/;
                     }
                     break;
                 case CombGuidSplitPartType.PartFour:
@@ -500,87 +265,44 @@ namespace CuteAnt
                     if (isSingleCharacter)
                     {
                         //m_value[9]
-                        chars[0] = HexToChar(m_value[9]);
+                        chars[0] = charToHexStringLow[m_value[9]]/*HexToChar(m_value[9])*/;
                     }
                     else
                     {
-                        chars[0] = HexToChar(((Int32)m_value[9]) >> 4);
-                        chars[1] = HexToChar(m_value[9]);
+                        chars[0] = charToHexStringHigh[m_value[9]]/*HexToChar(((Int32)m_value[9]) >> 4)*/;
+                        chars[1] = charToHexStringLow[m_value[9]]/*HexToChar(m_value[9])*/;
                     }
                     break;
             }
             return new String(chars, 0, length);
         }
 
-        /// <summary>根据所提供的格式方式，返回此 CombGuid 实例值的字符数组，如果此 CombGuid 结构值为空，则返回表示空值的字符数组。</summary>
-        /// <param name="sequentialType">指示生成的字符数组中标识顺序的 6 位字节的位置。</param>
-        /// <returns>此 CombGuid 的字符数组，包含一系列指定格式的小写十六进制位字符</returns>
-        public Char[] GetHexChars(CombGuidSequentialSegmentType sequentialType)
+        [MethodImpl(InlineMethod.Value)]
+        private static unsafe int HexsToChars(char* guidChars, int a, int b)
         {
-            //if (IsNull) { throw new HmExceptionBase("此 CombGuid 结构字节数组为空！"); }
-            if (IsNull) { return Empty.GetHexChars(sequentialType); }
+            var charToHexStringHigh = InternalCombGuidHelper.CharToHexStringHigh;
+            var charToHexStringLow = InternalCombGuidHelper.CharToHexStringLow;
+            guidChars[0] = charToHexStringHigh[a];
+            guidChars[1] = charToHexStringLow[a];
 
-            var offset = 0;
-            var guidChars = new Char[32];
+            guidChars[2] = charToHexStringHigh[b];
+            guidChars[3] = charToHexStringLow[b];
 
-            if (sequentialType == CombGuidSequentialSegmentType.Guid)
-            {
-                offset = HexsToChars(guidChars, offset, m_value[0], m_value[1]);
-                offset = HexsToChars(guidChars, offset, m_value[2], m_value[3]);
+            //guidChars[0] = HexToChar(a >> 4);
+            //guidChars[1] = HexToChar(a);
 
-                offset = HexsToChars(guidChars, offset, m_value[4], m_value[5]);
+            //guidChars[2] = HexToChar(b >> 4);
+            //guidChars[3] = HexToChar(b);
 
-                offset = HexsToChars(guidChars, offset, m_value[6], m_value[7]);
-
-                offset = HexsToChars(guidChars, offset, m_value[8], m_value[9]);
-
-                offset = HexsToChars(guidChars, offset, m_value[10], m_value[11]);
-                offset = HexsToChars(guidChars, offset, m_value[12], m_value[13]);
-                offset = HexsToChars(guidChars, offset, m_value[14], m_value[15]);
-            }
-            else
-            {
-                offset = HexsToChars(guidChars, offset, m_value[10], m_value[11]);
-                offset = HexsToChars(guidChars, offset, m_value[12], m_value[13]);
-                offset = HexsToChars(guidChars, offset, m_value[14], m_value[15]);
-
-                offset = HexsToChars(guidChars, offset, m_value[8], m_value[9]);
-
-                offset = HexsToChars(guidChars, offset, m_value[6], m_value[7]);
-
-                offset = HexsToChars(guidChars, offset, m_value[4], m_value[5]);
-
-                offset = HexsToChars(guidChars, offset, m_value[0], m_value[1]);
-                offset = HexsToChars(guidChars, offset, m_value[2], m_value[3]);
-            }
-
-            return guidChars;
+            return 4;
         }
 
-        /// <summary>根据所提供的格式方式，把此 CombGuid 编码为十六进制字符串，如果此 CombGuid 结构值为空，则返回表示空值的字符串。</summary>
-        /// <param name="sequentialType">指示生成的字符数组中标识顺序的 6 位字节的位置。</param>
-        /// <returns></returns>
-        public String ToHex(CombGuidSequentialSegmentType sequentialType)
-        {
-            return new String(GetHexChars(sequentialType));
-        }
-
-        private static Int32 HexsToChars(Char[] guidChars, Int32 offset, Int32 a, Int32 b)
-        {
-            guidChars[offset++] = HexToChar(a >> 4);
-            guidChars[offset++] = HexToChar(a);
-            guidChars[offset++] = HexToChar(b >> 4);
-            guidChars[offset++] = HexToChar(b);
-            return offset;
-        }
-
-        private static Char HexToChar(Int32 a)
+        [MethodImpl(InlineMethod.Value)]
+        private static char HexToChar(Int32 a)
         {
             a = a & 0xf;
-            return (Char)((a > 9) ? a - 10 + 0x61 : a + 0x30);
+            return (char)((a > 9) ? a - 10 + 0x61 : a + 0x30);
         }
-
-        #endregion
 
         #endregion
 
@@ -659,63 +381,6 @@ namespace CuteAnt
 
         #region -- 解析 --
 
-        #region - Parse -
-
-        /// <summary>将 CombGuid 的字符串表示形式转换为等效的 CombGuid 结构。</summary>
-        /// <param name="s">包含下面任一格式的 CombGuid 的字符串（“d”表示忽略大小写的十六进制数字）：
-        /// <para>32 个连续的数字 dddddddddddddddddddddddddddddddd </para>
-        /// <para>- 或 CombGuid 格式字符串 - </para>
-        /// <para>12 和 4、4、4、8 位数字的分组，各组之间有连线符，dddddddddddd-dddd-dddd-dddd-dddddddd</para>
-        /// <para>- 或 Guid 格式字符串 - </para>
-        /// <para>8、4、4、4 和 12 位数字的分组，各组之间有连线符，dddddddd-dddd-dddd-dddd-dddddddddddd</para>
-        /// </param>
-        /// <param name="sequentialType">指示字符串中标识顺序的 12 位字符串的位置</param>
-        /// <returns></returns>
-        public static CombGuid Parse(String s, CombGuidSequentialSegmentType sequentialType)
-        {
-            if (string.Equals(_NullString, s, StringComparison.OrdinalIgnoreCase))
-            {
-                return CombGuid.Null;
-            }
-            else
-            {
-                return new CombGuid(s, sequentialType);
-            }
-        }
-
-        #endregion
-
-        #region - TryParse -
-
-        /// <summary>将 CombGuid 的字符串表示形式转换为等效的 CombGuid 结构。</summary>
-        /// <param name="comb">包含下面任一格式的 CombGuid 的字符串（“d”表示忽略大小写的十六进制数字）：
-        /// <para>32 个连续的数字 dddddddddddddddddddddddddddddddd </para>
-        /// <para>- 或 CombGuid 格式字符串 - </para>
-        /// <para>12 和 4、4、4、8 位数字的分组，各组之间有连线符，dddddddddddd-dddd-dddd-dddd-dddddddd</para>
-        /// <para>- 或 Guid 格式字符串 - </para>
-        /// <para>8、4、4、4 和 12 位数字的分组，各组之间有连线符，dddddddd-dddd-dddd-dddd-dddddddddddd</para>
-        /// </param>
-        /// <param name="sequentialType">指示字符串中标识顺序的 12 位字符串的位置</param>
-        /// <param name="result">将包含已分析的值的结构。 如果此方法返回 true，result 包含有效的 CombGuid。 如果此方法返回 false，result 等于 CombGuid.Null。</param>
-        /// <returns></returns>
-        public static Boolean TryParse(String comb, CombGuidSequentialSegmentType sequentialType, out CombGuid result)
-        {
-            if (string.IsNullOrEmpty(comb)) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.comb); }
-
-            try
-            {
-                Int32 a; Int16 b, c; Byte[] d;
-                if (new GuidParser(comb, sequentialType).TryParse(out a, out b, out c, out d))
-                {
-                    result = new CombGuid(a, b, c, d);
-                    return true;
-                }
-            }
-            catch { }
-            result = Null;
-            return false;
-        }
-
         /// <summary>将 CombGuid 的字符串表示形式转换为等效的 CombGuid 结构。</summary>
         /// <param name="value">Guid结构、CombGuid结构、16 元素字节数组 或 包含下面任一格式的 CombGuid 的字符串（“d”表示忽略大小写的十六进制数字）：
         /// <para>32 个连续的数字 dddddddddddddddddddddddddddddddd </para>
@@ -767,8 +432,6 @@ namespace CuteAnt
 
         #endregion
 
-        #endregion
-
         #region -- 类型转换 --
 
         /// <summary>定义从 Guid 对象到 CombGuid 对象的隐式转换。</summary>
@@ -801,13 +464,14 @@ namespace CuteAnt
         /// <returns></returns>
         private static CombGuidComparison Compare(CombGuid x, CombGuid y)
         {
+            var guidComparisonOrders = InternalCombGuidHelper.GuidComparisonOrders;
             // Swap to the correct order to be compared
             for (Int32 i = 0; i < _SizeOfGuid; i++)
             {
                 Byte b1, b2;
 
-                b1 = x.m_value[_GuidComparisonOrders[i]];
-                b2 = y.m_value[_GuidComparisonOrders[i]];
+                b1 = x.m_value[guidComparisonOrders[i]];
+                b2 = y.m_value[guidComparisonOrders[i]];
                 if (b1 != b2)
                 {
                     return (b1 < b2) ? CombGuidComparison.LT : CombGuidComparison.GT;
@@ -1044,7 +708,7 @@ namespace CuteAnt
 
                 return CompareTo(combGuid);
             }
-            throw new ArgumentException("value 类型不是 CombGuid");
+            throw ThrowHelper.GetArgumentException_InvalidCombGuid();
         }
 
         /// <summary>将此 CombGuid 结构与所提供的 CombGuid 结构进行比较，并返回其相对值的指示。 不仅仅是比较最后 6 个字节，但会将最后 6 个字节视为比较中最重要的字节。</summary>
@@ -1229,126 +893,6 @@ namespace CuteAnt
             }
 
             throw new InvalidCastException();
-        }
-
-        #endregion
-
-        #region -- struct GuidParser --
-
-        private struct GuidParser
-        {
-            private String _src;
-            private Int32 _length;
-            private Int32 _cur;
-            private CombGuidSequentialSegmentType _sequentialType;
-
-            internal GuidParser(String src, CombGuidSequentialSegmentType sequentialType)
-            {
-                _src = src.Trim();
-                _cur = 0;
-                _length = _src.Length;
-                _sequentialType = sequentialType;
-            }
-
-            private void Reset()
-            {
-                _cur = 0;
-                _length = _src.Length;
-            }
-
-            private Boolean Eof
-            {
-                get { return _cur >= _length; }
-            }
-
-            internal Boolean TryParse(out Int32 a, out Int16 b, out Int16 c, out Byte[] d)
-            {
-                var hasHyphen = _length == 36;
-
-                a = 0; b = 0; c = 0; d = null;
-                UInt64 _a, _b, _c;
-
-                if (!ParseHex(8, hasHyphen, out _a)) { return false; }
-
-                if (hasHyphen && !ParseChar('-')) { return false; }
-
-                if (!ParseHex(4, hasHyphen, out _b)) { return false; }
-
-                if (hasHyphen && !ParseChar('-')) { return false; }
-
-                if (!ParseHex(4, hasHyphen, out _c)) { return false; }
-
-                if (hasHyphen && !ParseChar('-')) { return false; }
-
-                var _d = new Byte[8];
-                for (Int32 i = 0; i < _d.Length; i++)
-                {
-                    UInt64 dd;
-                    if (!ParseHex(2, hasHyphen, out dd)) { return false; }
-
-                    if (i == 1 && hasHyphen && !ParseChar('-')) { return false; }
-
-                    _d[i] = (Byte)dd;
-                }
-
-                if (!Eof) { return false; }
-
-                a = (Int32)_a;
-                b = (Int16)_b;
-                c = (Int16)_c;
-                d = _d;
-                return true;
-            }
-
-            private Boolean ParseChar(Char c)
-            {
-                var sc = _sequentialType == CombGuidSequentialSegmentType.Guid ? _src[_cur] : _src[_GuidParseOrders36[_cur]];
-                if (!Eof && sc == c)
-                {
-                    _cur++;
-                    return true;
-                }
-
-                return false;
-            }
-
-            private Boolean ParseHex(Int32 length, Boolean hasHyphen, out UInt64 res) //Boolean strict
-            {
-                res = 0;
-
-                for (Int32 i = 0; i < length; i++)
-                {
-                    if (Eof) { return !((i + 1 != length)); }
-
-                    var c = _sequentialType == CombGuidSequentialSegmentType.Guid ?
-                            _src[_cur] :
-                            hasHyphen ? _src[_GuidParseOrders36[_cur]] : _src[_GuidParseOrders32[_cur]];
-                    if (Char.IsDigit(c))
-                    {
-                        res = res * 16 + c - '0';
-                        _cur++;
-                        continue;
-                    }
-
-                    if (c >= 'a' && c <= 'f')
-                    {
-                        res = res * 16 + c - 'a' + 10;
-                        _cur++;
-                        continue;
-                    }
-
-                    if (c >= 'A' && c <= 'F')
-                    {
-                        res = res * 16 + c - 'A' + 10;
-                        _cur++;
-                        continue;
-                    }
-
-                    return false;
-                }
-
-                return true;
-            }
         }
 
         #endregion

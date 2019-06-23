@@ -24,6 +24,9 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
     <PackageReference Include="NetFx.Extensions.Primitives" Version="$(NetFxExtensionsPrimitivesPackageVersion)" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.2' ">
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemRuntimeCompilerServicesUnsafePackageVersion)" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Update="Internal\Strings.Designer.cs">
