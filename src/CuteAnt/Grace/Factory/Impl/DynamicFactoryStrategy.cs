@@ -12,113 +12,117 @@ using Grace.Utilities;
 
 namespace Grace.Factory.Impl
 {
-  /// <summary>Creates a dynamic factory class for interface type</summary>
-  public class DynamicFactoryStrategy : BaseInstanceExportStrategy
-  {
-    private Type _proxyType;
-    private List<DynamicTypeBuilder.DelegateInfo> _delegateInfo;
-    private readonly object _proxyTypeLock = new object();
-
-    /// <summary>Default constructor</summary>
-    /// <param name="activationType"></param>
-    /// <param name="injectionScope"></param>
-    public DynamicFactoryStrategy(Type activationType, IInjectionScope injectionScope)
-      : base(activationType, injectionScope) { }
-
-    /// <inheritdoc/>
-    protected override IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, ICompiledLifestyle lifestyle)
+    /// <summary>Creates a dynamic factory class for interface type</summary>
+    public class DynamicFactoryStrategy : BaseInstanceExportStrategy
     {
-      if (_proxyType == null)
-      {
-        lock (_proxyTypeLock)
+        private Type _proxyType;
+        private List<DynamicTypeBuilder.DelegateInfo> _delegateInfo;
+        private readonly object _proxyTypeLock = new object();
+
+        /// <summary>Default constructor</summary>
+        /// <param name="activationType"></param>
+        /// <param name="injectionScope"></param>
+        public DynamicFactoryStrategy(Type activationType, IInjectionScope injectionScope)
+            : base(activationType, injectionScope) { }
+
+        /// <inheritdoc/>
+        protected override IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, ICompiledLifestyle lifestyle)
         {
-          if (_proxyType == null)
-          {
-            var builder = new DynamicTypeBuilder();
+            if (_proxyType == null)
+            {
+                lock (_proxyTypeLock)
+                {
+                    if (_proxyType == null)
+                    {
+                        var builder = new DynamicTypeBuilder();
 
-            _proxyType = builder.CreateType(ActivationType, out _delegateInfo);
-          }
-        }
-      }
+                        _proxyType = builder.CreateType(ActivationType, out _delegateInfo);
+                    }
+                }
+            }
 
-      var parameters = new List<Expression>
-      {
-        request.ScopeParameter,
-        request.DisposalScopeExpression,
-        request.InjectionContextParameter
-      };
+            request.RequireExportScope();
+            request.RequireDisposalScope();
+            request.RequireInjectionContext();
 
-      var uniqueId = UniqueStringId.Generate();
+            var parameters = new List<Expression>
+            {
+                request.ScopeParameter,
+                request.DisposalScopeExpression,
+                request.InjectionContextParameter
+            };
 
-      const string _getPrefix = "Get";
+            var uniqueId = UniqueStringId.Generate();
 
-      foreach (var delegateInfo in _delegateInfo)
-      {
-        var locateType = delegateInfo.Method.ReturnType;
+            const string _getPrefix = "Get";
 
-        var newRequest = request.NewRequest(locateType, this, ActivationType, RequestType.Other, null, true);
+            foreach (var delegateInfo in _delegateInfo)
+            {
+                var locateType = delegateInfo.Method.ReturnType;
 
-        newRequest.AddKnownValueExpression(CreateKnownValueExpression(newRequest, ActivationType, uniqueId));
+                var newRequest = request.NewRequest(locateType, this, ActivationType, RequestType.Other, null, true);
 
-        if (delegateInfo.Method.Name.StartsWith(_getPrefix, StringComparison.Ordinal))
-        {
-          newRequest.SetLocateKey(delegateInfo.Method.Name.Substring(_getPrefix.Length));
-        }
+                newRequest.AddKnownValueExpression(CreateKnownValueExpression(newRequest, ActivationType, uniqueId));
 
-        if (delegateInfo.ParameterInfos != null)
-        {
-          foreach (var parameter in delegateInfo.ParameterInfos)
-          {
-            newRequest.AddKnownValueExpression(
-                CreateKnownValueExpression(newRequest, parameter.ParameterInfo.ParameterType, parameter.UniqueId, parameter.ParameterInfo.Name, parameter.ParameterInfo.Position));
-          }
-        }
+                if (delegateInfo.Method.Name.StartsWith(_getPrefix, StringComparison.Ordinal))
+                {
+                    newRequest.SetLocateKey(delegateInfo.Method.Name.Substring(_getPrefix.Length));
+                }
 
-        var result = request.Services.ExpressionBuilder.GetActivationExpression(request.RequestingScope, newRequest);
+                if (delegateInfo.ParameterInfos != null)
+                {
+                    foreach (var parameter in delegateInfo.ParameterInfos)
+                    {
+                        newRequest.AddKnownValueExpression(
+                            CreateKnownValueExpression(newRequest, parameter.ParameterInfo.ParameterType, parameter.UniqueId, parameter.ParameterInfo.Name, parameter.ParameterInfo.Position));
+                    }
+                }
 
-        var compiledDelegate = request.Services.Compiler.CompileDelegate(request.RequestingScope, result);
+                var result = request.Services.ExpressionBuilder.GetActivationExpression(request.RequestingScope, newRequest);
 
-        parameters.Add(Expression.Constant(compiledDelegate));
-      }
+                var compiledDelegate = request.Services.Compiler.CompileDelegate(request.RequestingScope, result);
+
+                parameters.Add(Expression.Constant(compiledDelegate));
+            }
 
 #if NET40
-      var constructor = _proxyType.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly).First();
+            var constructor = _proxyType.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly).First();
 #else
-      var constructor = _proxyType.GetTypeInfo().DeclaredConstructors.First();
+            var constructor = _proxyType.GetTypeInfo().DeclaredConstructors.First();
 #endif
 
-      request.RequireInjectionContext();
+            request.RequireInjectionContext();
 
-      var newStatement = Expression.New(constructor, parameters);
+            var newStatement = Expression.New(constructor, parameters);
 
-      const string _setExtraDataMethod = "SetExtraData";
+            const string _setExtraDataMethod = "SetExtraData";
 #if NET40
-      var setMethod = typeof(IExtraDataContainer).GetMethod(_setExtraDataMethod,
+            var setMethod = typeof(IExtraDataContainer).GetMethod(_setExtraDataMethod,
 #else
-      var setMethod = typeof(IExtraDataContainer).GetRuntimeMethod(_setExtraDataMethod,
+            var setMethod = typeof(IExtraDataContainer).GetRuntimeMethod(_setExtraDataMethod,
 #endif
                 new[] { typeof(object), typeof(object), typeof(bool) });
 
-      var invokeStatement = Expression.Call(request.InjectionContextParameter, setMethod,
-          Expression.Constant(uniqueId), newStatement, Expression.Constant(true));
+            var invokeStatement = Expression.Call(request.InjectionContextParameter, setMethod,
+                Expression.Constant(uniqueId), newStatement, Expression.Constant(true));
 
-      var castStatement = Expression.Convert(invokeStatement, ActivationType);
+            var castStatement = Expression.Convert(invokeStatement, ActivationType);
 
-      return request.Services.Compiler.CreateNewResult(request, castStatement);
-    }
+            return request.Services.Compiler.CreateNewResult(request, castStatement);
+        }
 
-    private IKnownValueExpression CreateKnownValueExpression(IActivationExpressionRequest request, Type argType, string valueId, string nameHint = null, int? position = null)
-    {
-      const string _getExtraDataMethod = "GetExtraData";
+        private IKnownValueExpression CreateKnownValueExpression(IActivationExpressionRequest request, Type argType, string valueId, string nameHint = null, int? position = null)
+        {
+            const string _getExtraDataMethod = "GetExtraData";
 #if NET40
-      var getMethod = typeof(IExtraDataContainer).GetMethod(_getExtraDataMethod, new[] { typeof(object) });
+            var getMethod = typeof(IExtraDataContainer).GetMethod(_getExtraDataMethod, new[] { typeof(object) });
 #else
-      var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod(_getExtraDataMethod, new[] { typeof(object) });
+            var getMethod = typeof(IExtraDataContainer).GetRuntimeMethod(_getExtraDataMethod, new[] { typeof(object) });
 #endif
 
-      var callExpression = Expression.Call(request.InjectionContextParameter, getMethod, Expression.Constant(valueId));
+            var callExpression = Expression.Call(request.InjectionContextParameter, getMethod, Expression.Constant(valueId));
 
-      return new SimpleKnownValueExpression(argType, Expression.Convert(callExpression, argType), nameHint, position);
+            return new SimpleKnownValueExpression(argType, Expression.Convert(callExpression, argType), nameHint, position);
+        }
     }
-  }
 }

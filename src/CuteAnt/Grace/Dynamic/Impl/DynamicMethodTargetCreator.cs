@@ -4,78 +4,78 @@ using CuteAnt.Reflection;
 
 namespace Grace.Dynamic.Impl
 {
-  /// <summary>interface for creating an object to bind dynamic method to</summary>
-  public interface IDynamicMethodTargetCreator
-  {
-    /// <summary>Create method target based on request</summary>
-    /// <param name="request">dynamic method request</param>
-    /// <returns></returns>
-    object CreateMethodTarget(DynamicMethodGenerationRequest request);
-  }
-
-  /// <summary>Class for creating dynamic method target</summary>
-  public class DynamicMethodTargetCreator : IDynamicMethodTargetCreator
-  {
-    /// <summary>Create method target based on request</summary>
-    /// <param name="request">dynamic method request</param>
-    /// <returns></returns>
-    public object CreateMethodTarget(DynamicMethodGenerationRequest request) 
-        => request.Constants.Count == 0 ? new DynamicMethodTarget() : CreateConstantTarget(request);
-
-    private object CreateConstantTarget(DynamicMethodGenerationRequest request)
+    /// <summary>interface for creating an object to bind dynamic method to</summary>
+    public interface IDynamicMethodTargetCreator
     {
-      Type openType = null;
-
-      switch (request.Constants.Count)
-      {
-        case 1:
-          openType = typeof(DynamicMethodTarget<>);
-          break;
-
-        case 2:
-          openType = typeof(DynamicMethodTarget<,>);
-          break;
-
-        case 3:
-          openType = typeof(DynamicMethodTarget<,,>);
-          break;
-
-        case 4:
-          openType = typeof(DynamicMethodTarget<,,,>);
-          break;
-
-        case 5:
-          openType = typeof(DynamicMethodTarget<,,,,>);
-          break;
-
-        case 6:
-          openType = typeof(DynamicMethodTarget<,,,,,>);
-          break;
-
-        case 7:
-          openType = typeof(DynamicMethodTarget<,,,,,,>);
-          break;
-
-        case 8:
-          openType = typeof(DynamicMethodTarget<,,,,,,,>);
-          break;
-
-        default:
-          return CreateArrayTarget(request);
-      }
-
-      // ## 苦竹 修改 ##
-      //var closedType = openType.MakeGenericType(request.Constants.Select(c => c.GetType()).ToArray());
-      //return Activator.CreateInstance(closedType, request.Constants.ToArray());
-      var closedType = openType.GetCachedGenericType(request.Constants.Select(c => c.GetType()).ToArray());
-      return ActivatorUtils.CreateInstance(closedType, request.Constants.ToArray());
+        /// <summary>Create method target based on request</summary>
+        /// <param name="request">dynamic method request</param>
+        /// <returns></returns>
+        object CreateMethodTarget(DynamicMethodGenerationRequest request);
     }
 
-    private object CreateArrayTarget(DynamicMethodGenerationRequest request)
+    /// <summary>Class for creating dynamic method target</summary>
+    public class DynamicMethodTargetCreator : IDynamicMethodTargetCreator
     {
-      request.IsArrayTarget = true;
+        /// <summary>Create method target based on request</summary>
+        /// <param name="request">dynamic method request</param>
+        /// <returns></returns>
+        public object CreateMethodTarget(DynamicMethodGenerationRequest request)
+            => 0U >= (uint)request.Constants.Count ? null : CreateConstantTarget(request);
 
-      return new ArrayDynamicMethodTarget(request.Constants.ToArray());
+        private object CreateConstantTarget(DynamicMethodGenerationRequest request)
+        {
+            Type openType = null;
+
+            switch (request.Constants.Count)
+            {
+                case 1:
+                    openType = typeof(DynamicMethodTarget<>);
+                    break;
+
+                case 2:
+                    openType = typeof(DynamicMethodTarget<,>);
+                    break;
+
+                case 3:
+                    openType = typeof(DynamicMethodTarget<,,>);
+                    break;
+
+                case 4:
+                    openType = typeof(DynamicMethodTarget<,,,>);
+                    break;
+
+                case 5:
+                    openType = typeof(DynamicMethodTarget<,,,,>);
+                    break;
+
+                case 6:
+                    openType = typeof(DynamicMethodTarget<,,,,,>);
+                    break;
+
+                case 7:
+                    openType = typeof(DynamicMethodTarget<,,,,,,>);
+                    break;
+
+                case 8:
+                    openType = typeof(DynamicMethodTarget<,,,,,,,>);
+                    break;
+
+                default:
+                    return CreateArrayTarget(request);
+            }
+
+            // ## 苦竹 修改 ##
+            //var closedType = openType.MakeGenericType(request.Constants.Select(c => c.GetType()).ToArray());
+            //return Activator.CreateInstance(closedType, request.Constants.ToArray());
+            var closedType = openType.GetCachedGenericType(request.Constants.Select(c => c.GetType()).ToArray());
+            return ActivatorUtils.CreateInstance(closedType, request.Constants.ToArray());
+        }
+
+        private object CreateArrayTarget(DynamicMethodGenerationRequest request)
+        {
+            request.IsArrayTarget = true;
+
+            return new ArrayDynamicMethodTarget(request.Constants.ToArray());
+        }
     }
-  }
 }

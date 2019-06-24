@@ -465,6 +465,7 @@ namespace CuteAnt
         private static CombGuidComparison Compare(CombGuid x, CombGuid y)
         {
             var guidComparisonOrders = InternalCombGuidHelper.GuidComparisonOrders;
+            { var unused = guidComparisonOrders[15]; }
             // Swap to the correct order to be compared
             for (Int32 i = 0; i < _SizeOfGuid; i++)
             {

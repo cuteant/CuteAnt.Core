@@ -94,49 +94,8 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="consider"></param>
         /// <param name="key">key to use while locating</param>
         /// <returns></returns>
-        public bool CanLocate(Type type, ActivationStrategyFilter consider = null, object key = null)
+        public override bool CanLocate(Type type, ActivationStrategyFilter consider = null, object key = null)
             => InternalFieldStorage.CanLocateTypeService.CanLocate(this, type, consider, key);
-
-        /// <summary>Locate a specific type</summary>
-        /// <param name="type">type to locate</param>
-        /// <returns>located instance</returns>
-        public object Locate(Type type)
-        {
-            return DelegateCache.ExecuteActivationStrategyDelegate(type, this);
-        }
-
-        /// <summary>Locate type or return default value</summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public object LocateOrDefault(Type type)
-        {
-            return DelegateCache.ExecuteActivationStrategyDelegateAllowNull(type, this);
-        }
-
-        /// <summary>Locate type or return default value</summary>
-        /// <param name="type"></param>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        public object LocateOrDefault(Type type, object defaultValue)
-        {
-            return DelegateCache.ExecuteActivationStrategyDelegateAllowNull(type, this) ?? defaultValue;
-        }
-
-        /// <summary>Locate type</summary>
-        /// <typeparam name="T">type to locate</typeparam>
-        /// <returns>located instance</returns>
-        public T Locate<T>() => (T)Locate(typeof(T));
-
-        /// <summary>Locate or return default</summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T LocateOrDefault<T>() => (T)LocateOrDefault(typeof(T));
-
-        /// <summary>Locate or return default</summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        public T LocateOrDefault<T>(T defaultValue) => (T)LocateOrDefault(typeof(T), defaultValue);
 
         /// <summary>Locate specific type using extra data or key</summary>
         /// <param name="type">type to locate</param>
@@ -146,7 +105,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="isDynamic">skip cache and look through exports</param>
         /// <returns>located instance</returns>
         // ReSharper disable once MethodOverloadWithOptionalParameter
-        public object Locate(Type type, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
+        public override object Locate(Type type, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
             IInjectionContext context = extraData == null ?
                 null : CreateInjectionContextFromExtraData(type, extraData);
@@ -167,7 +126,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="isDynamic">skip cache and look at all strategies</param>
         /// <returns>located instance</returns>
         // ReSharper disable once MethodOverloadWithOptionalParameter
-        public T Locate<T>(object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
+        public override T Locate<T>(object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
             => (T)Locate(typeof(T), extraData, consider, withKey, isDynamic);
 
         /// <summary>Locate all instances of a type</summary>
@@ -176,7 +135,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="consider">provide method to filter out exports</param>
         /// <param name="comparer">comparer to use for sorting</param>
         /// <returns>list of all type</returns>
-        public List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter consider = null, IComparer<object> comparer = null)
+        public override List<object> LocateAll(Type type, object extraData = null, ActivationStrategyFilter consider = null, IComparer<object> comparer = null)
         {
             return ((IInjectionScope)this).InternalLocateAll(this, this, type, extraData, consider, comparer);
         }
@@ -188,7 +147,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="consider">provide method to filter out exports</param>
         /// <param name="comparer">comparer to use for sorting</param>
         /// <returns>list of all located</returns>
-        public List<T> LocateAll<T>(Type type = null, object extraData = null, ActivationStrategyFilter consider = null, IComparer<T> comparer = null)
+        public override List<T> LocateAll<T>(Type type = null, object extraData = null, ActivationStrategyFilter consider = null, IComparer<T> comparer = null)
         {
             return ((IInjectionScope)this).InternalLocateAll(this, this, type ?? typeof(T), extraData, consider, comparer);
         }
@@ -201,7 +160,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="withKey">key to use while locating</param>
         /// <param name="isDynamic">skip cache and look at all exports</param>
         /// <returns></returns>
-        public bool TryLocate<T>(out T value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
+        public override bool TryLocate<T>(out T value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
             var context = CreateInjectionContextFromExtraData(typeof(T), extraData);
 
@@ -230,7 +189,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="withKey">key to use during locate</param>
         /// <param name="isDynamic">skip cache and look at all exports</param>
         /// <returns>returns tue if export found</returns>
-        public bool TryLocate(Type type, out object value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
+        public override bool TryLocate(Type type, out object value, object extraData = null, ActivationStrategyFilter consider = null, object withKey = null, bool isDynamic = false)
         {
             var context = CreateInjectionContextFromExtraData(type, extraData);
 
@@ -244,7 +203,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
         /// <returns></returns>
-        public object LocateByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
+        public override object LocateByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
         {
             return ((IInjectionScope)this).LocateByNameFromChildScope(this,
                 this, name, extraData, consider, false);
@@ -255,7 +214,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
         /// <returns></returns>
-        public List<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
+        public override List<object> LocateAllByName(string name, object extraData = null, ActivationStrategyFilter consider = null)
         {
             return ((IInjectionScope)this).InternalLocateAllByName(this,
                 this,
@@ -270,7 +229,7 @@ namespace Grace.DependencyInjection.Impl
         /// <param name="extraData"></param>
         /// <param name="consider"></param>
         /// <returns></returns>
-        public bool TryLocateByName(string name, out object value, object extraData = null, ActivationStrategyFilter consider = null)
+        public override bool TryLocateByName(string name, out object value, object extraData = null, ActivationStrategyFilter consider = null)
         {
             value = ((IInjectionScope)this).LocateByNameFromChildScope(this,
                 this, name, extraData, consider, true);
@@ -278,10 +237,10 @@ namespace Grace.DependencyInjection.Impl
             return value != null;
         }
 
-        /// <summary>Create as a new IExportLocate scope</summary>
-        /// <param name="scopeName">scope name</param>
-        /// <returns>new scope</returns>
-        public virtual IExportLocatorScope BeginLifetimeScope(string scopeName = "")
+        /// <summary>Being lifetime scope</summary>
+        /// <param name="scopeName"></param>
+        /// <returns></returns>
+        public override IExportLocatorScope BeginLifetimeScope(string scopeName = "")
         {
             return new LifetimeScope(this, this, scopeName, DelegateCache);
         }
@@ -289,7 +248,7 @@ namespace Grace.DependencyInjection.Impl
         /// <summary>Create injection context</summary>
         /// <param name="extraData">extra data</param>
         /// <returns></returns>
-        public IInjectionContext CreateContext(object extraData = null)
+        public override IInjectionContext CreateContext(object extraData = null)
             => InternalFieldStorage.InjectionContextCreator.CreateContext(extraData);
 
         /// <summary>Configure the injection scope</summary>
@@ -561,88 +520,6 @@ namespace Grace.DependencyInjection.Impl
             if (configure != null) { newScope.Configure(configure); }
 
             return newScope;
-        }
-
-        object IServiceProvider.GetService(Type type)
-        {
-            return DelegateCache.ExecuteActivationStrategyDelegateAllowNull(type, this);
-        }
-
-        /// <summary>TBD</summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="id"></param>
-        /// <param name="createDelegate"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public T GetOrCreateScopedService<T>(int id, ActivationStrategyDelegate createDelegate, IInjectionContext context)
-        {
-            var initialStorage = InternalScopedStorage;
-
-            if (ReferenceEquals(initialStorage, ScopedStorage.Empty))
-            {
-                return CreateAndSaveScopedService<T>(initialStorage, id, createDelegate, context);
-            }
-
-            if (initialStorage.Id == id)
-            {
-                return (T)initialStorage.ScopedService;
-            }
-
-            var storage = initialStorage.Next;
-
-            while (!ReferenceEquals(storage, ScopedStorage.Empty))
-            {
-                if (storage.Id == id)
-                {
-                    return (T)storage.ScopedService;
-                }
-
-                storage = storage.Next;
-            }
-
-            return CreateAndSaveScopedService<T>(initialStorage, id, createDelegate, context);
-        }
-
-        private T CreateAndSaveScopedService<T>(ScopedStorage initialStorage, int id,
-            ActivationStrategyDelegate createDelegate, IInjectionContext context)
-        {
-            var value = createDelegate(this, this, context);
-
-            var newStorage = new ScopedStorage { Id = id, Next = initialStorage, ScopedService = value };
-
-            if (Interlocked.CompareExchange(ref InternalScopedStorage, newStorage, initialStorage) == initialStorage)
-            {
-                return (T)value;
-            }
-
-            return HandleScopedStorageCollision<T>(initialStorage, id, newStorage, value);
-        }
-
-        private T HandleScopedStorageCollision<T>(ScopedStorage initialStorage, int id, ScopedStorage newStorage, object value)
-        {
-            SpinWait spinWait = new SpinWait();
-
-            while (Interlocked.CompareExchange(ref InternalScopedStorage, newStorage, initialStorage) != initialStorage)
-            {
-                var current = InternalScopedStorage;
-
-                while (!ReferenceEquals(current, ScopedStorage.Empty))
-                {
-                    if (current.Id == id)
-                    {
-                        return (T)current.ScopedService;
-                    }
-
-                    current = current.Next;
-                }
-
-                initialStorage = InternalScopedStorage;
-                newStorage.Next = initialStorage;
-
-                spinWait.SpinOnce();
-            }
-
-            return (T)value;
         }
 
         #endregion
