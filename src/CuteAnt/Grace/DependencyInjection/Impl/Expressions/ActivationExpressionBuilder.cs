@@ -31,9 +31,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <param name="wrapperExpressionCreator"></param>
         /// <param name="contextValueProvider"></param>
         public ActivationExpressionBuilder(IArrayExpressionCreator arrayExpressionCreator,
-                                               IEnumerableExpressionCreator enumerableExpressionCreator,
-                                               IWrapperExpressionCreator wrapperExpressionCreator,
-                                               IInjectionContextValueProvider contextValueProvider)
+                                            IEnumerableExpressionCreator enumerableExpressionCreator,
+                                            IWrapperExpressionCreator wrapperExpressionCreator,
+                                            IInjectionContextValueProvider contextValueProvider)
         {
             EnumerableExpressionCreator = enumerableExpressionCreator;
             ArrayExpressionCreator = arrayExpressionCreator;
@@ -358,7 +358,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 var configuration = request.WrapperPathNode.Strategy.GetActivationConfiguration(activationType);
 
                 if (configuration.ActivationType != null &&
-                    activationType.IsAssignableFrom(configuration.ActivationType))
+                    (activationType.IsAssignableFrom(configuration.ActivationType) ||
+#if NET40
+                     activationType.IsConstructedGenericType() && activationType.GetGenericTypeDefinition() == configuration.ActivationType))
+#else
+                     activationType.IsConstructedGenericType && activationType.GetGenericTypeDefinition() == configuration.ActivationType))
+#endif
                 {
                     var wrapper = request.PopWrapperPathNode();
 
@@ -370,7 +375,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 var configuration = request.DecoratorPathNode.Strategy.GetActivationConfiguration(activationType);
 
                 if (configuration.ActivationType != null &&
-                    activationType.IsAssignableFrom(configuration.ActivationType))
+                    (activationType.IsAssignableFrom(configuration.ActivationType) ||
+#if NET40
+                     activationType.IsConstructedGenericType() && activationType.GetGenericTypeDefinition() == configuration.ActivationType))
+#else
+                     activationType.IsConstructedGenericType && activationType.GetGenericTypeDefinition() == configuration.ActivationType))
+#endif
                 {
                     var decorator = request.PopDecoratorPathNode();
 

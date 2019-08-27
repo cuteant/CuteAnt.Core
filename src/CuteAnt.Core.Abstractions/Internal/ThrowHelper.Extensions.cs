@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace CuteAnt
@@ -130,6 +131,12 @@ namespace CuteAnt
             {
                 return new ArgumentException("value 的长度不是 16 个字节。");
             }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static NotSupportedException GetNotSupportedException(MemberInfo memberInfo)
+        {
+            return new NotSupportedException($"Not supported for MemberInfo of type: {memberInfo.GetType().Name}");
         }
     }
 }

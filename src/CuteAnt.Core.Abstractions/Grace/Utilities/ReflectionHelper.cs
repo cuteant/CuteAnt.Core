@@ -38,8 +38,25 @@ namespace Grace.Utilities
 
                 if (!constraint.IsAssignableFrom(exported))
                 {
-                    meets = false;
-                    break;
+#if NET40
+                    if (constraint.IsConstructedGenericType() &&
+                        exported.IsConstructedGenericType() &&
+                        constraint.GenericTypeArguments()[0].GetTypeInfo().GUID == Guid.Empty &&
+                        constraint.GetGenericTypeDefinition() == exported.GetGenericTypeDefinition())
+#else
+                    if (constraint.IsConstructedGenericType &&
+                        exported.IsConstructedGenericType &&
+                        constraint.GenericTypeArguments[0].GetTypeInfo().GUID == Guid.Empty &&
+                        constraint.GetGenericTypeDefinition() == exported.GetGenericTypeDefinition())
+#endif
+                    {
+                        // do nothing as it matches
+                    }
+                    else
+                    {
+                        meets = false;
+                        break;
+                    }
                 }
             }
 
@@ -75,17 +92,17 @@ namespace Grace.Utilities
         /// <returns></returns>
         public static Type GetMemeberType(this MemberInfo memberInfo)
         {
-            if (memberInfo is PropertyInfo propertyInfo)
+            switch (memberInfo)
             {
-                return propertyInfo.PropertyType;
-            }
+                case PropertyInfo propertyInfo:
+                    return propertyInfo.PropertyType;
 
-            if (memberInfo is FieldInfo fieldInfo)
-            {
-                return fieldInfo.FieldType;
-            }
+                case FieldInfo fieldInfo:
+                    return fieldInfo.FieldType;
 
-            throw new NotSupportedException($"Not supported for MemberInfo of type: {memberInfo.GetType().Name}");
+                default:
+                    throw CuteAnt.ThrowHelper.GetNotSupportedException(memberInfo);
+            }
         }
 
         private static Type CreateClosedExportTypeFromClassRequestingType(Type exportedType, Type requestedType)
