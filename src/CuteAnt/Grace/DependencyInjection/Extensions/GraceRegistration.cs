@@ -12,6 +12,8 @@ namespace Grace.DependencyInjection.Extensions
         /// <param name="descriptors">descriptors</param>
         public static IServiceProvider Populate(this IInjectionScope exportLocator, IEnumerable<ServiceDescriptor> descriptors)
         {
+            if (exportLocator is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.exportLocator); }
+
             exportLocator.Configure(c =>
             {
                 c.ExcludeTypeFromAutoRegistration(nameof(Microsoft) + ".*");
@@ -20,7 +22,7 @@ namespace Grace.DependencyInjection.Extensions
                 Register(c, descriptors);
             });
 
-            return exportLocator.Locate<IServiceProvider>();
+            return exportLocator/*.Locate<IServiceProvider>()*/;
         }
 
         private static void Register(IExportRegistrationBlock c, IEnumerable<ServiceDescriptor> descriptors)
@@ -51,9 +53,10 @@ namespace Grace.DependencyInjection.Extensions
 
                 case ServiceLifetime.Singleton:
                     return configuration.Lifestyle.Singleton();
-            }
 
-            return configuration;
+                default:
+                    return configuration;
+            }
         }
 
         private static IFluentExportInstanceConfiguration<T> ConfigureLifetime<T>(this IFluentExportInstanceConfiguration<T> configuration, ServiceLifetime lifecycleKind)
@@ -65,9 +68,10 @@ namespace Grace.DependencyInjection.Extensions
 
                 case ServiceLifetime.Singleton:
                     return configuration.Lifestyle.Singleton();
-            }
 
-            return configuration;
+                default:
+                    return configuration;
+            }
         }
     }
 }

@@ -39,18 +39,52 @@ namespace Grace.Utilities
                 if (!constraint.IsAssignableFrom(exported))
                 {
 #if NET40
-                    if (constraint.IsConstructedGenericType() &&
-                        exported.IsConstructedGenericType() &&
-                        constraint.GenericTypeArguments()[0].GetTypeInfo().GUID == Guid.Empty &&
-                        constraint.GetGenericTypeDefinition() == exported.GetGenericTypeDefinition())
-#else
-                    if (constraint.IsConstructedGenericType &&
-                        exported.IsConstructedGenericType &&
-                        constraint.GenericTypeArguments[0].GetTypeInfo().GUID == Guid.Empty &&
-                        constraint.GetGenericTypeDefinition() == exported.GetGenericTypeDefinition())
-#endif
+                    if (constraint.IsConstructedGenericType())
                     {
-                        // do nothing as it matches
+                        if (exported.IsConstructedGenericType())
+                        {
+                            if (constraint.GenericTypeArguments()[0].GUID != Guid.Empty ||
+#else
+                    if (constraint.IsConstructedGenericType)
+                    {
+                        if (exported.IsConstructedGenericType)
+                        {
+                            if (constraint.GenericTypeArguments[0].GUID != Guid.Empty ||
+#endif
+                            constraint.GetGenericTypeDefinition() != exported.GetGenericTypeDefinition())
+                            {
+                                meets = false;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            var genericConstraintType = constraint.GetGenericTypeDefinition();
+                            var found = false;
+                            var parentType = exported.BaseType;
+
+                            while (parentType != typeof(object))
+                            {
+#if NET40
+                                if (parentType.IsConstructedGenericType() &&
+#else
+                                if (parentType.IsConstructedGenericType &&
+#endif
+                                parentType.GetGenericTypeDefinition() == genericConstraintType)
+                                {
+                                    found = true;
+                                    break;
+                                }
+
+                                parentType = parentType.BaseType;
+                            }
+
+                            if (!found)
+                            {
+                                meets = false;
+                                break;
+                            }
+                        }
                     }
                     else
                     {
