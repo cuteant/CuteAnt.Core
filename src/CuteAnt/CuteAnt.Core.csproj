@@ -9,7 +9,7 @@
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\Microsoft.Extensions.ParameterDefaultValue.Sources\Microsoft.Extensions.ParameterDefaultValue.Sources.projitems" Label="Shared" />
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.2;netstandard2.0;net471;net451;net40</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netstandard2.0;net471;net451;net40</TargetFrameworks>
     <AssemblyName>CuteAnt.Core</AssemblyName>
     <RootNamespace>CuteAnt</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -67,28 +67,30 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <PackageReference Include="Net40.Reflection.Metadata" Version="$(SystemReflectionMetadataNet40PackageVersion)" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' or '$(TargetFramework)' == 'net40' ">
+    <PackageReference Include="NetFx.Extensions.Logging" Version="$(NetFxExtensionsLoggingPackageVersion)" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net40' ">
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="$(MicrosoftExtensionsLoggingPackageVersion)" />
+  </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="System.Reflection.Emit" Version="$(SystemReflectionEmitPackageVersion)" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="$(SystemReflectionEmitLightweightPackageVersion)" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="$(SystemReflectionTypeExtensionsPackageVersion)" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
-    <PackageReference Include="Net40.Reflection.Metadata" Version="$(SystemReflectionMetadataNet40PackageVersion)" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net40' ">
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemRuntimeCompilerServicesUnsafePackageVersion)" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net40' and '$(TargetFramework)' != 'netcoreapp2.2' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' or '$(TargetFramework)' == 'net471' or '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="System.Collections.Immutable" Version="$(SystemCollectionsImmutablePackageVersion)" />
     <PackageReference Include="System.Reflection.Metadata" Version="$(SystemReflectionMetadataPackageVersion)" />
     <PackageReference Include="System.Buffers" Version="$(SystemBuffersPackageVersion)" />
     <PackageReference Include="System.Memory" Version="$(SystemMemoryPackageVersion)" />
     <PackageReference Include="System.Numerics.Vectors" Version="$(SystemNumericsVectorsPackageVersion)" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemRuntimeCompilerServicesUnsafePackageVersion)" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net451' and '$(TargetFramework)' != 'net40' ">
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="$(MicrosoftExtensionsLoggingPackageVersion)" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' or '$(TargetFramework)' == 'net40' ">
-    <PackageReference Include="NetFx.Extensions.Logging" Version="$(NetFxExtensionsLoggingPackageVersion)" />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.2' ">
+    <PackageReference Include="System.Collections.Immutable" Version="$(SystemCollectionsImmutablePackageVersion)" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemRuntimeCompilerServicesUnsafePackageVersion)" />
   </ItemGroup>
 </Project>

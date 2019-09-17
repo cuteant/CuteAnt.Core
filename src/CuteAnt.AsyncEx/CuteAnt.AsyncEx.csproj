@@ -8,7 +8,7 @@
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.String.Sources\CuteAnt.Extensions.String.Sources.projitems" Label="Shared" />
   
   <PropertyGroup>
-    <TargetFrameworks>net471;net451;net40;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net471;net451;net40;netstandard2.0;netcoreapp3.0</TargetFrameworks>
     <AssemblyName>CuteAnt.AsyncEx</AssemblyName>
     <RootNamespace>CuteAnt.AsyncEx</RootNamespace>
     <DefineConstants>$(DefineConstants);NET_3_5_GREATER</DefineConstants>
