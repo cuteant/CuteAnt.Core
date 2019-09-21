@@ -164,7 +164,7 @@ namespace CuteAnt.IO
             _sb.Append(buffer, index, count);
         }
 
-#if NETCOREAPP
+#if NETCOREAPP || NETSTANDARD_2_0_GREATER
         public override void Write(ReadOnlySpan<char> buffer)
         {
             if (!_isOpen)

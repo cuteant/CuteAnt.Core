@@ -12,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CuteAnt.AsyncEx;
 using CuteAnt.Runtime;
-#if NETCOREAPP
+#if NETCOREAPP || NETSTANDARD_2_0_GREATER
 using System.Runtime.InteropServices;
 #endif
 
@@ -267,7 +267,7 @@ namespace CuteAnt.Buffers
 
         #endregion
 
-#if NETCOREAPP
+#if NETCOREAPP || NETSTANDARD_2_0_GREATER
 
         public override void Write(ReadOnlySpan<byte> buffer)
         {

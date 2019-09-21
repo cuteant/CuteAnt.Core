@@ -195,7 +195,7 @@ namespace CuteAnt.Buffers
             return InternalCopyToAsync(destination);
         }
 #else
-#if !NETCOREAPP
+#if !(NETCOREAPP || NETSTANDARD_2_0_GREATER)
         public Task CopyToAsync(Stream destination, CancellationToken cancellationToken) =>
            CopyToAsync(destination, StreamToStreamCopy.DefaultBufferSize, cancellationToken);
 #endif

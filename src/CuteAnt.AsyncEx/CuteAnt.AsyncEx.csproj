@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\version.props" />
   <Import Project="..\nuget.props" />
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.projitems" Label="Shared" />
@@ -8,7 +7,7 @@
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.String.Sources\CuteAnt.Extensions.String.Sources.projitems" Label="Shared" />
   
   <PropertyGroup>
-    <TargetFrameworks>net471;net451;net40;netstandard2.0;netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;netstandard2.0;net471;net451;net40</TargetFrameworks>
     <AssemblyName>CuteAnt.AsyncEx</AssemblyName>
     <RootNamespace>CuteAnt.AsyncEx</RootNamespace>
     <DefineConstants>$(DefineConstants);NET_3_5_GREATER</DefineConstants>
@@ -86,4 +85,7 @@ You can refer (https://github.com/StephenCleary/AsyncEx) for more details.</Desc
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
+
+  <Import Project="..\version.props" />
+
 </Project>

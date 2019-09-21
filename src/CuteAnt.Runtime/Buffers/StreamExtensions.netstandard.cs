@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#if !(NETCOREAPP || NET40)
+#if NETSTANDARD2_0 || NET471 || NET451
 
 using System;
 using System.Buffers;
