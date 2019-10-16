@@ -395,37 +395,34 @@ namespace CuteAnt
         /// <returns></returns>
         public static Boolean TryParse(Object value, CombGuidSequentialSegmentType sequentialType, out CombGuid result)
         {
-            if (value == null)
+            switch (value)
             {
-                result = Null;
-                return false;
-            }
+                case null:
+                    goto ReturnDefault;
 
-            var type = value.GetType();
-            if (type == TypeConstants.CombGuidType)
-            {
-                result = (CombGuid)value;
-                return true;
-            }
-            else if (type == TypeConstants.GuidType)
-            {
-                result = (Guid)value;
-                return true;
-            }
-            else if (type == TypeConstants.StringType)
-            {
-                return TryParse(value as String, sequentialType, out result);
-            }
-            else if (type == TypeConstants.ByteArrayType)
-            {
-                var bs = value as Byte[];
-                if (bs != null && bs.Length == _SizeOfGuid)
-                {
-                    result = new CombGuid(bs, sequentialType, true);
+                case CombGuid comb:
+                    result = comb;
                     return true;
-                }
+
+                case Guid guid:
+                    result = guid;
+                    return true;
+
+                case string str:
+                    return TryParse(str, sequentialType, out result);
+
+                case byte[] bs:
+                    if (bs.Length == _SizeOfGuid)
+                    {
+                        result = new CombGuid(bs, sequentialType, true);
+                        return true;
+                    }
+                    goto ReturnDefault;
+                default:
+                    goto ReturnDefault;
             }
 
+        ReturnDefault:
             result = Null;
             return false;
         }
@@ -469,10 +466,8 @@ namespace CuteAnt
             // Swap to the correct order to be compared
             for (Int32 i = 0; i < _SizeOfGuid; i++)
             {
-                Byte b1, b2;
-
-                b1 = x.m_value[guidComparisonOrders[i]];
-                b2 = y.m_value[guidComparisonOrders[i]];
+                uint b1 = x.m_value[guidComparisonOrders[i]];
+                uint b2 = y.m_value[guidComparisonOrders[i]];
                 if (b1 != b2)
                 {
                     return (b1 < b2) ? CombGuidComparison.LT : CombGuidComparison.GT;
@@ -487,13 +482,20 @@ namespace CuteAnt
         /// <returns>它在两个 CombGuid 结构相等时为 True，在两个实例不等时为 False。</returns>
         public static Boolean operator ==(CombGuid x, CombGuid y)
         {
-            if (x.IsNull || y.IsNull)
+            var xIsNull = x.IsNull;
+            var yIsNull = y.IsNull;
+            if (xIsNull || yIsNull)
             {
-                return (x.IsNull && y.IsNull);
+                return (xIsNull && yIsNull) ? true : false;
             }
             else
             {
-                return Compare(x, y) == CombGuidComparison.EQ;
+#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+                ReadOnlySpan<byte> valueSpan = x.m_value;
+                return valueSpan.SequenceEqual(y.m_value);
+#else
+                return (Compare(x, y) == CombGuidComparison.EQ) ? true : false;
+#endif
             }
         }
 
@@ -512,13 +514,15 @@ namespace CuteAnt
         /// <returns>如果第一个实例小于第二个实例，则它为 True。 否则为 False。</returns>
         public static Boolean operator <(CombGuid x, CombGuid y)
         {
-            if (x.IsNull || y.IsNull)
+            var xIsNull = x.IsNull;
+            var yIsNull = y.IsNull;
+            if (xIsNull || yIsNull)
             {
-                return (x.IsNull && !y.IsNull);
+                return (xIsNull && !yIsNull) ? true : false;
             }
             else
             {
-                return Compare(x, y) == CombGuidComparison.LT;
+                return (Compare(x, y) == CombGuidComparison.LT) ? true : false;
             }
         }
 
@@ -528,13 +532,15 @@ namespace CuteAnt
         /// <returns>如果第一个实例大于第二个实例，则它为 True。 否则为 False。</returns>
         public static Boolean operator >(CombGuid x, CombGuid y)
         {
-            if (x.IsNull || y.IsNull)
+            var xIsNull = x.IsNull;
+            var yIsNull = y.IsNull;
+            if (xIsNull || yIsNull)
             {
-                return (!x.IsNull && y.IsNull);
+                return (!xIsNull && yIsNull) ? true : false;
             }
             else
             {
-                return Compare(x, y) == CombGuidComparison.GT;
+                return (Compare(x, y) == CombGuidComparison.GT) ? true : false;
             }
         }
 
@@ -544,14 +550,16 @@ namespace CuteAnt
         /// <returns>如果第一个实例小于或等于第二个实例，则它为 True。 否则为 False。</returns>
         public static Boolean operator <=(CombGuid x, CombGuid y)
         {
-            if (x.IsNull || y.IsNull)
+            var xIsNull = x.IsNull;
+            var yIsNull = y.IsNull;
+            if (xIsNull || yIsNull)
             {
-                return x.IsNull;
+                return xIsNull;
             }
             else
             {
                 var cmp = Compare(x, y);
-                return cmp == CombGuidComparison.LT || cmp == CombGuidComparison.EQ;
+                return (cmp == CombGuidComparison.LT || cmp == CombGuidComparison.EQ) ? true : false;
             }
         }
 
@@ -561,14 +569,16 @@ namespace CuteAnt
         /// <returns>如果第一个实例大于或等于第二个实例，则为 True。 否则为 False。</returns>
         public static Boolean operator >=(CombGuid x, CombGuid y)
         {
-            if (x.IsNull || y.IsNull)
+            var xIsNull = x.IsNull;
+            var yIsNull = y.IsNull;
+            if (xIsNull || yIsNull)
             {
-                return y.IsNull;
+                return yIsNull;
             }
             else
             {
                 var cmp = Compare(x, y);
-                return cmp == CombGuidComparison.GT || cmp == CombGuidComparison.EQ;
+                return (cmp == CombGuidComparison.GT || cmp == CombGuidComparison.EQ) ? true : false;
             }
         }
 
@@ -635,7 +645,7 @@ namespace CuteAnt
         /// <returns></returns>
         public override Boolean Equals(Object value)
         {
-            if (value == null) { return false; }
+            if (value is null) { return false; }
 
             if ((value.GetType() != typeof(CombGuid))) { return false; }
 
@@ -683,10 +693,10 @@ namespace CuteAnt
         #region -- INullable 成员 --
 
         /// <summary>获取一个布尔值，该值指示此 CombGuid 结构是否为 null。</summary>
-        public Boolean IsNull => m_value == null;
+        public Boolean IsNull => m_value is null;
 
         /// <summary>获取一个布尔值，该值指示此 CombGuid 结构值是否为空或其值均为零。</summary>
-        public Boolean IsNullOrEmpty => (m_value == null || this == Empty);
+        public Boolean IsNullOrEmpty => (m_value is null || this == Empty);
 
         #endregion
 
@@ -701,7 +711,7 @@ namespace CuteAnt
         /// </returns>
         public Int32 CompareTo(Object value)
         {
-            if (value == null) { return 1; }
+            if (value is null) { return 1; }
 
             if (value.GetType() == typeof(CombGuid))
             {
@@ -732,9 +742,6 @@ namespace CuteAnt
                 return 1;
             }
 
-            //if (this < value) { return -1; }
-            //if (this > value) { return 1; }
-            //return 0;
             var cmp = Compare(this, value);
             switch (cmp)
             {

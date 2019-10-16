@@ -132,6 +132,26 @@ namespace CuteAnt.Tests
         }
 
         [Fact]
+        public void CombCompareTest()
+        {
+            var combA = CombGuid.NewComb();
+
+            var guid = Guid.NewGuid();
+
+            var comb = CombGuid.Parse(guid.ToString("D"), CombGuidSequentialSegmentType.Guid);
+            Assert.Equal((CombGuid)guid, comb);
+            Assert.True(guid >= comb);
+            Assert.True(guid <= comb);
+
+            comb = CombGuid.NewComb();
+
+            Assert.True(combA < comb);
+            Assert.True(combA <= comb);
+            Assert.True(comb > combA);
+            Assert.True(comb >= combA);
+        }
+
+        [Fact]
         public void ToByteArrayTest()
         {
             var comb = CombGuid.NewComb();
