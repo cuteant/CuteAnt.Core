@@ -6,7 +6,6 @@
 
   <Import Project="$(SourceRoot)/../CuteAnt.Extensions.Common/build/Dependencies.props" />
   <Import Project="$(SourceRoot)/../CuteAnt.Extensions.Common/build/Dependencies.3rdParty.props" />
-  <Import Project="$(SourceRoot)/../CuteAnt.Extensions.Common/build/Dependencies.AspNet.props" />
   <Import Project="$(SourceRoot)/../CuteAnt.Extensions.Common/build/Dependencies.AspNetCore.props" />
   <Import Project="$(SourceRoot)/../CuteAnt.Extensions.Common/build/Dependencies.AspNetCore2.props" />
   <Import Project="$(SourceRoot)/../CuteAnt.Extensions.Common/build/Dependencies.CuteAnt.props" />
