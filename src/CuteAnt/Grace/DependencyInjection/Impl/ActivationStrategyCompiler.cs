@@ -240,6 +240,7 @@ namespace Grace.DependencyInjection.Impl
             return compiled;
         }
 
+        // TODO: Typo in method name.
         protected virtual T CompileExpressionResultToOpitimzed<T>(
             IActivationExpressionResult expressionContext, ParameterExpression[] parameters, Expression[] extraExpressions,
             Expression finalExpression)
@@ -268,7 +269,7 @@ namespace Grace.DependencyInjection.Impl
 
             if (parameterInfos.Length > 3)
             {
-                throw new Exception("Delegat type not supported: " + typeof(T).Name);
+                throw new Exception("Delegate type not supported: " + typeof(T).Name);
             }
 
             if (parameterInfos.Length > 0)

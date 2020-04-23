@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1F97D5A4-285F-4962-8F8C-BCEF8278143B}"
 EndProject
@@ -38,8 +38,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TplDataflow.Net40", "test\T
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.DateTimeUtilities.Sources\CuteAnt.Extensions.DateTimeUtilities.Sources.projitems*{3c87bff6-2f11-4c86-b9af-2ee47e8b0ca0}*SharedItemsImports = 5
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{3c87bff6-2f11-4c86-b9af-2ee47e8b0ca0}*SharedItemsImports = 5
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.String.Sources\CuteAnt.Extensions.String.Sources.projitems*{3c87bff6-2f11-4c86-b9af-2ee47e8b0ca0}*SharedItemsImports = 5
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.TaskFactory.Sources\CuteAnt.Extensions.TaskFactory.Sources.projitems*{3c87bff6-2f11-4c86-b9af-2ee47e8b0ca0}*SharedItemsImports = 5
+		..\CuteAnt.Extensions.Common\src\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.projitems*{3c87bff6-2f11-4c86-b9af-2ee47e8b0ca0}*SharedItemsImports = 5
 		..\CuteAnt.Extensions.Common\src\Nito.AsyncEx.Tasks.Sources\Nito.AsyncEx.Tasks.Sources.projitems*{90bcc560-aa2b-4146-858a-9e524b696f75}*SharedItemsImports = 13
 		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{c7f8dbe6-77b7-494d-af00-018f7579548c}*SharedItemsImports = 13
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Collection.Sources\CuteAnt.Extensions.Collection.Sources.projitems*{deb6d75b-e452-48e1-8b80-973ffd77cd50}*SharedItemsImports = 5
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.DateTimeUtilities.Sources\CuteAnt.Extensions.DateTimeUtilities.Sources.projitems*{f1ba8ccd-7e4b-483f-95d1-3c04fdb112ea}*SharedItemsImports = 5
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Logging.Sources\CuteAnt.Extensions.Logging.Sources.projitems*{f1ba8ccd-7e4b-483f-95d1-3c04fdb112ea}*SharedItemsImports = 5
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.ReaderWriterLockSlim.Sources\CuteAnt.Extensions.ReaderWriterLockSlim.Sources.projitems*{f1ba8ccd-7e4b-483f-95d1-3c04fdb112ea}*SharedItemsImports = 5
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems*{f1ba8ccd-7e4b-483f-95d1-3c04fdb112ea}*SharedItemsImports = 5
+		..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.String.Sources\CuteAnt.Extensions.String.Sources.projitems*{f1ba8ccd-7e4b-483f-95d1-3c04fdb112ea}*SharedItemsImports = 5
+		..\CuteAnt.Extensions.Common\src\Microsoft.Extensions.ParameterDefaultValue.Sources\Microsoft.Extensions.ParameterDefaultValue.Sources.projitems*{f1ba8ccd-7e4b-483f-95d1-3c04fdb112ea}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

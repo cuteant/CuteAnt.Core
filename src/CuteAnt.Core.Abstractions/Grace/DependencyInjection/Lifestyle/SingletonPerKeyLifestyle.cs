@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using Grace.Data.Immutable;
 
 namespace Grace.DependencyInjection.Lifestyle
@@ -10,10 +8,10 @@ namespace Grace.DependencyInjection.Lifestyle
     public class SingletonPerKeyLifestyle : ICompiledLifestyle
     {
         private static MethodInfo getInstanceMethodInfo =
-            typeof(SingletonPerKeyLifestyle).GetTypeInfo().GetDeclaredMethod("GetInstance");
+            typeof(SingletonPerKeyLifestyle).GetTypeInfo().GetDeclaredMethod(nameof(GetInstance));
 
         private Func<IExportLocatorScope, IInjectionContext, object> _keyFunc;
-        private ImmutableHashTree<object,object> _singletons = ImmutableHashTree<object, object>.Empty;
+        private ImmutableHashTree<object, object> _singletons = ImmutableHashTree<object, object>.Empty;
         private ActivationStrategyDelegate _activationDelegate;
 
         /// <summary>
@@ -49,7 +47,7 @@ namespace Grace.DependencyInjection.Lifestyle
             _activationDelegate = request.Services.Compiler.CompileDelegate(scope, activationExpression(newRequest));
 
             ConstantExpression = Expression.Convert(Expression.Call(Expression.Constant(this), getInstanceMethodInfo,
-                request.ScopeParameter, request.DisposalScopeExpression, request.InjectionContextParameter,
+                newRequest.ScopeParameter, Expression.Constant(scope), request.InjectionContextParameter,
                 Expression.Constant(_activationDelegate)), request.ActivationType);
 
             var result = request.Services.Compiler.CreateNewResult(request, ConstantExpression);
@@ -64,7 +62,7 @@ namespace Grace.DependencyInjection.Lifestyle
 
             var value = _singletons.GetValueOrDefault(key);
 
-            if (value != null)
+            if (value is object)
             {
                 return value;
             }

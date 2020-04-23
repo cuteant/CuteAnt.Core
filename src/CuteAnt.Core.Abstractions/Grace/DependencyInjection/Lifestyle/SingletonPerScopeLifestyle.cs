@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Grace.Data;
 using Grace.Utilities;
@@ -154,25 +155,30 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="context"></param>
         /// <returns></returns>
         public static T GetValueFromScopeThreadSafe<T>(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate,
-          string uniqueId, bool shareContext, IInjectionContext context)
+            string uniqueId, bool shareContext, IInjectionContext context)
         {
-            var value = scope.GetExtraData(uniqueId);
+            var value = scope.GetExtraData(uniqueId) ??
+                GetValueFromScopeThreadSafeSlow(scope, creationDelegate, uniqueId, shareContext, context);
 
-            if (value != null) { return (T)value; }
+            return (T)value;
+        }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static object GetValueFromScopeThreadSafeSlow(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate,
+            string uniqueId, bool shareContext, IInjectionContext context)
+        {
             lock (scope.GetLockObject(uniqueId))
             {
-                value = scope.GetExtraData(uniqueId);
+                var value = scope.GetExtraData(uniqueId);
 
-                if (value == null)
+                if (value is null)
                 {
                     value = creationDelegate(scope, scope, shareContext ? context : null);
 
                     scope.SetExtraData(uniqueId, value);
                 }
+                return value;
             }
-
-            return (T)value;
         }
 
         private static Delegate CompileFuncDelage<T>(IActivationExpressionRequest request, IInjectionScope scope, IActivationExpressionResult result)

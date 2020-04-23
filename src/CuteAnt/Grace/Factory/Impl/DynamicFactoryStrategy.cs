@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Grace.Data;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Impl.Expressions;
@@ -28,18 +29,7 @@ namespace Grace.Factory.Impl
         /// <inheritdoc/>
         protected override IActivationExpressionResult CreateExpression(IInjectionScope scope, IActivationExpressionRequest request, ICompiledLifestyle lifestyle)
         {
-            if (_proxyType == null)
-            {
-                lock (_proxyTypeLock)
-                {
-                    if (_proxyType == null)
-                    {
-                        var builder = new DynamicTypeBuilder();
-
-                        _proxyType = builder.CreateType(ActivationType, out _delegateInfo);
-                    }
-                }
-            }
+            var proxyType = _proxyType ?? EnsureProxyTypeCreated();
 
             request.RequireExportScope();
             request.RequireDisposalScope();
@@ -86,16 +76,16 @@ namespace Grace.Factory.Impl
             }
 
 #if NET40
-            var constructor = _proxyType.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly).First();
+            var constructor = proxyType.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly).First();
 #else
-            var constructor = _proxyType.GetTypeInfo().DeclaredConstructors.First();
+            var constructor = proxyType.GetTypeInfo().DeclaredConstructors.First();
 #endif
 
             request.RequireInjectionContext();
 
             var newStatement = Expression.New(constructor, parameters);
 
-            const string _setExtraDataMethod = "SetExtraData";
+            const string _setExtraDataMethod = nameof(IExtraDataContainer.SetExtraData);
 #if NET40
             var setMethod = typeof(IExtraDataContainer).GetMethod(_setExtraDataMethod,
 #else
@@ -111,9 +101,24 @@ namespace Grace.Factory.Impl
             return request.Services.Compiler.CreateNewResult(request, castStatement);
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private Type EnsureProxyTypeCreated()
+        {
+            lock (_proxyTypeLock)
+            {
+                if (_proxyType is null)
+                {
+                    var builder = new DynamicTypeBuilder();
+
+                    _proxyType = builder.CreateType(ActivationType, out _delegateInfo);
+                }
+            }
+            return _proxyType;
+        }
+
         private IKnownValueExpression CreateKnownValueExpression(IActivationExpressionRequest request, Type argType, string valueId, string nameHint = null, int? position = null)
         {
-            const string _getExtraDataMethod = "GetExtraData";
+            const string _getExtraDataMethod = nameof(IExtraDataContainer.GetExtraData);
 #if NET40
             var getMethod = typeof(IExtraDataContainer).GetMethod(_getExtraDataMethod, new[] { typeof(object) });
 #else

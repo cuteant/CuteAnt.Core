@@ -323,7 +323,7 @@ namespace Grace.Data.Immutable
     /// <summary>Equals override</summary>
     /// <param name="left">left side of statement</param>
     /// <param name="right">right side of statement</param>
-    /// <returns>true if euqal</returns>
+    /// <returns>true if equal</returns>
     public static bool operator ==(ImmutableArray<T> left, ImmutableArray<T> right) => left.Equals(right);
 
     /// <summary>Not equal override</summary>

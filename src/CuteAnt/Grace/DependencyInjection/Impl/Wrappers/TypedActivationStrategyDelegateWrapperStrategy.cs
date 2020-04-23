@@ -55,7 +55,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
             var closedClass = typeof(TypedDelegateExpression<>).MakeGenericType(request.ActivationType.GenericTypeArguments);
 #endif
 
-            var closedMethod = closedClass.GetRuntimeMethod("CreateFunc", new Type[] {  });
+            var closedMethod = closedClass.GetRuntimeMethod(nameof(TypedDelegateExpression<object>.CreateFunc), new Type[] {  });
 
             var instance = Activator.CreateInstance(closedClass, scope, request, this);
 

@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
+using System.Runtime.CompilerServices;
 
 namespace Grace.DependencyInjection.Lifestyle
 {
@@ -44,7 +43,7 @@ namespace Grace.DependencyInjection.Lifestyle
             _activationDelegate =
                 request.Services.Compiler.CompileDelegate(scope, activationExpression(newRequest));
 
-            var singletonMethod = GetType().GetTypeInfo().GetDeclaredMethod("SingletonActivation");
+            var singletonMethod = GetType().GetTypeInfo().GetDeclaredMethod(nameof(SingletonActivation));
 
             ConstantExpression = Expression.Call(Expression.Constant(this), singletonMethod,
                 request.Constants.ScopeParameter, request.Constants.RootDisposalScope,
@@ -55,17 +54,17 @@ namespace Grace.DependencyInjection.Lifestyle
             return request.Services.Compiler.CreateNewResult(request, ConstantExpression);
         }
 
-        private object SingletonActivation(IExportLocatorScope scope, IDisposalScope disposalScope,
-            IInjectionContext context)
+        private object SingletonActivation(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context)
         {
-            if (_singleton != null)
-            {
-                return _singleton;
-            }
+            return _singleton ?? SingletonActivationSlow(scope, disposalScope, context);
+        }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private object SingletonActivationSlow(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context)
+        {
             lock (_lockObject)
             {
-                if (_singleton == null)
+                if (_singleton is null)
                 {
                     _singleton = _activationDelegate(scope, disposalScope, context);
                 }

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Grace.DependencyInjection.Exceptions;
 using Grace.Utilities;
@@ -89,34 +90,46 @@ namespace Grace.DependencyInjection.Lifestyle
         /// <param name="shareContext"></param>
         /// <returns></returns>
         public static T GetValueFromScope<T>(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate,
-          string uniqueId, string scopeName, bool shareContext, IInjectionContext context, StaticInjectionContext staticContext)
+            string uniqueId, string scopeName, bool shareContext, IInjectionContext context, StaticInjectionContext staticContext)
         {
-            while (scope != null)
+            while (scope is object)
             {
                 if (scope.ScopeName == scopeName) { break; }
 
                 scope = scope.Parent;
             }
 
-            if (scope == null) { throw new NamedScopeLocateException(scopeName, staticContext); }
+            if (scope is null) { throw GetNamedScopeLocateException(scopeName, staticContext); }
 
-            var value = scope.GetExtraData(uniqueId);
+            var value = scope.GetExtraData(uniqueId) ??
+                GetValueFromScopeSlow(scope, creationDelegate, uniqueId, shareContext, context);
 
-            if (value != null) { return (T)value; }
+            return (T)value;
+        }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static object GetValueFromScopeSlow(IExportLocatorScope scope, ActivationStrategyDelegate creationDelegate,
+            string uniqueId, bool shareContext, IInjectionContext context)
+        {
             lock (scope.GetLockObject(uniqueId))
             {
-                value = scope.GetExtraData(uniqueId);
+                var value = scope.GetExtraData(uniqueId);
 
-                if (value == null)
+                if (value is null)
                 {
                     value = creationDelegate(scope, scope, shareContext ? context : null);
 
                     scope.SetExtraData(uniqueId, value);
                 }
-            }
 
-            return (T)value;
+                return value;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static NamedScopeLocateException GetNamedScopeLocateException(string scopeName, StaticInjectionContext staticContext)
+        {
+            return new NamedScopeLocateException(scopeName, staticContext);
         }
 
         private string DebuggerDisplayValue => $"Singleton Per Named Scope ({_scopeName})";

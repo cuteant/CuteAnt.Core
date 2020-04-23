@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Grace.Utilities;
 
 namespace Grace.DependencyInjection.Lifestyle
@@ -100,24 +101,28 @@ namespace Grace.DependencyInjection.Lifestyle
         public static T GetValueGuaranteeOnce<T>(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context,
           ActivationStrategyDelegate activationDelegate, string uniqueId)
         {
-            var value = context.SharedData.GetExtraData(uniqueId);
-
-            if (value == null)
-            {
-                lock (context.SharedData.GetLockObject("SingletonPerObjectGraph|" + uniqueId))
-                {
-                    value = context.SharedData.GetExtraData(uniqueId);
-
-                    if (value == null)
-                    {
-                        value = activationDelegate(scope, disposalScope, context);
-
-                        context.SharedData.SetExtraData(uniqueId, value);
-                    }
-                }
-            }
+            var value = context.SharedData.GetExtraData(uniqueId) ??
+                GetValueGuaranteeOnceSlow(scope, disposalScope, context, activationDelegate, uniqueId);
 
             return (T)value;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static object GetValueGuaranteeOnceSlow(IExportLocatorScope scope, IDisposalScope disposalScope, IInjectionContext context,
+          ActivationStrategyDelegate activationDelegate, string uniqueId)
+        {
+            lock (context.SharedData.GetLockObject("SingletonPerObjectGraph|" + uniqueId))
+            {
+                var value = context.SharedData.GetExtraData(uniqueId);
+
+                if (value is null)
+                {
+                    value = activationDelegate(scope, disposalScope, context);
+
+                    context.SharedData.SetExtraData(uniqueId, value);
+                }
+                return value;
+            }
         }
     }
 }
