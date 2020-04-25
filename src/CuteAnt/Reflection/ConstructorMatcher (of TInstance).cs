@@ -52,7 +52,7 @@ namespace CuteAnt.Reflection
             .ToArray() ?? EmptyArray<ConstructorMatcher<TInstance>>.Instance;
         DIConstructorMatchers = ConstructorMatchers = matchers;
 
-        if (ConstructorMatchers.Length == 0)
+        if (0u >= (uint)ConstructorMatchers.Length)
         {
           ConstructorMatchers = new ConstructorMatcher<TInstance>[] { Default };
         }

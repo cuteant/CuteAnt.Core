@@ -31,7 +31,7 @@ namespace Grace.Diagnostics
       {
         var list = _metadata.Select(kvp => new KeyValuePairDebuggerView<object, object>(kvp.Key, kvp.Value)).ToList();
 
-        list.Sort((x, y) => string.Compare(x.Key?.ToString() ?? "", y.Key?.ToString() ?? "", StringComparison.CurrentCultureIgnoreCase));
+        list.Sort((x, y) => string.Compare(x.Key?.ToString() ?? "", y.Key?.ToString() ?? "", StringComparison.OrdinalIgnoreCase));
 
         return list;
       }

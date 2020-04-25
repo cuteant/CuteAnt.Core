@@ -68,11 +68,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <summary>Method info for add method on IDisposalScope</summary>
         protected MethodInfo AddMethod
             => _addMethod ??
-                (_addMethod = typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => string.Equals(_addDisposableMethodName, m.Name, StringComparison.Ordinal) && m.GetParameters().Length == 1));
+                (_addMethod = typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => string.Equals(_addDisposableMethodName, m.Name) && m.GetParameters().Length == 1));
 
         /// <summary>Method info for add method on IDisposalScope with cleanup delegate</summary>
         protected MethodInfo AddMethodWithCleanup
             => _addMethodWithCleanup ??
-                (_addMethodWithCleanup = typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => string.Equals(_addDisposableMethodName, m.Name, StringComparison.Ordinal) && m.GetParameters().Length == 2));
+                (_addMethodWithCleanup = typeof(IDisposalScope).GetTypeInfo().DeclaredMethods.First(m => string.Equals(_addDisposableMethodName, m.Name) && m.GetParameters().Length == 2));
     }
 }

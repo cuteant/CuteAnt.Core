@@ -140,7 +140,7 @@ namespace CuteAnt.Collections
             }
 
             int numToCopy = _size;
-            if (numToCopy == 0) return;
+            if (0u >= (uint)numToCopy) return;
 
             int firstPart = Math.Min(_array.Length - _head, numToCopy);
             Array.Copy(_array, _head, array, arrayIndex, firstPart);
@@ -180,7 +180,7 @@ namespace CuteAnt.Collections
             }
 
             int numToCopy = _size;
-            if (numToCopy == 0) return;
+            if (0u >= (uint)numToCopy) return;
 
             try
             {
@@ -241,7 +241,7 @@ namespace CuteAnt.Collections
         // InvalidOperationException.
         public T Dequeue()
         {
-            if (_size == 0)
+            if (0U >= (uint)_size)
             {
                 ThrowForEmptyQueue();
             }
@@ -266,7 +266,7 @@ namespace CuteAnt.Collections
 
         public bool TryDequeue(out T result)
         {
-            if (_size == 0)
+            if (0U >= (uint)_size)
             {
                 result = default;
                 return false;
@@ -295,7 +295,7 @@ namespace CuteAnt.Collections
         // InvalidOperationException.
         public T Peek()
         {
-            if (_size == 0)
+            if (0U >= (uint)_size)
             {
                 ThrowForEmptyQueue();
             }
@@ -305,7 +305,7 @@ namespace CuteAnt.Collections
 
         public bool TryPeek(out T result)
         {
-            if (_size == 0)
+            if (0U >= (uint)_size)
             {
                 result = default(T);
                 return false;
@@ -319,7 +319,7 @@ namespace CuteAnt.Collections
         // Equality is determined using EqualityComparer<T>.Default.Equals().
         public bool Contains(T item)
         {
-            if (_size == 0)
+            if (0U >= (uint)_size)
             {
                 return false;
             }
@@ -341,7 +341,7 @@ namespace CuteAnt.Collections
         // order produced by successive calls to Dequeue.
         public T[] ToArray()
         {
-            if (_size == 0)
+            if (0U >= (uint)_size)
             {
                 return EmptyArray<T>.Instance; // Array.Empty<T>();
             }

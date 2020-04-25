@@ -299,7 +299,7 @@ namespace Grace.DependencyInjection.Impl
 
             const string _systemNamespace = "System";
             if (type.IsValueType &&
-                (string.Equals(_systemNamespace, type.Namespace, StringComparison.Ordinal) ||
+                (string.Equals(_systemNamespace, type.Namespace) ||
                 (type.Namespace?.StartsWith(_systemNamespace, StringComparison.Ordinal) ?? false)))
             {
                 return false;

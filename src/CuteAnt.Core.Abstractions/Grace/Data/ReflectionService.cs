@@ -305,7 +305,7 @@ namespace Grace.Data
                     if (property.CanRead &&
                         !getMethodInfo.IsStatic &&
                         getMethodInfo.IsPublic &&
-                        getMethodInfo.GetParameters().Length == 0)
+                        0u >= (uint)getMethodInfo.GetParameters().Length)
                     {
                         var propertyAccess = Expression.Property(tVariable, getMethodInfo);
 
@@ -368,7 +368,7 @@ namespace Grace.Data
 
             const string _invokeMethodName = "Invoke";
 
-            var method = @delegate.GetType().GetRuntimeMethods().First(m => string.Equals(_invokeMethodName, m.Name, StringComparison.Ordinal));
+            var method = @delegate.GetType().GetRuntimeMethods().First(m => string.Equals(_invokeMethodName, m.Name));
             var expressions = new List<Expression>();
             var parameters = method.GetParameters();
 

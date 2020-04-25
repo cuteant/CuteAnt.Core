@@ -67,7 +67,7 @@ namespace CuteAnt.Reflection
                   }
                 }
 
-                if (complaints.Count == 0)
+                if (0u >= (uint)complaints.Count)
                 {
                   complaints.AddRange(defaultComplaints);
                 }

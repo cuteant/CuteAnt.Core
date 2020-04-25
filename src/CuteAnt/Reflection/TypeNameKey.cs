@@ -31,8 +31,8 @@ namespace CuteAnt.Reflection
 
         public bool Equals(TypeNameKey other)
         {
-            return (string.Equals(AssemblyName, other.AssemblyName, StringComparison.Ordinal) &&
-                    string.Equals(TypeName, other.TypeName, StringComparison.Ordinal));
+            return (string.Equals(AssemblyName, other.AssemblyName) &&
+                    string.Equals(TypeName, other.TypeName));
         }
     }
 
@@ -84,7 +84,7 @@ namespace CuteAnt.Reflection
         public int Compare(TypeNameKey x, TypeNameKey y)
         {
             var v = s_stringComparer.Compare(x.TypeName, y.TypeName);
-            if (v == 0)
+            if (0u >= (uint)v)
             {
                 return s_stringComparer.Compare(x.AssemblyName, y.AssemblyName);
             }

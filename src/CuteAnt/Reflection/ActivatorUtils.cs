@@ -40,7 +40,7 @@ namespace CuteAnt.Reflection
                                .Select(_ => new ConstructorMatcher(instanceType, _))
                                .ToArray() ?? EmptyArray<ConstructorMatcher>.Instance;
           matchers = diMatchers;
-          if (diMatchers.Length == 0)
+          if (0u >= (uint)diMatchers.Length)
           {
             matchers = new ConstructorMatcher[] { new ConstructorMatcher(instanceType, instanceType.MakeDelegateForCtor()) };
           }

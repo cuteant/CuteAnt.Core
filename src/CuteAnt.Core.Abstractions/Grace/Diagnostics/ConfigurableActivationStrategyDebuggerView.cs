@@ -38,7 +38,7 @@ namespace Grace.Diagnostics
       {
         var exports = _configurableActivationStrategy.ExportAs.ToList();
 
-        exports.Sort((x, y) => string.Compare(x.FullName, y.FullName, StringComparison.CurrentCultureIgnoreCase));
+        exports.Sort((x, y) => string.Compare(x.FullName, y.FullName, StringComparison.OrdinalIgnoreCase));
 
         return exports;
       }
@@ -53,7 +53,7 @@ namespace Grace.Diagnostics
             _configurableActivationStrategy.ExportAsKeyed.Select(
                 kvp => new KeyValuePairDebuggerView<Type, object>(kvp.Key, kvp.Value)).ToList();
 
-        list.Sort((x, y) => string.Compare(x.Key.FullName, y.Key.FullName, StringComparison.CurrentCultureIgnoreCase));
+        list.Sort((x, y) => string.Compare(x.Key.FullName, y.Key.FullName, StringComparison.OrdinalIgnoreCase));
 
         return list;
       }

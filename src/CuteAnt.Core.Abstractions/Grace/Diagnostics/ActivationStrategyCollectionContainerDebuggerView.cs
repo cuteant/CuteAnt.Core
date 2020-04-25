@@ -37,7 +37,7 @@ namespace Grace.Diagnostics
         _strategiesByType.Add(new StrategyListDebuggerView<T>(type, list));
       }
 
-      _strategiesByType.Sort((x, y) => string.Compare(x.TypeName, y.TypeName, StringComparison.CurrentCultureIgnoreCase));
+      _strategiesByType.Sort((x, y) => string.Compare(x.TypeName, y.TypeName, StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>Strategies by type</summary>

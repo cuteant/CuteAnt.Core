@@ -23,7 +23,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
       const string _invokeMethodName = "Invoke";
       foreach (var enrichmentDelegate in activationConfiguration.EnrichmentDelegates.Reverse())
       {
-        var invokeMethod = enrichmentDelegate.GetType().GetRuntimeMethods().First(m => string.Equals(_invokeMethodName, m.Name, StringComparison.Ordinal));
+        var invokeMethod = enrichmentDelegate.GetType().GetRuntimeMethods().First(m => string.Equals(_invokeMethodName, m.Name));
 
         var expressions = new List<Expression>();
 

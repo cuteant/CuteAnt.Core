@@ -65,7 +65,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
             const string _sortArrayMethodName = nameof(ArrayExpressionCreator.SortArray);
             var openMethod = typeof(ArrayExpressionCreator).GetRuntimeMethods()
-                .First(m => string.Equals(_sortArrayMethodName, m.Name, StringComparison.Ordinal));
+                .First(m => string.Equals(_sortArrayMethodName, m.Name));
 
             var closedMethod = openMethod.MakeGenericMethod(arrayElementType);
 

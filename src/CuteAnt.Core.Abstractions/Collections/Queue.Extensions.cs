@@ -8,7 +8,7 @@ namespace CuteAnt.Collections
         public bool IsEmpty
         {
             [MethodImpl(InlineMethod.Value)]
-            get { return _size == 0; }
+            get { return 0u >= (uint)_size; }
         }
 
         public bool NonEmpty
@@ -21,7 +21,7 @@ namespace CuteAnt.Collections
 
         public bool TryDequeueIf(Predicate<T> predicate, out T result)
         {
-            if (_size == 0)
+            if (0u >= (uint)_size)
             {
                 result = default;
                 return false;

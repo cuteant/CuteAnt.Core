@@ -6,161 +6,161 @@ using Microsoft.Extensions.Logging;
 
 namespace CuteAnt
 {
-  /// <summary>
-  ///     A collection of utility methods to retrieve and parse the values of the system properties (Environment variables).
-  /// </summary>
-  public static class SystemPropertyUtil
-  {
-    static readonly ILogger Logger = TraceLogger.GetLogger(typeof(SystemPropertyUtil));
-    static bool loggedException;
-
     /// <summary>
-    ///     Returns <c>true</c> if and only if the system property with the specified <c>key</c>
-    ///     exists.
+    ///     A collection of utility methods to retrieve and parse the values of the system properties (Environment variables).
     /// </summary>
-    public static bool Contains(string key) => Get(key) != null;
-
-    /// <summary>
-    ///     Returns the value of the system property with the specified
-    ///     <c>key</c>, while falling back to <c>null</c> if the property access fails.
-    /// </summary>
-    /// <returns>the property value or <c>null</c></returns>
-    public static string Get(string key) => Get(key, null);
-
-    /// <summary>
-    ///     Returns the value of the system property with the specified
-    ///     <c>key</c>, while falling back to the specified default value if
-    ///     the property access fails.
-    /// </summary>
-    /// <returns>
-    ///     the property value.
-    ///     <c>def</c> if there's no such property or if an access to the
-    ///     specified property is not allowed.
-    /// </returns>
-    public static string Get(string key, string def)
+    public static class SystemPropertyUtil
     {
-      if (string.IsNullOrEmpty(key)) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.key); }
+        static readonly ILogger Logger = TraceLogger.GetLogger(typeof(SystemPropertyUtil));
+        static bool loggedException;
 
-      try
-      {
-        return Environment.GetEnvironmentVariable(key) ?? def;
-      }
-      catch (Exception e)
-      {
-        if (!loggedException)
+        /// <summary>
+        ///     Returns <c>true</c> if and only if the system property with the specified <c>key</c>
+        ///     exists.
+        /// </summary>
+        public static bool Contains(string key) => Get(key) != null;
+
+        /// <summary>
+        ///     Returns the value of the system property with the specified
+        ///     <c>key</c>, while falling back to <c>null</c> if the property access fails.
+        /// </summary>
+        /// <returns>the property value or <c>null</c></returns>
+        public static string Get(string key) => Get(key, null);
+
+        /// <summary>
+        ///     Returns the value of the system property with the specified
+        ///     <c>key</c>, while falling back to the specified default value if
+        ///     the property access fails.
+        /// </summary>
+        /// <returns>
+        ///     the property value.
+        ///     <c>def</c> if there's no such property or if an access to the
+        ///     specified property is not allowed.
+        /// </returns>
+        public static string Get(string key, string def)
         {
-          Log("Unable to retrieve a system property '" + key + "'; default values will be used.", e);
-          loggedException = true;
+            if (string.IsNullOrEmpty(key)) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.key); }
+
+            try
+            {
+                return Environment.GetEnvironmentVariable(key) ?? def;
+            }
+            catch (Exception e)
+            {
+                if (!loggedException)
+                {
+                    Log("Unable to retrieve a system property '" + key + "'; default values will be used.", e);
+                    loggedException = true;
+                }
+                return def;
+            }
         }
-        return def;
-      }
+
+        /// <summary>
+        ///     Returns the value of the system property with the specified
+        ///     <c>key</c>, while falling back to the specified default value if
+        ///     the property access fails.
+        /// </summary>
+        /// <returns>
+        ///     the property value or <c>def</c> if there's no such property or
+        ///     if an access to the specified property is not allowed.
+        /// </returns>
+        public static bool GetBoolean(string key, bool def)
+        {
+            string value = Get(key);
+            if (value == null)
+            {
+                return def;
+            }
+
+            value = value.Trim();
+            if (0u >= (uint)value.Length)
+            {
+                return def;
+            }
+
+            if (string.Equals("true", value, StringComparison.OrdinalIgnoreCase)
+                || string.Equals("yes", value, StringComparison.OrdinalIgnoreCase)
+                || string.Equals("1", value))
+            {
+                return true;
+            }
+
+            if (string.Equals("false", value, StringComparison.OrdinalIgnoreCase)
+                || string.Equals("no", value, StringComparison.OrdinalIgnoreCase)
+                || string.Equals("0", value))
+            {
+                return false;
+            }
+
+            Log(
+                "Unable to parse the boolean system property '" + key + "':" + value + " - " +
+                    "using the default value: " + def);
+
+            return def;
+        }
+
+        /// <summary>
+        ///     Returns the value of the system property with the specified
+        ///     <c>key</c>, while falling back to the specified default value if
+        ///     the property access fails.
+        /// </summary>
+        /// <returns>
+        ///     the property value.
+        ///     <c>def</c> if there's no such property or if an access to the
+        ///     specified property is not allowed.
+        /// </returns>
+        public static int GetInt(string key, int def)
+        {
+            string value = Get(key);
+            if (value == null)
+            {
+                return def;
+            }
+
+            value = value.Trim();
+            if (!int.TryParse(value, out var result))
+            {
+                result = def;
+
+                Log(
+                    "Unable to parse the integer system property '" + key + "':" + value + " - " +
+                        "using the default value: " + def);
+            }
+            return result;
+        }
+
+        /// <summary>
+        ///     Returns the value of the system property with the specified
+        ///     <c>key</c>, while falling back to the specified default value if
+        ///     the property access fails.
+        /// </summary>
+        /// <returns>
+        ///     the property value.
+        ///     <c>def</c> if there's no such property or if an access to the
+        ///     specified property is not allowed.
+        /// </returns>
+        public static long GetLong(string key, long def)
+        {
+            string value = Get(key);
+            if (value == null)
+            {
+                return def;
+            }
+
+            value = value.Trim();
+            if (!long.TryParse(value, out var result))
+            {
+                result = def;
+                Log(
+                    "Unable to parse the long integer system property '" + key + "':" + value + " - " +
+                        "using the default value: " + def);
+            }
+            return result;
+        }
+
+        static void Log(string msg) => Logger.LogWarning(msg);
+
+        static void Log(string msg, Exception e) => Logger.LogWarning(e, msg);
     }
-
-    /// <summary>
-    ///     Returns the value of the system property with the specified
-    ///     <c>key</c>, while falling back to the specified default value if
-    ///     the property access fails.
-    /// </summary>
-    /// <returns>
-    ///     the property value or <c>def</c> if there's no such property or
-    ///     if an access to the specified property is not allowed.
-    /// </returns>
-    public static bool GetBoolean(string key, bool def)
-    {
-      string value = Get(key);
-      if (value == null)
-      {
-        return def;
-      }
-
-      value = value.Trim();
-      if (value.Length == 0)
-      {
-        return def;
-      }
-
-      if (string.Equals("true", value, StringComparison.OrdinalIgnoreCase)
-          || string.Equals("yes", value, StringComparison.OrdinalIgnoreCase)
-          || string.Equals("1", value, StringComparison.Ordinal))
-      {
-        return true;
-      }
-
-      if (string.Equals("false", value, StringComparison.OrdinalIgnoreCase)
-          || string.Equals("no", value, StringComparison.OrdinalIgnoreCase)
-          || string.Equals("0", value, StringComparison.Ordinal))
-      {
-        return false;
-      }
-
-      Log(
-          "Unable to parse the boolean system property '" + key + "':" + value + " - " +
-              "using the default value: " + def);
-
-      return def;
-    }
-
-    /// <summary>
-    ///     Returns the value of the system property with the specified
-    ///     <c>key</c>, while falling back to the specified default value if
-    ///     the property access fails.
-    /// </summary>
-    /// <returns>
-    ///     the property value.
-    ///     <c>def</c> if there's no such property or if an access to the
-    ///     specified property is not allowed.
-    /// </returns>
-    public static int GetInt(string key, int def)
-    {
-      string value = Get(key);
-      if (value == null)
-      {
-        return def;
-      }
-
-      value = value.Trim();
-      if (!int.TryParse(value, out var result))
-      {
-        result = def;
-
-        Log(
-            "Unable to parse the integer system property '" + key + "':" + value + " - " +
-                "using the default value: " + def);
-      }
-      return result;
-    }
-
-    /// <summary>
-    ///     Returns the value of the system property with the specified
-    ///     <c>key</c>, while falling back to the specified default value if
-    ///     the property access fails.
-    /// </summary>
-    /// <returns>
-    ///     the property value.
-    ///     <c>def</c> if there's no such property or if an access to the
-    ///     specified property is not allowed.
-    /// </returns>
-    public static long GetLong(string key, long def)
-    {
-      string value = Get(key);
-      if (value == null)
-      {
-        return def;
-      }
-
-      value = value.Trim();
-      if (!long.TryParse(value, out var result))
-      {
-        result = def;
-        Log(
-            "Unable to parse the long integer system property '" + key + "':" + value + " - " +
-                "using the default value: " + def);
-      }
-      return result;
-    }
-
-    static void Log(string msg) => Logger.LogWarning(msg);
-
-    static void Log(string msg, Exception e) => Logger.LogWarning(e, msg);
-  }
 }

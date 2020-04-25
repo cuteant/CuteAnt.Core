@@ -17,7 +17,7 @@ namespace CuteAnt.Internal
       try { resourceString = ResourceManager.GetString(resourceKey, null); }
       catch (MissingManifestResourceException) { }
 
-      if (defaultString != null && resourceKey.Equals(resourceString, StringComparison.Ordinal))
+      if (defaultString != null && string.Equals(resourceKey, resourceString))
       {
         return defaultString;
       }

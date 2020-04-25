@@ -362,7 +362,7 @@ namespace CuteAnt.Reflection
                     endTokensNeeded--;
                 }
 
-                if (endTokensNeeded == 0 && startPos != -1)
+                if (0u >= (uint)endTokensNeeded && startPos != -1)
                 {
                     results.Add(input.Substring(startPos, endPos - startPos + 2));
                     startPos = -1;
@@ -1240,8 +1240,8 @@ namespace CuteAnt.Reflection
         {
             if (type1 == type2) return true;
 
-            return string.Equals(type1.FullName, type2.FullName, StringComparison.Ordinal) &&
-                   string.Equals(type1.AssemblyQualifiedName, type2.AssemblyQualifiedName, StringComparison.Ordinal);
+            return string.Equals(type1.FullName, type2.FullName) &&
+                   string.Equals(type1.AssemblyQualifiedName, type2.AssemblyQualifiedName);
         }
 
         #endregion
@@ -1643,8 +1643,8 @@ namespace CuteAnt.Reflection
                     foreach (Assembly asm in loadedAssemblies)
                     {
                         // check for both full name or partial name match
-                        if (string.Equals(asm.FullName, assemblyName, StringComparison.Ordinal) ||
-                            string.Equals(asm.GetName().Name, assemblyName, StringComparison.Ordinal))
+                        if (string.Equals(asm.FullName, assemblyName) ||
+                            string.Equals(asm.GetName().Name, assemblyName))
                         {
                             assembly = asm;
                             break;
@@ -1763,7 +1763,7 @@ namespace CuteAnt.Reflection
                         scope--;
                         break;
                     case ',':
-                        if (scope == 0)
+                        if (0u >= (uint)scope)
                         {
                             return i;
                         }

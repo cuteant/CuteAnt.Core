@@ -68,8 +68,10 @@ namespace Grace.DependencyInjection.Impl.Expressions
         {
             var returnList = new List<IActivationExpressionResult>();
 
-            foreach (var parameter in constructor.GetParameters())
+            var parameters = constructor.GetParameters();
+            for (int idx = 0; idx < parameters.Length; idx++)
             {
+                ParameterInfo parameter = parameters[idx];
                 ConstructorParameterInfo parameterInfo = null;
 
                 if (!ReferenceEquals(configuration.ConstructorParameters, ImmutableLinkedList<ConstructorParameterInfo>.Empty))
@@ -138,7 +140,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             var parameterType = parameter.ParameterType;
 
             var matchedConstructor = configuration.ConstructorParameters.FirstOrDefault(
-                p => string.Compare(p.ParameterName, parameter.Name, StringComparison.CurrentCultureIgnoreCase) == 0 &&
+                p => 0u >= (uint)string.Compare(p.ParameterName, parameter.Name, StringComparison.CurrentCultureIgnoreCase) &&
                      (p.ParameterType == null ||
                       p.ParameterType.IsAssignableFrom(parameterType) ||
                       parameterType.IsAssignableFrom(p.ParameterType)));

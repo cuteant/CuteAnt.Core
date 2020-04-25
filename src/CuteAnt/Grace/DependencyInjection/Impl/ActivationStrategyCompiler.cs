@@ -217,7 +217,7 @@ namespace Grace.DependencyInjection.Impl
         {
             Expression compileExpression;
 
-            if (parameters.Length == 0 && extraExpressions.Length == 0)
+            if (0u >= (uint)parameters.Length && 0u >= (uint)extraExpressions.Length)
             {
                 compileExpression = finalExpression;
             }
@@ -247,8 +247,8 @@ namespace Grace.DependencyInjection.Impl
         {
             Expression compileExpression;
 
-            if (parameters.Length == 0 &&
-                extraExpressions.Length == 0)
+            if (0u >= (uint)parameters.Length &&
+                0u >= (uint)extraExpressions.Length)
             {
                 compileExpression = finalExpression;
             }
@@ -266,23 +266,24 @@ namespace Grace.DependencyInjection.Impl
 
             var invokeMethod = typeof(T).GetTypeInfo().GetDeclaredMethod("Invoke");
             var parameterInfos = invokeMethod.GetParameters();
+            var parameterInfosLength = (uint)parameterInfos.Length;
 
-            if (parameterInfos.Length > 3)
+            if (parameterInfosLength > 3u)
             {
                 throw new Exception("Delegate type not supported: " + typeof(T).Name);
             }
 
-            if (parameterInfos.Length > 0)
+            if (parameterInfosLength > 0u)
             {
                 parameterList.Add(expressionContext.Request.Constants.ScopeParameter);
             }
 
-            if (parameterInfos.Length > 1)
+            if (parameterInfosLength > 1u)
             {
                 parameterList.Add(expressionContext.Request.Constants.RootDisposalScope);
             }
 
-            if (parameterInfos.Length > 2)
+            if (parameterInfosLength > 2u)
             {
                 parameterList.Add(expressionContext.Request.Constants.InjectionContextParameter);
             }

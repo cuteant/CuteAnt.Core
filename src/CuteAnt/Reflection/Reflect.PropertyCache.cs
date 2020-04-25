@@ -187,7 +187,7 @@ namespace CuteAnt.Reflection
 
             var pis = type.GetProperties(bindingFlags);
             return ignoreIndexedProperties
-                  ? pis.Where(t => t.GetIndexParameters().Length == 0) // ignore indexed properties;
+                  ? pis.Where(t => 0u >= (uint)t.GetIndexParameters().Length) // ignore indexed properties;
                        .ToArray()
                   : pis;
         }
@@ -366,7 +366,7 @@ namespace CuteAnt.Reflection
             while (type != null && type != TypeConstants.ObjectType)
             {
                 var properties = GetTypeDeclaredProperties(type);
-                var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
+                var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name) &&
                                                               _.PropertyType == returnType);
                 if (property != null) { return property; }
 
@@ -397,7 +397,7 @@ namespace CuteAnt.Reflection
             while (type != null && type != TypeConstants.ObjectType)
             {
                 var properties = GetTypeDeclaredProperties(type);
-                var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
+                var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name) &&
                                                               IsParameterMatch(_.GetIndexParameters(), parameterTypes));
                 if (property != null) { return property; }
 
@@ -429,7 +429,7 @@ namespace CuteAnt.Reflection
             while (type != null && type != TypeConstants.ObjectType)
             {
                 var properties = GetTypeDeclaredProperties(type);
-                var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
+                var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name) &&
                                                               _.PropertyType == returnType &&
                                                               IsParameterMatch(_.GetIndexParameters(), parameterTypes));
                 if (property != null) { return property; }
@@ -507,7 +507,7 @@ namespace CuteAnt.Reflection
             while (type != null && type != TypeConstants.ObjectType)
             {
                 var properties = GetInstanceDeclaredProperties(type);
-                var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
+                var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name) &&
                                                               _.PropertyType == returnType);
                 if (property != null) { return property; }
 
@@ -538,7 +538,7 @@ namespace CuteAnt.Reflection
             while (type != null && type != TypeConstants.ObjectType)
             {
                 var properties = GetInstanceDeclaredProperties(type);
-                var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
+                var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name) &&
                                                               IsParameterMatch(_.GetIndexParameters(), parameterTypes));
                 if (property != null) { return property; }
 
@@ -570,7 +570,7 @@ namespace CuteAnt.Reflection
             while (type != null && type != TypeConstants.ObjectType)
             {
                 var properties = GetInstanceDeclaredProperties(type);
-                var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name, StringComparison.Ordinal) &&
+                var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name) &&
                                                               _.PropertyType == returnType &&
                                                               IsParameterMatch(_.GetIndexParameters(), parameterTypes));
                 if (property != null) { return property; }
@@ -603,7 +603,7 @@ namespace CuteAnt.Reflection
             if (propertyInfo.DeclaringType == type) { return propertyInfo; }
 
             return GetTypeDeclaredProperties(propertyInfo.DeclaringType)
-                      .FirstOrDefault(_ => string.Equals(_.Name, propertyInfo.Name, StringComparison.Ordinal) &&
+                      .FirstOrDefault(_ => string.Equals(_.Name, propertyInfo.Name) &&
                                            _.PropertyType == propertyInfo.PropertyType &&
                                            IsParameterMatch(_.GetIndexParameters(), propertyInfo.GetIndexParameters())
                       );

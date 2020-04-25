@@ -646,7 +646,7 @@ namespace CuteAnt.Reflection
 
     public static bool ShouldFilterProperty(PropertyDescriptor property, Attribute[] attributes)
     {
-      if (attributes == null || attributes.Length == 0)
+      if (attributes == null || 0u >= (uint)attributes.Length)
       {
         return false;
       }

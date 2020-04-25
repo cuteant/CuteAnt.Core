@@ -113,7 +113,7 @@ namespace Microsoft.Extensions.Logging
       {
         Exception[] loaderExceptions =
             ((ReflectionTypeLoadException)exception).LoaderExceptions;
-        if (loaderExceptions == null || loaderExceptions.Length == 0)
+        if (loaderExceptions is null || 0u >= (uint)loaderExceptions.Length)
         {
           sb.Append("No LoaderExceptions found");
         }

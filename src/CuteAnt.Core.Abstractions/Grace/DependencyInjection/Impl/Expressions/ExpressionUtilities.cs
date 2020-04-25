@@ -56,11 +56,11 @@ namespace Grace.DependencyInjection.Impl.Expressions
             IActivationExpressionResult[] resultsExpressions;
 
             // Handle closure based delegates differently
-            if (delegateInstance.Target != null && string.Equals(_closureName, delegateInstance.Target.GetType().FullName, StringComparison.Ordinal))
+            if (delegateInstance.Target != null && string.Equals(_closureName, delegateInstance.Target.GetType().FullName))
             {
                 resultsExpressions = CreateExpressionsForTypes(requestingStrategy, scope, request, methodInfo.ReturnType,
                     methodInfo.GetParameters()
-                        .Where(p => !(p.Position == 0 && string.Equals(_closureName, p.ParameterType.FullName, StringComparison.Ordinal)))
+                        .Where(p => !(0u >= (uint)p.Position && string.Equals(_closureName, p.ParameterType.FullName)))
                         .Select(p => p.ParameterType).ToArray());
 
                 expression = Expression.Invoke(Expression.Constant(delegateInstance),
@@ -116,7 +116,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 if (request.DefaultValue != null)
                 {
                     var method = typeof(ExpressionUtilities).GetRuntimeMethods()
-                        .FirstOrDefault(m => string.Equals(_valueOrDefaultMethodName, m.Name, StringComparison.Ordinal));
+                        .FirstOrDefault(m => string.Equals(_valueOrDefaultMethodName, m.Name));
 
                     var closedMethod = method.MakeGenericMethod(request.ActivationType);
 
@@ -142,7 +142,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                 request.RequireDisposalScope();
 
                 var method = typeof(ExpressionUtilities).GetRuntimeMethods()
-                    .FirstOrDefault(m => string.Equals(_addToDisposableScopeOrDefaultMethodName, m.Name, StringComparison.Ordinal));
+                    .FirstOrDefault(m => string.Equals(_addToDisposableScopeOrDefaultMethodName, m.Name));
 
                 var closedMethod = method.MakeGenericMethod(request.ActivationType);
 
@@ -196,7 +196,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 return _checkForNullMethodInfo ??
                        (_checkForNullMethodInfo =
-                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => string.Equals(_checkForNullMethodName, m.Name, StringComparison.Ordinal)));
+                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => string.Equals(_checkForNullMethodName, m.Name)));
             }
         }
 
@@ -229,7 +229,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 return _addToDisposalScopeMethodInfo ??
                        (_addToDisposalScopeMethodInfo =
-                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => string.Equals(_addToDisposalScopeMethodName, m.Name, StringComparison.Ordinal)));
+                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => string.Equals(_addToDisposalScopeMethodName, m.Name)));
             }
         }
 
@@ -265,7 +265,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
             {
                 return _checkForNullAndAddToDisposalScopeMethodInfo ??
                        (_checkForNullAndAddToDisposalScopeMethodInfo =
-                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => string.Equals(_checkForNullAndAddToDisposalScopeMethodName, m.Name, StringComparison.Ordinal)));
+                           typeof(ExpressionUtilities).GetRuntimeMethods().First(m => string.Equals(_checkForNullAndAddToDisposalScopeMethodName, m.Name)));
             }
         }
 

@@ -33,7 +33,7 @@ namespace Grace.Diagnostics
       {
         var list = _hashTree.Select(kvp => new KeyValuePairDebuggerView<TKey, TValue>(kvp.Key, kvp.Value)).ToList();
 
-        list.Sort((x, y) => string.Compare(x.Key?.ToString(), y.Key?.ToString(), StringComparison.CurrentCultureIgnoreCase));
+        list.Sort((x, y) => string.Compare(x.Key?.ToString(), y.Key?.ToString(), StringComparison.OrdinalIgnoreCase));
 
         return list;
       }

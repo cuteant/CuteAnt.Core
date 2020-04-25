@@ -15,7 +15,7 @@ namespace Grace.Utilities
     {
       if (typeFilters == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.typeFilters);
 
-      _typeFilters = typeFilters.Length == 0 ?
+      _typeFilters = 0u >= (uint)typeFilters.Length ?
                      ImmutableLinkedList<Func<T, bool>>.Empty :
                      ImmutableLinkedList.From(typeFilters);
     }

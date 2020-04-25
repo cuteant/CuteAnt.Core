@@ -306,7 +306,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
                     {
                         knownValue =
                             knownValues.FirstOrDefault(v =>
-                                string.Compare(keyString, v.Key as string, StringComparison.CurrentCultureIgnoreCase) == 0);
+                                0u >= (uint)string.Compare(keyString, v.Key as string, StringComparison.CurrentCultureIgnoreCase));
                     }
                     else
                     {

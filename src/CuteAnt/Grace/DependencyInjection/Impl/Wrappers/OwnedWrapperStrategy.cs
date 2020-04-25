@@ -64,7 +64,7 @@ namespace Grace.DependencyInjection.Impl.Wrappers
 
             const string _setValueMethodName = "SetValue";
             var setMethod = request.ActivationType.GetRuntimeMethods().First(
-                m => string.Equals(_setValueMethodName, m.Name, StringComparison.Ordinal));
+                m => string.Equals(_setValueMethodName, m.Name));
 
             var expression = Expression.Call(ownedParameter, setMethod, expressionResult.Expression);
 

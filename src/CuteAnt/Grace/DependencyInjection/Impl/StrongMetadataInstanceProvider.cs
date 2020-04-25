@@ -53,7 +53,7 @@ namespace Grace.DependencyInjection.Impl
 
       if (constructors.Length == 1)
       {
-        if (constructors[0].GetParameters().Length == 0)
+        if (0u >= (uint)constructors[0].GetParameters().Length)
         {
           return EmptyArray<object>.Instance; // new object[0];
         }

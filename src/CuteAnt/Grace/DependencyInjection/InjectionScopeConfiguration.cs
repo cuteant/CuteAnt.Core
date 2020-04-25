@@ -109,7 +109,7 @@ namespace Grace.DependencyInjection
         {
             const string _attributeTypeName = "_Attribute";
             return interfaceType == typeof(IDisposable) ||
-                   string.Equals(_attributeTypeName, interfaceType.Name, StringComparison.Ordinal);
+                   string.Equals(_attributeTypeName, interfaceType.Name);
         }
 
         #region Default Configuration

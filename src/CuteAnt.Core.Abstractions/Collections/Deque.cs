@@ -548,7 +548,7 @@ namespace CuteAnt.Collections
         public bool IsEmpty
         {
             [MethodImpl(InlineMethod.Value)]
-            get { return _count == 0; }
+            get { return 0u >= (uint)_count; }
         }
 
         public bool NonEmpty
@@ -666,7 +666,7 @@ namespace CuteAnt.Collections
         {
             EnsureCapacityForOneElement();
 
-            if (index == 0)
+            if (0u >= (uint)index)
             {
                 DoAddToFront(item);
                 return;
@@ -684,7 +684,7 @@ namespace CuteAnt.Collections
         /// <param name="index">The zero-based view index of the element to remove. This index is guaranteed to be valid.</param>
         private void DoRemoveAt(int index)
         {
-            if (index == 0)
+            if (0u >= (uint)index)
             {
                 DoRemoveFromFront();
                 return;
@@ -890,7 +890,7 @@ namespace CuteAnt.Collections
         {
             var count = _count;
             var buffer = _buffer;
-            if (index == 0)
+            if (0u >= (uint)index)
             {
 #if NETCOREAPP || NETSTANDARD_2_0_GREATER
                 if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
@@ -985,7 +985,7 @@ namespace CuteAnt.Collections
             var capacity = _buffer.Length; // Capacity
             if (_count == capacity) // IsFull
             {
-                Capacity = (capacity == 0) ? 1 : capacity * 2;
+                Capacity = (0u >= (uint)capacity) ? 1 : capacity * 2;
             }
         }
 
@@ -1033,7 +1033,7 @@ namespace CuteAnt.Collections
                 Capacity = checked(_count + collectionCount);
             }
 
-            if (collectionCount == 0) { return; }
+            if (0u >= (uint)collectionCount) { return; }
 
             DoInsertRange(index, source);
         }
@@ -1049,7 +1049,7 @@ namespace CuteAnt.Collections
         /// <exception cref="ArgumentException">The range [<paramref name="offset"/>, <paramref name="offset"/> + <paramref name="count"/>) is not within the range [0, <see cref="Count"/>).</exception>
         public void RemoveRange(int offset, int count)
         {
-            if (count == 0) { return; }
+            if (0u >= (uint)count) { return; }
             if (offset < 0) { CheckRangeArguments_Offset(offset); }
             if (count < 0) { CheckRangeArguments_Count(count); }
             if (_count - offset < count) { CheckRangeArguments(_count, offset, count); }
@@ -1265,7 +1265,7 @@ namespace CuteAnt.Collections
         public int FindLastIndex(int startIndex, int count, Predicate<T> match)
         {
             if (match == null) { ThrowArgumentNullException_Match(); }
-            if (_count == 0)
+            if (0u >= (uint)_count)
             {
                 // Special case for 0 length List
                 if (startIndex != -1)

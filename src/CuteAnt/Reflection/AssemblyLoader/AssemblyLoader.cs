@@ -68,7 +68,7 @@ namespace CuteAnt.Reflection
           dirEnumArgs[dir] = SearchOption.TopDirectoryOnly;
         }
       }
-      if (dirEnumArgs.Count == 0)
+      if (0u >= (uint)dirEnumArgs.Count)
       {
         dirEnumArgs[AppDomain.CurrentDomain.BaseDirectory] = SearchOption.TopDirectoryOnly;
       }
@@ -180,7 +180,7 @@ namespace CuteAnt.Reflection
       IEnumerable<AssemblyLoaderReflectionCriterion> reflectionCriteria, ILogger logger = null)
     {
       if (null == dirEnumArgs) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.dirEnumArgs);
-      if (dirEnumArgs.Count == 0) { ThrowArgumentException0(); }
+      if (0u >= (uint)dirEnumArgs.Count) { ThrowArgumentException0(); }
 
       HashSet<AssemblyLoaderPathNameCriterion> pathNameCriteriaSet = null == pathNameCriteria
           ? new HashSet<AssemblyLoaderPathNameCriterion>()
@@ -203,7 +203,7 @@ namespace CuteAnt.Reflection
     {
       try
       {
-        if (_dirEnumArgs.Count == 0) { ThrowInvalidOperationException0(); }
+        if (0u >= (uint)_dirEnumArgs.Count) { ThrowInvalidOperationException0(); }
 
         AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += CachedReflectionOnlyTypeResolver.OnReflectionOnlyAssemblyResolve;
         // the following explicit loop ensures that the finally clause is invoked
@@ -615,7 +615,7 @@ namespace CuteAnt.Reflection
     {
       if (!ReflectionOnlyLoadAssembly(pathName, out Assembly assembly, out string[] loadComplaints))
       {
-        if (loadComplaints == null || loadComplaints.Length == 0) { return false; }
+        if (loadComplaints == null || 0u >= (uint)loadComplaints.Length) { return false; }
 
         LogComplaints(pathName, loadComplaints);
         return false;

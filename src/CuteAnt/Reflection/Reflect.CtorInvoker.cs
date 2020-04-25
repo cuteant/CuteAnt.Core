@@ -175,7 +175,7 @@ namespace CuteAnt.Reflection
             TypeAccessException GetTypeAccessException()
             {
                 return new TypeAccessException("Generating constructor for type: " + instanceType +
-                  (paramTypes == null || paramTypes.Length == 0 ? " No empty constructor found!" :
+                  (paramTypes == null || 0u >= (uint)paramTypes.Length ? " No empty constructor found!" :
                   " No constructor found that matches the following parameter types: " +
                   string.Join(",", paramTypes.Select(x => x.Name).ToArray())));
 
@@ -204,7 +204,7 @@ namespace CuteAnt.Reflection
             }
             if (ctor == null)
             {
-                if (paramTypes == null || paramTypes.Length == 0)
+                if (paramTypes == null || 0u >= (uint)paramTypes.Length)
                 {
                     var emptyInvoker = instanceType.GetConstructorMethod();
                     result = (object[] ps) => (T)emptyInvoker.Invoke();
@@ -238,7 +238,7 @@ namespace CuteAnt.Reflection
             // goal: return new T(arguments)
             Type targetType = typeof(T) == TypeConstants.ObjectType ? instanceType : typeof(T);
 
-            if (targetType.IsValueType && paramTypes.Length == 0)
+            if (targetType.IsValueType && 0u >= (uint)paramTypes.Length)
             {
                 var tmp = il.DeclareLocal(targetType);
                 il.Emit(OpCodes.Ldloca, tmp);

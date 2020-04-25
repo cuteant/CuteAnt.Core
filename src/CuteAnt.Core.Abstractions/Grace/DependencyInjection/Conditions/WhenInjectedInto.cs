@@ -4,55 +4,56 @@ using Grace.Data;
 
 namespace Grace.DependencyInjection.Conditions
 {
-  /// <summary>Condition for testing if a strategy is being injected into another</summary>
-  public class WhenInjectedInto : ICompiledCondition
-  {
-    private readonly Func<Type, bool> _typeTest;
-
-    /// <summary>Default constructor takes list of types</summary>
-    /// <param name="types"></param>
-    public WhenInjectedInto(params Type[] types)
+    /// <summary>Condition for testing if a strategy is being injected into another</summary>
+    public class WhenInjectedInto : ICompiledCondition
     {
-      if (types == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.types);
-      _typeTest = type => TestTypes(type, types);
-    }
+        private readonly Func<Type, bool> _typeTest;
 
-    /// <summary>Constructor that takes func to test with instead of array of types</summary>
-    /// <param name="typeTest"></param>
-    public WhenInjectedInto(Func<Type, bool> typeTest)
-    {
-      if (typeTest == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.typeTest);
-      _typeTest = typeTest;
-    }
-
-    /// <summary>Test if being injected into a specific type</summary>
-    /// <param name="strategy">strategy to test</param>
-    /// <param name="staticInjectionContext">static injection context</param>
-    /// <returns></returns>
-    public bool MeetsCondition(IActivationStrategy strategy, StaticInjectionContext staticInjectionContext)
-    {
-      var targetInfo =
-          staticInjectionContext.InjectionStack.FirstOrDefault(
-              info => info.RequestingStrategy?.StrategyType == ActivationStrategyType.ExportStrategy);
-
-      return targetInfo?.InjectionType != null && _typeTest(targetInfo.InjectionType);
-    }
-
-    /// <summary>Tests for if one type is based on another</summary>
-    /// <param name="injectionType"></param>
-    /// <param name="types"></param>
-    /// <returns></returns>
-    protected bool TestTypes(Type injectionType, Type[] types)
-    {
-      foreach (var type in types)
-      {
-        if (ReflectionService.CheckTypeIsBasedOnAnotherType(injectionType, type))
+        /// <summary>Default constructor takes list of types</summary>
+        /// <param name="types"></param>
+        public WhenInjectedInto(params Type[] types)
         {
-          return true;
+            if (types == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.types);
+            _typeTest = type => TestTypes(type, types);
         }
-      }
 
-      return false;
+        /// <summary>Constructor that takes func to test with instead of array of types</summary>
+        /// <param name="typeTest"></param>
+        public WhenInjectedInto(Func<Type, bool> typeTest)
+        {
+            if (typeTest == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.typeTest);
+            _typeTest = typeTest;
+        }
+
+        /// <summary>Test if being injected into a specific type</summary>
+        /// <param name="strategy">strategy to test</param>
+        /// <param name="staticInjectionContext">static injection context</param>
+        /// <returns></returns>
+        public bool MeetsCondition(IActivationStrategy strategy, StaticInjectionContext staticInjectionContext)
+        {
+            var targetInfo =
+                staticInjectionContext.InjectionStack.FirstOrDefault(
+                    info => info.RequestingStrategy?.StrategyType == ActivationStrategyType.ExportStrategy);
+
+            return targetInfo?.InjectionType != null && _typeTest(targetInfo.InjectionType);
+        }
+
+        /// <summary>Tests for if one type is based on another</summary>
+        /// <param name="injectionType"></param>
+        /// <param name="types"></param>
+        /// <returns></returns>
+        protected bool TestTypes(Type injectionType, Type[] types)
+        {
+            for (int i = 0; i < types.Length; i++)
+            {
+                var type = types[i];
+                if (ReflectionService.CheckTypeIsBasedOnAnotherType(injectionType, type))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
-  }
 }

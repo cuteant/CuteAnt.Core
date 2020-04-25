@@ -30,7 +30,7 @@ namespace CuteAnt
 			do
 			{
 				newId = Interlocked.Increment(ref _lastId);
-			} while (newId == 0);
+			} while (0u >= (uint)newId);
 
 			// Update the Id unless another thread already updated it.
 			Interlocked.CompareExchange(ref id, newId, 0);

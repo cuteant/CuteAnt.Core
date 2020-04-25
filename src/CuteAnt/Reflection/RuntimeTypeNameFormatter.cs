@@ -181,7 +181,7 @@ namespace CuteAnt.Reflection
             var arity = type.GetGenericArguments().Length - baseTypeParameterCount;
 
             // If all of the generic parameters are in the declaring types then this type has no parameters of its own.
-            if (arity == 0) { return; }
+            if (0u >= (uint)arity) { return; }
 
             builder.Append('`');
             builder.Append(arity);

@@ -317,7 +317,7 @@ namespace CuteAnt.Collections
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void PushWithResize(T item)
         {
-            Array.Resize(ref _array, (_array.Length == 0) ? DefaultCapacity : 2 * _array.Length);
+            Array.Resize(ref _array, (0u >= (uint)_array.Length) ? DefaultCapacity : 2 * _array.Length);
             _array[_size] = item;
             _version++;
             _size++;
@@ -326,7 +326,7 @@ namespace CuteAnt.Collections
         // Copies the Stack to an array, in the same order Pop would return the items.
         public T[] ToArray()
         {
-            if (_size == 0)
+            if (0u >= (uint)_size)
                 return EmptyArray<T>.Instance; // Array.Empty<T>();
 
             T[] objArray = new T[_size];
