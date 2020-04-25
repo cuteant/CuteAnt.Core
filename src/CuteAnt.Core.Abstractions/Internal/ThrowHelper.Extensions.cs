@@ -19,6 +19,7 @@ namespace CuteAnt
         d,
         str,
         source,
+        callback,
         type,
         types,
         value,
