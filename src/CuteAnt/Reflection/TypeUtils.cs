@@ -302,7 +302,7 @@ namespace CuteAnt.Reflection
 
             foreach (var innerType in innerTypes)
             {
-                if (innerType.StartsWith("[[")) // Resolve and load generic types recursively
+                if (innerType.StartsWith("[[", StringComparison.Ordinal)) // Resolve and load generic types recursively
                 {
                     InnerGenericTypeArgs(GenericTypeArgsString(innerType));
                     string genericTypeArg = className.Trim('[', ']');
@@ -335,7 +335,11 @@ namespace CuteAnt.Reflection
             int endTokensNeeded = 0;
             string curStartToken = "";
             string curEndToken = "";
+#if NET40 || NET451
             var tokenPairs = new[] { new { Start = "[[", End = "]]" }, new { Start = "[", End = "]" } }; // Longer tokens need to come before shorter ones
+#else
+            var tokenPairs = new[] { (Start: "[[", End: "]]"), (Start: "[", End: "]") }; // Longer tokens need to come before shorter ones
+#endif
 
             foreach (var candidate in candidatesWithPositions)
             {
@@ -343,7 +347,7 @@ namespace CuteAnt.Reflection
                 {
                     foreach (var token in tokenPairs)
                     {
-                        if (candidate.Str.StartsWith(token.Start))
+                        if (candidate.Str.StartsWith(token.Start, StringComparison.Ordinal))
                         {
                             curStartToken = token.Start;
                             curEndToken = token.End;
@@ -353,10 +357,10 @@ namespace CuteAnt.Reflection
                     }
                 }
 
-                if (curStartToken != "" && candidate.Str.StartsWith(curStartToken))
+                if (curStartToken != "" && candidate.Str.StartsWith(curStartToken, StringComparison.Ordinal))
                     endTokensNeeded++;
 
-                if (curEndToken != "" && candidate.Str.EndsWith(curEndToken))
+                if (curEndToken != "" && candidate.Str.EndsWith(curEndToken, StringComparison.Ordinal))
                 {
                     endPos = candidate.Pos;
                     endTokensNeeded--;
@@ -512,6 +516,9 @@ namespace CuteAnt.Reflection
 
         private static readonly Lazy<bool> canUseReflectionOnly = new Lazy<bool>(() =>
         {
+#if NETCOREAPP
+            return false;
+#else
             try
             {
                 ReflectionOnlyTypeResolver.TryResolveType(typeof(TypeUtils).AssemblyQualifiedName, out Type t);
@@ -526,6 +533,7 @@ namespace CuteAnt.Reflection
                 // if other exceptions not related to platform ocurr, assume that ReflectionOnly is supported
                 return true;
             }
+#endif
         });
 
         public static bool CanUseReflectionOnly => canUseReflectionOnly.Value;
