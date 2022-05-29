@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Security;
 using System.Runtime.CompilerServices;
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using CuteAnt.Runtime.Interop;
 #endif
 
@@ -36,7 +36,7 @@ namespace CuteAnt.Diagnostics
     {
       try
       {
-#if DESKTOPCLR
+#if NETFRAMEWORK
         string debugMessage = "Assert fired! --> " + message + "\r\n";
         if (Debugger.IsAttached)
         {

@@ -3,7 +3,7 @@
 // </copyright>
 // System.ServiceModel.Internals\System\Runtime\AsyncEventArgs.cs
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System;
 //using System.Diagnostics;
 //using CuteAnt.Diagnostics;

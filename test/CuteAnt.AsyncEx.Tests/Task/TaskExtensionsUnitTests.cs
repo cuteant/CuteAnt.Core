@@ -25,7 +25,7 @@ namespace CuteAnt.AsyncEx.Tests
       var task = tcs.Task.WaitAsync(token);
 
       Assert.True(task.IsCanceled);
-#if NET_4_5_GREATER
+#if !(NET452 || NET451 || NET45 || NET40)
       Assert.Equal(token, GetCancellationTokenFromTask(task));
 #endif
     }
@@ -41,7 +41,7 @@ namespace CuteAnt.AsyncEx.Tests
       cts.Cancel();
 
       await AsyncAssert.ThrowsAsync<OperationCanceledException>(task);
-#if NET_4_5_GREATER
+#if !(NET452 || NET451 || NET45 || NET40)
       Assert.Equal(cts.Token, GetCancellationTokenFromTask(task));
 #endif
     }
@@ -63,7 +63,7 @@ namespace CuteAnt.AsyncEx.Tests
       var task = ((Task)tcs.Task).WaitAsync(token);
 
       Assert.True(task.IsCanceled);
-#if NET_4_5_GREATER
+#if !(NET452 || NET451 || NET45 || NET40)
       Assert.Equal(token, GetCancellationTokenFromTask(task));
 #endif
     }
@@ -79,7 +79,7 @@ namespace CuteAnt.AsyncEx.Tests
       cts.Cancel();
 
       await AsyncAssert.ThrowsAsync<OperationCanceledException>(task);
-#if NET_4_5_GREATER
+#if !(NET452 || NET451 || NET45 || NET40)
       Assert.Equal(cts.Token, GetCancellationTokenFromTask(task));
 #endif
     }
@@ -93,7 +93,7 @@ namespace CuteAnt.AsyncEx.Tests
       var task = TaskShim.WhenAny(new[] { tcs.Task }, token);
 
       Assert.True(task.IsCanceled);
-#if NET_4_5_GREATER
+#if !(NET452 || NET451 || NET45 || NET40)
       Assert.Equal(token, GetCancellationTokenFromTask(task));
 #endif
     }
@@ -123,7 +123,7 @@ namespace CuteAnt.AsyncEx.Tests
       cts.Cancel();
 
       await AsyncAssert.ThrowsAsync<OperationCanceledException>(task);
-#if NET_4_5_GREATER
+#if !(NET452 || NET451 || NET45 || NET40)
       Assert.Equal(cts.Token, GetCancellationTokenFromTask(task));
 #endif
     }
@@ -136,7 +136,7 @@ namespace CuteAnt.AsyncEx.Tests
       var task = TaskShim.WhenAny(new Task[] { tcs.Task }, token);
 
       Assert.True(task.IsCanceled);
-#if NET_4_5_GREATER
+#if !(NET452 || NET451 || NET45 || NET40)
       Assert.Equal(token, GetCancellationTokenFromTask(task));
 #endif
     }
@@ -166,7 +166,7 @@ namespace CuteAnt.AsyncEx.Tests
       cts.Cancel();
 
       await AsyncAssert.ThrowsAsync<OperationCanceledException>(task);
-#if NET_4_5_GREATER
+#if !(NET452 || NET451 || NET45 || NET40)
       Assert.Equal(cts.Token, GetCancellationTokenFromTask(task));
 #endif
     }

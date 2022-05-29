@@ -221,7 +221,7 @@ namespace CuteAnt.AsyncEx.Tests
             Assert.NotEqual(0, mutex.Id);
         }
 
-#if NET_4_5_GREATER
+#if !(NET452 || NET451 || NET45 || NET40)
     [Fact]
         public async Task AsyncLock_SupportsMultipleAsynchronousLocks()
         {

@@ -3,7 +3,7 @@
 // </copyright>
 // System.ServiceModel.Internals\System\Runtime\AsyncEventArgsCallback.cs
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 namespace CuteAnt.Runtime
 {
   public delegate void AsyncEventArgsCallback(IAsyncEventArgs eventArgs);

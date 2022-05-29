@@ -2,7 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // System.ServiceModel.Internals\System\Runtime\Interop\SafeEventLogWriteHandle.cs
 //------------------------------------------------------------
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;

@@ -26,7 +26,6 @@ namespace CuteAnt.Runtime
       }
     }
 
-#if NET_4_0_GREATER
     // Helper method when implementing an APM wrapper around a Task based async method which returns a result. 
     // In the BeginMethod method, you would call use ToApm to wrap a call to MethodAsync:
     //     return MethodAsync(params).ToApm(callback, state);
@@ -127,7 +126,6 @@ namespace CuteAnt.Runtime
       }, continuationState, CancellationToken.None, TaskContinuationOptions.HideScheduler, TaskScheduler.Default);
       return tcs.Task;
     }
-#endif
 
     // Helper method to implement the End method of an APM method pair which is wrapping a Task based
     // async method when the Task returns a result. By using task.GetAwaiter.GetResult(), the exception

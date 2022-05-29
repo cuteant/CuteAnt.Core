@@ -1,4 +1,4 @@
-﻿//#if DESKTOPCLR
+﻿//#if NETFRAMEWORK
 //using System;
 //using System.Runtime.InteropServices;
 

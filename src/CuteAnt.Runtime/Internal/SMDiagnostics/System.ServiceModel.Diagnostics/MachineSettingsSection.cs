@@ -2,7 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 namespace System.ServiceModel.Configuration
 {
     using System.Configuration;

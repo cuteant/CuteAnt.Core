@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 
-#if !DESKTOPCLR
+#if !NETFRAMEWORK
 using System;
 using System.Diagnostics.Contracts;
 using System.Security;

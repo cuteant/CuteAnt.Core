@@ -4,7 +4,7 @@
 
   public partial class RecyclableMemoryStream
   {
-#if NET_4_5_GREATER
+#if !(NET452 || NET451 || NET45 || NET40)
     public override bool TryGetBuffer(out ArraySegment<byte> buffer)
     {
       var getBuffer = GetBuffer();

@@ -6,7 +6,7 @@
  * 修改：海洋饼干（cuteant@outlook.com）
 */
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System;
 using System.Collections.Generic;
 using System.IO;

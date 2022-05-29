@@ -3,13 +3,13 @@
 //------------------------------------------------------------
 
 using System;
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System.Runtime.Serialization;
 #endif
 
 namespace CuteAnt
 {
-#if DESKTOPCLR
+#if NETFRAMEWORK
   [Serializable]
 #endif
   public class QuotaExceededException : SystemException
@@ -29,7 +29,7 @@ namespace CuteAnt
     {
     }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
     protected QuotaExceededException(SerializationInfo info, StreamingContext context)
       : base(info, context)
     {

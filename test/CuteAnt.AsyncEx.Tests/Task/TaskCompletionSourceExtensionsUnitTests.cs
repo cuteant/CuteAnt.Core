@@ -69,7 +69,7 @@ namespace CuteAnt.AsyncEx.Tests
     public async Task TryCompleteFromCompletedTask_PropagatesException()
     {
       var tcs = new TaskCompletionSource<int>();
-#if NET_4_5_GREATER
+#if !(NET452 || NET451 || NET45 || NET40)
       tcs.TryCompleteFromCompletedTask(Task.FromException(new NotImplementedException()), () => -1);
 #else
       tcs.TryCompleteFromCompletedTask(AsyncUtils.FromException(new NotImplementedException()), () => -1);
@@ -80,7 +80,7 @@ namespace CuteAnt.AsyncEx.Tests
     [Fact]
     public async Task CreateAsyncTaskSource_PermitsCompletingTask()
     {
-#if NET_4_5_GREATER
+#if !(NET452 || NET451 || NET45 || NET40)
       var tcs = TaskCompletionSourceExtensions.CreateAsyncTaskSource<object>();
 #else
       var tcs = new TaskCompletionSource<object>();

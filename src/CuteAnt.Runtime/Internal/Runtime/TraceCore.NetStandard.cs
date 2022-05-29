@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-#if !DESKTOPCLR
+#if !NETFRAMEWORK
 using System;
 using System.Reflection;
 using System.Security;

@@ -776,7 +776,7 @@ namespace CuteAnt.Pool
       private bool _expired;
       private InputQueue<T> _inputQueue;
       private T _item;
-#if DESKTOPCLR
+#if NETFRAMEWORK
       private IOThreadTimer _timer;
 
       public AsyncQueueReader(InputQueue<T> inputQueue, TimeSpan timeout, AsyncCallback callback, object state)
@@ -833,7 +833,7 @@ namespace CuteAnt.Pool
         _item = item.Value;
         if (_timer != null)
         {
-#if DESKTOPCLR
+#if NETFRAMEWORK
           _timer.Cancel();
 #else
           _timer.Change(TimeSpan.FromMilliseconds(-1), TimeSpan.FromMilliseconds(-1));
@@ -861,7 +861,7 @@ namespace CuteAnt.Pool
       [Fx.Tag.SynchronizationObject(Blocking = false)]
       private object _thisLock = new object();
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
       private IOThreadTimer _timer;
       public AsyncQueueWaiter(TimeSpan timeout, AsyncCallback callback, object state) : base(callback, state)
       {
@@ -898,7 +898,7 @@ namespace CuteAnt.Pool
 
         lock (ThisLock)
         {
-#if DESKTOPCLR
+#if NETFRAMEWORK
           timely = (_timer == null) || _timer.Cancel();
 #else
           timely = (_timer == null) || _timer.Change(TimeSpan.FromMilliseconds(-1), TimeSpan.FromMilliseconds(-1));

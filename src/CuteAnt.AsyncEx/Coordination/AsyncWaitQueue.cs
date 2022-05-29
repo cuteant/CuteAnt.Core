@@ -54,11 +54,7 @@ namespace CuteAnt.AsyncEx
     {
       if (token.IsCancellationRequested)
       {
-#if NET_4_5_GREATER
         return Task.FromCanceled<T>(token);
-#else
-        return TaskConstants<T>.Canceled;
-#endif
       }
 
       var ret = @this.Enqueue();
@@ -112,11 +108,7 @@ namespace CuteAnt.AsyncEx
       {
         if (_queue[i].Task == task)
         {
-#if NET_4_5_GREATER
           _queue[i].TrySetCanceled(cancellationToken);
-#else
-          _queue[i].TrySetCanceled();
-#endif
           _queue.RemoveAt(i);
           return true;
         }
@@ -128,11 +120,7 @@ namespace CuteAnt.AsyncEx
     {
       foreach (var source in _queue)
       {
-#if NET_4_5_GREATER
         source.TrySetCanceled(cancellationToken);
-#else
-        source.TrySetCanceled();
-#endif
       }
       _queue.Clear();
     }

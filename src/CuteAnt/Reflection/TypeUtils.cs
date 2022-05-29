@@ -516,7 +516,7 @@ namespace CuteAnt.Reflection
 
         private static readonly Lazy<bool> canUseReflectionOnly = new Lazy<bool>(() =>
         {
-#if NETCOREAPP
+#if !NETFRAMEWORK
             return false;
 #else
             try

@@ -9,7 +9,7 @@ namespace CuteAnt.Tests
 {
     public class CombGuidTest
     {
-#if DESKTOPCLR
+#if NETFRAMEWORK
         [Fact]
 #else
         [Fact(Skip = "net core")]
@@ -61,7 +61,7 @@ namespace CuteAnt.Tests
             Assert.Equal(guid.ToString("D"), comb.ToString(CombGuidFormatStringType.Guid));
             Assert.Equal(guid.ToString("N"), comb.ToString(CombGuidFormatStringType.Guid32Digits));
 
-#if NETCOREAPP_2_0_GREATER
+#if NETCOREAPP3_0_OR_GREATER
             Span<byte> buffer = stackalloc byte[36];
             var result = comb.TryFormat(buffer, CombGuidFormatStringType.Comb, out int bytesWritten);
             Assert.True(result);

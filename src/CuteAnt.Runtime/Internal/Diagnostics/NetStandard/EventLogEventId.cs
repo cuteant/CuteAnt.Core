@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#if !DESKTOPCLR
+#if !NETFRAMEWORK
 namespace CuteAnt.Diagnostics
 {
     // When adding an EventLogEventId, an entry must also be added to EventLog.mc.

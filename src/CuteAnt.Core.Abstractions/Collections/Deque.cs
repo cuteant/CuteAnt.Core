@@ -3,9 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-#if NET40
-using System.Linq;
-#endif
 
 namespace CuteAnt.Collections
 {
@@ -778,7 +775,7 @@ namespace CuteAnt.Collections
             if ((uint)offset < (uint)buffer.Length)
             {
                 T ret = buffer[offset];
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
                 if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
                 {
                     buffer[offset] = default;
@@ -792,7 +789,7 @@ namespace CuteAnt.Collections
             {
                 offset = offset % buffer.Length;
                 T ret = buffer[offset];
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
                 if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
                 {
                     buffer[offset] = default;
@@ -812,7 +809,7 @@ namespace CuteAnt.Collections
             var offset = _offset;
             var buffer = _buffer;
             var ret = buffer[offset];
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
             if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             {
                 buffer[offset] = default;
@@ -829,15 +826,9 @@ namespace CuteAnt.Collections
         /// <summary>Inserts a range of elements into the view.</summary>
         /// <param name="index">The index into the view at which the elements are to be inserted.</param>
         /// <param name="collection">The elements to insert. The sum of <c>collection.Count</c> and <see cref="Count"/> must be less than or equal to <see cref="Capacity"/>.</param>
-#if !NET40
         private void DoInsertRange(int index, IReadOnlyCollection<T> collection)
         {
             var collectionCount = collection.Count;
-#else
-        private void DoInsertRange(int index, IEnumerable<T> collection)
-        {
-            var collectionCount = collection.Count();
-#endif
             var buffer = _buffer;
             var count = _count;
             // Make room in the existing list
@@ -892,7 +883,7 @@ namespace CuteAnt.Collections
             var buffer = _buffer;
             if (0u >= (uint)index)
             {
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
                 if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
                 {
 #endif
@@ -901,7 +892,7 @@ namespace CuteAnt.Collections
                     {
                         buffer[idx % Capacity] = default;
                     }
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
             }
 #endif
             // Removing from the beginning: rotate to the new view
@@ -911,7 +902,7 @@ namespace CuteAnt.Collections
             }
             else if (index == count - collectionCount)
             {
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
                 if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
                 {
 #endif
@@ -920,7 +911,7 @@ namespace CuteAnt.Collections
                     {
                         buffer[DequeIndexToBufferIndex(index)] = default;
                     }
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
             }
 #endif
             // Removing from the ending: trim the existing view
@@ -939,7 +930,7 @@ namespace CuteAnt.Collections
                 {
                     var idx = DequeIndexToBufferIndex(j);
                     buffer[DequeIndexToBufferIndex(writeIndex + j)] = buffer[idx];
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
                     if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
                     {
                         buffer[idx] = default;
@@ -963,7 +954,7 @@ namespace CuteAnt.Collections
                 {
                     var idx = DequeIndexToBufferIndex(readIndex + j);
                     buffer[DequeIndexToBufferIndex(index + j)] = buffer[idx];
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
                     if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
                     {
                         buffer[idx] = default;
@@ -1086,7 +1077,7 @@ namespace CuteAnt.Collections
                     var idx = DequeIndexToBufferIndex(current++);
                     // copy item to the free slot.
                     buffer[DequeIndexToBufferIndex(freeIndex++)] = buffer[idx];
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
                     if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
                     {
                         buffer[idx] = default;
@@ -1604,7 +1595,7 @@ namespace CuteAnt.Collections
                 if (match(item))
                 {
                     result = item;
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
                     if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
                     {
                         buffer[index] = default;
@@ -1623,7 +1614,7 @@ namespace CuteAnt.Collections
                 if (match(item))
                 {
                     result = item;
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
                     if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
                     {
                         buffer[index] = default;
@@ -1777,7 +1768,7 @@ namespace CuteAnt.Collections
             var item = buffer[offset];
             if (match(item))
             {
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
                 if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
                 {
                     buffer[offset] = default;
@@ -1832,7 +1823,7 @@ namespace CuteAnt.Collections
         {
             if (NonEmpty)
             {
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
                 if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
                 {
 #endif
@@ -1848,7 +1839,7 @@ namespace CuteAnt.Collections
                         // The existing buffer is whole
                         Array.Clear(_buffer, _offset, _count);
                     }
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
             }
 #endif
         }

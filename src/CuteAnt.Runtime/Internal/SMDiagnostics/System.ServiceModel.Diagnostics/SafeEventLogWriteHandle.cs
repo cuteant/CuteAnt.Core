@@ -1,7 +1,7 @@
 ﻿//------------------------------------------------------------
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System;
 using Microsoft.Win32.SafeHandles;
 using System.Runtime.InteropServices;

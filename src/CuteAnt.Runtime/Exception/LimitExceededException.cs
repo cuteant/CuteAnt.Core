@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------
 
 using System;
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System.Runtime.Serialization;
 #endif
 
@@ -15,7 +15,7 @@ namespace CuteAnt
   /// <summary>
   /// This class defines the exception thrown when a configured limit or quota is exceeded.
   /// </summary>
-#if DESKTOPCLR
+#if NETFRAMEWORK
   [Serializable]
 #endif
   public class LimitExceededException : SystemException
@@ -47,7 +47,7 @@ namespace CuteAnt
     {
     }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
     /// <summary>
     /// Initializes a new instance of <see cref="LimitExceededException"/>.
     /// </summary>

@@ -3,7 +3,7 @@
 // System.ServiceModel.Internals\System\Runtime\ThreadNeutralSemaphore.cs
 //------------------------------------------------------------
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System;
 using System.Collections.Generic;
 using System.Threading;

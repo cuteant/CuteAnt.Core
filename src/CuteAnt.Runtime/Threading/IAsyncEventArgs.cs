@@ -3,7 +3,7 @@
 // </copyright>
 // System.ServiceModel.Internals\System\Runtime\IAsyncEventArgs.cs
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System;
 
 namespace CuteAnt.Runtime

@@ -94,7 +94,7 @@ namespace CuteAnt.Collections
         {
             if (_size != 0)
             {
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
                 if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
                 {
 #endif
@@ -107,7 +107,7 @@ namespace CuteAnt.Collections
                         Array.Clear(_array, _head, _array.Length - _head);
                         Array.Clear(_array, 0, _tail);
                     }
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
                 }
 #endif
 
@@ -250,7 +250,7 @@ namespace CuteAnt.Collections
             T[] array = _array;
 
             T removed = array[head];
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
             if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             {
                 array[head] = default;
@@ -276,7 +276,7 @@ namespace CuteAnt.Collections
             T[] array = _array;
 
             result = array[head];
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
             if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             {
                 array[head] = default;

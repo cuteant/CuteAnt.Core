@@ -7,7 +7,7 @@ using System.Net.Sockets;
 #if !NET40
 using System.Threading.Tasks;
 #endif
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System.Diagnostics;
 using System.ServiceModel;
 using CuteAnt.Runtime.Interop;
@@ -48,7 +48,7 @@ namespace CuteAnt.Pool
               }
               catch (SocketException exception)
               {
-#if DESKTOPCLR
+#if NETFRAMEWORK
                 DiagnosticUtility.ExceptionUtility.DiagnosticTraceHandledException(exception, TraceEventType.Information);
                 // we fall back to the NetBios machine if Dns fails
                 s_machineName = UnsafeNativeMethods.GetComputerName(ComputerNameFormat.PhysicalNetBIOS);

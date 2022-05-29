@@ -1,0 +1,57 @@
+<Project>
+  <!-- Shared Package Versions -->
+  <PropertyGroup>
+    <MicrosoftAspNetCoreAuthenticationAzureADUI3PackageVersion>3.1.25</MicrosoftAspNetCoreAuthenticationAzureADUI3PackageVersion>
+    <MicrosoftAspNetCoreAuthenticationFacebook3PackageVersion>3.1.25</MicrosoftAspNetCoreAuthenticationFacebook3PackageVersion>
+    <MicrosoftAspNetCoreAuthenticationGoogle3PackageVersion>3.1.25</MicrosoftAspNetCoreAuthenticationGoogle3PackageVersion>
+    <MicrosoftAspNetCoreAuthenticationJwtBearer3PackageVersion>3.1.25</MicrosoftAspNetCoreAuthenticationJwtBearer3PackageVersion>
+    <MicrosoftAspNetCoreAuthenticationMicrosoftAccount3PackageVersion>3.1.25</MicrosoftAspNetCoreAuthenticationMicrosoftAccount3PackageVersion>
+    <MicrosoftAspNetCoreAuthenticationOpenIdConnect3PackageVersion>3.1.25</MicrosoftAspNetCoreAuthenticationOpenIdConnect3PackageVersion>
+    <MicrosoftAspNetCoreAuthenticationTwitter3PackageVersion>3.1.25</MicrosoftAspNetCoreAuthenticationTwitter3PackageVersion>
+    <MicrosoftAspNetCoreAuthenticationWsFederation3PackageVersion>3.1.25</MicrosoftAspNetCoreAuthenticationWsFederation3PackageVersion>
+
+    <MicrosoftAspNetCoreAuthorization3PackageVersion>3.1.25</MicrosoftAspNetCoreAuthorization3PackageVersion>
+
+    <MicrosoftAspNetCoreConcurrencyLimiter3PackageVersion>3.1.25</MicrosoftAspNetCoreConcurrencyLimiter3PackageVersion>
+    <MicrosoftAspNetCoreConnectionsAbstractions3PackageVersion>3.1.25</MicrosoftAspNetCoreConnectionsAbstractions3PackageVersion>
+
+    <MicrosoftAspNetCoreCryptographyInternal3PackageVersion>3.1.25</MicrosoftAspNetCoreCryptographyInternal3PackageVersion>
+    <MicrosoftAspNetCoreCryptographyKeyDerivation3PackageVersion>3.1.25</MicrosoftAspNetCoreCryptographyKeyDerivation3PackageVersion>
+
+    <MicrosoftAspNetCoreDataProtection3PackageVersion>3.1.25</MicrosoftAspNetCoreDataProtection3PackageVersion>
+    <MicrosoftAspNetCoreDataProtectionAbstractions3PackageVersion>3.1.25</MicrosoftAspNetCoreDataProtectionAbstractions3PackageVersion>
+    <MicrosoftAspNetCoreDataProtectionAzureKeyVault3PackageVersion>3.1.25</MicrosoftAspNetCoreDataProtectionAzureKeyVault3PackageVersion>
+    <MicrosoftAspNetCoreDataProtectionAzureStorage3PackageVersion>3.1.25</MicrosoftAspNetCoreDataProtectionAzureStorage3PackageVersion>
+    <MicrosoftAspNetCoreDataProtectionExtensions3PackageVersion>3.1.25</MicrosoftAspNetCoreDataProtectionExtensions3PackageVersion>
+    <MicrosoftAspNetCoreDataProtectionStackExchangeRedis3PackageVersion>3.1.25</MicrosoftAspNetCoreDataProtectionStackExchangeRedis3PackageVersion>
+    <MicrosoftAspNetCoreDataProtectionSystemWeb3PackageVersion>3.1.25</MicrosoftAspNetCoreDataProtectionSystemWeb3PackageVersion>
+
+    <MicrosoftAspNetCoreJsonPatch3PackageVersion>3.1.25</MicrosoftAspNetCoreJsonPatch3PackageVersion>
+
+    <MicrosoftAspNetCoreHeaderPropagation3PackageVersion>3.1.25</MicrosoftAspNetCoreHeaderPropagation3PackageVersion>
+    <MicrosoftAspNetCoreHttpConnectionsClient3PackageVersion>3.1.25</MicrosoftAspNetCoreHttpConnectionsClient3PackageVersion>
+    <MicrosoftAspNetCoreHttpConnectionsCommon3PackageVersion>3.1.25</MicrosoftAspNetCoreHttpConnectionsCommon3PackageVersion>
+    <MicrosoftAspNetCoreHttpFeatures3PackageVersion>3.1.25</MicrosoftAspNetCoreHttpFeatures3PackageVersion>
+
+    <MicrosoftAspNetCoreMvcNewtonsoftJson3PackageVersion>3.1.25</MicrosoftAspNetCoreMvcNewtonsoftJson3PackageVersion>
+    <MicrosoftAspNetCoreMvcRazorRuntimeCompilation3PackageVersion>3.1.25</MicrosoftAspNetCoreMvcRazorRuntimeCompilation3PackageVersion>
+
+    <MicrosoftAspNetCoreSignalRClient3PackageVersion>3.1.25</MicrosoftAspNetCoreSignalRClient3PackageVersion>
+    <MicrosoftAspNetCoreSignalRClientCore3PackageVersion>3.1.25</MicrosoftAspNetCoreSignalRClientCore3PackageVersion>
+    <MicrosoftAspNetCoreSignalRClientMsgPack3PackageVersion>3.1.25</MicrosoftAspNetCoreSignalRClientMsgPack3PackageVersion>
+    <MicrosoftAspNetCoreSignalRCommon3PackageVersion>3.1.25</MicrosoftAspNetCoreSignalRCommon3PackageVersion>
+    <MicrosoftAspNetCoreSignalRProtocolsNewtonsoftJson3PackageVersion>3.1.25</MicrosoftAspNetCoreSignalRProtocolsNewtonsoftJson3PackageVersion>
+    <MicrosoftAspNetCoreSignalRProtocolsJson3PackageVersion>3.1.25</MicrosoftAspNetCoreSignalRProtocolsJson3PackageVersion>
+    <MicrosoftAspNetCoreSignalRProtocolsMessagePack3PackageVersion>3.1.25</MicrosoftAspNetCoreSignalRProtocolsMessagePack3PackageVersion>
+    <MicrosoftAspNetCoreSignalRStackExchangeRedis3PackageVersion>3.1.25</MicrosoftAspNetCoreSignalRStackExchangeRedis3PackageVersion>
+
+    <MicrosoftAspNetCoreMvcTesting3PackageVersion>3.1.25</MicrosoftAspNetCoreMvcTesting3PackageVersion>
+    <MicrosoftAspNetCoreTestHost3PackageVersion>3.1.25</MicrosoftAspNetCoreTestHost3PackageVersion>
+	
+    <MicrosoftAspNetCoreRazorLanguage3PackageVersion>3.1.25</MicrosoftAspNetCoreRazorLanguage3PackageVersion>
+    <MicrosoftCodeAnalysisRazor3PackageVersion>3.1.25</MicrosoftCodeAnalysisRazor3PackageVersion>
+
+    <MicrosoftAspNetCoreMvcVersioning3PackageVersion>5.0.0</MicrosoftAspNetCoreMvcVersioning3PackageVersion>
+    <MicrosoftAspNetCoreMvcVersioningApiExplorer3PackageVersion>5.0.0</MicrosoftAspNetCoreMvcVersioningApiExplorer3PackageVersion>
+  </PropertyGroup>
+</Project>

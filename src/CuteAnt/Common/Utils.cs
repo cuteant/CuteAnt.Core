@@ -349,7 +349,7 @@ namespace CuteAnt
     public static string GetStackTrace(int skipFrames = 0)
     {
       skipFrames += 1; //skip this method from the stack trace
-#if DESKTOPCLR
+#if NETFRAMEWORK
       return new System.Diagnostics.StackTrace(skipFrames).ToString();
 #else
       skipFrames += 2; //skip the 2 Environment.StackTrace related methods.

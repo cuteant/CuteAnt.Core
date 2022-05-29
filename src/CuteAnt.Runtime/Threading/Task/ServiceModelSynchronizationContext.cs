@@ -13,7 +13,7 @@ namespace CuteAnt.Runtime
 
     public override void Post(SendOrPostCallback callback, object state)
     {
-#if DESKTOPCLR
+#if NETFRAMEWORK
       IOThreadScheduler.ScheduleCallbackNoFlow(s => callback(s), state);
 #else
       IOThreadScheduler.ScheduleCallbackNoFlow(callback, state);

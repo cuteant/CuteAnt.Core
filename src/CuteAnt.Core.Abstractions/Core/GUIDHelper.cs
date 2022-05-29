@@ -224,17 +224,7 @@ namespace CuteAnt
     //				if (comb.Length != 32) { return false; }
     //				comb = "{1}{0}".FormatWith(comb.Substring(0, 12), comb.Substring(12));
     //			}
-    //#if NET_3_5_GREATER
     //			return Guid.TryParse(comb, out result);
-    //#else
-    //			var isGuid = true;
-    //			try
-    //			{
-    //				result = new Guid(comb);
-    //			}
-    //			catch { isGuid = false; }
-    //			return isGuid;
-    //#endif
     //		}
 
     #endregion

@@ -3,7 +3,7 @@
 // System.ServiceModel.Internals\System\Runtime\ActionItem.cs
 //------------------------------------------------------------
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System;
 using System.Diagnostics;
 using System.Security;

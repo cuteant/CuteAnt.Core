@@ -33,7 +33,7 @@ namespace CuteAnt.Collections
             result = array[head];
             if (!predicate(result)) { return false; }
 
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
             if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             {
                 array[head] = default;

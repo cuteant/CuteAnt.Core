@@ -2,7 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 namespace CuteAnt.Diagnostics
 {
     // Order is important here. The order must match the order of strings in src\ndp\cdf\src\WCF\EventLog\EventLog.mc

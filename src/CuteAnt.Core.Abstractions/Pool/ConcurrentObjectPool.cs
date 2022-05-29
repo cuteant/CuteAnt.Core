@@ -52,7 +52,7 @@ namespace CuteAnt.Pool
 
     public override void Clear()
     {
-#if NETCOREAPP // .NET Core 2.0+
+#if !NETSTANDARD2_0
       _innerPool.Clear();
 #else
       while (_innerPool.TryTake(out var item)) { }

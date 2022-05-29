@@ -208,7 +208,7 @@ namespace CuteAnt.Runtime
       }
     }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
     [Fx.Tag.Blocking]
 #endif
     public static bool WaitOne(WaitHandle waitHandle, TimeSpan timeout)
@@ -221,7 +221,7 @@ namespace CuteAnt.Runtime
       }
       else
       {
-#if DESKTOPCLR
+#if NETFRAMEWORK
         return waitHandle.WaitOne(timeout, false);
 #else
         //// http://msdn.microsoft.com/en-us/library/85bbbxt9(v=vs.110).aspx 
@@ -300,7 +300,7 @@ namespace CuteAnt.Runtime
 
       if (!s_tokenCache.TryGetValue(targetTime, out Task<CancellationToken> tokenTask))
       {
-#if NET_4_5_GREATER
+#if !(NET452 || NET451 || NET45 || NET40)
         var tcs = new TaskCompletionSource<CancellationToken>(TaskCreationOptions.RunContinuationsAsynchronously);
 #else
         var tcs = new TaskCompletionSource<CancellationToken>();
@@ -311,14 +311,8 @@ namespace CuteAnt.Runtime
         {
           // Since this thread was successful reserving a spot in the cache, it would be the only thread
           // that construct the CancellationTokenSource
-#if NET_4_0_GREATER
           var tokenSource = new CancellationTokenSource((int)(targetTime - currentTime));
           var token = tokenSource.Token;
-#else
-          var tokenSource = new CancellationTokenSource();
-          tokenSource.CancelAfter((int)(targetTime - currentTime));
-          var token = tokenSource.Token;
-#endif
           // Clean up cache when Token is canceled
           token.Register(s_deregisterToken, Tuple.Create(targetTime, tokenSource));
 
@@ -333,13 +327,7 @@ namespace CuteAnt.Runtime
           {
             // In unlikely scenario the token was already cancelled and timed out, we would not find it in cache.
             // In this case we would simply create a non-coalsed token
-#if NET_4_0_GREATER
             tokenTask = TaskShim.FromResult(new CancellationTokenSource(millisecondsTimeout).Token);
-#else
-            var cts = new CancellationTokenSource();
-            cts.CancelAfter(millisecondsTimeout);
-            tokenTask = TaskShim.FromResult(cts.Token);
-#endif
           }
         }
       }

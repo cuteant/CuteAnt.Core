@@ -3,7 +3,7 @@
 // System.ServiceModel.Internals\System\Runtime\IOThreadScheduler.cs
 //------------------------------------------------------------
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System;
 using System.Threading;
 using System.Security;

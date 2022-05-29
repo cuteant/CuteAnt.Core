@@ -13,13 +13,9 @@ namespace CuteAnt.Collections
       if (source is ICollection<T> collection) { return new CollectionWrapper<T>(collection); }
       if (source is ICollection nongenericCollection) { return new NongenericCollectionWrapper<T>(nongenericCollection); }
 
-#if !NET40
       var builder = new LargeArrayBuilder<T>(initialize: true);
       builder.AddRange(source);
       return builder.ToArray();
-#else
-      throw new NotSupportedException();
-#endif
     }
 
     private sealed class NongenericCollectionWrapper<T> : IReadOnlyCollection<T>

@@ -16,19 +16,11 @@ namespace CuteAnt.AsyncEx
     {
       if (cancellationToken.IsCancellationRequested)
       {
-#if NET_4_5_GREATER
         Task = System.Threading.Tasks.Task.FromCanceled<T>(cancellationToken);
-#else
-        Task = TaskConstants<T>.Canceled;
-#endif
         return;
       }
       var tcs = new TaskCompletionSource<T>();
-#if NET_4_5_GREATER
       _registration = cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken), useSynchronizationContext: false);
-#else
-      _registration = cancellationToken.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
-#endif
       Task = tcs.Task;
     }
 

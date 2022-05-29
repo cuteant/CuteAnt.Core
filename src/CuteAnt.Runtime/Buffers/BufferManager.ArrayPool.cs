@@ -2,7 +2,7 @@
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using CuteAnt.Runtime;
-#if !(NETCOREAPP || NETSTANDARD_2_0_GREATER)
+#if NETSTANDARD2_0
 using System.Threading;
 #endif
 
@@ -11,7 +11,7 @@ namespace CuteAnt.Buffers
     partial class BufferManager
     {
         /// <summary>The lazily-initialized shared pool instance.</summary>
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
         private static ArrayPool<byte> s_sharedInstance = ArrayPool<byte>.Shared;
 #else
         private static ArrayPool<byte> s_sharedInstance = null;
@@ -24,7 +24,7 @@ namespace CuteAnt.Buffers
         /// array than was requested. Renting a buffer from it with <see cref="T:System.Buffers.ArrayPool{byte}.Rent"/> will result in an 
         /// existing buffer being taken from the pool if an appropriate buffer is available or in a new 
         /// buffer being allocated if one is not available.</remarks>
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
         public static ArrayPool<byte> Shared => s_sharedInstance;
 #else
         public static ArrayPool<byte> Shared

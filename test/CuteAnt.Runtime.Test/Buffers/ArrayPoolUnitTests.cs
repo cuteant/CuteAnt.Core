@@ -80,7 +80,7 @@ namespace CuteAnt.Buffers.Tests
             ArrayPool<byte> pool = BufferManager.Shared;
             byte[] rented = pool.Rent(27);
             Assert.NotNull(rented);
-#if NETCOREAPP
+#if !NETFRAMEWORK
             Assert.Equal(32, rented.Length);
 #else
             Assert.Equal(128, rented.Length);
@@ -147,7 +147,7 @@ namespace CuteAnt.Buffers.Tests
             for (int i = 1; i < 10000; i++)
             {
                 byte[] buffer = pool.Rent(i);
-#if NETCOREAPP
+#if !NETFRAMEWORK
                 Assert.Equal(i <= 16 ? 16 : RoundUpToPowerOf2(i), buffer.Length);
 #else
                 Assert.Equal(i <= 128 ? 128 : RoundUpToPowerOf2(i), buffer.Length);
@@ -169,7 +169,7 @@ namespace CuteAnt.Buffers.Tests
         }
 
         [Theory]
-#if NETCOREAPP
+#if !NETFRAMEWORK
         [InlineData(1, 16)]
         [InlineData(15, 16)]
         [InlineData(16, 16)]
@@ -182,7 +182,7 @@ namespace CuteAnt.Buffers.Tests
         [InlineData(1024, 1024)]
         [InlineData(4096, 4096)]
         [InlineData(1024 * 1024, 1024 * 1024)]
-#if NETCOREAPP
+#if !NETFRAMEWORK
         [InlineData(1024 * 1024 + 1, 1024 * 1024 + 1)]
         [InlineData(1024 * 1024 * 2, 1024 * 1024 * 2)]
 #else

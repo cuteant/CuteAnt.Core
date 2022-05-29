@@ -3,7 +3,7 @@
 // </copyright>
 // System.ServiceModel.Internals\System\Runtime\IOThreadCancellationTokenSource.cs
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System;
 using System.Threading;
 

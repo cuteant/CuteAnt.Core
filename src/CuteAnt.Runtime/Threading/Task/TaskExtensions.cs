@@ -5,11 +5,7 @@
 
 using System;
 using System.ComponentModel;
-#if NET_4_0_GREATER
 using System.Runtime.CompilerServices;
-#else
-using Microsoft.Runtime.CompilerServices;
-#endif
 using System.Threading;
 using System.Threading.Tasks;
 //using CuteAnt.AsyncEx;

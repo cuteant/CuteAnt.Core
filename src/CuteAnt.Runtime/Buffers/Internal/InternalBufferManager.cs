@@ -11,7 +11,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
 using System.Security;
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System.Security.Permissions;
 #endif
 #endif //DEBUG
@@ -380,7 +380,7 @@ namespace CuteAnt.Buffers
 
 #if DEBUG
       [SecuritySafeCritical]
-#if DESKTOPCLR
+#if NETFRAMEWORK
       [PermissionSet(SecurityAction.Assert, Unrestricted = true)]
 #endif
       private static string CaptureStackTrace()

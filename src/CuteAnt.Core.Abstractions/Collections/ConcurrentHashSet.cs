@@ -7,10 +7,7 @@ namespace System.Collections.Concurrent
 {
   /// <summary>线程安全的哈希集合。内部采用泛型字典实现。</summary>
   /// <typeparam name="T"></typeparam>
-  public class ConcurrentHashSet<T> : ICollection<T>
-#if !NET40
-  //, ISet<T>
-#endif
+  public class ConcurrentHashSet<T> : ICollection<T> //, ISet<T>
   {
     #region -- 初始化 --
 

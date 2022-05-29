@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 
-#if !DESKTOPCLR
+#if !NETFRAMEWORK
 namespace CuteAnt.ServiceModel.Diagnostics
 {
     internal static class DiagnosticStrings

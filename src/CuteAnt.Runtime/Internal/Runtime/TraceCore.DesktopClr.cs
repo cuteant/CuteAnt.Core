@@ -6,7 +6,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using CuteAnt.Diagnostics;
 using System.Security;
 using System.Runtime.CompilerServices;

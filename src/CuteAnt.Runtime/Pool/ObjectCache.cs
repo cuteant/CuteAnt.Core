@@ -5,7 +5,7 @@
 
 using System;
 using System.Collections.Generic;
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using CuteAnt.Runtime;
 #else
 using System.Threading;
@@ -32,7 +32,7 @@ namespace CuteAnt.Pool
     private Dictionary<TKey, Item> _cacheItems;
     private bool _idleTimeoutEnabled;
     private bool _leaseTimeoutEnabled;
-#if DESKTOPCLR
+#if NETFRAMEWORK
     private IOThreadTimer _idleTimer;
 #else
     private Timer _idleTimer;
@@ -179,14 +179,14 @@ namespace CuteAnt.Pool
             _onIdle = new Action<object>(OnIdle);
           }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
           _idleTimer = new IOThreadTimer(_onIdle, this, false);
 #else
           _idleTimer = new Timer(new TimerCallback(_onIdle), this, _settings.IdleTimeout, TimeSpan.FromMilliseconds(-1));
 #endif
         }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
         _idleTimer.Set(_settings.IdleTimeout);
 #endif
       }
@@ -272,7 +272,7 @@ namespace CuteAnt.Pool
 
       if (setTimer)
       {
-#if DESKTOPCLR
+#if NETFRAMEWORK
         _idleTimer.Set(_settings.IdleTimeout);
 #else
         _idleTimer.Change(_settings.IdleTimeout, TimeSpan.FromMilliseconds(-1));
@@ -316,7 +316,7 @@ namespace CuteAnt.Pool
         _disposed = true;
         if (_idleTimer != null)
         {
-#if DESKTOPCLR
+#if NETFRAMEWORK
           _idleTimer.Cancel();
 #else
           _idleTimer.Change(TimeSpan.FromMilliseconds(-1), TimeSpan.FromMilliseconds(-1));

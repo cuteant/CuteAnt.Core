@@ -2,7 +2,7 @@
 //   Copyright (c) Microsoft Corporation.  All rights reserved.
 // </copyright>
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 namespace CuteAnt.Diagnostics
 {
   using System;

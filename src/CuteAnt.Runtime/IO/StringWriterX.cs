@@ -22,7 +22,7 @@ using System.Globalization;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System.Security.Permissions;
 #endif
 using CuteAnt.Pool;
@@ -164,7 +164,7 @@ namespace CuteAnt.IO
             _sb.Append(buffer, index, count);
         }
 
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
         public override void Write(ReadOnlySpan<char> buffer)
         {
             if (!_isOpen)
@@ -233,7 +233,7 @@ namespace CuteAnt.IO
 
 #if !NET40
         #region Task based Async APIs
-#if DESKTOPCLR
+#if NETFRAMEWORK
         [HostProtection(ExternalThreading = true)]
         [ComVisible(false)]
 #endif
@@ -243,7 +243,7 @@ namespace CuteAnt.IO
             return TaskConstants.Completed;
         }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
         [HostProtection(ExternalThreading = true)]
         [ComVisible(false)]
 #endif
@@ -253,7 +253,7 @@ namespace CuteAnt.IO
             return TaskConstants.Completed;
         }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
         [HostProtection(ExternalThreading = true)]
         [ComVisible(false)]
 #endif
@@ -263,7 +263,7 @@ namespace CuteAnt.IO
             return TaskConstants.Completed;
         }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
         [HostProtection(ExternalThreading = true)]
         [ComVisible(false)]
 #endif
@@ -273,7 +273,7 @@ namespace CuteAnt.IO
             return TaskConstants.Completed;
         }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
         [HostProtection(ExternalThreading = true)]
         [ComVisible(false)]
 #endif
@@ -283,7 +283,7 @@ namespace CuteAnt.IO
             return TaskConstants.Completed;
         }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
         [HostProtection(ExternalThreading = true)]
         [ComVisible(false)]
 #endif
@@ -293,7 +293,7 @@ namespace CuteAnt.IO
             return TaskConstants.Completed;
         }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
         [HostProtection(ExternalThreading = true)]
         [ComVisible(false)]
 #endif

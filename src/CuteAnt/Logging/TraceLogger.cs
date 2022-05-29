@@ -173,7 +173,7 @@ namespace Microsoft.Extensions.Logging
 
     #region -- Dump --
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
     /// <summary>Create a mini-dump file for the current state of this process</summary>
     /// <param name="dumpType">Type of mini-dump to create</param>
     /// <returns><c>FileInfo</c> for the location of the newly created mini-dump file</returns>
@@ -215,7 +215,7 @@ namespace Microsoft.Extensions.Logging
       return process.Handle;
     }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
     private static class NativeMethods
     {
       [DllImport("Dbghelp.dll")]
@@ -286,7 +286,7 @@ namespace Microsoft.Extensions.Logging
     #endregion
   }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
   internal enum MiniDumpType
   {
     // ReSharper disable UnusedMember.Global

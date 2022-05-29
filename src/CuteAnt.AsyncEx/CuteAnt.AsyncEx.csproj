@@ -7,7 +7,7 @@
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.String.Sources\CuteAnt.Extensions.String.Sources.projitems" Label="Shared" />
   
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;netstandard2.0;net471;net451;net40</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
     <AssemblyName>CuteAnt.AsyncEx</AssemblyName>
     <RootNamespace>CuteAnt.AsyncEx</RootNamespace>
     <DefineConstants>$(DefineConstants);NET_3_5_GREATER</DefineConstants>
@@ -21,13 +21,6 @@
 You can refer (https://github.com/StephenCleary/AsyncEx) for more details.</Description>
     <PackageTags>cuteant task async</PackageTags>
     <Authors>Stephen Cleary;Seabiscuit</Authors>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net40|AnyCPU'">
-    <DefineConstants>$(DefineConstants);NONATIVETASKS;PRENET45</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net40|AnyCPU'">
-    <DefineConstants>$(DefineConstants);NONATIVETASKS;PRENET45</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -57,11 +50,6 @@ You can refer (https://github.com/StephenCleary/AsyncEx) for more details.</Desc
     </Compile>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
-    <PackageReference Include="Microsoft.Bcl" Version="$(MicrosoftBclPackageVersion)" />
-    <PackageReference Include="Microsoft.Bcl.Async" Version="$(MicrosoftBclAsyncPackageVersion)" />
-    <PackageReference Include="Microsoft.Bcl.Build" Version="$(MicrosoftBclBuildPackageVersion)" />
-  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Internal\Strings.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -3,13 +3,13 @@
 // System.ServiceModel.Internals\System\Runtime\FatalException.cs
 
 using System;
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System.Runtime.Serialization;
 #endif
 
 namespace CuteAnt
 {
-#if DESKTOPCLR
+#if NETFRAMEWORK
   [Serializable]
 #endif
   public class FatalException : Exception
@@ -28,7 +28,7 @@ namespace CuteAnt
       Fx.Assert(innerException == null || !Fx.IsFatal(innerException), "FatalException can't be used to wrap fatal exceptions.");
     }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
     protected FatalException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }

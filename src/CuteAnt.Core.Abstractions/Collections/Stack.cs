@@ -86,7 +86,7 @@ namespace CuteAnt.Collections
         // Removes all Objects from the Stack.
         public void Clear()
         {
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
             if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             {
                 Array.Clear(_array, 0, _size); // Don't need to doc this but we clear the elements so that the gc can reclaim the references.
@@ -200,7 +200,7 @@ namespace CuteAnt.Collections
             int threshold = (int)(((double)_array.Length) * 0.9);
             if (_size < threshold)
             {
-#if DESKTOPCLR
+#if NETFRAMEWORK
                 T[] newarray = new T[_size];
                 Array.Copy(_array, 0, newarray, 0, _size);
                 _array = newarray;
@@ -259,7 +259,7 @@ namespace CuteAnt.Collections
             _version++;
             _size = size;
             T item = array[size];
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
             if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             {
                 array[size] = default;     // Free memory quicker.
@@ -284,7 +284,7 @@ namespace CuteAnt.Collections
             _version++;
             _size = size;
             result = array[size];
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
             if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             {
                 array[size] = default;     // Free memory quicker.

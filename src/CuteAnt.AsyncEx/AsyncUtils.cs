@@ -6,18 +6,15 @@ using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-#if NET40
-using CuteAnt.AsyncEx.Internal.PlatformEnlightenment;
-#endif
 
 namespace CuteAnt.AsyncEx
 {
-  /// <summary>AsyncUtils</summary>
-  public static class AsyncUtils
-  {
-    private struct VoidTaskResult { }
+    /// <summary>AsyncUtils</summary>
+    public static class AsyncUtils
+    {
+        private struct VoidTaskResult { }
 
-    #region @@ Constructors @@
+        #region @@ Constructors @@
 
 #if NET40
     /// <summary>The <c>TaskCreationOptions.DenyChildAttach</c> value, if it exists; otherwise, <c>0</c>.</summary>
@@ -32,216 +29,186 @@ namespace CuteAnt.AsyncEx
     }
 #endif
 
-    #endregion
+        #endregion
 
-    #region -- FromException --
+        #region -- FromException --
 
-    /// <summary>Returns an error task. The task is Completed, IsCanceled = False, IsFaulted = True</summary>
-    public static Task FromException(Exception exception)
-    {
-#if NET_4_5_GREATER
-      return Task.FromException(exception);
-#else
-      return FromException<VoidTaskResult>(exception);
-#endif
-    }
+        /// <summary>Returns an error task. The task is Completed, IsCanceled = False, IsFaulted = True</summary>
+        public static Task FromException(Exception exception)
+        {
+            return Task.FromException(exception);
+        }
 
-    /// <summary>Returns an error task of the given type. The task is Completed, IsCanceled = False, IsFaulted = True</summary>
-    /// <typeparam name="TResult"></typeparam>
-    public static Task<TResult> FromException<TResult>(Exception exception)
-    {
-#if NET_4_5_GREATER
-      return Task.FromException<TResult>(exception);
-#else
-      //var tcs = new TaskCompletionSource<TResult>();
-      //tcs.SetException(exception);
-      //return tcs.Task;
-      if (exception is AggregateException aggregateException)
-      {
-        var tcs = new TaskCompletionSource<TResult>();
-        tcs.SetException(aggregateException.InnerExceptions);
-        return tcs.Task;
-      }
-      else
-      {
-        var atmb = System.Runtime.CompilerServices.AsyncTaskMethodBuilder<TResult>.Create();
-        atmb.SetException(exception);
-        return atmb.Task;
-      }
-#endif
-    }
+        /// <summary>Returns an error task of the given type. The task is Completed, IsCanceled = False, IsFaulted = True</summary>
+        /// <typeparam name="TResult"></typeparam>
+        public static Task<TResult> FromException<TResult>(Exception exception)
+        {
+            return Task.FromException<TResult>(exception);
+        }
 
-    #endregion
+        #endregion
 
-    #region -- FromCanceled --
+        #region -- FromCanceled --
 
-    public static Task FromCanceled(CancellationToken cancellationToken)
-    {
-#if NET_4_5_GREATER
-      return Task.FromCanceled(cancellationToken);
-#else
-      return TaskConstants.Canceled;
-#endif
-    }
+        public static Task FromCanceled(CancellationToken cancellationToken)
+        {
+            return Task.FromCanceled(cancellationToken);
+        }
 
-    public static Task<TResult> FromCanceled<TResult>(CancellationToken cancellationToken)
-    {
-#if NET_4_5_GREATER
-      return Task.FromCanceled<TResult>(cancellationToken);
-#else
-      return TaskConstants<TResult>.Canceled;
-#endif
-    }
+        public static Task<TResult> FromCanceled<TResult>(CancellationToken cancellationToken)
+        {
+            return Task.FromCanceled<TResult>(cancellationToken);
+        }
 
-    #endregion
+        #endregion
 
-    #region --& GetCreationOptions &--
+        #region --& GetCreationOptions &--
 
-    /// <summary>Gets the options to use for creation tasks.</summary>
-    /// <param name="toInclude">Any options to include in the result.</param>
-    /// <returns>The options to use.</returns>
+        /// <summary>Gets the options to use for creation tasks.</summary>
+        /// <param name="toInclude">Any options to include in the result.</param>
+        /// <returns>The options to use.</returns>
 #if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static TaskCreationOptions GetCreationOptions(TaskCreationOptions toInclude = TaskCreationOptions.None)
-    {
+        public static TaskCreationOptions GetCreationOptions(TaskCreationOptions toInclude = TaskCreationOptions.None)
+        {
 #if !NET40
-      return toInclude | TaskCreationOptions.DenyChildAttach;
+            return toInclude | TaskCreationOptions.DenyChildAttach;
 #else
       return toInclude | _CreationDenyChildAttach;
 #endif
-    }
+        }
 
-    #endregion
+        #endregion
 
-    #region --& GetContinuationOptions &--
+        #region --& GetContinuationOptions &--
 
-    /// <summary>Gets the options to use for continuation tasks.</summary>
-    /// <param name="toInclude">Any options to include in the result.</param>
-    /// <returns>The options to use.</returns>
+        /// <summary>Gets the options to use for continuation tasks.</summary>
+        /// <param name="toInclude">Any options to include in the result.</param>
+        /// <returns>The options to use.</returns>
 #if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static TaskContinuationOptions GetContinuationOptions(TaskContinuationOptions toInclude = TaskContinuationOptions.None)
-    {
+        public static TaskContinuationOptions GetContinuationOptions(TaskContinuationOptions toInclude = TaskContinuationOptions.None)
+        {
 #if !NET40
-      return toInclude | TaskContinuationOptions.DenyChildAttach;
+            return toInclude | TaskContinuationOptions.DenyChildAttach;
 #else
       return toInclude | _ContinuationDenyChildAttach;
 #endif
-    }
+        }
 
-    #endregion
+        #endregion
 
-    #region --& StartTaskSafe &--
+        #region --& StartTaskSafe &--
 
-    /// <summary>Starts an already constructed task with handling and observing exceptions that may come from the scheduling process.</summary>
-    /// <param name="task">Task to be started.</param>
-    /// <param name="scheduler">TaskScheduler to schedule the task on.</param>
-    /// <returns>null on success, an exception reference on scheduling error. In the latter case, the task reference is nulled out.</returns>
-    public static Exception StartTaskSafe(Task task, TaskScheduler scheduler)
-    {
-      Contract.Requires(task != null, "Task to start is required.");
-      Contract.Requires(scheduler != null, "Scheduler on which to start the task is required.");
+        /// <summary>Starts an already constructed task with handling and observing exceptions that may come from the scheduling process.</summary>
+        /// <param name="task">Task to be started.</param>
+        /// <param name="scheduler">TaskScheduler to schedule the task on.</param>
+        /// <returns>null on success, an exception reference on scheduling error. In the latter case, the task reference is nulled out.</returns>
+        public static Exception StartTaskSafe(Task task, TaskScheduler scheduler)
+        {
+            Contract.Requires(task != null, "Task to start is required.");
+            Contract.Requires(scheduler != null, "Scheduler on which to start the task is required.");
 
-      if (TaskScheduler.Default == scheduler)
-      {
-        task.Start(scheduler);
-        return null; // We don't need to worry about scheduler exceptions from the default scheduler.
-      }
-      // Slow path with try/catch separated out so that StartTaskSafe may be inlined in the common case.
-      else
-      {
-        return StartTaskSafeCore(task, scheduler);
-      }
-    }
+            if (TaskScheduler.Default == scheduler)
+            {
+                task.Start(scheduler);
+                return null; // We don't need to worry about scheduler exceptions from the default scheduler.
+            }
+            // Slow path with try/catch separated out so that StartTaskSafe may be inlined in the common case.
+            else
+            {
+                return StartTaskSafeCore(task, scheduler);
+            }
+        }
 
-    /// <summary>Starts an already constructed task with handling and observing exceptions that may come from the scheduling process.</summary>
-    /// <param name="task">Task to be started.</param>
-    /// <param name="scheduler">TaskScheduler to schedule the task on.</param>
-    /// <returns>null on success, an exception reference on scheduling error. In the latter case, the task reference is nulled out.</returns>
-    [SuppressMessage("Microsoft.Performance", "CA1804:RemoveUnusedLocals")]
-    [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-    private static Exception StartTaskSafeCore(Task task, TaskScheduler scheduler)
-    {
-      Contract.Requires(task != null, "Task to start is needed.");
-      Contract.Requires(scheduler != null, "Scheduler on which to start the task is required.");
+        /// <summary>Starts an already constructed task with handling and observing exceptions that may come from the scheduling process.</summary>
+        /// <param name="task">Task to be started.</param>
+        /// <param name="scheduler">TaskScheduler to schedule the task on.</param>
+        /// <returns>null on success, an exception reference on scheduling error. In the latter case, the task reference is nulled out.</returns>
+        [SuppressMessage("Microsoft.Performance", "CA1804:RemoveUnusedLocals")]
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        private static Exception StartTaskSafeCore(Task task, TaskScheduler scheduler)
+        {
+            Contract.Requires(task != null, "Task to start is needed.");
+            Contract.Requires(scheduler != null, "Scheduler on which to start the task is required.");
 
-      Exception schedulingException = null;
+            Exception schedulingException = null;
 
-      try
-      {
-        task.Start(scheduler);
-      }
-      catch (Exception caughtException)
-      {
-        // Verify TPL has faulted the task
-        Debug.Assert(task.IsFaulted, "The task should have been faulted if it failed to start.");
+            try
+            {
+                task.Start(scheduler);
+            }
+            catch (Exception caughtException)
+            {
+                // Verify TPL has faulted the task
+                Debug.Assert(task.IsFaulted, "The task should have been faulted if it failed to start.");
 
-        // Observe the task's exception
-        AggregateException ignoredTaskException = task.Exception;
+                // Observe the task's exception
+                AggregateException ignoredTaskException = task.Exception;
 
-        schedulingException = caughtException;
-      }
+                schedulingException = caughtException;
+            }
 
-      return schedulingException;
-    }
+            return schedulingException;
+        }
 
-    #endregion
+        #endregion
 
-    #region --& CreateCachedTaskFromResult &--
+        #region --& CreateCachedTaskFromResult &--
 
-    /// <summary>Creates a task we can cache for the desired {TResult} result.</summary>
-    /// <param name="value">The value of the {TResult}.</param>
-    /// <returns>A task that may be cached.</returns>
+        /// <summary>Creates a task we can cache for the desired {TResult} result.</summary>
+        /// <param name="value">The value of the {TResult}.</param>
+        /// <returns>A task that may be cached.</returns>
 #if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static Task<TResult> CreateCachedTaskFromResult<TResult>(TResult value)
-    {
-      // AsyncTaskMethodBuilder<TResult> caches tasks that are non-disposable.
-      // By using these same tasks, we're a bit more robust against disposals,
-      // in that such a disposed task's ((IAsyncResult)task).AsyncWaitHandle
-      // is still valid.
-      var atmb = System.Runtime.CompilerServices.AsyncTaskMethodBuilder<TResult>.Create();
-      atmb.SetResult(value);
-      return atmb.Task; // must be accessed after SetResult to get the cached task
-    }
+        public static Task<TResult> CreateCachedTaskFromResult<TResult>(TResult value)
+        {
+            // AsyncTaskMethodBuilder<TResult> caches tasks that are non-disposable.
+            // By using these same tasks, we're a bit more robust against disposals,
+            // in that such a disposed task's ((IAsyncResult)task).AsyncWaitHandle
+            // is still valid.
+            var atmb = System.Runtime.CompilerServices.AsyncTaskMethodBuilder<TResult>.Create();
+            atmb.SetResult(value);
+            return atmb.Task; // must be accessed after SetResult to get the cached task
+        }
 
-    #endregion
+        #endregion
 
-    #region --& CreateCachedTaskCompletionSource &--
+        #region --& CreateCachedTaskCompletionSource &--
 
-    /// <summary>Creates a TaskCompletionSource{T} completed with a value of default(T) that we can cache.</summary>
-    /// <returns>Completed TaskCompletionSource{T} that may be cached.</returns>
+        /// <summary>Creates a TaskCompletionSource{T} completed with a value of default(T) that we can cache.</summary>
+        /// <returns>Completed TaskCompletionSource{T} that may be cached.</returns>
 #if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static TaskCompletionSource<T> CreateCachedTaskCompletionSource<T>()
-    {
-      var tcs = new TaskCompletionSource<T>();
-      tcs.SetResult(default(T));
-      return tcs;
-    }
+        public static TaskCompletionSource<T> CreateCachedTaskCompletionSource<T>()
+        {
+            var tcs = new TaskCompletionSource<T>();
+            tcs.SetResult(default(T));
+            return tcs;
+        }
 
-    #endregion
+        #endregion
 
-    #region --& CreateTaskFromException &--
+        #region --& CreateTaskFromException &--
 
-    /// <summary>Creates a task faulted with the specified exception.</summary>
-    /// <typeparam name="TResult">Specifies the type of the result for this task.</typeparam>
-    /// <param name="exception">The exception with which to complete the task.</param>
-    /// <returns>The faulted task.</returns>
+        /// <summary>Creates a task faulted with the specified exception.</summary>
+        /// <typeparam name="TResult">Specifies the type of the result for this task.</typeparam>
+        /// <param name="exception">The exception with which to complete the task.</param>
+        /// <returns>The faulted task.</returns>
 #if !NET40
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static Task<TResult> CreateTaskFromException<TResult>(Exception exception)
-    {
-      var atmb = System.Runtime.CompilerServices.AsyncTaskMethodBuilder<TResult>.Create();
-      atmb.SetException(exception);
-      return atmb.Task;
-    }
+        public static Task<TResult> CreateTaskFromException<TResult>(Exception exception)
+        {
+            var atmb = System.Runtime.CompilerServices.AsyncTaskMethodBuilder<TResult>.Create();
+            atmb.SetException(exception);
+            return atmb.Task;
+        }
 
-    #endregion
-  }
+        #endregion
+    }
 }

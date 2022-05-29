@@ -1,4 +1,4 @@
-﻿#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+﻿#if !NETSTANDARD2_0
 
 using System;
 using System.Diagnostics;

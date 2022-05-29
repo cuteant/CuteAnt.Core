@@ -22,7 +22,7 @@ namespace CuteAnt
   /// <summary>运行时</summary>
   public static class RuntimeHelper
   {
-#if DESKTOPCLR
+#if NETFRAMEWORK
     #region 控制台
 
     private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
@@ -94,7 +94,7 @@ namespace CuteAnt
 
     #endregion
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
     #region 操作系统
 
     private static String _OSName;
@@ -362,7 +362,7 @@ namespace CuteAnt
 #endif
   }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
   /// <summary>标识系统上的程序组</summary>
   [Flags]
   internal enum OSSuites : ushort

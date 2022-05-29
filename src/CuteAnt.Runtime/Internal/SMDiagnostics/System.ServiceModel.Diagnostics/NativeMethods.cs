@@ -2,7 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;

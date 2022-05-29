@@ -38,11 +38,9 @@ namespace CuteAnt.AsyncEx
     /// <returns><c>true</c> if the operation was successful; otherwise, <c>false</c>.</returns>
     public Boolean TrySetCanceled() => _tcs.TrySetCanceled();
 
-#if NET_4_5_GREATER
     /// <summary>Attempts to transition the underlying <see cref="Task"/> into the <see cref="TaskStatus.Canceled"/> state.</summary>
     /// <returns><c>true</c> if the operation was successful; otherwise, <c>false</c>.</returns>
     public Boolean TrySetCanceled(System.Threading.CancellationToken token) => _tcs.TrySetCanceled(token);
-#endif
 
     /// <summary>Transitions the underlying <see cref="Task"/> into the <see cref="TaskStatus.Faulted"/> state.</summary>
     /// <param name="exception">The exception to bind to this <see cref="Task"/>. May not be <c>null</c>.</param>

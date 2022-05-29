@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Security;
 using System.Runtime.CompilerServices;
 using System.Threading;
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System.Security.Permissions;
 #endif
 
@@ -323,7 +323,7 @@ namespace CuteAnt.Pool
 
       [Fx.Tag.SecurityNote(Critical = "Asserts in order to get the processor count from the environment", Safe = "This data isn't actually protected so it's ok to leak")]
       [SecuritySafeCritical]
-#if DESKTOPCLR
+#if NETFRAMEWORK
       [EnvironmentPermission(SecurityAction.Assert, Read = "NUMBER_OF_PROCESSORS")]
 #endif
       private static int GetProcessorCount() => Environment.ProcessorCount;

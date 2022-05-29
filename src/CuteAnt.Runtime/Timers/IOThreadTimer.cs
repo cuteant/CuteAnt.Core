@@ -3,7 +3,7 @@
 // System.ServiceModel.Internals\System\Runtime\IOThreadTimer.cs
 //------------------------------------------------------------
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System;
 using System.ComponentModel;
 using System.Security;

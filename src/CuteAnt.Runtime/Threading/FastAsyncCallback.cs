@@ -3,7 +3,7 @@
 // System.ServiceModel.Internals\System\Runtime\FastAsyncCallback.cs
 //-----------------------------------------------------------------------------
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System;
 
 namespace CuteAnt.Runtime

@@ -1,0 +1,81 @@
+<Project>
+  <!-- Shared Package Versions -->
+  <PropertyGroup>
+    <MicrosoftExtensionsApiDescriptionClient3PackageVersion>3.1.25</MicrosoftExtensionsApiDescriptionClient3PackageVersion>
+    <MicrosoftExtensionsApiDescriptionServer3PackageVersion>3.1.25</MicrosoftExtensionsApiDescriptionServer3PackageVersion>
+	
+    <MicrosoftExtensionsCachingAbstractions3PackageVersion>3.1.25</MicrosoftExtensionsCachingAbstractions3PackageVersion>
+    <MicrosoftExtensionsCachingMemory3PackageVersion>3.1.25</MicrosoftExtensionsCachingMemory3PackageVersion>
+    <MicrosoftExtensionsCachingStackExchangeRedis3PackageVersion>3.1.25</MicrosoftExtensionsCachingStackExchangeRedis3PackageVersion>
+    <MicrosoftExtensionsCachingSqlServer3PackageVersion>3.1.25</MicrosoftExtensionsCachingSqlServer3PackageVersion>
+    <MicrosoftExtensionsConfigurationAbstractions3PackageVersion>3.1.25</MicrosoftExtensionsConfigurationAbstractions3PackageVersion>
+    <MicrosoftExtensionsConfigurationAzureKeyVault3PackageVersion>3.1.25</MicrosoftExtensionsConfigurationAzureKeyVault3PackageVersion>
+    <MicrosoftExtensionsConfigurationBinder3PackageVersion>3.1.25</MicrosoftExtensionsConfigurationBinder3PackageVersion>
+    <MicrosoftExtensionsConfigurationCommandLine3PackageVersion>3.1.25</MicrosoftExtensionsConfigurationCommandLine3PackageVersion>
+    <MicrosoftExtensionsConfigurationEnvironmentVariables3PackageVersion>3.1.25</MicrosoftExtensionsConfigurationEnvironmentVariables3PackageVersion>
+    <MicrosoftExtensionsConfigurationFileExtensions3PackageVersion>3.1.25</MicrosoftExtensionsConfigurationFileExtensions3PackageVersion>
+    <MicrosoftExtensionsConfigurationIni3PackageVersion>3.1.25</MicrosoftExtensionsConfigurationIni3PackageVersion>
+    <MicrosoftExtensionsConfigurationJson3PackageVersion>3.1.25</MicrosoftExtensionsConfigurationJson3PackageVersion>
+    <MicrosoftExtensionsConfigurationKeyPerFile3PackageVersion>3.1.25</MicrosoftExtensionsConfigurationKeyPerFile3PackageVersion>
+    <MicrosoftExtensionsConfigurationNewtonsoftJson3PackageVersion>3.1.25</MicrosoftExtensionsConfigurationNewtonsoftJson3PackageVersion>
+    <MicrosoftExtensionsConfiguration3PackageVersion>3.1.25</MicrosoftExtensionsConfiguration3PackageVersion>
+    <MicrosoftExtensionsConfigurationUserSecrets3PackageVersion>3.1.25</MicrosoftExtensionsConfigurationUserSecrets3PackageVersion>
+    <MicrosoftExtensionsConfigurationXml3PackageVersion>3.1.25</MicrosoftExtensionsConfigurationXml3PackageVersion>
+    <MicrosoftExtensionsDependencyInjectionAbstractions3PackageVersion>3.1.25</MicrosoftExtensionsDependencyInjectionAbstractions3PackageVersion>
+    <MicrosoftExtensionsDependencyInjection3PackageVersion>3.1.25</MicrosoftExtensionsDependencyInjection3PackageVersion>
+
+    <MicrosoftDotNetPlatformAbstractions3PackageVersion>3.1.6</MicrosoftDotNetPlatformAbstractions3PackageVersion>
+    <MicrosoftExtensionsDependencyModel3PackageVersion>3.1.6</MicrosoftExtensionsDependencyModel3PackageVersion>
+
+    <MicrosoftExtensionsDiagnosticAdapter3PackageVersion>3.1.25</MicrosoftExtensionsDiagnosticAdapter3PackageVersion>
+    <MicrosoftExtensionsDiagnosticsHealthChecksAbstractions3PackageVersion>3.1.25</MicrosoftExtensionsDiagnosticsHealthChecksAbstractions3PackageVersion>
+    <MicrosoftExtensionsDiagnosticsHealthChecksEntityFrameworkCore3PackageVersion>3.1.25</MicrosoftExtensionsDiagnosticsHealthChecksEntityFrameworkCore3PackageVersion>
+    <MicrosoftExtensionsDiagnosticsHealthChecks3PackageVersion>3.1.25</MicrosoftExtensionsDiagnosticsHealthChecks3PackageVersion>
+    <MicrosoftExtensionsFileProvidersAbstractions3PackageVersion>3.1.25</MicrosoftExtensionsFileProvidersAbstractions3PackageVersion>
+    <MicrosoftExtensionsFileProvidersComposite3PackageVersion>3.1.25</MicrosoftExtensionsFileProvidersComposite3PackageVersion>
+    <MicrosoftExtensionsFileProvidersEmbedded3PackageVersion>3.1.25</MicrosoftExtensionsFileProvidersEmbedded3PackageVersion>
+    <MicrosoftExtensionsFileProvidersPhysical3PackageVersion>3.1.25</MicrosoftExtensionsFileProvidersPhysical3PackageVersion>
+    <MicrosoftExtensionsFileSystemGlobbing3PackageVersion>3.1.25</MicrosoftExtensionsFileSystemGlobbing3PackageVersion>
+    <MicrosoftExtensionsHostingAbstractions3PackageVersion>3.1.25</MicrosoftExtensionsHostingAbstractions3PackageVersion>
+    <MicrosoftExtensionsHosting3PackageVersion>3.1.25</MicrosoftExtensionsHosting3PackageVersion>
+    <MicrosoftExtensionsHttp3PackageVersion>3.1.25</MicrosoftExtensionsHttp3PackageVersion>
+    <MicrosoftExtensionsHttpPolly3PackageVersion>3.1.25</MicrosoftExtensionsHttpPolly3PackageVersion>
+    <MicrosoftExtensionsLocalizationAbstractions3PackageVersion>3.1.25</MicrosoftExtensionsLocalizationAbstractions3PackageVersion>
+    <MicrosoftExtensionsLocalization3PackageVersion>3.1.25</MicrosoftExtensionsLocalization3PackageVersion>
+    <MicrosoftExtensionsLoggingAbstractions3PackageVersion>3.1.25</MicrosoftExtensionsLoggingAbstractions3PackageVersion>
+    <MicrosoftExtensionsLoggingAzureAppServices3PackageVersion>3.1.25</MicrosoftExtensionsLoggingAzureAppServices3PackageVersion>
+    <MicrosoftExtensionsLoggingConfiguration3PackageVersion>3.1.25</MicrosoftExtensionsLoggingConfiguration3PackageVersion>
+    <MicrosoftExtensionsLoggingConsole3PackageVersion>3.1.25</MicrosoftExtensionsLoggingConsole3PackageVersion>
+    <MicrosoftExtensionsLoggingDebug3PackageVersion>3.1.25</MicrosoftExtensionsLoggingDebug3PackageVersion>
+    <MicrosoftExtensionsLoggingEventSource3PackageVersion>3.1.25</MicrosoftExtensionsLoggingEventSource3PackageVersion>
+    <MicrosoftExtensionsLogging3PackageVersion>3.1.25</MicrosoftExtensionsLogging3PackageVersion>
+    <MicrosoftExtensionsLoggingTesting3PackageVersion>3.1.25</MicrosoftExtensionsLoggingTesting3PackageVersion>
+    <MicrosoftExtensionsLoggingTraceSource3PackageVersion>3.1.25</MicrosoftExtensionsLoggingTraceSource3PackageVersion>
+    <MicrosoftExtensionsObjectPool3PackageVersion>3.1.25</MicrosoftExtensionsObjectPool3PackageVersion>
+    <MicrosoftExtensionsOptionsConfigurationExtensions3PackageVersion>3.1.25</MicrosoftExtensionsOptionsConfigurationExtensions3PackageVersion>
+    <MicrosoftExtensionsOptionsDataAnnotations3PackageVersion>3.1.25</MicrosoftExtensionsOptionsDataAnnotations3PackageVersion>
+    <MicrosoftExtensionsOptions3PackageVersion>3.1.25</MicrosoftExtensionsOptions3PackageVersion>
+    <MicrosoftExtensionsPrimitives3PackageVersion>3.1.25</MicrosoftExtensionsPrimitives3PackageVersion>
+
+    <MicrosoftExtensionsIdentityCore3PackageVersion>3.1.25</MicrosoftExtensionsIdentityCore3PackageVersion>
+    <MicrosoftExtensionsIdentityStores3PackageVersion>3.1.25</MicrosoftExtensionsIdentityStores3PackageVersion>
+    <MicrosoftExtensionsWebEncoders3PackageVersion>3.1.25</MicrosoftExtensionsWebEncoders3PackageVersion>
+
+    <MicrosoftDataSqliteCore3PackageVersion>3.1.25</MicrosoftDataSqliteCore3PackageVersion>
+    <MicrosoftDataSqlite3PackageVersion>3.1.25</MicrosoftDataSqlite3PackageVersion>
+
+    <MicrosoftEntityFrameworkCore3PackageVersion>3.1.25</MicrosoftEntityFrameworkCore3PackageVersion>
+    <MicrosoftEntityFrameworkCoreAbstractions3PackageVersion>3.1.25</MicrosoftEntityFrameworkCoreAbstractions3PackageVersion>
+    <MicrosoftEntityFrameworkCoreAnalyzers3PackageVersion>3.1.25</MicrosoftEntityFrameworkCoreAnalyzers3PackageVersion>
+    <MicrosoftEntityFrameworkCoreDesign3PackageVersion>3.1.25</MicrosoftEntityFrameworkCoreDesign3PackageVersion>
+    <MicrosoftEntityFrameworkCoreInMemory3PackageVersion>3.1.25</MicrosoftEntityFrameworkCoreInMemory3PackageVersion>
+    <MicrosoftEntityFrameworkCoreRelational3PackageVersion>3.1.25</MicrosoftEntityFrameworkCoreRelational3PackageVersion>
+    <MicrosoftEntityFrameworkCoreSqlite3PackageVersion>3.1.25</MicrosoftEntityFrameworkCoreSqlite3PackageVersion>
+    <MicrosoftEntityFrameworkCoreSqliteCore3PackageVersion>3.1.25</MicrosoftEntityFrameworkCoreSqliteCore3PackageVersion>
+    <MicrosoftEntityFrameworkCoreSqlServer3PackageVersion>3.1.25</MicrosoftEntityFrameworkCoreSqlServer3PackageVersion>
+    <MicrosoftEntityFrameworkCoreTools3PackageVersion>3.1.25</MicrosoftEntityFrameworkCoreTools3PackageVersion>
+
+    <MicrosoftJSInterop3PackageVersion>3.1.25</MicrosoftJSInterop3PackageVersion>
+    <MicrosoftJSInteropWebAssembly3PackageVersion>3.2.1</MicrosoftJSInteropWebAssembly3PackageVersion>
+  </PropertyGroup>
+</Project>

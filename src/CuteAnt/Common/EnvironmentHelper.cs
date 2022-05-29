@@ -11,7 +11,7 @@
  *			 将判断 Windows 操作系统版本的代码重构成我期望的 Api.
  ***********************************************************************************************************************/
 
-//#if DESKTOPCLR
+//#if NETFRAMEWORK
 //using System;
 //using System.Runtime.InteropServices;
 

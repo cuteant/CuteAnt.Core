@@ -1,14 +1,11 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
-#if NET_4_5_GREATER
 using System.Threading;
-#endif
+using System.Threading.Tasks;
 
 namespace CuteAnt.AsyncEx
 {
-  /// <summary>Provides completed task constants.</summary>
-  public static class TaskConstants
+    /// <summary>Provides completed task constants.</summary>
+    public static class TaskConstants
   {
     /// <summary>A task that has been completed with the value <c>true</c>.</summary>
     public static readonly Task<Boolean> BooleanTrue = AsyncUtils.CreateCachedTaskFromResult(true);
@@ -25,11 +22,7 @@ namespace CuteAnt.AsyncEx
     public static Task<Object> NullResult() => TaskConstants<Object>.Default;
 
     /// <summary>A <see cref="Task"/> that has been completed.</summary>
-#if NET_4_5_GREATER
     public static Task Completed => Task.CompletedTask;
-#else
-    public static Task Completed => TaskConstants<AsyncVoid>.Default;
-#endif
 
     /// <summary>A <see cref="Task"/> that will never complete.</summary>
     public static Task Never => TaskConstants<AsyncVoid>.Never;
@@ -60,19 +53,7 @@ namespace CuteAnt.AsyncEx
     /// <summary>A <see cref="Task"/> that will never complete.</summary>
     public static readonly Task<T> Never = new TaskCompletionSource<T>().Task;
 
-#if NET_4_5_GREATER
     /// <summary>A task that has been canceled.</summary>
     public static readonly Task<T> Canceled = Task.FromCanceled<T>(new CancellationToken(true));
-#else
-    /// <summary>A task that has been canceled.</summary>
-    public static readonly Task<T> Canceled = CanceledTask();
-
-    private static Task<T> CanceledTask()
-    {
-      var tcs = new TaskCompletionSource<T>();
-      tcs.SetCanceled();
-      return tcs.Task;
-    }
-#endif
   }
 }

@@ -490,7 +490,7 @@ namespace CuteAnt
             }
             else
             {
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
                 ReadOnlySpan<byte> valueSpan = x.m_value;
                 return valueSpan.SequenceEqual(y.m_value);
 #else

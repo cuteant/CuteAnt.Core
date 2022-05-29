@@ -2,12 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 #define DEBUG_EXPENSIVE
 #endif
 using System;
 using System.Threading;
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System.Diagnostics;
 #endif
 
@@ -285,7 +285,7 @@ namespace CuteAnt.Runtime
   {
     private object _mutex;
     private CommunicationWaitResult _result;
-#if DESKTOPCLR
+#if NETFRAMEWORK
     private IOThreadTimer _timer;
 #else
     private Timer _timer;
@@ -305,7 +305,7 @@ namespace CuteAnt.Runtime
         throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new TimeoutException(string.Format(InternalSR.SFxCloseTimedOut1, timeout)));
       }
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
       _timer = new IOThreadTimer(new Action<object>(TimeoutCallback), this, true);
       _timer.Set(timeout);
 #else
@@ -331,7 +331,7 @@ namespace CuteAnt.Runtime
         if (_result != CommunicationWaitResult.Waiting) { return; }
         _result = CommunicationWaitResult.Succeeded;
       }
-#if DESKTOPCLR
+#if NETFRAMEWORK
       _timer.Cancel();
 #else
       _timer.Change(TimeSpan.FromMilliseconds(-1), TimeSpan.FromMilliseconds(-1));
@@ -373,7 +373,7 @@ namespace CuteAnt.Runtime
         }
         _result = CommunicationWaitResult.Aborted;
       }
-#if DESKTOPCLR
+#if NETFRAMEWORK
       _timer.Cancel();
 #else
       _timer.Change(TimeSpan.FromMilliseconds(-1), TimeSpan.FromMilliseconds(-1));

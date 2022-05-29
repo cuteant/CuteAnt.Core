@@ -12,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CuteAnt.AsyncEx;
 using CuteAnt.Runtime;
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
 using System.Runtime.InteropServices;
 #endif
 
@@ -220,7 +220,6 @@ namespace CuteAnt.Buffers
             throw Fx.Exception.AsError(new NotSupportedException(InternalSR.ReadNotSupported));
         }
 
-#if NET_4_0_GREATER
         public sealed override Task<Int32> ReadAsync(Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken)
         {
             throw Fx.Exception.AsError(new NotSupportedException(InternalSR.ReadNotSupported));
@@ -230,7 +229,6 @@ namespace CuteAnt.Buffers
         {
             throw Fx.Exception.AsError(new NotSupportedException(InternalSR.ReadNotSupported));
         }
-#endif
 
         public sealed override int Read(byte[] buffer, int offset, int size)
         {
@@ -267,7 +265,7 @@ namespace CuteAnt.Buffers
 
         #endregion
 
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
 
         public override void Write(ReadOnlySpan<byte> buffer)
         {
@@ -362,7 +360,6 @@ namespace CuteAnt.Buffers
             CompletedAsyncResult.End(result);
         }
 
-#if NET_4_0_GREATER
         public override Task WriteAsync(Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken)
         {
             if (offset < 0) { ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset, offset, ExceptionResource.ValueMustBeNonNegative); }
@@ -386,7 +383,6 @@ namespace CuteAnt.Buffers
                 return AsyncUtils.FromException(ex2);
             }
         }
-#endif
 
         public override void Write(byte[] buffer, int offset, int size)
         {
@@ -1126,7 +1122,6 @@ namespace CuteAnt.Buffers
         {
         }
 
-#if NET_4_0_GREATER
         public override Task FlushAsync(CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested)
@@ -1144,7 +1139,6 @@ namespace CuteAnt.Buffers
                 return AsyncUtils.FromException(ex2);
             }
         }
-#endif
 
         #endregion
 

@@ -2,7 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 namespace CuteAnt.Diagnostics
 { 
     // When adding an EventLogEventId, an entry must also be added to src\ndp\cdf\src\WCF\EventLog\EventLog.mc.

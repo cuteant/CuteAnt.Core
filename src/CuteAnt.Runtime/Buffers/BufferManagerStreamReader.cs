@@ -1107,7 +1107,7 @@ namespace CuteAnt.Buffers
             }
         }
 #else
-#if !(NETCOREAPP || NETSTANDARD_2_0_GREATER)
+#if NETSTANDARD2_0
         public Task CopyToAsync(Stream destination, CancellationToken cancellationToken)
         {
             var bufferedStream = m_inputStream as IBufferedStream;

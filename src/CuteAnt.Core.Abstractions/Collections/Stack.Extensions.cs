@@ -35,7 +35,7 @@ namespace CuteAnt.Collections
 
             _version++;
             _size = size;
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
             if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             {
                 array[size] = default;     // Free memory quicker.

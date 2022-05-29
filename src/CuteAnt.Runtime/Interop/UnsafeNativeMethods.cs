@@ -3,7 +3,7 @@
 // System.ServiceModel.Internals\System\Runtime\Interop\UnsafeNativeMethods.cs
 //------------------------------------------------------------
 
-#if DESKTOPCLR
+#if NETFRAMEWORK
 using System;
 using System.Text;
 using System.Security;

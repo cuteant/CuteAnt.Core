@@ -13,11 +13,7 @@ namespace CuteAnt
 
         static EmptyArray()
         {
-#if NET_4_5_GREATER
             Instance = Array.Empty<T>();
-#else
-            Instance = new T[0];
-#endif
         }
 
         public static T[] Allocate(int n)
@@ -55,11 +51,7 @@ namespace CuteAnt
 
         static EmptyArray()
         {
-#if NET_4_5_GREATER || NETSTANDARD || NETCOREAPP
             Instance = Array.Empty<object>();
-#else
-            Instance = new object[0];
-#endif
         }
 
         public static object[] Allocate(int n)

@@ -15,7 +15,7 @@ namespace CuteAnt
         // https://vcsjones.com/2019/02/01/csharp-readonly-span-bytes-static/
 
         // string.Join(", ", Enumerable.Range(0, 256).Select(x => (int)BitConverter.ToString(new byte[] { (byte)x }).ToLower()[0]))
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
         public static ReadOnlySpan<byte> ByteToHexStringHigh =>
 #else
         public static readonly byte[] ByteToHexStringHigh =
@@ -27,7 +27,7 @@ namespace CuteAnt
 
 
         // string.Join(", ", Enumerable.Range(0, 256).Select(x => (int)BitConverter.ToString(new byte[] { (byte)x }).ToLower()[1]))
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
         public static ReadOnlySpan<byte> ByteToHexStringLow =>
 #else
         public static readonly byte[] ByteToHexStringLow =
@@ -39,7 +39,7 @@ namespace CuteAnt
 
 
         // Comparison orders.
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
         public static ReadOnlySpan<byte> GuidComparisonOrders =>
 #else
         public static readonly byte[] GuidComparisonOrders = 
@@ -48,7 +48,7 @@ namespace CuteAnt
 
 
         // Parse orders.
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
         public static ReadOnlySpan<byte> GuidParseOrders32 =>
 #else
         public static readonly byte[] GuidParseOrders32 = 
@@ -63,7 +63,7 @@ namespace CuteAnt
             };
 
 
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
         public static ReadOnlySpan<byte> GuidParseOrders36 =>
 #else
         public static readonly byte[] GuidParseOrders36 = 
@@ -81,7 +81,7 @@ namespace CuteAnt
                 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
             };
 
-#if NETCOREAPP || NETSTANDARD_2_0_GREATER
+#if !NETSTANDARD2_0
 
         public static ReadOnlySpan<byte> HexLookup => new byte[256]
         {
