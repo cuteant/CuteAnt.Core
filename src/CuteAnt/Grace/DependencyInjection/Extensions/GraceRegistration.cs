@@ -16,9 +16,13 @@ namespace Grace.DependencyInjection.Extensions
 
             exportLocator.Configure(c =>
             {
+#if NET6_0_OR_GREATER
+                c.Export<ServiceProviderIsServiceImpl>().As<IServiceProviderIsService>();
+#endif
+
                 c.ExcludeTypeFromAutoRegistration(nameof(Microsoft) + ".*");
                 c.Export<GraceServiceProvider>().As<IServiceProvider>().ExternallyOwned();
-                c.Export<GraceLifetimeScopeServiceScopeFactory>().As<IServiceScopeFactory>();
+                c.Export<GraceLifetimeScopeServiceScopeFactory>().As<IServiceScopeFactory>().Lifestyle.Singleton();
                 Register(c, descriptors);
             });
 
@@ -29,11 +33,11 @@ namespace Grace.DependencyInjection.Extensions
         {
             foreach (var descriptor in descriptors)
             {
-                if (descriptor.ImplementationType != null)
+                if (descriptor.ImplementationType is not null)
                 {
                     c.Export(descriptor.ImplementationType).As(descriptor.ServiceType).ConfigureLifetime(descriptor.Lifetime);
                 }
-                else if (descriptor.ImplementationFactory != null)
+                else if (descriptor.ImplementationFactory is not null)
                 {
                     c.ExportFactory(descriptor.ImplementationFactory).As(descriptor.ServiceType).ConfigureLifetime(descriptor.Lifetime);
                 }
@@ -74,4 +78,26 @@ namespace Grace.DependencyInjection.Extensions
             }
         }
     }
+
+#if NET6_0_OR_GREATER
+    sealed class ServiceProviderIsServiceImpl : IServiceProviderIsService
+    {
+        private readonly IExportLocatorScope _exportLocatorScope;
+
+        public ServiceProviderIsServiceImpl(IExportLocatorScope exportLocatorScope)
+        {
+            _exportLocatorScope = exportLocatorScope;
+        }
+
+        public bool IsService(Type serviceType)
+        {
+            if (serviceType.IsGenericTypeDefinition)
+            {
+                return false;
+            }
+
+            return _exportLocatorScope.CanLocate(serviceType);
+        }
+    }
+#endif
 }

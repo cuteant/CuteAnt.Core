@@ -124,7 +124,7 @@ namespace Grace.Utilities
         /// <summary>Get the type for a specific MemberInfo</summary>
         /// <param name="memberInfo"></param>
         /// <returns></returns>
-        public static Type GetMemeberType(this MemberInfo memberInfo)
+        public static Type GetMemberType(this MemberInfo memberInfo)
         {
             switch (memberInfo)
             {

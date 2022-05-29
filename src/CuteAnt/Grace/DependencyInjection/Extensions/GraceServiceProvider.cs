@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Grace.DependencyInjection.Extensions
 {
     /// <summary>Service provider for Grace</summary>
     internal sealed class GraceServiceProvider : IServiceProvider, IDisposable
+#if !(NETCOREAPP2_1 || NETSTANDARD2_0)
+        , IAsyncDisposable
+#endif
     {
         private readonly IExportLocatorScope _injectionScope;
 
@@ -20,5 +24,10 @@ namespace Grace.DependencyInjection.Extensions
 
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose() => _injectionScope.Dispose();
+
+#if !(NETCOREAPP2_1 || NETSTANDARD2_0)
+        /// <summary>Asynchonously performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        public ValueTask DisposeAsync() => _injectionScope.DisposeAsync();
+#endif
     }
 }

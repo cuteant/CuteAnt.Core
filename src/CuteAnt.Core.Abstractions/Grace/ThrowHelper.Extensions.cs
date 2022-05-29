@@ -1,4 +1,8 @@
-﻿namespace Grace
+﻿using System.Runtime.CompilerServices;
+using Grace.DependencyInjection;
+using Grace.DependencyInjection.Exceptions;
+
+namespace Grace
 {
     #region -- ExceptionArgument --
 
@@ -101,4 +105,17 @@
     }
 
     #endregion
+
+    partial class ThrowHelper
+    {
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static void ThrowNullValueProvidedException(StaticInjectionContext context)
+        {
+            throw GetException();
+            NullValueProvidedException GetException()
+            {
+                return new NullValueProvidedException(context); ;
+            }
+        }
+    }
 }

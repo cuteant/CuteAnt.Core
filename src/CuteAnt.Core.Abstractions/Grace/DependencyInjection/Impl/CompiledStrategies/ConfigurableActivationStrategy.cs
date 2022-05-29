@@ -157,12 +157,28 @@ namespace Grace.DependencyInjection.Impl.CompiledStrategies
 
         /// <summary>Export as a specific type</summary>
         /// <param name="exportType">type to export as</param>
-        public void AddExportAs(Type exportType) => _exportAs = _exportAs.Add(exportType);
+        public void AddExportAs(Type exportType)
+        {
+            if (_exportAs == ImmutableLinkedList<Type>.Empty ||
+                !_exportAs.Contains(exportType))
+            {
+                _exportAs = _exportAs.Add(exportType);
+            }
+        }
 
         /// <summary>Export as keyed type</summary>
         /// <param name="exportType">type to export as</param>
         /// <param name="key">export key</param>
-        public void AddExportAsKeyed(Type exportType, object key) => _exportAsKeyed = _exportAsKeyed.Add(new KeyValuePair<Type, object>(exportType, key));
+        public void AddExportAsKeyed(Type exportType, object key)
+        {
+            var kvp = new KeyValuePair<Type, object>(exportType, key);
+
+            if (_exportAsKeyed == ImmutableLinkedList<KeyValuePair<Type, object>>.Empty ||
+                !_exportAsKeyed.Contains(kvp))
+            {
+                _exportAsKeyed = _exportAsKeyed.Add(kvp);
+            }
+        }
 
         /// <summary>Export as name</summary>
         /// <param name="name"></param>

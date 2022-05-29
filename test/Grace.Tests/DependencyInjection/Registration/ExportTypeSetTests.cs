@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 using Grace.DependencyInjection;
 using Grace.DependencyInjection.Exceptions;
 using Grace.DependencyInjection.Lifestyle;
-using Grace.Diagnostics;
 using Grace.Tests.Classes.Simple;
 using Grace.Tests.DependencyInjection.AddOns;
 using Xunit;
@@ -334,6 +334,47 @@ namespace Grace.Tests.DependencyInjection.Registration
             Assert.NotNull(instance1);
         }
 
+#if NET6_0_OR_GREATER
+        [Fact]
+        public async Task ExportTypeSet_ExternallyOwned()
+        {
+            var container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportAssemblyContaining<IMultipleService>().ByInterfaces();
+            });
+
+            var disposed = false;
+
+            await using (var scope = container.BeginLifetimeScope())
+            {
+                var disposable = scope.Locate<IDisposableService>();
+
+                disposable.Disposing += (sender, args) => disposed = true;
+            }
+
+            Assert.True(disposed);
+
+            container = new DependencyInjectionContainer();
+
+            container.Configure(c =>
+            {
+                c.ExportAssemblyContaining<IMultipleService>().ByInterfaces().ExternallyOwned();
+            });
+
+            disposed = false;
+
+            await using (var scope = container.BeginLifetimeScope())
+            {
+                var disposable = scope.Locate<IDisposableService>();
+
+                disposable.Disposing += (sender, args) => disposed = true;
+            }
+
+            Assert.False(disposed);
+        }
+#else
         [Fact]
         public void ExportTypeSet_ExternallyOwned()
         {
@@ -373,6 +414,7 @@ namespace Grace.Tests.DependencyInjection.Registration
 
             Assert.False(disposed);
         }
+#endif
 
         [Fact]
         public void ExportTypeSet_UsingLifestyle()

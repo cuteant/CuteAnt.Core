@@ -3,7 +3,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Grace.Data;
-using Grace.DependencyInjection.Exceptions;
 
 namespace Grace.DependencyInjection.Impl.Expressions
 {
@@ -182,7 +181,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns>non null value</returns>
         public static T CheckForNull<T>(StaticInjectionContext context, T value)
         {
-            if (value == null) { throw new NullValueProvidedException(context); }
+            if (value is null) { ThrowHelper.ThrowNullValueProvidedException(context); }
 
             return value;
         }
@@ -204,7 +203,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
         #region AddToDisposalScope
 
-        const string _addToDisposalScopeMethodName = "AddToDisposalScope";
+        const string _addToDisposalScopeMethodName = nameof(AddToDisposalScope);
         /// <summary>Add instance to disposal scope and return it</summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="disposalScope"></param>
@@ -212,6 +211,12 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         public static T AddToDisposalScope<T>(IDisposalScope disposalScope, T value)
         {
+#if !(NETCOREAPP2_1 || NETSTANDARD2_0)
+            if (value is IAsyncDisposable asyncDisposable)
+            {
+                disposalScope.AddAsyncDisposable(asyncDisposable);
+            }
+#endif
             if (value is IDisposable disposable)
             {
                 disposalScope.AddDisposable(disposable);
@@ -246,14 +251,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         public static T CheckForNullAndAddToDisposalScope<T>(IDisposalScope disposalScope, StaticInjectionContext context, T value)
         {
-            if (value == null) { throw new NullValueProvidedException(context); }
+            if (value is null) { ThrowHelper.ThrowNullValueProvidedException(context); }
 
-            if (value is IDisposable disposable)
-            {
-                disposalScope.AddDisposable(disposable);
-            }
-
-            return value;
+            return AddToDisposalScope(disposalScope, value);
         }
 
         private static MethodInfo _checkForNullAndAddToDisposalScopeMethodInfo;
@@ -273,7 +273,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
         #region ValueOrDefault
 
-        const string _valueOrDefaultMethodName = "ValueOrDefault";
+        const string _valueOrDefaultMethodName = nameof(ValueOrDefault);
         /// <summary></summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="tValue"></param>
@@ -285,7 +285,7 @@ namespace Grace.DependencyInjection.Impl.Expressions
 
         #region AddToDisposableScopeOrDefault
 
-        const string _addToDisposableScopeOrDefaultMethodName = "AddToDisposableScopeOrDefault";
+        const string _addToDisposableScopeOrDefaultMethodName = nameof(AddToDisposableScopeOrDefault);
         /// <summary>Add to disposal scope or use default</summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="disposalScope"></param>
@@ -294,14 +294,9 @@ namespace Grace.DependencyInjection.Impl.Expressions
         /// <returns></returns>
         public static T AddToDisposableScopeOrDefault<T>(IDisposalScope disposalScope, T tValue, T defaultValue)
         {
-            if (tValue != null)
+            if (tValue is not null)
             {
-                if (tValue is IDisposable disposable)
-                {
-                    disposalScope.AddDisposable(disposable);
-                }
-
-                return tValue;
+                return AddToDisposalScope(disposalScope, tValue);
             }
 
             return defaultValue;
