@@ -5,7 +5,7 @@
   <Import Project="..\..\..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Reflection.Sources\CuteAnt.Extensions.Reflection.Sources.projitems" Label="Shared" />
   
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;netstandard2.1;netstandard2.0</TargetFrameworks>
     <RootNamespace>CuteAnt.Runtime</RootNamespace>
     <AssemblyName>CuteAnt.Runtime</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

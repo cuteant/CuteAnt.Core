@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
+using CuteAnt.Runtime;
 
 namespace CuteAnt.Pool
 {
@@ -13,135 +13,157 @@ namespace CuteAnt.Pool
     /// <typeparam name="TValue"></typeparam>
     public class LruCache<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
-        /// <summary>Delegate type for fetching the value associated with a given key.</summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public delegate TValue FetchValueDelegate(TKey key);
-
         // The following machinery is used to notify client objects when a key and its value 
         // is being flushed from the cache.
         // The client's event handler is called after the key has been removed from the cache,
         // but when the cache is in a consistent state so that other methods on the cache may freely
         // be invoked.
-        public class FlushEventArgs : EventArgs
-        {
-            public FlushEventArgs(TKey k, TValue v)
-            {
-                Key = k;
-                Value = v;
-            }
+        public event Action RaiseFlushEvent;
 
-            public TKey Key { get; }
-
-            public TValue Value { get; }
-        }
-
-        public event EventHandler<FlushEventArgs> RaiseFlushEvent;
-
-        private long _nextGeneration = 0L;
-        private long _generationToFree = 0L;
-        private readonly TimeSpan _requiredFreshness;
+        private long nextGeneration = 0;
+        private long generationToFree = 0;
+        private readonly TimeSpan requiredFreshness;
         // We want this to be a reference type so that we can update the values in the cache
         // without having to call AddOrUpdate, which is a nuisance
-        private sealed class TimestampedValue
+        private class TimestampedValue : IEquatable<TimestampedValue>
         {
-            public readonly DateTime WhenLoaded;
+            public readonly CoarseStopwatch Age;
             public readonly TValue Value;
             public long Generation;
 
             public TimestampedValue(LruCache<TKey, TValue> l, TValue v)
             {
-                Generation = Interlocked.Increment(ref l._nextGeneration);
+                Generation = Interlocked.Increment(ref l.nextGeneration);
                 Value = v;
-                WhenLoaded = DateTime.UtcNow;
+                Age = CoarseStopwatch.StartNew();
+            }
+
+            public override bool Equals(object obj) => obj is TimestampedValue value && Equals(value);
+            public bool Equals(TimestampedValue other) => ReferenceEquals(this, other) || Age == other.Age && EqualityComparer<TValue>.Default.Equals(Value, other.Value) && Generation == other.Generation;
+            public override int GetHashCode()
+            {
+#if NETSTANDARD2_0
+                unchecked
+                {
+                    var hashCode = this.Age.GetHashCode();
+                    hashCode = (hashCode * 397) ^ this.Value.GetHashCode();
+                    hashCode = (hashCode * 397) ^ this.Generation.GetHashCode();
+                    return hashCode;
+                }
+#else
+                return HashCode.Combine(Age, Value, Generation);
+#endif
             }
         }
 
-        private readonly ConcurrentDictionary<TKey, TimestampedValue> _cache;
-        private readonly FetchValueDelegate _fetcher;
+        private readonly ConcurrentDictionary<TKey, TimestampedValue> cache = new();
+        private int count;
 
-        public int Count => _cache.Count;
+        public int Count => count;
         public int MaximumSize { get; }
 
-        /// <summary>Creates a new LRU cache.</summary>
+        /// <summary>
+        /// Creates a new LRU (Least Recently Used) cache.
+        /// </summary>
         /// <param name="maxSize">Maximum number of entries to allow.</param>
         /// <param name="maxAge">Maximum age of an entry.</param>
-        /// <param name="fetcher"></param>
-        public LruCache(int maxSize, TimeSpan maxAge, FetchValueDelegate fetcher)
-            : this(maxSize, maxAge, fetcher, null)
-        {
-        }
-
-        /// <summary>Creates a new LRU cache.</summary>
-        /// <param name="maxSize">Maximum number of entries to allow.</param>
-        /// <param name="maxAge">Maximum age of an entry.</param>
-        /// <param name="fetcher"></param>
-        /// <param name="comparer"></param>
-        public LruCache(int maxSize, TimeSpan maxAge, FetchValueDelegate fetcher, IEqualityComparer<TKey> comparer)
+        public LruCache(int maxSize, TimeSpan maxAge)
         {
             if (maxSize <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(maxSize), "LRU maxSize must be greater than 0");
             }
             MaximumSize = maxSize;
-            _requiredFreshness = maxAge;
-            _fetcher = fetcher;
-            _cache = new ConcurrentDictionary<TKey, TimestampedValue>(comparer ?? EqualityComparer<TKey>.Default);
+            requiredFreshness = maxAge;
         }
 
         public void Add(TKey key, TValue value)
         {
-            AdjustSize();
             var result = new TimestampedValue(this, value);
-            _ = _cache.AddOrUpdate(key, result, (k, o) => result);
-        }
+            AdjustSize();
 
-        public bool ContainsKey(TKey key)
-        {
-            return _cache.TryGetValue(key, out _);
-        }
-
-        public bool RemoveKey(TKey key, out TValue value)
-        {
-            if (_cache.TryRemove(key, out TimestampedValue tv))
+            // add/update delegates can be called multiple times, but only the last result counts
+            var added = false;
+            cache.AddOrUpdate(key, _ =>
             {
-                value = tv.Value;
+                added = true;
+                return result;
+            }, (_, old) =>
+            {
+                added = false;
+                // if multiple values are added at once for the same key, take the newest one
+                return old.Age.Elapsed >= result.Age.Elapsed && old.Generation > result.Generation ? old : result;
+            });
+
+            if (added) Interlocked.Increment(ref count);
+        }
+
+        public bool ContainsKey(TKey key) => cache.ContainsKey(key);
+
+        public bool RemoveKey(TKey key)
+        {
+            if (!cache.TryRemove(key, out _)) return false;
+
+            Interlocked.Decrement(ref count);
+            return true;
+        }
+
+        public bool TryRemove<T>(TKey key, Func<T, TValue, bool> predicate, T context)
+        {
+            if (!cache.TryGetValue(key, out var timestampedValue))
+            {
+                return false;
+            }
+
+            if (predicate(context, timestampedValue.Value) && TryRemove(key, timestampedValue))
+            {
+                Interlocked.Decrement(ref count);
                 return true;
             }
-            value = default;
+
             return false;
+        }
+
+        private bool TryRemove(TKey key, TimestampedValue value)
+        {
+            var entry = new KeyValuePair<TKey, TimestampedValue>(key, value);
+
+#if NET5_0_OR_GREATER
+            return cache.TryRemove(entry);
+#else
+            // Cast the dictionary to its interface type to access the explicitly implemented Remove method.
+            var cacheDictionary = (IDictionary<TKey, TimestampedValue>)cache;
+            return cacheDictionary.Remove(entry);
+#endif
         }
 
         public void Clear()
         {
-            EventHandler<FlushEventArgs> handler = RaiseFlushEvent;
-            if (handler is object)
+            if (RaiseFlushEvent is { } FlushEvent)
             {
-                foreach (var pair in _cache)
-                {
-                    var args = new FlushEventArgs(pair.Key, pair.Value.Value);
-                    handler(this, args);
-                }
+                foreach (var _ in cache) FlushEvent();
             }
-            _cache.Clear();
+
+            // not thread-safe: if anything is added, or even removed after addition, between Clear and Count, count may be off
+            cache.Clear();
+            Interlocked.Exchange(ref count, 0);
         }
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            if (_cache.TryGetValue(key, out TimestampedValue result))
+            if (cache.TryGetValue(key, out var result))
             {
-                result.Generation = Interlocked.Increment(ref _nextGeneration);
-                var age = DateTime.UtcNow.Subtract(result.WhenLoaded);
-                if (age > _requiredFreshness)
+                var age = result.Age.Elapsed;
+                if (age > requiredFreshness)
                 {
-                    value = default;
-                    if (!_cache.TryRemove(key, out result)) { return false; }
-
-                    if (RaiseFlushEvent is object) { OnRaiseFlushEvent(key, result); }
-                    return false;
+                    if (RemoveKey(key)) RaiseFlushEvent?.Invoke();
                 }
-                value = result.Value;
-                return true;
+                else
+                {
+                    result.Generation = Interlocked.Increment(ref nextGeneration);
+                    value = result.Value;
+                    return true;
+                }
             }
 
             value = default;
@@ -150,49 +172,45 @@ namespace CuteAnt.Pool
 
         public TValue Get(TKey key)
         {
-            if (TryGetValue(key, out TValue value)) { return value; }
-            if (_fetcher is null) { return value; }
-
-            value = _fetcher(key);
-            Add(key, value);
+            TryGetValue(key, out var value);
             return value;
+        }
+
+        /// <summary>
+        /// Remove all expired values from the LRU (Least Recently Used) instance.
+        /// </summary>
+        public void RemoveExpired()
+        {
+            foreach (var entry in this.cache)
+            {
+                if (entry.Value.Age.Elapsed > requiredFreshness)
+                {
+                    if (RemoveKey(entry.Key)) RaiseFlushEvent?.Invoke();
+                }
+            }
         }
 
         private void AdjustSize()
         {
-            while (_cache.Count >= MaximumSize)
+            while (Count >= MaximumSize)
             {
-                long generationToDelete = Interlocked.Increment(ref _generationToFree);
-                KeyValuePair<TKey, TimestampedValue> entryToFree =
-                    _cache.FirstOrDefault(kvp => kvp.Value.Generation == generationToDelete);
-
-                TKey keyToFree = entryToFree.Key;
-                if (keyToFree is null) { continue; }
-                if (!_cache.TryRemove(keyToFree, out TimestampedValue old)) { continue; }
-
-                if (RaiseFlushEvent is object) { OnRaiseFlushEvent(keyToFree, old); }
+                long generationToDelete = Interlocked.Increment(ref generationToFree);
+                foreach (var e in cache)
+                {
+                    if (e.Value.Generation <= generationToDelete)
+                    {
+                        if (RemoveKey(e.Key)) RaiseFlushEvent?.Invoke();
+                        break;
+                    }
+                }
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private void OnRaiseFlushEvent(TKey key, TimestampedValue tv)
-        {
-            var args = new FlushEventArgs(key, tv.Value);
-            RaiseFlushEvent(this, args);
-        }
-
-        #region Implementation of IEnumerable
-
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            return _cache.Select(p => new KeyValuePair<TKey, TValue>(p.Key, p.Value.Value)).GetEnumerator();
+            return cache.Select(p => new KeyValuePair<TKey, TValue>(p.Key, p.Value.Value)).GetEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        #endregion
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
