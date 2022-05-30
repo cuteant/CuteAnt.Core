@@ -1,5 +1,4 @@
-﻿using CuteAnt.AsyncEx;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -212,6 +211,36 @@ namespace CuteAnt.AsyncEx.Tests
             await writeTask;
             foreach (var readTask in readTasks)
                 await readTask;
+        }
+
+        [Fact]
+        public async Task ReadLock_WriteLockCanceled_TakesLock()
+        {
+            var rwl = new AsyncReaderWriterLock();
+            var readKey = rwl.ReaderLock();
+            var cts = new CancellationTokenSource();
+
+            var writerLockReady = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var writerLockTask = Task.Run(async () =>
+            {
+                var writeKeyTask = rwl.WriterLockAsync(cts.Token);
+                writerLockReady.SetResult(null);
+                await Assert.ThrowsAnyAsync<OperationCanceledException>(() => writeKeyTask);
+            });
+            await writerLockReady.Task;
+
+            var readerLockReady = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var readerLockTask = Task.Run(async () =>
+            {
+                var readKeyTask = rwl.ReaderLockAsync();
+                readerLockReady.SetResult(null);
+                await readKeyTask;
+            });
+
+            await readerLockReady.Task;
+            cts.Cancel();
+
+            await readerLockTask;
         }
     }
 }

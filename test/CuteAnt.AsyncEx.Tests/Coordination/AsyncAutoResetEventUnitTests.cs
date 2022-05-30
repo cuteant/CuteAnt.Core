@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using CuteAnt.AsyncEx;
+using CuteAnt.AsyncEx.Synchronous;
 using System.Linq;
 using System.Threading;
 using System.Diagnostics.CodeAnalysis;

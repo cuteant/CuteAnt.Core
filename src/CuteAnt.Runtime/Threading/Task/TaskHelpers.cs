@@ -159,7 +159,7 @@ namespace CuteAnt.Runtime
         return true;
       }
 
-      if (timeout == TimeSpan.MaxValue || timeout == TaskShim.InfiniteTimeSpan)
+      if (timeout == TimeSpan.MaxValue || timeout == Timeout.InfiniteTimeSpan)
       {
         await task;
         return true;
@@ -167,7 +167,7 @@ namespace CuteAnt.Runtime
 
       using (CancellationTokenSource cts = new CancellationTokenSource())
       {
-        var completedTask = await TaskShim.WhenAny(task, TaskShim.Delay(timeout, cts.Token));
+        var completedTask = await Task.WhenAny(task, Task.Delay(timeout, cts.Token));
         if (completedTask == task)
         {
           cts.Cancel();
@@ -309,7 +309,7 @@ namespace CuteAnt.Runtime
       {
         if (scope != null)  // No need to change threads if already off of thread pool
         {
-          await TaskShim.Yield(); // Move synchronous method off of thread pool
+          await Task.Yield(); // Move synchronous method off of thread pool
         }
 
         action(argument);
@@ -363,7 +363,7 @@ namespace CuteAnt.Runtime
     // directly causing it to stay on the same thread.
     public void OnCompleted(Action continuation)
     {
-      TaskShim.Run(continuation);
+      Task.Run(continuation);
     }
 
     // Awaiter is only used to control where subsequent awaitable's run so GetResult needs no

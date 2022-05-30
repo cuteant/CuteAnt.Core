@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using System.Threading;
 using System.Diagnostics.CodeAnalysis;
-using CuteAnt.AsyncEx;
 using Xunit;
 
 namespace CuteAnt.AsyncEx.Tests
@@ -221,8 +220,7 @@ namespace CuteAnt.AsyncEx.Tests
             Assert.NotEqual(0, mutex.Id);
         }
 
-#if !(NET452 || NET451 || NET45 || NET40)
-    [Fact]
+        [Fact]
         public async Task AsyncLock_SupportsMultipleAsynchronousLocks()
         {
             // This test deadlocks with the old AsyncEx: https://github.com/StephenCleary/AsyncEx/issues/57
@@ -257,6 +255,5 @@ namespace CuteAnt.AsyncEx.Tests
                 task1.Wait();
             });
         }
-#endif
-  }
+    }
 }

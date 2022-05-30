@@ -1,75 +1,87 @@
 ﻿namespace CuteAnt.AsyncEx
 {
-  #region -- ExceptionArgument --
+    #region -- ExceptionArgument --
 
-  /// <summary>The convention for this enum is using the argument name as the enum name</summary>
-  internal enum ExceptionArgument
-  {
-    array,
-    assembly,
-    buffer,
-    destination,
-    key,
-    obj,
-    s,
-    str,
-    source,
-    type,
-    types,
-    value,
-    values,
-    valueFactory,
-    name,
-    item,
-    options,
-    list,
-    ts,
-    other,
-    pool,
-    inner,
-    policy,
-    offset,
-    count,
-    path,
-    typeInfo,
-    method,
-    qualifiedTypeName,
-    fullName,
-    feature,
-    manager,
-    directories,
-    dirEnumArgs,
-    asm,
-    includedAssemblies,
-    func,
-    defaultFn,
-    returnType,
-    propertyInfo,
-    parameterTypes,
-    fieldInfo,
-    memberInfo,
-    attributeType,
-    pi,
-    fi,
-    invoker,
-    instanceType,
-    target,
-    member,
-    typeName,
-    predicate,
-    assemblyPredicate,
-    action,
-    function,
-  }
+    /// <summary>The convention for this enum is using the argument name as the enum name</summary>
+    internal enum ExceptionArgument
+    {
+        s,
+        pi,
+        fi,
+        ts,
+        asm,
+        key,
+        obj,
+        str,
+        name,
+        item,
+        func,
+        path,
+        pool,
+        list,
+        type,
+        task,
 
-  #endregion
+        array,
+        count,
+        other,
+        inner,
+        types,
+        value,
+        @this,
 
-  #region -- ExceptionResource --
+        action,
+        buffer,
+        policy,
+        method,
+        offset,
+        source,
+        values,
+        target,
+        member,
 
-  /// <summary>The convention for this enum is using the resource name as the enum name</summary>
-  internal enum ExceptionResource
-  {
-  }
+        feature,
+        manager,
+        invoker,
+        options,
+        convert,
 
-  #endregion
+        assembly,
+        fullName,
+        typeInfo,
+        typeName,
+        function,
+
+        defaultFn,
+        predicate,
+        fieldInfo,
+        subscribe,
+
+        memberInfo,
+        returnType,
+        resultFunc,
+        destination,
+        directories,
+        dirEnumArgs,
+        unsubscribe,
+        instanceType,
+        valueFactory,
+        propertyInfo,
+        attributeType,
+        parameterTypes,
+        assemblyPredicate,
+        qualifiedTypeName,
+        includedAssemblies,
+    }
+
+    #endregion
+
+    #region -- ExceptionResource --
+
+    /// <summary>The convention for this enum is using the resource name as the enum name</summary>
+    internal enum ExceptionResource
+    {
+    }
+
+    #endregion
 }

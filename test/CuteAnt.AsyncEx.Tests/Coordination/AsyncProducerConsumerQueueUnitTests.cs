@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CuteAnt.AsyncEx;
 using System.Linq;
 using System.Threading;
 using System.Diagnostics.CodeAnalysis;
@@ -207,10 +206,10 @@ namespace CuteAnt.AsyncEx.Tests
                 results.Add(queue.Dequeue());
             }
 
-            Assert.Equal(results.Count, 3);
-            Assert.Equal(results[0], 3);
-            Assert.Equal(results[1], 13);
-            Assert.Equal(results[2], 17);
+            Assert.Equal(3, results.Count);
+            Assert.Equal(3, results[0]);
+            Assert.Equal(13, results[1]);
+            Assert.Equal(17, results[2]);
         }
     }
 }

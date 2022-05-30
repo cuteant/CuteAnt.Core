@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using CuteAnt.AsyncEx;
 using System.Linq;
 using System.Threading;
 using Xunit;

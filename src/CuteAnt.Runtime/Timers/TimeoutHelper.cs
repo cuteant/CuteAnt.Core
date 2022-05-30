@@ -327,7 +327,7 @@ namespace CuteAnt.Runtime
           {
             // In unlikely scenario the token was already cancelled and timed out, we would not find it in cache.
             // In this case we would simply create a non-coalsed token
-            tokenTask = TaskShim.FromResult(new CancellationTokenSource(millisecondsTimeout).Token);
+            tokenTask = Task.FromResult(new CancellationTokenSource(millisecondsTimeout).Token);
           }
         }
       }
