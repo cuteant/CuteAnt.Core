@@ -5,33 +5,21 @@ using CuteAnt.Reflection;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace CuteAnt.Tests
+namespace CuteAnt.Reflection.Tests
 {
-  /// <summary>
-  /// Tests for <see cref="RuntimeTypeNameFormatter"/>.
-  /// </summary>
-  //[TestCategory("BVT")]
-  public class RuntimeTypeNameFormatterTests
-  {
-    private readonly ITestOutputHelper output;
-
-    public RuntimeTypeNameFormatterTests(ITestOutputHelper output)
-    {
-      this.output = output;
-    }
-
     /// <summary>
-    /// Tests that various strings formatted with <see cref="RuntimeTypeNameFormatter"/> can be loaded using <see cref="Type.GetType(string)"/>.
+    /// Tests for <see cref="RuntimeTypeNameFormatter"/>.
     /// </summary>
-    [Fact]
-    public void FormattedTypeNamesAreRecoverable()
+    public class RuntimeTypeNameFormatterTests
     {
-      var types = new[]
-      {
+        private readonly ITestOutputHelper output;
+        private readonly Type[] types = new[]
+            {
                 typeof(NameValueCollection),
                 typeof(int),
                 typeof(int[]),
                 typeof(int*[]),
+                typeof(int[]),
                 typeof(List<>),
                 typeof(List<int>),
                 typeof(List<int*[]>),
@@ -47,22 +35,33 @@ namespace CuteAnt.Tests
                 typeof(NameValueCollection)
             };
 
-      foreach (var type in types)
-      {
-        var formatted = RuntimeTypeNameFormatter.Format(type);
-        this.output.WriteLine($"Full Name: {type.FullName}");
-        this.output.WriteLine($"Formatted: {formatted}");
-        var isRecoverable = TypeUtils.TryResolveType(formatted, out var resolved) && resolved == type;
-        Assert.True(isRecoverable, $"Type.GetType(\"{formatted}\") must be equal to the original type.");
-      }
-    }
+        public RuntimeTypeNameFormatterTests(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
 
-    public class Inner<T>
-    {
-      public class InnerInner<U, V>
-      {
-        public class Bottom { }
-      }
+        /// <summary>
+        /// Tests that various strings formatted with <see cref="RuntimeTypeNameFormatter"/> can be loaded using <see cref="Type.GetType(string)"/>.
+        /// </summary>
+        [Fact]
+        public void FormattedTypeNamesAreRecoverable()
+        {
+            foreach (var type in types)
+            {
+                var formatted = RuntimeTypeNameFormatter.Format(type);
+                this.output.WriteLine($"Full Name: {type.FullName}");
+                this.output.WriteLine($"Formatted: {formatted}");
+                var isRecoverable = TypeUtils.TryResolveType(formatted, out var resolved) && resolved == type;
+                Assert.True(isRecoverable, $"Type.GetType(\"{formatted}\") must be equal to the original type.");
+            }
+        }
+
+        public class Inner<T>
+        {
+            public class InnerInner<U, V>
+            {
+                public class Bottom { }
+            }
+        }
     }
-  }
 }

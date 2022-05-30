@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Text;
 using CuteAnt.Collections;
 using CuteAnt.Text;
@@ -22,8 +21,8 @@ namespace CuteAnt.Reflection
         private static readonly ConcurrentDictionary<Type, TypeKey> _typeCache =
             new ConcurrentDictionary<Type, TypeKey>(DefaultConcurrencyLevel, DictionaryCacheConstants.SIZE_MEDIUM);
 
-        private static readonly ConcurrentDictionary<TypeKey, Type> _typeKeyCache =
-            new ConcurrentDictionary<TypeKey, Type>(DefaultConcurrencyLevel, DictionaryCacheConstants.SIZE_MEDIUM, new TypeKey.Comparer());
+        private static readonly ConcurrentDictionary<int, (TypeKey Key, Type Type)> _typeKeyCache =
+            new ConcurrentDictionary<int, (TypeKey, Type)>();
 
         private static readonly Func<Type, TypeKey> _getTypeKey =
             type => new TypeKey(StringHelper.UTF8NoBOM.GetBytes(RuntimeTypeNameFormatter.Format(type)));
@@ -35,34 +34,41 @@ namespace CuteAnt.Reflection
             return _typeCache.GetOrAdd(type, _getTypeKey);
         }
 
-        public static Type GetTypeFromTypeKey(in TypeKey key, bool throwOnError = true)
+        public static unsafe bool TryGetType(in TypeKey key, out Type type)
         {
-            if (!_typeKeyCache.TryGetValue(key, out var result))
+            // Search through 
+            var hashCode = key.HashCode;
+            var typeNameBytes = key.TypeName;
+            var candidateHashCode = hashCode;
+            while (_typeKeyCache.TryGetValue(candidateHashCode, out var entry))
             {
-                result = GetTypeInternal(key, throwOnError);
-            }
+                var existingKey = entry.Key;
+                if (existingKey.HashCode != hashCode) { break; }
 
-            return result;
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static Type GetTypeInternal(in TypeKey key, bool throwOnError = true)
-        {
-            Type result = null;
-            if (throwOnError)
-            {
-                result = TypeUtils.ResolveType(Encoding.UTF8.GetString(key.TypeName));
-            }
-            else
-            {
-                var typeName = key.TypeName;
-                if (typeName != null)
+                if (existingKey.TypeName.AsSpan().SequenceEqual(key.TypeName))
                 {
-                    TypeUtils.TryResolveType(Encoding.UTF8.GetString(typeName), out result);
+                    type = entry.Type;
+                    return true;
                 }
+
+                // Try the next entry.
+                ++candidateHashCode;
             }
-            if (result != null) { _typeKeyCache[key] = result; }
-            return result;
+
+            // Allocate a string for the type name.
+            string typeNameString = Encoding.UTF8.GetString(typeNameBytes);
+
+            if (TypeUtils.TryResolveType(typeNameString, out type))
+            {
+                while (!_typeKeyCache.TryAdd(candidateHashCode++, (key, type)))
+                {
+                    // Insert the type at the first available position.
+                }
+
+                return true;
+            }
+
+            return false;
         }
     }
 
@@ -97,14 +103,7 @@ namespace CuteAnt.Reflection
             var a = x.TypeName;
             var b = y.TypeName;
             if (ReferenceEquals(a, b)) { return true; }
-            if (a.Length != b.Length) { return false; }
-            var length = a.Length;
-            for (var i = 0; i < length; i++)
-            {
-                if (a[i] != b[i]) { return false; }
-            }
-
-            return true;
+            return a.AsSpan().SequenceEqual(b);
         }
 
         public override bool Equals(object obj)
@@ -117,6 +116,8 @@ namespace CuteAnt.Reflection
         }
 
         public override int GetHashCode() => this.HashCode;
+
+        public override string ToString() => $"TypeName \"{Encoding.UTF8.GetString(TypeName)}\" (hash {HashCode:X8})";
 
         internal sealed class Comparer : IEqualityComparer<TypeKey>
         {

@@ -5,12 +5,13 @@ using System.Runtime.CompilerServices;
 
 namespace CuteAnt.Reflection
 {
-    internal readonly struct TypeNameKey : IEquatable<TypeNameKey>
+    /// <summary>Represents an assembly-qualifies type.</summary>
+    public readonly struct QualifiedType : IEquatable<QualifiedType>
     {
         internal readonly string AssemblyName;
         internal readonly string TypeName;
 
-        public TypeNameKey(string assemblyName, string typeName)
+        public QualifiedType(string assemblyName, string typeName)
         {
             AssemblyName = assemblyName;
             TypeName = typeName;
@@ -18,38 +19,42 @@ namespace CuteAnt.Reflection
 
         public override int GetHashCode()
         {
+#if NETSTANDARD2_0
             var comparer = StringComparer.Ordinal;
-            return (AssemblyName != null ? comparer.GetHashCode(AssemblyName) : 0) ^
-                   (TypeName != null ? comparer.GetHashCode(TypeName) : 0);
+            return (AssemblyName is not null ? comparer.GetHashCode(AssemblyName) : 0) ^
+                   (TypeName is not null ? comparer.GetHashCode(TypeName) : 0);
+#else
+            return HashCode.Combine(AssemblyName, TypeName);
+#endif
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is TypeNameKey nameKey) { return Equals(nameKey); }
+            if (obj is QualifiedType nameKey) { return Equals(nameKey); }
             return false;
         }
 
-        public bool Equals(TypeNameKey other)
+        public bool Equals(QualifiedType other)
         {
             return (string.Equals(AssemblyName, other.AssemblyName) &&
                     string.Equals(TypeName, other.TypeName));
         }
     }
 
-    internal sealed class TypeNameKeyComparer : IComparer, IEqualityComparer, IComparer<TypeNameKey>, IEqualityComparer<TypeNameKey>
+    public sealed class QualifiedTypeComparer : IComparer, IEqualityComparer, IComparer<QualifiedType>, IEqualityComparer<QualifiedType>
     {
         /// <summary>Default</summary>
-        public static readonly TypeNameKeyComparer Default;
+        public static readonly QualifiedTypeComparer Default;
 
         private static readonly StringComparer s_stringComparer;
 
-        static TypeNameKeyComparer()
+        static QualifiedTypeComparer()
         {
-            Default = new TypeNameKeyComparer();
+            Default = new QualifiedTypeComparer();
             s_stringComparer = StringComparer.Ordinal;
         }
 
-        #region -- IComparer Members --
+#region -- IComparer Members --
 
         /// <inheritdoc />
         public int Compare(object x, object y)
@@ -58,7 +63,7 @@ namespace CuteAnt.Reflection
             if (x == null) { return -1; }
             if (y == null) { return 1; }
 
-            if (x is TypeNameKey obj1 && y is TypeNameKey obj2)
+            if (x is QualifiedType obj1 && y is QualifiedType obj2)
             {
                 return Compare(obj1, obj2);
             }
@@ -76,12 +81,12 @@ namespace CuteAnt.Reflection
             }
         }
 
-        #endregion
+#endregion
 
-        #region -- IComparer<CombGuid> Members --
+#region -- IComparer<TypeNameKey> Members --
 
         /// <inheritdoc />
-        public int Compare(TypeNameKey x, TypeNameKey y)
+        public int Compare(QualifiedType x, QualifiedType y)
         {
             var v = s_stringComparer.Compare(x.TypeName, y.TypeName);
             if (0u >= (uint)v)
@@ -91,9 +96,9 @@ namespace CuteAnt.Reflection
             return v;
         }
 
-        #endregion
+#endregion
 
-        #region -- IEqualityComparer --
+#region -- IEqualityComparer --
 
         /// <inheritdoc />
         public new bool Equals(object x, object y)
@@ -101,7 +106,7 @@ namespace CuteAnt.Reflection
             if (x == y) return true;
             if (x == null || y == null) return false;
 
-            if (x is TypeNameKey key)
+            if (x is QualifiedType key)
             {
                 return key.Equals(y);
             }
@@ -113,25 +118,25 @@ namespace CuteAnt.Reflection
         {
             if (obj == null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.obj); }
 
-            if (obj is TypeNameKey) { return ((TypeNameKey)obj).GetHashCode(); }
+            if (obj is QualifiedType) { return ((QualifiedType)obj).GetHashCode(); }
 
             return obj.GetHashCode();
         }
 
-        #endregion
+#endregion
 
-        #region -- IEqualityComparer<TypeNameKey> Members --
+#region -- IEqualityComparer<TypeNameKey> Members --
 
         /// <inheritdoc />
-        public bool Equals(TypeNameKey x, TypeNameKey y)
+        public bool Equals(QualifiedType x, QualifiedType y)
         {
             return s_stringComparer.Equals(x.AssemblyName, y.AssemblyName) &&
                    s_stringComparer.Equals(x.TypeName, y.TypeName);
         }
 
         /// <inheritdoc />
-        public int GetHashCode(TypeNameKey obj) => obj.GetHashCode();
+        public int GetHashCode(QualifiedType obj) => obj.GetHashCode();
 
-        #endregion
+#endregion
     }
 }

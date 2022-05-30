@@ -14,7 +14,16 @@ namespace CuteAnt.Reflection
         public static readonly Assembly SystemAssembly = typeof(int).Assembly;
 
         private static readonly char[] SimpleNameTerminators = { '`', '*', '[', '&' };
-        private const char c_keyDelimiter = ':';
+
+        static RuntimeTypeNameFormatter()
+        {
+            IncludeAssemblyName = type => !SystemAssembly.Equals(type.Assembly);
+        }
+
+        /// <summary>
+        /// Gets or sets the delegate used to determine whether an assembly name should be printed for the provided type.
+        /// </summary>
+        public static Func<Type, bool> IncludeAssemblyName { get; set; }
 
         #region -- Format --
 
@@ -67,20 +76,20 @@ namespace CuteAnt.Reflection
 
         #region ==& GetTypeDefinition &==
 
-        private static readonly CachedReadConcurrentDictionary<Type, TypeNameKey> s_asmTypeDefinitionCache =
-            new CachedReadConcurrentDictionary<Type, TypeNameKey>(DictionaryCacheConstants.SIZE_MEDIUM);
-        private static readonly Func<Type, TypeNameKey> s_getTypeDefinitionFunc = GetTypeDefinitionInternal;
+        private static readonly CachedReadConcurrentDictionary<Type, QualifiedType> s_asmTypeDefinitionCache =
+            new CachedReadConcurrentDictionary<Type, QualifiedType>(DictionaryCacheConstants.SIZE_MEDIUM);
+        private static readonly Func<Type, QualifiedType> s_getTypeDefinitionFunc = GetTypeDefinitionInternal;
 
-        internal static TypeNameKey GetTypeDefinition(Type type)
+        internal static QualifiedType GetTypeDefinition(Type type)
             => s_asmTypeDefinitionCache.GetOrAdd(type, s_getTypeDefinitionFunc);
 
-        private static TypeNameKey GetTypeDefinitionInternal(Type type)
+        private static QualifiedType GetTypeDefinitionInternal(Type type)
         {
             var builder = StringBuilderCache.Acquire();
             Format(builder, type, isElementType: true);
             var typeName = StringBuilderCache.GetStringAndRelease(builder);
 
-            return new TypeNameKey(GetAssemblyName(type), typeName);
+            return new QualifiedType(GetAssemblyName(type), typeName);
         }
 
         #endregion
@@ -125,7 +134,10 @@ namespace CuteAnt.Reflection
 
             // Types which are used as elements are not formatted with their assembly name, since that is added after the
             // element type's adornments.
-            if (!isElementType) AddAssembly(builder, type);
+            if (!isElementType && IncludeAssemblyName(type))
+            {
+                AddAssembly(builder, type);
+            }
         }
 
         private static void AddNamespace(StringBuilder builder, Type type)
@@ -156,7 +168,7 @@ namespace CuteAnt.Reflection
         {
             // Generic type definitions (eg, List<> without parameters) and non-generic types do not include any
             // parameters in their formatting.
-            if (!type.IsConstructedGenericType()) { return; }
+            if (!type.IsConstructedGenericType || type.ContainsGenericParameters) { return; }
 
             var args = type.GetGenericArguments();
             builder.Append('[');
@@ -210,9 +222,17 @@ namespace CuteAnt.Reflection
         private static void AddAssembly(StringBuilder builder, Type type)
         {
             // Do not include the assembly name for the system assembly.
-            if (SystemAssembly.Equals(type.Assembly)) { return; }
+            if (IsSystemNamespace(type)) { return; }
             builder.Append(", ");
             builder.Append(type.Assembly.GetName().Name);
+        }
+
+        private static bool IsSystemNamespace(Type type)
+        {
+            var ns = type?.Namespace;
+            if (string.IsNullOrWhiteSpace(ns)) return false;
+            if (type.DeclaringType is Type declaringType) return IsSystemNamespace(declaringType);
+            return string.Equals(ns, "System", StringComparison.Ordinal) || ns.StartsWith("System.", StringComparison.Ordinal);
         }
 
         #endregion

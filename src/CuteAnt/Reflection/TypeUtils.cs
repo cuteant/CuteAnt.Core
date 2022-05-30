@@ -59,8 +59,6 @@ namespace CuteAnt.Reflection
 
         private static readonly ConcurrentDictionary<Tuple<Type, bool>, List<Type>> ReferencedTypes = new ConcurrentDictionary<Tuple<Type, bool>, List<Type>>();
 
-        private static readonly CachedReflectionOnlyTypeResolver ReflectionOnlyTypeResolver = new CachedReflectionOnlyTypeResolver();
-
         #endregion
 
         #region -- GetSimpleTypeName --
@@ -74,7 +72,7 @@ namespace CuteAnt.Reflection
                     return GetTemplatedName(
                         GetUntemplatedTypeName(type.DeclaringType.Name),
                         type.DeclaringType,
-                        type.GetGenericArguments(),
+                        type.GetGenericArgumentsSafe(),
                         _ => true) + "." + GetUntemplatedTypeName(type.Name);
                 }
 
@@ -140,10 +138,15 @@ namespace CuteAnt.Reflection
 
         public static string GetTemplatedName(Type t, Predicate<Type> fullName = null)
         {
-            if (fullName == null)
+            if (fullName is null)
+            {
                 fullName = _ => true; // default to full type names
+            }
 
-            if (t.IsGenericType) return GetTemplatedName(GetSimpleTypeName(t, fullName), t, t.GetGenericArguments(), fullName);
+            if (t.IsGenericType)
+            {
+                return GetTemplatedName(GetSimpleTypeName(t, fullName), t, t.GetGenericArgumentsSafe(), fullName);
+            }
 
             if (t.IsArray)
             {
@@ -168,19 +171,54 @@ namespace CuteAnt.Reflection
 
         #endregion
 
+        #region -- GetGenericArgumentsSafe --
+
+        public static Type[] GetGenericArgumentsSafe(this Type type)
+        {
+            var result = type.GetGenericArguments();
+
+            if (type.ContainsGenericParameters)
+            {
+                // Get generic parameter from generic type definition to have consistent naming for inherited interfaces
+                // Example: interface IA<TName>, class A<TOtherName>: IA<OtherName>
+                // in this case generic parameter name of IA interface from class A is OtherName instead of TName.
+                // To avoid this situation use generic parameter from generic type definition.
+                // Matching by position in array, because GenericParameterPosition is number across generic parameters.
+                // For half open generic types (IA<int,T>) T will have position 0.
+                var originalGenericArguments = type.GetGenericTypeDefinition().GetGenericArguments();
+                if (result.Length != originalGenericArguments.Length) // this check may be redunant
+                {
+                    return result;
+                }
+
+                for (int idx = 0; idx < result.Length; idx++)
+                {
+                    if (result[idx].IsGenericParameter)
+                    {
+                        result[idx] = originalGenericArguments[idx];
+                    }
+                }
+            }
+            return result;
+        }
+
+        #endregion
+
         #region -- GetGenericTypeArgs --
 
-        public static string GetGenericTypeArgs(IEnumerable<Type> args, Predicate<Type> fullName)
+        public static string GetGenericTypeArgs(IReadOnlyList<Type> args, Predicate<Type> fullName)
         {
             string s = string.Empty;
 
             bool first = true;
-            foreach (var genericParameter in args)
+            for (int idx = 0; idx < args.Count; idx++)
             {
+                var genericParameter = args[idx];
                 if (!first)
                 {
                     s += ",";
                 }
+
                 if (!genericParameter.IsGenericType)
                 {
                     s += GetSimpleTypeName(genericParameter, fullName);
@@ -394,7 +432,7 @@ namespace CuteAnt.Reflection
 
         private static string GetFullName(Type type)
         {
-            if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
+            if (type is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
             if (type.IsNested && !type.IsGenericParameter)
             {
                 return type.Namespace + "." + type.DeclaringType.Name + "." + type.Name;
@@ -406,6 +444,11 @@ namespace CuteAnt.Reflection
                        + new string(',', type.GetArrayRank() - 1)
                        + "]";
             }
+
+            // using of t.FullName breaks interop with core and full .net in one cluster, because
+            // FullName of types from corelib is different.
+            // .net core int: [System.Int32, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]
+            // full .net int: [System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]
             return type.FullName ?? (type.IsGenericParameter ? type.Name : type.Namespace + "." + type.Name);
         }
 
@@ -468,12 +511,10 @@ namespace CuteAnt.Reflection
 
         #region -- IsGeneratedType --
 
-#if !NET40
         public static bool IsGeneratedType(Type type)
         {
             return TypeHasAttribute(type, typeof(GeneratedCodeAttribute));
         }
-#endif
 
         #endregion
 
@@ -508,55 +549,6 @@ namespace CuteAnt.Reflection
             }
 
             return false;
-        }
-
-        #endregion
-
-        #region -- CanUseReflectionOnly --
-
-        private static readonly Lazy<bool> canUseReflectionOnly = new Lazy<bool>(() =>
-        {
-#if !NETFRAMEWORK
-            return false;
-#else
-            try
-            {
-                ReflectionOnlyTypeResolver.TryResolveType(typeof(TypeUtils).AssemblyQualifiedName, out Type t);
-                return true;
-            }
-            catch (PlatformNotSupportedException)
-            {
-                return false;
-            }
-            catch (Exception)
-            {
-                // if other exceptions not related to platform ocurr, assume that ReflectionOnly is supported
-                return true;
-            }
-#endif
-        });
-
-        public static bool CanUseReflectionOnly => canUseReflectionOnly.Value;
-
-        #endregion
-
-        #region -- ResolveReflectionOnlyType / ToReflectionOnlyType --
-
-        public static Type ResolveReflectionOnlyType(string assemblyQualifiedName)
-        {
-            return ReflectionOnlyTypeResolver.ResolveType(assemblyQualifiedName);
-        }
-
-        public static Type ToReflectionOnlyType(Type type)
-        {
-            if (CanUseReflectionOnly)
-            {
-                return type.Assembly.ReflectionOnly ? type : ResolveReflectionOnlyType(type.AssemblyQualifiedName);
-            }
-            else
-            {
-                return type;
-            }
         }
 
         #endregion
@@ -598,22 +590,10 @@ namespace CuteAnt.Reflection
 
         #region == TypeHasAttribute ==
 
-#if !NET40
         internal static bool TypeHasAttribute(Type type, Type attribType)
         {
-            if (type.Assembly.ReflectionOnly || attribType.Assembly.ReflectionOnly)
-            {
-                type = ToReflectionOnlyType(type);
-                attribType = ToReflectionOnlyType(attribType);
-
-                // we can't use Type.GetCustomAttributes here because we could potentially be working with a reflection-only type.
-                return CustomAttributeData.GetCustomAttributes(type).Any(
-                        attrib => attribType.IsAssignableFrom(attrib.AttributeType));
-            }
-
-            return type.GetCustomAttributes(attribType, true).Any();
+            return type.IsDefined(attribType, true);
         }
-#endif
 
         #endregion
 
@@ -729,7 +709,7 @@ namespace CuteAnt.Reflection
                     builder.AppendFormat(
                         "{0}[{1}]",
                         elementType,
-                        string.Concat(Enumerable.Range(0, type.GetArrayRank() - 1).Select(_ => ',')));
+                        new string(',', type.GetArrayRank() - 1));
                 }
 
                 return;
@@ -774,7 +754,7 @@ namespace CuteAnt.Reflection
                 var unadornedTypeName = getNameFunc(type);
                 builder.Append(EscapeIdentifier(unadornedTypeName));
                 var generics =
-                    Enumerable.Range(0, Math.Min(type.GetGenericArguments().Count(), typeArguments.Count))
+                    Enumerable.Range(0, Math.Min(type.GetGenericArguments().Length, typeArguments.Count))
                         .Select(_ => typeArguments.Dequeue())
                         .ToList();
                 if (generics.Count > 0 && options.IncludeTypeParameters)
@@ -791,7 +771,7 @@ namespace CuteAnt.Reflection
                 var unadornedTypeName = getNameFunc(type);
                 builder.Append(EscapeIdentifier(unadornedTypeName));
                 var generics =
-                    Enumerable.Range(0, Math.Min(type.GetGenericArguments().Count(), typeArguments.Count))
+                    Enumerable.Range(0, Math.Min(type.GetGenericArguments().Length, typeArguments.Count))
                         .Select(_ => typeArguments.Dequeue())
                         .ToList();
                 if (generics.Count > 0 && options.IncludeTypeParameters)
@@ -1491,8 +1471,8 @@ namespace CuteAnt.Reflection
         private static readonly ReaderWriterLockSlim _resolverLock = new ReaderWriterLockSlim();
         private static readonly CachedReadConcurrentDictionary<string, Assembly> _assemblyCache =
             new CachedReadConcurrentDictionary<string, Assembly>(StringComparer.Ordinal);
-        private static readonly CachedReadConcurrentDictionary<TypeNameKey, Type> _typeNameKeyCache =
-            new CachedReadConcurrentDictionary<TypeNameKey, Type>(DictionaryCacheConstants.SIZE_MEDIUM, TypeNameKeyComparer.Default);
+        private static readonly CachedReadConcurrentDictionary<QualifiedType, Type> _typeNameKeyCache =
+            new CachedReadConcurrentDictionary<QualifiedType, Type>(DictionaryCacheConstants.SIZE_MEDIUM, QualifiedTypeComparer.Default);
 
         /// <summary>Registers a custom type resolver in case you really need to manipulate the way serialization works with types.
         /// The <paramref name="resolve"/> func is allowed to return null in case you cannot resolve the requested type.
@@ -1506,7 +1486,7 @@ namespace CuteAnt.Reflection
             }
         }
 
-        internal static Type ResolveType(in TypeNameKey typeNameKey)
+        internal static Type ResolveType(in QualifiedType typeNameKey)
         {
             if (_typeNameKeyCache.TryGetValue(typeNameKey, out var type)) { return type; }
 
@@ -1514,7 +1494,7 @@ namespace CuteAnt.Reflection
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static Type InternalResolveType(in TypeNameKey typeNameKey)
+        private static Type InternalResolveType(in QualifiedType typeNameKey)
         {
             var qualifiedTypeName = Combine(typeNameKey.TypeName, typeNameKey.AssemblyName);
 
@@ -1604,7 +1584,7 @@ namespace CuteAnt.Reflection
         }
 
         /// <inheritdoc />
-        private static bool TryResolveType(in TypeNameKey typeNameKey, out Type type)
+        private static bool TryResolveType(in QualifiedType typeNameKey, out Type type)
         {
             if (_typeNameKeyCache.TryGetValue(typeNameKey, out type)) { return true; }
 
@@ -1615,13 +1595,13 @@ namespace CuteAnt.Reflection
         }
 
         [MethodImpl(InlineMethod.Value)]
-        private static void AddTypeToCache(in TypeNameKey typeNameKey, Type type)
+        private static void AddTypeToCache(in QualifiedType typeNameKey, Type type)
         {
             var entry = _typeNameKeyCache.GetOrAdd(typeNameKey, _ => type);
             if (!ReferenceEquals(entry, type)) { ThrowInvalidOperationException(); }
         }
 
-        private static bool TryPerformUncachedTypeResolution(in TypeNameKey typeNameKey, out Type type)
+        private static bool TryPerformUncachedTypeResolution(in QualifiedType typeNameKey, out Type type)
         {
             string assemblyName = typeNameKey.AssemblyName;
             string typeName = typeNameKey.TypeName;
@@ -1733,7 +1713,7 @@ namespace CuteAnt.Reflection
 
         #region == SplitFullyQualifiedTypeName ==
 
-        internal static TypeNameKey SplitFullyQualifiedTypeName(string fullyQualifiedTypeName)
+        internal static QualifiedType SplitFullyQualifiedTypeName(string fullyQualifiedTypeName)
         {
             int? assemblyDelimiterIndex = GetAssemblyDelimiterIndex(fullyQualifiedTypeName);
 
@@ -1751,7 +1731,7 @@ namespace CuteAnt.Reflection
                 assemblyName = null;
             }
 
-            return new TypeNameKey(assemblyName, typeName);
+            return new QualifiedType(assemblyName, typeName);
         }
 
         private static int? GetAssemblyDelimiterIndex(string fullyQualifiedTypeName)
