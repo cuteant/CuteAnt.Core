@@ -59,8 +59,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.AsyncEx.Tests", "te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuteAnt.Runtime.Tests", "test\CuteAnt.Runtime.Test\CuteAnt.Runtime.Tests.csproj", "{A457D323-4CC8-4561-A4A2-6E8C4FBD1210}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.IO.RecyclableMemoryStream.Tests", "test\Microsoft.IO.RecyclableMemoryStream.Tests\Microsoft.IO.RecyclableMemoryStream.Tests.csproj", "{E471B018-5731-4CAC-B7D6-A5F82BB935FC}"
-EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CuteAnt.Extensions.Async.Sources", "..\CuteAnt.Extensions.Common\src\CuteAnt.Extensions.Async.Sources\CuteAnt.Extensions.Async.Sources.shproj", "{B2BE33A0-1EB0-49F7-BD28-72806D4A1DF1}"
 EndProject
 Global
@@ -105,10 +103,6 @@ Global
 		{A457D323-4CC8-4561-A4A2-6E8C4FBD1210}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A457D323-4CC8-4561-A4A2-6E8C4FBD1210}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A457D323-4CC8-4561-A4A2-6E8C4FBD1210}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E471B018-5731-4CAC-B7D6-A5F82BB935FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E471B018-5731-4CAC-B7D6-A5F82BB935FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E471B018-5731-4CAC-B7D6-A5F82BB935FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E471B018-5731-4CAC-B7D6-A5F82BB935FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -135,7 +129,6 @@ Global
 		{A4350CB9-AF70-4024-9A00-2FA3F6202144} = {4515424F-A0DE-43AB-A9B6-C6000145B7EC}
 		{F5EBF205-531E-4B5D-8178-AD037A406B84} = {DD4188B4-D72A-4D3E-B5A6-3168231C6301}
 		{A457D323-4CC8-4561-A4A2-6E8C4FBD1210} = {DD4188B4-D72A-4D3E-B5A6-3168231C6301}
-		{E471B018-5731-4CAC-B7D6-A5F82BB935FC} = {DD4188B4-D72A-4D3E-B5A6-3168231C6301}
 		{B2BE33A0-1EB0-49F7-BD28-72806D4A1DF1} = {4744CD6C-82C3-4D38-A708-3D301A74397F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
