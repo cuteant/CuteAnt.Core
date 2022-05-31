@@ -15,16 +15,6 @@ namespace CuteAnt.Reflection
 
         private static readonly char[] SimpleNameTerminators = { '`', '*', '[', '&' };
 
-        static RuntimeTypeNameFormatter()
-        {
-            IncludeAssemblyName = type => !SystemAssembly.Equals(type.Assembly);
-        }
-
-        /// <summary>
-        /// Gets or sets the delegate used to determine whether an assembly name should be printed for the provided type.
-        /// </summary>
-        public static Func<Type, bool> IncludeAssemblyName { get; set; }
-
         #region -- Format --
 
         private static readonly CachedReadConcurrentDictionary<Type, string> Cache =
@@ -134,7 +124,7 @@ namespace CuteAnt.Reflection
 
             // Types which are used as elements are not formatted with their assembly name, since that is added after the
             // element type's adornments.
-            if (!isElementType && IncludeAssemblyName(type))
+            if (!isElementType)
             {
                 AddAssembly(builder, type);
             }
@@ -143,8 +133,8 @@ namespace CuteAnt.Reflection
         private static void AddNamespace(StringBuilder builder, Type type)
         {
             if (string.IsNullOrWhiteSpace(type.Namespace)) { return; }
-            builder.Append(type.Namespace);
-            builder.Append('.');
+            _ = builder.Append(type.Namespace);
+            _ = builder.Append('.');
         }
 
         private static void AddClassName(StringBuilder builder, Type type)
@@ -153,12 +143,12 @@ namespace CuteAnt.Reflection
             if (type.IsNested)
             {
                 AddClassName(builder, type.DeclaringType);
-                builder.Append('+');
+                _ = builder.Append('+');
             }
 
             // Format the simple type name.
             var index = type.Name.IndexOfAny(SimpleNameTerminators);
-            builder.Append(index > 0 ? type.Name.Substring(0, index) : type.Name);
+            _ = builder.Append(index > 0 ? type.Name.Substring(0, index) : type.Name);
 
             // Format this type's generic arity.
             AddGenericArity(builder, type);
@@ -171,16 +161,16 @@ namespace CuteAnt.Reflection
             if (!type.IsConstructedGenericType || type.ContainsGenericParameters) { return; }
 
             var args = type.GetGenericArguments();
-            builder.Append('[');
+            _ = builder.Append('[');
             for (var i = 0; i < args.Length; i++)
             {
-                builder.Append('[');
+                _ = builder.Append('[');
                 Format(builder, args[i], isElementType: false);
-                builder.Append(']');
-                if (i + 1 < args.Length) builder.Append(',');
+                _ = builder.Append(']');
+                if (i + 1 < args.Length) _ = builder.Append(',');
             }
 
-            builder.Append(']');
+            _ = builder.Append(']');
         }
 
         private static void AddGenericArity(StringBuilder builder, Type type)
@@ -195,44 +185,37 @@ namespace CuteAnt.Reflection
             // If all of the generic parameters are in the declaring types then this type has no parameters of its own.
             if (0u >= (uint)arity) { return; }
 
-            builder.Append('`');
-            builder.Append(arity);
+            _ = builder.Append('`');
+            _ = builder.Append(arity);
         }
 
         private static void AddPointerSymbol(StringBuilder builder, Type type)
         {
             if (!type.IsPointer) { return; }
-            builder.Append('*');
+            _ = builder.Append('*');
         }
 
         private static void AddByRefSymbol(StringBuilder builder, Type type)
         {
             if (!type.IsByRef) { return; }
-            builder.Append('&');
+            _ = builder.Append('&');
         }
 
         private static void AddArrayRank(StringBuilder builder, Type type)
         {
             if (!type.IsArray) { return; }
-            builder.Append('[');
-            builder.Append(',', type.GetArrayRank() - 1);
-            builder.Append(']');
+            _ = builder.Append('[');
+            _ = builder.Append(',', type.GetArrayRank() - 1);
+            _ = builder.Append(']');
         }
 
         private static void AddAssembly(StringBuilder builder, Type type)
         {
             // Do not include the assembly name for the system assembly.
-            if (IsSystemNamespace(type)) { return; }
-            builder.Append(", ");
-            builder.Append(type.Assembly.GetName().Name);
-        }
+            if (SystemAssembly.Equals(type.Assembly)) { return; }
 
-        private static bool IsSystemNamespace(Type type)
-        {
-            var ns = type?.Namespace;
-            if (string.IsNullOrWhiteSpace(ns)) return false;
-            if (type.DeclaringType is Type declaringType) return IsSystemNamespace(declaringType);
-            return string.Equals(ns, "System", StringComparison.Ordinal) || ns.StartsWith("System.", StringComparison.Ordinal);
+            _ = builder.Append(", ");
+            _ = builder.Append(type.Assembly.GetName().Name);
         }
 
         #endregion
