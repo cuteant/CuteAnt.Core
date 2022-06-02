@@ -52,6 +52,42 @@ namespace System
 
         #endregion
 
+        #region - HasAttributeOf -
+
+        /// <summary>HasAttribute</summary>
+        /// <param name="memberInfo"></param>
+        /// <param name="attributeType"></param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
+        public static bool HasAttributeOf(this MemberInfo memberInfo, Type attributeType, bool inherit = true)
+        {
+            if (null == memberInfo) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.memberInfo);
+            if (null == attributeType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.attributeType);
+
+            switch (memberInfo)
+            {
+                case Type typeInfo:
+                    return HasAttributeOf(typeInfo, attributeType, inherit);
+                case PropertyInfo propertyInfo:
+                    return HasAttributeOf(propertyInfo, attributeType, inherit);
+                case FieldInfo fieldInfo:
+                    return HasAttributeOf(fieldInfo, attributeType, inherit);
+                default:
+                    return GetCustomAttributesX(memberInfo, null, inherit).Any(_ => _.GetType().As(attributeType));
+            }
+        }
+
+        /// <summary>HasAttributeOf</summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="memberInfo"></param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
+        public static bool HasAttributeOf<TAttribute>(this MemberInfo memberInfo, bool inherit = true)
+          where TAttribute : Attribute
+            => HasAttributeOf(memberInfo, typeof(TAttribute), inherit);
+
+        #endregion
+
         #region - HasAttributeNamed -
 
         /// <summary>HasAttributeNamed</summary>
@@ -393,6 +429,44 @@ namespace System
 
         #endregion
 
+        #region - HasAttributeOf -
+
+        /// <summary>HasAttribute</summary>
+        /// <param name="type"></param>
+        /// <param name="attributeType"></param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
+        public static bool HasAttributeOf(this Type type, Type attributeType, bool inherit = true)
+        {
+            if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
+            if (null == attributeType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.attributeType);
+
+            if (GetRuntimeAttributes(type).Any(_ => _.GetType().As(attributeType))) { return true; }
+
+            //if (type.Assembly.ReflectionOnly || attributeType.Assembly.ReflectionOnly)
+            //{
+            //  type = TypeUtils.ToReflectionOnlyType(type);
+            //  attributeType = TypeUtils.ToReflectionOnlyType(attributeType);
+
+            //  // we can't use Type.GetCustomAttributes here because we could potentially be working with a reflection-only type.
+            //  return CustomAttributeData.GetCustomAttributes(type).Any(
+            //          attrib => attributeType.IsAssignableFrom(attrib.AttributeTypeEx()));
+            //}
+
+            return GetCustomAttributesX(type, null, inherit).Any(_ => _.GetType().As(attributeType));
+        }
+
+        /// <summary>HasAttributeOf</summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="type"></param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
+        public static bool HasAttributeOf<TAttribute>(this Type type, bool inherit = true)
+          where TAttribute : Attribute
+          => HasAttributeOf(type, typeof(TAttribute), inherit);
+
+        #endregion
+
         #region - HasAttributeNamed -
 
         /// <summary>HasAttributeNamed</summary>
@@ -669,6 +743,34 @@ namespace System
         public static bool HasAttribute<TAttribute>(this PropertyInfo propertyInfo, bool inherit = true)
           where TAttribute : Attribute
           => HasAttribute(propertyInfo, typeof(TAttribute), inherit);
+
+        #endregion
+
+        #region - HasAttributeOf -
+
+        /// <summary>HasAttribute</summary>
+        /// <param name="propertyInfo"></param>
+        /// <param name="attributeType"></param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
+        public static bool HasAttributeOf(this PropertyInfo propertyInfo, Type attributeType, bool inherit = true)
+        {
+            if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
+            if (null == attributeType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.attributeType);
+
+            if (GetRuntimeAttributes(propertyInfo).Any(_ => _.GetType().As(attributeType))) { return true; }
+
+            return GetCustomAttributesX(propertyInfo, null, inherit).Any(_ => _.GetType().As(attributeType));
+        }
+
+        /// <summary>HasAttributeOf</summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="propertyInfo"></param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
+        public static bool HasAttributeOf<TAttribute>(this PropertyInfo propertyInfo, bool inherit = true)
+          where TAttribute : Attribute
+          => HasAttributeOf(propertyInfo, typeof(TAttribute), inherit);
 
         #endregion
 
@@ -977,6 +1079,34 @@ namespace System
         public static bool HasAttribute<TAttribute>(this FieldInfo fieldInfo, bool inherit = true)
           where TAttribute : Attribute
           => HasAttribute(fieldInfo, typeof(TAttribute), inherit);
+
+        #endregion
+
+        #region - HasAttributeOf -
+
+        /// <summary>HasAttribute</summary>
+        /// <param name="fieldInfo"></param>
+        /// <param name="attributeType"></param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
+        public static bool HasAttributeOf(this FieldInfo fieldInfo, Type attributeType, bool inherit = true)
+        {
+            if (null == fieldInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.fieldInfo); }
+            if (null == attributeType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.attributeType);
+
+            if (GetRuntimeAttributes(fieldInfo).Any(_ => _.GetType().As(attributeType))) { return true; }
+
+            return GetCustomAttributesX(fieldInfo, null, inherit).Any(_ => _.GetType().As(attributeType));
+        }
+
+        /// <summary>HasAttributeOf</summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="fieldInfo"></param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
+        public static bool HasAttributeOf<TAttribute>(this FieldInfo fieldInfo, bool inherit = true)
+          where TAttribute : Attribute
+          => HasAttributeOf(fieldInfo, typeof(TAttribute), inherit);
 
         #endregion
 

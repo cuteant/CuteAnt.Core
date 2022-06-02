@@ -2,7 +2,7 @@
   <!-- Shared Package Versions -->
   <PropertyGroup>
     <!-- Core packages -->
-    <MicrosoftBclAsyncInterfaces2PackageVersion>1.0.0</MicrosoftBclAsyncInterfaces2PackageVersion>
+    <MicrosoftBclAsyncInterfaces2PackageVersion>6.0.0</MicrosoftBclAsyncInterfaces2PackageVersion>
     <MicrosoftCSharp2PackageVersion>4.5.0</MicrosoftCSharp2PackageVersion>
     <MicrosoftDataSqlClient2PackageVersion>1.0.19239.1</MicrosoftDataSqlClient2PackageVersion>
     <FSharpCore2PackageVersion>4.7.0</FSharpCore2PackageVersion>
@@ -61,10 +61,10 @@
     <SystemCollectionsImmutable2PackageVersion>1.5.0</SystemCollectionsImmutable2PackageVersion>
     <SystemReflectionMetadata2PackageVersion>1.6.0</SystemReflectionMetadata2PackageVersion>
 
-    <SystemBuffers2PackageVersion>4.5.0</SystemBuffers2PackageVersion>
+    <SystemBuffers2PackageVersion>4.5.1</SystemBuffers2PackageVersion>
     <SystemDiagnosticsDiagnosticSource2PackageVersion>4.5.1</SystemDiagnosticsDiagnosticSource2PackageVersion>
     <SystemIOPipelines2PackageVersion>4.5.3</SystemIOPipelines2PackageVersion>
-    <SystemMemory2PackageVersion>4.5.3</SystemMemory2PackageVersion>
+    <SystemMemory2PackageVersion>4.5.5</SystemMemory2PackageVersion>
     <SystemNetHttp2PackageVersion>4.3.4</SystemNetHttp2PackageVersion>
     <SystemNetHttpJson2PackageVersion>3.2.0</SystemNetHttpJson2PackageVersion>
     <SystemNetHttpWinHttpHandler2PackageVersion>4.5.4</SystemNetHttpWinHttpHandler2PackageVersion>
@@ -78,7 +78,7 @@
     <SystemReflectionExtensions2PackageVersion>4.3.0</SystemReflectionExtensions2PackageVersion>
     <SystemReflectionTypeExtensions2PackageVersion>4.5.1</SystemReflectionTypeExtensions2PackageVersion>
 
-    <SystemRuntimeCompilerServicesUnsafe2PackageVersion>4.5.2</SystemRuntimeCompilerServicesUnsafe2PackageVersion>
+    <SystemRuntimeCompilerServicesUnsafe2PackageVersion>4.5.3</SystemRuntimeCompilerServicesUnsafe2PackageVersion>
 
     <SystemPrivateServiceModel2PackageVersion>4.5.3</SystemPrivateServiceModel2PackageVersion>
     <SystemServiceModelDuplex2PackageVersion>4.5.3</SystemServiceModelDuplex2PackageVersion>
@@ -98,7 +98,7 @@
     <SystemTextEncodingsWeb2PackageVersion>4.6.0</SystemTextEncodingsWeb2PackageVersion>
     <SystemThreadingChannels2PackageVersion>4.5.0</SystemThreadingChannels2PackageVersion>
     <SystemThreadingTasksDataflow2PackageVersion>4.9.0</SystemThreadingTasksDataflow2PackageVersion>
-    <SystemThreadingTasksExtensions2PackageVersion>4.5.3</SystemThreadingTasksExtensions2PackageVersion>
+    <SystemThreadingTasksExtensions2PackageVersion>4.5.4</SystemThreadingTasksExtensions2PackageVersion>
     <SystemValueTuple2PackageVersion>4.5.0</SystemValueTuple2PackageVersion>
 
     <!-- .NetFx40 packages -->

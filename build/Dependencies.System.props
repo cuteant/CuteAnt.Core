@@ -2,7 +2,6 @@
   <!-- Shared Package Versions -->
   <PropertyGroup>
     <!-- Core packages -->
-    <MicrosoftBclAsyncInterfacesPackageVersion>6.0.0</MicrosoftBclAsyncInterfacesPackageVersion>
     <MicrosoftExperimentalCollectionsPackageVersion>1.0.6-e190117-3</MicrosoftExperimentalCollectionsPackageVersion>
     <MicrosoftCSharpPackageVersion>4.7.0</MicrosoftCSharpPackageVersion>
     <MicrosoftDataSqlClientPackageVersion>4.0.0</MicrosoftDataSqlClientPackageVersion>
@@ -64,25 +63,14 @@
     <SystemCollectionsImmutablePackageVersion>6.0.0</SystemCollectionsImmutablePackageVersion>
     <SystemReflectionMetadataPackageVersion>6.0.0</SystemReflectionMetadataPackageVersion>
 
-    <SystemBuffersPackageVersion>4.5.1</SystemBuffersPackageVersion>
     <SystemDiagnosticsDiagnosticSourcePackageVersion>6.0.0</SystemDiagnosticsDiagnosticSourcePackageVersion>
     <SystemIOPipelinesPackageVersion>6.0.2</SystemIOPipelinesPackageVersion>
     <SystemLinqAsyncPackageVersion>6.0.1</SystemLinqAsyncPackageVersion>
-    <SystemMemoryPackageVersion>4.5.4</SystemMemoryPackageVersion>
-    <SystemNetHttpPackageVersion>4.3.4</SystemNetHttpPackageVersion>
     <SystemNetHttpJsonPackageVersion>6.0.0</SystemNetHttpJsonPackageVersion>
     <SystemNetHttpWinHttpHandlerPackageVersion>6.0.0</SystemNetHttpWinHttpHandlerPackageVersion>
     <SystemNetWebSocketsWebSocketProtocolPackageVersion>5.0.0</SystemNetWebSocketsWebSocketProtocolPackageVersion>
-    <SystemNumericsVectorsPackageVersion>4.5.0</SystemNumericsVectorsPackageVersion>
 
     <SystemResourcesExtensionsPackageVersion>6.0.0</SystemResourcesExtensionsPackageVersion>
-
-    <SystemReflectionDispatchProxyPackageVersion>4.7.1</SystemReflectionDispatchProxyPackageVersion>
-    <SystemReflectionEmitPackageVersion>4.7.0</SystemReflectionEmitPackageVersion>
-    <SystemReflectionEmitILGenerationPackageVersion>4.7.0</SystemReflectionEmitILGenerationPackageVersion>
-    <SystemReflectionEmitLightweightPackageVersion>4.7.0</SystemReflectionEmitLightweightPackageVersion>
-    <SystemReflectionExtensionsPackageVersion>4.3.0</SystemReflectionExtensionsPackageVersion>
-    <SystemReflectionTypeExtensionsPackageVersion>4.7.0</SystemReflectionTypeExtensionsPackageVersion>
 
     <SystemRuntimeCompilerServicesUnsafePackageVersion>6.0.0</SystemRuntimeCompilerServicesUnsafePackageVersion>
 

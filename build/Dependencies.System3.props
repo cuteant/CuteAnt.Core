@@ -2,7 +2,6 @@
   <!-- Shared Package Versions -->
   <PropertyGroup>
     <!-- Core packages -->
-    <MicrosoftBclAsyncInterfaces3PackageVersion>1.1.1</MicrosoftBclAsyncInterfaces3PackageVersion>
     <MicrosoftExperimentalCollections3PackageVersion>1.0.6-e190117-3</MicrosoftExperimentalCollections3PackageVersion>
     <MicrosoftCSharp3PackageVersion>4.7.0</MicrosoftCSharp3PackageVersion>
     <MicrosoftDataSqlClient3PackageVersion>2.0.1</MicrosoftDataSqlClient3PackageVersion>
@@ -64,15 +63,12 @@
     <SystemCollectionsImmutable3PackageVersion>1.7.1</SystemCollectionsImmutable3PackageVersion>
     <SystemReflectionMetadata3PackageVersion>1.8.1</SystemReflectionMetadata3PackageVersion>
 
-    <SystemBuffers3PackageVersion>4.5.1</SystemBuffers3PackageVersion>
     <SystemDiagnosticsDiagnosticSource3PackageVersion>4.7.1</SystemDiagnosticsDiagnosticSource3PackageVersion>
     <SystemIOPipelines3PackageVersion>4.7.3</SystemIOPipelines3PackageVersion>
-    <SystemMemory3PackageVersion>4.5.4</SystemMemory3PackageVersion>
     <SystemNetHttp3PackageVersion>4.3.4</SystemNetHttp3PackageVersion>
     <SystemNetHttpJson3PackageVersion>3.2.1</SystemNetHttpJson3PackageVersion>
     <SystemNetHttpWinHttpHandler3PackageVersion>4.7.2</SystemNetHttpWinHttpHandler3PackageVersion>
     <SystemNetWebSocketsWebSocketProtocol3PackageVersion>4.7.1</SystemNetWebSocketsWebSocketProtocol3PackageVersion>
-    <SystemNumericsVectors3PackageVersion>4.5.0</SystemNumericsVectors3PackageVersion>
 
     <SystemReflectionDispatchProxy3PackageVersion>4.7.1</SystemReflectionDispatchProxy3PackageVersion>
     <SystemReflectionEmit3PackageVersion>4.7.0</SystemReflectionEmit3PackageVersion>
