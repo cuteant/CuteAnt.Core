@@ -3,15 +3,19 @@ using Xunit;
 
 namespace CuteAnt.Tests
 {
-  public class ThrowHelperTest
-  {
-    [Fact]
-    public void RunTest()
+    public class ThrowHelperTest
     {
-      Assert.Throws<ArgumentException>(() => ThrowHelper.ThrowArgumentException(ExceptionResource.Type_Name_Must_Not_Null, ExceptionArgument.name));
-      var exc = ThrowHelper.GetArgumentException(ExceptionResource.Type_Name_Must_Not_Null, ExceptionArgument.member);
-      Assert.Contains("A type name must not be null nor consist of only whitespace.", exc.Message);
-      Assert.EndsWith("member", exc.Message);
+        [Fact]
+        public void RunTest()
+        {
+            Assert.Throws<ArgumentException>(() => ThrowHelper.ThrowArgumentException(ExceptionResource.Type_Name_Must_Not_Null, ExceptionArgument.name));
+            var exc = ThrowHelper.GetArgumentException(ExceptionResource.Type_Name_Must_Not_Null, ExceptionArgument.member);
+            Assert.Contains("A type name must not be null nor consist of only whitespace.", exc.Message);
+#if !NETCOREAPP2_1
+            Assert.Contains("'member'", exc.Message);
+#else
+            Assert.EndsWith("member", exc.Message);
+#endif
+        }
     }
-  }
 }

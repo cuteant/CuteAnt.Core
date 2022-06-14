@@ -56,7 +56,7 @@ namespace CuteAnt.Pool
             }
         }
 
-        private readonly ConcurrentDictionary<TKey, TimestampedValue> cache = new();
+        private readonly ConcurrentDictionary<TKey, TimestampedValue> _cache = new();
         private int count;
 
         public int Count => count;
@@ -67,7 +67,8 @@ namespace CuteAnt.Pool
         /// </summary>
         /// <param name="maxSize">Maximum number of entries to allow.</param>
         /// <param name="maxAge">Maximum age of an entry.</param>
-        public LruCache(int maxSize, TimeSpan maxAge)
+        /// <param name="comparer"></param>
+        public LruCache(int maxSize, TimeSpan maxAge, IEqualityComparer<TKey> comparer)
         {
             if (maxSize <= 0)
             {
@@ -75,6 +76,7 @@ namespace CuteAnt.Pool
             }
             MaximumSize = maxSize;
             requiredFreshness = maxAge;
+            _cache = comparer is null ? (new()) : (new(comparer));
         }
 
         public void Add(TKey key, TValue value)
@@ -84,7 +86,7 @@ namespace CuteAnt.Pool
 
             // add/update delegates can be called multiple times, but only the last result counts
             var added = false;
-            cache.AddOrUpdate(key, _ =>
+            _cache.AddOrUpdate(key, _ =>
             {
                 added = true;
                 return result;
@@ -98,11 +100,11 @@ namespace CuteAnt.Pool
             if (added) Interlocked.Increment(ref count);
         }
 
-        public bool ContainsKey(TKey key) => cache.ContainsKey(key);
+        public bool ContainsKey(TKey key) => _cache.ContainsKey(key);
 
         public bool RemoveKey(TKey key)
         {
-            if (!cache.TryRemove(key, out _)) return false;
+            if (!_cache.TryRemove(key, out _)) return false;
 
             Interlocked.Decrement(ref count);
             return true;
@@ -110,7 +112,7 @@ namespace CuteAnt.Pool
 
         public bool TryRemove<T>(TKey key, Func<T, TValue, bool> predicate, T context)
         {
-            if (!cache.TryGetValue(key, out var timestampedValue))
+            if (!_cache.TryGetValue(key, out var timestampedValue))
             {
                 return false;
             }
@@ -129,10 +131,10 @@ namespace CuteAnt.Pool
             var entry = new KeyValuePair<TKey, TimestampedValue>(key, value);
 
 #if NET5_0_OR_GREATER
-            return cache.TryRemove(entry);
+            return _cache.TryRemove(entry);
 #else
             // Cast the dictionary to its interface type to access the explicitly implemented Remove method.
-            var cacheDictionary = (IDictionary<TKey, TimestampedValue>)cache;
+            var cacheDictionary = (IDictionary<TKey, TimestampedValue>)_cache;
             return cacheDictionary.Remove(entry);
 #endif
         }
@@ -141,17 +143,17 @@ namespace CuteAnt.Pool
         {
             if (RaiseFlushEvent is { } FlushEvent)
             {
-                foreach (var _ in cache) FlushEvent();
+                foreach (var _ in _cache) FlushEvent();
             }
 
             // not thread-safe: if anything is added, or even removed after addition, between Clear and Count, count may be off
-            cache.Clear();
+            _cache.Clear();
             Interlocked.Exchange(ref count, 0);
         }
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            if (cache.TryGetValue(key, out var result))
+            if (_cache.TryGetValue(key, out var result))
             {
                 var age = result.Age.Elapsed;
                 if (age > requiredFreshness)
@@ -181,7 +183,7 @@ namespace CuteAnt.Pool
         /// </summary>
         public void RemoveExpired()
         {
-            foreach (var entry in this.cache)
+            foreach (var entry in this._cache)
             {
                 if (entry.Value.Age.Elapsed > requiredFreshness)
                 {
@@ -195,7 +197,7 @@ namespace CuteAnt.Pool
             while (Count >= MaximumSize)
             {
                 long generationToDelete = Interlocked.Increment(ref generationToFree);
-                foreach (var e in cache)
+                foreach (var e in _cache)
                 {
                     if (e.Value.Generation <= generationToDelete)
                     {
@@ -208,7 +210,7 @@ namespace CuteAnt.Pool
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            return cache.Select(p => new KeyValuePair<TKey, TValue>(p.Key, p.Value.Value)).GetEnumerator();
+            return _cache.Select(p => new KeyValuePair<TKey, TValue>(p.Key, p.Value.Value)).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

@@ -94,8 +94,8 @@ namespace CuteAnt.Reflection
                 if (ignoreIndexedProperties && pi.GetIndexParameters().Length > 0) { continue; }
                 if (ignoreNonSerializedProperties)
                 {
-                    if (pi.FirstAttribute<XmlIgnoreAttribute>() != null) { continue; }
-                    if (pi.FirstAttribute<IgnoreDataMemberAttribute>() != null) { continue; }
+                    if (pi.FirstAttribute<XmlIgnoreAttribute>() is not null) { continue; }
+                    if (pi.FirstAttribute<IgnoreDataMemberAttribute>() is not null) { continue; }
                 }
 
                 list.Add(pi);
@@ -319,18 +319,14 @@ namespace CuteAnt.Reflection
             if (name.IsNullOrWhiteSpace()) { return null; }
 
             // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-            while (type != null && type != TypeConstants.ObjectType)
+            while (type is not null && type != TypeConstants.ObjectType)
             {
                 var properties = s_typeDeclaredPropertiesCache.GetItem(type, s_getTypeDeclaredPropertiesFunc);
                 if (properties.TryGetValue(name, out PropertyInfo property)) { return property; };
 
                 if (declaredOnly) { break; }
 
-#if NET40
                 type = type.BaseType;
-#else
-                type = type.BaseType;
-#endif
             }
 
             return null;
@@ -359,24 +355,20 @@ namespace CuteAnt.Reflection
         /// <returns></returns>
         public static PropertyInfo LookupTypeProperty(this Type type, string name, Type returnType, bool declaredOnly = false)
         {
-            if (null == name) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
-            if (null == returnType) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.returnType); }
+            if (name is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
+            if (returnType is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.returnType); }
 
             // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-            while (type != null && type != TypeConstants.ObjectType)
+            while (type is not null && type != TypeConstants.ObjectType)
             {
                 var properties = GetTypeDeclaredProperties(type);
                 var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name) &&
                                                               _.PropertyType == returnType);
-                if (property != null) { return property; }
+                if (property is not null) { return property; }
 
                 if (declaredOnly) { break; }
 
-#if NET40
                 type = type.BaseType;
-#else
-                type = type.BaseType;
-#endif
             }
 
             return null;
@@ -390,24 +382,20 @@ namespace CuteAnt.Reflection
         /// <returns></returns>
         public static PropertyInfo LookupTypeProperty(this Type type, string name, Type[] parameterTypes, bool declaredOnly = false)
         {
-            if (null == name) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
-            if (null == parameterTypes) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.parameterTypes); }
+            if (name is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
+            if (parameterTypes is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.parameterTypes); }
 
             // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-            while (type != null && type != TypeConstants.ObjectType)
+            while (type is not null && type != TypeConstants.ObjectType)
             {
                 var properties = GetTypeDeclaredProperties(type);
                 var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name) &&
                                                               IsParameterMatch(_.GetIndexParameters(), parameterTypes));
-                if (property != null) { return property; }
+                if (property is not null) { return property; }
 
                 if (declaredOnly) { break; }
 
-#if NET40
                 type = type.BaseType;
-#else
-                type = type.BaseType;
-#endif
             }
 
             return null;
@@ -422,25 +410,21 @@ namespace CuteAnt.Reflection
         /// <returns></returns>
         public static PropertyInfo LookupTypeProperty(this Type type, string name, Type returnType, Type[] parameterTypes, bool declaredOnly = false)
         {
-            if (null == name) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
-            if (null == parameterTypes) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.parameterTypes); }
+            if (name is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
+            if (parameterTypes is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.parameterTypes); }
 
             // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-            while (type != null && type != TypeConstants.ObjectType)
+            while (type is not null && type != TypeConstants.ObjectType)
             {
                 var properties = GetTypeDeclaredProperties(type);
                 var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name) &&
                                                               _.PropertyType == returnType &&
                                                               IsParameterMatch(_.GetIndexParameters(), parameterTypes));
-                if (property != null) { return property; }
+                if (property is not null) { return property; }
 
                 if (declaredOnly) { break; }
 
-#if NET40
                 type = type.BaseType;
-#else
-                type = type.BaseType;
-#endif
             }
 
             return null;
@@ -460,18 +444,14 @@ namespace CuteAnt.Reflection
             if (name.IsNullOrWhiteSpace()) { return null; }
 
             // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-            while (type != null && type != TypeConstants.ObjectType)
+            while (type is not null && type != TypeConstants.ObjectType)
             {
                 var properties = s_instanceDeclaredPropertiesCache.GetItem(type, s_getInstanceDeclaredPropertiesFunc);
                 if (properties.TryGetValue(name, out PropertyInfo property)) { return property; };
 
                 if (declaredOnly) { break; }
 
-#if NET40
                 type = type.BaseType;
-#else
-                type = type.BaseType;
-#endif
             }
 
             return null;
@@ -500,24 +480,20 @@ namespace CuteAnt.Reflection
         /// <returns></returns>
         public static PropertyInfo LookupInstanceProperty(this Type type, string name, Type returnType, bool declaredOnly = false)
         {
-            if (null == name) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
-            if (null == returnType) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.returnType); }
+            if (name is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
+            if (returnType is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.returnType); }
 
             // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-            while (type != null && type != TypeConstants.ObjectType)
+            while (type is not null && type != TypeConstants.ObjectType)
             {
                 var properties = GetInstanceDeclaredProperties(type);
                 var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name) &&
                                                               _.PropertyType == returnType);
-                if (property != null) { return property; }
+                if (property is not null) { return property; }
 
                 if (declaredOnly) { break; }
 
-#if NET40
                 type = type.BaseType;
-#else
-                type = type.BaseType;
-#endif
             }
 
             return null;
@@ -531,24 +507,20 @@ namespace CuteAnt.Reflection
         /// <returns></returns>
         public static PropertyInfo LookupInstanceProperty(this Type type, string name, Type[] parameterTypes, bool declaredOnly = false)
         {
-            if (null == name) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
-            if (null == parameterTypes) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.parameterTypes); }
+            if (name is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
+            if (parameterTypes is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.parameterTypes); }
 
             // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-            while (type != null && type != TypeConstants.ObjectType)
+            while (type is not null && type != TypeConstants.ObjectType)
             {
                 var properties = GetInstanceDeclaredProperties(type);
                 var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name) &&
                                                               IsParameterMatch(_.GetIndexParameters(), parameterTypes));
-                if (property != null) { return property; }
+                if (property is not null) { return property; }
 
                 if (declaredOnly) { break; }
 
-#if NET40
                 type = type.BaseType;
-#else
-                type = type.BaseType;
-#endif
             }
 
             return null;
@@ -563,25 +535,21 @@ namespace CuteAnt.Reflection
         /// <returns></returns>
         public static PropertyInfo LookupInstanceProperty(this Type type, string name, Type returnType, Type[] parameterTypes, bool declaredOnly = false)
         {
-            if (null == name) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
-            if (null == parameterTypes) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.parameterTypes); }
+            if (name is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
+            if (parameterTypes is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.parameterTypes); }
 
             // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-            while (type != null && type != TypeConstants.ObjectType)
+            while (type is not null && type != TypeConstants.ObjectType)
             {
                 var properties = GetInstanceDeclaredProperties(type);
                 var property = properties.FirstOrDefault(_ => string.Equals(_.Name, name) &&
                                                               _.PropertyType == returnType &&
                                                               IsParameterMatch(_.GetIndexParameters(), parameterTypes));
-                if (property != null) { return property; }
+                if (property is not null) { return property; }
 
                 if (declaredOnly) { break; }
 
-#if NET40
                 type = type.BaseType;
-#else
-                type = type.BaseType;
-#endif
             }
 
             return null;
@@ -597,8 +565,8 @@ namespace CuteAnt.Reflection
         /// <returns></returns>
         public static PropertyInfo AsDeclaredProperty(this PropertyInfo propertyInfo, Type type)
         {
-            if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
-            if (null == type) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
+            if (propertyInfo is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
+            if (type is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.type); }
 
             if (propertyInfo.DeclaringType == type) { return propertyInfo; }
 

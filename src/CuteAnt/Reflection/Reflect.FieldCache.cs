@@ -175,18 +175,14 @@ namespace CuteAnt.Reflection
             if (name.IsNullOrWhiteSpace()) { return null; }
 
             // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-            while (type != null && type != TypeConstants.ObjectType)
+            while (type is not null && type != TypeConstants.ObjectType)
             {
                 var fields = s_typeDeclaredFieldsCache.GetItem(type, s_getTypeDeclaredFieldsFunc);
                 if (fields.TryGetValue(name, out FieldInfo field)) { return field; };
 
                 if (declaredOnly) { break; }
 
-#if NET40
                 type = type.BaseType;
-#else
-                type = type.BaseType;
-#endif
             }
 
             return null;
@@ -200,8 +196,9 @@ namespace CuteAnt.Reflection
             //return GetTypeDeclaredFields(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
             var dic = new Dictionary<string, FieldInfo>(StringComparer.Ordinal);
             var fields = GetTypeDeclaredFields(type);
-            foreach (var fi in fields)
+            for (int i = 0; i < fields.Length; i++)
             {
+                var fi = fields[i];
                 dic[fi.Name] = fi;
             }
             return dic;
@@ -221,18 +218,14 @@ namespace CuteAnt.Reflection
             if (name.IsNullOrWhiteSpace()) { return null; }
 
             // 父类属性的获取需要递归，有些类型的父类为空，比如接口
-            while (type != null && type != TypeConstants.ObjectType)
+            while (type is not null && type != TypeConstants.ObjectType)
             {
                 var fields = s_instanceDeclaredFieldsCache.GetItem(type, s_getInstanceDeclaredFieldsFunc);
                 if (fields.TryGetValue(name, out FieldInfo field)) { return field; };
 
                 if (declaredOnly) { break; }
 
-#if NET40
                 type = type.BaseType;
-#else
-                type = type.BaseType;
-#endif
             }
 
             return null;
@@ -246,8 +239,9 @@ namespace CuteAnt.Reflection
             //return GetTypeDeclaredFields(type).ToDictionary(_ => _.Name, StringComparer.Ordinal);
             var dic = new Dictionary<string, FieldInfo>(StringComparer.Ordinal);
             var fields = GetInstanceDeclaredFields(type);
-            foreach (var fi in fields)
+            for (int i = 0; i < fields.Length; i++)
             {
+                var fi = fields[i];
                 dic[fi.Name] = fi;
             }
             return dic;

@@ -3,118 +3,118 @@ using System.Reflection;
 
 namespace CuteAnt.Reflection
 {
-  public static partial class PropertyInvoker
-  {
-    #region -- CreateExpressionGetter --
-
-    public static MemberGetter CreateExpressionGetter(PropertyInfo propertyInfo)
+    public static partial class PropertyInvoker
     {
-      //if (!propertyInfo.CanRead) { return TypeAccessorHelper.EmptyMemberGetter; }
-      var getMethodInfo = propertyInfo.GetGetMethod(true);
-      if (getMethodInfo == null) { return TypeAccessorHelper.EmptyMemberGetter; }
+        #region -- CreateExpressionGetter --
 
-      const string _oInstanceParameterName = "oInstanceParam";
+        public static MemberGetter CreateExpressionGetter(PropertyInfo propertyInfo)
+        {
+            var getMethodInfo = propertyInfo.GetGetMethod(true);
+            if (getMethodInfo is null) { return TypeAccessorHelper.EmptyMemberGetter; }
 
-      var oInstanceParam = Expression.Parameter(TypeConstants.ObjectType, _oInstanceParameterName);
-      var instanceParam = Expression.Convert(oInstanceParam, propertyInfo.ReflectedType); //propertyInfo.DeclaringType doesn't work on Proxy types
+            const string _oInstanceParameterName = "oInstanceParam";
 
-      var exprCallPropertyGetFn = Expression.Call(instanceParam, getMethodInfo);
-      var oExprCallPropertyGetFn = Expression.Convert(exprCallPropertyGetFn, TypeConstants.ObjectType);
+            var oInstanceParam = Expression.Parameter(TypeConstants.ObjectType, _oInstanceParameterName);
+            var instanceParam = Expression.Convert(oInstanceParam, propertyInfo.ReflectedType); //propertyInfo.DeclaringType doesn't work on Proxy types
 
-      return Expression.Lambda<MemberGetter>(oExprCallPropertyGetFn, oInstanceParam).Compile();
+            var exprCallPropertyGetFn = Expression.Call(instanceParam, getMethodInfo);
+            var oExprCallPropertyGetFn = Expression.Convert(exprCallPropertyGetFn, TypeConstants.ObjectType);
+
+            return Expression.Lambda<MemberGetter>(oExprCallPropertyGetFn, oInstanceParam).Compile();
+        }
+
+        #endregion
+
+        #region -- CreateExpressionSetter --
+
+        public static MemberSetter CreateExpressionSetter(PropertyInfo propertyInfo)
+        {
+            var propertySetMethod = propertyInfo.GetSetMethod(true);
+            if (propertySetMethod is null) return TypeAccessorHelper.EmptyMemberSetter;
+
+            try
+            {
+                var declaringType = propertyInfo.ReflectedType;
+
+                var instance = Expression.Parameter(TypeConstants.ObjectType, TypeAccessorHelper.InstanceParameterName);
+                var argument = Expression.Parameter(TypeConstants.ObjectType, TypeAccessorHelper.ArgumentParameterName);
+
+                var instanceParam = declaringType.IsValueType && !declaringType.IsNullableType()
+                    ? Expression.Unbox(instance, declaringType)
+                    : Expression.Convert(instance, declaringType);
+
+                //var valueParam = Expression.Convert(argument, propertyInfo.PropertyType);
+                var valueParam = TypeAccessorHelper.GetCastOrConvertExpression(argument, propertyInfo.PropertyType);
+
+                var setterCall = Expression.Call(instanceParam, propertySetMethod, valueParam);
+
+                return Expression.Lambda<MemberSetter>(setterCall, instance, argument).Compile();
+            }
+            catch //fallback for Android
+            {
+                return (o, convertedValue) => propertySetMethod.Invoke(o, new[] { convertedValue });
+            }
+        }
+
+        #endregion
     }
 
-    #endregion
-
-    #region -- CreateExpressionSetter --
-
-    public static MemberSetter CreateExpressionSetter(PropertyInfo propertyInfo)
+    public static partial class PropertyInvoker<T>
     {
-      //if (!propertyInfo.CanWrite) { return TypeAccessorHelper.EmptyMemberSetter; }
-      var propertySetMethod = propertyInfo.GetSetMethod(true);
-      if (propertySetMethod == null) return TypeAccessorHelper.EmptyMemberSetter;
+        #region -- CreateExpressionGetter --
 
-      try
-      {
-        var declaringType = propertyInfo.ReflectedType;
+        public static MemberGetter<T> CreateExpressionGetter(PropertyInfo propertyInfo)
+        {
+            var getMethodInfo = propertyInfo.GetGetMethod(true);
+            if (getMethodInfo is null) { return TypeAccessorHelper<T>.EmptyMemberGetter; }
 
-        var instance = Expression.Parameter(TypeConstants.ObjectType, TypeAccessorHelper.InstanceParameterName);
-        var argument = Expression.Parameter(TypeConstants.ObjectType, TypeAccessorHelper.ArgumentParameterName);
+            var thisType = TypeAccessorHelper<T>.ThisType;
+            var propertyDeclaringType = propertyInfo.DeclaringType;
 
-        var instanceParam = declaringType.IsValueType && !declaringType.IsNullableType()
-            ? Expression.Unbox(instance, declaringType)
-            : Expression.Convert(instance, declaringType);
+            var instance = Expression.Parameter(thisType, TypeAccessorHelper.InstanceParameterName);
+            var property = thisType != propertyDeclaringType
+                ? Expression.Property(Expression.TypeAs(instance, propertyDeclaringType), propertyInfo)
+                : Expression.Property(instance, propertyInfo);
+            var convertProperty = Expression.TypeAs(property, TypeConstants.ObjectType);
+            return Expression.Lambda<MemberGetter<T>>(convertProperty, instance).Compile();
+        }
 
-        //var valueParam = Expression.Convert(argument, propertyInfo.PropertyType);
-        var valueParam = TypeAccessorHelper.GetCastOrConvertExpression(argument, propertyInfo.PropertyType);
+        #endregion
 
-        var setterCall = Expression.Call(instanceParam, propertySetMethod, valueParam);
+        #region -- CreateExpressionSetter --
 
-        return Expression.Lambda<MemberSetter>(setterCall, instance, argument).Compile();
-      }
-      catch //fallback for Android
-      {
-        return (o, convertedValue) => propertySetMethod.Invoke(o, new[] { convertedValue });
-      }
+        public static MemberSetter<T> CreateExpressionSetter(PropertyInfo propertyInfo)
+        {
+            //if (!propertyInfo.CanWrite) { return TypeAccessorHelper<T>.EmptyMemberSetter; }
+            var mi = propertyInfo.GetSetMethod(true);
+            if (mi is null) return TypeAccessorHelper<T>.EmptyMemberSetter;
+
+            try
+            {
+                var thisType = TypeAccessorHelper<T>.ThisType;
+                var propertyDeclaringType = propertyInfo.DeclaringType;
+
+                var instance = Expression.Parameter(thisType, TypeAccessorHelper.InstanceParameterName);
+                var argument = Expression.Parameter(TypeConstants.ObjectType, TypeAccessorHelper.ArgumentParameterName);
+
+                var instanceType = thisType != propertyDeclaringType
+                    ? (Expression)Expression.TypeAs(instance, propertyDeclaringType)
+                    : instance;
+
+                var setterCall = Expression.Call(
+                    instanceType,
+                    mi,
+                    TypeAccessorHelper.GetCastOrConvertExpression(argument, propertyInfo.PropertyType));  //Expression.Convert(argument, propertyInfo.PropertyType));
+
+                return Expression.Lambda<MemberSetter<T>>(setterCall, instance, argument).Compile();
+            }
+            catch //fallback for Android
+            {
+                return (o, convertedValue) => mi.Invoke(o, new[] { convertedValue });
+            }
+        }
+
+        #endregion
     }
-
-    #endregion
-  }
-
-  public static partial class PropertyInvoker<T>
-  {
-    #region -- CreateExpressionGetter --
-
-    public static MemberGetter<T> CreateExpressionGetter(PropertyInfo propertyInfo)
-    {
-      //if (!propertyInfo.CanRead) { return TypeAccessorHelper<T>.EmptyMemberGetter; }
-      var thisType = TypeAccessorHelper<T>.ThisType;
-      var propertyDeclaringType = propertyInfo.DeclaringType;
-
-      var instance = Expression.Parameter(thisType, TypeAccessorHelper.InstanceParameterName);
-      var property = thisType != propertyDeclaringType
-          ? Expression.Property(Expression.TypeAs(instance, propertyDeclaringType), propertyInfo)
-          : Expression.Property(instance, propertyInfo);
-      var convertProperty = Expression.TypeAs(property, TypeConstants.ObjectType);
-      return Expression.Lambda<MemberGetter<T>>(convertProperty, instance).Compile();
-    }
-
-    #endregion
-
-    #region -- CreateExpressionSetter --
-
-    public static MemberSetter<T> CreateExpressionSetter(PropertyInfo propertyInfo)
-    {
-      //if (!propertyInfo.CanWrite) { return TypeAccessorHelper<T>.EmptyMemberSetter; }
-      var mi = propertyInfo.GetSetMethod(true);
-      if (mi == null) return TypeAccessorHelper<T>.EmptyMemberSetter;
-
-      try
-      {
-        var thisType = TypeAccessorHelper<T>.ThisType;
-        var propertyDeclaringType = propertyInfo.DeclaringType;
-
-        var instance = Expression.Parameter(thisType, TypeAccessorHelper.InstanceParameterName);
-        var argument = Expression.Parameter(TypeConstants.ObjectType, TypeAccessorHelper.ArgumentParameterName);
-
-        var instanceType = thisType != propertyDeclaringType
-            ? (Expression)Expression.TypeAs(instance, propertyDeclaringType)
-            : instance;
-
-        var setterCall = Expression.Call(
-            instanceType,
-            mi,
-            TypeAccessorHelper.GetCastOrConvertExpression(argument, propertyInfo.PropertyType));  //Expression.Convert(argument, propertyInfo.PropertyType));
-
-        return Expression.Lambda<MemberSetter<T>>(setterCall, instance, argument).Compile();
-      }
-      catch //fallback for Android
-      {
-        return (o, convertedValue) => mi.Invoke(o, new[] { convertedValue });
-      }
-    }
-
-    #endregion
-  }
 }
 

@@ -867,10 +867,10 @@ namespace CuteAnt.Reflection
 
             var matcher = s_methodMatcherCache.GetOrAdd(method, mi => new MethodMatcher(mi));
 
-            matcher.Match(parameters, out var parameterValues, out var parameterValuesSet, out var paramInfos);
+            matcher.Match(parameters, out var parameterValues, out var paramInfos);
             for (var index = 0; index != paramInfos.Length; index++)
             {
-                if (parameterValuesSet[index] == false)
+                if (parameterValues[index] is null)
                 {
                     if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
                     {
@@ -892,10 +892,10 @@ namespace CuteAnt.Reflection
 
             var matcher = MethodMatcher<TTarget, TReturn>.GetMethodMatcher(method);
 
-            matcher.Match(parameters, out var parameterValues, out var parameterValuesSet, out var paramInfos);
+            matcher.Match(parameters, out var parameterValues, out var paramInfos);
             for (var index = 0; index != paramInfos.Length; index++)
             {
-                if (parameterValuesSet[index] == false)
+                if (parameterValues[index] is null)
                 {
                     if (!ParameterDefaultValue.TryGetDefaultValue(paramInfos[index], out var defaultValue))
                     {

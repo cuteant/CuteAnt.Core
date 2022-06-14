@@ -670,7 +670,7 @@ namespace System
         /// <returns></returns>
         public static PropertyInfo AddRuntimeAttributes(this PropertyInfo propertyInfo, params Attribute[] attrs)
         {
-            if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
+            if (propertyInfo is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
 
             var runtimeAttributes = s_propertyAttributesMap.GetItem(UniqueKey(propertyInfo), k => new List<Attribute>());
             lock (runtimeAttributes)
@@ -686,7 +686,7 @@ namespace System
         /// <returns></returns>
         public static PropertyInfo ReplaceRuntimeAttribute(this PropertyInfo propertyInfo, Attribute attr)
         {
-            if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
+            if (propertyInfo is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
 
             var runtimeAttributes = s_propertyAttributesMap.GetItem(UniqueKey(propertyInfo), k => new List<Attribute>());
 
@@ -704,7 +704,7 @@ namespace System
         /// <returns></returns>
         public static PropertyInfo ClearRuntimeAttributes(this PropertyInfo propertyInfo)
         {
-            if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
+            if (propertyInfo is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
 
             var runtimeAttributes = s_propertyAttributesMap.GetItem(UniqueKey(propertyInfo), k => new List<Attribute>());
 
@@ -727,7 +727,7 @@ namespace System
         /// <returns></returns>
         public static bool HasAttribute(this PropertyInfo propertyInfo, Type attributeType, bool inherit = true)
         {
-            if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
+            if (propertyInfo is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
             if (null == attributeType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.attributeType);
 
             if (GetRuntimeAttributes(propertyInfo).Any(_ => _.GetType() == attributeType)) { return true; }
@@ -755,7 +755,7 @@ namespace System
         /// <returns></returns>
         public static bool HasAttributeOf(this PropertyInfo propertyInfo, Type attributeType, bool inherit = true)
         {
-            if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
+            if (propertyInfo is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
             if (null == attributeType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.attributeType);
 
             if (GetRuntimeAttributes(propertyInfo).Any(_ => _.GetType().As(attributeType))) { return true; }
@@ -783,7 +783,7 @@ namespace System
         /// <returns></returns>
         public static bool HasAttributeNamed(this PropertyInfo propertyInfo, string name, bool inherit = true)
         {
-            if (null == propertyInfo) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
+            if (propertyInfo is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.propertyInfo); }
             if (string.IsNullOrWhiteSpace(name)) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.name); }
 
             var normalizedAttr = name.Replace("Attribute", "");

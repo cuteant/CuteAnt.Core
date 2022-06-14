@@ -25,7 +25,7 @@ namespace CuteAnt.Reflection
         [Obsolete("=> ActivatorUtils.FastCreateInstance")]
         public static object CreateInstance(this Type instanceType)
         {
-            if (instanceType == null) { return null; }
+            if (instanceType is null) { return null; }
 
             return GetConstructorMethod(instanceType).Invoke();
         }
@@ -37,7 +37,7 @@ namespace CuteAnt.Reflection
         [Obsolete("=> ActivatorUtils.FastCreateInstance")]
         public static T CreateInstance<T>(this Type instanceType)
         {
-            if (instanceType == null) { return default(T); }
+            if (instanceType is null) { return default; }
 
             return (T)GetConstructorMethod(instanceType).Invoke();
         }
@@ -175,7 +175,7 @@ namespace CuteAnt.Reflection
             TypeAccessException GetTypeAccessException()
             {
                 return new TypeAccessException("Generating constructor for type: " + instanceType +
-                  (paramTypes == null || 0u >= (uint)paramTypes.Length ? " No empty constructor found!" :
+                  (paramTypes is null || 0u >= (uint)paramTypes.Length ? " No empty constructor found!" :
                   " No constructor found that matches the following parameter types: " +
                   string.Join(",", paramTypes.Select(x => x.Name).ToArray())));
 
@@ -189,7 +189,7 @@ namespace CuteAnt.Reflection
         /// <summary>Try generates or gets a strongly-typed open-instance delegate to the specified type constructor that takes the specified type params.</summary>
         public static bool TryMakeDelegateForCtor<T>(this Type instanceType, Type[] paramTypes, out CtorInvoker<T> result)
         {
-            if (null == instanceType) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.instanceType);
+            if (instanceType is null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.instanceType);
 
             ConstructorInfo ctor = null;
             if (!(instanceType == TypeConstants.StringType ||
@@ -202,9 +202,9 @@ namespace CuteAnt.Reflection
                 }
                 catch { }
             }
-            if (ctor == null)
+            if (ctor is null)
             {
-                if (paramTypes == null || 0u >= (uint)paramTypes.Length)
+                if (paramTypes is null || 0u >= (uint)paramTypes.Length)
                 {
                     var emptyInvoker = instanceType.GetConstructorMethod();
                     result = (object[] ps) => (T)emptyInvoker.Invoke();
@@ -219,7 +219,7 @@ namespace CuteAnt.Reflection
 
         internal static CtorInvoker<T> MakeDelegateForCtor<T>(Type instanceType, Type[] paramTypes, ConstructorInfo ctor)
         {
-            if (null == paramTypes) { paramTypes = Type.EmptyTypes; }
+            if (paramTypes is null) { paramTypes = Type.EmptyTypes; }
 
             var dynMethod = new DynamicMethod(c_ctorInvokerName,
                 MethodAttributes.Static | MethodAttributes.Public,
