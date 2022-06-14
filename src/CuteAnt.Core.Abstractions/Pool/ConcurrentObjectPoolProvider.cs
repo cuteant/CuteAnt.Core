@@ -2,20 +2,20 @@
 
 namespace CuteAnt.Pool
 {
-  public class ConcurrentObjectPoolProvider : ObjectPoolProvider
-  {
-    public static readonly ConcurrentObjectPoolProvider Default = new ConcurrentObjectPoolProvider();
-
-    public int MaximumRetained { get; set; } = int.MaxValue;
-
-    public override ObjectPool<T> Create<T>(IPooledObjectPolicy<T> policy)
+    public class ConcurrentObjectPoolProvider : ObjectPoolProvider
     {
-      return new ConcurrentObjectPool<T>(policy, MaximumRetained);
-    }
+        public static readonly ConcurrentObjectPoolProvider Default = new ConcurrentObjectPoolProvider();
 
-    public override ObjectPool<T> Create<T>(IPooledObjectPolicy<T> policy, int maximumRetained)
-    {
-      return new ConcurrentObjectPool<T>(policy, maximumRetained);
+        public int MaximumRetained { get; set; } = int.MaxValue;
+
+        public override ObjectPool<T> Create<T>(IPooledObjectPolicy<T> policy)
+        {
+            return Create<T>(policy, MaximumRetained);
+        }
+
+        public override ObjectPool<T> Create<T>(IPooledObjectPolicy<T> policy, int maximumRetained)
+        {
+            return new ConcurrentObjectPool<T>(policy, maximumRetained);
+        }
     }
-  }
 }

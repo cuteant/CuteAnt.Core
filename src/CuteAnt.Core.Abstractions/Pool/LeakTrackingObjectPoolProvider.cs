@@ -5,26 +5,36 @@ using System;
 
 namespace CuteAnt.Pool
 {
-  public class LeakTrackingObjectPoolProvider : ObjectPoolProvider
-  {
-    private readonly ObjectPoolProvider _inner;
-
-    public LeakTrackingObjectPoolProvider(ObjectPoolProvider inner)
+    /// <summary>
+    /// An <see cref="ObjectPoolProvider"/> that produces instances of
+    /// <see cref="LeakTrackingObjectPool{T}"/>.
+    /// </summary>
+    public class LeakTrackingObjectPoolProvider : ObjectPoolProvider
     {
-      if (null == inner) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.inner); }
-      _inner = inner;
-    }
+        private readonly ObjectPoolProvider _inner;
 
-    public override ObjectPool<T> Create<T>(IPooledObjectPolicy<T> policy)
-    {
-      var inner = _inner.Create<T>(policy);
-      return new LeakTrackingObjectPool<T>(inner);
-    }
+        /// <summary>
+        /// Initializes a new instance of <see cref="LeakTrackingObjectPoolProvider"/>.
+        /// </summary>
+        /// <param name="inner">The <see cref="ObjectPoolProvider"/> to wrap.</param>
+        public LeakTrackingObjectPoolProvider(ObjectPoolProvider inner)
+        {
+            if (null == inner) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.inner); }
+            _inner = inner;
+        }
 
-    public override ObjectPool<T> Create<T>(IPooledObjectPolicy<T> policy, int maximumRetained)
-    {
-      var inner = _inner.Create<T>(policy, maximumRetained);
-      return new LeakTrackingObjectPool<T>(inner);
+        /// <inheritdoc/>
+        public override ObjectPool<T> Create<T>(IPooledObjectPolicy<T> policy)
+        {
+            var inner = _inner.Create<T>(policy);
+            return new LeakTrackingObjectPool<T>(inner);
+        }
+
+        /// <inheritdoc/>
+        public override ObjectPool<T> Create<T>(IPooledObjectPolicy<T> policy, int maximumRetained)
+        {
+            var inner = _inner.Create<T>(policy, maximumRetained);
+            return new LeakTrackingObjectPool<T>(inner);
+        }
     }
-  }
 }

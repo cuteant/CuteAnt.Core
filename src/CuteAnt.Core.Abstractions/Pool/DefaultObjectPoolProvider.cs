@@ -5,20 +5,33 @@ using System;
 
 namespace CuteAnt.Pool
 {
-  public class DefaultObjectPoolProvider : ObjectPoolProvider
-  {
-    public static readonly DefaultObjectPoolProvider Default = new DefaultObjectPoolProvider();
-
-    public int MaximumRetained { get; set; } = Environment.ProcessorCount * 2;
-
-    public override ObjectPool<T> Create<T>(IPooledObjectPolicy<T> policy)
+    /// <summary>
+    /// The default <see cref="ObjectPoolProvider"/>.
+    /// </summary>
+    public class DefaultObjectPoolProvider : ObjectPoolProvider
     {
-      return new DefaultObjectPool<T>(policy, MaximumRetained);
-    }
+        public static readonly DefaultObjectPoolProvider Default = new DefaultObjectPoolProvider();
 
-    public override ObjectPool<T> Create<T>(IPooledObjectPolicy<T> policy, int maximumRetained)
-    {
-      return new DefaultObjectPool<T>(policy, maximumRetained);
+        /// <summary>
+        /// The maximum number of objects to retain in the pool.
+        /// </summary>
+        public int MaximumRetained { get; set; } = Environment.ProcessorCount * 2;
+
+        public override ObjectPool<T> Create<T>(IPooledObjectPolicy<T> policy)
+        {
+            return Create<T>(policy, MaximumRetained);
+        }
+
+        public override ObjectPool<T> Create<T>(IPooledObjectPolicy<T> policy, int maximumRetained)
+        {
+            if (policy is null) { ThrowHelper.ThrowArgumentNullException(ExceptionArgument.policy); }
+
+            if (typeof(IDisposable).IsAssignableFrom(typeof(T)))
+            {
+                return new DisposableObjectPool<T>(policy, maximumRetained);
+            }
+
+            return new DefaultObjectPool<T>(policy, maximumRetained);
+        }
     }
-  }
 }

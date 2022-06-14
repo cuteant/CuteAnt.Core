@@ -3,12 +3,19 @@
 
 namespace CuteAnt.Pool
 {
-  public abstract class PooledObjectPolicy<T> : IPooledObjectPolicy<T>
-  {
-    public abstract T Create();
+    /// <summary>
+    /// A base type for <see cref="IPooledObjectPolicy{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of object which is being pooled.</typeparam>
+    public abstract class PooledObjectPolicy<T> : IPooledObjectPolicy<T>
+    {
+        /// <inheritdoc />
+        public abstract T Create();
 
-    public abstract T PreGetting(T obj);
+        /// <inheritdoc />
+        public abstract T PreGetting(T obj);
 
-    public abstract bool Return(T obj);
-  }
+        /// <inheritdoc />
+        public abstract bool Return(T obj);
+    }
 }
